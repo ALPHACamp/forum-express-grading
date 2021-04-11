@@ -1,0 +1,55 @@
+<h1>餐廳後台</h1>
+
+<div class="restaurants-header d-flex align-items-center justify-content-between">
+  <div class="restaurants-nav">
+    <a href="/admin/restaurants">Restaurants</a>
+    <span> | </span>
+    <a href="/admin/users">Users</a>
+    <span> | </span>
+    <a href='/admin/categories'>Categories</a>
+  </div>
+
+  <div class="add-restaurant">
+    <a href='/admin/restaurants/create'>
+      <button type="button" class="btn btn-primary">New Restaurant</button>
+    </a>
+  </div>
+</div>
+
+<br />
+<br />
+
+<table class="table">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Category</th>
+      <th scope="col">Name</th>
+      <th scope="col">#</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each restaurants}}
+    <tr>
+      <th scope="row">{{this.id}}</th>
+      <td>{{this.Category.name}}</td>
+      <td>{{this.name}}</td>
+      <td>
+        <button type="button" class="btn btn-link">
+          <a href="/admin/restaurants/{{this.id}}">
+            Show
+          </a>
+        </button>
+        <button type="button" class="btn btn-link">
+          <a href="/admin/restaurants/{{this.id}}/edit">
+            Edit
+          </a>
+        </button>
+        <form action="/admin/restaurants/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
+          <button type="submit" class="btn btn-link">Delete</button>
+        </form>
+      </td>
+    </tr>
+    {{/each}}
+  </tbody>
+</table>

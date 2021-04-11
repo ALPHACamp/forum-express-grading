@@ -1,0 +1,28 @@
+<div class="profile-container" style="background-color: #fff; height: 350px">
+  <div class="row">
+    <div class="avatar col-md-4">
+      <img src="{{userProfile.avatar}}" alt="User Avatar" style="width: 350px; height: 350px;">
+    </div>
+    <div class="personal-info col-md-4">
+      <h1>{{userProfile.name}}</h1>
+      <p>{{userProfile.email}}</p>
+      {{#if (isSelected userProfile.id user.id)}}
+      <a href="/users/{{user.id}}/edit">
+        <button class="btn btn-primary">Edit</button>
+      </a>
+      {{/if}}
+    </div>
+  </div>
+  <div class="row mt-3">
+    <div class="col-12 px-4 py-3" style="border-bottom: #9797979e solid 1px;">
+      <div>已評論餐廳 ({{count}})</div>
+    </div>
+    <div class="col-12 p-4">
+      {{#each comments}}
+      <a href="/restaurants/{{this.RestaurantId}}" class="mr-3">
+        <img src="{{this.Restaurant.image}}" style="width: 100px;">
+      </a>
+      {{/each}}
+    </div>
+  </div>
+</div>

@@ -11,11 +11,10 @@
     "password": "password",
     "database": "forum_test",
     "host": "127.0.0.1",
-    "dialect": "mysql",
-    "logging": false
+    "dialect": "mysql"
   },
   "production": {
-    "use_env_variable": "CLEARDB_SILVER_URL"
+    "use_env_variable": "CLEARDB_DATABASE_URL"
   },
   "travis": {
     "username": "travis",
