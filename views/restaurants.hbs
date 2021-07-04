@@ -1,0 +1,55 @@
+
+<h1>餐廳清單</h1>
+
+<ul class="nav nav-pills">
+  <li class="nav-item">
+    <a class="nav-link" href="?categoryId=" {{#ifCond '' categoryId}}active{{/ifCond}}>全部</a>
+  </li>
+  {{#each categories}}
+    <li class="nav-item">
+      <a class="nav-link" href="?categoryId={{this.id}}" {{#ifCond this.id ../categoryId}}active{{/ifCond}}>{{this.name}}</a>
+    </li>
+  {{/each}}
+</ul>
+<br/>
+<div class="row">
+  {{#each restaurants}}
+    <div class="col-md-4">
+      <div class="card mb-4 shadow-sm">
+        <img class="card-img-top" src="{{this.image}}" alt="Card image cap" width="286px" height="180px">
+        <div class="card-body">
+          <p class="card-text">
+            <a href="/restaurants/{{this.id}}">
+              {{this.name}}
+            </a>
+          </p>
+          <span class="badge badge-secondary">{{this.categoryName}}</span>
+          <p class="card-text">{{this.description}}</p>
+        </div>
+      </div>
+    </div>
+  {{/each}}
+</div>
+<br />
+<br />
+<nav aria-label="Page navigation example">
+  <ul class="pagination">
+    <li class="page-item">
+      <a class="page-link" href="/restaurants?page={{prev}}&categoryId={{categoryId}}" aria-label="Previous">
+        <span aria-hidden="true">&laquo;</span>
+      </a>
+    </li>
+    {{#each totalPage}}
+      {{#ifCond this ../page}}
+        <li class="page-item active"><a class="page-link" href="#">{{this}}</a></li>
+    {{else}}
+      <li class="page-item"><a class="page-link"
+          href="/restaurants?page={{this}}&categoryId={{../categoryId}}">{{this}}</a></li>
+      {{/ifCond}}
+    {{/each}}
+      <li class="page-item"><a class="page-link" href="/restaurants?page={{next}}&categoryId={{categoryId}}" aria-label="Next">
+      <span aria-hidden="true">&raquo;</span>
+    </a>
+    </li>
+  </ul>
+</nav>
