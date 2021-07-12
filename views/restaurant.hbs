@@ -1,0 +1,77 @@
+<div class="row">
+  <div class="col-md-12">
+    <h1>{{restaurant.name}}</h1>
+    <p>[{{restaurant.Category.name}}]</p>
+  </div>
+  <div class="col-md-4">
+    <img class="img-responsive center-block" src="{{restaurant.image}}" style="width: 250px;margin-bottom: 25px;">
+    <div class="well">
+      <ul class="list-unstyled">
+        <li><strong>Opening Hour:</strong> {{restaurant.opening_hours}}</li>
+        <li><strong>Tel:</strong> {{restaurant.tel}}</li>
+        <li><strong>Address:</strong> {{restaurant.address}}</li>
+      </ul>
+    </div>
+  </div>
+  <div class="col-md-8">
+    <p>{{restaurant.description}}</p>
+  </div>
+  <form action="/restaurants/{{restaurant.id}}/dashboard" method="GET">
+    <button type="submit" class="btn btn-outline-primary">Dashboard</button>
+  </form>
+  &nbsp;
+  {{#if isFavorited}}
+  <form action="/favorite/{{restaurant.id}}?_method=DELETE" method="POST"><button type="submit" class="btn btn-danger">移除收藏</button></form>
+  {{else}}
+  <form action="/favorite/{{restaurant.id}}" method="POST"><button type="submit" class="btn btn-outline-danger">加到收藏</button></form>
+  {{/if}}
+  &nbsp;
+  {{#if isLiked}}
+  <form action="/like/{{restaurant.id}}?_method=DELETE" method="POST">
+    <button type="submit" class="btn btn-success">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16">
+      <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01L8 2.748zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15z"></path>
+      </svg>
+      Unlike
+    </button>
+  </form>
+  {{else}}
+  <form action="/like/{{restaurant.id}}" method="POST">
+    <button type="submit" class="btn">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16">
+      <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01L8 2.748zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15z"></path>
+      </svg>
+      Like
+    </button>
+  </form>
+  {{/if}}
+
+  <hr>
+</div>
+<br />
+<br /><br />
+<h3>所有評論：</h3>
+{{#each restaurant.Comments}}
+  {{#if ../user.isAdmin}}
+  <form action="/comments/{{this.id}}?_method=DELETE" method="POST" style="float: right;">
+    <button type="submit" class="btn btn-danger">Delete</button>
+  </form>
+  {{/if}}
+  <blockquote class="blockquote mb-0">
+    <h4><a href="/users/{{this.User.id}}">{{this.User.name}}</a></h4>
+    <p>{{this.text}}</p>
+    <footer class="blockquote-footer">{{this.createdAt}}</footer>
+  </blockquote>
+  <hr />
+{{/each}}
+<br />
+<form action="/comments" method="POST">
+  <div class="form-group">
+    <label for="text">留下評論：</label>
+    <textarea class="form-control" id="text" name="text" rows="3" maxlength="200"></textarea>
+    <small>word limit: 200</small>
+  </div>
+  <input type="hidden" name="restaurantId" value="{{restaurant.id}}" />
+  <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+<a href="javascript:history.back()">回上一頁</a>

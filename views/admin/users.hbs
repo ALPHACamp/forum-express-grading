@@ -1,0 +1,49 @@
+
+<h1>後台 - 使用者列表</h1>
+<a href="/admin/restaurants">餐廳管理</a> | <a href="/admin/users">使用者管理</a> | <a href="/admin/categories">分類管理</a>
+<br/>
+<br/>
+
+<table class="table">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Name</th>
+      <th scope="col">Email</th>
+      <th scope="col">Status</th>
+      <th scope="col">Profile</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each users}}
+    <tr>
+      <th scope="row">{{this.id}}</th>
+      <td>{{this.name}}</td>
+      <td>{{this.email}}</td>
+      <td>
+        {{#if this.isAdmin}}
+        <span>Admin
+          <form action="/admin/users/{{this.id}}/toggleAdmin?_method=PUT" method="POST" style="display: inline;">
+            <button type="submit" class="btn btn-small">推下神壇！</button>
+          </form>
+        </span>
+        {{else}}
+        <span>Common User&nbsp;
+          <form action="/admin/users/{{this.id}}/toggleAdmin?_method=PUT" method="POST" style="display: inline;">
+            <button type="submit" class="btn btn-small">set as admin</button>
+          </form>
+        </span>
+        {{/if}}
+      </td>
+      <td>
+        <form action="/users/{{this.id}}" method="GET" style="display: inline;">
+          <button type="submit" class="btn btn-small">View</button>
+        </form> 
+        <form action="/users/{{this.id}}/edit" method="GET" style="display: inline;">
+          <button type="submit" class="btn btn-small">Edit</button>
+        </form>       
+      </td>
+    </tr>
+    {{/each}}
+  </tbody>
+</table>
