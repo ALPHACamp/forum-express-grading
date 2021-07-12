@@ -1,6 +1,9 @@
 node_modules/ 
 temp/
 upload/
+！upload/pic-replacement.jpg
+tigger/
 
 .DS_Store
 .env
+note.md

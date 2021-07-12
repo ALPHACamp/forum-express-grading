@@ -1,0 +1,100 @@
+
+<style>
+  a.active {
+    font-weight: heavy;
+    color: olive;
+    }
+</style>
+<h1>餐廳清單</h1>
+<ul class="nav nav-tabs">
+ <li class="nav-item">
+   <a class="nav-link active" href="#">首頁</a>
+ </li>
+ <li class="nav-item">
+   <a class="nav-link" href="/restaurants/feeds">最新動態</a>
+ </li>
+ <li class="nav-item">
+  <a class="nav-link" href="/users/top">美食達人</a>
+ </li>
+<li class="nav-item">
+  <a class="nav-link" href="/restaurants/top">人氣餐廳</a>
+</li>
+</ul>
+<br/>
+<ul class="nav nav-pills">
+  <li class="nav-item">
+    <a class="nav-link" href="?categoryId=" {{#ifCond '' categoryId}}active{{/ifCond}}>全部</a>
+  </li>
+  {{#each categories}}
+    <li class="nav-item">
+      <a class="nav-link" href="?categoryId={{this.id}}" {{#ifCond this.id ../categoryId}}active{{/ifCond}}>{{this.name}}</a>
+    </li>
+  {{/each}}
+</ul>
+<br/>
+<div class="row">
+  {{#each restaurants}}
+    <div class="col-md-4">
+      <div class="card mb-4 shadow-sm">
+        <img class="card-img-top" src="{{this.image}}" alt="Card image cap" width="286px" height="180px">
+        <div class="card-body">
+          <p class="card-text">
+            <a href="/restaurants/{{this.id}}">
+              {{this.name}}
+            </a>
+          </p>
+          <span class="badge badge-secondary">{{this.categoryName}}</span>
+          <p class="card-text">{{this.description}}</p>
+          {{#if this.isFavorited}}
+          <form action="/favorite/{{this.id}}?_method=DELETE" method="POST" style="display:inline-block"><button type="submit" class="btn btn-danger">移除收藏</button></form>
+          {{else}}
+          <form action="/favorite/{{this.id}}" method="POST" style="display:inline-block"><button type="submit" class="btn btn-outline-danger">加到收藏</button></form>
+          {{/if}}
+            &nbsp;
+          {{#if isLiked}}
+          <form action="/like/{{this.id}}?_method=DELETE" method="POST" style="display:inline-block">
+            <button type="submit" class="btn btn-success">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16">
+              <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01L8 2.748zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15z"></path>
+              </svg>
+              Unlike
+            </button>
+          </form>
+          {{else}}
+          <form action="/like/{{this.id}}" method="POST" style="display:inline-block">
+            <button type="submit" class="btn">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16">
+              <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01L8 2.748zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15z"></path>
+              </svg>
+              Like
+            </button>
+          </form>
+          {{/if}}
+        </div>
+      </div>
+    </div>
+  {{/each}}
+</div>
+<br />
+<br />
+<nav aria-label="Page navigation example">
+  <ul class="pagination">
+    <li class="page-item">
+      <a class="page-link" href="/restaurants?page={{prev}}&categoryId={{categoryId}}" aria-label="Previous">
+        <span aria-hidden="true">&laquo;</span>
+      </a>
+    </li>
+    {{#each totalPage}}
+      {{#ifCond this ../page}}
+        <li class="page-item active"><a class="page-link" href="#">{{this}}</a></li>
+    {{else}}
+      <li class="page-item"><a class="page-link"
+          href="/restaurants?page={{this}}&categoryId={{../categoryId}}">{{this}}</a></li>
+      {{/ifCond}}
+    {{/each}}
+      <li class="page-item"><a class="page-link" href="/restaurants?page={{next}}&categoryId={{categoryId}}" aria-label="Next">
+      <span aria-hidden="true">&raquo;</span>
+    </a>
+    </li>
+  </ul>
+</nav>

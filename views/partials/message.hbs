@@ -1,0 +1,24 @@
+        {{#if success_messages}}
+          <div class="alert alert-success" role="alert" style="margin: 30px 0 ;">
+            {{success_messages}}
+          </div>
+        {{/if}}
+        {{#if warning_messages}}
+          <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <strong>無權限</strong> {{warning_messages}}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+        {{/if}}
+        {{#if errorArr}}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+          <strong>表格有錯誤</strong>
+          {{#each errorArr}}
+            <li>{{this}}</li>
+          {{/each}}
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        {{/if}}
