@@ -24,6 +24,7 @@ const mockResponse = () => {
 
 describe('# A17', () => {
   describe('登入測試: POST /signin', function(){
+    // 以下測試會發出真實的 request 測試資料庫是否有正確的 user 資料
     it('#1 密碼錯誤', function(done){
       request(app)
         .post('/signin')
@@ -47,7 +48,7 @@ describe('# A17', () => {
         .post('/signin')
         .type('urlencoded')
         .send('email=root@example.com&password=12345678')
-        .expect('Location', '/')
+        .expect('Location', '/restaurants')
         .expect(302, done)
     })
   });
@@ -71,7 +72,7 @@ describe('# A17', () => {
     
     context('# [顯示使用者清單]', () => {
       it(" GET /admin/users ", async () => {
-        // 製作假 request & response
+        // 模擬 request & response
         const req = mockRequest();
         const res = mockResponse();
 
@@ -85,7 +86,7 @@ describe('# A17', () => {
   
     context('# [修改使用者權限] for admin', () => {
       before(() => {
-        // 製作假 db 資料: UserMock
+        // 模擬 user db 資料: UserMock
         this.UserMock = dbMock.define('User', {
           id: 1,
           email: 'root@example.com',
@@ -125,7 +126,7 @@ describe('# A17', () => {
           isAdmin: false,
         }, {
           instanceMethods: {
-            // 模擬 update 函數，並依據傳入的變數，跟著修正，如果傳入 {isAdmin: true}，假資料中的 isAdmin 變會變成 true
+            // 模擬 update 函數，並依據傳入的變數，跟著修正，如果傳入 {isAdmin: true}
             update: (changes) => {
               this.UserMock._defaults = {...changes};
               return Promise.resolve();
