@@ -25,7 +25,8 @@ const mockResponse = () => {
 describe('# A20: 餐廳資訊整理：Dashboard', function () {
   context('# [Q1: Dashboard - 1 - controller / view / route]', () => {
     before(async () => {
-      // 模擬 user, restaurant, category, comment 資料
+      // 製作假資料
+      // 本 context 會用這筆資料進行測試
       this.UserMock = dbMock.define('User', {
         id: 1,
         email: 'root@example.com',
@@ -44,6 +45,7 @@ describe('# A20: 餐廳資訊整理：Dashboard', function () {
         id: 1,
         text: 'gogogo',
       })
+      // 模擬 Sequelize 行為
       // 將 mock user db 中的 findByPK 用 findOne 取代 (sequelize mock not support findByPK)
       this.RestaurantMock.findByPk = (id) =>
         this.RestaurantMock.findOne({ where: { id: id } })
@@ -62,15 +64,18 @@ describe('# A20: 餐廳資訊整理：Dashboard', function () {
     })
 
     it(' GET /restaurants/:id/dashboard ', async () => {
-      const req = mockRequest({ params: { id: 1 } })
+      // 模擬 request & response
+      const req = mockRequest({ params: { id: 1 } }) // 帶入 params.id = 1，對 GET /restaurants/1/dashboard 發出請求
       const res = mockResponse()
-      // call getDashBoard function
+      // 測試 restController.getDashBoard 函式
       await this.restController.getDashBoard(req, res)
 
-      // 確認執行 getDasgBoard 之後，回傳的 res.render 的參數是否與模擬資料相同
+      // getDashBoard 執行完畢後，應呼叫 res.render
+      // res.render 的第 1 個參數要是 'dashboard'
+      // res.render 的第 2 個參數要包含 restaurant，其 name 屬性的值應是 '銷魂麵'
       res.render.getCall(0).args[0].should.equal('dashboard')
       res.render.getCall(0).args[1].restaurant.name.should.equal('銷魂麵')
-      res.render.getCall(0).args[1].n_comments.should.equal(1)
+      res.render.getCall(0).args[1].n_comments.should.equal(1) // question**
     })
   })
 })
