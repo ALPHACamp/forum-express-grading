@@ -38,10 +38,10 @@ describe('# A21: Like / Unlike', function () {
       this.getUser = sinon.stub(helpers, 'getUser').returns({ id: 1 })
 
       // 建立了一個模擬的 Like table，裡面目前是空的
-      // 模擬 Sequelize 行為
       this.mockLikeData = []
       this.likeMock = createModelMock('Like', null, this.mockLikeData)
-
+      
+      // 連向模擬的 Like table
       this.userController = createControllerProxy('../controllers/userController', {Like: this.likeMock})
     })
 
@@ -81,6 +81,7 @@ describe('# A21: Like / Unlike', function () {
         RestaurantId: 2,
       }, mockLikeData);
 
+      // 連向模擬的 Like table
       this.userController = createControllerProxy('../controllers/userController', { Like: this.likeMock })
     })
 

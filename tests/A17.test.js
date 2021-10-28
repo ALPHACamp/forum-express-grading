@@ -58,9 +58,10 @@ describe('# A17', () => {
   });
 
   describe('# A17: 使用者權限管理', function () {
+    // 前置準備
     before(() => {
       // 製作假資料
-      // 下個 context 會用這筆資料進行測試
+      // 本 context 會用這筆資料進行測試
       this.UserMock = createModelMock('User', {
         id: 1,
         email: 'root@example.com',
@@ -68,10 +69,11 @@ describe('# A17', () => {
         isAdmin: false,
       })
 
-      // 將 adminController 中的 User db 取代成 User mock db
+      // 修改 adminController 中的資料庫連線設定，由連向真實的資料庫 -> 改為連向模擬的 User table
       this.adminController = createControllerProxy('../../controllers/adminController', { User: this.UserMock })
     })
-
+    
+    // 開始測試
     context('# [顯示使用者清單]', () => {
       it(' GET /admin/users ', async () => {
         // 模擬 request & response

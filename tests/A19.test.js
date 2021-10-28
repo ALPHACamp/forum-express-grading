@@ -20,6 +20,7 @@ const mockResponse = () => {
 describe('# A19', () => {
   describe('# A19: 建立 User Profile', function () {
     context('# [瀏覽 Profile]', () => {
+      // 前置準備
       before(() => {
         // 模擬登入驗證
         this.ensureAuthenticated = sinon
@@ -35,10 +36,11 @@ describe('# A19', () => {
           isAdmin: false,
         })
 
-        // 將 userController 中的 User db 取代成 User mock db
+        // 修改 userController 中的資料庫連線設定，由連向真實的資料庫 -> 改為連向模擬的 User table
         this.userController = createControllerProxy('../../controllers/userController', { User: this.UserMock })
       })
 
+      // 開始測試
       it(' GET /users/:id ', async () => {
         // 模擬 request & response
         const req = mockRequest({ params: { id: 1 } }) // 帶入 params.id = 1，對 GET /users/1 發出請求
@@ -53,7 +55,8 @@ describe('# A19', () => {
         res.render.getCall(0).args[0].should.equal('profile')
         res.render.getCall(0).args[1].user.name.should.equal('admin')
       })
-
+      
+      // 測試完畢，清除資料
       after(async () => {
         // 清除模擬驗證資料
         this.ensureAuthenticated.restore()
@@ -78,7 +81,7 @@ describe('# A19', () => {
           isAdmin: false,
         })
 
-        // 將 userController 中的 User db 取代成 User mock db
+        // 連向模擬的 User table
         this.userController = createControllerProxy('../../controllers/userController', { User: this.UserMock })
       })
 
@@ -123,7 +126,7 @@ describe('# A19', () => {
           }
         )
 
-        // 將 userController 中的 User db 取代成 User mock db
+        // 連向模擬的 User table
         this.userController = createControllerProxy('../../controllers/userController', { User: this.UserMock })
       })
 

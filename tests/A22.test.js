@@ -93,10 +93,9 @@ describe('# A22: TOP 10 人氣餐廳 ', function () {
           .returns({ id: 1, followings: [], favoritedRestaurants: [] })
 
         // 建立了一個模擬的 Restaurant table，裡面放入 2 間餐廳資料
-        // 模擬 Sequelize 行為
         this.restaurantMock = createModelMock('Restaurant', null, mockRestaurantData)
 
-        // 將 restController 中的 Restaurant db 取代成 Restaurant mock db
+        // 連向模擬的 Restaurant table
         this.restController = createControllerProxy('../controllers/restController', {
           Restaurant: this.restaurantMock,
         })
@@ -104,7 +103,7 @@ describe('# A22: TOP 10 人氣餐廳 ', function () {
         // 建立了一個模擬的 Favorite table，裡面有 1 筆資料
         this.favoriteMock = createModelMock('Favorite', null, mockRestaurantData, 'FavoritedUsers')
 
-        // 將 userController 中的 Favorite db 取代成 Favorite mock db
+        // 連向模擬的 Favorite table
         this.userController = createControllerProxy('../controllers/userController', {Favorite: this.favoriteMock})
       })
 

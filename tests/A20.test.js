@@ -43,7 +43,7 @@ describe('# A20: 餐廳資訊整理：Dashboard', function () {
         text: "gogogo"
       })
 
-      // 將 restController 中的 User,Category,Restaurant,Comment 都用模擬資料取代
+      // 連向模擬的 tables
       this.restController = createControllerProxy('../controllers/restController', { 
         User: this.UserMock, 
         Category: this.CategoryMock, 
