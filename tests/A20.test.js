@@ -64,7 +64,6 @@ describe('# A20: 餐廳資訊整理：Dashboard', function () {
       // res.render 的第 2 個參數要包含 restaurant，其 name 屬性的值應是 '銷魂麵'
       res.render.getCall(0).args[0].should.equal('dashboard')
       res.render.getCall(0).args[1].restaurant.name.should.equal('銷魂麵')
-      res.render.getCall(0).args[1].n_comments.should.equal(1) // question**
     })
   })
 })
