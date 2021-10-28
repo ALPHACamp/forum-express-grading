@@ -4,10 +4,7 @@ const sinon = require('sinon')
 const should = chai.should()
 
 const helpers = require('../_helpers')
-const SequelizeMock = require('sequelize-mock')
-const proxyquire = require('proxyquire')
-
-const dbMock = new SequelizeMock()
+const { createModelMock, createControllerProxy } = require('../helpers/unitTestHelpers');
 
 const mockRequest = (query) => {
   return {
@@ -27,39 +24,31 @@ describe('# A20: 餐廳資訊整理：Dashboard', function () {
     before(async () => {
       // 製作假資料
       // 本 context 會用這筆資料進行測試
-      this.UserMock = dbMock.define('User', {
+      this.UserMock = createModelMock('User', {
         id: 1,
         email: 'root@example.com',
         name: 'admin',
         isAdmin: false,
       })
-      this.RestaurantMock = dbMock.define('Restaurant', {
+      this.RestaurantMock = createModelMock('Restaurant', {
         id: 1,
-        name: '銷魂麵',
+        name: '銷魂麵'
       })
-      this.CategoryMock = dbMock.define('Category', {
+      this.CategoryMock = createModelMock('Category', {
         id: 1,
-        name: '食物',
+        name: '食物'
       })
-      this.CommentMock = dbMock.define('Comment', {
+      this.CommentMock = createModelMock('Comment', {
         id: 1,
-        text: 'gogogo',
+        text: "gogogo"
       })
-      // 模擬 Sequelize 行為
-      // 將 mock user db 中的 findByPK 用 findOne 取代 (sequelize mock not support findByPK)
-      this.RestaurantMock.findByPk = (id) =>
-        this.RestaurantMock.findOne({ where: { id: id } })
-      // 將 count 的 function 預設回傳假資料數目 1
-      this.CommentMock.count = () => 1
 
       // 將 restController 中的 User,Category,Restaurant,Comment 都用模擬資料取代
-      this.restController = proxyquire('../controllers/restController', {
-        '../models': {
-          User: this.UserMock,
-          Category: this.CategoryMock,
-          Restaurant: this.RestaurantMock,
-          Comment: this.CommentMock,
-        },
+      this.restController = createControllerProxy('../controllers/restController', { 
+        User: this.UserMock, 
+        Category: this.CategoryMock, 
+        Restaurant: this.RestaurantMock,
+        Comment: this.CommentMock,
       })
     })
 

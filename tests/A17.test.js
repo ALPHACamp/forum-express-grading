@@ -2,13 +2,10 @@ const chai = require('chai')
 const request = require('supertest')
 const sinon = require('sinon')
 const should = chai.should()
-const SequelizeMock = require('sequelize-mock')
-const proxyquire = require('proxyquire')
-
-const dbMock = new SequelizeMock()
 
 const app = require('../../app')
 const { classToInvokable } = require('sequelize/types/lib/utils')
+const { createModelMock, createControllerProxy } = require('../helpers/unitTestHelpers');
 
 const mockRequest = (query) => {
   return {
@@ -64,20 +61,15 @@ describe('# A17', () => {
     before(() => {
       // 製作假資料
       // 下個 context 會用這筆資料進行測試
-      this.UserMock = dbMock.define('User', {
+      this.UserMock = createModelMock('User', {
         id: 1,
         email: 'root@example.com',
         name: 'admin',
         isAdmin: false,
       })
-      // 模擬 Sequelize 行為
-      // 將 mock user db 中的 findByPK 用 findOne 取代 (sequelize mock not support findByPK)
-      this.UserMock.findByPk = (id) =>
-        this.UserMock.findOne({ where: { id: id } })
+
       // 將 adminController 中的 User db 取代成 User mock db
-      this.adminController = proxyquire('../../controllers/adminController', {
-        '../models': { User: this.UserMock },
-      })
+      this.adminController = createControllerProxy('../../controllers/adminController', { User: this.UserMock })
     })
 
     context('# [顯示使用者清單]', () => {
@@ -100,22 +92,18 @@ describe('# A17', () => {
       before(() => {
       // 製作假資料
       // 本 context 會用這筆資料進行測試
-        this.UserMock = dbMock.define('User', {
-          id: 1,
-          email: 'root@example.com',
-          name: 'admin',
-          isAdmin: true, // 是管理者
-        })
-        // 模擬 Sequelize 行為
-        // 將 mock user db 中的 findByPK 用 findOne 取代 (sequelize mock not support findByPK)
-        // 將 count 的 function 預設回傳假資料數目 1
-        this.UserMock.count = () => 1
-        this.UserMock.findByPk = (id) =>
-          this.UserMock.findOne({ where: { id: id } })
+        this.UserMock = createModelMock(
+          'User', 
+          {
+            id: 1,
+            email: 'root@example.com',
+            name: 'admin',
+            isAdmin: true, // 是管理者
+          }
+        )
+        
         // 將 adminController 中的 User db 取代成 User mock db
-        this.adminController = proxyquire('../../controllers/adminController', {
-          '../models': { User: this.UserMock },
-        })
+        this.adminController = createControllerProxy('../../controllers/adminController', { User: this.UserMock })
       })
 
       it(' PUT /admin/users/:id/toggleAdmin ', async () => {
@@ -137,34 +125,19 @@ describe('# A17', () => {
 
     context('# [修改使用者權限] for user', () => {
       before(() => {
-      // 製作假資料
-      // 本 context 會用這筆資料進行測試
-        this.UserMock = dbMock.define(
+        // 製作假資料
+        // 本 context 會用這筆資料進行測試
+        this.UserMock = createModelMock(
           'User',
           {
             id: 1,
             email: 'user@example.com',
             name: 'user',
             isAdmin: false, // 非管理者
-          },
-          {
-            instanceMethods: {
-               // 模擬一個會改變 admin 權限的函式
-              update: (changes) => {
-                this.UserMock._defaults = { ...changes }
-                return Promise.resolve()
-              },
-            },
           }
         )
-        // 模擬 Sequelize 行為
-        this.UserMock.count = () => 1
-        this.UserMock.findByPk = (id) =>
-          this.UserMock.findOne({ where: { id: id } })
-
-        this.adminController = proxyquire('../../controllers/adminController', {
-          '../models': { User: this.UserMock },
-        })
+        // 將 adminController 中的 User db 取代成 User mock db
+        this.adminController = createControllerProxy('../../controllers/adminController', { User: this.UserMock })
       })
 
       it(' PUT /admin/users/:id/toggleAdmin ', async (done) => {

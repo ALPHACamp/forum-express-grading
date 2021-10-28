@@ -5,10 +5,7 @@ const should = chai.should()
 
 const app = require('../app')
 const helpers = require('../_helpers')
-const SequelizeMock = require('sequelize-mock')
-const proxyquire = require('proxyquire')
-
-const dbMock = new SequelizeMock({ autoQueryFallback: false })
+const { createModelMock, createControllerProxy } = require('../helpers/unitTestHelpers')
 
 const mockRequest = (query) => {
   return {
@@ -95,61 +92,20 @@ describe('# A22: TOP 10 人氣餐廳 ', function () {
           .stub(helpers, 'getUser')
           .returns({ id: 1, followings: [], favoritedRestaurants: [] })
 
-      // 建立了一個模擬的 Restaurant table，裡面放入 2 間餐廳資料
-      // 模擬 Sequelize 行為
-        this.restaurantMock = dbMock.define('Restaurant')
-        this.restaurantMock.$queryInterface.$useHandler(
-          (query, queryOptions, done) => {
-            if (query === 'findAll') {
-              return Promise.resolve(
-                mockRestaurantData.map((d) => this.restaurantMock.build(d))
-              )
-            }
-          }
-        )
+        // 建立了一個模擬的 Restaurant table，裡面放入 2 間餐廳資料
+        // 模擬 Sequelize 行為
+        this.restaurantMock = createModelMock('Restaurant', null, mockRestaurantData)
 
         // 將 restController 中的 Restaurant db 取代成 Restaurant mock db
-        this.restController = proxyquire('../controllers/restController', {
-          '../models': {
-            Restaurant: this.restaurantMock,
-          },
+        this.restController = createControllerProxy('../controllers/restController', {
+          Restaurant: this.restaurantMock,
         })
 
         // 建立了一個模擬的 Favorite table，裡面有 1 筆資料
-        this.favoriteMock = dbMock.define('Favorite')
-        this.favoriteMock.create = this.favoriteMock.upsert
-        this.favoriteMock.$queryInterface.$useHandler(
-          (query, queryOptions, done) => {
-            if (query === 'upsert') {
-              // 新增 favortie 資料到模擬資料
-              const { userId, restaurantId } = queryOptions[0]
-              const restaurant = mockRestaurantData.find(
-                (d) => d.id === restaurantId
-              )
-              restaurant.favoritedUsers.push({ userId: userId })
-              return Promise.resolve(
-                mockRestaurantData.map((d) => this.restaurantMock.build(d))
-              )
-            } else if (query === 'destroy') {
-              // 刪除模擬資料中的某一筆 favortie 資料
-              const { userId, restaurantId } = queryOptions[0].where
-              const restaurant = mockRestaurantData.find(
-                (d) => d.id === restaurantId
-              )
-              restaurant.favoritedUsers = restaurant.favoritedUsers.filter(
-                (d) => !(d.userId === userId)
-              )
-              return Promise.resolve(
-                mockRestaurantData.map((d) => this.restaurantMock.build(d))
-              )
-            }
-          }
-        )
+        this.favoriteMock = createModelMock('Favorite', null, mockRestaurantData, 'FavoritedUsers')
 
         // 將 userController 中的 Favorite db 取代成 Favorite mock db
-        this.userController = proxyquire('../controllers/userController', {
-          '../models': { Favorite: this.favoriteMock },
-        })
+        this.userController = createControllerProxy('../controllers/userController', {Favorite: this.favoriteMock})
       })
 
       it(' POST favorite ', async () => {

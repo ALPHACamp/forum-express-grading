@@ -5,10 +5,7 @@ const should = chai.should()
 
 const db = require('../models')
 const helpers = require('../_helpers')
-const SequelizeMock = require('sequelize-mock')
-const proxyquire = require('proxyquire')
-
-const dbMock = new SequelizeMock({ autoQueryFallback: false })
+const { createModelMock, createControllerProxy } = require('../helpers/unitTestHelpers')
 
 const mockRequest = (query) => {
   return {
@@ -43,30 +40,9 @@ describe('# A21: Like / Unlike', function () {
       // 建立了一個模擬的 Like table，裡面目前是空的
       // 模擬 Sequelize 行為
       this.mockLikeData = []
-      this.likeMock = dbMock.define('Like')
-      // 因為 mock 中的 create 有問題，因此指向 upsert function, 這樣可以在 useHandler 中取得 create 呼叫
-      this.likeMock.create = this.likeMock.upsert
+      this.likeMock = createModelMock('Like', null, this.mockLikeData)
 
-      // 模擬 Like.create and Like.findall 的 function
-      this.likeMock.$queryInterface.$useHandler((query, queryOptions, done) => {
-        if (query === 'upsert') {
-          // create 時會帶 userId 跟 restaurantId (ex: Like.create({ userId: 1, restaurantId: 2}))
-          const { userId, restaurantId } = queryOptions[0]
-
-          // 新增這個 Like 的資訊到模擬資料裡
-          this.mockLikeData.push({ userId, restaurantId })
-
-          // 回傳模擬資料
-          return Promise.resolve(this.likeMock.build(this.mockLikeData))
-        } else if (query === 'findAll') {
-          // 回傳模擬資料
-          return Promise.resolve(this.mockLikeData)
-        }
-      })
-
-      this.userController = proxyquire('../controllers/userController', {
-        '../models': { Like: this.likeMock },
-      })
+      this.userController = createControllerProxy('../controllers/userController', {Like: this.likeMock})
     })
 
     it(' POST /like/:restaurantId ', async () => {
@@ -99,31 +75,13 @@ describe('# A21: Like / Unlike', function () {
       // 製作假資料
       // 下個 context 會用這筆資料進行測試
       // 模擬 Like table 裡目前有 1 筆資料如下
-      this.likeMock = dbMock.define('Like', {
+      this.likeMock = createModelMock('Like', {
         id: 1,
-        userId: 1,
-        restaurantId: 2,
-      })
-      // 模擬 Sequelize 行為
-      // 模擬 Like.destroy and Like.finall 的 function
-      this.likeMock.$queryInterface.$useHandler((query, queryOptions, done) => {
-        if (query === 'destroy') {
-          const { userId, restaurantId } = queryOptions[0].where
-          // destroy 可以從 where 取得要刪除的資料
-          // 因此就可以模擬將模擬資料中的資料刪除
-          mockLikeData = mockLikeData.filter(
-            (d) => !(d.userId === userId && d.restaurantId === restaurantId)
-          )
+        UserId: 1,
+        RestaurantId: 2,
+      }, mockLikeData);
 
-          return Promise.resolve(this.likeMock.build(mockLikeData))
-        } else if (query === 'findAll') {
-          return Promise.resolve(mockLikeData)
-        }
-      })
-
-      this.userController = proxyquire('../controllers/userController', {
-        '../models': { Like: this.likeMock },
-      })
+      this.userController = createControllerProxy('../controllers/userController', { Like: this.likeMock })
     })
 
     it(' DELETE /like/:restaurantId ', async () => {
