@@ -47,7 +47,7 @@ describe('# A21: Like / Unlike', function () {
 
     it(' POST /like/:restaurantId ', async () => {
       // 模擬 request & response
-      const req = mockRequest({ params: { id: 1, restaurantId: 2 } }) // 帶入 params.id = 1，對 POST /like/2 發出請求
+      const req = mockRequest({ params: { restaurantId: 2 } }) // 帶入 params.restaurantId = 2，對 POST /like/2 發出請求
       const res = mockResponse()
 
       // 測試 userController.addLike 函式
@@ -56,6 +56,10 @@ describe('# A21: Like / Unlike', function () {
       const likes = await this.likeMock.findAll()
       // addLike 執行完畢後，Like table 應會從空的 -> 變成有 1 筆資料
       likes.should.have.lengthOf(1)
+      // 資料裡的 UserId 應該會跟我們傳入的 user id 一樣
+      likes[0].UserId.should.equal(1)
+      // 資料裡的 RestaurantId 會跟我們傳入的 params.restaurantId 一樣
+      likes[0].RestaurantId.should.equal(2)
     })
 
     after(async () => {
