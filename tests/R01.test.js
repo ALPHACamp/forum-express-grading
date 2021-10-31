@@ -19,7 +19,7 @@ const mockResponse = () => {
   }
 }
 
-describe('# A17', () => {
+describe('# R01', () => {
   describe('登入測試: POST /signin', function(){
     // 以下測試會發出請求，測試資料庫內是否有作業指定的使用者資料
     // 測試資料的來源是真實的資料庫
@@ -57,7 +57,7 @@ describe('# A17', () => {
     })
   });
 
-  describe('# A17: 使用者權限管理', function () {
+  describe('# R01: 使用者權限管理', function () {
     // 前置準備
     before(() => {
       // 製作假資料

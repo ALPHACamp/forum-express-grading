@@ -46,7 +46,7 @@ let mockRestaurantData = [
   },
 ]
 
-describe('# A22: TOP 10 人氣餐廳 ', function () {
+describe('# R05: TOP 10 人氣餐廳 ', function () {
   context('# [網址正確、畫面正常執行]', () => {
     before(async () => {
       // 模擬登入驗證

@@ -17,8 +17,8 @@ const mockResponse = () => {
     render: sinon.spy(),
   }
 }
-describe('# A19', () => {
-  describe('# A19: 建立 User Profile', function () {
+describe('# R02', () => {
+  describe('# R02: 建立 User Profile', function () {
     context('# [瀏覽 Profile]', () => {
       // 前置準備
       before(() => {

@@ -28,7 +28,7 @@ let mockLikeData = [
   },
 ]
 
-describe('# A21: Like / Unlike', function () {
+describe('# R04: Like / Unlike', function () {
   context('# Q1: 使用者可以 Like 餐廳', () => {
     before(() => {
       // 模擬登入驗證

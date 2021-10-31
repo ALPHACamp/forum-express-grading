@@ -19,7 +19,7 @@ const mockResponse = () => {
   }
 }
 
-describe('# A20: 餐廳資訊整理：Dashboard', function () {
+describe('# R03: 餐廳資訊整理：Dashboard', function () {
   context('# [Q1: Dashboard - 1 - controller / view / route]', () => {
     before(async () => {
       // 製作假資料
