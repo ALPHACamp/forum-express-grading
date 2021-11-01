@@ -3,8 +3,7 @@ const request = require('supertest')
 const sinon = require('sinon')
 const should = chai.should()
 
-const app = require('../../app')
-const { classToInvokable } = require('sequelize/types/lib/utils')
+const app = require('../app')
 const { createModelMock, createControllerProxy } = require('../helpers/unitTestHelpers');
 
 const mockRequest = (query) => {
