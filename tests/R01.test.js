@@ -3,19 +3,7 @@ const request = require('supertest')
 const should = chai.should()
 
 const app = require('../app')
-const { createModelMock, createControllerProxy } = require('../helpers/unitTestHelpers');
-
-const mockRequest = (query) => {
-  return {
-    ...query,
-    flash: sinon.spy(),
-  }
-}
-const mockResponse = () => {
-  return {
-    redirect: sinon.spy(),
-  }
-}
+const { createModelMock, createControllerProxy, mockRequest, mockResponse } = require('../helpers/unitTestHelpers');
 
 describe('# R01', () => {
   describe('登入測試: POST /signin', function(){
@@ -158,8 +146,6 @@ describe('# R01', () => {
         // 將假資料撈出，比對確認有成功修改到
         const user = await this.UserMock.findOne({ where: { id: 1 } })
         user.isAdmin.should.equal(true)
-
-        done()
       })
     })
   })
