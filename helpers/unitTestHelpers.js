@@ -32,7 +32,7 @@ const createModelMock = (name, defaultValue, data, joinedTableName) => {
         return Promise.resolve(data.map(d => mockModel.build(d)))
       } else if (query === 'findAll') {
         // 回傳模擬資料
-        return Promise.resolve(data.map(d => mockModel.build(d)))
+        return Promise.resolve( data ? data.map(d => mockModel.build(d)) : [])
       }else if (query === 'destroy') {
         // destroy 可以從 where 取得要刪除的資料
         // 因此就可以模擬將模擬資料中的資料刪除
@@ -56,7 +56,7 @@ const createModelMock = (name, defaultValue, data, joinedTableName) => {
         return Promise.resolve(mockModel.build(data))
       } else if (query === 'findAll') {
         // 回傳模擬資料
-        return Promise.resolve(data.map(d => mockModel.build(d)))
+        return Promise.resolve(data ? data.map(d => mockModel.build(d)) : [])
       } else if (query === 'destroy') {
         // destroy 可以從 where 取得要刪除的資料
         // 因此就可以模擬將模擬資料中的資料刪除
