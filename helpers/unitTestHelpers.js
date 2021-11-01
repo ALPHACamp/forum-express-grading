@@ -79,7 +79,22 @@ const createControllerProxy = (path, model) => {
   return controller;
 }
 
+const mockRequest = (query) => {
+  return {
+    ...query,
+    flash: sinon.spy(),
+  }
+}
+const mockResponse = () => {
+  return {
+    redirect: sinon.spy(),
+    render: sinon.spy(),
+  }
+}
+
 module.exports = {
   createModelMock,
-  createControllerProxy
+  createControllerProxy,
+  mockRequest,
+  mockResponse
 }
