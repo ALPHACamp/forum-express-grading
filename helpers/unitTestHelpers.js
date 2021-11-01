@@ -1,5 +1,6 @@
 const SequelizeMock = require('sequelize-mock')
 const proxyquire = require('proxyquire')
+const sinon = require('sinon')
 
 const dbMock = new SequelizeMock()
 
