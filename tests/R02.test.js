@@ -3,20 +3,8 @@ const request = require('supertest')
 const sinon = require('sinon')
 const should = chai.should()
 
-const { createModelMock, createControllerProxy } = require('../helpers/unitTestHelpers');
+const { createModelMock, createControllerProxy, mockRequest, mockResponse } = require('../helpers/unitTestHelpers');
 
-const mockRequest = (query) => {
-  return {
-    ...query,
-    flash: sinon.spy(),
-  }
-}
-const mockResponse = () => {
-  return {
-    redirect: sinon.spy(),
-    render: sinon.spy(),
-  }
-}
 describe('# R02', () => {
   describe('# R02: 建立 User Profile', function () {
     context('# [瀏覽 Profile]', () => {
