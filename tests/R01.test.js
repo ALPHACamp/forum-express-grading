@@ -128,7 +128,7 @@ describe('# R01', () => {
         this.adminController = createControllerProxy('../controllers/adminController', { User: this.UserMock })
       })
 
-      it(' PUT /admin/users/:id/toggleAdmin ', async (done) => {
+      it(' PUT /admin/users/:id/toggleAdmin ', async () => {
         // 模擬 request & response
         const req = mockRequest({ params: { id: 1 } }) // 帶入 params.id = 1，對 PUT /admin/users/1/toggleAdmin 發出請求
         const res = mockResponse()
