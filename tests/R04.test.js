@@ -5,20 +5,7 @@ const should = chai.should()
 
 const db = require('../models')
 const helpers = require('../_helpers')
-const { createModelMock, createControllerProxy } = require('../helpers/unitTestHelpers')
-
-const mockRequest = (query) => {
-  return {
-    ...query,
-    flash: sinon.spy(),
-  }
-}
-const mockResponse = () => {
-  return {
-    redirect: sinon.spy(),
-    render: sinon.spy(),
-  }
-}
+const { createModelMock, createControllerProxy, mockRequest, mockResponse } = require('../helpers/unitTestHelpers')
 
 // 建立模擬的 Like 資料
 let mockLikeData = [
