@@ -5,20 +5,8 @@ const should = chai.should()
 
 const app = require('../app')
 const helpers = require('../_helpers')
-const { createModelMock, createControllerProxy } = require('../helpers/unitTestHelpers')
+const { createModelMock, createControllerProxy, mockRequest, mockResponse } = require('../helpers/unitTestHelpers')
 
-const mockRequest = (query) => {
-  return {
-    ...query,
-    flash: sinon.spy(),
-  }
-}
-const mockResponse = () => {
-  return {
-    redirect: sinon.spy(),
-    render: sinon.spy(),
-  }
-}
 // 模擬 2 間餐廳資料
 let mockRestaurantData = [
   {
