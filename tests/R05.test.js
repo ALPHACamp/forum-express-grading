@@ -16,7 +16,7 @@ let mockRestaurantData = [
     address: 'address',
     opening_hours: 'opening_hours',
     description: 'test description',
-    favoritedUsers: [
+    FavoritedUsers: [
       {
         userId: 1,
       },
@@ -30,7 +30,7 @@ let mockRestaurantData = [
     opening_hours: 'opening_hours',
     description: 'description',
     categoryId: 1,
-    favoritedUsers: [],
+    FavoritedUsers: [],
   },
 ]
 
@@ -44,7 +44,7 @@ describe('# R05: TOP 10 人氣餐廳 ', function () {
       // 模擬 getUser 函式，負責取得使用者資料
       this.getUser = sinon
         .stub(helpers, 'getUser')
-        .returns({ id: 1, followings: [], favoritedRestaurants: [] })
+        .returns({ id: 1, Followings: [], FavoritedRestaurants: [] })
     })
 
     it(' GET /restaurants/top ', (done) => {
@@ -78,7 +78,7 @@ describe('# R05: TOP 10 人氣餐廳 ', function () {
         // 模擬 getUser 函式，負責取得使用者資料
         this.getUser = sinon
           .stub(helpers, 'getUser')
-          .returns({ id: 1, followings: [], favoritedRestaurants: [] })
+          .returns({ id: 1, Followings: [], FavoritedRestaurants: [] })
 
         // 建立了一個模擬的 Restaurant table，裡面放入 2 間餐廳資料
         this.restaurantMock = createModelMock('Restaurant', null, mockRestaurantData)
@@ -99,7 +99,7 @@ describe('# R05: TOP 10 人氣餐廳 ', function () {
         // 模擬 request & response
         // 對 POST /favorite/2 發出請求，夾帶 user.favoritedRestaurants
         const req = mockRequest({
-          user: { favoritedRestaurants: [] }, 
+          user: { FavoritedRestaurants: [] }, 
           params: { restaurantId: 2 },
         })
         const res = mockResponse()
@@ -120,7 +120,7 @@ describe('# R05: TOP 10 人氣餐廳 ', function () {
         // 模擬 request & response
         // 對 DELETE /favorite/1 發出請求，夾入 user.favoritedRestaurants
         const req = mockRequest({
-          user: { favoritedRestaurants: [] },
+          user: { FavoritedRestaurants: [] },
           params: { restaurantId: 1 },
         })
         const res = mockResponse()
