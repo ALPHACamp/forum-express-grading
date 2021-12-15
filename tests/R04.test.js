@@ -5,7 +5,7 @@ const should = chai.should()
 
 const db = require('../models')
 const helpers = require('../helpers/auth-helpers')
-const { createModelMock, createControllerProxy, mockRequest, mockResponse } = require('../helpers/unit-test-helper')
+const { createModelMock, createControllerProxy, mockRequest, mockResponse, mockNext } = require('../helpers/unit-test-helper')
 
 // 建立模擬的 Like 資料
 let mockLikeData = [
@@ -34,11 +34,12 @@ describe('# R04: Like / Unlike', function () {
 
     it(' POST /like/:restaurantId ', async () => {
       // 模擬 request & response
-      const req = mockRequest({ params: { restaurantId: 2 } }) // 帶入 params.restaurantId = 2，對 POST /like/2 發出請求
+      const req = mockRequest({ params: { restaurantId: 2 }, user: {id: 1} }) // 帶入 params.restaurantId = 2，對 POST /like/2 發出請求
       const res = mockResponse()
+      const next = mockNext
 
       // 測試 userController.addLike 函式
-      await this.userController.addLike(req, res)
+      await this.userController.addLike(req, res, next)
       // 將模擬的 Like table 內的資料全數撈出
       const likes = await this.likeMock.findAll()
       // addLike 執行完畢後，Like table 應會從空的 -> 變成有 1 筆資料
@@ -79,11 +80,12 @@ describe('# R04: Like / Unlike', function () {
     it(' DELETE /like/:restaurantId ', async () => {
       // 模擬 request & response
       // 模擬發出 request, 帶入 params.id = 1, restaurantId = 2
-      const req = mockRequest({ params: { id: 1, restaurantId: 2 } }) // 帶入 params.id = 1，對 DELETE /like/2 發出請求
+      const req = mockRequest({ params: { id: 1, restaurantId: 2 }, user: {id: 1} }) // 帶入 params.id = 1，對 DELETE /like/2 發出請求
       const res = mockResponse()
+      const next = mockNext
 
       // 測試作業指定的 userController.removeLike 函式
-      await this.userController.removeLike(req, res)
+      await this.userController.removeLike(req, res, next)
 
       // 將模擬的 Like table 內的資料全數撈出
       const likes = await this.likeMock.findAll()

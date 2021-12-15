@@ -99,9 +99,12 @@ const mockResponse = () => {
   }
 }
 
+const mockNext = (err) => console.log("[ERROR]:", err)
+
 module.exports = {
   createModelMock,
   createControllerProxy,
   mockRequest,
-  mockResponse
+  mockResponse,
+  mockNext
 }
