@@ -5,7 +5,7 @@ const should = chai.should()
 
 const app = require('../app')
 const helpers = require('../helpers/auth-helpers')
-const { createModelMock, createControllerProxy, mockRequest, mockResponse } = require('../helpers/unit-test-helper')
+const { createModelMock, createControllerProxy, mockRequest, mockResponse, mockNext } = require('../helpers/unit-test-helper')
 
 // 模擬 2 間餐廳資料
 let mockRestaurantData = [
@@ -103,12 +103,13 @@ describe('# R05: TOP 10 人氣餐廳 ', function () {
           params: { restaurantId: 2 },
         })
         const res = mockResponse()
+        const next = mockNext
 
         // 測試 userController.addFavorite 函式
-        await this.userController.addFavorite(req, res)
+        await this.userController.addFavorite(req, res, next)
 
         // 取得餐廳排序資料
-        await this.restController.getTopRestaurant(req, res)
+        await this.restController.getTopRestaurants(req, res, next)
         
         // addFavorite 執行完畢後，應呼叫 res.render
         // res.render 的第 2 個參數要包含 restaurants
@@ -124,11 +125,12 @@ describe('# R05: TOP 10 人氣餐廳 ', function () {
           params: { restaurantId: 1 },
         })
         const res = mockResponse()
+        const next = mockNext
 
         // 測試 userController.removeFavorite 函式
-        await this.userController.removeFavorite(req, res)
+        await this.userController.removeFavorite(req, res, next)
         // 取得餐廳排序資料
-        await this.restController.getTopRestaurant(req, res)
+        await this.restController.getTopRestaurants(req, res, next)
 
         // removeFavorite 執行完畢後，應呼叫 res.render
         // res.render 的第 2 個參數要包含 restaurants

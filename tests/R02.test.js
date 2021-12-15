@@ -4,7 +4,7 @@ const sinon = require('sinon')
 const should = chai.should()
 
 const helpers = require('../helpers/auth-helpers')
-const { createModelMock, createControllerProxy, mockRequest, mockResponse } = require('../helpers/unit-test-helper');
+const { createModelMock, createControllerProxy, mockRequest, mockResponse, mockNext } = require('../helpers/unit-test-helper');
 
 describe('# R02: 餐廳資訊整理：Dashboard', function () {
   context('# [Q1: Dashboard - 1 - controller / view / route]', () => {
@@ -44,8 +44,10 @@ describe('# R02: 餐廳資訊整理：Dashboard', function () {
       // 模擬 request & response
       const req = mockRequest({ params: { id: 1 } }) // 帶入 params.id = 1，對 GET /restaurants/1/dashboard 發出請求
       const res = mockResponse()
+      const next = mockNext
+      
       // 測試 restController.getDashBoard 函式
-      await this.restController.getDashboard(req, res)
+      await this.restController.getDashboard(req, res, next)
 
       // getDashBoard 執行完畢後，應呼叫 res.render
       // res.render 的第 1 個參數要是 'dashboard'
