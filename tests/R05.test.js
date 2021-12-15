@@ -84,7 +84,7 @@ describe('# R05: TOP 10 人氣餐廳 ', function () {
         this.restaurantMock = createModelMock('Restaurant', null, mockRestaurantData)
 
         // 連向模擬的 Restaurant table
-        this.restController = createControllerProxy('../controllers/restController', {
+        this.restController = createControllerProxy('../controllers/restaurant-controller', {
           Restaurant: this.restaurantMock,
         })
 
@@ -92,7 +92,7 @@ describe('# R05: TOP 10 人氣餐廳 ', function () {
         this.favoriteMock = createModelMock('Favorite', null, mockRestaurantData, 'FavoritedUsers')
 
         // 連向模擬的 Favorite table
-        this.userController = createControllerProxy('../controllers/userController', {Favorite: this.favoriteMock})
+        this.userController = createControllerProxy('../controllers/user-controller', {Favorite: this.favoriteMock})
       })
 
       it(' POST favorite ', async () => {

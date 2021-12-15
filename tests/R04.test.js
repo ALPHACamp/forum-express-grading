@@ -29,7 +29,7 @@ describe('# R04: Like / Unlike', function () {
       this.likeMock = createModelMock('Like', null, this.mockLikeData)
       
       // 連向模擬的 Like table
-      this.userController = createControllerProxy('../controllers/userController', {Like: this.likeMock})
+      this.userController = createControllerProxy('../controllers/user-controller', {Like: this.likeMock})
     })
 
     it(' POST /like/:restaurantId ', async () => {
@@ -73,7 +73,7 @@ describe('# R04: Like / Unlike', function () {
       }, mockLikeData);
 
       // 連向模擬的 Like table
-      this.userController = createControllerProxy('../controllers/userController', { Like: this.likeMock })
+      this.userController = createControllerProxy('../controllers/user-controller', { Like: this.likeMock })
     })
 
     it(' DELETE /like/:restaurantId ', async () => {
