@@ -96,7 +96,7 @@ describe('# R05: TOP 10 人氣餐廳 ', function () {
       })
 
       it(' POST favorite ', async () => {
-        // 模擬 request & response
+        // 模擬 request & response & next
         // 對 POST /favorite/2 發出請求，夾帶 user.favoritedRestaurants
         const req = mockRequest({
           user: { FavoritedRestaurants: [] }, 
@@ -118,7 +118,7 @@ describe('# R05: TOP 10 人氣餐廳 ', function () {
       })
 
       it(' DELETE favorite ', async () => {
-        // 模擬 request & response
+        // 模擬 request & response & next
         // 對 DELETE /favorite/1 發出請求，夾入 user.favoritedRestaurants
         const req = mockRequest({
           user: { FavoritedRestaurants: [] },
@@ -132,7 +132,7 @@ describe('# R05: TOP 10 人氣餐廳 ', function () {
         // 取得餐廳排序資料
         await this.restController.getTopRestaurants(req, res, next)
 
-        // removeFavorite 執行完畢後，應呼叫 res.render
+        // removeFavorite 執行完畢，應呼叫 res.render
         // res.render 的第 2 個參數要包含 restaurants
         // restaurants 當中的第 1 筆資料 id 屬性值應是 2 (id：1 的那家餐廳被刪除了)
         res.render.getCall(0).args[1].restaurants[0].id.should.equal(2)

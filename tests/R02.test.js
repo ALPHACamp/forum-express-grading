@@ -41,7 +41,7 @@ describe('# R02: 餐廳資訊整理：Dashboard', function () {
     })
 
     it(' GET /restaurants/:id/dashboard ', async () => {
-      // 模擬 request & response
+      // 模擬 request & response & next
       const req = mockRequest({ params: { id: 1 } }) // 帶入 params.id = 1，對 GET /restaurants/1/dashboard 發出請求
       const res = mockResponse()
       const next = mockNext
@@ -49,7 +49,7 @@ describe('# R02: 餐廳資訊整理：Dashboard', function () {
       // 測試 restController.getDashBoard 函式
       await this.restController.getDashboard(req, res, next)
 
-      // getDashBoard 執行完畢後，應呼叫 res.render
+      // getDashBoard 正確執行的話，應呼叫 res.render
       // res.render 的第 1 個參數要是 'dashboard'
       // res.render 的第 2 個參數要包含 restaurant，其 name 屬性的值應是 '銷魂麵'
       // res.render 的地 3 個參數要包含 restaurant，其 viewCounts 值應該是 3

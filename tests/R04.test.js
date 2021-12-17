@@ -33,8 +33,8 @@ describe('# R04: Like / Unlike', function () {
     })
 
     it(' POST /like/:restaurantId ', async () => {
-      // 模擬 request & response
-      const req = mockRequest({ params: { restaurantId: 2 }, user: {id: 1} }) // 帶入 params.restaurantId = 2，對 POST /like/2 發出請求
+      // 模擬 request & response & next
+      const req = mockRequest({ params: { restaurantId: 2 }, user: {id: 1} }) // 帶入 params.restaurantId = 2, user.id = 1，對 POST /like/2 發出請求
       const res = mockResponse()
       const next = mockNext
 
@@ -78,9 +78,9 @@ describe('# R04: Like / Unlike', function () {
     })
 
     it(' DELETE /like/:restaurantId ', async () => {
-      // 模擬 request & response
-      // 模擬發出 request, 帶入 params.id = 1, restaurantId = 2
-      const req = mockRequest({ params: { id: 1, restaurantId: 2 }, user: {id: 1} }) // 帶入 params.id = 1，對 DELETE /like/2 發出請求
+      // 模擬 request & response & next
+      // 模擬發出 request, 帶入 params.id = 1, params.restaurantId = 2, user.id = 1
+      const req = mockRequest({ params: { id: 1, restaurantId: 2 }, user: {id: 1} }) // 對 DELETE /like/2 發出請求
       const res = mockResponse()
       const next = mockNext
 
