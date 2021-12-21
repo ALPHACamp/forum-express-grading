@@ -1,9 +1,6 @@
 const chai = require('chai')
 const request = require('supertest')
-const sinon = require('sinon')
-const should = chai.should()
 
-const helpers = require('../helpers/auth-helpers')
 const { createModelMock, createControllerProxy, mockRequest, mockResponse, mockNext } = require('../helpers/unit-test-helper');
 
 describe('# R02: 餐廳資訊整理：Dashboard', function () {
@@ -11,25 +8,25 @@ describe('# R02: 餐廳資訊整理：Dashboard', function () {
     before(async () => {
       // 製作假資料
       // 本 context 會用這筆資料進行測試
-      this.UserMock = createModelMock('User', {
+      this.UserMock = createModelMock('User', [{
         id: 1,
         email: 'root@example.com',
         name: 'admin',
         isAdmin: false,
-      })
-      this.RestaurantMock = createModelMock('Restaurant', {
+      }])
+      this.RestaurantMock = createModelMock('Restaurant', [{
         id: 1,
         name: '銷魂麵',
         viewCounts: 3
-      })
-      this.CategoryMock = createModelMock('Category', {
+      }])
+      this.CategoryMock = createModelMock('Category', [{
         id: 1,
         name: '食物'
-      })
-      this.CommentMock = createModelMock('Comment', {
+      }])
+      this.CommentMock = createModelMock('Comment', [{
         id: 1,
         text: "gogogo"
-      })
+      }])
 
       // 連向模擬的 tables
       this.restController = createControllerProxy('../controllers/restaurant-controller', { 

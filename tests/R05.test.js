@@ -18,7 +18,7 @@ let mockRestaurantData = [
     description: 'test description',
     FavoritedUsers: [
       {
-        UserId: 1,
+        userId: 1,
       },
     ],
   },
@@ -81,7 +81,7 @@ describe('# R05: TOP 10 人氣餐廳 ', function () {
           .returns({ id: 1, Followings: [], FavoritedRestaurants: [] })
 
         // 建立了一個模擬的 Restaurant table，裡面放入 2 間餐廳資料
-        this.restaurantMock = createModelMock('Restaurant', null, mockRestaurantData)
+        this.restaurantMock = createModelMock('Restaurant', mockRestaurantData)
 
         // 連向模擬的 Restaurant table
         this.restController = createControllerProxy('../controllers/restaurant-controller', {
@@ -89,7 +89,7 @@ describe('# R05: TOP 10 人氣餐廳 ', function () {
         })
 
         // 建立了一個模擬的 Favorite table，裡面有 1 筆資料
-        this.favoriteMock = createModelMock('Favorite', null, mockRestaurantData, 'FavoritedUsers')
+        this.favoriteMock = createModelMock('Favorite', [{userId: 1, restaurantId: 1}], 'FavoritedUsers', mockRestaurantData)
 
         // 連向模擬的 Favorite table
         this.userController = createControllerProxy('../controllers/user-controller', {Favorite: this.favoriteMock})
@@ -99,7 +99,7 @@ describe('# R05: TOP 10 人氣餐廳 ', function () {
         // 模擬 request & response & next
         // 對 POST /favorite/2 發出請求，夾帶 user.favoritedRestaurants
         const req = mockRequest({
-          user: { FavoritedRestaurants: [] }, 
+          user: { id: 1, FavoritedRestaurants: [] }, 
           params: { restaurantId: 2 },
         })
         const res = mockResponse()
@@ -107,7 +107,6 @@ describe('# R05: TOP 10 人氣餐廳 ', function () {
 
         // 測試 userController.addFavorite 函式
         await this.userController.addFavorite(req, res, next)
-
         // 取得餐廳排序資料
         await this.restController.getTopRestaurants(req, res, next)
         
@@ -121,7 +120,7 @@ describe('# R05: TOP 10 人氣餐廳 ', function () {
         // 模擬 request & response & next
         // 對 DELETE /favorite/1 發出請求，夾入 user.favoritedRestaurants
         const req = mockRequest({
-          user: { FavoritedRestaurants: [] },
+          user: { FavoritedRestaurants: [], id: 1 },
           params: { restaurantId: 1 },
         })
         const res = mockResponse()

@@ -1,6 +1,4 @@
-const chai = require('chai')
 const request = require('supertest')
-const should = chai.should()
 
 const app = require('../app')
 const { createModelMock, createControllerProxy, mockRequest, mockResponse, mockNext } = require('../helpers/unit-test-helper');
@@ -48,12 +46,12 @@ describe('# R01', () => {
     before(() => {
       // 製作假資料
       // 本 context 會用這筆資料進行測試
-      this.UserMock = createModelMock('User', {
+      this.UserMock = createModelMock('User', [{
         id: 1,
         email: 'root@example.com',
         name: 'admin',
         isAdmin: false,
-      })
+      }])
 
       // 修改 adminController 中的資料庫連線設定，由連向真實的資料庫 -> 改為連向模擬的 User table
       this.adminController = createControllerProxy('../controllers/admin-controller', { User: this.UserMock })
@@ -81,14 +79,15 @@ describe('# R01', () => {
       before(() => {
       // 製作假資料
       // 本 context 會用這筆資料進行測試
+        const data = 
         this.UserMock = createModelMock(
           'User', 
-          {
+          [{
             id: 1,
             email: 'root@example.com',
             name: 'admin',
             isAdmin: true, // 是管理者
-          }
+          }]
         )
         
         // 將 adminController 中的 User db 取代成 User mock db
@@ -102,7 +101,7 @@ describe('# R01', () => {
         const next = mockNext
 
        // 測試作業指定的 adminController.patchUser 函式
-        await this.adminController.patchUser(req, res, next)
+        await this.adminController.patchUsers(req, res, next)
 
         // patchUser 正確執行的話，應呼叫 req.flash
         // req.flash 的參數應該要與下列字串一致
@@ -117,14 +116,17 @@ describe('# R01', () => {
       before(() => {
         // 製作假資料
         // 本 context 會用這筆資料進行測試
+        const data = {
+         
+        }
         this.UserMock = createModelMock(
           'User',
-          {
+          [{
             id: 1,
             email: 'user@example.com',
             name: 'user',
             isAdmin: false, // 非管理者
-          }
+          }]
         )
         // 將 adminController 中的 User db 取代成 User mock db
         this.adminController = createControllerProxy('../controllers/admin-controller', { User: this.UserMock })
@@ -137,7 +139,7 @@ describe('# R01', () => {
         const next = mockNext
 
         // 測試作業指定的 adminController.patchUser 函式
-        await this.adminController.patchUser(req, res, next)
+        await this.adminController.patchUsers(req, res, next)
 
         // patchUser 正確執行的話，應呼叫 req.flash 
         // req.flash 的參數應與下列字串一致
@@ -156,14 +158,15 @@ describe('# R01', () => {
       before(() => {
         // 製作假資料
         // 本 context 會用這筆資料進行測試
+        const data = 
         this.UserMock = createModelMock(
           'User',
-          {
+          [{
             id: 2,
             email: 'user2@example.com',
             name: 'user2',
             isAdmin: true // 是管理者
-          }
+          }]
         )
         // 將 adminController 中的 User db 取代成 User mock db
         this.adminController = createControllerProxy('../controllers/admin-controller', { User: this.UserMock })
@@ -176,7 +179,7 @@ describe('# R01', () => {
         const next = mockNext
 
         // 測試作業指定的 adminController.patchUser 函式
-        await this.adminController.patchUser(req, res, next)
+        await this.adminController.patchUsers(req, res, next)
 
         // patchUser 正確執行的話，應呼叫 req.flash 
         // req.flash 的參數應與下列字串一致

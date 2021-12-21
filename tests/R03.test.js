@@ -1,8 +1,4 @@
-const chai = require('chai')
-const request = require('supertest')
 const sinon = require('sinon')
-const should = chai.should()
-
 
 const helpers = require('../helpers/auth-helpers')
 const { createModelMock, createControllerProxy, mockRequest, mockResponse, mockNext } = require('../helpers/unit-test-helper');
@@ -19,12 +15,12 @@ describe('# R03', () => {
         this.getUser = sinon.stub(helpers, 'getUser').returns({ id: 1 })
        // 製作假資料
        // 本 context 會用這筆資料進行測試
-        this.UserMock = createModelMock('User', {
+        this.UserMock = createModelMock('User', [{
           id: 1,
           email: 'root@example.com',
           name: 'admin',
           isAdmin: false,
-        })
+        }])
 
         // 修改 userController 中的資料庫連線設定，由連向真實的資料庫 -> 改為連向模擬的 User table
         this.userController = createControllerProxy('../controllers/user-controller', { User: this.UserMock })
@@ -38,7 +34,7 @@ describe('# R03', () => {
         const next = mockNext
 
         // 測試作業指定的 userController.getUser 函式
-        await this.userController.getUser(req, res, next)
+        await this.userController.getUser(req, res, next);
 
         // getUser 正確執行的話，應呼叫 res.render
         // res.render 的第 1 個參數要是 'users/profile' 
@@ -65,12 +61,12 @@ describe('# R03', () => {
 
         // 製作假資料
         // 本 context 會用這筆資料進行測試
-        this.UserMock = createModelMock('User', {
+        this.UserMock = createModelMock('User', [{
           id: 1,
           email: 'root@example.com',
           name: 'admin',
           isAdmin: false,
-        })
+        }])
 
         // 連向模擬的 User table
         this.userController = createControllerProxy('../controllers/user-controller', { User: this.UserMock })
@@ -110,12 +106,12 @@ describe('# R03', () => {
         // 本 context 會用這筆資料進行測試
         this.UserMock = createModelMock(
           'User',
-          {
+          [{
             id: 1,
             email: 'root@example.com',
             name: 'admin',
             isAdmin: false,
-          }
+          }]
         )
 
         // 連向模擬的 User table
