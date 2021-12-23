@@ -1,11 +1,13 @@
 const express = require('express')
+const routes = require('./routes')
+
 const app = express()
-const port = 3000
+const port = process.env.PORT || 3000
+
+app.use(routes)
 
 app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`)
+  console.info(`Example app listening on port ${port}!`)
 })
-
-require('./routes')(app)
 
 module.exports = app
