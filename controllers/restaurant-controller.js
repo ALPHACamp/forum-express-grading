@@ -39,7 +39,8 @@ const restaurantController = {
     Restaurant.findByPk(req.params.id, {
       include: [
         Category,
-        { model: Comment, include: User }
+        { model: Comment, include: User },
+        { model: User, as: 'FavoritedUsers' } // 新增這行
       ] // 先不使用 raw: true 因為下方還要先 increment，改為 increment 之後 toJSON 處理
     })
       .then(restaurant => {
@@ -47,8 +48,11 @@ const restaurantController = {
         return restaurant.increment('viewCounts')
       })
       .then(restaurant => {
-        restaurant = restaurant.toJSON()
-        return res.render('restaurant', { restaurant })
+        const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id) // 新增這一行
+        return res.render('restaurant', {
+          restaurant: restaurant.toJSON(),
+          isFavorited // 新增這一行
+        })
       })
       .catch(err => next(err))
   },
