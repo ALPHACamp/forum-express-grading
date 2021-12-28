@@ -1,4 +1,5 @@
 const { Restaurant, User, Category } = require('../models')
+const { getUser } = require('../helpers/auth-helpers')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const adminController = {
@@ -97,12 +98,13 @@ const adminController = {
       .catch(err => next(err))
   },
   getUsers: (req, res, next) => {
-    User.findAll({ raw: true })
+    return User.findAll({ raw: true })
       .then(users => res.render('admin/users', { users }))
       .catch(err => next(err))
   },
-  patchUser: (req, res, next) => {
-    User.findByPk(req.params.id)
+  patchUsers: (req, res, next) => {
+    // if (!getUser(req).isAdmin) throw new Error('禁止變更 root 權限')
+    return User.findByPk(req.params.id)
       .then(user => {
         if (!user) throw new Error("user can't be found!")
         return user.update({ isAdmin: !user.isAdmin })
