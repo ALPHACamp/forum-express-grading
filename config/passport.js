@@ -12,7 +12,7 @@ passport.use(new LocalStrategy(
   },
   // authenticate user
   (req, email, password, cb) => {
-    User.findOne({ where: { email } })
+    return User.findOne({ where: { email } })
       .then(user => {
         if (!user) return cb(null, false, req.flash('error_messages', '帳號或密碼輸入錯誤！'))
         bcrypt.compare(password, user.password).then(res => {
@@ -24,10 +24,10 @@ passport.use(new LocalStrategy(
 ))
 // serialize and deserialize user
 passport.serializeUser((user, cb) => {
-  cb(null, user.id)
+  return cb(null, user.id)
 })
 passport.deserializeUser((id, cb) => {
-  User.findByPk(id, {
+  return User.findByPk(id, {
     include: [
       { model: Restaurant, as: 'FavoritedRestaurants' },
       { model: Restaurant, as: 'LikedRestaurants' },
