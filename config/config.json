@@ -6,9 +6,16 @@
     "host": "127.0.0.1",
     "dialect": "mysql"
   },
+  "travis": {
+    "username": "root",
+    "password": "password",
+    "database": "forum",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  },
   "test": {
     "username": "root",
-    "password": null,
+    "password": "password",
     "database": "forum",
     "host": "127.0.0.1",
     "dialect": "mysql"
