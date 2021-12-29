@@ -50,4 +50,4 @@ Procfile          text
 *.webp            binary
 
 # Ignore files (like .npmignore or .gitignore)
-*.*ignore         text
+*.*ignore         text 
