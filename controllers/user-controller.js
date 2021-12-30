@@ -5,7 +5,7 @@ const db = require('../models')
 const { User, Comment, Restaurant, Favorite } = db
 const userController = {
   getUser: (req, res, next) => {
-    Promise.all([
+    return Promise.all([
       User.findByPk(req.params.id, { raw: true }),
       Comment.findAndCountAll({
         include: [User, Restaurant],
@@ -16,7 +16,7 @@ const userController = {
     ])
       .then(([user, comments]) => {
         if (!user) throw new Error("User doesn't exsist")
-        return res.render('profile', {
+        return res.render('users/profile', {
           user,
           comments: comments.rows,
           commentCount: comments.count
@@ -24,17 +24,17 @@ const userController = {
       })
   },
   editUser: (req, res, next) => {
-    User.findByPk(req.params.id, { raw: true })
+    return User.findByPk(req.params.id, { raw: true })
       .then(user => {
         if (!user) throw new Error("User doesn't exist")
-        return res.render('profile-form', { user })
+        return res.render('users/edit', { user })
       })
   },
   putUser: (req, res, next) => {
     const { name } = req.body
     if (!name) throw new Error('User name is required!')
     const { file } = req
-    Promise.all([
+    return Promise.all([
       User.findByPk(req.params.id),
       imgurFileHandler(file)
     ])
@@ -46,7 +46,7 @@ const userController = {
         })
       })
       .then(() => {
-        req.flash('success_messages', 'user profile was successfully updated')
+        req.flash('success_messages', '使用者資料編輯成功')
         res.redirect(`/users/${req.params.id}`)
       })
       .catch(err => next(err))

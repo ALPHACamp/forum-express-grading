@@ -40,6 +40,7 @@ describe('# R03', () => {
         // 測試作業指定的 userController.getUser 函式
         await this.userController.getUser(req, res, next);
 
+        console.log('into R03.test.js/line43')
         // getUser 正確執行的話，應呼叫 res.render
         // res.render 的第 1 個參數要是 'users/profile' 
         // res.render 的第 2 個參數要是 user，其 name 屬性的值應是 'admin'
