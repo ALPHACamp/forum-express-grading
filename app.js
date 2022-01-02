@@ -7,6 +7,7 @@ const port = process.env.PORT || 3000
 app.use(routes)
 
 app.listen(port, () => {
+  console.log('test')
   console.info(`Example app listening on port ${port}!`)
 })
 
