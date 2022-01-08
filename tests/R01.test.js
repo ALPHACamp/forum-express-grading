@@ -103,7 +103,7 @@ describe('# R01', () => {
         const next = mockNext
 
        // 測試作業指定的 adminController.patchUser 函式
-        await this.adminController.patchUsers(req, res, next)
+        await this.adminController.patchUser(req, res, next)
 
         // patchUser 正確執行的話，應呼叫 req.flash
         // req.flash 的參數應該要與下列字串一致
@@ -138,7 +138,7 @@ describe('# R01', () => {
         const next = mockNext
 
         // 測試作業指定的 adminController.patchUser 函式
-        await this.adminController.patchUsers(req, res, next)
+        await this.adminController.patchUser(req, res, next)
 
         // patchUser 正確執行的話，應呼叫 req.flash 
         // req.flash 的參數應與下列字串一致
@@ -177,7 +177,7 @@ describe('# R01', () => {
         const next = mockNext
 
         // 測試作業指定的 adminController.patchUser 函式
-        await this.adminController.patchUsers(req, res, next)
+        await this.adminController.patchUser(req, res, next)
 
         // patchUser 正確執行的話，應呼叫 req.flash 
         // req.flash 的參數應與下列字串一致
