@@ -44,7 +44,7 @@ describe('# R01', () => {
     })
   });
 
-  describe('# R01: 使用者權限管理', function () {
+  describe('# 使用者權限管理', function () {
     // 前置準備
     before(() => {
       // 製作假資料
@@ -82,7 +82,6 @@ describe('# R01', () => {
       before(() => {
       // 製作假資料
       // 本 context 會用這筆資料進行測試
-        const data = 
         this.UserMock = createModelMock(
           'User', 
           [{
@@ -119,9 +118,6 @@ describe('# R01', () => {
       before(() => {
         // 製作假資料
         // 本 context 會用這筆資料進行測試
-        const data = {
-         
-        }
         this.UserMock = createModelMock(
           'User',
           [{
@@ -161,7 +157,6 @@ describe('# R01', () => {
       before(() => {
         // 製作假資料
         // 本 context 會用這筆資料進行測試
-        const data = 
         this.UserMock = createModelMock(
           'User',
           [{
