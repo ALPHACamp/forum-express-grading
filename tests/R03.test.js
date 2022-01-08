@@ -40,9 +40,9 @@ describe('# R03', () => {
 
         // getUser 正確執行的話，應呼叫 res.render
         // res.render 的第 1 個參數要是 'users/profile' 
-        // res.render 的第 2 個參數要是 user，其 name 屬性的值應是 'admin'
+        // res.render 的第 2 個參數要是 user，其 id 屬性的值應是 1
         res.render.getCall(0).args[0].should.equal('users/profile')
-        res.render.getCall(0).args[1].user.name.should.equal('admin')
+        res.render.getCall(0).args[1].user.id.should.equal(1)
       })
       
       // 測試完畢，清除資料
