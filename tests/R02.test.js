@@ -51,7 +51,7 @@ describe('# R02: 餐廳資訊整理：Dashboard', function () {
       // getDashBoard 正確執行的話，應呼叫 res.render
       // res.render 的第 1 個參數要是 'dashboard'
       // res.render 的第 2 個參數要包含 restaurant，其 name 屬性的值應是 '銷魂麵'
-      // res.render 的第 3 個參數要包含 restaurant，其 viewCounts 值應該是 3
+      // res.render 的第 2 個參數要包含 restaurant，其 viewCounts 值應該是 3
       res.render.getCall(0).args[0].should.equal('dashboard')
       res.render.getCall(0).args[1].restaurant.name.should.equal('銷魂麵')
       res.render.getCall(0).args[1].restaurant.viewCounts.should.equal(3)
