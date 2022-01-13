@@ -49,7 +49,7 @@ app.use((req, res, next) => {
   // 設定 locals 使前端樣板可存取變數
   res.locals.success_messages = req.flash('success_messages')
   res.locals.error_messages = req.flash('error_messages')
-  res.locals.user = getUser(req)
+  res.locals.loginUser = getUser(req)
   next()
 })
 
