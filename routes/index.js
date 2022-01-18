@@ -3,6 +3,9 @@ const router = express.Router()
 
 const restController = require('../controllers/restaurant-controller')
 
+const admin = require('./modules/admin')
+
+router.use('/admin', admin)
 router.get('/restaurants', restController.getRestaurants)
 
 // Fallback route, if there is no match route from top to bottom, redirect this route
