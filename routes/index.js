@@ -1,8 +1,11 @@
 const express = require('express')
 const router = express.Router()
 
-router.get('/', (req, res) => {
-  res.send('Hello World!')
-})
+const restController = require('../controllers/restaurant-controller')
+
+router.get('/restaurants', restController.getRestaurants)
+
+// Fallback route, if there is no match route from top to bottom, redirect this route
+router.use('/', (req, res) => res.redirect('/restaurants'))
 
 module.exports = router
