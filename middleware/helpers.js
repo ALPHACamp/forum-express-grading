@@ -1,4 +1,4 @@
-const { getUser } = require('./auth')
+const { getUser } = require('./auth-helpers')
 
 const helpers = {
   localVariable: (req, res, next) => {
