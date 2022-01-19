@@ -6,6 +6,7 @@ const routes = require('./routes')
 const handlebars = require('express-handlebars')
 const session = require('express-session')
 const flash = require('connect-flash')
+const passport = require('./config/passport')
 const middleware = require('./middleware/middleware')
 
 const app = express()
@@ -24,6 +25,8 @@ app.use(
   })
 )
 app.use(flash())
+app.use(passport.initialize())
+app.use(passport.session())
 app.use(middleware.localVariable)
 
 app.use(routes)
