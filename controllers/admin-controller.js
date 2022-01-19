@@ -55,13 +55,14 @@ const adminController = {
       // Keep sequelize class to update data
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
-        return restaurant.update({
-          name,
-          tel,
-          address,
-          openingHours,
-          description
-        })
+        return restaurant
+          .update({
+            name,
+            tel,
+            address,
+            openingHours,
+            description
+          })
           .then(() => {
             req.flash(
               'success_messages',
@@ -71,6 +72,18 @@ const adminController = {
           })
           .catch(err => next(err))
       })
+  },
+
+  deleteRestaurant: (req, res, next) => {
+    return Restaurant.findByPk(req.params.id)
+      .then(restaurant => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        return restaurant.destroy()
+      })
+      .then(() => {
+        return res.redirect('/admin/restaurants')
+      })
+      .catch(err => next(err))
   }
 }
 
