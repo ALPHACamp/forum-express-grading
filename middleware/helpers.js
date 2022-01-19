@@ -1,11 +1,13 @@
-const middleware = {
+const { getUser } = require('./auth')
+
+const helpers = {
   localVariable: (req, res, next) => {
     res.locals.success_messages = req.flash('success_messages')
     res.locals.error_messages = req.flash('error_messages')
     res.locals.warning_messages = req.flash('warning_messages')
-    res.locals.user = req.user
+    res.locals.user = getUser(req)
     next()
   }
 }
 
-module.exports = middleware
+module.exports = helpers

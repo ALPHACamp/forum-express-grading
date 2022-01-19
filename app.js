@@ -7,12 +7,13 @@ const handlebars = require('express-handlebars')
 const session = require('express-session')
 const flash = require('connect-flash')
 const passport = require('./config/passport')
-const middleware = require('./middleware/middleware')
+const helpers = require('./middleware/helpers')
+const handlebarsHelpers = require('./middleware/handlebars-helpers')
 
 const app = express()
 const port = process.env.PORT
 
-app.engine('hbs', handlebars({ extname: '.hbs' }))
+app.engine('hbs', handlebars({ extname: '.hbs', helpers: handlebarsHelpers }))
 app.set('view engine', 'hbs')
 
 // http and session
@@ -27,7 +28,7 @@ app.use(
 app.use(flash())
 app.use(passport.initialize())
 app.use(passport.session())
-app.use(middleware.localVariable)
+app.use(helpers.localVariable)
 
 app.use(routes)
 
