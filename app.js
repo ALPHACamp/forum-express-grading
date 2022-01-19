@@ -4,6 +4,7 @@ if (process.env.NODE_ENV !== 'production') {
 }
 const routes = require('./routes')
 const handlebars = require('express-handlebars')
+const methodOverride = require('method-override')
 const session = require('express-session')
 const flash = require('connect-flash')
 const passport = require('./config/passport')
@@ -18,6 +19,7 @@ app.set('view engine', 'hbs')
 
 // http and session
 app.use(express.urlencoded({ extended: true }))
+app.use(methodOverride('_method'))
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
