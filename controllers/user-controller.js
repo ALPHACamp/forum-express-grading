@@ -23,6 +23,21 @@ const userController = {
         res.redirect('/signin')
       })
       .catch(err => next(err))
+  },
+
+  signinPage: (req, res) => {
+    return res.render('signin')
+  },
+
+  signin: (req, res) => {
+    req.flash('success_messages', '登入成功!')
+    return res.redirect('/restaurants')
+  },
+
+  logout: (req, res) => {
+    req.flash('success_messages', '登出成功!')
+    req.logout()
+    return res.redirect('/signin')
   }
 }
 

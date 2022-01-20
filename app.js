@@ -3,6 +3,7 @@ const exhbs = require('express-handlebars')
 const session = require('express-session')
 const flash = require('connect-flash')
 const routes = require('./routes')
+const passport = require('./config/passport')
 
 const app = express()
 const port = process.env.PORT || 3000
@@ -17,6 +18,8 @@ app.use(session({
   resave: false,
   saveUninitialized: false
 }))
+app.use(passport.initialize())
+app.use(passport.session())
 app.use(flash())
 app.use((req, res, next) => {
   res.locals.success_messages = req.flash('success_messages')
