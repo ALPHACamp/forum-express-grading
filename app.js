@@ -1,3 +1,4 @@
+const path = require('path')
 const express = require('express')
 const exphbs = require('express-handlebars')
 const routes = require('./routes')
@@ -16,6 +17,7 @@ app.engine('hbs', exphbs({ extname: '.hbs', helpers: require('./helpers/hbs-help
 app.set('view engine', 'hbs')
 
 app.use(express.urlencoded({ extended: true }))
+app.use('/upload', express.static(path.join(__dirname, 'upload')))
 
 app.use(session({
   secret: SESSION_SECRET,
