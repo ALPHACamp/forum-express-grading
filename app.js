@@ -3,6 +3,7 @@ const exhbs = require('express-handlebars')
 const session = require('express-session')
 const flash = require('connect-flash')
 const methodOverride = require('method-override')
+const path = require('path')
 const routes = require('./routes')
 const passport = require('./config/passport')
 const handlebarsHelpers = require('./helpers/handlebars-helpers')
@@ -35,7 +36,7 @@ app.use((req, res, next) => {
   res.locals.user = getUser(req)
   next()
 })
-
+app.use('/upload', express.static(path.join(__dirname, 'upload')))
 app.use(routes)
 
 app.listen(port, () => {
