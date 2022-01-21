@@ -1,5 +1,5 @@
 const { Restaurant } = require('../models')
-const { localFileHandler } = require('../middleware/file-helpers')
+const { imgurFileHandler } = require('../middleware/file-helpers')
 
 const adminController = {
   getRestaurants: (req, res, next) => {
@@ -29,8 +29,7 @@ const adminController = {
 
     const { file } = req
 
-    console.log(localFileHandler(file))
-    localFileHandler(file)
+    imgurFileHandler(file)
       .then(filePath =>
         Restaurant.create({
           name,
@@ -63,7 +62,7 @@ const adminController = {
 
     const { file } = req
 
-    Promise.all([Restaurant.findByPk(req.params.id), localFileHandler(file)])
+    Promise.all([Restaurant.findByPk(req.params.id), imgurFileHandler(file)])
       // Keep sequelize class to update data
       .then(([restaurant, filePath]) => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
