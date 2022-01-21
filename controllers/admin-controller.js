@@ -1,4 +1,4 @@
-const { Restaurant } = require('../models')
+const { Restaurant, User } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helper')
 
 const adminController = {
@@ -21,7 +21,7 @@ const adminController = {
       name, tel, address, openingHours, description, image: filePath || null
     }))
       .then(() => {
-        req.flash('success_msg', 'restaurant is successfully created')
+        req.flash('success_messages', 'restaurant is successfully created')
         res.redirect('/admin/restaurants')
       })
       .catch(err => next(err))
@@ -63,7 +63,7 @@ const adminController = {
         return restaurant.update({ name, tel, address, openingHours, description, image: filePath || restaurant.image })
       })
       .then(() => {
-        req.flash('success_msg', 'restaurant is successfully update')
+        req.flash('success_messages', 'restaurant is successfully update')
         res.redirect('/admin/restaurants')
       })
       .catch(err => next(err))
@@ -77,6 +77,32 @@ const adminController = {
       })
       .then(() => res.redirect('/admin/restaurants'))
       .catch(err => next(err))
+  },
+  getUsers: async (req, res, next) => {
+    try {
+      const users = await User.findAll({ raw: true })
+      res.render('admin/users', { users })
+    } catch (err) {
+      next(err)
+    }
+  },
+  patchUser: async (req, res, next) => {
+    try {
+      const rawUser = await User.findByPk(req.params.id)
+      const user = rawUser.toJSON()
+      if (!user) throw new Error('User do not exist')
+
+      if (user.email === 'root@example.com') {
+        req.flash('error_messages', '禁止變更 root 權限')
+        return res.redirect('back')
+      }
+
+      user.isAdmin ? await rawUser.update({ isAdmin: false }) : await rawUser.update({ isAdmin: true })
+      req.flash('success_messages', '使用者權限變更成功')
+      return res.redirect('/admin/users')
+    } catch (err) {
+      next(err)
+    }
   }
 }
 
