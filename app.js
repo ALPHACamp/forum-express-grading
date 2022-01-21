@@ -2,6 +2,7 @@ const express = require('express')
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config()
 }
+const path = require('path')
 const routes = require('./routes')
 const handlebars = require('express-handlebars')
 const methodOverride = require('method-override')
@@ -20,6 +21,7 @@ app.set('view engine', 'hbs')
 // http and session
 app.use(express.urlencoded({ extended: true }))
 app.use(methodOverride('_method'))
+app.use('/upload', express.static(path.join(__dirname, 'upload')))
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
