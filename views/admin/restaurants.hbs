@@ -1,15 +1,23 @@
 <h1>餐廳後台</h1>
+<div class="d-flex gap-2">
+<a href="/admin/restaurants" style="text-decoration: none;">Restaurants</a>
+  |
+<a href="/admin/users" style="text-decoration: none;">Users</a>
+
+</div>
+
+<br />
 <a href='/admin/restaurants/create'>
   <button type='button' class='btn btn-primary'>New Restaurant</button>
 </a>
 <br />
 <br />
 <table class='table align-middle'>
-  <thead class='thead-dark'>
+  <thead class='thead-dark table-dark'>
     <tr>
       <th scope='col'>#</th>
       <th scope='col'>Name</th>
-      <th scope='col'></th>
+      <th scope='col'>Actions</th>
     </tr>
   </thead>
   <tbody>
@@ -39,7 +47,7 @@
             method='POST'
             style='display: inline;'
           >
-            <button type="submit" class="btn btn-link link-danger" onclick=confirm(`確定要刪除 {{ this.name }} 嗎？`)>Delete</button>
+            <button type="submit" class="btn btn-link link-danger" onclick="confirm(`確定要刪除 {{ this.name }} 嗎？`)">Delete</button>
           </form>
         </td>
       </tr>

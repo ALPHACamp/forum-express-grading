@@ -17,6 +17,7 @@ const port = process.env.PORT
 
 app.engine('hbs', handlebars({ extname: '.hbs', helpers: handlebarsHelpers }))
 app.set('view engine', 'hbs')
+app.use(express.static('public'))
 
 // http and session
 app.use(express.urlencoded({ extended: true }))

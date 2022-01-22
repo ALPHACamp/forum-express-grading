@@ -6,4 +6,11 @@ const ensureAuthenticated = req => {
   return req.isAuthenticated()
 }
 
-module.exports = { getUser, ensureAuthenticated }
+const isSuperUser = user => {
+  // Super user list
+  const superUser = ['root@example.com']
+
+  return superUser.includes(user.email)
+}
+
+module.exports = { getUser, ensureAuthenticated, isSuperUser }
