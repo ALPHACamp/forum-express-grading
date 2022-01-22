@@ -1,15 +1,15 @@
-const { getUser, ensureAuthenticated } = require('./auth-helpers')
+const authHelper = require('./auth-helpers')
 
 const authenticated = (req, res, next) => {
-  if (ensureAuthenticated(req)) {
+  if (authHelper.ensureAuthenticated(req)) {
     return next()
   }
   return res.redirect('/signin')
 }
 
 const authenticatedAdmin = (req, res, next) => {
-  if (ensureAuthenticated(req)) {
-    if (getUser(req).isAdmin) return next()
+  if (authHelper.ensureAuthenticated(req)) {
+    if (authHelper.getUser(req).isAdmin) return next()
     return res.redirect('/')
   }
   return res.redirect('/signin')

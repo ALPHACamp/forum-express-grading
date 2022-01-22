@@ -17,6 +17,10 @@
     "use_env_variable": "CLEARDB_DATABASE_URL"
   },
   "travis": {
-  "username": "travis"
+    "username": "travis",
+    "database": "forum",
+    "host": "127.0.0.1",
+    "dialect": "mysql",
+    "logging": false
   }
 }

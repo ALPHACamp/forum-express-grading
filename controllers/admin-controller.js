@@ -1,7 +1,10 @@
 const { Restaurant } = require('../models')
+const { User } = require('../models')
 const { imgurFileHandler } = require('../middleware/file-helpers')
+const { isSuperUser } = require('../middleware/auth-helpers')
 
 const adminController = {
+  // Restaurants CRUD
   getRestaurants: (req, res, next) => {
     Restaurant.findAll({ raw: true })
       .then(restaurants => {
@@ -96,6 +99,34 @@ const adminController = {
         return res.redirect('/admin/restaurants')
       })
       .catch(err => next(err))
+  },
+
+  // Users CRUD
+  getUsers: async (req, res) => {
+    const users = await User.findAll({ raw: true })
+    return res.render('admin/users', {
+      users,
+      script: 'admin/users',
+      user: req.user
+    })
+  },
+
+  patchUser: async (req, res, next) => {
+    try {
+      const user = await User.findByPk(req.params.id)
+
+      // Validate user type
+      if (!user) throw new Error("User doesn't exist")
+      if (isSuperUser(user)) {
+        req.flash('error_messages', '禁止變更 root 權限')
+        return res.redirect('back')
+      }
+
+      // Update user access
+      await user.update({ isAdmin: !user.isAdmin })
+      req.flash('success_messages', '使用者權限變更成功')
+      return res.redirect('/admin/users')
+    } catch (error) { next(error) }
   }
 }
 
