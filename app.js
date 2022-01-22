@@ -13,7 +13,7 @@ const helpers = require('./middleware/helpers')
 const handlebarsHelpers = require('./middleware/handlebars-helpers')
 
 const app = express()
-const port = process.env.PORT
+const port = process.env.PORT || 3000
 
 app.engine('hbs', handlebars({ extname: '.hbs', helpers: handlebarsHelpers }))
 app.set('view engine', 'hbs')
@@ -25,7 +25,7 @@ app.use(methodOverride('_method'))
 app.use('/upload', express.static(path.join(__dirname, 'upload')))
 app.use(
   session({
-    secret: process.env.SESSION_SECRET,
+    secret: process.env.SESSION_SECRET || 'secret',
     resave: false,
     saveUninitialized: false
   })
