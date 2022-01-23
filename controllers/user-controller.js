@@ -1,4 +1,4 @@
-const bcrypt = require('bcryptjs') //載入 bcrypt
+const bcrypt = require('bcryptjs') // 載入 bcrypt
 const db = require('../models')
 const { User } = db
 const userController = {
@@ -13,16 +13,16 @@ const userController = {
         if (user) throw new Error('Email already exists!')
         return bcrypt.hash(req.body.password, 10) // 前面加 return
       })
-      .then(hash => User.create({  //上面錯誤狀況都沒發生，就把使用者的資料寫入資料庫
+      .then(hash => User.create({ // 上面錯誤狀況都沒發生，就把使用者的資料寫入資料庫
         name: req.body.name,
         email: req.body.email,
         password: hash
       }))
       .then(() => {
-        req.flash('success_messages', '成功註冊帳號！') //並顯示成功訊息
+        req.flash('success_messages', '成功註冊帳號！') // 並顯示成功訊息
         res.redirect('/signin')
       })
-      .catch(err => next(err)) //接住前面拋出的錯誤，呼叫專門做錯誤處理的 middleware
+      .catch(err => next(err)) // 接住前面拋出的錯誤，呼叫專門做錯誤處理的 middleware
   },
   signInPage: (req, res) => {
     res.render('signin')
