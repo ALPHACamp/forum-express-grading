@@ -11,16 +11,20 @@ const adminController = {
       .then(restaurants => res.render('admin/restaurants', { restaurants }))
       .catch(err => next(err))
   },
-  createRestaurant: (req, res) => {
-    res.render('admin/create')
+  createRestaurant: (req, res, next) => {
+    Category.findAll({
+      raw: true
+    })
+      .then(categories => res.render('admin/create', { categories }))
+      .catch(err => next(err))
   },
   postRestaurant: (req, res, next) => {
-    const { name, tel, address, openingHours, description } = req.body
+    const { name, tel, address, openingHours, description, categoryId } = req.body
     if (!name) throw new Error('Restaurant name is required')
 
     const { file } = req
     imgurFileHandler(file).then(filePath => Restaurant.create({
-      name, tel, address, openingHours, description, image: filePath || null
+      name, tel, address, openingHours, description, image: filePath || null, categoryId
     }))
       .then(() => {
         req.flash('success_messages', 'restaurant is successfully created')
@@ -42,18 +46,19 @@ const adminController = {
       .catch(err => next(err))
   },
   editRestaurant: (req, res, next) => {
-    return Restaurant.findByPk(req.params.id, {
-      raw: true
-    })
-      .then(restaurant => {
+    return Promise.all([ // 因為編輯情境時，「查詢 Restaurants table」 和「查詢 Categories table」沒有先後順序，不需要互相等待，所以使用Promise.all
+      Restaurant.findByPk(req.params.id, { raw: true }),
+      Category.findAll({ raw: true })
+    ])
+      .then(([restaurant, categories]) => {
         if (!restaurant) throw new Error('Restaurant do not exist')
 
-        res.render('admin/edit', { restaurant })
+        res.render('admin/edit', { restaurant, categories })
       })
       .catch(err => next(err))
   },
   putRestaurant: (req, res, next) => {
-    const { name, tel, address, openingHours, description } = req.body
+    const { name, tel, address, openingHours, description, categoryId } = req.body
     if (!name) throw new Error('Restaurant name is required')
 
     const { file } = req
@@ -64,7 +69,7 @@ const adminController = {
       .then(([restaurant, filePath]) => {
         if (!restaurant) throw new Error('Restaurant do not exist')
 
-        return restaurant.update({ name, tel, address, openingHours, description, image: filePath || restaurant.image })
+        return restaurant.update({ name, tel, address, openingHours, description, image: filePath || restaurant.image, categoryId })
       })
       .then(() => {
         req.flash('success_messages', 'restaurant is successfully update')
