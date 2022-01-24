@@ -2,6 +2,7 @@ const express = require('express')
 const handlebars = require('express-handlebars')
 const session = require('express-session')
 const flash = require('connect-flash')
+const passport = require('./config/passport')
 
 const routes = require('./routes')
 
@@ -17,6 +18,10 @@ app.set('view engine', 'hbs')
 app.use(express.urlencoded({ extended: true }))
 // 建立session
 app.use(session({ secret: SESSION_SECRET, resave: false, saveUninitialized: true }))
+// 初始化passport
+app.use(passport.initialize())
+// 啟動passport-session
+app.use(passport.session())
 // 掛載flash
 app.use(flash())
 // 設定環境變數
