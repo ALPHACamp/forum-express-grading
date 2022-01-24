@@ -97,7 +97,7 @@ const adminController = {
         return res.redirect('back')
       }
 
-      user.isAdmin ? await rawUser.update({ isAdmin: false }) : await rawUser.update({ isAdmin: true })
+      await rawUser.update({ isAdmin: !user.isAdmin })
       req.flash('success_messages', '使用者權限變更成功')
       return res.redirect('/admin/users')
     } catch (err) {
