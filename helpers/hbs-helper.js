@@ -15,5 +15,8 @@ module.exports = {
     } else {
       return 'set ad admin'
     }
+  },
+  ifCond: function (a, b, options) {
+    return a === b ? options.fn(this) : options.inverse(this)
   }
 }
