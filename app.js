@@ -6,6 +6,7 @@ const session = require('express-session')
 const passport = require('./config/passport')
 const { getUser } = require('./helpers/auth-helpers')
 const handlebarsHelpers = require('./helpers/handlebars-helpers')
+const methodOverride = require('method-override')
 
 const app = express()
 const port = process.env.PORT || 3000
@@ -17,6 +18,7 @@ app.engine('hbs', handlebars({ extname: '.hbs', helpers: handlebarsHelpers }))
 app.set('view engine', 'hbs')
 app.use(express.urlencoded({ extended: true }))
 app.use(session({ secret: SESSION_SECRET, resave: false, saveUninitialized: false }))
+app.use(methodOverride('_method'))
 app.use(passport.initialize()) // 增加這行，初始化 Passport
 app.use(passport.session()) // 增加這行，啟動 session 功能
 app.use(flash()) // 掛載套件
