@@ -1,4 +1,5 @@
-const { Category } = require('../models')
+const { Restaurant, Category } = require('../models')
+const { isAttached } = require('../middleware/data-helper')
 
 const categoryController = {
   getCategories: async (req, res, next) => {
@@ -39,7 +40,12 @@ const categoryController = {
 
   deleteCategory: async (req, res, next) => {
     try {
-      await Category.destroy({ where: { id: req.params.id } })
+      // Find if any restaurant is attached to this category
+      const a = await isAttached(req.params.id, Restaurant, 'categoryId')
+      console.log(a)
+      // If so, ask admin to decide how to keep it or delete it
+
+      // await Category.destroy({ where: { id: req.params.id } })
       return res.redirect('/admin/categories')
     } catch (error) {
       next(error)
