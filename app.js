@@ -3,15 +3,15 @@ const handlebars = require('express-handlebars')
 const routes = require('./routes')
 
 const app = express()
-const port = process.env.PORT || 3000
+const PORT = process.env.PORT || 3000
 
 app.engine('hbs', handlebars({ extname: '.hbs' }))
 app.set('view engine', 'hbs')
 
 app.use(routes)
 
-app.listen(port, () => {
-  console.info(`Example app listening on port ${port}!`)
+app.listen(PORT, () => {
+  console.info(`Example app listening on http://localhost:${PORT}`)
 })
 
 module.exports = app
