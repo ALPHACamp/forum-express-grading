@@ -1,0 +1,61 @@
+
+{{> admin-tabs route='categories'}}
+
+<br />
+
+{{#if category}}
+<form class="row g-3" action="/admin/categories/{{category.id}}?_method=PUT" method="POST">
+  <div class="col-auto">
+    <input type="text" class="form-control" id="category" name="name" 
+    value="{{category.name}}">
+  </div>
+  <div class="col-auto">
+    <button type="submit" class="btn btn-warning mb-3">Update</button>
+  </div>
+  <div class="col-auto">
+    <a href='/admin/categories/'>
+      <button type='button' class='btn btn-link'>Create New</button>
+    </a>
+  </div>
+</form>
+{{else}}
+<form class="row g-3" action="/admin/categories" method="POST">
+  <div class="col-auto">
+    <input type="text" class="form-control" id="category" name="name" 
+    placeholder="New Category">
+  </div>
+  <div class="col-auto">
+    <button type="submit" class="btn btn-success mb-3">Create</button>
+  </div>
+</form>
+{{/if}}
+
+<br />
+<table class='table align-middle'>
+  <thead class='thead-dark table-dark'>
+    <tr>
+      <th scope='col'>#</th>
+      <th scope='col'>Category Name</th>
+      <th scope='col'>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each categories}}
+      <tr>
+        <th scope='row'>{{this.id}}</th>
+        <td>{{this.name}}</td>
+        <td>
+          <a href="/admin/categories/{{this.id}}">
+          <button type="button" class="btn btn-link">Edit</button></a>
+          <form
+            action='/admin/categories/{{this.id}}?_method=DELETE'
+            method='POST'
+            style='display: inline;'
+          >
+            <button type="submit" class="btn btn-link link-danger">Delete</button>
+          </form>
+        </td>
+      </tr>
+    {{/each}}
+  </tbody>
+</table>

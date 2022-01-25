@@ -5,11 +5,7 @@ module.exports = {
     return dayjs().year()
   },
 
-  ifCon: (a, b, options) => {
-    if (a === b) {
-      return options.fn(this)
-    } else {
-      return options.inverse(this)
-    }
+  ifCon: function (a, b, options) {
+    return a === b ? options.fn(this) : options.inverse(this)
   }
 }
