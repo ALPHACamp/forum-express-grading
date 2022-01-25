@@ -3,6 +3,7 @@ const handlebars = require('express-handlebars')
 const session = require('express-session')
 const flash = require('connect-flash')
 const passport = require('./config/passport')
+const methodOverride = require('method-override')
 
 const routes = require('./routes')
 const handlebarsHelpers = require('./helpers/handlebars-helpers')
@@ -27,6 +28,8 @@ app.use(passport.initialize())
 app.use(passport.session())
 // 掛載flash
 app.use(flash())
+// 設定method-override
+app.use(methodOverride('_method'))
 // 設定環境變數
 app.use((req, res, next) => {
   // 設定flash訊息
