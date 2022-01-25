@@ -12,7 +12,7 @@ const adminController = {
   },
   postRestaurant: (req, res, next) => {
     const { name, tel, address, openingHours, description } = req.body
-    if (!name) throw new Error('Restaurant name is required!') // name 是必填，若發先是空值就會終止程式碼，並在畫面顯示錯誤提示
+    if (!name) throw new Error('Restaurant name is required!')
     Restaurant.create({
       name,
       tel,
@@ -23,6 +23,16 @@ const adminController = {
       .then(() => {
         req.flash('success_messages', 'restaurant was successfully created')
         res.redirect('/admin/restaurants')
+      })
+      .catch(err => next(err))
+  },
+  getRestaurant: (req, res, next) => {
+    Restaurant.findByPk(req.params.id, {
+      raw: true
+    })
+      .then(restaurant => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        res.render('admin/restaurant', { restaurant })
       })
       .catch(err => next(err))
   }
