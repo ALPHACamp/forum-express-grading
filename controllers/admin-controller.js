@@ -41,6 +41,23 @@ const adminController = {
         res.redirect('/admin/restaurants')
       })
       .catch(err => next(err))
+  },
+
+  // 查看餐廳詳細資料的路由
+  getRestaurant: (req, res, next) => {
+    // 查詢資料庫是否有動態路由所填的id值
+    Restaurant.findByPk(req.params.rest_id, {
+      // 將資料轉換成js原生物件
+      raw: true
+    })
+      .then(restaurant => {
+        // 判斷是否有查詢到資料，若無則丟出一個Error物件
+        if (!restaurant) throw new Error("Restaurant didn't exists!")
+
+        // 若有資料渲染admin/restaurant頁面
+        res.render('admin/restaurant', { restaurant })
+      })
+      .catch(err => next(err))
   }
 }
 
