@@ -3,15 +3,15 @@ const router = express.Router()
 const passport = require('passport')
 
 const { generalErrorHandler } = require('../middleware/error-handler')
-const { authenticated } = require('../middleware/auth')
+const { authenticated, authenticatedAdmin } = require('../middleware/auth')
 const restController = require('../controllers/restaurant-controller')
 const userController = require('../controllers/user-controller')
 
 // 引入路由模組
 const admin = require('./modules/admin')
 
-// 建立路由
-router.use('/admin', admin)
+// 建立admin相關路由，先經由authenticatedAdmin驗証是否有admin權限
+router.use('/admin', authenticatedAdmin, admin)
 
 // signup相關路由
 router.get('/signup', userController.signUpPage)
