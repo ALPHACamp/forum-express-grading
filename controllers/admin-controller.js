@@ -21,12 +21,18 @@ const adminController = {
       .catch(err => next(err))
   },
 
-  createRestaurant: (req, res) => {
-    return res.render('admin/create-restaurant')
+  createRestaurant: async (req, res, next) => {
+    try {
+      const categories = await Category.findAll({ raw: true })
+      return res.render('admin/create-restaurant', { categories })
+    } catch (error) {
+      next(error)
+    }
   },
 
   postRestaurant: (req, res, next) => {
-    const { name, tel, address, openingHours, description } = req.body
+    const { name, tel, address, openingHours, description, categoryId } =
+      req.body
     if (!name) throw new Error('Restaurant name is required!')
 
     const { file } = req
@@ -39,6 +45,7 @@ const adminController = {
           address,
           openingHours,
           description,
+          categoryId,
           image: filePath || null
         })
       )
@@ -49,17 +56,23 @@ const adminController = {
       .catch(err => next(err))
   },
 
-  editRestaurant: (req, res, next) => {
-    Restaurant.findByPk(req.params.id, { raw: true })
-      .then(restaurant => {
-        if (!restaurant) throw new Error("Restaurant didn't exist!")
-        return res.render('admin/edit-restaurant', { restaurant })
-      })
-      .catch(err => next(err))
+  editRestaurant: async (req, res, next) => {
+    try {
+      const [restaurant, categories] = await Promise.all([
+        Restaurant.findByPk(req.params.id, { raw: true, nest: true, include: [Category] }),
+        Category.findAll({ raw: true })
+      ])
+
+      if (!restaurant) throw new Error("Restaurant didn't exist!")
+      return res.render('admin/edit-restaurant', { restaurant, categories })
+    } catch (error) {
+      next(error)
+    }
   },
 
   putRestaurant: (req, res, next) => {
-    const { name, tel, address, openingHours, description } = req.body
+    const { name, tel, address, openingHours, description, categoryId } =
+      req.body
     if (!name) throw new Error('Restaurant name is required!')
 
     const { file } = req
@@ -75,6 +88,7 @@ const adminController = {
             address,
             openingHours,
             description,
+            categoryId,
             image: filePath || restaurant.image
           })
           .then(() => {
