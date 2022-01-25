@@ -43,7 +43,8 @@
           </a>
         </button>
         <form action="/admin/categories/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
-          <button type="submit" class="btn btn-link link-danger">Delete</button>
+          <button type="submit" class="btn btn-link link-danger" id="category-delete"
+            data-name="{{this.name}}">Delete</button>
         </form>
       </td>
     </tr>
@@ -52,3 +53,25 @@
 </table>
 <br />
 <br />
+
+<script>
+  const categoriesDelete = document.querySelectorAll('#category-delete')
+
+  categoriesDelete.forEach(categoryDelete => {
+    categoryDelete.addEventListener('click', async event => {
+      event.stopPropagation()
+      event.preventDefault()
+
+      let toggle
+      // eslint-disable-next-line no-undef
+      toggle = await Swal.fire({
+        title: '注意',
+        text: `確定要刪除${categoryDelete.dataset.name}此分類嗎？`,
+        icon: 'warning',
+        showCancelButton: true
+      })
+
+      if (toggle.isConfirmed) return categoryDelete.parentElement.submit()
+    })
+  })
+</script>
