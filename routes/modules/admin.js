@@ -8,6 +8,7 @@ const upload = require('../../middleware/multer')
 
 router.get('/restaurants/create', adminController.createRestaurant)
 router.post('/restaurants', upload.single('image'), adminController.postRestaurant)
+router.post('/categories', categoryController.postCategory)
 
 router.get('/restaurants/:id/edit', adminController.editRestaurant)
 router.put('/restaurants/:id', upload.single('image'), adminController.putRestaurant)
