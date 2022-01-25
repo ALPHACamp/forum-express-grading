@@ -7,7 +7,7 @@ services:
 
 # 設定參數(Travis CI 會按照參數分別執行)
 env:
-  - NODE_ENV=travis JWT_SECRET=JWT_SECRET
+  - NODE_ENV=travis JWT_SECRET=JWT_SECRET PORT=3000 SESSION_SECRET=secret IMGUR_CLIENT_ID=c664133d84cf6b5
 
 # 在 install 前執行的指令
 before_install:
