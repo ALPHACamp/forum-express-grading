@@ -18,7 +18,11 @@
     <tr>
       <th scope="row">{{this.id}}</th>
       <td>{{this.name}}</td>
+      {{#if this.Category.name}}
       <td>{{this.Category.name}}</td>
+      {{else}}
+      <td>未分類</td>
+      {{/if}}
       <td>
         <button type="button" class="btn btn-link">
           <a class="btn btn-link link-primary" href="/admin/restaurants/{{this.id}}">
