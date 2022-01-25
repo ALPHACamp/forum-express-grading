@@ -1,6 +1,7 @@
 {
-  "name": "forum-express-grading",
-  "version": "3.0.0",
+  "name": "forum-express-workspace",
+  "version": "1.0.0",
+  "description": "",
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
@@ -10,26 +11,46 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ALPHACamp/forum-express-grading.git"
+    "url": "git+https://github.com/ALPHACamp/forum-express-2021.git"
   },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ALPHACamp/forum-express-2021/issues"
+  },
+  "homepage": "https://github.com/ALPHACamp/forum-express-2021#readme",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "connect-flash": "^0.1.1",
+    "dayjs": "^1.10.7",
+    "dotenv": "^10.0.0",
     "express": "^4.17.1",
-    "mysql2": "^2.2.5",
-    "sequelize": "^6.3.5",
-    "sequelize-cli": "^6.2.0"
+    "express-handlebars": "^5.3.4",
+    "express-session": "^1.17.2",
+    "faker": "^5.5.3",
+    "imgur": "^1.0.2",
+    "method-override": "^3.0.0",
+    "multer": "^1.4.3",
+    "mysql2": "^2.3.2",
+    "passport": "^0.5.0",
+    "passport-local": "^1.0.0",
+    "proxyquire": "^2.1.3",
+    "sequelize": "^6.7.0",
+    "sequelize-cli": "^6.3.0",
+    "sequelize-mock": "^0.10.2",
+    "sinon": "^12.0.1"
+  },
+  "directories": {
+    "test": "tests"
   },
   "devDependencies": {
-    "chai": "^4.2.0",
+    "chai": "^4.3.4",
     "eslint": "^7.32.0",
     "eslint-config-standard": "^16.0.3",
     "eslint-plugin-import": "^2.23.4",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^5.1.0",
-    "mocha": "^8.2.0",
-    "nodemon": "^2.0.12",
-    "proxyquire": "^2.1.3",
-    "sequelize-mock": "^0.10.2",
-    "sinon": "^9.2.0",
-    "supertest": "^5.0.0"
+    "mocha": "^9.1.3",
+    "supertest": "^6.1.4"
   }
 }
