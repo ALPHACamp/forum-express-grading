@@ -1,23 +1,33 @@
-<h1>餐廳後台</h1>
-<a href='/admin/restaurants/create'>
-  <button type="button" class="btn btn-primary">New Restaurant</button>
-</a>
+<h1 class="text-center">餐廳後台</h1>
+<ul class="nav justify-content-center">
+  <li class="nav-item">
+    <a class="nav-link" href="/admin/restaurants/">Restaurants</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="/admin/users/">Users</a>
+  </li>
+</ul>
+<div class="create-restaurant text-end">
+  <a href='/admin/restaurants/create'>
+    <button type="button" class="btn btn-primary">New Restaurant</button>
+  </a>
+</div>
 <br />
 <br />
-<table class="table align-middle">
-  <thead class="thead-dark">
+<table class="table table-striped">
+  <thead class="table-primary">
     <tr>
-      <th scope="col">#</th>
-      <th scope="col">Name</th>
-      <th scope="col"></th>
+      <th scope="col" class="text-center">#</th>
+      <th scope="col" class="text-center">Name</th>
+      <th scope="col" class="text-center"></th>
     </tr>
   </thead>
   <tbody>
     {{#each restaurants}}
       <tr>
-        <th scope="row">{{this.id}}</th>
-        <td>{{this.name}}</td>
-        <td>
+        <th scope="row" class="text-center">{{this.id}}</th>
+        <td class="text-center">{{this.name}}</td>
+        <td class="text-center">
           <button type="button" class="btn btn-link">
             <a class="btn btn-link link-primary" href="/admin/restaurants/{{this.id}}">
               Show

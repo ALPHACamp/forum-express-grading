@@ -1,0 +1,47 @@
+<h1 class="text-center">餐廳後台</h1>
+<ul class="nav justify-content-center">
+  <li class="nav-item">
+    <a class="nav-link" href="/admin/restaurants/">Restaurants</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="/admin/users/">Users</a>
+  </li>
+</ul>
+
+<br />
+<table class="table table-striped">
+  <thead class="table-primary">
+    <tr>
+      <th scope="col" class="text-center">#</th>
+      <th scope="col" class="text-center">Name</th>
+      <th scope="col" class="text-center">Email</th>
+      <th scope="col" class="text-center">Role</th>
+      <th scope="col" class="text-center">#</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each users}}
+    <tr>
+      <th scope="row" class="text-center">{{this.id}}</th>
+      <td class="text-center">{{this.name}}</td>
+      <td class="text-center">{{this.email}}</td>    
+      {{#if this.isAdmin}}
+      <td class="text-center">admin</td>
+      {{else}}
+      <td class="text-center">user</td>
+      {{/if}}   
+      <td class="text-center">
+        {{#if this.isAdmin}}    
+        <form action="/admin/users/{{this.id}}?_method=PUT" method="POST">
+          <button class="btn btn-link" type="submit">set as user</button>
+        </form>
+        {{else}}
+        <form action="/admin/users/{{this.id}}?_method=PUT" method="POST">
+          <button class="btn btn-link" type="submit">set as admin</button>
+        </form>
+        {{/if}}
+      </td>
+    </tr>
+    {{/each}}
+  </tbody>
+</table>
