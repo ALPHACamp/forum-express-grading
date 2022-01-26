@@ -10,7 +10,6 @@ const userController = {
   signUpPage: (req, res) => {
     res.render('signup')
   },
-
   signUp: (req, res, next) => {
     const { name, email, password, passwordCheck } = req.body
 
@@ -35,6 +34,18 @@ const userController = {
       .catch(error => {
         next(error)
       })
+  },
+  signInPage: (req, res) => {
+    res.render('signin')
+  },
+  signIn: (req, res) => {
+    req.flash('success_messages', '成功登入！')
+    res.redirect('/restaurants')
+  },
+  signOut: (req, res) => {
+    req.flash('success_messages', '登出成功！')
+    req.logout()
+    res.redirect('/signin')
   }
 
 }
