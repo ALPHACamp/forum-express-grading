@@ -89,13 +89,17 @@ const adminController = {
     return User.findAll({
       raw: true
     })
-      .then(users => res.render('admin/users', { users }))
+      .then(users =>
+        res.render('admin/users', {
+          users,
+          operator: req.user // 當前使用者
+        }))
       .catch(err => next(err))
   },
   patchUser: async (req, res, next) => {
     try {
       const user = await User.findByPk(req.params.id)
-      if (!user) throw new Error("Restaurant didn't exist!")
+      if (!user) throw new Error("User didn't exist!")
       const { email, isAdmin } = user.dataValues
       if (email === 'root@example.com') {
         req.flash('error_messages', '禁止變更 root 權限')

@@ -34,7 +34,8 @@
       </td>
       <td>
         <form action="/admin/users/{{this.id}}?_method=PATCH" method="POST" style="display: inline;">
-          <button type="submit" class="btn btn-link">
+          <button type="submit" class="btn btn-link trans-auth" data-name={{this.name}} {{#isSelf this.id
+            ../operator.id}} data-self="true" {{/isSelf}}>
             {{#if this.isAdmin}}set as user
             {{else}}set as admin
             {{/if}}
