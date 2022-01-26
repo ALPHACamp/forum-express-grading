@@ -1,7 +1,7 @@
 // 引入model
 const { Restaurant } = require('../models')
 // 引入file-helpers
-const { localFileHandler } = require('../helpers/file-helpers')
+const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const adminController = {
   // 瀏覽後台網頁
@@ -33,7 +33,7 @@ const adminController = {
     const { file } = req
 
     // 呼叫localFileHandler處理圖片檔案
-    localFileHandler(file)
+    imgurFileHandler(file)
       // 取得圖片路徑後，將全部資料新增至資料庫
       .then(filePath => Restaurant.create({
         name,
@@ -101,7 +101,7 @@ const adminController = {
       // 使用動態id查詢資料庫資料
       Restaurant.findByPk(req.params.rest_id),
       // 呼叫localFileHandler處理圖片檔案
-      localFileHandler(file)
+      imgurFileHandler(file)
     ])
       .then(([restaurant, filePath]) => { // 取得promise.all先處理的兩樣回傳參數
         // 判斷是否有資料，若無丟出Error物件
