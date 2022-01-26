@@ -19,6 +19,7 @@ router.get('/users', adminController.getUsers)
 router.patch('/users/:id', adminController.patchUser)
 
 // Categories
+router.get('/categories/check-attachment/:id', categoryController.checkAttachment)
 router.get('/categories/:id', categoryController.getCategories)
 router.put('/categories/:id', categoryController.putCategory)
 router.delete('/categories/:id', categoryController.deleteCategory)
