@@ -1,6 +1,4 @@
-<h1>餐廳後台</h1>
-{{> admin-tabs}}
-<br />
+{{> admin-tabs route='categories'}}
 
 <form class="d-md-flex align-items-center" action="/admin/categories{{#if selectedCategory}}/{{selectedCategory.id}}?_method=PUT{{/if}}" method="POST">
   <div>
@@ -45,3 +43,6 @@
     {{/each}}
   </tbody>
 </table>
+
+<br />
+<br />
