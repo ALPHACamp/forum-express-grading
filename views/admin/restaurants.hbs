@@ -19,6 +19,7 @@
     <tr>
       <th scope="col" class="text-center">#</th>
       <th scope="col" class="text-center">Name</th>
+      <th scope="col" class="text-center">Category</th>
       <th scope="col" class="text-center"></th>
     </tr>
   </thead>
@@ -27,6 +28,7 @@
       <tr>
         <th scope="row" class="text-center">{{this.id}}</th>
         <td class="text-center">{{this.name}}</td>
+        <td class="text-center">{{this.Category.name}}</td>
         <td class="text-center">
           <button type="button" class="btn btn-link">
             <a class="btn btn-link link-primary" href="/admin/restaurants/{{this.id}}">
