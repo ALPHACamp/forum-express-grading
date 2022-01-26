@@ -1,6 +1,7 @@
 const express = require('express')
 const handlebars = require('express-handlebars')
 const routes = require('./routes')
+const bodyParser = require('body-parser')
 
 const app = express()
 const port = process.env.PORT || 3000
@@ -9,6 +10,9 @@ app.engine('hbs', handlebars({
   extname: '.hbs'
 }))
 app.set('view engine', '.hbs')
+app.use(bodyParser.urlencoded({
+  extended: true
+})) // 加入這行
 
 app.use(routes)
 
