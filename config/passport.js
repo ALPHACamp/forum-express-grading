@@ -14,10 +14,10 @@ passport.use(new LocalStrategy(
   // authenticate user
   (req, email, password, cb) => {
     User.findOne({
-        where: {
-          email
-        }
-      })
+      where: {
+        email
+      }
+    })
       .then(user => {
         if (!user) return cb(null, false, req.flash('error_messages', '帳號或密碼輸入錯誤！'))
         bcrypt.compare(password, user.password).then(res => {
