@@ -1,11 +1,6 @@
 <h1 class="text-center">餐廳後台</h1>
 <ul class="nav justify-content-center">
-  <li class="nav-item">
-    <a class="nav-link" href="/admin/restaurants/">Restaurants</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" href="/admin/users/">Users</a>
-  </li>
+  {{>admin-tabs route='restaurants'}}
 </ul>
 <div class="create-restaurant text-end">
   <a href='/admin/restaurants/create'>
