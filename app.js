@@ -9,6 +9,9 @@ const port = process.env.PORT || 3000
 app.engine('hbs', handlebars({ extname: '.hbs' }))
 app.set('view engine', 'hbs')
 
+// body-parser
+app.use(express.urlencoded({ extended: true }))
+
 // 路由入口
 app.use(routes)
 
