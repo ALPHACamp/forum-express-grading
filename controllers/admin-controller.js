@@ -1,5 +1,7 @@
 // 引入model
 const { Restaurant } = require('../models')
+// 引入file-helpers
+const { localFileHandler } = require('../helpers/file-helpers')
 
 const adminController = {
   // 瀏覽後台網頁
@@ -27,14 +29,20 @@ const adminController = {
     // 判斷name欄位是否有值，若無則丟出Error物件
     if (!name) throw new Error('Restaurant name is required')
 
-    // 判斷name有值後，新增資料至資料庫
-    Restaurant.create({
-      name,
-      tel,
-      address,
-      description,
-      openingHours
-    })
+    // 取得在middleware/multer處理過放在req.file裡的圖片資料
+    const { file } = req
+
+    // 呼叫localFileHandler處理圖片檔案
+    localFileHandler(file)
+      // 取得圖片路徑後，將全部資料新增至資料庫
+      .then(filePath => Restaurant.create({
+        name,
+        tel,
+        address,
+        description,
+        openingHours,
+        image: filePath || null
+      }))
       .then(() => {
         // 回傳成功訊息，並導向admin/restaurants
         req.flash('success_messages', 'restaurant was successfully created')
@@ -85,9 +93,17 @@ const adminController = {
     // 判斷name是否有填值，若無丟出Error物件
     if (!name) throw new Error('Restaurant name is required!')
 
-    // 使用動態id查詢資料庫資料
-    Restaurant.findByPk(req.params.rest_id)
-      .then(restaurant => {
+    // 取得在middleware/multer處理過放在req.file裡的圖片資料
+    const { file } = req
+
+    // 使用promise.all先處理兩件非同步事件
+    Promise.all([
+      // 使用動態id查詢資料庫資料
+      Restaurant.findByPk(req.params.rest_id),
+      // 呼叫localFileHandler處理圖片檔案
+      localFileHandler(file)
+    ])
+      .then(([restaurant, filePath]) => { // 取得promise.all先處理的兩樣回傳參數
         // 判斷是否有資料，若無丟出Error物件
         if (!restaurant) throw new Error("Restaurant didn't exists!")
 
@@ -97,7 +113,8 @@ const adminController = {
           tel,
           address,
           openingHours,
-          description
+          description,
+          image: filePath || restaurant.image // 如果filePath有值就更新成filePath， 若沒有值維特更新前的image
         })
       })
       .then(() => {

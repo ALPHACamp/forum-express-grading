@@ -1,3 +1,4 @@
+const path = require('path')
 const express = require('express')
 const handlebars = require('express-handlebars')
 const session = require('express-session')
@@ -30,6 +31,8 @@ app.use(passport.session())
 app.use(flash())
 // 設定method-override
 app.use(methodOverride('_method'))
+// 設定讓外部傳入的 request 可以取得 /upload 路徑
+app.use('/upload', express.static(path.join(__dirname, 'upload')))
 // 設定環境變數
 app.use((req, res, next) => {
   // 設定flash訊息
