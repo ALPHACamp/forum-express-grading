@@ -1,3 +1,5 @@
+const dayjs = require('dayjs')
+const currentYear = () => dayjs().year()
 module.exports = {
-  currentYear: () => new Date().getFullYear()
+  currentYear
 }
