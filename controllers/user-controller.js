@@ -11,12 +11,16 @@ const userController = {
     res.render('signup')
   },
 
-  signUp: (req, res) => {
+  signUp: (req, res, next) => {
     const { name, email, password, passwordCheck } = req.body
-    const hashSalt = bcrypt.genSaltSync(10)
 
-    console.log(bcrypt.hashSync('qwe', '$2a$10$8/zZ3rig2Z0fVKDHV784.u'))
-    bcrypt.hash(password, hashSalt)
+    if (password !== passwordCheck) throw new Error('Passwords do not match!')
+
+    User.findOne({ where: { email } })
+      .then(user => {
+        if (user) throw new Error('Email already exists!')
+        return bcrypt.hash(password, 10)
+      })
       .then(password =>
         User.create({
           name,
@@ -24,7 +28,13 @@ const userController = {
           password
         })
       )
-      .then(() => res.redirect('/users/signin'))
+      .then(() => {
+        req.flash('success_messages', '成功註冊帳號！')
+        res.redirect('/users/signin')
+      })
+      .catch(error => {
+        next(error)
+      })
   }
 
 }
