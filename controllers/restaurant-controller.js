@@ -3,7 +3,7 @@ const { Restaurant, Category } = require('../models')
 const restaurantController = {
   getRestaurants: (req, res, next) => {
     Restaurant.findAll({
-      include: [Category],
+      include: Category,
       raw: true,
       nest: true
     })
@@ -20,7 +20,7 @@ const restaurantController = {
   },
   getRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
-      include: [Category],
+      include: Category,
       raw: true,
       nest: true
     })
@@ -33,7 +33,7 @@ const restaurantController = {
   },
   getDashboard: async (req, res, next) => {
     try {
-      const restaurant = await Restaurant.findByPk(req.params.id, { include: [Category] })
+      const restaurant = await Restaurant.findByPk(req.params.id, { include: Category })
       if (!restaurant) throw new Error("Restaurant doesn't exist")
 
       await restaurant.increment('viewCounts')
