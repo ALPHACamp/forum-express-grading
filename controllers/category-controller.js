@@ -4,14 +4,13 @@ const categoryController = {
   getCategories: (req, res, next) => {
     const { id } = req.params
 
-    return Category.findAll({ raw: true })
-      .then(categories => {
-        const selectedCategory = id
-          ? categories.find(item => item.id === Number(id))
-          : null
-
+    return Promise.all([
+      Category.findAll({ raw: true }),
+      id ? Category.findByPk(id, { raw: true }) : null
+    ])
+      .then(([categories, category]) => {
         return res.render('admin/categories', {
-          categories, selectedCategory
+          categories, category
         })
       })
       .catch(err => next(err))
@@ -32,6 +31,7 @@ const categoryController = {
   putCategory: (req, res, next) => {
     const { id } = req.params
     const { name } = req.body
+    if (!name) throw new Error('Category name is required!')
 
     return Category.findByPk(id)
       .then(category => {
