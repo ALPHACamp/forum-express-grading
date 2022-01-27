@@ -5,7 +5,7 @@ const restaurantController = {
     return Restaurant.findAll({
       raw: true,
       nest: true,
-      include: [Category]
+      include: Category
     })
       .then(restaurants => {
         const data = restaurants.map(r => ({
@@ -16,6 +16,22 @@ const restaurantController = {
         return res.render('restaurants', {
           restaurants: data
         })
+      })
+      .catch(err => next(err))
+  },
+
+  getRestaurant: (req, res, next) => {
+    const { id } = req.params
+
+    return Restaurant.findByPk(id, {
+      raw: true,
+      nest: true,
+      include: Category
+    })
+      .then(restaurant => {
+        if (!restaurant) throw new Error("Restaurant doesn't exist!")
+
+        res.render('restaurant', { restaurant })
       })
       .catch(err => next(err))
   }
