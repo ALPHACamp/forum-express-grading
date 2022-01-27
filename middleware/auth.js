@@ -1,10 +1,10 @@
 // 引入方法
-const { ensureAuthenticated, getUser } = require('../helpers/auth-helpers')
+const helpers = require('../helpers/auth-helpers')
 
 // 確認是否有登入
 const authenticated = (req, res, next) => {
   // 判斷是否有登入
-  if (ensureAuthenticated(req)) {
+  if (helpers.ensureAuthenticated(req)) {
     // 有登入，進入下一個路由
     return next()
   }
@@ -16,9 +16,9 @@ const authenticated = (req, res, next) => {
 // 確認是否有admin權限
 const authenticatedAdmin = (req, res, next) => {
   // 判斷是否有登入
-  if (ensureAuthenticated(req)) {
+  if (helpers.ensureAuthenticated(req)) {
     // 有登入再判斷登入者是否具有admin權限，若有進入下一路由
-    if (getUser(req).isAdmin) return next()
+    if (helpers.getUser(req).isAdmin) return next()
 
     // 若沒有admin權限，回到前台首面
     res.redirect('/')
