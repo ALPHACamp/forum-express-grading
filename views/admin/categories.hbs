@@ -43,7 +43,7 @@
             onmouseover="this.style.textDecoration='underline'" onmouseleave="this.style.textDecoration='none'">Edit</a>
         <form action="/admin/categories/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
           <button type="submit" class="btn btn-link link-danger" style="text-decoration: none;"
-            onmouseover="this.style.textDecoration='underline'" onmouseleave="this.style.textDecoration='none'">
+            onmouseover="this.style.textDecoration='underline'" onmouseleave="this.style.textDecoration='none'" onclick="return confirm(`確定要刪除 {{this.name}} 嗎？`)">
             Delete
           </button>
         </form>

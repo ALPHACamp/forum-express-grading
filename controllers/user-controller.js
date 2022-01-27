@@ -4,7 +4,7 @@ const { User } = db
 
 const userController = {
   signUpPage: (req, res) => {
-    res.render('signup')
+    return res.render('signup')
   },
 
   signUp: (req, res, next) => {
@@ -20,7 +20,7 @@ const userController = {
       .then(hash => User.create({ name, email, password: hash }))
       .then(() => {
         req.flash('success_messages', '成功註冊帳號!')
-        res.redirect('/signin')
+        return res.redirect('/signin')
       })
       .catch(err => next(err))
   },

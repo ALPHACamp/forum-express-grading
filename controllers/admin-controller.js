@@ -39,7 +39,7 @@ const adminController = {
       })
       .then(() => {
         req.flash('success_messages', 'Restaurant was successfully created')
-        res.redirect('/admin/restaurants')
+        return res.redirect('/admin/restaurants')
       })
       .catch(err => next(err))
   },
@@ -99,7 +99,7 @@ const adminController = {
       })
       .then(() => {
         req.flash('success_messages', 'Restaurant was successfully updated')
-        res.redirect('/admin/restaurants')
+        return res.redirect('/admin/restaurants')
       })
       .catch(err => next(err))
   },
@@ -115,7 +115,7 @@ const adminController = {
       })
       .then(() => {
         req.flash('success_messages', 'Restaurant was successfully deleted')
-        res.redirect('/admin/restaurants')
+        return res.redirect('/admin/restaurants')
       })
       .catch(err => next(err))
   },

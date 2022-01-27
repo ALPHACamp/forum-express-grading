@@ -23,7 +23,7 @@ const categoryController = {
     return Category.create({ name })
       .then(() => {
         req.flash('success_messages', 'Category was successfully created')
-        res.redirect('/admin/categories')
+        return res.redirect('/admin/categories')
       })
       .catch(err => next(err))
   },
@@ -41,7 +41,7 @@ const categoryController = {
       })
       .then(() => {
         req.flash('success_messages', 'Category was successfully updated')
-        res.redirect('/admin/categories')
+        return res.redirect('/admin/categories')
       })
       .catch(err => next(err))
   },
@@ -57,7 +57,7 @@ const categoryController = {
       })
       .then(() => {
         req.flash('success_messages', 'Category was successfully deleted')
-        res.redirect('/admin/categories')
+        return res.redirect('/admin/categories')
       })
       .catch(err => next(err))
   }
