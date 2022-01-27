@@ -1,4 +1,4 @@
-/* eslint-disable no-undef */
+const Swal = require('sweetalert2')
 const userToggles = document.querySelectorAll('.user-auth-change')
 
 userToggles.forEach(userToggle => {

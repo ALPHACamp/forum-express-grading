@@ -1,3 +1,4 @@
+const Swal = require('sweetalert2')
 const deleteBtns = document.querySelectorAll('.link-danger')
 
 deleteBtns.forEach(deleteBtn => {
