@@ -1,4 +1,5 @@
 const { Restaurant } = require('../models')
+const { localFileHandler } = require('../helpers/file-helpers')
 const adminController = {
   getRestaurants: (req, res, next) => {
     Restaurant.findAll({
@@ -15,7 +16,11 @@ const adminController = {
   postRestaurant: (req, res, next) => {
     const { name, tel, address, openingHours, description } = req.body
     if (!name) throw new Error('Restaurant name is required!')
-    Restaurant.create({ name, tel, address, openingHours, description })
+    const { file } = req
+    localFileHandler(file)
+      .then(filePath => {
+        Restaurant.create({ name, tel, address, openingHours, description, image: filePath || null })
+      })
       .then(() => {
         req.flash('success_messages', 'Restaurant was successfully created!')
         res.redirect('/admin/restaurants')
@@ -41,16 +46,19 @@ const adminController = {
   putRestaurant: (req, res, next) => {
     const { name, tel, address, openingHours, description } = req.body
     if (!name) throw new Error('Restaurant name is required!')
-    Restaurant.findByPk(req.params.id)
-      .then(restaurant => {
+    const { file } = req
+    Promise.all([
+      Restaurant.findByPk(req.params.id), localFileHandler(file)
+    ])
+      .then(([restaurant, filePath]) => {
         if (!restaurant) throw new Error('Restaurant did not exist!')
-        return restaurant.update({ name, tel, address, openingHours, description })
-          .then(() => {
-            req.flash('success_messages', 'Restaurant was successfully updated!')
-            res.redirect('/admin/restaurants')
-          })
-          .catch(err => next(err))
+        return restaurant.update({ name, tel, address, openingHours, description, image: filePath || restaurant.image })
       })
+      .then(() => {
+        req.flash('success_messages', 'Restaurant was successfully updated!')
+        res.redirect('/admin/restaurants')
+      })
+      .catch(err => next(err))
   },
   deleteRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id)
