@@ -1,8 +1,8 @@
-const transAuthBtns = document.querySelectorAll(".trans-auth")
+const transAuthBtns = document.querySelectorAll('.trans-auth')
 
 transAuthBtns.forEach(transAuthBtn => {
   transAuthBtn.addEventListener('click', async event => {
-    console.log("got click")
+    console.log('got click')
     event.stopPropagation()
     event.preventDefault()
     let result = null
@@ -10,7 +10,7 @@ transAuthBtns.forEach(transAuthBtn => {
     if (transAuthBtn.dataset.self) {
       result = await Swal.fire({
         title: '你要確定餒',
-        text: "確定要調降自己的權限？",
+        text: '確定要調降自己的權限？',
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
