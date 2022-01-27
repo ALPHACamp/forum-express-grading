@@ -20,7 +20,8 @@ module.exports = (sequelize, DataTypes) => {
     openingHours: DataTypes.STRING,
     description: DataTypes.TEXT,
     address: DataTypes.STRING,
-    image: DataTypes.STRING
+    image: DataTypes.STRING,
+    viewCounts: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'Restaurant',
