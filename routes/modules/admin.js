@@ -1,9 +1,11 @@
 const express = require('express')
 const router = express.Router()
 
-const restController = require('../../controllers/admin-controller')
+const { authenticatedAdmin } = require('../../middleware/auth')
 
-router.get('/restaurants', restController.getRestaurants)
-router.get('/', (req, res) => res.redirect('/restaurants'))
+const adminController = require('../../controllers/admin-controller')
+
+router.get('/restaurants', authenticatedAdmin, adminController.getRestaurants)
+router.get('/', (req, res) => res.redirect('/admin/restaurants'))
 
 module.exports = router
