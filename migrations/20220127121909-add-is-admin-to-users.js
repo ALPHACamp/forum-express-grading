@@ -13,7 +13,6 @@ module.exports = {
       defaultValue: false
     })
   },
-
   down: async (queryInterface, Sequelize) => {
     /**
      * Add reverting commands here.
