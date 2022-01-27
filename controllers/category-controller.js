@@ -53,7 +53,6 @@ const categoryController = {
 
       // Delete category along with all restaurant
       if (deleteOption === 'deleteAll') {
-        console.log('刪光光')
         await Restaurant.destroy({ where: { categoryId } })
         await Category.destroy({ where: { id: categoryId } })
       }
@@ -63,6 +62,7 @@ const categoryController = {
         // Find '未分類' category id or create one if not found
         // eslint-disable-next-line no-unused-vars
         const [nullCategory, _created] = await Category.findOrCreate({ where: { name: '未分類' } })
+
         // Replace restaurants' category id with replace id
         await Restaurant.update(
           { categoryId: nullCategory.id },

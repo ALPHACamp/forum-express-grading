@@ -42,9 +42,8 @@ passport.use(new LocalStrategy(
     })
 
     passport.deserializeUser((id, done) => {
-      User.findByPk(id)
+      User.findByPk(id, { raw: true })
         .then(user => {
-          user = user.toJSON()
           return done(null, user)
         })
     })
