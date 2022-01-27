@@ -21,6 +21,15 @@ const commentController = {
         res.redirect(`/restaurants/${restaurantId}`)
       })
       .catch(err => next(err))
+  },
+  deleteComment: (req, res) => {
+    return Comment.findByPk(req.params.id)
+      .then(comment => {
+        comment.destroy()
+          .then(comment => {
+            res.redirect(`/restaurants/${comment.restaurantId}`)
+          })
+      })
   }
 }
 module.exports = commentController
