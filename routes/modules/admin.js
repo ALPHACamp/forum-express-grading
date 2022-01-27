@@ -14,6 +14,9 @@ router.get('/restaurants/:id', adminController.getRestaurant)
 router.get('/restaurants/:id/edit', adminController.editRestaurant)
 router.put('/restaurants/:id', adminController.putRestaurant)
 
+// 刪除單一餐聽
+router.delete('/restaurants/:id', adminController.deleteRestaurant)
+
 // 顯示所有餐廳
 router.get('/restaurants', adminController.getRestaurants)
 
