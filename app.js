@@ -1,3 +1,4 @@
+const path = require('path')
 const express = require('express')
 const handlebars = require('express-handlebars')
 const flash = require('connect-flash')
@@ -17,13 +18,14 @@ const SESSION_SECRET = 'secret'
 app.engine('hbs', handlebars({ extname: '.hbs', helpers: handlebarsHelpers }))
 app.set('view engine', 'hbs')
 
-// body-parser & session & passport & flash-msg & methodOverride
+// body-parser & session & passport & flash-msg & methodOverride & upload
 app.use(express.urlencoded({ extended: true }))
 app.use(session({ secret: SESSION_SECRET, resave: false, saveUninitialized: false }))
 app.use(passport.initialize())
 app.use(passport.session())
 app.use(flash())
 app.use(methodOverride('_method'))
+app.use('/upload', express.static(path.join(__dirname, 'upload')))
 
 // 進入主要路由前的 middleware
 app.use((req, res, next) => {
