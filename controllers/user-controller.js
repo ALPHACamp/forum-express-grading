@@ -30,6 +30,21 @@ const userController = {
       })
       // 接住前面拋出的錯誤，呼叫專門做錯誤處理的 middleware
       .catch(err => next(err))
+  },
+  signInPage: (req, res) => {
+    // 取得錯誤處理當下所發出的 form body
+    const body = req.flash('body')
+    const bodyParse = body.length ? JSON.parse(body) : ''
+    res.render('signin', { ...bodyParse })
+  },
+  signIn: (req, res) => {
+    req.flash('success_messages', '成功登入！')
+    res.redirect('/restaurants')
+  },
+  logout: (req, res) => {
+    req.flash('success_messages', '登出成功！')
+    req.logout()
+    res.redirect('/signin')
   }
 }
 
