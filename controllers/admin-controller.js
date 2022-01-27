@@ -7,6 +7,22 @@ const adminController = {
     })
       .then(restaurants => res.render('admin/restaurants', { restaurants }))
       .catch(err => next(err))
+  },
+  createRestaurant: (req, res) => {
+    res.render('admin/create-restaurant')
+  },
+  postRestaurant: (req, res, next) => {
+    const { name, tel, address, openingHours, description } = req.body
+
+    // name 是必填，若發先是空值就會終止程式碼，並在畫面顯示錯誤提示
+    if (!name) throw new Error('Restaurant name is required!')
+
+    Restaurant.create({ name, tel, address, openingHours, description })
+      .then(() => {
+        req.flash('success_messages', 'restaurant was successfully created')
+        res.redirect('/admin/restaurants')
+      })
+      .catch(err => next(err))
   }
 }
 module.exports = adminController

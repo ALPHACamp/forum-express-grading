@@ -6,7 +6,7 @@ const passport = require('../config/passport')
 
 // 引用錯誤處理 middleware
 const { generalErrorHandler } = require('../middleware/error-handler')
-const { authenticated } = require('../middleware/auth')
+const { authenticated, authenticatedAdmin } = require('../middleware/auth')
 
 const restController = require('../controllers/restaurant-controller')
 const userController = require('../controllers/user-controller')
@@ -14,7 +14,7 @@ const userController = require('../controllers/user-controller')
 const admin = require('./modules/admin')
 
 // 管理員
-router.use('/admin', admin)
+router.use('/admin', authenticatedAdmin, admin)
 
 // 註冊
 router.get('/signup', userController.signUpPage)
