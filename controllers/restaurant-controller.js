@@ -63,7 +63,7 @@ const restaurantController = {
       include: Category
     })
       .then(restaurant => {
-        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        if (!restaurant) throw new Error("Restaurant doesn't exist!")
 
         return res.render('dashboard', { restaurant })
       })
