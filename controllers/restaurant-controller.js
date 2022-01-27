@@ -47,7 +47,8 @@ const restaurantController = {
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant doesn't exist")
 
-        res.render('restaurant', { restaurant })
+        restaurant.increment('viewCounts')
+        res.render('restaurant', { restaurant: restaurant.toJSON() })
       })
       .catch(err => next(err))
   },
@@ -55,9 +56,6 @@ const restaurantController = {
     try {
       const restaurant = await Restaurant.findByPk(req.params.id, { include: Category })
       if (!restaurant) throw new Error("Restaurant doesn't exist")
-
-      await restaurant.increment('viewCounts')
-      await restaurant.reload()
 
       res.render('dashboard', { restaurant: restaurant.toJSON() })
     } catch (err) {
