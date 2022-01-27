@@ -7,6 +7,9 @@ const adminController = require('../../controllers/admin-controller')
 router.get('/restaurants/create', adminController.createRestaurant)
 router.post('/restaurants', adminController.postRestaurant)
 
+// 顯示單一餐廳
+router.get('/restaurants/:id', adminController.getRestaurant)
+
 // 顯示所有餐廳
 router.get('/restaurants', adminController.getRestaurants)
 
