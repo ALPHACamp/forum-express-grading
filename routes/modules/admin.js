@@ -10,6 +10,10 @@ router.post('/restaurants', adminController.postRestaurant)
 // 顯示單一餐廳
 router.get('/restaurants/:id', adminController.getRestaurant)
 
+// 編輯單一餐廳
+router.get('/restaurants/:id/edit', adminController.editRestaurant)
+router.put('/restaurants/:id', adminController.putRestaurant)
+
 // 顯示所有餐廳
 router.get('/restaurants', adminController.getRestaurants)
 
