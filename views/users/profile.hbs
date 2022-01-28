@@ -6,3 +6,27 @@
     <a href="/users/{{user.id}}/edit" class="btn btn-primary">edit</a>
   </div>
 </div>
+
+<br>
+
+<div class="row">
+  <div class="card w-100 mx-0 px-0">
+
+    <div class="card-header">
+      {{count}} 間已評論的餐廳
+    </div>
+
+    <ul class="d-flex flex-wrap align-items-center">
+      {{#each user.Comments}}
+      <li class="m-3" style="max-width: 150px; list-style-type: none;">    
+        <p>{{this.Restaurant.name}}</p>
+
+        <a href="/restaurants/{{this.Restaurant.id}}">
+          <img class="w-100" src="{{this.Restaurant.image}}" alt="restaurant image">
+        </a>
+      </li>
+      {{/each}}
+    </ul>
+
+  </div>
+</div>
