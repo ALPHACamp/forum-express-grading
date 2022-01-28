@@ -1,5 +1,10 @@
 const fs = require('fs')
+const imgur = require('imgur')
 
+const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
+imgur.setClientId(IMGUR_CLIENT_ID)
+
+// 本地 檔案上傳
 const localFileHandler = file => {
   // file 是 multer 處理完的檔案
   return new Promise((resolve, reject) => {
@@ -12,6 +17,22 @@ const localFileHandler = file => {
       .catch(err => reject(err))
   })
 }
+
+// Imgur 檔案上傳
+const imgurFileHandler = file => {
+  return new Promise((resolve, reject) => {
+    if (!file) return resolve(null)
+    return imgur
+      .uploadFile(file.path)
+      .then(img => {
+        // 檢查 img 是否存在
+        resolve(img?.link || null)
+      })
+      .catch(err => reject(err))
+  })
+}
+
 module.exports = {
-  localFileHandler
+  localFileHandler,
+  imgurFileHandler
 }
