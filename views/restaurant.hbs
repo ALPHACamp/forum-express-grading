@@ -21,6 +21,18 @@
   <hr>
 </div>
 
+<h3>所有評論：</h3>
+{{#each restaurant.Comments}}
+<blockquote class="blockquote mb-0">
+  <h4><a href="/users/{{this.User.id}}">{{this.User.name}}</a></h4>
+  <p>{{this.text}}</p>
+  <footer class="blockquote-footer">{{moment this.createdAt}}</footer>
+</blockquote>
+<hr />
+{{/each}}
+
+<br />
+
 {{!-- Comment --}}
 <form action="/comments" method="POST">
   <div class="form-row mb-3">
@@ -31,3 +43,4 @@
   <button type="submit" class="btn btn-primary">Submit</button>
   <a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
 </form>
+
