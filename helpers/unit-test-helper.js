@@ -1,3 +1,4 @@
+// 測試設計者的工具包
 const SequelizeMock = require('sequelize-mock')
 const proxyquire = require('proxyquire')
 const sinon = require('sinon')
