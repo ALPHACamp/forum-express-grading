@@ -7,5 +7,8 @@ module.exports = {
   },
   moment: function (a) {
     return moment(a).fromNow()
+  },
+  sum: function (a) {
+    return a.length
   }
 }
