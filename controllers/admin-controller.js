@@ -1,5 +1,5 @@
 // 引入model
-const { Restaurant } = require('../models')
+const { Restaurant, User } = require('../models')
 // 引入file-helpers
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
@@ -139,6 +139,54 @@ const adminController = {
       // 重新導向admin/restaurants
       .then(() => res.redirect('/admin/restaurants'))
       .catch(err => next(err))
+  },
+
+  // 渲染admin/users頁面
+  getUsers: (req, res, next) => {
+    // 查詢user table所有資料
+    return User.findAll({
+      // 將資料轉換成js原生物件
+      raw: true
+    })
+      .then(users => {
+        // 遍歷所有user，判斷isAdmin
+        // 若是admin，新增role value為admin，非admin role value為user
+        users.forEach(user => {
+          user.role = user.isAdmin ? 'admin' : 'user'
+        })
+        // 渲染admin/users頁面， 傳入users參數
+        res.render('admin/users', { users })
+      })
+      .catch(err => next(err))
+  },
+
+  patchUser: (req, res, next) => {
+    // 取得動態路由被修改使用者的id資料
+    const id = req.params.id
+    // 查詢被修改使用者資料
+    return User.findByPk(id)
+      .then(modifyUser => {
+        // 判斷是否有資料，若無丟出Error物件
+        if (!modifyUser) throw new Error("User didn't exists!")
+        // 判斷是否為最高權限信箱
+        if (modifyUser.email === 'root@example.com') {
+          // 回傳錯誤資訊
+          req.flash('error_messages', '禁止變更 root 權限')
+          // 回到上一頁
+          return res.redirect('back')
+        }
+
+        // 修改權限並回存資料庫
+        return modifyUser.update({
+          isAdmin: !modifyUser.isAdmin
+        })
+          .then(() => {
+            // 回傳成功資訊
+            req.flash('success_messages', '使用者權限變更成功')
+            // 重新導向/admin/users
+            return res.redirect('/admin/users')
+          })
+      })
   }
 }
 
