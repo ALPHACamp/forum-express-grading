@@ -1,0 +1,26 @@
+<div class="user-profile d-flex justify-content-center">
+  <div class="image-container">
+    {{#if user.image}}
+      <img src="{{user.image}}" width="250" alt="user-image">
+    {{else}}
+      <img src="/image/alphacamp_logo.png" width="250" alt="user-image">
+    {{/if}}  
+  </div>
+  <div class="profile p-5">
+    <h3>{{user.name}}</h3>
+    <h3>{{user.email}}</h3>
+    <a class="btn btn-primary" href="/users/{{user.id}}/edit">Edit</a>
+  </div>
+</div>
+{{#if user.Comments}}
+  <div class="commented-restaurant-container mt-5">
+    <h3 class="text-center">Commented Restaurants</h3>
+    <div class="commented-restaurant d-flex flex-wrap justify-content-center">
+      {{#each user.Comments}}
+      <a href="/restaurants/{{this.Restaurant.id}}">
+        <img src="{{this.Restaurant.image}}" class="m-1" alt="restaurant-image" width="100">
+      </a>
+      {{/each}}
+    </div>
+  </div>
+{{/if}}

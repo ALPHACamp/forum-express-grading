@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs')
 const db = require('../models')
-const { User } = db
+const { User, Restaurant, Comment } = db
+const { imgurFileHandler } = require('../helpers/file-helpers')
 const userController = {
   signUpPage: (req, res) => {
     res.render('signup')
@@ -33,6 +34,45 @@ const userController = {
     req.flash('success_messages', '登出成功!')
     req.logout()
     res.redirect('/signin')
+  },
+  getUser: (req, res, next) => {
+    return User.findByPk(req.params.id, {
+      include: [{
+        model: Comment, include: [Restaurant]
+      }]
+    })
+      .then(user => {
+        return res.render('users/profile', { user: user.toJSON() })
+      })
+      .catch(err => next(err))
+  },
+  editUser: (req, res, next) => {
+    return User.findByPk(req.params.id)
+      .then(user => {
+        return res.render('users/edit', { user: user.toJSON() })
+      })
+  },
+  putUser: (req, res, next) => {
+    const { name, email } = req.body
+    const userId = req.params.id
+    const { file } = req
+    if (!name) throw new Error('Name is required!')
+    return Promise.all([
+      User.findByPk(userId),
+      imgurFileHandler(file)
+    ])
+      .then(([user, filePath]) => {
+        return user.update({
+          name,
+          email,
+          image: filePath || user.image
+        })
+      })
+      .then(() => {
+        req.flash('success_messages', '使用者資料編輯成功')
+        return res.redirect(`/users/${userId}`)
+      })
+      .catch(err => next(err))
   }
 }
 module.exports = userController
