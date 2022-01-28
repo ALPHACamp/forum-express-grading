@@ -1,0 +1,8 @@
+<div class="row row-cols-1 row-cols-md-2 bg-white border">
+  <img class="p-2" src="{{user.image}}" alt="avatar" style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+  <div class="p-2">
+    <h3>{{user.name}}</h3>
+    <p>{{user.email}}</p>
+    <a href="/users/{{user.id}}/edit" class="btn btn-primary">edit</a>
+  </div>
+</div>
