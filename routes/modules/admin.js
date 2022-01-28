@@ -25,6 +25,9 @@ router.get('/restaurants', adminController.getRestaurants)
 // 顯示所有使用者
 router.get('/users', adminController.getUsers)
 
+// 更新使用者權限
+router.patch('/users/:id', adminController.patchUser)
+
 // 首頁路由
 router.get('/', (req, res) => res.redirect('/admin/restaurants'))
 

@@ -11,13 +11,23 @@
   </thead>
   <tbody>
     {{#each users}}
-      <tr>
-        <th scope="row">{{this.id}}</th>
-        <td>{{this.name}}</td>
-        <td>{{this.email}}</td>
-        <td>{{#if this.isAdmin}}admin{{else}}user{{/if}}</td>
-        <td>{{#if this.isAdmin}}set as user{{else}}set as admin{{/if}}</td>
-      </tr>
+      <form action="/admin/users/{{this.id}}?_method=patch" method="post">
+        <tr>
+          <th scope="row">{{this.id}}</th>
+          <td>{{this.name}}</td>
+          <td>{{this.email}}</td>
+          <td>{{#if this.isAdmin}}admin{{else}}user{{/if}}</td>
+          <td>
+            <button class="btn btn-link text-decoration-none">
+              {{#if this.isAdmin}}
+                set as user
+              {{else}}
+                set as admin
+              {{/if}}
+            </button>
+          </td>
+        </tr>
+      </form>
     {{/each}}
   </tbody>
 </table>
