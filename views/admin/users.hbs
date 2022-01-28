@@ -1,0 +1,23 @@
+{{> admin-user-rest-nav}}
+<table class="table align-middle table-hover">
+  <thead class="table-dark">
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Name</th>
+      <th scope="col">Email</th>
+      <th scope="col">Role</th>
+      <th scope="col">#</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each users}}
+      <tr>
+        <th scope="row">{{this.id}}</th>
+        <td>{{this.name}}</td>
+        <td>{{this.email}}</td>
+        <td>{{#if this.isAdmin}}admin{{else}}user{{/if}}</td>
+        <td>{{#if this.isAdmin}}set as user{{else}}set as admin{{/if}}</td>
+      </tr>
+    {{/each}}
+  </tbody>
+</table>

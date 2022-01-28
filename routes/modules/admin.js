@@ -22,6 +22,9 @@ router.delete('/restaurants/:id', adminController.deleteRestaurant)
 // 顯示所有餐廳
 router.get('/restaurants', adminController.getRestaurants)
 
+// 顯示所有使用者
+router.get('/users', adminController.getUsers)
+
 // 首頁路由
 router.get('/', (req, res) => res.redirect('/admin/restaurants'))
 
