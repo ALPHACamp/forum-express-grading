@@ -1,4 +1,3 @@
-// R01 作業對應的測試檔
 const request = require('supertest')
 const chai = require('chai')
 const sinon = require('sinon')
