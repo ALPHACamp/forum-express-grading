@@ -1,0 +1,19 @@
+<div class="card mb-3" style="width: 1200px; height: 25%;">
+  <div class="row g-0">
+    <div class="col-md-4">
+      <img class="img-responsive center-block mb-5" src="{{user.image}}"
+        style="width: 250px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+    </div>
+    <div class="col-md-8">
+      <div class="card-body">
+        <div class="col-md-12">
+          <h3>{{user.name}}</h3>
+          <p>{{user.email}}</p>
+        </div>
+        <a href='/users/{{user.id}}/edit'>
+          <button type="button" class="btn btn-primary">Edit Profile</button>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
