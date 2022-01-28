@@ -1,4 +1,4 @@
-const { Restaurant } = require('../models')
+const { Restaurant, User } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 const adminController = {
   getRestaurants: (req, res, next) => {
@@ -86,6 +86,34 @@ const adminController = {
       })
       .then(() => res.redirect('/admin/restaurants'))
       .catch(err => next(err))
+  },
+  getUsers: (req, res, next) => {
+    return User.findAll({ raw: true })
+      .then(users => {
+        res.render('admin/users', { users })
+      })
+  },
+  patchUsers: async (req, res, next) => {
+    const user = await User.findByPk(req.params.id)
+    console.log(user)
+    const { name, email, password, isAdmin } = user
+    console.log(isAdmin)
+    if (isAdmin) {
+      await user.update({
+        name,
+        email,
+        password,
+        isAdmin: null
+      })
+    } else {
+      await user.update({
+        name,
+        email,
+        password,
+        isAdmin: true
+      })
+    }
+    res.redirect('/admin/users')
   }
 }
 
