@@ -23,10 +23,19 @@
 
 <h3>所有評論：</h3>
 {{#each restaurant.Comments}}
-<blockquote class="blockquote mb-0">
-  <h4><a href="/users/{{this.User.id}}">{{this.User.name}}</a></h4>
-  <p>{{this.text}}</p>
-  <footer class="blockquote-footer">{{moment this.createdAt}}</footer>
+<blockquote class="blockquote mb-0 d-flex justify-content-between align-items-center">
+  <div>
+    <h4><a href="/users/{{this.User.id}}">{{this.User.name}}</a></h4>
+    <p>{{this.text}}</p>
+    <footer class="blockquote-footer">{{moment this.createdAt}}</footer>
+  </div>
+
+  {{#if ../user.isAdmin}}
+  <form action="/comments/{{this.id}}?_method=DELETE" method="POST">
+    <input type="hidden" name="restaurantId" value="{{../restaurant.id}}">
+    <button type="submit" class="btn btn-danger">Delete</button>
+  </form>
+  {{/if}}
 </blockquote>
 <hr />
 {{/each}}
