@@ -7,6 +7,15 @@ const adminController = {
       })
       .catch(error => next(error))
   },
+  getRestaurant: (req, res, next) => {
+    const id = req.params.id
+    Restaurant.findByPk(id, { raw: true })
+      .then(restaurant => {
+        if (!restaurant) throw new Error('Restaurant didn\'t exist!')
+        res.render('admin/restaurant', { restaurant })
+      })
+      .catch(error => next(error))
+  },
   createRestaurant: (req, res, next) => {
     res.render('admin/create-restaurant')
   },
