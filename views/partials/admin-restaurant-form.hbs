@@ -7,6 +7,14 @@
     <input class="form-control" type="tel" name="tel" id="tel" placeholder="Enter tel" value="{{restaurant.tel}}">
 </div>
 <div class="form-row mb-3">
+  <label class="form-label" for="categoryId">Category</label>
+  <select class="form-control" id="categoryId" name="categoryId">
+    {{#each categories}}
+      <option value="{{this.id}}">{{this.name}}</option>
+    {{/each}}
+  </select>
+</div>
+<div class="form-row mb-3">
     <label class="form-label" for="address">Address</label>
     <input class="form-control" type="text" name="address" id="address" placeholder="Enter address"
         value="{{restaurant.address}}">
