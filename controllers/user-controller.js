@@ -18,10 +18,22 @@ const userController = {
         password: hash
       }))
       .then(() => {
-        res.flash('success_messages', 'Registration Successful.')
+        req.flash('success_messages', 'Registration Successful.')
         res.redirect('/signin')
       })
       .catch(err => next(err))
+  },
+  signInPage: (req, res) => {
+    res.render('signin')
+  },
+  signIn: (req, res) => {
+    req.flash('success_messages', 'login successful！')
+    res.redirect('/restaurants')
+  },
+  logout: (req, res) => {
+    req.flash('success_messages', 'logout successful！')
+    req.logout()
+    res.redirect('/signin')
   }
 }
 
