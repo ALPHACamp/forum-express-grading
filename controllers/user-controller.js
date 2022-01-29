@@ -42,7 +42,21 @@ const userController = {
       }]
     })
       .then(user => {
-        return res.render('users/profile', { user: user.toJSON() })
+        const commentedRestaurants = user.Comments.map(e => e.dataValues.restaurantId)
+        const uniqRestaurantsSet = new Set(commentedRestaurants)
+        Restaurant.findAndCountAll({
+          raw: true,
+          nest: true,
+          where: { id: [...uniqRestaurantsSet] }
+        })
+          .then(restaurants => {
+            console.log(restaurants)
+            return res.render('users/profile', {
+              user: user.toJSON(),
+              restaurants: restaurants.rows,
+              restaurantsCount: restaurants.count
+            })
+          })
       })
       .catch(err => next(err))
   },
@@ -62,6 +76,7 @@ const userController = {
       imgurFileHandler(file)
     ])
       .then(([user, filePath]) => {
+        if (user.id !== req.user.id) throw new Error('您不是使用者本人，無法進行操作!')
         return user.update({
           name,
           email,
