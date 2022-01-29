@@ -1,14 +1,18 @@
-const fs = require('fs') // 引入 fs 模組
-const localFileHandler = file => { // file 是 multer 處理完的檔案
+// 載入fs模組
+const fs = require('fs')
+// 定義本地端的檔案處理器，參數file會是由multer所提供的req.file
+const localFileHandler = file => {
   return new Promise((resolve, reject) => {
+    // 該檔案不存在
     if (!file) return resolve(null)
-    const fileName = `upload/${file.originalname}`
+    // 該檔案存在
+    const targetFilePath = `upload/${file.originalname}`
+    // file.path: The full path to the uploaded file
     return fs.promises.readFile(file.path)
-      .then(data => fs.promises.writeFile(fileName, data))
-      .then(() => resolve(`/${fileName}`))
-      .catch(err => reject(err))
+      .then(data => fs.promises.writeFile(targetFilePath, data))
+      .then(() => resolve(`/${targetFilePath}`))
+      .catch(error => reject(error))
   })
 }
-module.exports = {
-  localFileHandler
-}
+
+exports = module.exports = { localFileHandler }
