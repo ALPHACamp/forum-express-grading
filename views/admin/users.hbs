@@ -26,7 +26,7 @@
       <td>{{#if this.isAdmin}} admin {{else}} user {{/if}}</td>
       <td>
         <form action="/admin/users/{{this.id}}?_method=PATCH" method="POST" style="display: inline;">
-          <button type="submit" class="btn btn-link" style="text-decoration:none;">{{#if this.isAdmin}} set as user {{else}}set as
+          <button type="submit" class="btn btn-link" style="text-decoration:none;" {{#if this.isLogger}}onclick="return confirm('你確定要將自己降格成一般使用者嗎')"{{/if}}>{{#if this.isAdmin}} set as user {{else}}set as
           admin{{/if}}</button>
         </form>
       </td>

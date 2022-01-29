@@ -85,12 +85,17 @@ const adminController = {
       .then(() => res.redirect('/admin/restaurants'))
       .catch(err => next(err))
   },
-  getUsers: (req, res, next) => {
-    return User.findAll({
-      raw: true
-    })
-      .then(users => res.render('admin/users', { users }))
-      .catch(err => next(err))
+  getUsers: async (req, res, next) => {
+    try {
+      const users = await User.findAll({ raw: true })
+      // 判斷是不是登入者，如果是登入者在之後修改權限時跳出提醒
+      users.forEach(user => {
+        if (user.id === res.locals.user.id) {
+          user.isLogger = true
+        }
+      })
+      res.render('admin/users', { users })
+    } catch (err) { next(err) }
   },
   patchUser: async (req, res, next) => {
     try {
