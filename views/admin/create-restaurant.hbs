@@ -1,0 +1,7 @@
+{{!-- enctype 屬性可以設定 form 送出後 POST 請求的 Content-Type --}}
+<form action="/admin/restaurants" method="POST" enctype="multipart/form-data">
+  <div class="mb-4 text-center">
+    <h1 class="h3 font-weight-normal mb-3">Create Restaurant</h1>
+  </div>
+  {{> admin-restaurant-form}}
+</form>
