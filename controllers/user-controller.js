@@ -41,15 +41,13 @@ const userController = {
   },
 
   getUser: (req, res, next) => {
-    // since R03.test.js uses custom request,
-    // so we have req.params as fallback
-    const sessionUserId = Number(req.user?.id) || req.params.id
+    const sessionUser = req.user
     const requestUserId = req.params.id
     const DEFAULT_COMMENT_COUNT = 0
 
     return User.findByPk(requestUserId, {
       include: { model: Comment, include: Restaurant },
-      group: 'Comments->Restaurant.name'
+      group: 'Comments.restaurant_id'
     })
       .then(user => {
         if (!user) throw new Error("User doesn't exist")
@@ -57,7 +55,7 @@ const userController = {
         const count = user.Comments?.length || DEFAULT_COMMENT_COUNT
 
         return res.render('users/profile', {
-          user, count, sessionUserId
+          user, count, sessionUser
         })
       })
       .catch(err => next(err))

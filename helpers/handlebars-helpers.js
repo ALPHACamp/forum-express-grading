@@ -8,5 +8,12 @@ module.exports = {
 
   ifCond: function (a, b, options) {
     return a === b ? options.fn(this) : options.inverse(this)
-  }
+  },
+
+  orCond: function (a, b, options) {
+    if (a === undefined && b) return options.fn(this)
+    if (a) return options.fn(this)
+  },
+
+  thisOrThat: (a, b) => a || b
 }
