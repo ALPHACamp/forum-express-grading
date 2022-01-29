@@ -4,10 +4,6 @@ module.exports = {
     return dayjs().year()
   },
   if_isMatch: (a, b, options) => {
-    if (a === b) {
-      return options.fn(this)
-    } else {
-      return options.inverse(this)
-    }
+    return a === b ? options.fn(this) : options.inverse(this)
   }
 }
