@@ -30,3 +30,27 @@
   </div>
   {{/each}}
 </div>
+
+<nav class="mt-3" aria-label="page navigation">
+  <ul class="pagination">
+    <li class="page-item {{#if_isMatch pagination.currentPage 1}}disabled{{/if_isMatch}}">
+      <a class="page-link" href="/restaurants?page={{pagination.prev}}&categoryId={{categoryId}}" aria-label="Previous">
+        <span aria-hidden="true">&laquo;</span>
+      </a>
+    </li>
+    {{#each pagination.pages}}
+    {{#if_isMatch this ../pagination.currentPage}}
+    <li class="page-item active"><a class="page-link" href="#">{{this}}</a></li>
+    {{else}}
+    <li class="page-item">
+      <a class="page-link" href="/restaurants?page={{this}}&categoryId={{../categoryId}}">{{this}}</a>
+    </li>
+    {{/if_isMatch}}
+    {{/each}}
+    <li class="page-item {{#if_isMatch pagination.currentPage pagination.totalPage}}disabled{{/if_isMatch}}">
+      <a class="page-link" href="/restaurants?page={{pagination.next}}&categoryId={{categoryId}}" aria-label="Next">
+        <span aria-hidden="true">&raquo;</span>
+      </a>
+    </li>
+  </ul>
+</nav>
