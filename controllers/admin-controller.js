@@ -4,8 +4,8 @@ const adminController = {
     Restaurant.findAll({
       raw: true
     })
-    .then(restaurants => res.render('admin/restaurants', { restaurants }))
-    .catch(err => next(err))
+      .then(restaurants => res.render('admin/restaurants', { restaurants }))
+      .catch(err => next(err))
   }
 }
 
