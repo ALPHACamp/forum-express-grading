@@ -1,14 +1,26 @@
-const { Category } = require('../models')
+const { Category, Restaurant } = require('../models')
 const categoryController = {
   getCategories: (req, res, next) => {
     return Promise.all([
       Category.findAll({ raw: true }),
-      req.params.id ? Category.findByPk(req.params.id, { raw: true }) : null
+      req.params.id ? Category.findByPk(req.params.id, { raw: true }) : null,
+      Restaurant.getCountByCategory()
     ])
-      .then(([categories, category]) => res.render('admin/categories', {
-        categories,
-        category
-      }))
+      .then(([categories, category, restaurantCount]) => {
+        restaurantCount.forEach(categoryId => {
+          for (let i = 0; i < categories.length; i++) {
+            if (categoryId.categoryId === categories[i].id) {
+              categories[i].amount = categoryId.amount
+              categories[i].noRestaurant = true
+              break
+            } else { }
+          }
+        });
+        return res.render('admin/categories', {
+          categories,
+          category
+        })
+      })
       .catch(err => next(err))
   },
   postCategory: async (req, res, next) => {
@@ -48,6 +60,18 @@ const categoryController = {
         return nowCategory.update({ name })
       })
       .then(() => res.redirect('/admin/categories'))
+      .catch(err => next(err))
+  },
+  deleteCategory: (req, res, next) => {
+    return Category.findByPk(req.params.id)
+      .then(category => {
+        if (!category) throw new Error("Category didn't exist!")
+        return category.destroy()
+      })
+      .then(category => {
+        req.flash('success_messages', `Category ${category.name}  was successfully deleted`)
+        res.redirect('/admin/categories')
+      })
       .catch(err => next(err))
   }
 }

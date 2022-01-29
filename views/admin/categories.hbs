@@ -28,6 +28,7 @@
     <tr>
       <th scope="col">#</th>
       <th scope="col">Category Name</th>
+      <th scope="col">家數</th>
       <th scope="col">#</th>
     </tr>
   </thead>
@@ -36,6 +37,7 @@
     <tr>
       <th scope="row">{{this.id}}</th>
       <td>{{this.name}}</td>
+      <td>{{this.amount}}</td>
       <td>
         <button type="button" class="btn btn-link">
           <a class="btn btn-link link-primary" href="/admin/categories/{{this.id}}">
@@ -43,7 +45,9 @@
           </a>
         </button>
         <form action="/admin/categories/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
-          <button type="submit" class="btn btn-link link-danger">Delete</button>
+          <button type="submit" class="btn btn-link link-danger delete-category" data-name={{this.name}}
+            data-id={{this.id}} {{#if this.noRestaurant}} data-need="true" {{else}} "data-need=" false"
+            {{/if}}>Delete</button>
         </form>
       </td>
     </tr>
