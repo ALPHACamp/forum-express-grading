@@ -20,7 +20,8 @@
       </td>
       <td>
         <form action="/admin/users/{{this.id}}?_method=PATCH" method="POST" style="display: inline;">
-          <button type="submit" class="btn btn-link link-primary">
+          <button type="submit" class="btn btn-link link-primary" {{#if_isMatch this.id
+            ../user.id}}onclick="return confirm(`確定變更自己為 User 嗎？`)" {{/if_isMatch}}>
             set as {{#if this.isAdmin}}user{{else}}admin{{/if}}
           </button>
         </form>
