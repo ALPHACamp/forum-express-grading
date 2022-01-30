@@ -49,16 +49,18 @@ const adminController = {
 
   putRestaurant: (req, res, next) => {
     const { name, tel, address, openingHours, description } = req.body
+    const id = req.params.id
     if (!name) throw new Error('Restaurant name is required!')
 
     const { file } = req // 把檔案取出來
-    return Promise.all([Restaurant.findByPk(req.params.id), imgurFileHandler(file)])
+    return Promise.all([Restaurant.findByPk(id), imgurFileHandler(file)])
       .then(([restaurant, filePath]) => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         // 如果 filePath 是 Truthy (使用者有上傳新照片) 就用 filePath，是 Falsy (使用者沒有上傳新照片) 就沿用原本資料庫內的值
         return restaurant.update({ name, tel, address, openingHours, description, image: filePath || restaurant.image })
       })
       .then(() => {
+        req.flash('success_animation', id)
         req.flash('success_messages', 'restaurant was successfully to update')
         res.redirect('/admin/restaurants')
       })
@@ -83,6 +85,8 @@ const adminController = {
   },
   patchUser: (req, res, next) => {
     const id = req.params.id
+    const userId = req.user?.id
+
     return User.findByPk(id)
       .then(user => {
         // superuser
@@ -91,8 +95,12 @@ const adminController = {
           return res.redirect('back')
         }
         // common user
+        req.flash('success_animation', id)
         req.flash('success_messages', '使用者權限變更成功')
         return user.update({ isAdmin: !user.isAdmin }).then(() => {
+          // self
+          if (userId === Number(id)) return res.redirect('/restaurants')
+          // others
           return res.redirect('/admin/users')
         })
       })

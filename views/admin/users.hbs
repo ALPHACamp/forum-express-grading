@@ -1,4 +1,5 @@
 {{> admin-user-rest-nav}}
+{{success_animation}}
 <table class="table align-middle table-hover">
   <thead class="table-dark">
     <tr>
@@ -12,7 +13,7 @@
   <tbody>
     {{#each users}}
       <form action="/admin/users/{{this.id}}?_method=patch" method="post">
-        <tr>
+        <tr {{#ifCond ../success_animation this.id}}class="item-animation" {{/ifCond}}>
           <th scope="row">{{this.id}}</th>
           <td>{{this.name}}</td>
           <td>{{this.email}}</td>

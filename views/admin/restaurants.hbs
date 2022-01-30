@@ -13,7 +13,7 @@
   </thead>
   <tbody>
     {{#each restaurants}}
-      <tr>
+      <tr {{#ifCond ../success_animation this.id}}class="item-animation" {{/ifCond}}>
         <th scope="row">{{this.id}}</th>
         <td>{{this.name}}</td>
         <td>

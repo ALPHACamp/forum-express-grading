@@ -1,0 +1,16 @@
+@keyframes edit-item {
+  0% {
+    background-color: #d4edda;
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  50% {
+    background-color: #d4edda;
+    opacity: 1;
+    transform: translateX(0px);
+  }
+}
+
+.item-animation {
+  animation: edit-item 1s none;
+}

@@ -5,7 +5,6 @@ module.exports = {
 
   // 比較兩輸入值是否一致
   ifCond: function (a, b, options) {
-    console.log(a, b)
     if (String(a) === String(b)) {
       return options.fn()
     }
