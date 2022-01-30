@@ -23,7 +23,7 @@ const restaurantController = {
           ...r,
           description: r.description.substring(0, 50)
         }))
-        console.log(getPagination(limit, page, restaurants.count).pages)
+
         return res.render('restaurants', {
           restaurants: data,
           categories,
@@ -51,13 +51,16 @@ const restaurantController = {
   },
   getDashboard: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
-      include: Category,
-      nest: true,
-      raw: true
+      include: [
+        Category,
+        { model: Comment, where: { restaurantId: req.params.id } }
+      ]
     })
-      .then(restaurant => {
+      .then(r => {
+        const restaurant = r.toJSON()
+        const commentCounts = restaurant.Comments.length
         if (!restaurant) throw new Error("Restaurant didn't exist!")
-        res.render('dashboard', { restaurant })
+        res.render('dashboard', { restaurant, commentCounts })
       })
       .catch(err => next(err))
   }
