@@ -73,6 +73,32 @@ const restaurantController = {
         return res.render('dashboard', { restaurant })
       })
       .catch(err => next(err))
+  },
+
+  getFeeds: (req, res, next) => {
+    const queryOptions = {
+      limit: 10,
+      order: [['createdAt', 'DESC']],
+      raw: true,
+      nest: true
+    }
+
+    return Promise.all([
+      Restaurant.findAll({
+        ...queryOptions,
+        include: Category
+      }),
+      Comment.findAll({
+        ...queryOptions,
+        include: [Restaurant, User]
+      })
+    ])
+      .then(([restaurants, comments]) => {
+        return res.render('feeds', {
+          restaurants, comments
+        })
+      })
+      .catch(err => next(err))
   }
 }
 
