@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs')
-const { User, Comment, Restaurant, Favorite } = require('../models')
+const { User, Comment, Restaurant, Favorite, Like } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const userController = {
@@ -143,6 +143,54 @@ const userController = {
         req.flash(
           'success_messages',
           'You have successfully removed favorite from this restaurant'
+        )
+        return res.redirect('back')
+      })
+      .catch(err => next(err))
+  },
+
+  addLike: (req, res, next) => {
+    const userId = req.user.id
+    const { restaurantId } = req.params
+
+    return Promise.all([
+      Restaurant.findByPk(restaurantId),
+      Like.findOne({
+        where: { userId, restaurantId }
+      })
+    ])
+      .then(([restaurant, like]) => {
+        if (!restaurant) throw new Error("Restaurant doesn't exist")
+        if (like) throw new Error('You have liked this restaurant!')
+
+        return Like.create({ userId, restaurantId })
+      })
+      .then(() => {
+        req.flash(
+          'success_messages',
+          'You have liked this restaurant'
+        )
+        res.redirect('back')
+      })
+      .catch(err => next(err))
+  },
+
+  removeLike: (req, res, next) => {
+    const userId = req.user.id
+    const { restaurantId } = req.params
+
+    return Like.findOne({
+      where: { userId, restaurantId }
+    })
+      .then(like => {
+        if (!like) throw new Error("You haven't Liked this restaurant")
+
+        return like.destroy()
+      })
+      .then(() => {
+        req.flash(
+          'success_messages',
+          'You have disliked this restaurant'
         )
         return res.redirect('back')
       })

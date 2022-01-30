@@ -24,11 +24,15 @@ const restaurantController = {
     ])
       .then(([restaurants, categories]) => {
         const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
+        const likedRestaurantsId = req.user && req.user.LikedRestaurants.map(lr => lr.id)
+
         const data = restaurants.rows.map(r => ({
           ...r,
           description: r.description.substring(0, 50) + '...',
-          isFavorited: favoritedRestaurantsId.includes(r.id)
+          isFavorited: favoritedRestaurantsId.includes(r.id),
+          isLiked: likedRestaurantsId.includes(r.id)
         }))
+        console.log(data.length)
 
         return res.render('restaurants', {
           restaurants: data,
@@ -41,13 +45,15 @@ const restaurantController = {
   },
 
   getRestaurant: (req, res, next) => {
-    const { id } = req.params
+    const userId = req.user.id
+    const restaurantId = req.params.id
 
-    return Restaurant.findByPk(id, {
+    return Restaurant.findByPk(restaurantId, {
       include: [
         { model: Category },
         { model: Comment, include: User },
-        { model: User, as: 'FavoritedUsers' }
+        { model: User, as: 'FavoritedUsers' },
+        { model: User, as: 'LikedUsers' }
       ]
     })
       .then(restaurant => {
@@ -58,10 +64,15 @@ const restaurantController = {
       .then(restaurant => {
         restaurant = restaurant.toJSON()
         const isFavorited = restaurant.FavoritedUsers.some(
-          f => f.id === req.user.id
+          f => f.id === userId
+        )
+        const isLiked = restaurant.LikedUsers.some(
+          l => l.id === userId
         )
 
-        return res.render('restaurant', { restaurant, isFavorited })
+        return res.render('restaurant', {
+          restaurant, isFavorited, isLiked
+        })
       })
       .catch(err => next(err))
   },
