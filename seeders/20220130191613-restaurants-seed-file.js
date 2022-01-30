@@ -13,6 +13,7 @@ module.exports = {
      * }], {});
     */
     await queryInterface.bulkInsert('Restaurants',
+    /* To return an object literal expression requires parentheses around expression: */
       Array.from({ length: 50 }, () => ({
         name: faker.name.findName(),
         tel: faker.phone.phoneNumber(),
