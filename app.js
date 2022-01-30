@@ -12,6 +12,11 @@ const handlebarsHelpers = require('./helpers/handlebars-helper')
 require('./models')
 
 const routes = require('./routes')
+
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
+
 const SESSION_SECRET = 'secret'
 
 const app = express()

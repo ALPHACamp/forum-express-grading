@@ -1,5 +1,9 @@
 // 載入fs模組
 const fs = require('fs')
+const imgur = require('imgur')
+const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
+imgur.setClientId(IMGUR_CLIENT_ID)
+
 // 定義本地端的檔案處理器，參數file會是由multer所提供的req.file
 const localFileHandler = file => {
   return new Promise((resolve, reject) => {
@@ -15,4 +19,16 @@ const localFileHandler = file => {
   })
 }
 
-exports = module.exports = { localFileHandler }
+const imgurFileHandler = file => {
+  return new Promise((resolve, reject) => {
+    if (!file) return resolve(null)
+
+    imgur.uploadFile(file.path)
+      .then(img =>
+        resolve(img?.link || null)
+      )
+      .catch(error => reject(error))
+  })
+}
+
+exports = module.exports = { localFileHandler, imgurFileHandler }
