@@ -1,13 +1,30 @@
 const express = require('express')
 const router = express.Router()
+
 const admin = require('./modules/admin')
-const user = require('./modules/user')
-const { authenticated, authenticatedAdmin } = require('../middleware/auth')
-const { generalErrorHandler } = require('../middleware/error-handler')
+
+const passport = require('../config/passport')
+const userController = require('../controllers/user-controller')
+
 const restaurantController = require('../controllers/restaurant-controller')
 
+const { authenticated, authenticatedAdmin } = require('../middleware/auth')
+const { generalErrorHandler } = require('../middleware/error-handler')
+
 router.use('/admin', authenticatedAdmin, admin)
-router.use('/users', user)
+
+router.get('/signup', userController.signUpPage)
+router.post('/signup', userController.signUp)
+
+router.get('/signin', userController.signInPage)
+
+router.post('/signin', passport.authenticate('local', {
+  failureRedirect: '/signin',
+  failureFlash: true
+}), userController.signIn)
+
+router.get('/signout', userController.signOut)
+
 router.get('/restaurants', authenticated, restaurantController.getRestaurants)
 router.use('/', (req, res) => res.redirect('/restaurants'))
 router.use('/', generalErrorHandler)

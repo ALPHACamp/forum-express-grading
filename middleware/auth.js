@@ -5,7 +5,7 @@ const authenticated = (req, res, next) => {
   if (ensureAuthenticated(req)) {
     return next()
   }
-  res.redirect('/users/signin')
+  res.redirect('/signin')
 }
 
 const authenticatedAdmin = (req, res, next) => {
@@ -13,7 +13,7 @@ const authenticatedAdmin = (req, res, next) => {
     if (getUser(req).isAdmin) return next()
     res.redirect('/')
   } else {
-    res.redirect('/users/signin')
+    res.redirect('/signin')
   }
 }
 

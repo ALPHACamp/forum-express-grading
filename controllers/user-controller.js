@@ -29,7 +29,7 @@ const userController = {
       )
       .then(() => {
         req.flash('success_messages', '成功註冊帳號！')
-        res.redirect('/users/signin')
+        res.redirect('/signin')
       })
       .catch(error => {
         next(error)
@@ -43,7 +43,6 @@ const userController = {
     res.redirect('/restaurants')
   },
   signOut: (req, res) => {
-    console.log('hi')
     req.flash('success_messages', '登出成功！')
     req.logout()
     res.redirect('/signin')
