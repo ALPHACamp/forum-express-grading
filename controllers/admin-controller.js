@@ -4,6 +4,7 @@ const {
 const {
   localFileHandler
 } = require('../helpers/file-helpers')
+
 const adminController = {
   getRestaurants: (req, res, next) => {
     Restaurant.findAll({
@@ -26,9 +27,11 @@ const adminController = {
       description
     } = req.body
     if (!name) throw new Error('Restaurant name is required!')
+
     const {
       file
     } = req
+
     localFileHandler(file)
       .then(filePath => Restaurant.create({
         name,
@@ -45,12 +48,12 @@ const adminController = {
       .catch(err => next(err))
   },
   getRestaurant: (req, res, next) => {
-    Restaurant.findByPk(req.params.id, { // 去資料庫用 id 找一筆資料
-      raw: true // 找到以後整理格式再回傳
+    Restaurant.findByPk(req.params.id, {
+      raw: true
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
-        //  如果找不到，回傳錯誤訊息，後面不執行
+
         res.render('admin/restaurant', {
           restaurant
         })
@@ -79,22 +82,25 @@ const adminController = {
       description
     } = req.body
     if (!name) throw new Error('Restaurant name is required!')
+
     const {
       file
-    } = req // 把檔案取出來
-    Promise.all([ // 非同步處理
-      Restaurant.findByPk(req.params.id), // 去資料庫查有沒有這間餐廳
-      localFileHandler(file) // 把檔案傳到 file-helper 處理
+    } = req
+
+    Promise.all([
+      Restaurant.findByPk(req.params.id),
+      localFileHandler(file)
     ])
-      .then(([restaurant, filePath]) => { // 以上兩樣事都做完以後
+      .then(([restaurant, filePath]) => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
-        return restaurant.update({ // 修改這筆資料
+
+        return restaurant.update({
           name,
           tel,
           address,
           openingHours,
           description,
-          image: filePath || restaurant.image // 如果 filePath 是 Truthy (使用者有上傳新照片) 就用 filePath，是 Falsy (使用者沒有上傳新照片) 就沿用原本資料庫內的值
+          image: filePath || restaurant.image
         })
       })
       .then(() => {
@@ -113,6 +119,7 @@ const adminController = {
       .then(() => res.redirect('/admin/restaurants'))
       .catch(err => next(err))
   }
+
 }
 
 module.exports = adminController

@@ -3,6 +3,7 @@ const db = require('../models')
 const {
   User
 } = db
+
 const userController = {
   signUpPage: (req, res) => {
     res.render('signup')
@@ -43,6 +44,7 @@ const userController = {
     req.logout()
     res.redirect('/signin')
   }
+
 }
 
 module.exports = userController
