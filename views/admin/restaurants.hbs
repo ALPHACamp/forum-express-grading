@@ -1,0 +1,45 @@
+<h1 class="text-center">餐廳後台</h1>
+<ul class="nav justify-content-center">
+  {{>admin-tabs route='restaurants'}}
+</ul>
+<div class="create-restaurant text-end">
+  <a href='/admin/restaurants/create'>
+    <button type="button" class="btn btn-primary">New Restaurant</button>
+  </a>
+</div>
+<br />
+<br />
+<table class="table table-striped">
+  <thead class="table-primary">
+    <tr>
+      <th scope="col" class="text-center">#</th>
+      <th scope="col" class="text-center">Name</th>
+      <th scope="col" class="text-center">Category</th>
+      <th scope="col" class="text-center"></th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each restaurants}}
+      <tr>
+        <th scope="row" class="text-center">{{this.id}}</th>
+        <td class="text-center">{{this.name}}</td>
+        <td class="text-center">{{this.Category.name}}</td>
+        <td class="text-center">
+          <button type="button" class="btn btn-link">
+            <a class="btn btn-link link-primary" href="/admin/restaurants/{{this.id}}">
+              Show
+            </a>
+          </button>
+          <button type="button" class="btn btn-link">
+            <a class="btn btn-link link-primary" href="/admin/restaurants/{{this.id}}/edit">
+              Edit
+            </a>
+          </button>
+          <form action="/admin/restaurants/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
+            <button type="submit" class="btn btn-link link-danger" onclick="return confirm(`確定要刪除 {{ this.name }} 嗎？`)">Delete</button>
+          </form>
+        </td>
+      </tr>
+    {{/each}}
+  </tbody>
+</table>
