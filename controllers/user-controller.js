@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs')
-const { User, Comment, Restaurant, Favorite, Like } = require('../models')
+const { User, Comment, Restaurant, Favorite, Like, Followship } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const userController = {
@@ -202,13 +202,64 @@ const userController = {
       include: { model: User, as: 'Followers' }
     })
       .then(users => {
-        users = users.map(user => ({
+        const result = users.map(user => ({
           ...user.toJSON(),
           followerCount: user.Followers.length,
           isFollowed: req.user.Followings.some(f => f.id === user.id)
         }))
+          .sort((a, b) => b.followerCount - a.followerCount)
 
-        return res.render('top-users', { users })
+        return res.render('top-users', { users: result })
+      })
+      .catch(err => next(err))
+  },
+
+  addFollowing: (req, res, next) => {
+    const followerId = req.user.id
+    const followingId = req.params.userId
+
+    return Promise.all([
+      User.findByPk(followingId),
+      Followship.findOne({
+        where: { followerId, followingId }
+      })
+    ])
+      .then(([user, followship]) => {
+        if (!user) throw new Error("User doesn't exist!")
+        if (followship) throw new Error('You have already followed this user!')
+
+        return Followship.create({
+          followerId, followingId
+        })
+      })
+      .then(() => {
+        req.flash(
+          'success_messages',
+          'You have successfully followed this user'
+        )
+        return res.redirect('back')
+      })
+      .catch(err => next(err))
+  },
+
+  removeFollowing: (req, res, next) => {
+    const followerId = req.user.id
+    const followingId = req.params.userId
+
+    return Followship.findOne({
+      where: { followerId, followingId }
+    })
+      .then(followship => {
+        if (!followship) throw new Error("You haven't followed this user")
+
+        return followship.destroy()
+      })
+      .then(() => {
+        req.flash(
+          'success_messages',
+          'You have successfully unfollowed this user'
+        )
+        return res.redirect('back')
       })
       .catch(err => next(err))
   }
