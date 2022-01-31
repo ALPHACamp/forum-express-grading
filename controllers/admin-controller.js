@@ -27,7 +27,7 @@ const adminController = {
 
         if (user.email === process.env.SUPERUSER_EMAIL) {
           req.flash('error_messages', '禁止變更 root 權限')
-          res.redirect('back')
+          return res.redirect('back')
         }
         return user.update({
           isAdmin: !user.isAdmin
