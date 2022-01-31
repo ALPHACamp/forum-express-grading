@@ -1,5 +1,5 @@
 const { Restaurant, User } = require('../models')
-const { imgurFileHandler } = require('../helpers/file-helpers')
+const helpers = require('../helpers/file-helpers')
 
 const adminController = {
   getRestaurants: (req, res, next) => {
@@ -16,6 +16,26 @@ const adminController = {
           user.permissionOptionValue = !user.isAdmin
         })
         res.render('admin/users', { type, users })
+      })
+      .catch(error => next(error))
+  },
+  patchUser: (req, res, next) => {
+    console.log('hi patch')
+    const id = req.params.id
+    User.findByPk(id)
+      .then(user => {
+        if (!user) throw new Error('User didn\'t exist!')
+
+        if (user.email === process.env.SUPERUSER_EMAIL) {
+          throw new Error('You have no permission to change')
+        }
+        user.isAdmin = !user.isAdmin
+        return user.save()
+      })
+      .then(user => {
+        const currentPermission = user.isAdmin ? 'an admin' : 'a user'
+        req.flash('success_messages', `${user.name} is ${currentPermission} now`)
+        return res.redirect('/admin/users')
       })
       .catch(error => next(error))
   },
@@ -36,7 +56,7 @@ const adminController = {
     const { name, tel, address, openingHours, description } = req.body
     if (!name) throw new Error('Restaurant name is required!')
     const { file } = req
-    imgurFileHandler(file)
+    helpers.imgurFileHandler(file)
       .then(filePath =>
         Restaurant.create({
           name,
@@ -67,7 +87,7 @@ const adminController = {
     const { file } = req
     Promise.all([
       Restaurant.findByPk(id),
-      imgurFileHandler(file)
+      helpers.imgurFileHandler(file)
     ])
       .then(([restaurant, filePath]) =>
         restaurant.update({

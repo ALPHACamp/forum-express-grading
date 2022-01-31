@@ -8,6 +8,7 @@ router.get('/restaurants', adminController.getRestaurants)
 router.get('/restaurants/create', adminController.createRestaurant)
 
 router.get('/users', adminController.getUsers)
+router.patch('/users/:id', adminController.patchUser)
 
 router.get('/restaurants/:id/edit', adminController.editRestaurant)
 router.put('/restaurants/:id', upload.single('image'), adminController.putRestaurant)
