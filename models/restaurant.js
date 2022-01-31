@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       Restaurant.belongsTo(models.Category, { foreignKey: 'categoryId' })
       Restaurant.hasMany(models.View, { foreignKey: 'restaurantId' })
+      Restaurant.hasMany(models.Comment, { foreignKey: 'restaurantId' })
     }
   };
   Restaurant.init({
