@@ -32,7 +32,6 @@ const restaurantController = {
           isFavorited: favoritedRestaurantsId.includes(r.id),
           isLiked: likedRestaurantsId.includes(r.id)
         }))
-        console.log(data.length)
 
         return res.render('restaurants', {
           restaurants: data,
