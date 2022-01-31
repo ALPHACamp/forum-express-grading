@@ -4,13 +4,13 @@ const helpers = require('../helpers/file-helpers')
 const adminController = {
   getRestaurants: (req, res, next) => {
     const type = 'restaurant'
-    Restaurant.findAll({ raw: true })
+    return Restaurant.findAll({ raw: true })
       .then(restaurants => res.render('admin/restaurants', { type, restaurants }))
       .catch(error => next(error))
   },
   getUsers: (req, res, next) => {
     const type = 'user'
-    User.findAll({ raw: true })
+    return User.findAll({ raw: true })
       .then(users => {
         users.forEach(user => {
           user.permissionOptionValue = !user.isAdmin
@@ -20,21 +20,21 @@ const adminController = {
       .catch(error => next(error))
   },
   patchUser: (req, res, next) => {
-    console.log('hi patch')
     const id = req.params.id
-    User.findByPk(id)
+    return User.findByPk(id)
       .then(user => {
         if (!user) throw new Error('User didn\'t exist!')
 
         if (user.email === process.env.SUPERUSER_EMAIL) {
-          throw new Error('You have no permission to change')
+          req.flash('error_messages', '禁止變更 root 權限')
+          res.redirect('back')
         }
-        user.isAdmin = !user.isAdmin
-        return user.save()
+        return user.update({
+          isAdmin: !user.isAdmin
+        })
       })
-      .then(user => {
-        const currentPermission = user.isAdmin ? 'an admin' : 'a user'
-        req.flash('success_messages', `${user.name} is ${currentPermission} now`)
+      .then(() => {
+        req.flash('success_messages', '使用者權限變更成功')
         return res.redirect('/admin/users')
       })
       .catch(error => next(error))
