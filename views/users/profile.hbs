@@ -1,0 +1,14 @@
+<div class="row mb-5">
+  <div class="col-md-4">
+    <img class="img-responsive center-block mb-5" src="{{user.image}}"
+      style="width: 250px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+  </div>
+  <div class="col-md-8">
+    <h1>{{user.name}}</h1>
+    <p>[{{user.email}}]</p>
+    {{#ifCond user.id sessionUserId}}
+    <a class="btn btn-primary" href="/users/{{../user.id}}/edit">edit</a>
+    {{/ifCond}}
+  </div>
+  <hr>
+</div>

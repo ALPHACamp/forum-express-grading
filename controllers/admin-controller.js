@@ -67,6 +67,7 @@ const adminController = {
   },
 
   putRestaurant: (req, res, next) => {
+    console.log(req.body)
     const { name, tel, address, openingHours, description, categoryId } = req.body
     if (!name) throw new Error('Restaurant name is required!')
     const { file } = req
