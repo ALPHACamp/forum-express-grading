@@ -117,6 +117,37 @@ const restaurantController = {
         })
       })
       .catch(err => next(err))
+  },
+
+  getTopRestaurants: (req, res, next) => {
+    const resultArray = []
+
+    return Restaurant.findAll({
+      include: { model: User, as: 'FavoritedUsers' },
+      nest: true
+    })
+      .then(restaurants => {
+        const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
+
+        const result = restaurants.map(r => ({
+          ...r.dataValues,
+          description: r.description.substring(0, 100) + '...',
+          favoritedCount: r.FavoritedUsers.length,
+          isFavorited: favoritedRestaurantsId?.some(id => id === r.id) || false
+        }))
+          .sort((a, b) => b.favoritedCount - a.favoritedCount)
+
+        for (let i = 0; i < result.length; i++) {
+          if (i < 10) {
+            resultArray.push(result[i])
+          } else break
+        }
+
+        return res.render('top-restaurants', {
+          restaurants: resultArray
+        })
+      })
+      .catch(err => next(err))
   }
 }
 
