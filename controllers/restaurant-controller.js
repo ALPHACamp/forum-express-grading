@@ -119,8 +119,6 @@ const restaurantController = {
   },
 
   getTopRestaurants: (req, res, next) => {
-    const resultArray = []
-
     return Restaurant.findAll({
       include: { model: User, as: 'FavoritedUsers' },
       nest: true
@@ -135,15 +133,10 @@ const restaurantController = {
           isFavorited: favoritedRestaurantsId?.some(id => id === r.id) || false
         }))
           .sort((a, b) => b.favoritedCount - a.favoritedCount)
-
-        for (let i = 0; i < result.length; i++) {
-          if (i < 10) {
-            resultArray.push(result[i])
-          } else break
-        }
+          .slice(0, 10)
 
         return res.render('top-restaurants', {
-          restaurants: resultArray
+          restaurants: result
         })
       })
       .catch(err => next(err))
