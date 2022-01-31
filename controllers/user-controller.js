@@ -101,52 +101,54 @@ const userController = {
       .catch(err => next(err))
   },
 
-  addFavorite: (req, res, next) => {
-    const userId = req.user.id
-    const { restaurantId } = req.params
+  addFavorite: async (req, res, next) => {
+    try {
+      const userId = req.user.id
+      const { restaurantId } = req.params
 
-    return Promise.all([
-      Restaurant.findByPk(restaurantId),
-      Favorite.findOne({
-        where: { userId, restaurantId }
-      })
-    ])
-      .then(([restaurant, favorite]) => {
-        if (!restaurant) throw new Error("Restaurant doesn't exist")
-        if (favorite) throw new Error('You have favorited this restaurant!')
+      const [restaurant, favorite] = await Promise.all([
+        Restaurant.findByPk(restaurantId),
+        Favorite.findOne({
+          where: { userId, restaurantId }
+        })
+      ])
 
-        return Favorite.create({ userId, restaurantId })
-      })
-      .then(() => {
-        req.flash(
-          'success_messages',
-          'You have successfully added this restaurant to favorite'
-        )
-        return res.redirect('back')
-      })
-      .catch(err => next(err))
+      if (!restaurant) throw new Error("Restaurant doesn't exist")
+      if (favorite) throw new Error('You have favorited this restaurant!')
+
+      await Favorite.create({ userId, restaurantId })
+
+      req.flash(
+        'success_messages',
+        'You have successfully added this restaurant to favorite'
+      )
+      return res.redirect('back')
+    } catch (err) { next(err) }
   },
 
-  removeFavorite: (req, res, next) => {
-    const userId = req.user.id
-    const { restaurantId } = req.params
+  removeFavorite: async (req, res, next) => {
+    try {
+      const userId = req.user.id
+      const { restaurantId } = req.params
 
-    return Favorite.findOne({
-      where: { userId, restaurantId }
-    })
-      .then(favorite => {
-        if (!favorite) throw new Error("You haven't favorited this restaurant")
+      const [restaurant, favorite] = await Promise.all([
+        Restaurant.findByPk(restaurantId),
+        Favorite.findOne({
+          where: { userId, restaurantId }
+        })
+      ])
 
-        return favorite.destroy()
-      })
-      .then(() => {
-        req.flash(
-          'success_messages',
-          'You have successfully removed favorite from this restaurant'
-        )
-        return res.redirect('back')
-      })
-      .catch(err => next(err))
+      if (!restaurant) throw new Error("Restaurant doesn't exist")
+      if (!favorite) throw new Error("You haven't favorited this restaurant")
+
+      await favorite.destroy()
+
+      req.flash(
+        'success_messages',
+        'You have successfully removed favorite from this restaurant'
+      )
+      return res.redirect('back')
+    } catch (err) { next(err) }
   },
 
   addLike: (req, res, next) => {
