@@ -7,6 +7,8 @@ const adminController = require('../../controllers/admin-controller')
 router.get('/restaurants', adminController.getRestaurants)
 router.get('/restaurants/create', adminController.createRestaurant)
 
+router.get('/users', adminController.getUsers)
+
 router.get('/restaurants/:id/edit', adminController.editRestaurant)
 router.put('/restaurants/:id', upload.single('image'), adminController.putRestaurant)
 

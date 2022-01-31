@@ -1,14 +1,22 @@
 const { Restaurant, User } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
+
 const adminController = {
   getRestaurants: (req, res, next) => {
+    const type = 'restaurant'
     Restaurant.findAll({ raw: true })
-      .then(restaurants => res.render('admin/restaurants', { restaurants }))
+      .then(restaurants => res.render('admin/restaurants', { type, restaurants }))
       .catch(error => next(error))
   },
   getUsers: (req, res, next) => {
+    const type = 'user'
     User.findAll({ raw: true })
-      .then(users => res.render('admin/users', { users }))
+      .then(users => {
+        users.forEach(user => {
+          user.permissionOptionValue = !user.isAdmin
+        })
+        res.render('admin/users', { type, users })
+      })
       .catch(error => next(error))
   },
   getRestaurant: (req, res, next) => {
