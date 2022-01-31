@@ -8,5 +8,10 @@ module.exports = {
   relativeTimeFromNow: a => dayjs(a).fromNow(),
   if_isMatch: function (a, b, options) {
     return a === b ? options.fn(this) : options.inverse(this)
-  }
+  },
+  checkAdmin: function (reqUser, user, options) {
+    if (reqUser === undefined && user) return options.fn(this)
+    if (reqUser) return options.fn(this)
+  },
+  thisOrThat: (a, b) => a || b
 }

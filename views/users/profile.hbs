@@ -1,0 +1,13 @@
+<div class="row mb-5">
+  <div class="col-md-4">
+    <img class="img-responsive center-block mb-5"
+      src="{{#if user.image}}{{user.image}}{{else}}https://i.imgur.com/9qWUEba.jpeg{{/if}}"
+      style="width: 250px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+  </div>
+  <div class="col-md-8">
+    <p class="my-4 text-bold h4">{{user.name}}</p>
+    <p class="my-4">{{user.email}}</p>
+    {{#if_isMatch user.id reqUser.id}}<a class="btn btn-primary" href="/users/{{user.id}}/edit">edit</a>{{/if_isMatch}}
+  </div>
+</div>
+<hr>
