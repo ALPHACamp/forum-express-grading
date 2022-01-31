@@ -1,11 +1,14 @@
-const { Restaurant } = require('../models')
+const { Restaurant, User } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 const adminController = {
   getRestaurants: (req, res, next) => {
     Restaurant.findAll({ raw: true })
-      .then(restaurants => {
-        res.render('admin/restaurants', { restaurants })
-      })
+      .then(restaurants => res.render('admin/restaurants', { restaurants }))
+      .catch(error => next(error))
+  },
+  getUsers: (req, res, next) => {
+    User.findAll({ raw: true })
+      .then(users => res.render('admin/users', { users }))
       .catch(error => next(error))
   },
   getRestaurant: (req, res, next) => {
