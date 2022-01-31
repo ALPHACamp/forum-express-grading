@@ -9,13 +9,16 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarCollapse">
         <ul class="navbar-nav ms-auto mb-2 mb-md-0">
-          {{#if user.isAdmin}}
+          {{#checkAdmin reqUser.isAdmin user.isAdmin}}
           <li class="nav-item">
             <a href="/admin" class="nav-link">Admin 後台</a>
           </li>
-          {{/if}}
+          {{/checkAdmin}}
+          <li class="nav-item">
+            <a href="/users/{{thisOrThat reqUser.id user.id}}" class="nav-link">Profile</a>
+          </li>
           <li class="nav-item d-inline-flex align-items-center">
-            <span class="text-white nav-link">Hi, {{ user.email }}</span>
+            <span class="text-white nav-link">Hi, {{thisOrThat reqUser.email user.email}}</span>
           </li>
           <li class="nav-item">
             <a href="/logout"><button class="btn btn-outline-success my-sm-0 my-2">Logout</button></a>
