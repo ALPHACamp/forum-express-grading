@@ -11,3 +11,26 @@
   </div>
 </div>
 <hr>
+<div class="row mb-5">
+  <div class="col-md-12">
+    <h5 class="my-4">{{commentCounts}} 已評論餐廳</h5>
+  </div>
+  {{#each user.Comments}}
+  <div class="col-md-2">
+    <div class="card mb-4 shadow-sm">
+      <a href="/restaurants/{{this.Restaurant.id}}">
+        <img class="card-img-top img-fluid" src="{{this.Restaurant.image}}" alt="Card image cap"
+          style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+      </a>
+      <div class="card-body">
+        <p class="card-text">
+          <a href="/restaurants/{{this.Restaurant.id}}">
+            {{this.Restaurant.name}}
+          </a>
+        </p>
+        <span class="badge bg-secondary">{{this.Restaurant.Category.name}}</span>
+      </div>
+    </div>
+  </div>
+  {{/each}}
+</div>
