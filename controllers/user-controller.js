@@ -1,6 +1,5 @@
 const bcrypt = require('bcryptjs')
-const db = require('../models')
-const { User } = db
+const { User, Comment, Restaurant } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helper')
 
 const userController = {
@@ -42,17 +41,25 @@ const userController = {
     res.redirect('/signin')
   },
   getUser: (req, res, next) => {
+    const userSession = req.user
     const userId = req.params.id
-    return User.findByPk(userId)
+
+    return User.findByPk(userId, {
+      include: [{ model: Comment, include: [Restaurant] }],
+      group: 'Comments->Restaurant.id'
+    })
       .then(user => {
         if (!user) throw new Error('User do not exist')
+        user = user.toJSON()
 
-        res.render('users/profile', { user: user.toJSON() })
+        res.render('users/profile', { user, userSession })
       })
       .catch(err => next(err))
   },
   editUser: (req, res, next) => {
-    const userId = req.params.id
+    const userId = Number(req.params.id)
+    // if (Number(userId) !== req.user.id) throw new Error('You can only edit yourself profile')
+
     return User.findByPk(userId)
       .then(user => {
         if (!user) throw new Error('User do not exist')

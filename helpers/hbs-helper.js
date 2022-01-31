@@ -22,5 +22,8 @@ module.exports = {
   },
   moment: function (a) {
     return moment(a).fromNow()
+  },
+  commentCounts: array => {
+    return array.length
   }
 }
