@@ -67,7 +67,6 @@ const userController = {
   },
 
   putUser: (req, res, next) => {
-    console.log(req.body)
     const { id } = req.user || req.params
 
     const { name } = req.body
