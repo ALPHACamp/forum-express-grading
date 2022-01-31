@@ -1,10 +1,41 @@
-const { Restaurant } = require('../models')
-const { imgurFileHandler } = require('../helpers/file-helpers')
+const { Restaurant, User } = require('../models')
+const helpers = require('../helpers/file-helpers')
+
 const adminController = {
   getRestaurants: (req, res, next) => {
-    Restaurant.findAll({ raw: true })
-      .then(restaurants => {
-        res.render('admin/restaurants', { restaurants })
+    const type = 'restaurant'
+    return Restaurant.findAll({ raw: true })
+      .then(restaurants => res.render('admin/restaurants', { type, restaurants }))
+      .catch(error => next(error))
+  },
+  getUsers: (req, res, next) => {
+    const type = 'user'
+    return User.findAll({ raw: true })
+      .then(users => {
+        users.forEach(user => {
+          user.permissionOptionValue = !user.isAdmin
+        })
+        res.render('admin/users', { type, users })
+      })
+      .catch(error => next(error))
+  },
+  patchUser: (req, res, next) => {
+    const id = req.params.id
+    return User.findByPk(id)
+      .then(user => {
+        if (!user) throw new Error('User didn\'t exist!')
+
+        if (user.email === process.env.SUPERUSER_EMAIL) {
+          req.flash('error_messages', '禁止變更 root 權限')
+          return res.redirect('back')
+        }
+        return user.update({
+          isAdmin: !user.isAdmin
+        })
+      })
+      .then(() => {
+        req.flash('success_messages', '使用者權限變更成功')
+        return res.redirect('/admin/users')
       })
       .catch(error => next(error))
   },
@@ -25,7 +56,7 @@ const adminController = {
     const { name, tel, address, openingHours, description } = req.body
     if (!name) throw new Error('Restaurant name is required!')
     const { file } = req
-    imgurFileHandler(file)
+    helpers.imgurFileHandler(file)
       .then(filePath =>
         Restaurant.create({
           name,
@@ -56,7 +87,7 @@ const adminController = {
     const { file } = req
     Promise.all([
       Restaurant.findByPk(id),
-      imgurFileHandler(file)
+      helpers.imgurFileHandler(file)
     ])
       .then(([restaurant, filePath]) =>
         restaurant.update({
