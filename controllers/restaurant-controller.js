@@ -65,7 +65,8 @@ const restaurantController = {
     return Restaurant.findByPk(req.params.id, {
       include: [
         Category,
-        { model: Comment }
+        { model: Comment },
+        { model: User, as: 'FavoritedUsers' }
       ]
     })
       .then(r => {
@@ -98,6 +99,28 @@ const restaurantController = {
           restaurants,
           comments
         })
+      })
+      .catch(err => next(err))
+  },
+  getTopRestaurants: (req, res, next) => {
+    return Restaurant.findAll({
+      include: [
+        { model: User, as: 'FavoritedUsers' },
+        { model: Category }
+      ]
+    })
+      .then(restaurants => {
+        const userFavoritedRestaurantsId = req.user ? req.user.FavoritedRestaurants : []
+        const result = restaurants
+          .map(r => ({
+            ...r.toJSON(),
+            favoritedCount: r.FavoritedUsers.length,
+            isFavorited: userFavoritedRestaurantsId.some(f => f.id === r.id)
+            // isLiked: req.user.LikedRestaurants.some(liked => liked.id === r.id)
+          }))
+          .sort((a, b) => b.favoritedCount - a.favoritedCount)
+
+        res.render('top-restaurants', { restaurants: result })
       })
       .catch(err => next(err))
   }
