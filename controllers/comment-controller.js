@@ -27,8 +27,19 @@ const commentController = {
     }
   },
 
-  deleteComment: (req, res, next) => {
+  deleteComment: async (req, res, next) => {
+    try {
+      const isAdmin = await User.findByPk(req.user.id, { raw: true })
+      if (!isAdmin) throw new Error("User doesn't exist!")
 
+      const comment = await Comment.findByPk(req.params.id)
+      if (!comment) throw new Error("Comment didn't exist!")
+      comment.destroy()
+
+      return res.redirect(`/restaurants/${comment.restaurantId}`)
+    } catch (error) {
+      next(error)
+    }
   }
 }
 
