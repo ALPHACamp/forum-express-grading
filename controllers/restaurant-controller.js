@@ -119,7 +119,6 @@ const restaurantController = {
             // isLiked: req.user.LikedRestaurants.some(liked => liked.id === r.id)
           }))
           .sort((a, b) => b.favoritedCount - a.favoritedCount)
-
         res.render('top-restaurants', { restaurants: result })
       })
       .catch(err => next(err))
