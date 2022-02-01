@@ -84,8 +84,7 @@ const adminController = {
       await user.update({ isAdmin: !user.isAdmin })
       req.flash('success_messages', '使用者權限變更成功')
       return res.redirect('/admin/users')
-    }
-    catch (error) { next(error) }
+    } catch (error) { next(error) }
   }
 }
 module.exports = adminController
