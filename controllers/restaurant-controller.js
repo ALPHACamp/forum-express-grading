@@ -62,11 +62,18 @@ const restaurantController = {
 
   getDashboard: async (req, res, next) => {
     try {
-      const restaurant = await Restaurant.findByPk(req.params.id, { include: Category, raw: true, nest: true })
+      const restaurantId = req.params.id
+      const [restaurant, comments] = await Promise.all([
+        Restaurant.findByPk(restaurantId, {
+          include: Category,
+          raw: true,
+          nest: true
+        }),
 
-      const comments = await Comment.findAndCountAll({ where: { restaurantId: req.params.id } })
-
-      console.log(comments.count)
+        Comment.findAndCountAll({
+          where: { restaurantId }
+        })
+      ])
 
       return res.render('dashboard', {
         restaurant: restaurant,
