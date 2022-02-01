@@ -5,15 +5,15 @@ const categoryController = {
   getCategories: (req, res, next) => {
     // 修改以下
     return Promise.all([
-        Category.findAll({
+      Category.findAll({
+        raw: true
+      }),
+      req.params.id
+        ? Category.findByPk(req.params.id, {
           raw: true
-        }),
-        req.params.id ?
-        Category.findByPk(req.params.id, {
-          raw: true
-        }) :
-        null
-      ])
+        })
+        : null
+    ])
       .then(([categories, category]) => {
         res.render('admin/categories', {
           categories,
@@ -28,8 +28,8 @@ const categoryController = {
     } = req.body
     if (!name) throw new Error('Category name is required!')
     return Category.create({
-        name
-      })
+      name
+    })
       .then(() => res.redirect('/admin/categories'))
       .catch(err => next(err))
   },
