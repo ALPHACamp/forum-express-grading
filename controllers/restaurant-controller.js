@@ -38,7 +38,8 @@ const restaurantController = {
     try {
       // Eager Loading
       const restInstance = await Restaurant.findByPk(req.params.id, {
-        include: [Category, { model: Comment, include: User }]
+        include: [Category, { model: Comment, include: User }],
+        order: [[Comment, 'createdAt', 'DESC']]
       })
 
       if (!restInstance) throw new Error("Restaurant didn't exist!")
