@@ -26,6 +26,14 @@ module.exports = {
       image: `https://loremflickr.com/320/240/monster/?random=${Math.random() * 100}`,
       created_at: new Date(),
       updated_at: new Date()
+    }, { // 測試用
+      email: 'aaa@aaa.aaa',
+      password: 'aaa',
+      is_admin: true,
+      name: 'AAA',
+      image: `https://loremflickr.com/320/240/monster/?random=${Math.random() * 100}`,
+      created_at: new Date(),
+      updated_at: new Date()
     }], {})
   },
 
