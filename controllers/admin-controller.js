@@ -1,6 +1,7 @@
 const {
   Restaurant,
-  User
+  User,
+  Category
 } = require('../models')
 
 const {
@@ -9,7 +10,9 @@ const {
 const adminController = {
   getRestaurants: (req, res, next) => {
     Restaurant.findAll({
-      raw: true
+      raw: true,
+      nest: true,
+      include: [Category]
     })
       .then(restaurants => res.render('admin/restaurants', {
         restaurants
@@ -50,7 +53,9 @@ const adminController = {
   },
   getRestaurant: (req, res, next) => {
     Restaurant.findByPk(req.params.id, {
-      raw: true
+      raw: true,
+      nest: true,
+      include: [Category]
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
@@ -137,9 +142,9 @@ const adminController = {
   patchUser: (req, res, next) => {
     // 利用Mysql的findByPk找到所要尋找的特定user id
     return User.findByPk(req.params.id)
-    // 找到該user
+      // 找到該user
       .then(user => {
-      // 如果該user不存在，回傳User didn't exist!的錯誤訊息
+        // 如果該user不存在，回傳User didn't exist!的錯誤訊息
         if (!user) throw new Error("User didn't exist!")
         // 如果該user 的email等於root@example.com則丟出錯誤訊息
         if (user.email === 'root@example.com') {
@@ -157,7 +162,7 @@ const adminController = {
             res.redirect('/admin/users')
           })
       })
-    // 捕捉錯誤訊息
+      // 捕捉錯誤訊息
       .catch(err => next(err))
   }
 }
