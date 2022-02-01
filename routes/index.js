@@ -8,9 +8,11 @@ const { authenticated, authenticatedAdmin } = require('../middleware/auth')
 
 const admin = require('./modules/admin')
 const restaurants = require('./modules/restaurants')
+const comments = require('./modules/comments')
 
 router.use('/admin', authenticatedAdmin, admin)
 router.use('/restaurants', authenticated, restaurants)
+router.use('/comments', comments)
 
 router.get('/signup', userController.signUpPage)
 router.post('/signup', userController.signUp)
