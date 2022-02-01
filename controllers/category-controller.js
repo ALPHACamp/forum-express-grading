@@ -5,15 +5,15 @@ const categoryController = {
   getCategories: (req, res, next) => {
     // 修改以下
     return Promise.all([
-      Category.findAll({
-        raw: true
-      }),
-      req.params.id
-        ? Category.findByPk(req.params.id, {
+        Category.findAll({
           raw: true
-        })
-        : null
-    ])
+        }),
+        req.params.id ?
+        Category.findByPk(req.params.id, {
+          raw: true
+        }) :
+        null
+      ])
       .then(([categories, category]) => {
         res.render('admin/categories', {
           categories,
@@ -28,8 +28,8 @@ const categoryController = {
     } = req.body
     if (!name) throw new Error('Category name is required!')
     return Category.create({
-      name
-    })
+        name
+      })
       .then(() => res.redirect('/admin/categories'))
       .catch(err => next(err))
   },
@@ -44,6 +44,16 @@ const categoryController = {
         return category.update({
           name
         })
+      })
+      .then(() => res.redirect('/admin/categories'))
+      .catch(err => next(err))
+  },
+  deleteCategory: (req, res, next) => {
+    return Category.findByPk(req.params.id)
+      .then(category => {
+        if (!category) throw new Error("Category didn't exist!")
+        // 確認要刪除的類別存在，再進行下面的刪除動作
+        return category.destroy()
       })
       .then(() => res.redirect('/admin/categories'))
       .catch(err => next(err))
