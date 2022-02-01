@@ -13,15 +13,19 @@ const adminController = {
       .catch(err => next(err))
   },
   createRestaurant: (req, res, next) => {
-    return res.render('admin/create-restaurant')
+    return Category.findAll({
+      raw: true
+    })
+      .then(categories => res.render('admin/create-restaurant', { categories }))
+      .catch(err => next(err))
   },
   postRestaurant: (req, res, next) => {
-    const { name, tel, address, openingHours, description } = req.body
+    const { name, tel, address, openingHours, description, categoryId } = req.body
     if (!name) throw new Error('Restaurant name is required!')
     const { file } = req
     imgurFileHandler(file)
       .then(filePath => {
-        Restaurant.create({ name, tel, address, openingHours, description, image: filePath || null })
+        Restaurant.create({ name, tel, address, openingHours, description, image: filePath || null, categoryId })
       })
       .then(() => {
         req.flash('success_messages', 'Restaurant was successfully created!')
@@ -38,15 +42,18 @@ const adminController = {
       .catch(err => next(err))
   },
   editRestaurant: (req, res, next) => {
-    Restaurant.findByPk(req.params.id, { raw: true })
-      .then(restaurant => {
+    return Promise.all([
+      Restaurant.findByPk(req.params.id, { raw: true }),
+      Category.findAll({ raw: true })
+    ])
+      .then(([restaurant, categories]) => {
         if (!restaurant) throw new Error('Restaurant did not exist!')
-        res.render('admin/edit-restaurant', { restaurant })
+        res.render('admin/edit-restaurant', { restaurant, categories })
       })
       .catch(err => next(err))
   },
   putRestaurant: (req, res, next) => {
-    const { name, tel, address, openingHours, description } = req.body
+    const { name, tel, address, openingHours, description, categoryId } = req.body
     if (!name) throw new Error('Restaurant name is required!')
     const { file } = req
     Promise.all([
@@ -54,7 +61,7 @@ const adminController = {
     ])
       .then(([restaurant, filePath]) => {
         if (!restaurant) throw new Error('Restaurant did not exist!')
-        return restaurant.update({ name, tel, address, openingHours, description, image: filePath || restaurant.image })
+        return restaurant.update({ name, tel, address, openingHours, description, image: filePath || restaurant.image, categoryId })
       })
       .then(() => {
         req.flash('success_messages', 'Restaurant was successfully updated!')
