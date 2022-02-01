@@ -28,7 +28,7 @@ module.exports = {
       updated_at: new Date()
     }, { // 測試用
       email: 'aaa@aaa.aaa',
-      password: 'aaa',
+      password: await bcrypt.hash('aaa', 10),
       is_admin: true,
       name: 'AAA',
       image: `https://loremflickr.com/320/240/monster/?random=${Math.random() * 100}`,
