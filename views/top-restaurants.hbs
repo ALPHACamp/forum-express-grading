@@ -1,0 +1,48 @@
+{{> restaurant-tabs route='topRestaurants'}}
+
+<h1>Top 10 人氣餐廳</h1>
+<hr />
+
+{{#each restaurants}}
+<div class="row justify-content-md-center">
+  <div class="col-8">
+    <div class="card mb-4">
+      <div class="row g-0">
+        <div class="col-md-4">
+          <img src="{{this.image}}" class="img-fluid rounded-start">
+        </div>
+        <div class="col-md-8">
+          <div class="card-body">
+            <h5 class="card-title">{{this.name}}</h5>
+            <span class="bg-secondary badge mb-3">{{this.Category.name}}</span>
+            <span class="card-text mark">收藏數：<b>{{this.favoritedCount}}</b></span>
+            <p class="card-text mt-2">{{this.description}}</p>
+            <div class="d-flex">
+              <a class="btn btn-success m-1" href="/restaurants/{{this.id}}">Show</a>
+              {{#if isFavorited}}
+              <form action="/favorite/{{this.id}}?_method=DELETE" method="POST">
+                <button type="submit" class="btn btn-danger m-1">移除最愛</button>
+              </form>
+              {{else}}
+              <form action="/favorite/{{this.id}}" method="POST">
+                <button type="submit" class="btn btn-primary m-1">加到最愛</button>
+              </form>
+              {{/if}}
+              {{!-- {{#if isLiked}}
+              <form action="/like/{{this.id}}?_method=DELETE" method="POST">
+                <button type="submit" class="btn btn-secondary m-1">Unlike</button>
+              </form>
+              {{else}}
+              <form action="/like/{{this.id}}" method="POST">
+                <button type="submit" class="btn btn-warning m-1">Like</button>
+              </form>
+              {{/if}} --}}
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{{/each}}
