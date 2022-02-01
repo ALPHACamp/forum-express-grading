@@ -1,4 +1,4 @@
-const { Restaurant, Category, View } = require('../models')
+const { Restaurant, Category, View, User, Comment } = require('../models')
 const { getOffset, getPagination } = require('../middleware/pagination-helper')
 
 const restaurantController = {
@@ -36,9 +36,11 @@ const restaurantController = {
 
   getRestaurant: async (req, res, next) => {
     try {
+      // Eager Loading
       const restInstance = await Restaurant.findByPk(req.params.id, {
-        include: Category
+        include: [Category, { model: Comment, include: User }]
       })
+
       if (!restInstance) throw new Error("Restaurant didn't exist!")
 
       // Update view count on restaurant
