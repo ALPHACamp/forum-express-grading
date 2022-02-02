@@ -94,6 +94,13 @@ const adminController = {
       req.flash('success_messages', '使用者權限變更成功')
       return res.redirect('/admin/users')
     } catch (error) { next(error) }
+  },
+  getCategories: (req, res, next) => {
+    Category.findAll({ raw: true })
+      .then(categories => {
+        res.render('admin/restaurants', { categories })
+      })
+      .catch(err => next(err))
   }
 }
 module.exports = adminController
