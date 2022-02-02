@@ -5,13 +5,11 @@ const db = require('../models')
 const User = db.User
 
 passport.use(new LocalStrategy(
-  // customize user field
   {
     usernameField: 'email',
     passwordField: 'password',
     passReqToCallback: true
   },
-  // authenticate user
   (req, email, password, cb) => {
     User.findOne({ where: { email } })
       .then(user => {
@@ -23,7 +21,6 @@ passport.use(new LocalStrategy(
       })
   }
 ))
-// serialize and deserialize user
 passport.serializeUser((user, cb) => {
   cb(null, user.id)
 })
