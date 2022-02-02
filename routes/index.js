@@ -8,5 +8,5 @@ router.get('/signup', userController.signUpPage)
 router.post('/signup', userController.signUp)
 router.use('/admin', admin)
 router.get('/restaurants', restController.getRestaurant)
-router.use('/', (req, res) => res.redirect('/restaurants'))
+router.get('/', (req, res) => res.redirect('/restaurants'))
 module.exports = router
