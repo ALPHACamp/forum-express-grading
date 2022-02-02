@@ -50,10 +50,12 @@ const adminController = {
       .catch(error => next(error))
   },
   createRestaurant: (req, res, next) => {
-    res.render('admin/create-restaurant')
+    Category.findAll({ raw: true })
+      .then(categories => res.render('admin/create-restaurant', { categories }))
+      .catch(error => next(error))
   },
   postRestaurant: (req, res, next) => {
-    const { name, tel, address, openingHours, description } = req.body
+    const { name, tel, address, openingHours, description, categoryId } = req.body
     if (!name) throw new Error('Restaurant name is required!')
     const { file } = req
     helpers.imgurFileHandler(file)
@@ -64,7 +66,8 @@ const adminController = {
           address,
           openingHours,
           description,
-          image: filePath || null
+          image: filePath || null,
+          categoryId
         })
       )
       .then(() => {
@@ -75,15 +78,18 @@ const adminController = {
   },
   editRestaurant: (req, res, next) => {
     const id = req.params.id
-    Restaurant.findByPk(id, { raw: true })
-      .then(restaurant => {
+    Promise.all([
+      Restaurant.findByPk(id, { raw: true }),
+      Category.findAll({ raw: true })
+    ])
+      .then(([restaurant, categories]) => {
         if (!restaurant) throw new Error('Restaurant didn\'t exist')
-        res.render('admin/edit-restaurant', { restaurant })
+        res.render('admin/edit-restaurant', { restaurant, categories })
       })
   },
   putRestaurant: (req, res, next) => {
     const id = req.params.id
-    const { name, tel, address, openingHours, description } = req.body
+    const { name, tel, address, openingHours, description, categoryId } = req.body
     const { file } = req
     Promise.all([
       Restaurant.findByPk(id),
@@ -96,7 +102,8 @@ const adminController = {
           address,
           openingHours,
           description,
-          image: filePath || restaurant.image
+          image: filePath || restaurant.image,
+          categoryId
         })
       )
       .then(() => {
