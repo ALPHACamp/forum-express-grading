@@ -2,11 +2,20 @@ const {
   Restaurant,
   Category
 } = require('../models')
+const {
+  getOffset,
+  getPagination
+} = require('../helpers/pagination-helper')
 const restaurantController = {
   getRestaurants: (req, res, next) => {
+    const DEFAULT_LIMIT = 9 // 每頁顯示9間餐廳
     const categoryId = Number(req.query.categoryId) || ''
+    const page = Number(req.query.page) || 1
+    const limit = Number(req.query.limit) || DEFAULT_LIMIT
+    const offset = getOffset(limit, page)
+
     return Promise.all([
-      Restaurant.findAll({
+      Restaurant.findAndCountAll({
         include: Category,
         where: {
           ...categoryId
@@ -15,6 +24,8 @@ const restaurantController = {
               }
             : {}
         },
+        limit,
+        offset, // 把limit和offset傳入，這樣sequelize在查詢的時候才知到要查詢幾筆資料
         nest: true,
         raw: true
       }),
@@ -23,14 +34,16 @@ const restaurantController = {
       })
     ])
       .then(([restaurants, categories]) => {
-        const data = restaurants.map(r => ({
+        console.log(restaurants)
+        const data = restaurants.rows.map(r => ({
           ...r,
           description: r.description.substring(0, 50)
         }))
         return res.render('restaurants', {
           restaurants: data,
           categories,
-          categoryId
+          categoryId,
+          pagination: getPagination(limit, page, restaurants.count)
         })
       })
       .catch(err => next(err))
