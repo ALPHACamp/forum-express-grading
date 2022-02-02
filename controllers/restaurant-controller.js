@@ -50,10 +50,22 @@ const restaurantController = {
   },
 
   getRestaurant: (req, res, next) => {
+    const {
+      Restaurant,
+      Category,
+      Comment,
+      User
+    } = require('../models')
     return Restaurant.findByPk(req.params.id, {
-      include: Category
+      include: [Category,
+        {
+          model: Comment,
+          include: User
+        }
+      ]
     })
       .then(restaurant => {
+        console.log(restaurant.Comments[0].dataValues)
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         // 每點擊一次就要增加一次瀏覽數
         return restaurant.increment('viewCount')
