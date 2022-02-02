@@ -1,6 +1,8 @@
 const bcrypt = require('bcryptjs')
 const { User } = require('../models')
 
+const { imgurFileHandler } = require('../middleware/file-helpers')
+
 const userController = {
   signUpPage: (req, res) => {
     return res.render('signup')
@@ -44,8 +46,52 @@ const userController = {
     req.flash('success_messages', '登出成功！')
     req.logout()
     return res.redirect('/signin')
-  }
+  },
 
+  // User profile
+  getUser: async (req, res, next) => {
+    try {
+      const user = await User.findByPk(req.params.id, { raw: true })
+
+      return res.render('users/profile', { user })
+    } catch (error) {
+      next(error)
+    }
+  },
+
+  editUser: async (req, res, next) => {
+    try {
+      const user = await User.findByPk(req.params.id, { raw: true })
+
+      return res.render('users/edit', { user })
+    } catch (error) {
+      next(error)
+    }
+  },
+
+  putUser: async (req, res, next) => {
+    try {
+      const { name } = req.body
+      const { id } = req.params
+      if (!name) throw new Error('User name is required!')
+
+      const { file } = req
+      const [filePath, user] = await Promise.all([
+        imgurFileHandler(file),
+        User.findByPk(id)
+      ])
+
+      await user.update({
+        name,
+        image: filePath || user.image
+      })
+
+      req.flash('success_messages', '使用者資料編輯成功')
+      return res.redirect(`/users/${id}`)
+    } catch (error) {
+      next(error)
+    }
+  }
 }
 
 module.exports = userController

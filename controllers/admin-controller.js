@@ -1,6 +1,6 @@
 const { Restaurant, User, Category } = require('../models')
 const { imgurFileHandler } = require('../middleware/file-helpers')
-const { isSuperUser } = require('../middleware/auth-helpers')
+const { isSuperUser } = require('../helpers/auth-helpers')
 
 const adminController = {
   // Restaurants CRUD

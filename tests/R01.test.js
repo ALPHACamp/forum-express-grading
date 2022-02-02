@@ -38,33 +38,28 @@ describe('# R01', () => {
         .post('/signin')
         .type('urlencoded')
         .send('email=root@example.com&password=12345678')
-        // 期待登入驗證成功，重新導向 /restaurants
+        // 期待登入驗證成功，重新導向 /restaurants 
         .expect('Location', '/restaurants')
         .expect(302, done)
     })
-  })
+  });
 
   describe('# 使用者權限管理', function () {
     // 前置準備
     before(() => {
       // 製作假資料
       // 本 context 會用這筆資料進行測試
-      this.UserMock = createModelMock('User', [
-        {
-          id: 1,
-          email: 'root@example.com',
-          name: 'admin',
-          isAdmin: false
-        }
-      ])
+      this.UserMock = createModelMock('User', [{
+        id: 1,
+        email: 'root@example.com',
+        name: 'admin',
+        isAdmin: false,
+      }])
 
       // 修改 adminController 中的資料庫連線設定，由連向真實的資料庫 -> 改為連向模擬的 User table
-      this.adminController = createControllerProxy(
-        '../controllers/admin-controller',
-        { User: this.UserMock }
-      )
+      this.adminController = createControllerProxy('../controllers/admin-controller', { User: this.UserMock })
     })
-
+    
     // 開始測試
     context('# [顯示使用者清單]', () => {
       it(' GET /admin/users ', async () => {
@@ -85,22 +80,20 @@ describe('# R01', () => {
 
     context('# [修改使用者權限] for root', () => {
       before(() => {
-        // 製作假資料
-        // 本 context 會用這筆資料進行測試
-        this.UserMock = createModelMock('User', [
-          {
+      // 製作假資料
+      // 本 context 會用這筆資料進行測試
+        this.UserMock = createModelMock(
+          'User', 
+          [{
             id: 1,
             email: 'root@example.com',
             name: 'admin',
-            isAdmin: true // 是管理者
-          }
-        ])
-
-        // 將 adminController 中的 User db 取代成 User mock db
-        this.adminController = createControllerProxy(
-          '../controllers/admin-controller',
-          { User: this.UserMock }
+            isAdmin: true, // 是管理者
+          }]
         )
+        
+        // 將 adminController 中的 User db 取代成 User mock db
+        this.adminController = createControllerProxy('../controllers/admin-controller', { User: this.UserMock })
       })
 
       it(' PATCH /admin/users/:id ', async () => {
@@ -109,15 +102,14 @@ describe('# R01', () => {
         const res = mockResponse()
         const next = mockNext
 
-        // 測試作業指定的 adminController.patchUser 函式
+       // 測試作業指定的 adminController.patchUser 函式
         await this.adminController.patchUser(req, res, next)
 
         // patchUser 正確執行的話，應呼叫 req.flash
         // req.flash 的參數應該要與下列字串一致
-        req.flash.calledWith('error_messages', '禁止變更 root 權限').should.be
-          .true
+        req.flash.calledWith('error_messages','禁止變更 root 權限').should.be.true
 
-        // patchUser 執行完畢，應呼叫 res.redirect 並重新導向上一頁
+        // patchUser 執行完畢，應呼叫 res.redirect 並重新導向上一頁 
         res.redirect.calledWith('back').should.be.true
       })
     })
@@ -126,19 +118,17 @@ describe('# R01', () => {
       before(() => {
         // 製作假資料
         // 本 context 會用這筆資料進行測試
-        this.UserMock = createModelMock('User', [
-          {
+        this.UserMock = createModelMock(
+          'User',
+          [{
             id: 1,
             email: 'user@example.com',
             name: 'user',
-            isAdmin: false // 非管理者
-          }
-        ])
-        // 將 adminController 中的 User db 取代成 User mock db
-        this.adminController = createControllerProxy(
-          '../controllers/admin-controller',
-          { User: this.UserMock }
+            isAdmin: false, // 非管理者
+          }]
         )
+        // 將 adminController 中的 User db 取代成 User mock db
+        this.adminController = createControllerProxy('../controllers/admin-controller', { User: this.UserMock })
       })
 
       it(' PATCH /admin/users/:id ', async () => {
@@ -150,10 +140,9 @@ describe('# R01', () => {
         // 測試作業指定的 adminController.patchUser 函式
         await this.adminController.patchUser(req, res, next)
 
-        // patchUser 正確執行的話，應呼叫 req.flash
+        // patchUser 正確執行的話，應呼叫 req.flash 
         // req.flash 的參數應與下列字串一致
-        req.flash.calledWith('success_messages', '使用者權限變更成功').should.be
-          .true
+        req.flash.calledWith('success_messages','使用者權限變更成功').should.be.true
         // patchUser 執行完畢，應呼叫 res.redirect 並重新導向 /admin/users
         res.redirect.calledWith('/admin/users').should.be.true
 
@@ -168,19 +157,17 @@ describe('# R01', () => {
       before(() => {
         // 製作假資料
         // 本 context 會用這筆資料進行測試
-        this.UserMock = createModelMock('User', [
-          {
+        this.UserMock = createModelMock(
+          'User',
+          [{
             id: 2,
             email: 'user2@example.com',
             name: 'user2',
             isAdmin: true // 是管理者
-          }
-        ])
-        // 將 adminController 中的 User db 取代成 User mock db
-        this.adminController = createControllerProxy(
-          '../controllers/admin-controller',
-          { User: this.UserMock }
+          }]
         )
+        // 將 adminController 中的 User db 取代成 User mock db
+        this.adminController = createControllerProxy('../controllers/admin-controller', { User: this.UserMock })
       })
 
       it(' PATCH /admin/users/:id ', async () => {
@@ -192,10 +179,9 @@ describe('# R01', () => {
         // 測試作業指定的 adminController.patchUser 函式
         await this.adminController.patchUser(req, res, next)
 
-        // patchUser 正確執行的話，應呼叫 req.flash
+        // patchUser 正確執行的話，應呼叫 req.flash 
         // req.flash 的參數應與下列字串一致
-        req.flash.calledWith('success_messages', '使用者權限變更成功').should.be
-          .true
+        req.flash.calledWith('success_messages','使用者權限變更成功').should.be.true
         // patchUser 執行完畢，應呼叫 res.redirect 並重新導向 /admin/users
         res.redirect.calledWith('/admin/users').should.be.true
 
