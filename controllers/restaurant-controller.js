@@ -26,12 +26,17 @@ const restaurantController = {
         const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
         // 可以命名的提早命名，避免在 loop 內命名，節省程式運行成本
 
+        const likedRestaurantsId = req.user && req.user.LikedRestaurants.map(lr => lr.id)
+
         const data = restaurants.rows.map(r => ({
           ...r,
           description: r.description.substring(0, 50),
           // 擷取50字
-          isFavorited: favoritedRestaurantsId.includes(r.id)
+
+          isFavorited: favoritedRestaurantsId.includes(r.id),
           // 判定是否被 User 收藏
+
+          isLiked: likedRestaurantsId.includes(r.id)
         }))
         return res.render('restaurants', {
           restaurants: data,
@@ -47,7 +52,8 @@ const restaurantController = {
       include: [
         Category,
         { model: Comment, include: User },
-        { model: User, as: 'FavoritedUsers' }
+        { model: User, as: 'FavoritedUsers' },
+        { model: User, as: 'LikedUsers' }
       ]
     })
       .then(restaurant => {
@@ -57,8 +63,10 @@ const restaurantController = {
       .then(restaurant => {
         const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id)
         // some: 對比成功就會停止程式， map: 不論有無成功對比，皆會跑完全部資料
+
+        const isLiked = restaurant.LikedUsers.some(l => l.id === req.user.id)
         restaurant = restaurant.toJSON()
-        res.render('restaurant', { restaurant: restaurant.toJSON(), isFavorited })
+        res.render('restaurant', { restaurant, isFavorited, isLiked })
       })
       .catch(err => next(err))
   },
