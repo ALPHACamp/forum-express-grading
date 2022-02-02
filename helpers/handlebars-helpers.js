@@ -1,9 +1,11 @@
 const dayjs = require('dayjs')
 const currentYear = () => dayjs().year()
-const role = isAdmin => isAdmin ? 'admin' : 'user'
-const setRole = isAdmin => isAdmin ? 'set user' : 'set admin'
+const isAdminLogger = (thisIsAdim, thisId, userId, options) => {
+  if (thisIsAdim && thisId === userId) {
+    return options.fn(this)
+  }
+}
 module.exports = {
   currentYear,
-  role,
-  setRole
+  isAdminLogger
 }
