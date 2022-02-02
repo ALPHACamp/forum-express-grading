@@ -12,8 +12,13 @@ const defaultNavOption = (selectedType, currentType) => {
   return selectedType === currentType ? 'active' : ''
 }
 
+const ifCond = (selectedOption, currentOption, options) => {
+  return selectedOption === currentOption ? options.fn(this) : options.inverse(this)
+}
+
 exports = module.exports = {
   currentYear,
   permissionType,
-  defaultNavOption
+  defaultNavOption,
+  ifCond
 }
