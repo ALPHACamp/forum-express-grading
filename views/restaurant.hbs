@@ -17,6 +17,16 @@
   <div class="col-md-8">
     <p style="white-space: break-spaces;">{{restaurant.description}}</p>
     <a href="/restaurant/{{restaurant.id}}/dashboard" class="btn btn-primary">Dashboard</a>
+
+    {{#if isFavorited }}
+    <form action="/favorite/{{restaurant.id}}?_method=DELETE" method="POST" style="display: contents;">
+      <button type="submit" class="btn btn-danger removeFavorited" data-name="{{restaurant.name}}">移除最愛</button>
+    </form>
+    {{else}}
+    <form action="/favorite/{{restaurant.id}}" method="POST" style="display: contents;">
+      <button type="submit" class="btn btn-primary">加到最愛</button>
+    </form>
+    {{/if}}
   </div>
   <hr>
 </div>
@@ -46,3 +56,25 @@
   <button type="submit" class="btn btn-primary">Submit</button>
   <a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
 </form>
+
+<script>
+  const removeFavorited = document.querySelectorAll('.removeFavorited')
+
+  removeFavorited.forEach(remove => {
+    remove.addEventListener('click', async event => {
+      event.stopPropagation()
+      event.preventDefault()
+
+      let toggle
+      // eslint-disable-next-line no-undef
+      toggle = await Swal.fire({
+        title: '注意',
+        text: `是否要將${remove.dataset.name}移除最愛呢？`,
+        icon: 'warning',
+        showCancelButton: true
+      })
+
+      if (toggle.isConfirmed) return remove.parentElement.submit()
+    })
+  })
+</script>

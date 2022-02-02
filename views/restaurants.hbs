@@ -29,12 +29,15 @@
         <span class="badge bg-secondary">{{this.Category.name}}</span>
         <p class="card-text text-truncate">{{this.description}}</p>
         <div class="d-flex">
+          {{#if isFavorited}}
           <form action="/favorite/{{this.id}}?_method=DELETE" method="POST">
-            <button type="submit" class="btn btn-danger m-1">移除最愛</button>
+            <button type="submit" class="btn btn-danger m-1 removeFavorited" data-name="{{this.name}}">移除最愛</button>
           </form>
+          {{else}}
           <form action="/favorite/{{this.id}}" method="POST">
             <button type="submit" class="btn btn-primary m-1">加到最愛</button>
           </form>
+          {{/if}}
         </div>
       </div>
     </div>
@@ -65,3 +68,25 @@
     </li>
   </ul>
 </nav>
+
+<script>
+  const removeFavorited = document.querySelectorAll('.removeFavorited')
+
+  removeFavorited.forEach(remove => {
+    remove.addEventListener('click', async event => {
+      event.stopPropagation()
+      event.preventDefault()
+
+      let toggle
+      // eslint-disable-next-line no-undef
+      toggle = await Swal.fire({
+        title: '注意',
+        text: `是否要將${remove.dataset.name}移除最愛呢？`,
+        icon: 'warning',
+        showCancelButton: true
+      })
+
+      if (toggle.isConfirmed) return remove.parentElement.submit()
+    })
+  })
+</script>
