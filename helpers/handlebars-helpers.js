@@ -1,11 +1,9 @@
 const dayjs = require('dayjs')
 const currentYear = () => dayjs().year()
-const isAdminLogger = (thisIsAdim, thisId, userId, options) => {
-  if (thisIsAdim && thisId === userId) {
-    return options.fn(this)
-  }
+const ifCond = function (a, b, options) {
+  return a === b ? options.fn(this) : options.inverse(this)
 }
 module.exports = {
   currentYear,
-  isAdminLogger
+  ifCond
 }
