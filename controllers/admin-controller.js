@@ -3,19 +3,17 @@ const helpers = require('../helpers/file-helpers')
 
 const adminController = {
   getRestaurants: (req, res, next) => {
-    const type = 'restaurant'
     return Restaurant.findAll({ raw: true, nest: true, include: [Category] })
-      .then(restaurants => res.render('admin/restaurants', { type, restaurants }))
+      .then(restaurants => res.render('admin/restaurants', { restaurants }))
       .catch(error => next(error))
   },
   getUsers: (req, res, next) => {
-    const type = 'user'
     return User.findAll({ raw: true })
       .then(users => {
         users.forEach(user => {
           user.permissionOptionValue = !user.isAdmin
         })
-        res.render('admin/users', { type, users })
+        res.render('admin/users', { users })
       })
       .catch(error => next(error))
   },
@@ -41,10 +39,11 @@ const adminController = {
   },
   getRestaurant: (req, res, next) => {
     const id = req.params.id
-    Restaurant.findByPk(id, { raw: true, nest: true, include: [Category] })
+    Restaurant.findByPk(id, { raw: true, include: [Category] })
       .then(restaurant => {
         // avoid user from inputing id in url
         if (!restaurant) throw new Error('Restaurant didn\'t exist!')
+        console.log(restaurant['Category.name'])
         res.render('admin/restaurant', { restaurant })
       })
       .catch(error => next(error))
