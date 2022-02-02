@@ -1,10 +1,10 @@
-const { Restaurant, User } = require('../models')
+const { Restaurant, User, Category } = require('../models')
 const helpers = require('../helpers/file-helpers')
 
 const adminController = {
   getRestaurants: (req, res, next) => {
     const type = 'restaurant'
-    return Restaurant.findAll({ raw: true })
+    return Restaurant.findAll({ raw: true, nest: true, include: [Category] })
       .then(restaurants => res.render('admin/restaurants', { type, restaurants }))
       .catch(error => next(error))
   },
@@ -41,7 +41,7 @@ const adminController = {
   },
   getRestaurant: (req, res, next) => {
     const id = req.params.id
-    Restaurant.findByPk(id, { raw: true })
+    Restaurant.findByPk(id, { raw: true, nest: true, include: [Category] })
       .then(restaurant => {
         // avoid user from inputing id in url
         if (!restaurant) throw new Error('Restaurant didn\'t exist!')
