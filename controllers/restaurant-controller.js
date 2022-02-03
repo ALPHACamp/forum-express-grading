@@ -65,7 +65,6 @@ const restaurantController = {
       ]
     })
       .then(restaurant => {
-        console.log(restaurant.Comments[0].dataValues)
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         // 每點擊一次就要增加一次瀏覽數
         return restaurant.increment('viewCount')
@@ -80,14 +79,12 @@ const restaurantController = {
   // 渲染已經有算好瀏覽數的viewCount到前單樣版
   getDashboard: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
-      include: Category,
-      nest: true,
-      raw: true
+      include: Category
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         res.render('dashboard', {
-          restaurant: restaurant
+          restaurant: restaurant.toJSON()
         })
       })
       .catch(err => next(err))
