@@ -20,6 +20,7 @@ if (config.use_env_variable) {
 fs
   .readdirSync(__dirname)
   .filter(file => {
+    console.log('model ok!')
     return (file.indexOf('.') !== 0) && (file !== basename) && (file.slice(-3) === '.js')
   })
   .forEach(file => {
@@ -30,6 +31,7 @@ fs
 // 設定 Models 之間的關聯
 Object.keys(db).forEach(modelName => {
   if (db[modelName].associate) {
+    console.log(db[modelName])
     db[modelName].associate(db)
   }
 })
