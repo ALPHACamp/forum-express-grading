@@ -13,12 +13,23 @@ const restaurantController = {
   },
   getRestaurant: (req, res, next) => {
     const id = req.params.id
+    return Restaurant.findByPk(id, { nest: true, include: [Category] })
+      .then(restaurant => {
+        if (!restaurant) throw new Error('Restaurant doesn\'t exist')
+        return restaurant.increment('viewCounts')
+      })
+      .then(restaurant => res.render('restaurant', {
+        restaurant: restaurant.toJSON()
+      }))
+      .catch(error => next(error))
+  },
+  getDashboard: (req, res, next) => {
+    const id = req.params.id
     return Restaurant.findByPk(id, { raw: true, nest: true, include: [Category] })
       .then(restaurant => {
         if (!restaurant) throw new Error('Restaurant doesn\'t exist')
-        res.render('restaurant', { restaurant })
+        res.render('dashboard', { restaurant })
       })
-      .catch(error => next(error))
   }
 }
 
