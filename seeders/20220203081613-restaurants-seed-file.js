@@ -12,6 +12,11 @@ module.exports = {
      *   isBetaMember: false
      * }], {});
     */
+    const categories = await queryInterface.sequelize.query(
+      'SELECT id FROM Categories;', {
+        type: queryInterface.sequelize.QueryTypes.SELECT
+      }
+    )
     await queryInterface.bulkInsert('Restaurants',
     /* To return an object literal expression requires parentheses around expression: */
       Array.from({ length: 50 }, () => ({
@@ -22,7 +27,8 @@ module.exports = {
         image: `https://loremflickr.com/320/240/restaurant,food/?random=${Math.random() * 100}`,
         description: faker.lorem.text(),
         created_at: new Date(),
-        updated_at: new Date()
+        updated_at: new Date(),
+        category_id: categories[Math.floor(Math.random() * categories.length)].id
       }))
     )
   },
