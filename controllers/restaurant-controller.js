@@ -19,6 +19,10 @@ const restaurantController = {
         res.render('restaurant', { restaurant })
       })
       .catch(error => next(error))
+  },
+  getDashboard: (req, res, next) => {
+    console.log('hi getDashboard')
+    res.render('restaurant-dashboard')
   }
 }
 
