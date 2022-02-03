@@ -11,14 +11,8 @@
   <li class="nav-item">
     <a class="nav-link" href="/admin/categories">Categories</a>
   </li>
-  <li class="nav-item">
-    <a href='/admin/restaurants/create'>
-     <button type="button" class="btn btn-primary">New Restaurant</button>
-    </a>
-  </li>
+
 </ul>
-<br />
-<br />
 {{#if users}}
   <table class="table align-middle">
     <thead class="thead-dark">
@@ -59,6 +53,9 @@
 {{/if}}
 
 {{#if restaurants}}
+  <a href='/admin/restaurants/create'>
+    <button type="button" class="btn btn-primary my-2">New Restaurant</button>
+  </a>
   <table class="table align-middle">
     <thead class="thead-dark">
       <tr>
@@ -96,11 +93,21 @@
 {{/if}}
 
 {{#if categories}}
+  <div class="d-flex align-items-center py-3 my-2 text-white-50 bg-purple">
+    <form action="/admin/categories" method="POST" class="row">
+      <div class="col-auto">
+        <input class="form-control" type="text" name="name" id="name" placeholder="Category name">
+      </div>
+      <div class="col-auto">
+        <input type="submit" class="btn btn-primary" value="Create">
+      </div>
+    </form>
+</div>
   <table class="table align-middle">
     <thead class="thead-dark">
       <tr>
         <th scope="col">#</th>
-        <th scope="col">Name</th>
+        <th scope="col">Category Name</th>
         <th scope="col">#</th>
       </tr>
     </thead>
