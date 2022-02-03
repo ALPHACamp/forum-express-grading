@@ -93,16 +93,7 @@
 {{/if}}
 
 {{#if categories}}
-  <div class="d-flex align-items-center py-3 my-2 text-white-50 bg-purple">
-    <form action="/admin/categories" method="POST" class="row">
-      <div class="col-auto">
-        <input class="form-control" type="text" name="name" id="name" placeholder="Category name">
-      </div>
-      <div class="col-auto">
-        <input type="submit" class="btn btn-primary" value="Create">
-      </div>
-    </form>
-</div>
+  {{> category}}
   <table class="table align-middle">
     <thead class="thead-dark">
       <tr>
@@ -118,7 +109,7 @@
           <td>{{this.name}}</td>
           <td>
             <button type="button" class="btn btn-link">
-              <a class="btn btn-link link-primary" href="/admin/categories/{{this.id}}/edit">
+              <a class="btn btn-link link-primary" href="/admin/categories/{{this.id}}">
                 Edit
               </a>
             </button>

@@ -1,0 +1,24 @@
+<div class="d-flex align-items-center py-3 my-2 text-white-50 bg-purple">
+  {{#if category}}
+    <form action="/admin/categories/{{category.id}}?_method=PUT" method="POST" class="row">
+      <div class="col-auto">
+        <input class="form-control" type="text" name="name" id="name" value="{{category.name}}">
+      </div>
+      <div class="col-auto">
+        <input type="submit" class="btn btn-warning" value="Update">
+      </div>
+      <div class="col-auto">
+        <a href="/admin/categories" class="btn btn-link link-secondary">or Create New</a>
+      </div>
+    </form>
+  {{else}}
+    <form action="/admin/categories" method="POST" class="row">
+    <div class="col-auto">
+      <input class="form-control" type="text" name="name" id="name" placeholder="Category name">
+    </div>
+    <div class="col-auto">
+      <input type="submit" class="btn btn-primary" value="Create">
+    </div>
+  </form>
+  {{/if}}
+</div>
