@@ -28,7 +28,7 @@ const restaurantController = {
     return Restaurant.findByPk(id, { raw: true, nest: true, include: [Category] })
       .then(restaurant => {
         if (!restaurant) throw new Error('Restaurant doesn\'t exist')
-        res.render('restaurant-dashboard', { restaurant })
+        res.render('dashboard', { restaurant })
       })
   }
 }
