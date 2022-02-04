@@ -1,8 +1,6 @@
 <div class="row mb-5">
-  <div class="col-md-12">
-    <h1>{{restaurant.name}}</h1>
-    <p>[{{restaurant.Category.name}}]</p>
-  </div>
+  {{>restaurant-title}}
+
   <div class="col-md-4">
     <img class="img-responsive center-block mb-5" src="{{restaurant.image}}"
       style="width: 250px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
@@ -16,6 +14,11 @@
   </div>
   <div class="col-md-8">
     <p style="white-space: break-spaces;">{{restaurant.description}}</p>
+    <button type="button" class="btn btn-link">
+      <a class="btn btn-secondary" href="/restaurants/{{restaurant.id}}/dashboard">
+        Dashboard
+      </a>
+    </button>
   </div>
   <hr>
 </div>
