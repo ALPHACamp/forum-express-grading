@@ -1,6 +1,8 @@
 const {
   Restaurant,
-  Category
+  Category,
+  Comment,
+  User
 } = require('../models')
 const {
   getOffset,
@@ -79,12 +81,39 @@ const restaurantController = {
   // 渲染已經有算好瀏覽數的viewCount到前單樣版
   getDashboard: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
-      include: Category
+      include: [Category, {
+        model: Comment, include: User
+      }]
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         res.render('dashboard', {
           restaurant: restaurant.toJSON()
+        })
+      })
+      .catch(err => next(err))
+  },
+  getFeeds: (req, res, next) => {
+    return Promise.all([
+      Restaurant.findAll({
+        limit: 10,
+        order: [['createdAt', 'DESC']],
+        include: [Category],
+        raw: true,
+        nest: true
+      }),
+      Comment.findAll({
+        limit: 10,
+        order: [['createdAt', 'DESC']],
+        include: [User, Restaurant],
+        raw: true,
+        nest: true
+      })
+    ])
+      .then(([restaurants, comments]) => {
+        res.render('feeds', {
+          restaurants,
+          comments
         })
       })
       .catch(err => next(err))

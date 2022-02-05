@@ -1,8 +1,6 @@
 const bcrypt = require('bcryptjs')
-const db = require('../models')
-const {
-  User
-} = db
+const { imgurFileHandler } = require('../helpers/file-helpers')
+const { User, Restaurant, Comment } = require('../models')
 
 const userController = {
   signUpPage: (req, res) => {
@@ -43,8 +41,67 @@ const userController = {
     req.flash('success_messages', '登出成功！')
     req.logout()
     res.redirect('/signin')
-  }
+  },
+  getUser: (req, res, next) => {
+    return User.findByPk(req.params.id, {
+      include: [{
+        model: Comment, include: Restaurant
+      }]
+    })
+      .then(user => {
+        if (!user) throw new Error("User didn't exist!")
+        user = user.toJSON()
+        // 搞懂下面這段
+        user.commentedRestaurants = user.Comments && user.Comments.reduce((acc, c) => {
+          if (!acc.some(r => r.id === c.restaurantId)) {
+            acc.push(c.Restaurant)
+          }
+          return acc
+        }, [])
 
+        res.render('users/profile', {
+          user: user
+        })
+      })
+      .catch(err => next(err))
+  },
+  editUser: (req, res, next) => {
+    return User.findByPk(req.params.id)
+      .then(user => {
+        if (!user) throw new Error("User didn't exist!")
+        res.render('users/edit', {
+          user: user.toJSON()
+        })
+      })
+      .catch(err => next(err))
+  },
+  // 搞懂下面這段
+  putUser: (req, res, next) => {
+    if (Number(req.params.id) !== Number(req.user.id)) {
+      res.redirect(`/users/${req.params.id}`)
+    }
+    const {
+      file
+    } = req
+
+    return Promise.all([
+      User.findByPk(req.params.id),
+      imgurFileHandler(file)
+    ])
+      .then(([user, filePath]) => {
+        if (!user) throw new Error("User didn't exist!")
+
+        return user.update({
+          name: req.body.name,
+          image: filePath || user.image
+        })
+      })
+      .then(() => {
+        req.flash('success_messages', '使用者資料編輯成功')
+        res.redirect(`/users/${req.params.id}`)
+      })
+      .catch(err => next(err))
+  }
 }
 
 module.exports = userController
