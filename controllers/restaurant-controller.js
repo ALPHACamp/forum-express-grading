@@ -5,7 +5,6 @@ const restaurantController = {
   getRestaurants: (req, res, next) => {
     // obtain current category
     const categoryId = Number(req.query.categoryId) || ''
-    console.log('categoryId', req.query.categoryId)
     // define where condition for SQL
     const where = {}
     if (categoryId) where.categoryId = categoryId
