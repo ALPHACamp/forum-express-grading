@@ -21,7 +21,7 @@ const restaurantController = {
     ])
       .then(([categories, restaurants]) => {
         const pagination = getPagination(limit, page, restaurants.count)
-        if (!pagination.pages.includes(page)) throw new Error("Page didn't exist")
+        if (!pagination.pages.includes(page)) throw new Error("Page didn't exist!")
         restaurants = restaurants.rows.map(restaurant => ({
           ...restaurant,
           description: restaurant.description.substring(0, 50)
@@ -50,8 +50,14 @@ const restaurantController = {
   },
   getDashboard: (req, res, next) => {
     return Restaurant
-      .findByPk(req.params.id, { raw: true, nest: true, include: [Category] })
-      .then(restaurant => res.render('dashboard', { restaurant }))
+      .findByPk(req.params.id, {
+        nest: true,
+        include: [Category, Comment]
+      })
+      .then(restaurant => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        return res.render('dashboard', { restaurant: restaurant.toJSON() })
+      })
       .catch(err => next(err))
   }
 }
