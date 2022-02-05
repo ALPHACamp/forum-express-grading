@@ -4,7 +4,7 @@ module.exports = {
   up: async (queryInterface, Sequelize) => {
     // 取得categories
     const categories = await queryInterface.sequelize.query(
-      'SELECT id FROM categories;',
+      'SELECT id FROM Categories;',
       { type: queryInterface.sequelize.QueryTypes.SELECT }
     )
     await queryInterface.bulkInsert('Restaurants',
@@ -17,7 +17,8 @@ module.exports = {
         description: faker.lorem.text(),
         created_at: new Date(),
         updated_at: new Date(),
-        category_id: categories[Math.floor(Math.random() * categories.length)].id
+        category_id: categories[Math.floor(Math.random() * categories.length)].id,
+        view_counts: 0
       }))
     )
   },
