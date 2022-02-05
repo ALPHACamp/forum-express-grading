@@ -28,9 +28,20 @@ const categoryContoller = {
     return Category.findByPk(req.params.id)
       .then(category => {
         if (!category) {
-          throw new Error('Category name is required')
+          throw new Error('Category id does not exists')
         }
         return category.update({ name })
+      })
+      .then(() => res.redirect('/admin/categories'))
+      .catch(err => next(err))
+  },
+  deleteCagtegory: (req, res, next) => {
+    return Category.findByPk(req.params.id)
+      .then(category => {
+        if (!category) {
+          throw new Error('Category id does not exists')
+        }
+        return category.destroy()
       })
       .then(() => res.redirect('/admin/categories'))
       .catch(err => next(err))
