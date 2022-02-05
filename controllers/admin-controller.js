@@ -2,7 +2,7 @@ const { Restaurant, User, Category } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 const adminController = {
   getRestaurants: (req, res, next) => {
-    Restaurant.findAll({
+    return Restaurant.findAll({
       raw: true,
       nest: true,
       include: [Category]
@@ -41,7 +41,7 @@ const adminController = {
       .catch(err => next(err))
   },
   getRestaurant: (req, res, next) => {
-    Restaurant.findByPk(req.params.id, { // 去資料庫用 id 找一筆資料
+    return Restaurant.findByPk(req.params.id, { // 去資料庫用 id 找一筆資料
       raw: true, // 找到以後整理格式再回傳
       nest: true,
       include: [Category]
@@ -49,7 +49,7 @@ const adminController = {
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         // 如果找不到，回傳錯誤訊息，後面不執行
-        res.render('admin/restaurant', { restaurant })
+        return res.render('admin/restaurant', { restaurant })
       })
       .catch(err => next(err))
   },
@@ -104,6 +104,7 @@ const adminController = {
         if (!users) throw new Error("User didn't exist!")
         return res.render('admin/users', { users })
       })
+      .catch(err => next(err))
   },
   patchUser: async (req, res, next) => {
     try {
