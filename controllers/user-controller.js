@@ -109,7 +109,7 @@ const userController = {
       Favorite.findOne({
         where: {
           userId: req.user.id,
-          restaurantId
+          restaurantId: restaurantId
         }
       })
     ])
