@@ -1,0 +1,12 @@
+<form method="POST" action="/users/{{user.id}}?method=PUT">
+  <div class="form-row mb-3">
+    <label class="form-label" for="name">Name</label>
+    <input class="form-control" type="text" name="name" id="name" placeholder="Enter name" required
+    value="{{user.name}}">
+  </div>
+  <div class="form-row mb-3">
+    <label class="form-label" for="image">Image</label>
+    <input class="form-control" type="file" class="form-control-file" id="image" name="image">
+  </div>
+  <button type="submit" class="btn btn-primary">Submit</button>
+</form>
