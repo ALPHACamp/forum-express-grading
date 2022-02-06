@@ -173,7 +173,22 @@ const userController = {
         if (!like) throw new Error("You haven't liked this restaurant")
         return like.destroy()
       })
-      .then(() => res.redirect('bakc'))
+      .then(() => res.redirect('back'))
+      .catch(err => next(err))
+  },
+  getTopUsers: (req, res, next) => {
+    return User.findAll({
+      // Followers => 有多少個 follower
+      include: [{ model: User, as: 'Followers' }]
+    })
+      .then(users => {
+        users = users.map(user => ({
+          ...user.toJSON(),
+          followerCount: user.Followers.length,
+          isFollowed: req.user.Followings.some(f => f.id === user.id)
+        }))
+        res.render('top-users', { users: users })
+      })
       .catch(err => next(err))
   }
 
