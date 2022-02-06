@@ -48,7 +48,14 @@ const userController = {
     res.redirect('/signin')
   },
   getUser: (req, res, next) => {
-    res.render('users/profile')
+    const userId = req.params.id
+    return User.findByPk(userId, { raw: true })
+      .then(user => {
+        if (!user) throw new Error('User didn\'t exist')
+        console.log('user image: ', user.image)
+        return res.render('users/profile', { user })
+      })
+      .catch(error => next(error))
   }
 
 }
