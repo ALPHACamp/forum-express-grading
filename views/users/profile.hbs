@@ -1,0 +1,12 @@
+<div class="card flex-row" style="width: 100%">
+  {{#if user.image}}
+    <img src="{{user.image}}" style="width: 18rem; height: 18rem; border-radius:50%;">
+  {{else}}
+    <img src="https://res.cloudinary.com/dqfxgtyoi/image/upload/v1644154630/github/defaultAvatar_uapauy.png" style="width: 18rem; height: 18rem; border-radius:50%;">
+  {{/if}}
+  <div class="card-body mx-3">
+    <h5 class="card-title">{{user.name}}</h5>
+    <p class="card-text">{{user.email}}</p>
+    <a href="/users/{{user.id}}/edit" class="btn btn-primary">edit</a>
+  </div>
+</div>
