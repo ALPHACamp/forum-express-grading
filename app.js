@@ -7,10 +7,10 @@ const app = express()
 const port = process.env.PORT || 3000
 const db = require('./models')
 const SESSION_SECRET = 'secret'
-const handlebarsHelpers = require('./helper/handlebars-helpers')
+const handlebarsHelpers = require('./helpers/handlebars-helpers')
 const passport = require('./config/passport')
 
-const { getUser } = require('./helper/auth-helper')
+const { getUser } = require('./helpers/auth-helpers')
 
 app.engine('hbs', handlebars({ extname: '.hbs', helpers: handlebarsHelpers }))
 app.set('view engine', 'hbs')
