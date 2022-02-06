@@ -5,7 +5,6 @@ const commentController = {
   postComment: (req, res, next) => {
     const { text, restaurantId } = req.body
     const userId = authHelpers.getUserId(req)
-    console.log('restaurant: ', restaurantId)
     Promise.all([
       Restaurant.findByPk(restaurantId),
       User.findByPk(userId)
@@ -31,7 +30,6 @@ const commentController = {
       })
       .then(deletedComment => {
         req.flash('success_messages', '成功移除留言')
-        console.log('deleted: ', deletedComment.restaurantId)
         res.redirect(`/restaurants/${deletedComment.restaurantId}`)
       })
   }

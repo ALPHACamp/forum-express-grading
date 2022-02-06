@@ -1,6 +1,8 @@
 // load bcrypt.js
 const bcrypt = require('bcryptjs')
 
+const fileHelpers = require('../helpers/file-helpers')
+
 // load db
 const { User } = require('../models')
 
@@ -63,6 +65,25 @@ const userController = {
         if (!user) throw new Error('User didn\'t exist')
         return res.render('users/edit', { user })
       })
+      .catch(error => next(error))
+  },
+  putUser: (req, res, next) => {
+    const { name } = req.body
+    const { file } = req
+    const userId = req.params.id
+
+    Promise.all([
+      User.findByPk(userId),
+      fileHelpers.imgurFileHandler(file)
+    ])
+      .then(([user, filePath]) => {
+        if (!user) throw new Error('User did\'nt exist')
+        return user.update({
+          name,
+          image: filePath || user.image
+        })
+      })
+      .then(user => res.redirect(`/users/${user.id}`))
       .catch(error => next(error))
   }
 

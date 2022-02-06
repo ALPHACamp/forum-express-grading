@@ -3,6 +3,7 @@ const router = express.Router()
 
 const admin = require('./modules/admin')
 
+const upload = require('../middleware/multer')
 const passport = require('../config/passport')
 const userController = require('../controllers/user-controller')
 const restController = require('../controllers/restaurant-controller')
@@ -25,8 +26,9 @@ router.post('/signin', passport.authenticate('local', {
 
 router.get('/signout', userController.signOut)
 
-router.get('/users/:id', userController.getUser)
-router.get('/users/:id/edit', userController.editUser)
+router.get('/users/:id', authenticated, userController.getUser)
+router.get('/users/:id/edit', authenticated, userController.editUser)
+router.put('/users/:id', authenticated, upload.single('image'), userController.putUser)
 
 router.get('/restaurants/:id/dashboard', authenticated, restController.getDashboard)
 router.get('/restaurants/:id', authenticated, restController.getRestaurant)
