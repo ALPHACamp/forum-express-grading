@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const restaurantController = require('../controllers/restaurant-controllers')
+const restaurantController = require('../controllers/restaurant-controller')
 const userController = require('../controllers/user-controller')
 const { authenticated, authenticatedAdmin } = require('../middleware/auth')
 const { generalErrorHandler } = require('../middleware/error-handler')
@@ -16,6 +16,7 @@ router.post('/signin', passport.authenticate('local', {
   failureFlash: true
 }), userController.signIn)
 router.get('/logout', userController.logout)
+router.get('/restaurants/:id/dashboard', authenticated, restaurantController.getDashboard)
 router.get('/restaurants/:id', authenticated, restaurantController.getRestaurant)
 router.get('/restaurants', authenticated, restaurantController.getRestaurants)
 router.get('/', (req, res) => res.redirect('/restaurants'))
