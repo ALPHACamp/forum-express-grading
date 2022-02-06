@@ -25,6 +25,18 @@ const userController = {
       })
       // 接住前面的錯誤，呼叫專門處理錯誤的middleware
       .catch(err => next(err))
+  },
+  signInPage: (req, res) => {
+    res.render('signin')
+  },
+  signIn: (req, res) => {
+    req.flash('success_messages', '成功登入！')
+    res.redirect('/restaurants')
+  },
+  logout: (req, res) => {
+    req.flash('success_messages', '成功登出！')
+    req.logout()
+    res.redirect('/signin')
   }
 }
 module.exports = userController
