@@ -20,6 +20,7 @@ module.exports = {
         category_id: categories[Math.floor(Math.random() * categories.length)].id
       })), {})
   },
+
   down: async (queryInterface, Sequelize) => {
     await queryInterface.bulkDelete('Restaurants', null, {})
   }
