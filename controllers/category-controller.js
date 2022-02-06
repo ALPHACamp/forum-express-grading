@@ -15,7 +15,7 @@ const categoryController = {
               break
             } else { }
           }
-        });
+        })
         return res.render('admin/categories', {
           categories,
           category
@@ -35,14 +35,14 @@ const categoryController = {
       res.redirect('/admin/categories')
     } catch (err) { next(err) }
     // const { name } = req.body
-    // if (!name) throw new Error('Category name is required!') 
+    // if (!name) throw new Error('Category name is required!')
     // Category.findOne({ where: { name } })
     //   .then(category => {
     //     if (category) throw new Error('Email already exists!')
     //     return Category.create({ name })
     //       .then(() => {
-    //         req.flash('success_messages', `Category ${name}  was successfully created`) 
-    //         res.redirect('/admin/categories') 
+    //         req.flash('success_messages', `Category ${name}  was successfully created`)
+    //         res.redirect('/admin/categories')
     //       })
     //       .catch(err => next(err))
     //   })
