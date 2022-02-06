@@ -2,6 +2,7 @@
 const bcrypt = require('bcryptjs')
 
 const fileHelpers = require('../helpers/file-helpers')
+const authHelpers = require('../helpers/auth-helpers')
 
 // load db
 const { User } = require('../models')
@@ -50,16 +51,23 @@ const userController = {
     res.redirect('/signin')
   },
   getUser: (req, res, next) => {
-    const userId = req.params.id
-    return User.findByPk(userId, { raw: true })
-      .then(user => {
-        if (!user) throw new Error('User didn\'t exist')
-        return res.render('users/profile', { user })
+    // prevent a user from getting edit page to another user
+    const currentUser = authHelpers.getUser(req)
+    const targetUserId = req.params.id
+
+    return User.findByPk(targetUserId, { raw: true })
+      .then(targetUser => {
+        if (!targetUser) throw new Error('User didn\'t exist')
+        return res.render('users/profile', {
+          user: currentUser,
+          targetUser
+        })
       })
       .catch(error => next(error))
   },
   editUser: (req, res, next) => {
-    const userId = req.params.id
+    // prevent a user from getting edit page to another user with /users/:id in URI
+    const userId = authHelpers.getUserId(req) || req.params.id
     return User.findByPk(userId, { raw: true })
       .then(user => {
         if (!user) throw new Error('User didn\'t exist')
@@ -70,9 +78,11 @@ const userController = {
   putUser: (req, res, next) => {
     const { name } = req.body
     const { file } = req
-    const userId = req.params.id
-
-    Promise.all([
+    const currentUserId = Number(authHelpers.getUserId(req))
+    const userId = Number(req.params.id)
+    // prevent a user from getting edit page to another user with /users/:id in URI
+    if (currentUserId !== userId) return res.redirect('back')
+    return Promise.all([
       User.findByPk(userId),
       fileHelpers.imgurFileHandler(file)
     ])
@@ -83,7 +93,10 @@ const userController = {
           image: filePath || user.image
         })
       })
-      .then(user => res.redirect(`/users/${user.id}`))
+      .then(() => {
+        req.flash('success_messages', '使用者資料編輯成功')
+        res.redirect(`/users/${userId}`)
+      })
       .catch(error => next(error))
   }
 
