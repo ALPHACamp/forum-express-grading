@@ -31,6 +31,7 @@ const commentController = {
       })
       .then(deletedComment => {
         req.flash('success_messages', '成功移除留言')
+        console.log('deleted: ', deletedComment.restaurantId)
         res.redirect(`/restaurants/${deletedComment.restaurantId}`)
       })
   }
