@@ -20,7 +20,7 @@
         <td>{{#if this.isAdmin}}admin{{else}}user{{/if}}</td>
         <td>
           <form action="/admin/users/{{this.id}}?_method=PATCH" method="POST" style="display: inline;">
-            <button type="submit" class="btn btn-link" {{#if this.isAdmin}}{{#ifCond this.id ../user.id}}onclick="return confirm('Set yourself as a user.')"{{/ifCond}}{{/if}}>Set {{#if this.isAdmin}}user{{else}}admin{{/if}}</button>
+            <button type="submit" class="btn btn-link" {{#if this.isAdmin}}{{#ifCond this.id ../current_user.id}}onclick="return confirm('Set yourself as a user.')"{{/ifCond}}{{/if}}>Set {{#if this.isAdmin}}user{{else}}admin{{/if}}</button>
           </form>
         </td>
       </tr>
