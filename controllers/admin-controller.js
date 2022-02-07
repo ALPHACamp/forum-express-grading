@@ -133,5 +133,4 @@ const adminController = {
       .catch(err => next(err))
   }
 }
-
 module.exports = adminController
