@@ -6,7 +6,9 @@
   <label class="form-label" for="categoryId">Category</label>
   <select class="form-control" id="categoryId" name="categoryId">
     {{#each categories}}
-    <option value="{{this.id}}">{{this.name}}</option>
+    <option value="{{this.id}}" {{#ifCond this.id ../restaurant.categoryId}} selected {{/ifCond}}>
+      {{this.name}}
+    </option>
     {{/each}}
   </select>
 </div>
@@ -22,8 +24,8 @@
 <div class="form-row mb-3">
   <label class="form-label" for="openingHours">Opening Hours</label>
   <input class="form-control" type="time" name="openingHours" id="openingHours" placeholder="Enter opening hours"
-    value="{{restaurant.openingHours}}"> 
-<div class="form-row mb-3"></div>
+    value="{{restaurant.openingHours}}">
+  <div class="form-row mb-3"></div>
   <label class="form-label" for="description">Description</label>
   <textarea class="form-control" id="description" name="description" rows="3">{{restaurant.description}}</textarea>
 </div>
