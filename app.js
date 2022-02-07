@@ -5,7 +5,6 @@ const session = require('express-session')
 const flash = require('connect-flash')
 const app = express()
 const port = process.env.PORT || 3000
-const db = require('./models')
 const SESSION_SECRET = 'secret'
 const handlebarsHelpers = require('./helpers/handlebars-helpers')
 const passport = require('./config/passport')
