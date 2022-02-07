@@ -52,7 +52,6 @@ const userController = {
   },
   getUser: (req, res, next) => {
     // prevent a user from getting edit page to another user
-    const currentUser = authHelpers.getUser(req)
     const targetUserId = req.params.id
 
     return User.findByPk(targetUserId, {
@@ -65,7 +64,7 @@ const userController = {
     })
       .then(targetUser => {
         const simpleHashTable = {}
-        const comments = targetUser.Comments
+        const comments = targetUser.Comments || []
         for (let index = 0; index < comments.length; index++) {
           const key = comments[index].restaurantId.toString()
           if (simpleHashTable === {} || !simpleHashTable[key]) {
@@ -76,10 +75,11 @@ const userController = {
           }
         }
         targetUser = targetUser.toJSON()
+        const commentedRestaurantsCounts = Object.keys(simpleHashTable).length || 0
+
         return res.render('users/profile', {
-          currentUser,
-          targetUser,
-          commentedRestaurantsCounts: Object.keys(simpleHashTable).length
+          user: targetUser,
+          commentedRestaurantsCounts
         })
       })
       .catch(error => next(error))
@@ -97,10 +97,12 @@ const userController = {
   putUser: (req, res, next) => {
     const { name } = req.body
     const { file } = req
+
     const currentUserId = Number(authHelpers.getUserId(req))
     const userId = Number(req.params.id)
     // prevent a user from getting edit page to another user with /users/:id in URI
-    if (currentUserId !== userId) return res.redirect('back')
+    if (currentUserId !== userId) return res.redirect('/')
+
     return Promise.all([
       User.findByPk(userId),
       fileHelpers.imgurFileHandler(file)

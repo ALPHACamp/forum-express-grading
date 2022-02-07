@@ -1,14 +1,14 @@
 <div class="card flex-row" style="width: 100%">
-  {{#if targetUser.image}}
-    <img src="{{targetUser.image}}" style="width: 18rem; height: 18rem; border-radius:50%;">
+  {{#if user.image}}
+    <img src="{{user.image}}" style="width: 18rem; height: 18rem; border-radius:50%;">
   {{else}}
     <img src="https://res.cloudinary.com/dqfxgtyoi/image/upload/v1644154630/github/defaultAvatar_uapauy.png" style="width: 18rem; height: 18rem; border-radius:50%;">
   {{/if}}
   <div class="card-body mx-3">
-    <h5 class="card-title">{{targetUser.name}}</h5>
-    <p class="card-text">{{targetUser.email}}</p>
-  {{#ifCond targetUser.id user.id}}
-    <a href="/users/{{targetUser.id}}/edit" class="btn btn-primary">edit</a>
+    <h5 class="card-title">{{user.name}}</h5>
+    <p class="card-text">{{user.email}}</p>
+  {{#ifCond user.id currentUser.id}}
+    <a href="/users/{{user.id}}/edit" class="btn btn-primary">edit</a>
   {{/ifCond}}
     <p class="card-text mt-3">{{commentedRestaurantsCounts}} 已評論餐廳</p>
   </div>
@@ -19,7 +19,7 @@
     {{commentedRestaurantsCounts}}間已評論餐廳
   </div>
   <div class="card-body d-flex flex-wrap">
-   {{#each targetUser.Comments}}
+   {{#each user.Comments}}
     <div class="col-md-3">
       <div class="card mb-3 mx-2 shadow-sm">
         <a href="/restaurants/{{this.Restaurant.id}}">
