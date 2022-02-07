@@ -62,7 +62,7 @@ const lineChartData = async duration => {
       sequelize.query(
         `SELECT 
           SUM(sums) AS comment_counts, 
-          date_format(ordered_date, "%M %Y") AS date 
+          date_format(ordered_date, "%m/%Y") AS date 
           FROM 
             (
               SELECT 
@@ -78,7 +78,7 @@ const lineChartData = async duration => {
       sequelize.query(
         `SELECT 
           SUM(sums) AS view_counts, 
-          date_format(ordered_date, "%M %Y") AS date 
+          date_format(ordered_date, "%m/%Y") AS date 
           FROM 
             (
               SELECT COUNT(id) AS sums, 
