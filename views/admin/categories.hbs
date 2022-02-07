@@ -11,9 +11,7 @@
         <a class="btn btn-link link-secondary" href="/admin/categories">or Create New</a>
       </div>
     </form>
-  </div>
   {{else}}
-  <div class="d-flex align-items-center pt-3 pb-5 my-3 text-white-50 bg-purple">
     <form class="row" action="/admin/categories" method="POST">
       <div class="col-auto">
         <input class="form-control" type="text" placeholder="Category Name" name="name">
@@ -22,7 +20,6 @@
         <button class="btn btn-success" type="submit">Create</button>
       </div>
     </form>
-  </div>
   {{/if}}
 </div>
 <table class="table align-middle">
