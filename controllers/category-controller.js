@@ -1,10 +1,16 @@
 const { Category } = require('../models')
 const categoryController = {
   getCategories: (req, res, next) => {
-    return Category.findAll({
-      raw: true
-    })
-      .then(categories => res.render('admin/categories', { categories }))
+    return Promise.all([
+      Category.findAll({ raw: true }),
+      req.params.id ? Category.findByPk(req.params.id, { raw: true }) : null
+    ])
+      .then(([categories, category]) => {
+        res.render('admin/categories', {
+          categories,
+          category
+        })
+      })
       .catch(err => next(err))
   },
   postCategory: (req, res, next) => {
@@ -13,6 +19,20 @@ const categoryController = {
     Category.create({ name })
       .then(() => {
         req.flash('success_messages', 'category was successfully created')
+        res.redirect('/admin/categories')
+      })
+      .catch(err => next(err))
+  },
+  putCategory: (req, res, next) => {
+    const { name } = req.body
+    if (!name) throw new Error('Category name is required!')
+    return Category.findByPk(req.params.id)
+      .then(category => {
+        if (!category) throw new Error("Category doesn't exist!")
+        return category.update({ name })
+      })
+      .then(() => {
+        req.flash('success_messages', 'restaurant was successfully to update')
         res.redirect('/admin/categories')
       })
       .catch(err => next(err))
