@@ -1,0 +1,14 @@
+<div class="card mb-3 mx-auto" style="max-width: 1040px; max-height: 300px">
+  <div class="row g-0">
+    <div class="col-md-4 d-flex justify-content-center align-items-center">
+      <img src="{{user.image}}" class="user-avatar" alt="...">
+    </div>
+    <div class="col-md-8">
+      <div class="card-body">
+        <h5 class="card-title">{{ user.name }}</h5>
+        <p class="card-text">{{ user.email}}</p>
+        <a href="/users/{{user.id}}/edit"><button class="btn btn-outline-success my-sm-0 my-2">Edit</button></a>
+      </div>
+    </div>
+  </div>
+</div>
