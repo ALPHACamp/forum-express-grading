@@ -19,7 +19,11 @@ module.exports = (sequelize, DataTypes) => {
     address: DataTypes.STRING,
     openingHours: DataTypes.STRING,
     description: DataTypes.TEXT,
-    image: DataTypes.STRING
+    image: DataTypes.STRING,
+    viewCounts: {
+      type: DataTypes.NUMBER,
+      defaultValue: 0
+    }
   }, {
     sequelize,
     modelName: 'Restaurant',
