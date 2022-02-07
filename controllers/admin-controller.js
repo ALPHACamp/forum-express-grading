@@ -21,14 +21,19 @@ const adminController = {
   },
 
   // 渲染新增餐廳頁面
-  createRestaurant: (req, res) => {
-    return res.render('admin/create-restaurant')
+  createRestaurant: (req, res, next) => {
+    // 查詢所有category資料
+    return Category.findAll({
+      raw: true
+    })
+      .then(categories => res.render('admin/create-restaurant', { categories })) // 渲染create-restaurant，並帶入category資料
+      .catch(err => next(err))
   },
 
   // 新增餐廳路由
   postRestaurant: (req, res, next) => {
     // 取得表單資料
-    const { name, tel, address, description, openingHours } = req.body
+    const { name, tel, address, description, openingHours, categoryId } = req.body
 
     // 判斷name欄位是否有值，若無則丟出Error物件
     if (!name) throw new Error('Restaurant name is required')
@@ -45,7 +50,8 @@ const adminController = {
         address,
         description,
         openingHours,
-        image: filePath || null
+        image: filePath || null,
+        categoryId
       }))
       .then(() => {
         // 回傳成功訊息，並導向admin/restaurants
@@ -78,17 +84,18 @@ const adminController = {
 
   // 渲染修改頁面
   editRestaurant: (req, res, next) => {
-    // 查詢資料庫是否有動態路由所填的id值
-    Restaurant.findByPk(req.params.rest_id, {
-      // 將資料轉換成js原生物件
-      raw: true
-    })
-      .then(restaurant => {
+    return Promise.all([
+      // 查詢資料庫是否有動態路由所填的id值
+      Restaurant.findByPk(req.params.rest_id, { raw: true }),
+      // 查詢所有category資料
+      Category.findAll({ raw: true })
+    ])
+      .then(([restaurant, categories]) => {
         // 判斷是否有查詢到資料，若無則丟出一個Error物件
         if (!restaurant) throw new Error("Restaurant didn't exists!")
 
         // 若有資料渲染admin/restaurant頁面
-        res.render('admin/edit-restaurant', { restaurant })
+        res.render('admin/edit-restaurant', { restaurant, categories })
       })
       .catch(err => next(err))
   },
@@ -96,7 +103,7 @@ const adminController = {
   // 修改資料庫資料路由
   putRestaurant: (req, res, next) => {
     // 取得表單資料
-    const { name, tel, address, openingHours, description } = req.body
+    const { name, tel, address, openingHours, description, categoryId } = req.body
 
     // 判斷name是否有填值，若無丟出Error物件
     if (!name) throw new Error('Restaurant name is required!')
@@ -122,7 +129,8 @@ const adminController = {
           address,
           openingHours,
           description,
-          image: filePath || restaurant.image // 如果filePath有值就更新成filePath， 若沒有值維特更新前的image
+          image: filePath || restaurant.image, // 如果filePath有值就更新成filePath， 若沒有值維特更新前的image
+          categoryId
         })
       })
       .then(() => {
