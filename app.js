@@ -1,4 +1,3 @@
-// let branch push more commit
 const path = require('path')
 const express = require('express')
 const handlebars = require('express-handlebars')
@@ -15,7 +14,7 @@ if (process.env.NODE_ENV !== 'production') {
 }
 const app = express()
 const port = process.env.PORT || 3000
-const SESSION_SECRET = process.env.SESSION_SECRET
+const SESSION_SECRET = process.env.SESSION_SECRET || 'test'
 
 app.engine('hbs', handlebars({ extname: '.hbs', helpers: handlebarsHelpers }))
 
