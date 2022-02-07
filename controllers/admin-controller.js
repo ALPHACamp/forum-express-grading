@@ -1,5 +1,5 @@
 // 引入model
-const { Restaurant, User } = require('../models')
+const { Restaurant, User, Category } = require('../models')
 // 引入file-helpers
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
@@ -9,7 +9,11 @@ const adminController = {
     // 查詢Restaurant所有資料
     Restaurant.findAll({
       // 去除sequelize物件實例
-      raw: true
+      raw: true,
+      // 將關連的資料包成一個物件
+      nest: true,
+      // 關連Category
+      include: [Category]
     })
       // 渲染admin/restaurants畫面
       .then(restaurants => res.render('admin/restaurants', { restaurants }))
@@ -56,7 +60,11 @@ const adminController = {
     // 查詢資料庫是否有動態路由所填的id值
     Restaurant.findByPk(req.params.rest_id, {
       // 將資料轉換成js原生物件
-      raw: true
+      raw: true,
+      // 將關連的資料包成一個物件
+      nest: true,
+      // 關連Category
+      include: [Category]
     })
       .then(restaurant => {
         // 判斷是否有查詢到資料，若無則丟出一個Error物件
