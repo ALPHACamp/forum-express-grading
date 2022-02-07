@@ -76,7 +76,6 @@ const userController = {
           }
         }
         targetUser = targetUser.toJSON()
-        console.log(targetUser)
         return res.render('users/profile', {
           currentUser,
           targetUser,
