@@ -1,4 +1,4 @@
-const { Restaurant, Category } = require('../models')
+const { Restaurant, Category, Comment, User } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
 const restaurantController = {
   getRestaurants: (req, res) => {
@@ -42,7 +42,10 @@ const restaurantController = {
   },
   getRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
-      include: [Category],
+      include: [
+        Category,
+        { model: Comment, include: User, order: '"createdAt" DESC' }  // 尚未解決排序
+      ],
       nest: true
     })
       .then(restaurant => {
@@ -50,6 +53,7 @@ const restaurantController = {
         return restaurant.increment('view_counts')
       })
       .then(restaurant => {
+        console.log(restaurant)
         res.render('restaurant', { restaurant: restaurant.toJSON() })
       })
       .catch(err => next(err))
