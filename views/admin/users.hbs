@@ -31,12 +31,12 @@
       <td>
         <form action="/admin/users/{{this.id}}?_method=PATCH" method="POST" style="display: inline;">
         {{#if isAdmin}}
-          <input class="form-control" type="hidden" name="isAdmin" id="is-admin" value="0">
+          <input class="form-control" type="hidden" name="isAdmin" id="is-admin" value="false">
           <button type="submit" class="btn btn-link">
             set as user
           </button>
         {{else}}
-          <input class="form-control" type="hidden" name="isAdmin" id="is-admin" value="1">
+          <input class="form-control" type="hidden" name="isAdmin" id="is-admin" value="true">
           <button type="submit" class="btn btn-link">
             set as admin
           </button>

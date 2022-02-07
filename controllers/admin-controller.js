@@ -1,6 +1,7 @@
 const { Restaurant } = require('../models')
 const { User } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
+const { admin } = require('../config/config.json')
 
 const adminController = {
   getRestaurants: async (req, res, next) => {
@@ -80,11 +81,11 @@ const adminController = {
     try {
       const user = await User.findByPk(req.params.id)
       if (!user) throw new Error("User didn't exist!")
-      if (user.email === 'root@example.com') {
+      if (user.email === admin) {
         req.flash('error_messages', '禁止變更 root 權限')
         return res.redirect('back')
       }
-      const isAdmin = req.params?.isAdmin || !user.isAdmin
+      const isAdmin = (req.body?.isAdmin === 'true') || !user.isAdmin
       await user.update({ isAdmin })
       req.flash('success_messages', '使用者權限變更成功')
       res.redirect('/admin/users')
