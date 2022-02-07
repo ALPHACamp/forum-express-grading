@@ -129,7 +129,7 @@ const adminController = {
           req.flash('error_messages', '禁止變更 root 權限')
           return res.redirect('back')
         }
-        user.isAdmin = user.isAdmin !== true
+        user.isAdmin = !user.isAdmin
         // return user.save({ fields: ['isAdmin'] })
         //   .then(user => {
         //     return user.reload()
