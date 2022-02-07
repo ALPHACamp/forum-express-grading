@@ -32,6 +32,7 @@ const restaurantController = {
           ...r,
           description: r.description.substring(0, 50)
         }))
+        console.log('restaurants: ', restaurants, paginatorHelpers.getPagination(limit, currentPage, count))
         return res.render('restaurants', {
           restaurants,
           categories,

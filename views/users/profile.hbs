@@ -12,3 +12,28 @@
   {{/ifCond}}
   </div>
 </div>
+
+<div class="card mt-3">
+  <div class="card-header">
+    {{commentedRestaurantsCounts}}間已評論餐廳
+  </div>
+  <div class="card-body d-flex">
+   {{#each targetUser.Comments}}
+    <div class="col-md-3">
+      <div class="card mb-3 mx-2 shadow-sm">
+        <a href="/restaurants/{{this.Restaurant.id}}">
+          <img class="card-img-top img-fluid" src="{{this.Restaurant.image}}" alt="Card image cap" width="286px" height="180px" style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+        </a>
+        <div class="card-body">
+          <p class="card-text">
+            <a href="/restaurants/{{this.Restaurant.id}}">
+                {{this.Restaurant.name}}
+            </a>
+          </p>
+        </div>
+      </div>
+    </div>
+    {{/each}}
+
+  </div>
+</div>

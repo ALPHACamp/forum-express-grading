@@ -5,7 +5,7 @@ const fileHelpers = require('../helpers/file-helpers')
 const authHelpers = require('../helpers/auth-helpers')
 
 // load db
-const { User } = require('../models')
+const { User, Restaurant, Comment } = require('../models')
 
 // build controller
 const userController = {
@@ -55,12 +55,32 @@ const userController = {
     const currentUser = authHelpers.getUser(req)
     const targetUserId = req.params.id
 
-    return User.findByPk(targetUserId, { raw: true })
+    return User.findByPk(targetUserId, {
+      include: [
+        {
+          model: Comment,
+          include: Restaurant
+        }
+      ]
+    })
       .then(targetUser => {
-        if (!targetUser) throw new Error('User didn\'t exist')
+        const simpleHashTable = {}
+        const comments = targetUser.Comments
+        for (let index = 0; index < comments.length; index++) {
+          const key = comments[index].restaurantId.toString()
+          if (simpleHashTable === {} || !simpleHashTable[key]) {
+            simpleHashTable[key] = true
+          } else {
+            comments.splice(index, 1)
+            index--
+          }
+        }
+        targetUser = targetUser.toJSON()
+        console.log(targetUser)
         return res.render('users/profile', {
-          user: currentUser,
-          targetUser
+          currentUser,
+          targetUser,
+          commentedRestaurantsCounts: Object.keys(simpleHashTable).length
         })
       })
       .catch(error => next(error))

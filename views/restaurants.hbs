@@ -41,11 +41,11 @@
     {{#each pagination.pages}}
       {{#ifCond this @root.pagination.currentPage}}
       <li class="page-item active">
-        <a class="page-link" href="#">{{../this}}</a>
+        <a class="page-link" href="#">{{this}}</a>
       </li>
       {{else}}
       <li class="page-item"></li>
-        <a class="page-link" href="/restaurants?categoryId={{@root.categoryId}}&page={{../this}}">{{../this}}</a>
+        <a class="page-link" href="/restaurants?categoryId={{@root.categoryId}}&page={{this}}">{{this}}</a>
       </li>
       {{/ifCond}}
     {{/each}}

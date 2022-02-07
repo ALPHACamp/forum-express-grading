@@ -23,7 +23,7 @@ module.exports = {
           opening_hours: '08:00',
           description: faker.lorem.text(),
           address: faker.address.streetAddress(),
-          image: `https://loremflickr.com/320/240/restaurant,food/?random=${Math.random() * 100}`,
+          image: `https://loremflickr.com/320/240/restaurant,dish/?random=${Math.random() * 100}`,
           category_id: categories[Math.floor(Math.random() * categories.length)].id,
           created_at: new Date(),
           updated_at: new Date()
