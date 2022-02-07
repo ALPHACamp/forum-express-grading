@@ -11,8 +11,17 @@ const categoryController = {
   postCategory: (req, res, next) => {
     const { name } = req.body
     if (!name) throw new Error('Category name is required!')
-    return Category.create({ name })
-      .then(() => res.redirect('/admin/categories'))
+    return Category.findAll({ raw: true })
+      .then(categories => {
+        categories.forEach(category => {
+          if (category.name === name) throw new Error('This category exists!')
+        })
+
+        return Category.create({ name })
+      })
+      .then(() => {
+        res.redirect('/admin/categories')
+      })
       .catch(err => next(err))
   }
 }
