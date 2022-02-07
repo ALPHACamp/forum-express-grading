@@ -46,6 +46,21 @@ const categoryController = {
       })
       .then(() => res.redirect('/admin/categories')) // 重新導向admin/categories
       .catch(err => next(err))
+  },
+
+  // 刪除category資料
+  deleteCategory: (req, res, next) => {
+    // 查詢動態路由id的category資料
+    Category.findByPk(req.params.id)
+      .then(category => {
+        // 若查無資料，回傳錯誤訊息
+        if (!category) throw new Error("Category doesn't exist!")
+
+        // 刪除資料庫資料
+        return category.destroy()
+      })
+      .then(() => res.redirect('/admin/categories')) // 重新導向admin/categories
+      .catch(err => next(err))
   }
 }
 
