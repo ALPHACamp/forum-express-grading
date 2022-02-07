@@ -25,6 +25,25 @@ const restaurantController = {
   getRestaurant: (req, res, next) => {
     // 查詢動態id的restaurant資料，並關連category
     Restaurant.findByPk(req.params.id, {
+      include: Category
+    })
+      .then(restaurant => {
+        // 若查詢不到資料，回傳錯誤訊息
+        if (!restaurant) throw new Error("Restaurant doesn't exist!")
+
+        // 更新資料庫viewCounts值 + 1
+        restaurant.update({ viewCounts: restaurant.viewCounts + 1 })
+
+        // 渲染restaurant頁面，將參數轉換成普通物件並帶入
+        return res.render('restaurant', { restaurant: restaurant.toJSON() })
+      })
+      .catch(err => next(err))
+  },
+
+  // 瀏覽特定餐廳的點擊次數
+  getDashboard: (req, res, next) => {
+    // 查詢動態路由的restaurant資料，並關聯category
+    return Restaurant.findByPk(req.params.id, {
       include: Category,
       nest: true,
       raw: true
@@ -33,8 +52,8 @@ const restaurantController = {
         // 若查詢不到資料，回傳錯誤訊息
         if (!restaurant) throw new Error("Restaurant doesn't exist!")
 
-        // 渲染restaurant頁面，並帶入參數
-        return res.render('restaurant', { restaurant })
+        // 渲染dashboard頁面，並帶入參數
+        return res.render('dashboard', { restaurant })
       })
       .catch(err => next(err))
   }
