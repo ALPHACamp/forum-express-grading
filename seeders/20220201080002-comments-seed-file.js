@@ -34,6 +34,19 @@ module.exports = {
       })),
       {}
     )
+
+    // Update restaurant comment counts
+    for (const rest of restaurants) {
+      const comment = await queryInterface.sequelize.query(
+        `SELECT COUNT(id) AS "count" FROM Comments WHERE restaurant_id = ${rest.id};`,
+        { type: queryInterface.sequelize.QueryTypes.SELECT }
+      )
+
+      await queryInterface.sequelize.query(
+        `UPDATE Restaurants SET comment_counts = ${comment[0].count} WHERE id = ${rest.id}`,
+        { type: queryInterface.sequelize.QueryTypes.UPDATE }
+      )
+    }
   },
 
   down: async (queryInterface, Sequelize) => {

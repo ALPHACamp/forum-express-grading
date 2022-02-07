@@ -1,4 +1,4 @@
-做一個餐廳的儀表板，以下排序方法都有分頁、遞增遞減、點擊進入個別餐廳頁面功能
+{{!-- 做一個餐廳的儀表板，以下排序方法都有分頁、遞增遞減、點擊進入個別餐廳頁面功能
 1. 管理者可以排序總瀏覽數（可能列出前20個後使用分頁功能，可以參考 GA）
 2. 管理者可以排序總留言數（）
 3. 管理者可以排序總追蹤數
@@ -12,4 +12,62 @@ canvas
 
 所有類別及他們的餐廳數量
 
-先開一個 demo 專案了解 chart 怎麼呈現，要用什麼樣的 data
+先開一個 demo 專案了解 chart 怎麼呈現，要用什麼樣的 data --}}
+
+{{!-- 餐廳折線圖，三種線，瀏覽、收藏、留言，依時間排序 --}}
+{{> admin-tabs route='dashboard'}}
+
+{{!-- Dashboard --}}
+<div class="container">
+  <div class="row">
+    <div class="col-3">
+      <div class="list-group mt-5">
+        <button class="btn list-group-item list-group-item-action disabled" type="button" data-bs-toggle="collapse" data-bs-target="#dataRangeCollapse" aria-expanded="false" aria-controls="dataRangeCollapse">Restaurants  <i class="fas fa-caret-down"></i>
+        </button>
+        <div class="collapse show" id="dataRangeCollapse">
+          <div class="card card-body">
+            <button type="button" class="list-group-item list-group-item-action active" data-type="restaurant" value="days">30 Days</button>
+            <button type="button" class="list-group-item list-group-item-action" data-type="restaurant" value="months">3 Months</button>
+          </div>
+        </div>
+        <button type="button" class="list-group-item list-group-item-action" data-type="category">Category Pie chart</button>
+      </div>
+    </div>
+    <div class="col-9">
+      <div class="card">
+        <div class="card-body">
+          <div class="chart-container">
+            <canvas id="chart"></canvas>
+          </div>
+        </div>
+      </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{{!-- Data Table --}}
+<table class='table align-middle mt-4'>
+  <thead class='thead-light table-light'>
+    <tr>
+      <th scope='col'>#</th>
+      <th scope='col'>Name</th>
+      <th scope='col'>Category</th>
+      <th scope='col'>Views</th>
+      <th scope='col'>Comments</th>
+      <th scope='col'>Likes</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each restaurants}}
+      <tr>
+        <th scope='row'>{{this.id}}</th>
+        <td>{{this.name}}</td>
+        <td>{{this.Category.name}}</td>
+        <td>{{this.viewCounts}}</td>
+        <td>{{this.commentCounts}}</td>
+        <td>0</td>
+      </tr>
+    {{/each}}
+  </tbody>
+</table>

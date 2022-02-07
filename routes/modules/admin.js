@@ -26,6 +26,10 @@ router.delete('/categories/:id', categoryController.deleteCategory)
 router.post('/categories', categoryController.postCategory)
 router.get('/categories', categoryController.getCategories)
 
+// Dashboard
+router.get('/dashboard', adminController.getDashboard)
+router.get('/dashboard/chart', adminController.getChartData)
+
 // Fallback route
 router.use('/', (req, res) => res.redirect('/admin/restaurants'))
 

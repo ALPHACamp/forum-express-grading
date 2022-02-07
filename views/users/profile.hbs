@@ -13,3 +13,21 @@
     </div>
   </div>
 </div>
+
+<div class="card">
+  <h5 class="card-header">{{commentedRestaurants}} 已評論餐廳</h5>
+  <div class="card-body">
+  <div class="container">
+    <div class="row row-cols-auto">
+      {{#each comments}}
+      <div class="col">
+        <a href="/restaurants/{{this.Restaurant.id}}">
+          <img src="{{this.Restaurant.image}}" class="rounded mb-3" alt="restaurant-thumbnail" style="max-width: 50px; height: auto;">
+        </a>
+      </div>
+      {{/each}}
+    </div>
+  </div>
+    <p>已發表評論數：{{totalComments}}</p>
+  </div>
+</div>
