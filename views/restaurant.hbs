@@ -1,8 +1,5 @@
 <div class="row mb-5">
-  <div class="col-md-12">
-    <h1>{{restaurant.name}}</h1>
-    <p>[{{restaurant.Category.name}}]</p>
-  </div>
+  {{> restaurant-header}}
   <div class="col-md-4">
     <img class="img-responsive center-block mb-5" src="{{restaurant.image}}"
       style="width: 250px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
@@ -19,4 +16,5 @@
   </div>
   <hr>
 </div>
+<a class="btn btn-outline-primary" href="/restaurants/{{restaurant.id}}/dashboard">Dashboard</a>
 <a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
