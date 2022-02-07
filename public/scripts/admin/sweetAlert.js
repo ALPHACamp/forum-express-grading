@@ -63,3 +63,23 @@ deleteCategoryBtns.forEach(deleteCategoryBtn => {
     if (result.isConfirmed) return deleteCategoryBtn.parentElement.submit()
   })
 })
+
+// 刪除評論
+const deleteCommentBtns = document.querySelectorAll('.delete-comment')
+deleteCommentBtns.forEach(deleteCommentBtn => {
+  deleteCommentBtn.addEventListener('click', async event => {
+    event.stopPropagation()
+    event.preventDefault()
+    let result = null
+    result = await Swal.fire({
+      title: '你要確定餒',
+      text: `$確定要刪除${deleteCommentBtn.dataset.name}這個類別？`,
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!'
+    })
+    if (result.isConfirmed) return deleteCommentBtn.parentElement.submit()
+  })
+})
