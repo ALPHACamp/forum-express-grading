@@ -16,6 +16,7 @@ module.exports = {
       email: 'root@example.com',
       password: await bcrypt.hash('12345678', 10),
       is_admin: true,
+      image: `https://loremflickr.com/320/240/man,woman/?random=${Math.random() * 100}`,
       created_at: new Date(),
       updated_at: new Date()
     },
@@ -24,6 +25,7 @@ module.exports = {
       email: 'user1@example.com',
       password: await bcrypt.hash('12345678', 10),
       is_admin: false,
+      image: `https://loremflickr.com/320/240/man,woman/?random=${Math.random() * 100}`,
       created_at: new Date(),
       updated_at: new Date()
     },
@@ -32,6 +34,7 @@ module.exports = {
       email: 'user2@example.com',
       password: await bcrypt.hash('12345678', 10),
       is_admin: false,
+      image: `https://loremflickr.com/320/240/man,woman/?random=${Math.random() * 100}`,
       created_at: new Date(),
       updated_at: new Date()
     }

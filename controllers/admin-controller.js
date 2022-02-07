@@ -43,7 +43,6 @@ const adminController = {
       .then(restaurant => {
         // avoid user from inputing id in url
         if (!restaurant) throw new Error('Restaurant didn\'t exist!')
-        console.log(restaurant['Category.name'])
         res.render('admin/restaurant', { restaurant })
       })
       .catch(error => next(error))

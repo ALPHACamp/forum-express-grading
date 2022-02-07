@@ -45,7 +45,10 @@ const restaurantController = {
     const id = req.params.id
     return Restaurant.findByPk(id, {
       nest: true,
-      include: [{ model: Comment, include: User }]
+      include: [
+        Category,
+        { model: Comment, include: User }
+      ]
     })
       .then(restaurant => {
         if (!restaurant) throw new Error('Restaurant doesn\'t exist')

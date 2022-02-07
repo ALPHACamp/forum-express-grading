@@ -12,7 +12,7 @@ function getUser (req) {
  * @return {Number}
  */
 function getUserId (req) {
-  return getUser(req).id
+  return getUser(req)?.id
 }
 
 /**
