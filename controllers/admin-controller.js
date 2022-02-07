@@ -1,6 +1,7 @@
 const { Restaurant, User, Category } = require('../models')
 const { imgurFileHandler } = require('../middleware/file-helpers')
-const { isSuperUser } = require('../middleware/auth-helpers')
+const { isSuperUser } = require('../helpers/auth-helpers')
+const { lineChartData, pieChartData } = require('../middleware/data-helper')
 
 const adminController = {
   // Restaurants CRUD
@@ -13,7 +14,11 @@ const adminController = {
   },
 
   getRestaurant: (req, res, next) => {
-    Restaurant.findByPk(req.params.id, { raw: true, nest: true, include: [Category] })
+    Restaurant.findByPk(req.params.id, {
+      raw: true,
+      nest: true,
+      include: [Category]
+    })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         return res.render('admin/restaurant', { restaurant })
@@ -59,7 +64,11 @@ const adminController = {
   editRestaurant: async (req, res, next) => {
     try {
       const [restaurant, categories] = await Promise.all([
-        Restaurant.findByPk(req.params.id, { raw: true, nest: true, include: [Category] }),
+        Restaurant.findByPk(req.params.id, {
+          raw: true,
+          nest: true,
+          include: [Category]
+        }),
         Category.findAll({ raw: true })
       ])
 
@@ -139,7 +148,38 @@ const adminController = {
       await user.update({ isAdmin: !user.isAdmin })
       req.flash('success_messages', '使用者權限變更成功')
       return res.redirect('/admin/users')
-    } catch (error) { next(error) }
+    } catch (error) {
+      next(error)
+    }
+  },
+
+  // Restaurant Dashboard
+  getDashboard: async (req, res, next) => {
+    const restaurants = await Restaurant.findAll({
+      include: [Category],
+      raw: true,
+      nest: true
+    })
+
+    return res.render('admin/restaurants-dashboard', {
+      restaurants,
+      script: 'admin/dashboard',
+      style: 'admin/dashboard'
+    })
+  },
+
+  getChartData: async (req, res, next) => {
+    const { type, duration } = req.query
+    let data
+    if (type === 'restaurant') {
+      data = await lineChartData(duration)
+    }
+
+    if (type === 'category') {
+      data = await pieChartData()
+    }
+
+    return res.json(data)
   }
 }
 

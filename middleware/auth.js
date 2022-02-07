@@ -1,4 +1,4 @@
-const authHelper = require('./auth-helpers')
+const authHelper = require('../helpers/auth-helpers')
 
 const authenticated = (req, res, next) => {
   if (authHelper.ensureAuthenticated(req)) {

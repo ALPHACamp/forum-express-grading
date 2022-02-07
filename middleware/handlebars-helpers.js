@@ -10,6 +10,8 @@ module.exports = {
 
   relativeTimeFromNow: a => dayjs(a).fromNow(),
 
+  format: a => dayjs(a).format('DD/MM/YYYY'),
+
   ifCon: function (a, b, options) {
     return a === b ? options.fn(this) : options.inverse(this)
   }

@@ -13,7 +13,9 @@
     "url": "git+https://github.com/ALPHACamp/forum-express-grading.git"
   },
   "dependencies": {
+    "axios": "^0.25.0",
     "bcryptjs": "^2.4.3",
+    "chart.js": "^3.7.0",
     "connect-flash": "^0.1.1",
     "dayjs": "^1.10.7",
     "dotenv": "^10.0.0",

@@ -10,14 +10,16 @@ const commentController = {
 
       const [user, restaurant] = await Promise.all([
         User.findByPk(userId, { raw: true }),
-        Restaurant.findByPk(restaurantId, { raw: true })
+        Restaurant.findByPk(restaurantId)
       ])
       if (!user) throw new Error("User didn't exist!")
       if (!restaurant) throw new Error("User didn't exist!")
 
+      // Increment restaurant comment counts
+      await restaurant.increment('commentCounts')
       await Comment.create({
         text,
-        restaurantId,
+        restaurantId: restaurant.toJSON().id,
         userId
       })
 
@@ -35,6 +37,10 @@ const commentController = {
       const comment = await Comment.findByPk(req.params.id)
       if (!comment) throw new Error("Comment didn't exist!")
       comment.destroy()
+
+      // Decrement restaurant comment counts
+      const restInstance = await Restaurant.findByPk(comment.restaurantId)
+      restInstance.decrement('commentCounts')
 
       return res.redirect(`/restaurants/${comment.restaurantId}`)
     } catch (error) {

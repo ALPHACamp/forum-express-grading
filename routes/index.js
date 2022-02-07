@@ -7,10 +7,12 @@ const { generalErrorHandler } = require('../middleware/error-handler')
 const { authenticated, authenticatedAdmin } = require('../middleware/auth')
 
 const admin = require('./modules/admin')
+const users = require('./modules/users')
 const restaurants = require('./modules/restaurants')
 const comments = require('./modules/comments')
 
 router.use('/admin', authenticatedAdmin, admin)
+router.use('/users', authenticated, users)
 router.use('/restaurants', authenticated, restaurants)
 router.use('/comments', comments)
 
