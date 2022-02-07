@@ -19,6 +19,24 @@ const restaurantController = {
         // 渲染restaurants
         return res.render('restaurants', { restaurants: data })
       })
+  },
+
+  // 瀏覽特定餐廳詳細資訊
+  getRestaurant: (req, res, next) => {
+    // 查詢動態id的restaurant資料，並關連category
+    Restaurant.findByPk(req.params.id, {
+      include: Category,
+      nest: true,
+      raw: true
+    })
+      .then(restaurant => {
+        // 若查詢不到資料，回傳錯誤訊息
+        if (!restaurant) throw new Error("Restaurant doesn't exist!")
+
+        // 渲染restaurant頁面，並帶入參數
+        return res.render('restaurant', { restaurant })
+      })
+      .catch(err => next(err))
   }
 }
 
