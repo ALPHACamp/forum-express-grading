@@ -8,7 +8,9 @@
         <h5 class="card-title">{{ user.name }}</h5>
         <p class="card-text">{{ user.email}}</p>
         <p class="card-text">{{commentCount}} 家已評論的餐廳</p>
+        {{#ifCond selfUser.id user.id }}
         <a href="/users/{{user.id}}/edit"><button class="btn btn-outline-success my-sm-0 my-2">Edit</button></a>
+        {{/ifCond}}
       </div>
     </div>
   </div>

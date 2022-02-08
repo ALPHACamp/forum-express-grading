@@ -11,5 +11,12 @@ module.exports = {
     return a === b ? options.fn(this) : options.inverse(this)
   },
   // 評論時間使用
-  relativeTimeFromNow: a => dayjs(a).fromNow()
+  relativeTimeFromNow: a => dayjs(a).fromNow(),
+  // this or that
+  thisOrThat: (a, b) => a || b,
+
+  orCond: function (a, b, options) {
+    if (a) return options.fn(this)
+    if (b && a === undefined) return options.fn(this)
+  }
 }

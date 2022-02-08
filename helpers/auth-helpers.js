@@ -8,3 +8,4 @@ module.exports = {
   getUser,
   ensureAuthenticated // 新增這裡
 }
+
