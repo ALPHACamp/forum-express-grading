@@ -5,7 +5,7 @@ const fileHelpers = require('../helpers/file-helpers')
 const authHelpers = require('../helpers/auth-helpers')
 
 // load db
-const { User } = require('../models')
+const { User, Restaurant, Comment } = require('../models')
 
 // build controller
 const userController = {
@@ -50,21 +50,44 @@ const userController = {
     req.logout()
     res.redirect('/signin')
   },
+  // Get a user profile with id
   getUser: (req, res, next) => {
-    // prevent a user from getting edit page to another user
-    const currentUser = authHelpers.getUser(req)
     const targetUserId = req.params.id
-
-    return User.findByPk(targetUserId, { raw: true })
+    // Get a user with all comment records of restaurant for himself or herself
+    return User.findByPk(targetUserId, {
+      include: [
+        {
+          model: Comment,
+          include: Restaurant
+        }
+      ]
+    })
       .then(targetUser => {
-        if (!targetUser) throw new Error('User didn\'t exist')
+        // targetUser is the user record with all comment records
+        // Remove repeated comment for same restaurant
+        const simpleHashTable = {}
+        const comments = targetUser.Comments || []
+        for (let index = 0; index < comments.length; index++) {
+          const key = comments[index].restaurantId.toString()
+          if (simpleHashTable === {} || !simpleHashTable[key]) {
+            simpleHashTable[key] = true
+          } else {
+            comments.splice(index, 1)
+            index--
+          }
+        }
+        targetUser = targetUser.toJSON()
+        // Get number of commentd restaurant for the user
+        const commentedRestaurantsCounts = Object.keys(simpleHashTable).length || 0
+
         return res.render('users/profile', {
-          user: currentUser,
-          targetUser
+          user: targetUser,
+          commentedRestaurantsCounts
         })
       })
       .catch(error => next(error))
   },
+  // Get a user edit page for profile
   editUser: (req, res, next) => {
     // prevent a user from getting edit page to another user with /users/:id in URI
     const userId = authHelpers.getUserId(req) || req.params.id
@@ -75,13 +98,16 @@ const userController = {
       })
       .catch(error => next(error))
   },
+  // Update profile data for a user with id
   putUser: (req, res, next) => {
     const { name } = req.body
     const { file } = req
+
     const currentUserId = Number(authHelpers.getUserId(req))
     const userId = Number(req.params.id)
     // prevent a user from getting edit page to another user with /users/:id in URI
-    if (currentUserId !== userId) return res.redirect('back')
+    if (currentUserId !== userId) return res.redirect('/')
+    // upload image file and update profile data
     return Promise.all([
       User.findByPk(userId),
       fileHelpers.imgurFileHandler(file)
