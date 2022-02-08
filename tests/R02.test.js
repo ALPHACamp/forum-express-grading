@@ -47,7 +47,10 @@ describe('# R02: 餐廳資訊整理：Dashboard', function () {
       
       // 測試 restController.getDashBoard 函式
       await this.restController.getDashboard(req, res, next)
-      console.log(res.render)
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/R03-test
       // getDashBoard 正確執行的話，應呼叫 res.render
       // res.render 的第 1 個參數要是 'dashboard'
       // res.render 的第 2 個參數要包含 restaurant，其 name 屬性的值應是 '銷魂麵'
