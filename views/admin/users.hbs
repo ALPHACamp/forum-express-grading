@@ -1,0 +1,49 @@
+{{>admin-tabs route='users'}}
+
+<table class="table">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Email</th>
+      <th scope="col">Role</th>
+      <th scope="col">#</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each users}}
+    <tr>
+      <th scope="row">{{this.id}}</th>
+      <td>{{this.name}}</td>
+      <td>{{showRole this.isAdmin}}</td>
+      <td>
+        <form action="/admin/users/{{this.id}}?_method=PATCH" method="POST" style="display: inline;">
+          <button type="submit" class="btn btn-link user-auth-change" data-name={{this.name}}>{{setRole
+            this.isAdmin}}</button>
+        </form>
+      </td>
+    </tr>
+    {{/each}}
+  </tbody>
+</table>
+
+<script>
+  const userToggles = document.querySelectorAll('.user-auth-change')
+
+  userToggles.forEach(userToggle => {
+    userToggle.addEventListener('click', async event => {
+      event.stopPropagation()
+      event.preventDefault()
+
+      let toggle
+      // eslint-disable-next-line no-undef
+      toggle = await Swal.fire({
+        title: '注意',
+        text: `確定要更改${userToggle.dataset.name}的權限嗎？`,
+        icon: 'warning',
+        showCancelButton: true
+      })
+
+      if (toggle.isConfirmed) return userToggle.parentElement.submit()
+    })
+  })
+</script>

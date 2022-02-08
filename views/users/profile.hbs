@@ -1,0 +1,41 @@
+<div class="card mb-3" style="width: 1200px; height: 25%;">
+  <div class="row g-0">
+    <div class="col-md-4">
+      <img class="img-responsive center-block mb-5" src="{{user.image}}"
+        style="width: 250px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+    </div>
+    <div class="col-md-8">
+      <div class="card-body">
+        <div class="col-md-12">
+          <h3>{{user.name}}</h3>
+          <p>{{user.email}}</p>
+        </div>
+        {{#ifCond user.id userSession.id}}
+        <a href='/users/{{user.id}}/edit'>
+          <button type="button" class="btn btn-primary">Edit Profile</button>
+        </a>
+        {{/ifCond}}
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card text-center" style="width: 1200px">
+  <div class="card-header">
+    {{#if user.Comments}} {{commentCounts user.Comments}} {{else}} 0 {{/if}}間已評論餐廳
+  </div>
+  <div class="card-body d-flex justify-content-around flex-wrap">
+    {{#if user.Comments}}
+    {{#each user.Comments}}
+    <a href="/restaurants/{{this.Restaurant.id}}">
+      <img class="center-block mb-5 me-2" src="{{this.Restaurant.image}}"
+        style="width: 250px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+    </a>
+    {{/each}}
+    {{else}}
+    <p>
+    <h2>無評論餐廳</h2>
+    </p>
+    {{/if}}
+  </div>
+</div>

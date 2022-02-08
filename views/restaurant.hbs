@@ -1,0 +1,97 @@
+<div class="row mb-5">
+  <div class="col-md-12">
+    <h1>{{restaurant.name}}</h1>
+    <p>[{{restaurant.Category.name}}]</p>
+  </div>
+  <div class="col-md-4">
+    <img class="img-responsive center-block mb-5" src="{{restaurant.image}}"
+      style="width: 250px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+    <div class="well">
+      <ul class="list-unstyled">
+        <li><strong>Opening Hour:</strong> {{restaurant.openingHours}}</li>
+        <li><strong>Tel:</strong> {{restaurant.tel}}</li>
+        <li><strong>Address:</strong> {{restaurant.address}}</li>
+      </ul>
+    </div>
+  </div>
+  <div class="col-md-8">
+    <p style="white-space: break-spaces;">{{restaurant.description}}</p>
+    <a href="/restaurant/{{restaurant.id}}/dashboard" class="btn btn-primary">Dashboard</a>
+
+    <div class="d-flex mt-2 align-items-center">
+      {{#if isFavorited }}
+      <form action="/favorite/{{restaurant.id}}?_method=DELETE" method="POST">
+        <button type="submit" class="btn btn-danger remove" data-name="{{restaurant.name}}">移除最愛</button>
+      </form>
+      {{else}}
+      <form action="/favorite/{{restaurant.id}}" method="POST">
+        <button type="submit" class="btn btn-primary">加到最愛</button>
+      </form>
+      {{/if}}
+
+      {{#if isLiked}}
+      <form action="/like/{{restaurant.id}}?_method=DELETE" method="POST">
+        <button type="submit" class="btn btn-danger m-1 remove" data-name="{{restaurant.name}}"
+          data-action="Dislike">Dislike</button>
+      </form>
+      {{else}}
+      <form action="/like/{{restaurant.id}}" method="POST">
+        <button type="submit" class="btn btn-primary m-1">Like</button>
+      </form>
+      {{/if}}
+    </div>
+
+  </div>
+  <div class="d-flex">
+
+  </div>
+  <hr>
+</div>
+
+<br /><br />
+<h3>所有評論：</h3>
+{{#each restaurant.Comments}}
+{{#if ../user.isAdmin}}
+<form action="/comments/{{this.id}}?_method=DELETE" method="POST" style="float: right;">
+  <button type="submit" class="btn btn-danger">Delete</button>
+</form>
+{{/if}}
+<blockquote class="blockquote mb-0">
+  <h5><a href="/users/{{this.User.id}}">{{this.User.name}}</a></h5>
+  <p>{{this.text}}</p>
+  <footer class="blockquote-footer">{{moment this.createdAt}}</footer>
+</blockquote>
+<hr />
+{{/each}}
+
+<form action="/comments" method="POST">
+  <div class="form-row mb-3">
+    <label class="form-label" for="text">留下評論：</label>
+    <textarea class="form-control" id="text" name="text" rows="3"></textarea>
+  </div>
+  <input type="hidden" name="restaurantId" value="{{restaurant.id}}" />
+  <button type="submit" class="btn btn-primary">Submit</button>
+  <a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
+</form>
+
+<script>
+  const removeButton = document.querySelectorAll('.remove')
+
+  removeButton.forEach(remove => {
+    remove.addEventListener('click', async event => {
+      event.stopPropagation()
+      event.preventDefault()
+
+      let toggle
+      // eslint-disable-next-line no-undef
+      toggle = await Swal.fire({
+        title: '注意',
+        text: `是否要將${remove.dataset.name} ${remove.dataset.action}呢？`,
+        icon: 'warning',
+        showCancelButton: true
+      })
+
+      if (toggle.isConfirmed) return remove.parentElement.submit()
+    })
+  })
+</script>
