@@ -7,8 +7,31 @@
       <div class="card-body">
         <h5 class="card-title">{{ user.name }}</h5>
         <p class="card-text">{{ user.email}}</p>
+        <p class="card-text">{{commentCount}} 家已評論的餐廳</p>
         <a href="/users/{{user.id}}/edit"><button class="btn btn-outline-success my-sm-0 my-2">Edit</button></a>
       </div>
+    </div>
+  </div>
+</div>
+<div class="card">
+  <div class="card-header">
+    {{ commentCount }} 家已評論的餐廳
+  </div>
+  <div class="card-body">
+    <div class="row row-cols-1 row-cols-md-6 g-4">
+      {{#each user.Comments}}
+      <div class="card-comment gx-0 mt-3 ms-3" style="width: 10rem;">
+        <a href="/restaurants/{{this.Restaurant.id}}">
+          <img src="{{this.Restaurant.image}}" data-id=${item.id} class="card-img-top card-user-img"
+            data-bs-toggle="modal" data-bs-target="#user-modal" alt="user-img" role="button">
+        </a>
+        <div class="card-body p-0">
+          <h5 class="card-user-name text-center mb-1">{{this.Restaurant.name}}</h5>
+          <h5 class="card-add-favorite text-center mb-0"><i class="far fa-heart favorite-icon" data-id=${item.id}
+              role="button"></i></h5>
+        </div>
+      </div>
+      {{/each}}
     </div>
   </div>
 </div>
