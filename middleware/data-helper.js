@@ -92,6 +92,7 @@ const lineChartData = async duration => {
       )
     ])
 
+    console.log(comments, views)
     // Extract an array of each month
     const months = []
     for (let i = 0; i < comments.length; i++) {
