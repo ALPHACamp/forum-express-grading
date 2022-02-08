@@ -31,6 +31,21 @@ const commentController = {
       })
       .then(() => res.redirect(`/restaurants/${restaurantId}`)) // 重新導向該餐廳詳細頁面
       .catch(err => next(err))
+  },
+
+  // 刪除評論
+  deleteComment: (req, res, next) => {
+    // 查詢動態路由的comment資料
+    return Comment.findByPk(req.params.id)
+      .then(comment => {
+        // 判斷是否有該資料，無回傳錯誤訊息
+        if (!comment) throw new Error("Comment didn't exists!")
+
+        // 刪除資料庫資料
+        return comment.destroy()
+      })
+      .then(deletedComment => res.redirect(`/restaurants/${deletedComment.restaurantId}`)) // 動新導向刪除評論的餐廳詳細頁面
+      .catch(err => next(err))
   }
 }
 
