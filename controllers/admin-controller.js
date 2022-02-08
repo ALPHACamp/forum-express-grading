@@ -109,7 +109,6 @@ const adminController = {
   patchUser: (req, res, next) => {
     return User.findByPk(req.params.id)
       .then(user => {
-        console.log(user)
         const { email, isAdmin } = user
         if (email !== 'root@example.com') {
           user.update({ isAdmin: !isAdmin })
