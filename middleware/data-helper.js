@@ -62,7 +62,7 @@ const lineChartData = async duration => {
       sequelize.query(
         `SELECT 
           SUM(sums) AS comment_counts, 
-          date_format(ordered_date, "%m/%Y") AS date 
+          date_format(ordered_date, "%Y-%m-01") AS date 
           FROM 
             (
               SELECT 
@@ -78,7 +78,7 @@ const lineChartData = async duration => {
       sequelize.query(
         `SELECT 
           SUM(sums) AS view_counts, 
-          date_format(ordered_date, "%m/%Y") AS date 
+          date_format(ordered_date, "%Y-%m-01") AS date 
           FROM 
             (
               SELECT COUNT(id) AS sums, 
@@ -92,7 +92,10 @@ const lineChartData = async duration => {
       )
     ])
 
-    console.log(comments, views)
+    // Sort data entries by date to prevent database error
+    sortByDate(comments)
+    sortByDate(views)
+
     // Extract an array of each month
     const months = []
     for (let i = 0; i < comments.length; i++) {
@@ -161,4 +164,13 @@ function checkTimeContinuum (data, dataCounts, time) {
       data.splice(i - 1, 0, 0)
     }
   }
+}
+
+function sortByDate (array) {
+  // array must have two properties -> {data: 0, date: '2022-02-3'}
+  array.sort((a, b) => new Date(a.date) - new Date(b.date))
+  // format date to "%m-%Y"
+  array.forEach(data => {
+    data.date = dayjs(data.date).format('MM-YYYY')
+  })
 }
