@@ -23,8 +23,17 @@ const restaurantController = {
         Category.findAll({ raw: true })
       ])
 
+      // Cleaning restaurant data
+      const favoritedRestaurantIds =
+        req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
+
+      const restData = restaurants.rows.map(r => ({
+        ...r,
+        isFavorited: favoritedRestaurantIds.includes(r.id)
+      }))
+
       return res.render('restaurants', {
-        restaurants: restaurants.rows,
+        restaurants: restData,
         categories,
         categoryId,
         pagination: getPagination(limit, page, restaurants.count)
@@ -38,12 +47,17 @@ const restaurantController = {
     try {
       // Eager Loading
       const restInstance = await Restaurant.findByPk(req.params.id, {
-        include: [Category, { model: Comment, include: User }],
+        include: [
+          Category,
+          { model: Comment, include: User },
+          { model: User, as: 'FavoritedUsers' }
+        ],
         order: [[Comment, 'createdAt', 'DESC']]
       })
 
       if (!restInstance) throw new Error("Restaurant didn't exist!")
 
+      const isFavorited = restInstance.FavoritedUsers.some(fu => fu.id === req.user.id)
       // Update view count on restaurant
       const restaurant = await restInstance.increment('view_counts')
 
@@ -54,7 +68,8 @@ const restaurantController = {
       })
 
       return res.render('restaurant', {
-        restaurant: restaurant.toJSON()
+        restaurant: restaurant.toJSON(),
+        isFavorited
       })
     } catch (error) {
       next(error)
