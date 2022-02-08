@@ -14,6 +14,13 @@ module.exports = (sequelize, DataTypes) => {
       Restaurant.belongsTo(models.Category, { foreignKey: 'categoryId' })
       Restaurant.hasMany(models.View, { foreignKey: 'restaurantId' })
       Restaurant.hasMany(models.Comment, { foreignKey: 'restaurantId' })
+
+      // Join table
+      Restaurant.belongsToMany(models.User, {
+        through: models.Favorite,
+        foreignKey: 'restaurantId',
+        as: 'FavoritedUsers'
+      })
     }
   };
   Restaurant.init({
