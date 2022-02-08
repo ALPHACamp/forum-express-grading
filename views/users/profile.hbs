@@ -1,0 +1,15 @@
+<div class="profile d-flex bg-white">
+  <div class="avatar bg-light" style="border-radius: 100%; ">
+    <img
+      src="{{#if user.image }}{{ user.image }}{{else}}https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png{{/if}}"
+      alt="avatar">
+  </div>
+  <div class="content">
+    <h3>{{ user.name }}</h3>
+    <p>{{ user.email }}</p>
+    <p style="font-weight: lighter">Joined since {{formatTime user.createdAt}}</p>
+    <form action="/users/{{ user.id }}/edit" method="get">
+      <button type="submit" class="btn btn-primary">Edit</button>
+    </form>
+  </div>
+</div>
