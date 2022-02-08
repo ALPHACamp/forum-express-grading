@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate (models) {
       Comment.belongsTo(models.Restaurant, { foreignKey: 'restaurantId' })
-      Comment.belongsTo(models.user, { foreignKey: 'userId' })
+      Comment.belongsTo(models.User, { foreignKey: 'userId' })
     }
   };
   Comment.init({
