@@ -3,22 +3,34 @@ const { Restaurant, Category } = require('../models')
 
 const restaurantController = {
   // 瀏覽餐廳頁面
-  getRestaurants: (req, res) => {
-    // 尋找全部restaurant資料，並關連category
-    Restaurant.findAll({
-      include: Category,
-      nest: true,
-      raw: true
-    })
-      .then(restaurants => {
+  getRestaurants: (req, res, next) => {
+    // 取得查詢條資料
+    const categoryId = Number(req.query.categoryId) || '' // 查詢條件為字串，先將資料轉成數值再操作
+
+    Promise.all([
+      // 尋找全部restaurant資料，並關連category
+      Restaurant.findAll({
+        include: Category,
+        // 增加查詢條件
+        where: {
+          ...categoryId ? { categoryId } : {} // 若categoryId為true，回傳物件categoryId，若無回傳空物件，再使用展開運算子展開物件
+        },
+        nest: true,
+        raw: true
+      }),
+      // 尋找全部category資料
+      Category.findAll({ raw: true })
+    ])
+      .then(([restaurants, categories]) => {
         // 新增變數data，取得map回傳陣列
         const data = restaurants.map(r => ({
           ...r, // 展開r的物件
           description: r.description.substring(0, 50) // 將餐廳描述截為50字
         }))
         // 渲染restaurants
-        return res.render('restaurants', { restaurants: data })
+        return res.render('restaurants', { restaurants: data, categories, categoryId })
       })
+      .catch(err => next(err))
   },
 
   // 瀏覽特定餐廳詳細資訊
