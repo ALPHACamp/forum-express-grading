@@ -113,7 +113,7 @@ const adminController = {
       const user = await User.findByPk(id)
       const { email, isAdmin } = user.dataValues
 
-      if (email === process.env.ROOT_EMAIL) {
+      if (email === 'root@example.com') {
         req.flash('error_messages', '禁止變更 root 權限')
         return res.redirect('back')
       }
