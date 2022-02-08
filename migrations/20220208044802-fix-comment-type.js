@@ -8,7 +8,7 @@ module.exports = {
   },
   down: async (queryInterface, Sequelize) => {
     await queryInterface.changeColumn('Comments', 'text', {
-      type: Sequelize.STRING,
+      type: Sequelize.STRING
     })
   }
 }

@@ -73,7 +73,7 @@ deleteCommentBtns.forEach(deleteCommentBtn => {
     let result = null
     result = await Swal.fire({
       title: '你要確定餒',
-      text: `$確定要刪除${deleteCommentBtn.dataset.name}這個類別？`,
+      text: '確定要刪除這個評論？',
       icon: 'question',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',

@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 const faker = require('faker')
 module.exports = {
   up: async (queryInterface, Sequelize) => {
@@ -18,7 +18,7 @@ module.exports = {
         created_at: new Date(),
         updated_at: new Date(),
         restaurant_id: restaurants[Math.floor(Math.random() * restaurants.length)].id,
-        user_id: users[Math.floor(Math.random() * (users.length - 1))].id //測試一個user無評論情形
+        user_id: users[Math.floor(Math.random() * (users.length - 1))].id // 測試一個user無評論情形
       })), {}
     )
   },
@@ -26,4 +26,4 @@ module.exports = {
   down: async (queryInterface, Sequelize) => {
     await queryInterface.bulkDelete('Comments', null, {})
   }
-};
+}
