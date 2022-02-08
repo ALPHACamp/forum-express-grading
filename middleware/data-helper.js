@@ -70,7 +70,7 @@ const lineChartData = async duration => {
                 convert(created_at, date) AS ordered_date
               FROM comments
               GROUP BY ordered_date
-              ORDER BY ordered_date
+              ORDER BY ordered_date ASC
             ) AS origin
         GROUP BY date;`,
         { type: Sequelize.QueryTypes.SELECT }
@@ -85,7 +85,7 @@ const lineChartData = async duration => {
               convert(created_at, date) AS ordered_date
               FROM views
               GROUP BY ordered_date
-              ORDER BY ordered_date
+              ORDER BY ordered_date ASC
             ) AS origin
         GROUP BY date;`,
         { type: Sequelize.QueryTypes.SELECT }
