@@ -32,11 +32,10 @@ const restaurantController = {
         if (!restaurant) throw new Error("Restaurant doesn't exist!")
 
         // 更新資料庫viewCounts值 + 1
-        restaurant.update({ viewCounts: restaurant.viewCounts + 1 })
-
-        // 渲染restaurant頁面，將參數轉換成普通物件並帶入
-        return res.render('restaurant', { restaurant: restaurant.toJSON() })
+        return restaurant.increment('viewCounts')
       })
+      // 渲染restaurant頁面，將參數轉換成普通物件並帶入
+      .then(restaurant => res.render('restaurant', { restaurant: restaurant.toJSON() }))
       .catch(err => next(err))
   },
 
