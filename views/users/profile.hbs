@@ -1,0 +1,83 @@
+<div class="row row-cols-1 row-cols-md-2 bg-white border mx-auto">
+  <img class="p-2" src="{{user.image}}" alt="avatar" style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+  <div class="p-2">
+    <h3>{{user.name}}</h3>
+    <p>{{user.email}}</p>
+    <p>{{commentCounts}} 以評論餐廳</p>
+    <p>{{favoriteCounts}} 收藏的餐廳</p>
+    <p>{{followingCounts}} followings (追蹤者)</p>
+    <p>{{followerCounts}} followers (追隨者)</p>
+    {{#ifCond user.id sessionUser.id }}
+    <a href="/users/{{user.id}}/edit" class="btn btn-primary">edit</a>
+    {{/ifCond}}
+  </div>
+</div>
+
+<br>
+
+<div class="row">
+  <div class="col-4 d-flex flex-column">
+
+    <div class="card w-100 mx-0 px-0 mb-2">
+      <div class="card-header">
+        {{followingCounts}} followings (追蹤者)
+      </div>
+      <ul class="d-flex flex-wrap align-items-center mt-3">
+        {{#each user.Followings}}
+        <li style="max-width: 100px; list-style-type: none;">
+          <a href="/users/{{this.id}}">
+            <img class="w-100" src="{{this.image}}" alt="restaurant image">
+          </a>
+        </li>
+        {{/each}}
+      </ul>
+    </div>
+
+    <div class="card w-100 mx-0 px-0">
+      <div class="card-header">
+        {{followerCounts}} followings (追蹤者)
+      </div>
+      <ul class="d-flex flex-wrap align-items-center mt-3">
+        {{#each user.Followers}}
+        <li style="max-width: 100px; list-style-type: none;">
+          <a href="/users/{{this.id}}">
+            <img class="w-100" src="{{this.image}}" alt="restaurant image">
+          </a>
+        </li>
+        {{/each}}
+      </ul>
+    </div>
+  </div>
+
+  <div class="col-8 d-flex flex-column">
+    <div class="card w-100 mx-0 px-0 mb-2">
+      <div class="card-header">
+        {{commentCounts}} 間已評論的餐廳
+      </div>
+      <ul class="d-flex flex-wrap align-items-center mt-3">
+        {{#each user.Comments}}
+        <li style="max-width: 100px; list-style-type: none;">
+          <a href="/restaurants/{{this.Restaurant.id}}">
+            <img class="w-100" src="{{this.Restaurant.image}}" alt="restaurant image">
+          </a>
+        </li>
+        {{/each}}
+      </ul>
+    </div>
+
+    <div class="card w-100 mx-0 px-0">
+      <div class="card-header">
+        {{favoriteCounts}} 間收藏的餐廳
+      </div>
+      <ul class="d-flex flex-wrap align-items-center mt-3">
+        {{#each user.FavoritedRestaurants}}
+        <li style="max-width: 100px; list-style-type: none;">
+          <a href="/restaurants/{{this.id}}">
+            <img class="w-100" src="{{this.image}}" alt="restaurant image">
+          </a>
+        </li>
+        {{/each}}
+      </ul>
+    </div>
+  </div>
+</div>
