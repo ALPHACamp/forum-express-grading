@@ -1,5 +1,5 @@
 // 引入model
-const { Restaurant, Category } = require('../models')
+const { Restaurant, Category, User, Comment } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
 
 const restaurantController = {
@@ -52,7 +52,10 @@ const restaurantController = {
   getRestaurant: (req, res, next) => {
     // 查詢動態id的restaurant資料，並關連category
     Restaurant.findByPk(req.params.id, {
-      include: Category
+      include: [
+        Category,
+        { model: Comment, include: User }
+      ]
     })
       .then(restaurant => {
         // 若查詢不到資料，回傳錯誤訊息
