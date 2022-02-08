@@ -1,34 +1,14 @@
 'use strict'
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('Comments', {
-      id: {
-        allowNull: false,
-        autoIncrement: true,
-        primaryKey: true,
-        type: Sequelize.INTEGER
-      },
-      text: {
-        type: Sequelize.TEXT,
-        allowNull: false
-      },
-      user_id: {
-        type: Sequelize.INTEGER
-      },
-      restaurant_id: {
-        type: Sequelize.INTEGER
-      },
-      created_at: {
-        allowNull: false,
-        type: Sequelize.DATE
-      },
-      updated_at: {
-        allowNull: false,
-        type: Sequelize.DATE
-      }
+    await queryInterface.changeColumn('Comments', 'text', {
+      type: Sequelize.TEXT,
+      allowNull: false
     })
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('Comments')
+    await queryInterface.changeColumn('Comments', 'text', {
+      type: Sequelize.STRING,
+    })
   }
 }
