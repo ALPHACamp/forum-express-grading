@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs')
-const { User, Restaurant, Comment } = require('../models')
+const { User, Restaurant, Comment, Favorite } = require('../models')
 // import db for using db function
 const db = require('../models/index')
 
@@ -72,7 +72,6 @@ const userController = {
             db.sequelize.fn('count', db.sequelize.col('restaurant_id')),
             'comments'
           ]
-
         ],
         include: [Restaurant],
         group: ['restaurant_id'],
@@ -125,6 +124,52 @@ const userController = {
 
       req.flash('success_messages', '使用者資料編輯成功')
       return res.redirect(`/users/${id}`)
+    } catch (error) {
+      next(error)
+    }
+  },
+
+  addFavorite: async (req, res, next) => {
+    try {
+      const { restaurantId } = req.params
+      const [restaurant, favorite] = await Promise.all([
+        Restaurant.findByPk(restaurantId),
+        Favorite.findOne({
+          where: {
+            restaurantId,
+            userId: req.user.id
+          }
+        })
+      ])
+
+      if (!restaurant) throw new Error("Restaurant didn't exist!")
+      if (favorite) throw new Error('You have favorited this restaurant!')
+
+      Favorite.create({
+        restaurantId,
+        userId: req.user.id
+      })
+
+      return res.redirect('back')
+    } catch (error) {
+      next(error)
+    }
+  },
+
+  removeFavorite: async (req, res, next) => {
+    try {
+      const favorite = await Favorite.findOne({
+        where: {
+          userId: req.user.id,
+          restaurantId: req.params.restaurantId
+        }
+      })
+
+      if (!favorite) throw new Error("You haven't favorited this restaurant")
+
+      favorite.destroy()
+
+      return res.redirect('back')
     } catch (error) {
       next(error)
     }

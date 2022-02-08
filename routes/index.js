@@ -16,6 +16,18 @@ router.use('/users', authenticated, users)
 router.use('/restaurants', authenticated, restaurants)
 router.use('/comments', comments)
 
+// Favorite
+router.post(
+  '/favorite/:restaurantId',
+  authenticated,
+  userController.addFavorite
+)
+router.delete(
+  '/favorite/:restaurantId',
+  authenticated,
+  userController.removeFavorite
+)
+
 router.get('/signup', userController.signUpPage)
 router.post('/signup', userController.signUp)
 router.get('/signin', userController.signInPage)
