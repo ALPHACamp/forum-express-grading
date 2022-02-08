@@ -40,25 +40,70 @@ const userController = {
     return res.redirect('/signin')
   },
 
-  getUser: (req, res, next) => {
-    const sessionUser = req.user
-    const requestUserId = req.params.id
-    const DEFAULT_COMMENT_COUNT = 0
+  getUser: async (req, res, next) => {
+    try {
+      const sessionUser = req.user
+      const requestUserId = req.params.id
+      const DEFAULT_COUNT = 0
 
-    return User.findByPk(requestUserId, {
-      include: { model: Comment, include: Restaurant },
-      group: 'Comments.restaurant_id'
-    })
-      .then(user => {
-        if (!user) throw new Error("User doesn't exist")
-        user = user.toJSON()
-        const count = user.Comments?.length || DEFAULT_COMMENT_COUNT
+      const include = [
+        { model: Comment, include: Restaurant }
+      ]
 
-        return res.render('users/profile', {
-          user, count, sessionUser
+      // usually, the following tables are included during user deserialization
+      // but in case of request user ID does not match request parameter ID,
+      // it's necessary to join these tables for later data processing.
+      if (!sessionUser || sessionUser?.id !== requestUserId) {
+        include.push(...[
+          { model: Restaurant, as: 'FavoritedRestaurants' },
+          { model: User, as: 'Followings' },
+          { model: User, as: 'Followers' }
+        ])
+      }
+
+      let user = await User.findByPk(requestUserId, { include })
+      if (!user) throw new Error("User doesn't exist")
+      user = user.toJSON()
+
+      // declare two arrays first, one for only ID array,
+      // another one for actual object that will be used later.
+      const commentIdArray = []
+      const commentObjArray = []
+
+      if (user.Comments?.length) {
+        user.Comments.forEach(c => {
+          if (!commentIdArray.includes(c.restaurantId)) {
+            commentIdArray.push(c.restaurantId)
+            commentObjArray.push(c)
+          }
         })
+
+        user.Comments = commentObjArray
+      }
+
+      // in case of request user ID does match request parameter ID,
+      // we simply merge sessionUser data into user data
+      if (sessionUser?.id === requestUserId) {
+        user.FavoritedRestaurants = sessionUser.FavoritedRestaurants
+        user.Followings = sessionUser.Followings
+        user.Followers = sessionUser.Followers
+      }
+
+      // calculate total counts
+      const commentCounts = user.Comments?.length || DEFAULT_COUNT
+      const favoriteCounts = user.FavoritedRestaurants?.length || DEFAULT_COUNT
+      const followingCounts = user.Followings?.length || DEFAULT_COUNT
+      const followerCounts = user.Followers?.length || DEFAULT_COUNT
+
+      return res.render('users/profile', {
+        user,
+        commentCounts,
+        favoriteCounts,
+        followingCounts,
+        followerCounts,
+        sessionUser
       })
-      .catch(err => next(err))
+    } catch (err) { next(err) }
   },
 
   editUser: (req, res, next) => {
@@ -219,6 +264,10 @@ const userController = {
   addFollowing: (req, res, next) => {
     const followerId = req.user.id
     const followingId = req.params.userId
+
+    if (followerId === Number(followingId)) {
+      throw new Error('You can not follow yourself!')
+    }
 
     return Promise.all([
       User.findByPk(followingId),
