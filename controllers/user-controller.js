@@ -50,10 +50,10 @@ const userController = {
     req.logout()
     res.redirect('/signin')
   },
+  // Get a user profile with id
   getUser: (req, res, next) => {
-    // prevent a user from getting edit page to another user
     const targetUserId = req.params.id
-
+    // Get a user with all comment records of restaurant for himself or herself
     return User.findByPk(targetUserId, {
       include: [
         {
@@ -63,6 +63,8 @@ const userController = {
       ]
     })
       .then(targetUser => {
+        // targetUser is the user record with all comment records
+        // Remove repeated comment for same restaurant
         const simpleHashTable = {}
         const comments = targetUser.Comments || []
         for (let index = 0; index < comments.length; index++) {
@@ -75,6 +77,7 @@ const userController = {
           }
         }
         targetUser = targetUser.toJSON()
+        // Get number of commentd restaurant for the user
         const commentedRestaurantsCounts = Object.keys(simpleHashTable).length || 0
 
         return res.render('users/profile', {
@@ -84,6 +87,7 @@ const userController = {
       })
       .catch(error => next(error))
   },
+  // Get a user edit page for profile
   editUser: (req, res, next) => {
     // prevent a user from getting edit page to another user with /users/:id in URI
     const userId = authHelpers.getUserId(req) || req.params.id
@@ -94,6 +98,7 @@ const userController = {
       })
       .catch(error => next(error))
   },
+  // Update profile data for a user with id
   putUser: (req, res, next) => {
     const { name } = req.body
     const { file } = req
@@ -102,7 +107,7 @@ const userController = {
     const userId = Number(req.params.id)
     // prevent a user from getting edit page to another user with /users/:id in URI
     if (currentUserId !== userId) return res.redirect('/')
-
+    // upload image file and update profile data
     return Promise.all([
       User.findByPk(userId),
       fileHelpers.imgurFileHandler(file)

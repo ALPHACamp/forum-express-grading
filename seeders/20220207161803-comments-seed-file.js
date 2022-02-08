@@ -30,16 +30,16 @@ module.exports = {
     // set a bulkInsert target to seed comments and record comments for each restaurant
     const commentsTable = {}
     const seedComments = Array.from({ length: DEFAULT_MAX_COMMENTS }, () => {
-      const restaurant_id = seedRestaurants[Math.floor(Math.random() * seedRestaurants.length)]
+      const restaurantId = seedRestaurants[Math.floor(Math.random() * seedRestaurants.length)]
       // count comment for each restaurant
-      commentsTable[restaurant_id] = isNaN(commentsTable[restaurant_id])
+      commentsTable[restaurantId] = isNaN(commentsTable[restaurantId])
         ? 1
-        : ++commentsTable[restaurant_id]
+        : ++commentsTable[restaurantId]
 
       return {
         text: faker.lorem.sentence(),
         user_id: seedUsers[Math.floor(Math.random() * seedUsers.length)],
-        restaurant_id,
+        restaurant_id: restaurantId,
         created_at: new Date(),
         updated_at: new Date()
       }
