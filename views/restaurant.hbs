@@ -18,8 +18,13 @@
 </div>
 <a class="btn btn-outline-primary" href="/restaurants/{{restaurant.id}}/dashboard">Dashboard</a>
 {{!-- Comment --}}
-<h3 class="mb-3">所有評論：</h3>
+<h3 class="mb-3 mt-2">所有評論：</h3>
 {{#each restaurant.Comments}}
+{{#if ../user.isAdmin}}
+<form action="/comments/{{this.id}}?_method=DELETE" method="POST" class="float-end">
+  <button type="submit" class="btn btn-danger">Delete</button>
+</form>
+{{/if}}
 <blockquote class="blockquote mb-0">
   <h4><a href="/users/{{this.User.id}}" style="text-decoration: none">{{this.User.name}}</a></h4>
   <p>{{this.text}}</p>
