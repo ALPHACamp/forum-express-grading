@@ -26,10 +26,12 @@ const restaurantController = {
       // Cleaning restaurant data
       const favoritedRestaurantIds =
         req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
+      const likedRestaurantIds = req.user && req.user.LikedRestaurants.map(lr => lr.id)
 
       const restData = restaurants.rows.map(r => ({
         ...r,
-        isFavorited: favoritedRestaurantIds.includes(r.id)
+        isFavorited: favoritedRestaurantIds.includes(r.id),
+        isLiked: likedRestaurantIds.includes(r.id)
       }))
 
       return res.render('restaurants', {
@@ -50,7 +52,8 @@ const restaurantController = {
         include: [
           Category,
           { model: Comment, include: User },
-          { model: User, as: 'FavoritedUsers' }
+          { model: User, as: 'FavoritedUsers' },
+          { model: User, as: 'LikedUsers' }
         ],
         order: [[Comment, 'createdAt', 'DESC']]
       })
@@ -58,6 +61,7 @@ const restaurantController = {
       if (!restInstance) throw new Error("Restaurant didn't exist!")
 
       const isFavorited = restInstance.FavoritedUsers.some(fu => fu.id === req.user.id)
+      const isLiked = restInstance.LikedUsers.some(lu => lu.id === req.user.id)
       // Update view count on restaurant
       const restaurant = await restInstance.increment('view_counts')
 
@@ -69,7 +73,8 @@ const restaurantController = {
 
       return res.render('restaurant', {
         restaurant: restaurant.toJSON(),
-        isFavorited
+        isFavorited,
+        isLiked
       })
     } catch (error) {
       next(error)

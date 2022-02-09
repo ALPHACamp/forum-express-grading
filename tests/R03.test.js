@@ -35,7 +35,7 @@ describe('# R03', () => {
         const res = mockResponse()
         const next = mockNext
 
-        // 測試作業指定的 userController.getUser 函式\
+        // 測試作業指定的 userController.getUser 函式
         await this.userController.getUser(req, res, next);
 
         // getUser 正確執行的話，應呼叫 res.render

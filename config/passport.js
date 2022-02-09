@@ -44,10 +44,10 @@ passport.use(new LocalStrategy(
     passport.deserializeUser((id, done) => {
       User.findByPk(id, {
         include: [
-          { model: Restaurant, as: 'FavoritedRestaurants' }
+          { model: Restaurant, as: 'FavoritedRestaurants' },
+          { model: Restaurant, as: 'LikedRestaurants' }
         ]
-      })
-        .then(user => done(null, user.toJSON()))
+      }).then(user => done(null, user.toJSON()))
     })
   }))
 
