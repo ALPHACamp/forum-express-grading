@@ -73,7 +73,7 @@ const restaurantController = {
       Restaurant.findAll({
         raw: true,
         nest: true,
-        include: [Category],
+        include: Category,
         limit: 10,
         order: [
           ['createdAt', 'DESC']

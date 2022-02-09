@@ -14,6 +14,11 @@ module.exports = (sequelize, DataTypes) => {
       Restaurant.belongsTo(models.Category, { foreignKey: 'categoryId' })
 
       Restaurant.hasMany(models.Comment, { foreignKey: 'restaurantId' })
+      Restaurant.belongsToMany(models.User, {
+        through: models.Favorite,
+        foreignKey: 'restaurant_id',
+        as: 'favoritedRestaurants'
+      })
     }
   };
   Restaurant.init({
