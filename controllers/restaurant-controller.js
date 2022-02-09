@@ -85,6 +85,29 @@ const restaurantController = {
         return res.render('dashboard', { restaurant })
       })
       .catch(err => next(err))
+  },
+
+  // 瀏覽feeds頁面
+  getFeeds: (req, res, next) => {
+    return Promise.all([
+      Restaurant.findAll({ // 查詢10筆餐餐，以createdAt降冪排列
+        limit: 10,
+        order: [['createdAt', 'DESC']],
+        include: [Category],
+        raw: true,
+        nest: true
+      }),
+      Comment.findAll({ // 查詢10筆評論，以createdAt降冪排列
+        limit: 10,
+        order: [['createdAt', 'DESC']],
+        include: [User, Restaurant],
+        raw: true,
+        nest: true
+      })
+    ])
+      .then(([restaurants, comments]) => {
+        return res.render('feeds', { restaurants, comments })
+      })
   }
 }
 
