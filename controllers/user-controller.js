@@ -1,7 +1,7 @@
 // 引入模組
 const bcrypt = require('bcryptjs')
 const db = require('../models')
-const { User } = db
+const { User, Comment, Restaurant } = db
 
 // 引入file-helpers
 const { imgurFileHandler } = require('../helpers/file-helpers')
@@ -56,15 +56,24 @@ const userController = {
   getUser: (req, res, next) => {
     // 取得動態路由id
     const id = Number(req.params.id)
+    // 取得使用者id
+    // const userId = req.user.id
 
-    // 查詢動態路由id的user資料
-    return User.findByPk(id, { raw: true })
-      .then(user => {
+    return Promise.all([
+      User.findByPk(id, { raw: true }), // 查詢動態路由id的user資料
+      Comment.findAndCountAll({ // 查詢使用者的評論資料
+        include: Restaurant,
+        where: { userId: id },
+        raw: true,
+        nest: true
+      })
+    ])
+      .then(([user, comment]) => {
         // 判斷是否有該資料，否回傳錯誤訊息
         if (!user) throw new Error("User didn't exists!")
 
         // 渲染users/profile頁面，並帶入參數
-        return res.render('users/profile', { user })
+        return res.render('users/profile', { user, comment: comment.rows, commentCounts: comment.count })
       })
       .catch(err => next(err))
   },
