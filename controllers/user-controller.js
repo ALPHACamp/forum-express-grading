@@ -5,7 +5,7 @@ const fileHelpers = require('../helpers/file-helpers')
 const authHelpers = require('../helpers/auth-helpers')
 
 // load db
-const { User, Restaurant, Comment, Favorite } = require('../models')
+const { User, Restaurant, Comment, Favorite, Like } = require('../models')
 
 // build controller
 const userController = {
@@ -164,6 +164,52 @@ const userController = {
         if (!favorite) throw new Error('You haven\'t favorited this restaurant')
 
         return favorite.destroy()
+      })
+      .then(() => res.redirect('back'))
+      .catch(error => next(error))
+  },
+  // Handling like/unlink
+  addLike: (req, res, next) => {
+    const { restaurantId } = req.params
+    const userId = authHelpers.getUserId(req)
+    // check whether the restaurant exists
+    // check whether the restaurant exists in like table
+    return Promise.all([
+      Restaurant.findByPk(restaurantId),
+      Like.findOne({
+        where: {
+          userId,
+          restaurantId
+        }
+      })
+    ])
+      .then(([restaurant, like]) => {
+        if (!restaurant) throw new Error('Restaurant didn\'t exist')
+        if (like) throw new Error('You have clicked like button')
+        // add it to like table
+        return Like.create({
+          userId,
+          restaurantId
+        })
+      })
+      .then(() => res.redirect('back'))
+      .catch(error => next(error))
+  },
+  removeLike: (req, res, next) => {
+    const { restaurantId } = req.params
+    const userId = authHelpers.getUserId(req)
+
+    // check whether the restaurant is in like Table
+    return Like.findOne({
+      where: {
+        userId,
+        restaurantId
+      }
+    })
+      .then(likedRestaurant => {
+        if (!likedRestaurant) throw new Error('You haven\'t liked this restaurant')
+        // remove it from like Table
+        return likedRestaurant.destroy()
       })
       .then(() => res.redirect('back'))
       .catch(error => next(error))
