@@ -30,12 +30,15 @@ const restaurantController = {
       .then(([categories, restaurants]) => {
         const count = restaurants.count
         const user = authHelpers.getUser(req)
+        // obtain a favorite list for each user
         const favoriteList = user && user.FavoritedRestaurants.map(fr => (fr.id))
+        // obtain a like list for each user
         const likeList = user && user.LikedRestaurants.map(lr => lr.id)
 
         restaurants = restaurants.rows.map(r => ({
           ...r,
           description: r.description.substring(0, 50),
+          // determine which restaurant is favorited or liked ?
           isFavorited: favoriteList.includes(r.id),
           isLiked: likeList.includes(r.id)
         }))
@@ -65,6 +68,7 @@ const restaurantController = {
       })
       .then(restaurant => {
         const userId = authHelpers.getUserId(req)
+        // determine whether current restaurant is favorited or liked?
         const isFavorited = restaurant.FavoritedUsers.some(fr => fr.id === userId)
         const isLiked = restaurant.LikedUsers.some(lr => lr.id === userId)
         return res.render('restaurant', {
