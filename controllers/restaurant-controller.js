@@ -31,11 +31,13 @@ const restaurantController = {
         const count = restaurants.count
         const user = authHelpers.getUser(req)
         const favoriteList = user && user.FavoritedRestaurants.map(fr => (fr.id))
+        const likeList = user && user.LikedRestaurants.map(lr => lr.id)
 
         restaurants = restaurants.rows.map(r => ({
           ...r,
           description: r.description.substring(0, 50),
-          isFavorited: favoriteList.includes(r.id)
+          isFavorited: favoriteList.includes(r.id),
+          isLiked: likeList.includes(r.id)
         }))
         return res.render('restaurants', {
           restaurants,
@@ -53,7 +55,8 @@ const restaurantController = {
       include: [
         Category,
         { model: Comment, include: User },
-        { model: User, as: 'FavoritedUsers' }
+        { model: User, as: 'FavoritedUsers' },
+        { model: User, as: 'LikedUsers' }
       ]
     })
       .then(restaurant => {
@@ -63,8 +66,10 @@ const restaurantController = {
       .then(restaurant => {
         const userId = authHelpers.getUserId(req)
         const isFavorited = restaurant.FavoritedUsers.some(fr => fr.id === userId)
+        const isLiked = restaurant.LikedUsers.some(lr => lr.id === userId)
         return res.render('restaurant', {
           restaurant: restaurant.toJSON(),
+          isLiked,
           isFavorited
         })
       })
