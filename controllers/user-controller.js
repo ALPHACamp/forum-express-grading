@@ -1,7 +1,7 @@
 // 引入模組
 const bcrypt = require('bcryptjs')
 const db = require('../models')
-const { User, Comment, Restaurant } = db
+const { User, Comment, Restaurant, Favorite } = db
 
 // 引入file-helpers
 const { imgurFileHandler } = require('../helpers/file-helpers')
@@ -131,6 +131,56 @@ const userController = {
         req.flash('success_messages', '使用者資料編輯成功') // 回傳成功訊息
         res.redirect(`/users/${id}`) // 重新導向該使用者profile頁面
       })
+      .catch(err => next(err))
+  },
+
+  // 新增favorite
+  addFavorite: (req, res, next) => {
+    // 取得動態路由restaurantId
+    const { restaurantId } = req.params
+
+    return Promise.all([
+      Restaurant.findByPk(restaurantId), // 查詢動態路由餐廳資料
+      Favorite.findOne({ // 查詢是否有favorite資料
+        where: {
+          userId: req.user.id,
+          restaurantId
+        }
+      })
+    ])
+      .then(([restaurant, favorite]) => {
+        // 判斷資料是否已在，若不是回傳錯誤訊息
+        if (!restaurant) throw new Error("Restaurant didn't exists!")
+        if (favorite) throw new Error('You have favorited this restaurant!')
+
+        // 新增至資料庫
+        return Favorite.create({
+          userId: req.user.id,
+          restaurantId
+        })
+      })
+      .then(() => res.redirect('back')) // 重新導向上一頁
+      .catch(err => next(err))
+  },
+
+  removeFavorite: (req, res, next) => {
+    // 取得動態路由restaurantId
+    const { restaurantId } = req.params
+
+    return Favorite.findOne({ // 查詢是否有favorite資料
+      where: {
+        userId: req.user.id,
+        restaurantId
+      }
+    })
+      .then(favorite => {
+        // 判斷資料是否已在，若不是回傳錯誤訊息
+        if (!favorite) throw new Error("You haven't favorited this restaurant!")
+
+        // 刪除資料庫
+        return favorite.destroy()
+      })
+      .then(() => res.redirect('back')) // 重新導向上一頁
       .catch(err => next(err))
   }
 }
