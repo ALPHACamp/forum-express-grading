@@ -1,7 +1,6 @@
 node_modules/ 
 temp/
-upload/
-
+upload/*
 !upload/defaultUser.png
 
 .DS_Store
