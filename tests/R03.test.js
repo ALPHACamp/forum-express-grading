@@ -128,28 +128,31 @@ describe('# R03', () => {
           params: { id: 1 },
           body: { name: 'admin2' },
         })
-        const res = mockResponse()
-        const next = mockNext
-
-        // 測試作業指定的 userController.putUser 函式
-        await this.userController.putUser(req, res, next)
-
-        // putUser 正確執行的話，應呼叫 req.flash 
-        // req.flash 的參數應與下列字串一致
-        req.flash.calledWith('success_messages', '使用者資料編輯成功').should.be.true
-        // putUser 執行完畢，應呼叫 res.redirect 並重新導向 /users/1
-        res.redirect.calledWith('/users/1').should.be.true
-        // putUser 執行完畢後，id:1 使用者的 name 應該已被修改 
-        // 將假資料撈出，比對確認有成功修改到
-        const user = await this.UserMock.findOne({ where: { id: 1 } })
-        user.name.should.equal('admin2')
+        user: { id: 1 },
+        params: { id: 1 },
+        body: { name: 'admin2' },
       })
+      const res = mockResponse()
+      const next = mockNext
 
-      after(async () => {
-        // 清除模擬驗證資料
-        this.ensureAuthenticated.restore()
-        this.getUser.restore()
-      })
+      // 測試作業指定的 userController.putUser 函式
+      await this.userController.putUser(req, res, next)
+
+      // putUser 正確執行的話，應呼叫 req.flash 
+      // req.flash 的參數應與下列字串一致
+      req.flash.calledWith('success_messages', '使用者資料編輯成功').should.be.true
+      // putUser 執行完畢，應呼叫 res.redirect 並重新導向 /users/1
+      res.redirect.calledWith('/users/1').should.be.true
+      // putUser 執行完畢後，id:1 使用者的 name 應該已被修改 
+      // 將假資料撈出，比對確認有成功修改到
+      const user = await this.UserMock.findOne({ where: { id: 1 } })
+      user.name.should.equal('admin2')
+    })
+
+    after(async () => {
+      // 清除模擬驗證資料
+      this.ensureAuthenticated.restore()
+      this.getUser.restore()
     })
   })
 })
