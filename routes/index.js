@@ -7,10 +7,15 @@ const { authenticated, authenticatedAdmin } = require('../middleware/auth')
 const { generalErrorHandler } = require('../middleware/error-handler')
 const passport = require('../config/passport')
 const admin = require('./modules/admin')
+const upload = require('../middleware/multer')
 // router.get('/', (req, res) => {
 //   res.send('Hello World!')
 // })
 router.use('/admin', authenticatedAdmin, admin)
+// 個人頁面
+router.get('/users/:id/edit', userController.editUser)
+router.get('/users/:id', userController.getUser)
+router.put('/users/:id', upload.single('image'), userController.putUser)
 // 註冊路由
 router.get('/signup', userController.signUpPage)
 router.post('/signup', userController.signUp)
