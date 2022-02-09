@@ -79,16 +79,16 @@ const userController = {
         nest: true
       })
 
-      // const totalComments = comments.reduce(
-      //   (acc, curr) => acc + curr.comments,
-      //   comments[0].comments
-      // )
+      const totalComments = comments.reduce(
+        (acc, curr) => acc + curr.comments,
+        comments[0].comments
+      )
 
       return res.render('users/profile', {
         user,
         comments,
-        commentedRestaurants: comments.length
-        // totalComments
+        commentedRestaurants: comments.length,
+        totalComments
       })
     } catch (error) {
       next(error)
