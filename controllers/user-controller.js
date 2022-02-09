@@ -4,6 +4,7 @@ const { User, Restaurant, Comment, Favorite, Like } = require('../models')
 const db = require('../models/index')
 
 const { imgurFileHandler } = require('../middleware/file-helpers')
+const { restart } = require('nodemon')
 
 const userController = {
   signUpPage: (req, res) => {
@@ -205,6 +206,26 @@ const userController = {
       like.destroy()
 
       return res.redirect('back')
+    } catch (next) {}
+  },
+
+  getTopUsers: async (req, res, next) => {
+    try {
+      const users = await User.findAll({
+        include: [
+          { model: User, as: 'Followers' }
+        ],
+        raw: true,
+        nest: true
+      })
+
+      console.log(users)
+      users.map(user => ({
+        ...user,
+        followerCount: user.Followers.length,
+        isFollowed: req.user.Followings.some(uf => uf.id === user.id)
+      }))
+      return res.render('top-users', { users })
     } catch (next) {}
   }
 }
