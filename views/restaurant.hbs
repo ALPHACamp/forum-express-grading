@@ -27,6 +27,15 @@
     <button type="submit" class="btn btn-primary m-1">加到最愛</button>
   </form>
   {{/if}}
+  {{#if isLiked}}
+  <form action="/like/{{restaurant.id}}?_method=DELETE" method="POST">
+    <button type="submit" class="btn btn-outline-danger m-1">移除喜歡</button>
+  </form>
+  {{else}}
+  <form action="/like/{{restaurant.id}}" method="POST">
+    <button type="submit" class="btn btn-outline-primary m-1">加到喜歡</button>
+  </form>
+  {{/if}}
 </div>
 {{!-- Comment --}}
 <h3 class="mb-3 mt-2">所有評論：</h3>
