@@ -98,9 +98,6 @@ const adminController = {
         return user.update({ isAdmin: !user.isAdmin }).then(() => {
           req.flash('success_animation', id)
           req.flash('success_messages', '使用者權限變更成功')
-          // self
-          if (userId === Number(id)) return res.redirect('/restaurants')
-          // others
           return res.redirect('/admin/users')
         })
       })
