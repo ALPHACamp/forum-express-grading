@@ -1,10 +1,9 @@
-<h1>餐廳後台</h1>
+{{> admin-user-rest-nav}}
+<!-- show restaurants -->
 <a href='/admin/restaurants/create'>
-  <button type="button" class="btn btn-primary">New Restaurant</button>
+  <button type="button" class="btn btn-primary mb-4">New Restaurant</button>
 </a>
-<br />
-<br />
-<table class="table align-middle">
+<table class="table align-middle table-hover">
   <thead class="thead-dark">
     <tr>
       <th scope="col">#</th>
@@ -14,7 +13,7 @@
   </thead>
   <tbody>
     {{#each restaurants}}
-      <tr>
+      <tr {{#ifCond ../success_animation this.id}}class="item-animation" {{/ifCond}}>
         <th scope="row">{{this.id}}</th>
         <td>{{this.name}}</td>
         <td>

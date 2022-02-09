@@ -1,0 +1,35 @@
+{{> admin-user-rest-nav}}
+{{success_animation}}
+<table class="table align-middle table-hover">
+  <thead class="table-dark">
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Name</th>
+      <th scope="col">Email</th>
+      <th scope="col">Role</th>
+      <th scope="col">#</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each users}}
+      <form action="/admin/users/{{this.id}}?_method=patch" method="post">
+        <tr {{#ifCond ../success_animation this.id}}class="item-animation" {{/ifCond}}>
+          <th scope="row">{{this.id}}</th>
+          <td>{{this.name}}</td>
+          <td>{{this.email}}</td>
+          <td>{{#if this.isAdmin}}admin{{else}}user{{/if}}</td>
+          <td>
+            <button class="btn btn-link text-decoration-none" {{#ifCond ../user.id this.id}}
+              onclick="return confirm('警告：將自己設定為一般使用者')" {{/ifCond}}>
+              {{#if this.isAdmin}}
+                set as user
+              {{else}}
+                set as admin
+              {{/if}}
+            </button>
+          </td>
+        </tr>
+      </form>
+    {{/each}}
+  </tbody>
+</table>
