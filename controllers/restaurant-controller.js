@@ -40,6 +40,8 @@ const restaurantController = {
   },
   getRestaurant: (req, res, next) => {
     Restaurant.findByPk(req.params.id, {
+      // 跟 Restaurant 關聯的 Comment model 的 createdAt 欄位進行倒序
+      order: [[Comment, 'createdAt', 'DESC']],
       include: [
         Category,
         { model: Comment, include: User }
