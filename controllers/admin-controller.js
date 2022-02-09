@@ -15,14 +15,21 @@ const adminController = {
       next(error)
     }
   },
-  createRestaurant: (req, res) => { return res.render('admin/create-restaurant') },
+  createRestaurant: async (req, res, next) => {
+    try {
+      const categories = await Category.findAll({ raw: true })
+      res.render('admin/create-restaurant', { categories })
+    } catch (error) {
+      next(error)
+    }
+  },
   postRestaurant: async (req, res, next) => {
-    const { name, tel, address, openingHours, description } = req.body
+    const { name, tel, address, openingHours, description, categoryId } = req.body
     try {
       if (!name) throw new Error('Restaurant name is required!')
       const { file } = req
       const filePath = await imgurFileHandler(file)
-      await Restaurant.create({ name, tel, address, openingHours, description, Image: filePath || null })
+      await Restaurant.create({ name, tel, address, openingHours, description, Image: filePath || null, categoryId })
       req.flash('success_messages', 'restaurant was successfully created')
       res.redirect('/admin/restaurants')
     } catch (error) {
@@ -45,21 +52,22 @@ const adminController = {
   editRestaurant: async (req, res, next) => {
     try {
       const restaurant = await Restaurant.findByPk(req.params.id, { raw: true })
+      const categories = await Category.findAll({ raw: true })
       if (!restaurant) throw new Error("Restaurant didn't exist!")
-      res.render('admin/edit-restaurant', { restaurant })
+      res.render('admin/edit-restaurant', { restaurant, categories })
     } catch (error) {
       next(error)
     }
   },
   putRestaurant: async (req, res, next) => {
-    const { name, tel, address, openingHours, description } = req.body
+    const { name, tel, address, openingHours, description, categoryId } = req.body
     try {
       if (!name) throw new Error('Restaurant name is required!')
       const { file } = req
       const restaurant = await Restaurant.findByPk(req.params.id)
       const filePath = await imgurFileHandler(file)
       if (!restaurant) throw new Error("Restaurant didn't exist!")
-      await restaurant.update({ name, tel, address, openingHours, description, image: filePath || restaurant.filePath })
+      await restaurant.update({ name, tel, address, openingHours, description, image: filePath || restaurant.filePath, categoryId })
       req.flash('success_messages', 'restaurant was successfully to update')
       res.redirect('/admin/restaurants')
     } catch (error) {
