@@ -5,7 +5,7 @@ const fileHelpers = require('../helpers/file-helpers')
 const authHelpers = require('../helpers/auth-helpers')
 
 // load db
-const { User, Restaurant, Comment } = require('../models')
+const { User, Restaurant, Comment, Favorite } = require('../models')
 
 // build controller
 const userController = {
@@ -124,8 +124,50 @@ const userController = {
         res.redirect(`/users/${userId}`)
       })
       .catch(error => next(error))
-  }
+  },
+  addFavorite: (req, res, next) => {
+    const { restaurantId } = req.params
+    const userId = authHelpers.getUserId(req)
 
+    return Promise.all([
+      Restaurant.findByPk(restaurantId),
+      Favorite.findOne({
+        where: {
+          userId,
+          restaurantId
+        }
+      })
+    ])
+      .then(([restaurant, favorite]) => {
+        if (!restaurant) throw new Error('Restaurant didn\'t exist')
+        if (favorite) throw new Error('You have favorited this restaurant!')
+
+        return Favorite.create({
+          userId,
+          restaurantId
+        })
+      })
+      .then(() => res.redirect('back'))
+      .catch(error => next(error))
+  },
+  removeFavorite: (req, res, next) => {
+    const { restaurantId } = req.params
+    const userId = authHelpers.getUserId(req)
+
+    return Favorite.findOne({
+      where: {
+        userId,
+        restaurantId
+      }
+    })
+      .then(favorite => {
+        if (!favorite) throw new Error('You haven\'t favorited this restaurant')
+
+        return favorite.destroy()
+      })
+      .then(() => res.redirect('back'))
+      .catch(error => next(error))
+  }
 }
 
 // exports controller
