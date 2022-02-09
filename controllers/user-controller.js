@@ -152,9 +152,7 @@ const userController = {
       })
 
       return res.redirect('back')
-    } catch (error) {
-      next(error)
-    }
+    } catch (next) {}
   },
 
   removeFavorite: async (req, res, next) => {
@@ -171,39 +169,26 @@ const userController = {
       favorite.destroy()
 
       return res.redirect('back')
-    } catch (error) {
-      next(error)
-    }
+    } catch (next) {}
   },
 
   // Like feature
   addLike: async (req, res, next) => {
     try {
       const { restaurantId } = req.params
-      const [restaurant, like] = await Promise.all([
-        Restaurant.findByPk(restaurantId),
-        Like.findOne({
-          where: {
-            restaurantId,
-            userId: req.user.id
-          }
-        })
-      ])
-
-      console.log(restaurant)
+      const restaurant = await Restaurant.findByPk(restaurantId)
 
       if (!restaurant) throw new Error("Restaurant didn't exist!")
-      if (like) throw new Error('You have liked this restaurant!')
 
-      Like.create({
-        restaurantId,
-        userId: req.user.id
+      await Like.findOrCreate({
+        where: {
+          restaurantId,
+          userId: req.user.id
+        }
       })
 
       return res.redirect('back')
-    } catch (error) {
-      next(error)
-    }
+    } catch (next) {}
   },
 
   removeLike: async (req, res, next) => {
@@ -220,9 +205,7 @@ const userController = {
       like.destroy()
 
       return res.redirect('back')
-    } catch (error) {
-      next(error)
-    }
+    } catch (next) {}
   }
 }
 
