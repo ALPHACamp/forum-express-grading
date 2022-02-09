@@ -1,5 +1,6 @@
 const { Restaurant, Category, User, Comment } = require('../models')
 const paginatorHelpers = require('../helpers/pagination-helpers')
+const authHelpers = require('../helpers/auth-helpers')
 
 const restaurantController = {
   getRestaurants: (req, res, next) => {
@@ -28,9 +29,13 @@ const restaurantController = {
     ])
       .then(([categories, restaurants]) => {
         const count = restaurants.count
+        const user = authHelpers.getUser(req)
+        const favoriteList = user && user.FavoritedRestaurants.map(fr => (fr.id))
+
         restaurants = restaurants.rows.map(r => ({
           ...r,
-          description: r.description.substring(0, 50)
+          description: r.description.substring(0, 50),
+          isFavorited: favoriteList.includes(r.id)
         }))
         return res.render('restaurants', {
           restaurants,
@@ -47,16 +52,22 @@ const restaurantController = {
       nest: true,
       include: [
         Category,
-        { model: Comment, include: User }
+        { model: Comment, include: User },
+        { model: User, as: 'FavoritedUsers' }
       ]
     })
       .then(restaurant => {
         if (!restaurant) throw new Error('Restaurant doesn\'t exist')
         return restaurant.increment('viewCounts')
       })
-      .then(restaurant => res.render('restaurant', {
-        restaurant: restaurant.toJSON()
-      }))
+      .then(restaurant => {
+        const userId = authHelpers.getUserId(req)
+        const isFavorited = restaurant.FavoritedUsers.some(fr => fr.id === userId)
+        return res.render('restaurant', {
+          restaurant: restaurant.toJSON(),
+          isFavorited
+        })
+      })
       .catch(error => next(error))
   },
   getDashboard: (req, res, next) => {
