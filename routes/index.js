@@ -33,6 +33,7 @@ router.get('/restaurants', authenticated, restController.getRestaurants)
 router.delete('/comments/:id', authenticatedAdmin, commentController.deleteComment)
 router.post('/comments', authenticated, commentController.postComment)
 
+router.get('/users/top', authenticated, userController.getTopUsers)
 router.get('/users/:id', authenticated, userController.getUser)
 router.put('/users/:id', authenticated, upload.single('image'), userController.putUser)
 router.get('/users/:id/edit', authenticated, userController.editUser)
@@ -43,7 +44,7 @@ router.delete('/favorite/:restaurantId', authenticated, userController.removeFav
 router.post('/like/:restaurantId', authenticated, userController.addLike)
 router.delete('/like/:restaurantId', authenticated, userController.removeLike)
 
-router.use('/', (req, res) => res.redirect('/restaurants'))
+router.get('/', (req, res) => res.redirect('/restaurants'))
 
 // 加入錯誤訊息的middleware
 router.use('/', generalErrorHandler)

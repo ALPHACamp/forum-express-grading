@@ -231,6 +231,27 @@ const userController = {
       })
       .then(() => res.redirect('back')) // 重新導向上一頁
       .catch(err => next(err))
+  },
+
+  // 瀏覽美食達人頁面
+  getTopUsers: (req, res, next) => {
+    // 查詢所有User與Followship有關的資料
+    return User.findAll({
+      include: [{ model: User, as: 'Followers' }]
+    })
+      .then(users => {
+        // 整理 users 資料，把每個 user都拿出來處理一次，並把新陣列儲存在 users 裡
+        users = users.map(user => ({
+          // 轉換成普通物件
+          ...user.toJSON(),
+          // 計算追蹤者人數
+          followerCount: user.Followers.length,
+          // 判斷登入者是否追蹤該使用者
+          isFollow: req.user.Followings.some(f => f.id === user.id)
+        }))
+        res.render('top-users', { users: users })
+      })
+      .catch(err => next(err))
   }
 }
 
