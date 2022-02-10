@@ -82,7 +82,6 @@ const restaurantController = {
       })
     ])
       .then(([restaurants, comments]) => {
-        console.log(comments)
         res.render('feeds', { restaurants, comments })
       })
       .catch(err => next(err))
