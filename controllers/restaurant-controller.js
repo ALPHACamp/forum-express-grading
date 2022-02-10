@@ -78,8 +78,8 @@ const restaurantController = {
         if (!restaurant) throw new Error("Restaurant didn't exist!") //  如果找不到，回傳錯誤訊息，後面不執行
         const result = {
           ...restaurant.toJSON(),
-          favoritedCount: restaurant.FavoritedUsers.length,
-          commentCount: restaurant.Comments.length
+          // favoritedCount: restaurant.FavoritedUsers.length, //test no
+          // commentCount: restaurant.Comments.length  //test no
         }
         res.render('dashboard', { restaurant: result })
       })
