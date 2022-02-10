@@ -28,6 +28,8 @@ router.patch('/users/:id', adminController.patchUser)
 router.get('/categories/:id', categoryController.getCategories)
 // 更新類別
 router.put('/categories/:id', categoryController.putCategory)
+// 刪除類別
+router.delete('/categories/:id', categoryController.deleteCategory)
 // 顯示所有類別
 router.get('/categories', categoryController.getCategories)
 // 新增類別
