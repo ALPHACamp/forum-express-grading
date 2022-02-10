@@ -1,0 +1,31 @@
+<div class="card" style="width: 100%;">
+  <div class="row no-gutters">
+    <div class="col-md-4">
+      <img src="{{user.image}}" alt="user's avatar" class="img-responsive center-block " style="width: 250px; height: 250px; border-radius:50%; object-fit: cover;" onload="this.style.opacity=1;">
+    </div>
+    <div class="col-md-8">
+      <div class="card-body">
+        <h5 class="card-title">{{user.name}}</h5>
+        <p class="card-text">{{user.email}}</p>
+        <p class="card-text">{{#if count}}{{count}}已{{else}}尚未{{/if}}評論過餐廳</p>
+        {{#ifCond user.id sessionUserId}}
+        <a href="/users/{{user.id}}/edit" class="btn btn-primary">Edit</a>
+        {{/ifCond}}
+      </div>
+    </div>
+  </div>
+</div>
+<br>
+
+<div class="card">
+  <div class="card-header">
+    {{#if count}}{{count}}已{{else}}尚未{{/if}}評論餐廳
+  </div>
+  <div class="card-body">
+    {{#each user.Comments}} 
+    <a href="/restaurants/{{this.Restaurant.id}}">
+      <img class="width: 25px; height: 25px;" src="{{this.Restaurant.image}}" style=" width: 50px; height: 50px;" alt="restaurant image">
+    </a>
+    {{/each}}
+  </div>
+</div>

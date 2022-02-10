@@ -16,7 +16,12 @@ const authenticatedAdmin = (req, res, next) => {
   }
 }
 
+const currentUserIsUser = (req, res, next) => {
+  return req.user.id === Number(req.params.id) ? next() : res.redirect('/')
+}
+
 module.exports = {
   authenticated,
-  authenticatedAdmin
+  authenticatedAdmin,
+  currentUserIsUser
 }
