@@ -1,7 +1,7 @@
 // 引入模組
 const bcrypt = require('bcryptjs')
 const db = require('../models')
-const { User, Comment, Restaurant, Favorite, Like } = db
+const { User, Comment, Restaurant, Favorite, Like, Followship } = db
 
 // 引入file-helpers
 const { imgurFileHandler } = require('../helpers/file-helpers')
@@ -240,17 +240,73 @@ const userController = {
       include: [{ model: User, as: 'Followers' }]
     })
       .then(users => {
-        // 整理 users 資料，把每個 user都拿出來處理一次，並把新陣列儲存在 users 裡
-        users = users.map(user => ({
+        // 整理 users 資料，把每個 user都拿出來處理一次，並把新陣列儲存在 result 裡
+        const result = users.map(user => ({
           // 轉換成普通物件
           ...user.toJSON(),
           // 計算追蹤者人數
           followerCount: user.Followers.length,
           // 判斷登入者是否追蹤該使用者
-          isFollow: req.user.Followings.some(f => f.id === user.id)
+          isFollowed: req.user.Followings.some(f => f.id === user.id)
         }))
-        res.render('top-users', { users: users })
+          // user資料依followerCount降冪排列
+          // sort函式回傳值 >0 b移到a前面 ; <0 b移到a後面 ; =0不移動
+          .sort((a, b) => b.followerCount - a.followerCount)
+
+        res.render('top-users', { users: result })
       })
+      .catch(err => next(err))
+  },
+
+  // 追蹤user
+  addFollowing: (req, res, next) => {
+    // 取得動態路由user id
+    const { userId } = req.params
+
+    return Promise.all([
+      User.findByPk(userId), // 查詢指定使用者資料
+      Followship.findOne({ // 查詢指定使用者是否被登入者追蹤
+        where: {
+          followerId: req.user.id,
+          followingId: userId
+        }
+      })
+    ])
+      .then(([user, followship]) => {
+        // 判斷資料存在與否， 回傳錯誤訊息
+        if (!user) throw new Error("User didn't exists!")
+        if (followship) throw new Error('You are already following this user!')
+
+        // 新增至資料庫
+        return Followship.create({
+          followerId: req.user.id,
+          followingId: userId
+        })
+      })
+      .then(() => res.redirect('back')) // 重新導向上一頁
+      .catch(err => next(err))
+  },
+
+  // 刪除追蹤user
+  removeFollowing: (req, res, next) => {
+    // 取得動態路由user id
+    const { userId } = req.params
+
+    // 查詢指定使用者是否被登入者追蹤
+    return Followship.findOne({
+      where: {
+        followerId: req.user.id,
+        followingId: userId
+      }
+    })
+      .then(followship => {
+        // 若沒有資料，回傳錯誤訊息
+        if (!followship) throw new Error("You haven't followed this user!")
+
+        // 從資料庫刪除
+        return followship.destroy()
+      })
+      .then(() => res.redirect('back')) // 重新導向上一頁
       .catch(err => next(err))
   }
 }
