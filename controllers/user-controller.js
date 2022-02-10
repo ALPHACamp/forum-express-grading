@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs')
-const { User, Restaurant, Comment, Favorite, Like } = require('../models')
+const { User, Restaurant, Comment, Favorite, Like, Followship } = require('../models')
 // import db for using db function
 const db = require('../models/index')
 
@@ -152,7 +152,9 @@ const userController = {
       })
 
       return res.redirect('back')
-    } catch (next) {}
+    } catch (error) {
+      next(error)
+    }
   },
 
   removeFavorite: async (req, res, next) => {
@@ -169,7 +171,9 @@ const userController = {
       await favorite.destroy()
 
       return res.redirect('back')
-    } catch (next) {}
+    } catch (error) {
+      next(error)
+    }
   },
 
   // Like feature
@@ -188,7 +192,9 @@ const userController = {
       })
 
       return res.redirect('back')
-    } catch (next) {}
+    } catch (error) {
+      next(error)
+    }
   },
 
   removeLike: async (req, res, next) => {
@@ -205,26 +211,69 @@ const userController = {
       await like.destroy()
 
       return res.redirect('back')
-    } catch (next) {}
+    } catch (error) {
+      next(error)
+    }
   },
 
   getTopUsers: async (req, res, next) => {
     try {
-      const users = await User.findAll({
-        include: [
-          { model: User, as: 'Followers' }
-        ],
-        raw: true,
-        nest: true
+      const rawUsers = await User.findAll({
+        include: [{ model: User, as: 'Followers' }]
       })
 
-      users.map(user => ({
-        ...user,
+      const users = rawUsers.map(user => ({
+        ...user.toJSON(),
         followerCount: user.Followers.length,
         isFollowed: req.user.Followings.some(uf => uf.id === user.id)
       }))
+
+      users.sort((a, b) => b.followerCount - a.followerCount)
+
       return res.render('top-users', { users })
-    } catch (next) {}
+    } catch (error) {
+      next(error)
+    }
+  },
+
+  // Following
+  addFollowing: async (req, res, next) => {
+    try {
+      const { userId } = req.params
+
+      if (Number(userId) === req.user.id) throw new Error("You can't follow yourself.")
+      const user = await User.findByPk(userId)
+      if (!user) throw new Error("User didn't exist!")
+
+      await Followship.findOrCreate({
+        where: {
+          followerId: req.user.id,
+          followingId: userId
+        }
+      })
+
+      return res.redirect('back')
+    } catch (error) {
+      next(error)
+    }
+  },
+
+  removeFollowing: async (req, res, next) => {
+    try {
+      const followship = await Followship.findOne({
+        where: {
+          followerId: req.user.id,
+          followingId: req.params.userId
+        }
+      })
+
+      if (!followship) throw new Error("You haven't followed this user!")
+
+      await followship.destroy()
+      return res.redirect('back')
+    } catch (error) {
+      next(error)
+    }
   }
 }
 
