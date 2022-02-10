@@ -31,6 +31,7 @@ router.patch('/users/:id', adminController.patchUser)
 
 // 類別
 router.get('/categories', categoryController.getCategories)
+router.post('/categories', categoryController.postCategory)
 
 // 首頁路由
 router.get('/', (req, res) => res.redirect('/admin/restaurants'))
