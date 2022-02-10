@@ -1,6 +1,6 @@
-const { Restaurant, Category, User, Comment } = require('../models')
 const paginatorHelpers = require('../helpers/pagination-helpers')
 const authHelpers = require('../helpers/auth-helpers')
+const { Restaurant, Category, User, Comment } = require('../models')
 
 const restaurantController = {
   getRestaurants: (req, res, next) => {
@@ -111,6 +111,23 @@ const restaurantController = {
     ])
       .then(([restaurants, comments]) => {
         return res.render('feeds', { restaurants, comments })
+      })
+      .catch(error => next(error))
+  },
+  // Render Top 10 restaurants
+  getTopRestaurants: (req, res, next) => {
+    const DEFAULT_MAX_TOP_NUMBER = 10
+    return Restaurant.findAll({
+      // include: { model: User, as: 'FavoritedUsers' },
+      limit: DEFAULT_MAX_TOP_NUMBER
+    })
+      .then(restaurants => {
+        const results = restaurants
+          .map(restaurant => ({
+            ...restaurant.toJSON(),
+            description: restaurant.description.substring(0, 50)
+          }))
+        return res.render('top-restaurants', { restaurants: results })
       })
       .catch(error => next(error))
   }
