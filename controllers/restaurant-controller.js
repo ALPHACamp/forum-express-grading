@@ -32,10 +32,13 @@ const restaurantController = {
       Category.findAll({ raw: true })
     ])
       .then(([restaurants, categories]) => {
+        // 先檢查req.user是否有資料，若有則將FavoritedRestaurants的餐廳id取出成陣列
+        const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
         // 新增變數data，取得map回傳陣列
         const data = restaurants.rows.map(r => ({
           ...r, // 展開r的物件
-          description: r.description.substring(0, 50) // 將餐廳描述截為50字
+          description: r.description.substring(0, 50), // 將餐廳描述截為50字
+          isFavorited: favoritedRestaurantsId.includes(r.id) // 判斷favoritedRestaurantsId是否有包含目前餐廳的id，並回傳boolean值
         }))
         // 渲染restaurants
         return res.render('restaurants', {
@@ -54,7 +57,8 @@ const restaurantController = {
     Restaurant.findByPk(req.params.id, {
       include: [
         Category,
-        { model: Comment, include: User }
+        { model: Comment, include: User },
+        { model: User, as: 'FavoritedUsers' } // 使用多對多關連User
       ]
     })
       .then(restaurant => {
@@ -65,7 +69,10 @@ const restaurantController = {
         return restaurant.increment('viewCounts')
       })
       // 渲染restaurant頁面，將參數轉換成普通物件並帶入
-      .then(restaurant => res.render('restaurant', { restaurant: restaurant.toJSON() }))
+      .then(restaurant => {
+        const isFavorited = restaurant.FavoritedUsers.some(fu => fu.id === req.user.id) // 判斷FavoritedUsers是否存在登入者的id
+        res.render('restaurant', { restaurant: restaurant.toJSON(), isFavorited })
+      })
       .catch(err => next(err))
   },
 
