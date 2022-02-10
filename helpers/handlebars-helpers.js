@@ -5,9 +5,6 @@ module.exports = {
 
   // 比較兩輸入值是否一致
   ifCond: function (a, b, options) {
-    if (String(a) === String(b)) {
-      return options.fn()
-    }
-    return options.inverse()
+    return String(a) === String(b) ? options.fn(this) : options.inverse(this)
   }
 }
