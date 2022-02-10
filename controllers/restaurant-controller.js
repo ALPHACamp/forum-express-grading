@@ -45,17 +45,19 @@ const restaurantController = {
       include: [
         Category,
         { model: Comment, include: User },
-        { model: User, as: 'FavoritedUsers' }
+        { model: User, as: 'FavoritedUsers' } // 取出以FavoritedUsers作為關聯名的user陣列
       ]
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
+        return restaurant.increment('view_counts')
+      })
+      .then(restaurant => {
+        // 確認現在登入者是否在收藏者陣列中
         const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id)
-        const newCount = restaurant.increment('view_counts')
-        restaurant.update({ viewCounts: newCount })
         res.render('restaurant', {
           restaurant: restaurant.toJSON(),
-          isFavorited
+          isFavorited // 回傳給前端頁面使用
         })
       })
       .catch(err => next(err))
