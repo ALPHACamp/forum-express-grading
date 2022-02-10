@@ -4,7 +4,6 @@ const { User, Restaurant, Comment, Favorite, Like } = require('../models')
 const db = require('../models/index')
 
 const { imgurFileHandler } = require('../middleware/file-helpers')
-const { restart } = require('nodemon')
 
 const userController = {
   signUpPage: (req, res) => {
