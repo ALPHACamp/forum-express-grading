@@ -1,6 +1,12 @@
 <h1 class="mb-3">餐廳後台</h1>
-<a class="btn link-primary p-0" style="display: inline;" href="/admin/restaurants">Restaurants</a>
-<a class="btn link-primary" style="display: inline;" href="/admin/users">Users</a>
+<ul class="nav nav-tabs my-4">
+  <li class="nav-item">
+    <a class="nav-link active" href="/admin/restaurants">Restaurants</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="/admin/users">Users</a>
+  </li>
+</ul>
 <a href='/admin/restaurants/create'>
   <button type="button" class="btn btn-primary">New Restaurant</button>
 </a>
@@ -11,6 +17,7 @@
     <tr>
       <th scope="col">#</th>
       <th scope="col">Name</th>
+      <th scope="col">Category</th>
       <th scope="col"></th>
     </tr>
   </thead>
@@ -19,6 +26,7 @@
     <tr>
       <th scope="row">{{this.id}}</th>
       <td>{{this.name}}</td>
+      <td>{{this.Category.name}}</td>
       <td>
         <button type="button" class="btn btn-link">
           <a class="btn btn-link link-primary" href="/admin/restaurants/{{this.id}}">
