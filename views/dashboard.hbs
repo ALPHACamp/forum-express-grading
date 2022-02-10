@@ -1,0 +1,13 @@
+<div class="row mb-5">
+  {{> restaurant-header}}
+  <hr>
+  <div class="list">
+    <ul>
+      <li>瀏覽次數：{{restaurant.viewCounts}} </li>
+      <li>評論數：{{restaurant.Comments.length}} </li>
+      <li>收藏數：{{restaurant.FavoritedUsers.length}}</li>
+      <li>喜歡數：{{restaurant.LikedUsers.length}}</li>
+    </ul>
+  </div>
+</div>
+<a class="btn btn-outline-primary" href="javascript:history.back()">回上一頁</a>
