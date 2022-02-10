@@ -5,7 +5,10 @@ const fileHelpers = require('../helpers/file-helpers')
 const authHelpers = require('../helpers/auth-helpers')
 
 // load db
-const { User, Restaurant, Comment, Favorite, Like } = require('../models')
+const {
+  User, Restaurant, Comment,
+  Favorite, Like, Followship
+} = require('../models')
 
 // build controller
 const userController = {
@@ -220,13 +223,66 @@ const userController = {
     })
       .then(users => {
         const currentUser = authHelpers.getUser(req)
-        users = users.map(user => ({
-          ...user.toJSON(),
-          followerCount: user.Followers.length,
-          isFollowed: currentUser.Followings.some(f => f.id === user.id)
-        }))
-        return res.render('top-users', { users: users })
+        const results = users
+          .map(user => ({
+            ...user.toJSON(),
+            followerCount: user.Followers.length,
+            isFollowed: currentUser.Followings.some(f => f.id === user.id)
+          }))
+          .sort((a, b) => b.followerCount - a.followerCount)
+        return res.render('top-users', { users: results })
       })
+      .catch(error => next(error))
+  },
+  // Handling following/unfollowing
+  addFollowing: (req, res, next) => {
+    // The target user who current user wants to follow
+    const followingId = req.params.userId
+    // The current User
+    const followerId = authHelpers.getUserId(req)
+
+    // Check whether the target user exists
+    // Check whether the target user exists in following list of current user
+    return Promise.all([
+      User.findByPk(followingId),
+      Followship.findOne({
+        where: {
+          followerId,
+          followingId
+        }
+      })
+    ])
+      .then(([user, following]) => {
+        if (!user) throw new Error('User didn\'t exist')
+        if (following) throw new Error('You are already following this user!')
+        // add the user to the list
+        return Followship.create({
+          followerId,
+          followingId
+        })
+      })
+      .then(() => res.redirect('back'))
+      .catch(error => next(error))
+  },
+  removeFollowing: (req, res, next) => {
+    // The target user who current user wants to follow
+    const followingId = req.params.userId
+    // The current User
+    const followerId = authHelpers.getUserId(req)
+
+    // Check whether the target user exists in the following list
+    return Followship.findOne({
+      where: {
+        followerId,
+        followingId
+      }
+    })
+      .then(following => {
+        if (!following) throw new Error('You haven\'t followed this user!')
+        // remove the user from the list
+        return following.destroy()
+      })
+      .then(() => res.redirect('back'))
       .catch(error => next(error))
   }
 }
