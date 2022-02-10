@@ -23,11 +23,14 @@ const restaurantController = {
       .then(([restaurants, categories]) => {
         // 防止req.user為空於是加上&&, 回傳被此使用者收藏的餐廳陣列
         const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
+        const likedRestaurantsId = req.user && req.user.LikedRestaurants.map(fr => fr.id)
         const data = restaurants.rows.map(r => ({
           ...r,
           description: r.description.substring(0, 50),
           // 在data上加上餐廳是否被收藏的資料
-          isFavorited: favoritedRestaurantsId.includes(r.id)
+          isFavorited: favoritedRestaurantsId.includes(r.id),
+          // 加上餐廳是否被喜歡的資料給頁面使用
+          isLiked: likedRestaurantsId.includes(r.id)
         }))
         return res.render('restaurants', {
           restaurants: data,
@@ -45,7 +48,8 @@ const restaurantController = {
       include: [
         Category,
         { model: Comment, include: User },
-        { model: User, as: 'FavoritedUsers' } // 取出以FavoritedUsers作為關聯名的user陣列
+        { model: User, as: 'FavoritedUsers' }, // 取出以FavoritedUsers作為關聯名的user陣列
+        { model: User, as: 'LikedUsers' } // 取出按過此餐廳喜歡的user陣列
       ]
     })
       .then(restaurant => {
@@ -55,9 +59,11 @@ const restaurantController = {
       .then(restaurant => {
         // 確認現在登入者是否在收藏者陣列中
         const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id)
+        const isLiked = restaurant.LikedUsers.some(f => f.id === req.user.id)
         res.render('restaurant', {
           restaurant: restaurant.toJSON(),
-          isFavorited // 回傳給前端頁面使用
+          isFavorited, // 回傳給前端頁面使用
+          isLiked
         })
       })
       .catch(err => next(err))
