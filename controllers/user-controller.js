@@ -1,7 +1,7 @@
 // 引入模組
 const bcrypt = require('bcryptjs')
 const db = require('../models')
-const { User, Comment, Restaurant, Favorite } = db
+const { User, Comment, Restaurant, Favorite, Like } = db
 
 // 引入file-helpers
 const { imgurFileHandler } = require('../helpers/file-helpers')
@@ -179,6 +179,55 @@ const userController = {
 
         // 刪除資料庫
         return favorite.destroy()
+      })
+      .then(() => res.redirect('back')) // 重新導向上一頁
+      .catch(err => next(err))
+  },
+
+  // 新增like
+  addLike: (req, res, next) => {
+    const { restaurantId } = req.params // 取得動態餐廳id
+
+    return Promise.all([
+      Restaurant.findByPk(restaurantId), // 查詢動態路由所指的restaurant資料
+      Like.findOne({ // 查詢登入使用者是否有like指定餐廳
+        where: {
+          userId: req.user.id,
+          restaurantId
+        }
+      })
+    ])
+      .then(([restaurant, like]) => {
+        // 判斷資料是否已在，回傳錯誤訊息
+        if (!restaurant) throw new Error("Restaurant didn't exists!")
+        if (like) throw new Error('You have liked this restaurant!')
+
+        // 新增至資料庫
+        return Like.create({
+          userId: req.user.id,
+          restaurantId
+        })
+      })
+      .then(() => res.redirect('back')) // 重新導向上一頁
+      .catch(err => next(err))
+  },
+
+  // 刪除like
+  removeLike: (req, res, next) => {
+    const { restaurantId } = req.params // 取得動態餐廳id
+
+    return Like.findOne({ // 查詢動態路由所指的restaurant資料
+      where: {
+        userId: req.user.id,
+        restaurantId
+      }
+    })
+      .then(like => {
+        // 判斷資料是否已在，若不是回傳錯誤訊息
+        if (!like) throw new Error("You haven't liked this restaurant!")
+
+        // 從資料庫刪除
+        return like.destroy()
       })
       .then(() => res.redirect('back')) // 重新導向上一頁
       .catch(err => next(err))
