@@ -18,7 +18,10 @@ const categoryController = {
         if (category) throw new Error('Category name exists')
         return Category.create({ name })
       })
-      .then(() => res.redirect('/admin/categories'))
+      .then(category => {
+        req.flash('success_animation', category.id)
+        res.redirect('/admin/categories')
+      })
       .catch(err => next(err))
   },
 
@@ -31,10 +34,11 @@ const categoryController = {
         // 搜尋錯誤，此 id 不存在
         if (!category) throw new Error("Category doesn't exist!")
         // 沒改變，不更新
-        if (category.name === name) return
+        if (category.name === name) return req.flash('success_animation', req.params.id)
         // 有改變，檢查是不是已經存在
         if (categories.length > 0) throw new Error('Category name exists!')
         // 有改變，沒有重複
+        req.flash('success_animation', req.params.id)
         return category.update({ name })
       })
       .then(() => res.redirect('/admin/categories'))
