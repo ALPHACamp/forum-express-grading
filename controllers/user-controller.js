@@ -146,7 +146,7 @@ const userController = {
       if (!restaurant) throw new Error("Restaurant didn't exist!")
       if (favorite) throw new Error('You have favorited this restaurant!')
 
-      Favorite.create({
+      await Favorite.create({
         restaurantId,
         userId: req.user.id
       })
@@ -166,7 +166,7 @@ const userController = {
 
       if (!favorite) throw new Error("You haven't favorited this restaurant")
 
-      favorite.destroy()
+      await favorite.destroy()
 
       return res.redirect('back')
     } catch (next) {}
@@ -202,7 +202,7 @@ const userController = {
 
       if (!like) throw new Error("You haven't liked this restaurant")
 
-      like.destroy()
+      await like.destroy()
 
       return res.redirect('back')
     } catch (next) {}
@@ -218,7 +218,6 @@ const userController = {
         nest: true
       })
 
-      console.log(users)
       users.map(user => ({
         ...user,
         followerCount: user.Followers.length,
