@@ -1,0 +1,34 @@
+<div class="row row-cols-1 justify-content-around row-cols-md-2 bg-white border">
+  <div class="col-md-4 mt-5">
+    <img class="img-responsive center-block mb-5" src="{{user.image}}"
+      style="width: 550px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+  </div>
+  <div class="col-md-4 mt-5">
+    <p style="white-space: break-spaces;">{{user.name}}</p>
+    <p style="white-space: break-spaces;">{{user.email}}</p>
+    <p style="white-space: break-spaces;">{{commentCounts}} 已評論的餐廳</p>
+
+
+    <a href='/users/{{user.id}}/edit'>
+      <button type="button" class="btn btn-primary">Edit</button>
+    </a>
+
+  </div>
+</div>
+
+<div class="row">
+  <div class="card px-0 mt-2">
+    <div class="card-header">
+      {{commentCounts}} 已評論的餐廳
+    </div>
+    <ul class="d-flex flex-wrap align-items-center">
+      {{#each comment}}
+      <li class="m-3" style="max-width: 150px; list-style-type: none;">
+        <a href="/restaurants/{{this.Restaurant.id}}">
+          <img class="w-100" src="{{this.Restaurant.image}}" alt="restaurant image">
+        </a>
+      </li>
+      {{/each}}
+    </ul>
+  </div>
+</div>
