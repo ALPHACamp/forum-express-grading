@@ -2,14 +2,20 @@
   <div class="col-6">
     <img class="rounded-circle float-start img-fluid"
     {{#if user.image}}src="{{user.image}}"
-    {{else}}src="https://png.pngtree.com/element_our/20190601/ourlarge/pngtree-cartoon-character-icon-free-button-illustration-image_1373716.jpg"{{/if}} alt="..." style="width: 400px; height: 400px">
+    {{else}}src="https://png.pngtree.com/element_our/20190601/ourlarge/pngtree-cartoon-character-icon-free-button-illustration-image_1373716.jpg"{{/if}} alt="..." width="400px">
   </div>
   <div class="col-6">
-    <ul>
+    <ul class="list-unstyled">
       <li><h1>{{user.name}}</h1></li>
       <li><p>{{user.email}}</p></li>
+      <li><p>{{comment.count}}已評論餐廳</p></li>
     </ul>
+    <a class="btn btn-primary" href="{{user.id}}/edit">Edit</a>
   </div>
 </div>
-<a class="btn btn-primary" href="{{user.id}}/edit">Edit</a>
-<a class="btn btn-outline-secondary" href="javascript:history.back()">回上一頁</a>
+<div class="row mb-5 bg-white border">
+  <nav class="navbar navbar-light bg-light fw-bold">{{comments.count}}已評論餐廳</nav>
+  {{#each commentData}}
+  <a class="col-auto my-3" href="/restaurants/{{this.Restaurant.id}}"><img src="{{this.Restaurant.image}}" alt="..." style="width: 100px; height: 100px;"></a>
+  {{/each}}
+</div>
