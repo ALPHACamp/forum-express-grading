@@ -15,3 +15,20 @@
     </div>
   </div>
 </div> 
+
+<div class='row'>
+  <div class='col-md'>
+
+    <div class='card-header'>
+      {{count}} 間已評論的餐廳
+    </div>
+
+    <ul class='d-flex align-items-center'>
+      {{#each comment}}
+      <li class='m-3' style='max-width: 150px; list-style-type: none;'>    
+        <a href='/restaurants/{{this.Restaurant.id}}'>
+          <img class='w-100' src='{{this.Restaurant.image}}' alt='restaurant image'>
+        </a>
+      </li>
+      {{/each}}
+    </ul>
