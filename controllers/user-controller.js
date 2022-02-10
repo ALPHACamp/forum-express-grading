@@ -55,6 +55,9 @@ const userController = {
       })
     ])
       .then(([user, comments]) => {
+        if (!user) {
+          throw new Error("User didn't exist!")
+        }
         const restaurants = []
         const set = new Set()
         for (const comment of comments) {
@@ -63,11 +66,8 @@ const userController = {
             restaurants.push(comment.Restaurant)
           }
         }
-        if (!user) {
-          throw new Error("User didn't exist!")
-        }
         const defaultProfileIcon = `/upload/${process.env.DEFAULT_PROFILE}`
-        return res.render('users/profile', { user, defaultProfileIcon, restaurants })
+        return res.render('users/profile', { user, sessionUser: req.user, defaultProfileIcon, restaurants })
       })
       .catch(err => next(err))
   },
@@ -89,6 +89,10 @@ const userController = {
     if (!name) {
       throw new Error('User name is required')
     }
+    if (req.user.id !== parseInt(req.params.id)) {
+      throw new Error('User can only edit his/her own data')
+    }
+
     const { file } = req
     return Promise.all([
       User.findByPk(req.params.id),
