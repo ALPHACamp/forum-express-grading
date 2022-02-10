@@ -1,9 +1,6 @@
 const unduplicatedRest = comments => {
-  const target = comments.filter(function (comment, index) {
-    for (let i = index + 1; i < comments.length; i++) {
-      if (comment.Restaurant.id === comments[i].Restaurant.id) return null
-    }
-    return comment
+  const target = [...new Set(comments)] || comments.filter(function (comment, index, self) {
+    return self.indexOf(comment) === index
   })
   return target
 }
