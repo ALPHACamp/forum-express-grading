@@ -1,0 +1,34 @@
+<h1>Profile</h1>
+<div class='card mb-3'>
+  <div class='row'>
+    <div class='col-md-2'>
+      <img class="card-img-top img-fluid" src="{{user.image}}" alt="profile image" width="286px" height="180px"
+            style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+    </div>
+
+    <div class='col-md-8'>
+      <div class='card-body'>
+        <h5 class='card-title'>{{user.name}}</h5>
+        <p class='card-text'>{{user.email}}</p>
+        <a class="btn btn-outline-secondary" href="/users/{{user.id}}/edit">Edit</a>
+      </div>
+    </div>
+  </div>
+</div> 
+
+<div class='row'>
+  <div class='col-md'>
+
+    <div class='card-header'>
+      {{count}} 間已評論的餐廳
+    </div>
+
+    <ul class='d-flex align-items-center'>
+      {{#each comment}}
+      <li class='m-3' style='max-width: 150px; list-style-type: none;'>    
+        <a href='/restaurants/{{this.Restaurant.id}}'>
+          <img class='w-100' src='{{this.Restaurant.image}}' alt='restaurant image'>
+        </a>
+      </li>
+      {{/each}}
+    </ul>
