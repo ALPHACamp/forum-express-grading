@@ -39,10 +39,10 @@ router.post('/comments', authenticated, commentController.postComment)
 router.delete('/comments/:id', authenticated, commentController.deleteComment)
 
 router.post('/favorite/:restaurantId', authenticated, userController.addFavorite)
-router.delete('/favorite/:restaurantId', userController.removeFavorite)
+router.delete('/favorite/:restaurantId', authenticated, userController.removeFavorite)
 
-router.post('/like/:restaurantId', userController.addLike)
-router.delete('/like/:restaurantId', userController.removeLike)
+router.post('/like/:restaurantId', authenticated, userController.addLike)
+router.delete('/like/:restaurantId', authenticated, userController.removeLike)
 
 router.use('/', (req, res) => res.redirect('/restaurants'))
 router.use('/', generalErrorHandler)
