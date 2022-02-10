@@ -173,7 +173,7 @@ const userController = {
   },
   addFollowing: (req, res, next) => {
     const { userId } = req.params
-    Promise.all([
+    return Promise.all([
       User.findByPk(userId),
       Followship.findOne({
         where: {
@@ -194,7 +194,7 @@ const userController = {
       .catch(err => next(err))
   },
   removeFollowing: (req, res, next) => {
-    Followship.findOne({
+    return Followship.findOne({
       where: {
         followerId: req.user.id,
         followeeId: req.params.userId

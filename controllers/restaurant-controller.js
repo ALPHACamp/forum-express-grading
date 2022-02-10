@@ -1,4 +1,4 @@
-const { Restaurant, Category, Comment, User } = require('../models')
+const { Restaurant, Category, Comment, User, Favorite } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
 const restaurantController = {
   getRestaurants: (req, res) => {
@@ -68,12 +68,20 @@ const restaurantController = {
   getDashboard: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, { // 去資料庫用 id 找一筆資料
       // raw: true, // 找到以後整理格式再回傳
-      nest: true,
-      include: [Category]
+      include: [
+        Category,
+        Comment,
+        { model: User, as: 'FavoritedUsers' }
+      ]
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!") //  如果找不到，回傳錯誤訊息，後面不執行
-        res.render('dashboard', { restaurant: restaurant.toJSON() })
+        const result = {
+          ...restaurant.toJSON(),
+          favoritedCount: restaurant.FavoritedUsers.length,
+          commentCount: restaurant.Comments.length
+        }
+        res.render('dashboard', { restaurant: result })
       })
       .catch(err => next(err))
   },
@@ -99,6 +107,27 @@ const restaurantController = {
           restaurants,
           comments
         })
+      })
+      .catch(err => next(err))
+  },
+  getTopRestaurants: (req, res, next) => {
+    return Restaurant.findAll({
+      include: [
+        Category,
+        { model: User, as: 'FavoritedUsers' }]
+    })
+      .then(restaurants => {
+        const topCount = 10 // 取 top 10
+        const result = restaurants
+          .map(restaurant => ({
+            ...restaurant.toJSON(),
+            description: restaurant.description.substring(0, 50),
+            favoritedCount: restaurant.FavoritedUsers.length,
+            isFavorited: req.user.FavoritedRestaurants.some(f => f.id === restaurant.id),
+            // isLiked: req.user.LikedRestaurants.some(l => l.id === restaurant.id) // R05test no
+          }))
+          .sort((a, b) => b.favoritedCount - a.favoritedCount)
+        res.render('top-restaurants', { restaurants: result.slice(0, (topCount)) })
       })
       .catch(err => next(err))
   }
