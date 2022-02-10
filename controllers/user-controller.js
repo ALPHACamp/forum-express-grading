@@ -54,7 +54,10 @@ const userController = {
         raw: true
       })
     ])
-      .then(([user, comments]) => {
+      .then(([profileUser, comments]) => {
+        if (!profileUser) {
+          throw new Error("User didn't exist!")
+        }
         const restaurants = []
         const set = new Set()
         for (const comment of comments) {
@@ -63,15 +66,16 @@ const userController = {
             restaurants.push(comment.Restaurant)
           }
         }
-        if (!user) {
-          throw new Error("User didn't exist!")
-        }
         const defaultProfileIcon = `/upload/${process.env.DEFAULT_PROFILE}`
-        return res.render('users/profile', { user, defaultProfileIcon, restaurants })
+        return res.render('users/profile', { user: req.user, profileUser, defaultProfileIcon, restaurants })
       })
       .catch(err => next(err))
   },
   editUser: (req, res, next) => {
+    if (req.user.id !== parseInt(req.params.id)) {
+      req.flash('error_messages', "User cannot edit other user's profile!")
+      return res.redirect(`/users/${req.user.id}`)
+    }
     return User.findByPk(req.params.id, {
       nest: true,
       raw: true
