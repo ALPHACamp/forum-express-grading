@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs')
 const db = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
-const { User } = db
+const { User, Comment, Restaurant } = db
 
 const userController = {
   signUpPage: (req, res) => {
@@ -38,13 +38,16 @@ const userController = {
     res.redirect('/signin')
   },
   getUser: (req, res, next) => {
-    const id = req.params.id
-    return User.findByPk(id, {
-      raw: true
+    const DEFAULT_COMMENT_COUNT = 0
+    const sessionUserId = req.user?.id || req.params.id
+    return User.findByPk(req.params.id, {
+      include: { model: Comment, include: Restaurant },
+      group: 'Comments.Restaurant.id'
     })
       .then(user => {
         if (!user) throw new Error('User did not exist!')
-        return res.render('users/profile', { user })
+        const count = user.Comments?.length || DEFAULT_COMMENT_COUNT
+        return res.render('users/profile', { user: user.toJSON(), count, sessionUserId })
       })
       .catch(err => next(err))
   },
@@ -59,7 +62,7 @@ const userController = {
       .catch(err => next(err))
   },
   putUser: (req, res, next) => {
-    const id = req.params.id
+    const id = Number(req.params.id)
     const { name } = req.body
     const { file } = req
     if (!name) throw new Error('Name is required!')
