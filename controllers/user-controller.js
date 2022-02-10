@@ -213,6 +213,21 @@ const userController = {
       })
       .then(() => res.redirect('back'))
       .catch(error => next(error))
+  },
+  getTopUsers: (req, res, next) => {
+    return User.findAll({
+      include: { model: User, as: 'Followers' }
+    })
+      .then(users => {
+        const currentUser = authHelpers.getUser(req)
+        users = users.map(user => ({
+          ...user.toJSON(),
+          followerCount: user.Followers.length,
+          isFollowed: currentUser.Followings.some(f => f.id === user.id)
+        }))
+        return res.render('top-users', { users: users })
+      })
+      .catch(error => next(error))
   }
 }
 
