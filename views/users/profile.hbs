@@ -23,3 +23,17 @@
 		</div>
 	</div>
 {{/if}}
+<div class="card">
+  <div class="card-header">
+    {{commentCounts}} 已評論餐廳
+  </div>
+  <div class="card-body d-flex flex-wrap">
+{{#each user.Comments}}
+    <div class="col-md-1">
+    	<a href="/restaurants/{{this.Restaurant.id}}">
+			<img src="{{this.Restaurant.image}}" style="width:100px; margin: ;transition: opacity 0.5s; opacity:0;" class="img-responsive center-block mb-5" onload="this.style.opacity=1;">
+		</a>
+	</div>
+{{/each}}
+  </div>
+</div>

@@ -2,6 +2,7 @@ const bcrypt = require('bcryptjs')
 const db = require('../models')
 const { User } = db
 const { imgurFileHandler } = require('../helpers/file-helpers')
+const { Restaurant, Comment } = require('../models')
 const userController = {
   signUpPage: (req, res) => {
     res.render('signup')
@@ -53,11 +54,14 @@ const userController = {
       .catch(err => next(err))
   },
   getUser: (req, res, next) => {
-    const paramsId = parseInt(req.params.id)
-    return User.findByPk(paramsId)
+    return User.findByPk(req.params.id, {
+      include: { model: Comment, include: Restaurant }
+    })
       .then(user => {
         if (!user) throw new Error('User did not exist!')
-        res.render('users/profile', { user: user.toJSON() })
+        let commentCounts = ''
+        if (user.Comments) commentCounts = user.Comments.length
+        res.render('users/profile', { user: user.toJSON(), commentCounts })
       })
       .catch(err => next(err))
     // 上面這組程式碼可以使用也能通過測試，可是如果在瀏覽器直接輸入別的params id，
@@ -87,7 +91,6 @@ const userController = {
       .catch(err => next(err))
   },
   putUser: (req, res, next) => {
-    console.log(req)
     const { name } = req.body
     const { file } = req
     const userId = req.user.id
