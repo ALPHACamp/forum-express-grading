@@ -111,15 +111,17 @@ const adminController = {
       .catch(error => next(error))
   },
   deleteRestaurant: (req, res, next) => {
-    const id = req.params.id
-    Restaurant.findByPk(id)
-      .then(restaurant => {
-        if (!restaurant) throw new Error('Restaurant didn\'t exist')
-        return restaurant.destroy()
-      })
-      .then(() => {
+    const { id } = req.params
+
+    return Restaurant.destroy({
+      where: {
+        id
+      }
+    })
+      .then(result => {
+        if (!result) throw new Error('Restaurant didn\'t exist')
         req.flash('success_messages', '你已成功刪除餐廳')
-        res.redirect('/admin/restaurants')
+        return res.redirect('/admin/restaurants')
       })
       .catch(error => next(error))
   }
