@@ -1,0 +1,16 @@
+<div class="card mb-3">
+  <div class="row no-gutters">
+    <div class="col-md-4">
+      <img class="img-responsive center-block" src="{{user.image}}" style= "width: 350px; height: 350px">
+    </div>
+    <div class="col-md-8">
+      <div class="card-body">
+        <h5 class="card-title">{{user.name}}</h5>
+        <p class="card-text">{{user.email}}</p>
+      </div>
+      <a href='/users/{{user.id}}/edit'>
+        <button type="button" class="btn btn-primary">edit</button>
+      </a>
+    </div>
+  </div>
+</div>
