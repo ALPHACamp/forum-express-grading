@@ -1,5 +1,4 @@
 'use strict'
-const faker = require('faker')
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
@@ -12,7 +11,7 @@ module.exports = {
      *   isBetaMember: false
      * }], {});
     */
-    const DEFAULT_MAX_COMMENTS = 50
+    const DEFAULT_MAX_FAVORITES = 50
     // obtain each restaurant ID from all exist seed users
     const seedUsers = (await queryInterface.sequelize.query(
       'SELECT `id` FROM `Users`', {
@@ -25,55 +24,56 @@ module.exports = {
         type: queryInterface.sequelize.QueryTypes.SELECT
       })).map(item => item.id)
 
-    // a list stores which comment each restaurant has
-    const restComments = {}
-    // a list which stores each restaurant each user has commented
-    const userComments = Array.from({ length: seedUsers.length }, () => ({}))
+    // a list stores which favorite each restaurant has
+    const favoriteUsersCount = {}
+    // a list stores which favorite each user has
+    const favoriteRestaurantsCount = {}
 
-    // generate a set of seed comments and count each comment
-    const seedComments = Array.from({ length: DEFAULT_MAX_COMMENTS }, () => {
-      const currentUserIndex = Math.floor(Math.random() * seedUsers.length)
-
+    // generate a set of seed favorites and count each favorite
+    const seedFavorites = Array.from({ length: DEFAULT_MAX_FAVORITES }, () => {
       const restaurantId = seedRestaurants[Math.floor(Math.random() * seedRestaurants.length)]
-      const userId = seedUsers[currentUserIndex]
-      // records a restaurant he/she commented
-      userComments[currentUserIndex][restaurantId] = true
-      // counts comment for each restaurant
-      restComments[restaurantId] = isNaN(restComments[restaurantId])
+      const userId = seedUsers[Math.floor(Math.random() * seedUsers.length)]
+      // counts favorite restaurant for each user
+      favoriteRestaurantsCount[userId] = isNaN(favoriteRestaurantsCount[userId])
         ? 1
-        : ++restComments[restaurantId]
+        : ++favoriteRestaurantsCount[userId]
+      // counts favorited time for each restaurant
+      favoriteUsersCount[restaurantId] = isNaN(favoriteUsersCount[restaurantId])
+        ? 1
+        : ++favoriteUsersCount[restaurantId]
 
       return {
-        text: faker.lorem.sentence(),
         user_id: userId,
         restaurant_id: restaurantId,
         created_at: new Date(),
         updated_at: new Date()
       }
     })
+    // update favorite count for each user
+    seedUsers.forEach(async userId => {
+      const count = favoriteRestaurantsCount[userId]
 
-    // update comment count for each restaurant
-    seedRestaurants.forEach(async restId => {
-      if (typeof restComments[restId] === 'number') {
+      const queryStatement = `
+      UPDATE Users SET favorite_count = ${count}
+      WHERE id = ${userId}
+      `
+      await queryInterface.sequelize.query(queryStatement)
+    })
+
+    // update favorited count for each restaurant
+    seedRestaurants.forEach(async restaurantId => {
+      if (typeof favoriteUsersCount[restaurantId] === 'number') {
+        const count = favoriteUsersCount[restaurantId]
         const queryStatement = `
-        UPDATE Restaurants SET commented_count = ${restComments[restId]}
-        WHERE id = ${restId}
+          UPDATE Restaurants SET favorited_count = ${count}
+          WHERE id = ${restaurantId}
         `
         await queryInterface.sequelize.query(queryStatement)
       }
     })
 
-    // update restaurant comment count for each user
-    userComments.forEach(async (list, index) => {
-      const queryStatement = `
-      UPDATE Users SET rest_comment_count = ${Object.keys(list).length}
-      WHERE id = ${seedUsers[index]}
-      `
-      await queryInterface.sequelize.query(queryStatement)
-    })
-
-    // generate a sef of comments to Comments Table
-    await queryInterface.bulkInsert('Comments', seedComments)
+    // generate a sef of favorites to Favorites Table
+    await queryInterface.bulkInsert('Favorites', seedFavorites)
   },
 
   down: async (queryInterface, Sequelize) => {
@@ -85,7 +85,7 @@ module.exports = {
      */
 
     // remove all records from Favorites Table
-    await queryInterface.bulkDelete('Comments', null)
+    await queryInterface.bulkDelete('Favorites', null)
 
     // obtain each restaurant ID from all exist seed users
     const seedUsers = (await queryInterface.sequelize.query(
@@ -99,20 +99,21 @@ module.exports = {
         type: queryInterface.sequelize.QueryTypes.SELECT
       })).map(item => item.id)
 
-    // reset restaurant comment count for each user
+    // reset favorite count for each user
     seedUsers.forEach(async userId => {
       const queryStatement = `
-      UPDATE Users SET rest_comment_count = 0 
-      WHERE id = ${userId}`
-
+      UPDATE Users SET favorite_count = 0 
+      WHERE id = ${userId}
+      `
       await queryInterface.sequelize.query(queryStatement)
     })
 
-    // reset comment count for each restaurant
-    seedRestaurants.forEach(async restId => {
+    // reset favorited count for each restaurant
+    seedRestaurants.forEach(async restaurantId => {
       const queryStatement = `
-      UPDATE Restaurants SET commented_count = 0 
-      WHERE id = ${restId}`
+      UPDATE Restaurants SET favorited_count = 0 
+      WHERE id = ${restaurantId}`
+
       await queryInterface.sequelize.query(queryStatement)
     })
   }
