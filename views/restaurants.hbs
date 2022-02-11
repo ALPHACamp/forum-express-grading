@@ -29,13 +29,24 @@
         <span class="badge bg-secondary">{{this.Category.name}}</span>
         <p class="card-text text-truncate">{{this.description}}</p>
         <div class="d-flex">
-          {{#if isFavorited}}
+          {{#if this.isFavorited}}
           <form action="/favorite/{{this.id}}?_method=DELETE" method="POST">
             <button type="submit" class="btn btn-danger m-1">移除最愛</button>
           </form>
           {{else}}
           <form action="/favorite/{{this.id}}" method="POST">
             <button type="submit" class="btn btn-primary m-1">加到最愛</button>
+          </form>
+          {{/if}}
+        </div>
+        <div class="d-flex">
+          {{#if this.isLiked}}
+          <form action="/like/{{this.id}}?_method=DELETE" method="POST">
+            <button type="submit" class="btn btn-danger m-1">Unlike</button>
+          </form>
+          {{else}}
+          <form action="/like/{{this.id}}" method="POST">
+            <button type="submit" class="btn btn-primary m-1">like</button>
           </form>
           {{/if}}
         </div>
