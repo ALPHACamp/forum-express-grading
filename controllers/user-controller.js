@@ -187,24 +187,17 @@ const userController = {
   addLike: (req, res, next) => {
     const { restaurantId } = req.params // 取得動態餐廳id
 
-    return Promise.all([
-      Restaurant.findByPk(restaurantId), // 查詢動態路由所指的restaurant資料
-      Like.findOne({ // 查詢登入使用者是否有like指定餐廳
-        where: {
-          userId: req.user.id,
-          restaurantId
-        }
-      })
-    ])
-      .then(([restaurant, like]) => {
+    return Restaurant.findByPk(restaurantId) // 查詢動態路由所指的restaurant資料
+      .then(restaurant => {
         // 判斷資料是否已在，回傳錯誤訊息
         if (!restaurant) throw new Error("Restaurant didn't exists!")
-        if (like) throw new Error('You have liked this restaurant!')
 
-        // 新增至資料庫
-        return Like.create({
-          userId: req.user.id,
-          restaurantId
+        // 先查詢是否有資料，若無則新增至資料庫
+        return Like.findOrCreate({
+          where: {
+            userId: req.user.id,
+            restaurantId
+          }
         })
       })
       .then(() => res.redirect('back')) // 重新導向上一頁
