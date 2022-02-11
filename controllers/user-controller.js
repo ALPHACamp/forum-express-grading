@@ -128,6 +128,7 @@ const userController = {
       })
       .catch(error => next(error))
   },
+  // Handing favorite/unfavorite
   addFavorite: (req, res, next) => {
     const { restaurantId } = req.params
     const userId = authHelpers.getUserId(req)
@@ -156,7 +157,8 @@ const userController = {
   removeFavorite: (req, res, next) => {
     const { restaurantId } = req.params
     const userId = authHelpers.getUserId(req)
-
+    // check whether the restaurant exists in favorite Table
+    // If the restaurant exists, then remove it from the favorite Table
     return Favorite.findOne({
       where: {
         userId,
@@ -202,21 +204,21 @@ const userController = {
     const { restaurantId } = req.params
     const userId = authHelpers.getUserId(req)
 
-    // check whether the restaurant is in like Table
-    return Like.findOne({
+    // check whether the restaurant exists in like Table
+    // If the restaurant exists, then remove it from the like Table
+    return Like.destroy({
       where: {
         userId,
         restaurantId
       }
     })
-      .then(likedRestaurant => {
-        if (!likedRestaurant) throw new Error('You haven\'t liked this restaurant')
-        // remove it from like Table
-        return likedRestaurant.destroy()
+      .then(result => {
+        if (!result) throw new Error('You haven\'t liked this restaurant')
+        return res.redirect('back')
       })
-      .then(() => res.redirect('back'))
       .catch(error => next(error))
   },
+  // Render Top Users
   getTopUsers: (req, res, next) => {
     return User.findAll({
       include: { model: User, as: 'Followers' }
@@ -271,18 +273,17 @@ const userController = {
     const followerId = authHelpers.getUserId(req)
 
     // Check whether the target user exists in the following list
-    return Followship.findOne({
+    // if the user exists, then remove it from the followship table
+    return Followship.destroy({
       where: {
         followerId,
         followingId
       }
     })
-      .then(following => {
-        if (!following) throw new Error('You haven\'t followed this user!')
-        // remove the user from the list
-        return following.destroy()
+      .then(result => {
+        if (!result) throw new Error('You haven\'t followed this user!')
+        return res.redirect('back')
       })
-      .then(() => res.redirect('back'))
       .catch(error => next(error))
   }
 }

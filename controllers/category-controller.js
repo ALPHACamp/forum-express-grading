@@ -41,16 +41,17 @@ const categoryController = {
       .catch(error => next(error))
   },
   deleteCategory: (req, res, next) => {
-    const id = req.params.id
+    const { id } = req.params
 
-    return Category.findByPk(id)
-      .then(category => {
-        if (!category) throw new Error('Category doesn\'t exist!')
-        return category.destroy()
-      })
-      .then(() => {
+    return Category.destroy({
+      where: {
+        id
+      }
+    })
+      .then(result => {
+        if (!result) throw new Error('Category doesn\'t exist!')
         req.flash('success_messages', 'category was successfully removed')
-        res.redirect('/admin/categories')
+        return res.redirect('/admin/categories')
       })
       .catch(error => next(error))
   }
