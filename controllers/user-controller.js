@@ -142,17 +142,16 @@ const userController = {
       .catch(err => next(err))
   },
   removeLike: (req, res, next) => {
-    return Like.findOne({
+    return Like.destroy({
       where: {
         userId: req.user.id,
         restaurantId: req.params.restaurantId
       }
     })
-      .then(like => {
-        if (!like) throw new Error('You have not liked this restaurant!')
-        return like.destroy()
+      .then(removedLike => {
+        if (!removedLike) throw new Error('You have not liked this restaurant!')
+        return res.redirect('back')
       })
-      .then(() => res.redirect('back'))
       .catch(err => next(err))
   }
 }
