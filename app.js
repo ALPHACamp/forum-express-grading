@@ -13,6 +13,10 @@ const passport = require('./config/passport')
 
 const { getUser } = require('./helpers/auth-helpers')
 
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
+
 app.engine('hbs', handlebars({ extname: '.hbs', helpers: handlebarsHelpers }))
 app.set('view engine', 'hbs')
 
