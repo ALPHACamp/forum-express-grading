@@ -1,0 +1,26 @@
+<div class="row">
+  <img class="img-responsive center-block mb-5" src="{{user.image}}" style="width:250px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+  <div class="col-md-8">
+    <h4>{{user.name}}</h4>
+    <p>{{user.email}}</p>
+    <a href='/users/{{user.id}}/edit'>
+      <button type="button" class="btn btn-primary">edit</button>
+    </a>
+  </div>
+</div>
+
+{{!-- comment for restaurant --}}
+<div class="mt-5 mb-3">
+  {{count}} 已評論餐廳
+</div>
+<div class="list-group d-inline-flex flex-row">
+  {{#each comment}}
+    <a href="/restaurants/{{this.Restaurant.id}}" class="list-group-item list-group-item-action">
+      <img src="{{this.Restaurant.image}}" style="width:7em; height:7em" alt="restaurant image">
+    </a>
+  {{/each}}
+</div>
+
+  
+
+  

@@ -1,5 +1,8 @@
 const bcrypt = require('bcryptjs')
-const { User, Restaurant, Favorite } = require('../models')
+const { User, Restaurant, Favorite, Comment } = require('../models')
+const { localFileHandler } = require('../helpers/file-helpers')
+const { getUser } = require('../helpers/auth-helpers')
+
 const userController = {
   signUpPage: (req, res) => {
     res.render('signup')
@@ -70,6 +73,61 @@ const userController = {
         return favorite.destroy()
       })
       .then(() => res.redirect('back'))
+  },
+  getUser: (req, res, next) => {
+    return Promise.all([
+      User.findByPk(req.params.id, {
+        nest: true,
+        raw: true
+      }),
+      Comment.findAndCountAll({
+        include: Restaurant,
+        nest: true,
+        raw: true,
+        where: { user_id: req.params.id }
+      })
+    ])
+      .then(([user, comment]) => {
+        if (!user) throw new Error("User didn't exist!")
+        res.render('users/profile', {
+          user, comment: comment.rows, count: comment.count
+        })
+      })
+      .catch(err => next(err))
+  },
+  editUser: (req, res, next) => {
+    if (Number(getUser(req).id) !== Number(req.params.id)) {
+      throw new Error("You cannot edit other user's profile!")
+    } else {
+      return User.findByPk(req.params.id, {
+        nest: true,
+        raw: true
+      })
+        .then(user => {
+          if (!user) throw new Error("User didn't exist!")
+          res.render('users/edit', { user })
+        })
+        .catch(err => next(err))
+    }
+  },
+  putUser: (req, res, next) => {
+    const { name } = req.body
+    if (!name) throw new Error('User name is required!')
+    const { file } = req
+    Promise.all([
+      User.findByPk(req.params.id),
+      localFileHandler(file)
+    ])
+      .then(([user, filePath]) => {
+        return user.update({
+          name,
+          image: filePath || user.image
+        })
+      })
+      .then(() => {
+        req.flash('success_messages', '使用者資料編輯成功')
+        res.redirect(`/users/${req.params.id}`)
+      })
       .catch(err => next(err))
   }
 }
