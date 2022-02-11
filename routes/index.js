@@ -29,6 +29,7 @@ router.get('/logout', userController.logout)
 
 // 首頁
 router.get('/restaurants', authenticated, restController.getRestaurants)
+router.get('/restaurants/:id', authenticated, restController.getRestaurant)
 router.get('/', (req, res) => res.redirect('/restaurants'))
 
 // 錯誤處理 middleware
