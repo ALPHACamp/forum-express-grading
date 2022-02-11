@@ -102,7 +102,6 @@ const userController = {
 
   // 更新profile
   putUser: (req, res, next) => {
-    console.log('name', req)
     // 取得表單資料
     const { name } = req.body
     // 取得在middleware/multer處理過放在req.file裡的圖片資料
