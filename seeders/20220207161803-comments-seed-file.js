@@ -45,10 +45,10 @@ module.exports = {
       }
     })
 
-    // update comment counts according to seed settings
+    // update comment count according to seed settings
     seedRestaurants.forEach(async restId => {
       if (typeof commentsTable[restId] === 'number') {
-        const queryStatement = `UPDATE Restaurants SET comment_counts = ${commentsTable[restId]} WHERE id = ${restId}`
+        const queryStatement = `UPDATE Restaurants SET comment_count = ${commentsTable[restId]} WHERE id = ${restId}`
         await queryInterface.sequelize.query(queryStatement)
       }
     })
@@ -77,7 +77,7 @@ module.exports = {
 
     // reset each comment count for each restaurant
     seedRestaurants.forEach(async restId => {
-      const queryStatement = `UPDATE Restaurants SET comment_counts = 0 WHERE id = ${restId}`
+      const queryStatement = `UPDATE Restaurants SET comment_count = 0 WHERE id = ${restId}`
       await queryInterface.sequelize.query(queryStatement)
     })
   }

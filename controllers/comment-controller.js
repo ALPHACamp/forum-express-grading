@@ -18,7 +18,7 @@ const commentController = {
         if (!restaurant) throw new Error('Restaurant didn\'t exist!')
         if (!user) throw new Error('User did\'n exist')
         // both restaurant and user exist
-        return restaurant.increment('commentCounts')
+        return restaurant.increment('commentCount')
       })
       .then(() =>
         Comment.create({
@@ -43,7 +43,7 @@ const commentController = {
       })
       .then(restaurant => {
         return restaurant.update({
-          commentCounts: --restaurant.commentCounts
+          commentCount: --restaurant.commentCount
         })
       })
       .then(restaurant => {
