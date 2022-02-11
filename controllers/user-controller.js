@@ -2,6 +2,8 @@ const bcrypt = require('bcryptjs')
 const db = require('../models')
 const { User } = db
 const { localFileHandler } = require('../helpers/file-helpers')
+const { getUser } = require('../helpers/auth-helpers')
+
 const userController = {
   signUpPage: (req, res) => {
     res.render('signup')
@@ -50,8 +52,7 @@ const userController = {
       .catch(err => next(err))
   },
   editUser: (req, res, next) => {
-    console.log(res.locals.user.id)
-    if (res.locals.user._id !== req.params.id) {
+    if (Number(getUser(req).id) !== Number(req.params.id)) {
       throw new Error("You cannot edit other user's profile!")
     } else {
       return User.findByPk(req.params.id, {
@@ -60,9 +61,7 @@ const userController = {
       })
         .then(user => {
           if (!user) throw new Error("User didn't exist!")
-          res.render('users/edit', {
-            user
-          })
+          res.render('users/edit', { user })
         })
         .catch(err => next(err))
     }
@@ -81,9 +80,9 @@ const userController = {
           image: filePath || user.image
         })
       })
-      .then(user => {
-        req.flash('success_messages', 'user was successfully to update')
-        res.redirect(`/users/${user.id}`)
+      .then(() => {
+        req.flash('success_messages', '使用者資料編輯成功')
+        res.redirect(`/users/${req.params.id}`)
       })
       .catch(err => next(err))
   }
