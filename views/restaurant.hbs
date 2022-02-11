@@ -16,6 +16,9 @@
   </div>
   <div class="col-md-8">
     <p style="white-space: break-spaces;">{{restaurant.description}}</p>
+  <form action="/restaurants/{{restaurant.id}}/dashboard" method="GET">
+    <button type="submit" class="btn btn-primary m">Dashboard</button>
+  </form>
   </div>
   <hr>
 </div>
