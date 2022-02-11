@@ -26,7 +26,8 @@ const restaurantController = {
       // Cleaning restaurant data
       const favoritedRestaurantIds =
         req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
-      const likedRestaurantIds = req.user && req.user.LikedRestaurants.map(lr => lr.id)
+      const likedRestaurantIds =
+        req.user && req.user.LikedRestaurants.map(lr => lr.id)
 
       const restData = restaurants.rows.map(r => ({
         ...r,
@@ -47,7 +48,7 @@ const restaurantController = {
 
   getRestaurant: async (req, res, next) => {
     try {
-      // Eager Loading
+      // Eager Loading (JOIN)
       const restInstance = await Restaurant.findByPk(req.params.id, {
         include: [
           Category,
@@ -60,7 +61,9 @@ const restaurantController = {
 
       if (!restInstance) throw new Error("Restaurant didn't exist!")
 
-      const isFavorited = restInstance.FavoritedUsers.some(fu => fu.id === req.user.id)
+      const isFavorited = restInstance.FavoritedUsers.some(
+        fu => fu.id === req.user.id
+      )
       const isLiked = restInstance.LikedUsers.some(lu => lu.id === req.user.id)
       // Update view count on restaurant
       const restaurant = await restInstance.increment('view_counts')
@@ -129,6 +132,27 @@ const restaurantController = {
     } catch (error) {
       next(error)
     }
+  },
+
+  getTopRestaurants: async (req, res, next) => {
+    const rawRestaurants = await Restaurant.findAll({
+      include: [
+        { model: User, as: 'FavoritedUsers' },
+        { model: User, as: 'LikedUsers' }
+      ]
+    })
+
+    const restaurants = rawRestaurants.map(r => ({
+      ...r.toJSON(),
+      favoritedCount: r.FavoritedUsers.length,
+      isFavorited: req.user && req.user.FavoritedRestaurants.some(fr => fr.id === r.id)
+    }))
+
+    // Sort restaurants by favoritedCount and only return the highest 10
+    restaurants.sort((a, b) => b.favoritedCount - a.favoritedCount)
+    restaurants.splice(10)
+
+    return res.render('top-restaurants', { restaurants })
   }
 }
 

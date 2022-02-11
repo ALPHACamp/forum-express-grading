@@ -180,15 +180,22 @@ const userController = {
   addLike: async (req, res, next) => {
     try {
       const { restaurantId } = req.params
-      const restaurant = await Restaurant.findByPk(restaurantId)
+      const [restaurant, like] = await Promise.all([
+        Restaurant.findByPk(restaurantId),
+        Like.findOne({
+          where: {
+            restaurantId,
+            userId: req.user.id
+          }
+        })
+      ])
 
       if (!restaurant) throw new Error("Restaurant didn't exist!")
+      if (like) throw new Error('You have liked this restaurant!')
 
-      await Like.findOrCreate({
-        where: {
-          restaurantId,
-          userId: req.user.id
-        }
+      await Like.create({
+        restaurantId,
+        userId: req.user.id
       })
 
       return res.redirect('back')
