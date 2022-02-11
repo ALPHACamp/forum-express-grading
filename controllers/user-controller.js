@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs')
-const { User, Restaurant, Comment, Favorite } = require('../models')
+const { User, Restaurant, Favorite } = require('../models')
 const userController = {
   signUpPage: (req, res) => {
     res.render('signup')
