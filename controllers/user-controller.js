@@ -160,6 +160,24 @@ const userController = {
       })
       .then(() => res.redirect('back'))
       .catch(err => next(err))
+  },
+  getTopUsers: (req, res, next) => {
+    // 撈出User 以及 followers 關聯資料
+    return User.findAll({
+      include: [{ model: User, as: 'Followers' }]
+    })
+      .then(users => {
+        // 每個 user 項目都拿出來處理一次，並把新陣列儲存在 users 裡
+        users = users.map(user => ({
+          // 將sequelize資料轉成前端可使用JSON資料
+          ...user.toJSON(),
+          followerCount: user.Followers.length, // User裡Followers陣列的項目數量==追蹤者數量
+          // 判斷目前登入使用者是否已追蹤該 user 物件
+          isFollowed: req.user.Followings.some(f => f.id === user.id)
+        }))
+        res.render('top-users', { users: users })
+      })
+      .catch(err => next(err))
   }
 }
 
