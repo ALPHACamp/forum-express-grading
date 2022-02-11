@@ -32,6 +32,9 @@ router.get('/restaurants', authenticated, restController.getRestaurants)
 router.get('/restaurants/:id', authenticated, restController.getRestaurant)
 router.get('/', (req, res) => res.redirect('/restaurants'))
 
+// dashboard
+router.get('/restaurants/:id/dashboard', authenticated, restController.getDashboard)
+
 // 錯誤處理 middleware
 router.use('/', generalErrorHandler)
 
