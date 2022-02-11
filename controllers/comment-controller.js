@@ -3,7 +3,6 @@ const { Comment, User, Restaurant } = require('../models')
 const commentController = {
   postComment: (req, res, next) => {
     const { restaurantId, text } = req.body
-    console.log(text)
     const userId = req.user.id
     if (!text) throw new Error('Comment text is required!')
 
