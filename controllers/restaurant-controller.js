@@ -50,8 +50,8 @@ const restController = {
         { model: Comment, include: User }
       ]
     }).then(restaurant => {
-      const viewCounts = restaurant.viewCounts
       if (!restaurant) throw new Error('Restaurant did not exist!')
+      const viewCounts = restaurant.viewCounts
       return restaurant.update({ viewCounts: viewCounts + 1 })
     }).then(restaurant => res.render('restaurant', { restaurant: restaurant.toJSON() }))
       .catch(err => next(err))
