@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs')
 const db = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
-const { User, Comment, Restaurant, Favorite, Like } = db
+const { User, Comment, Restaurant, Favorite, Like, Followship } = db
 
 const userController = {
   signUpPage: (req, res) => {
@@ -159,12 +159,49 @@ const userController = {
       include: { model: User, as: 'Followers' }
     })
       .then(users => {
-        users = users.map(user => ({
-          ...user.toJSON(),
-          followerCount: user.Followers.length,
-          isFollowed: req.user.Followings.some(f => f.id === user.id)
-        }))
-        res.render('top-users', { users })
+        const result = users
+          .map(user => ({
+            ...user.toJSON(),
+            followerCount: user.Followers.length,
+            isFollowed: req.user.Followings.some(f => f.id === user.id)
+          }))
+          .sort((a, b) => b.followerCount - a.followerCount)
+        return res.render('top-users', { users: result })
+      })
+      .catch(err => next(err))
+  },
+  addFollowing: (req, res, next) => {
+    const { userId } = req.params
+    return Promise.all([
+      User.findByPk(userId),
+      Followship.findOne({
+        where: {
+          followerId: req.user.id,
+          followingId: userId
+        }
+      })
+    ])
+      .then(([user, follow]) => {
+        if (!user) throw new Error('User did not exist!')
+        if (follow) throw new Error('You have followed this user!')
+        return Followship.create({
+          followerId: req.user.id,
+          followingId: userId
+        })
+      })
+      .then(() => res.redirect('back'))
+      .catch(err => next(err))
+  },
+  removeFollowing: (req, res, next) => {
+    return Followship.destroy({
+      where: {
+        followerId: req.user.id,
+        followingId: req.params.userId
+      }
+    })
+      .then(removedFollow => {
+        if (!removedFollow) throw new Error('You have not followed this user!')
+        return res.redirect('back')
       })
       .catch(err => next(err))
   }
