@@ -10,6 +10,7 @@ const { authenticated, authenticatedAdmin } = require('../middleware/auth')
 
 const restController = require('../controllers/restaurant-controller')
 const userController = require('../controllers/user-controller')
+const commentController = require('../controllers/comment-controller')
 
 const admin = require('./modules/admin')
 
@@ -30,10 +31,14 @@ router.get('/logout', userController.logout)
 // 首頁
 router.get('/restaurants', authenticated, restController.getRestaurants)
 router.get('/restaurants/:id', authenticated, restController.getRestaurant)
-router.get('/', (req, res) => res.redirect('/restaurants'))
 
 // dashboard
 router.get('/restaurants/:id/dashboard', authenticated, restController.getDashboard)
+
+// 評論
+router.post('/comments', authenticated, commentController.postComment)
+
+router.get('/', (req, res) => res.redirect('/restaurants'))
 
 // 錯誤處理 middleware
 router.use('/', generalErrorHandler)
