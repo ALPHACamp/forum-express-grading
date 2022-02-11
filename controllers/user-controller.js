@@ -54,8 +54,8 @@ const userController = {
         raw: true
       })
     ])
-      .then(([profileUser, comments]) => {
-        if (!profileUser) {
+      .then(([user, comments]) => {
+        if (!user) {
           throw new Error("User didn't exist!")
         }
         const restaurants = []
@@ -67,15 +67,11 @@ const userController = {
           }
         }
         const defaultProfileIcon = `/upload/${process.env.DEFAULT_PROFILE}`
-        return res.render('users/profile', { user: req.user, profileUser, defaultProfileIcon, restaurants })
+        return res.render('users/profile', { user, sessionUser: req.user, defaultProfileIcon, restaurants })
       })
       .catch(err => next(err))
   },
   editUser: (req, res, next) => {
-    if (req.user.id !== parseInt(req.params.id)) {
-      req.flash('error_messages', "User cannot edit other user's profile!")
-      return res.redirect(`/users/${req.user.id}`)
-    }
     return User.findByPk(req.params.id, {
       nest: true,
       raw: true
@@ -93,6 +89,10 @@ const userController = {
     if (!name) {
       throw new Error('User name is required')
     }
+    if (req.user.id !== parseInt(req.params.id)) {
+      throw new Error('User can only edit his/her own data')
+    }
+
     const { file } = req
     return Promise.all([
       User.findByPk(req.params.id),
