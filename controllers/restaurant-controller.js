@@ -122,6 +122,31 @@ const restaurantController = {
       .then(([restaurants, comments]) => {
         return res.render('feeds', { restaurants, comments })
       })
+  },
+
+  // 瀏覽top餐廳頁面
+  getTopRestaurants: (req, res, next) => {
+    const length = 10 // 顯示資料的筆數
+    const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id) // 取得user.FavoritedRestaurants的餐廳id
+
+    // 查詢restaurant全部資料，並多對多關連user
+    return Restaurant.findAll({
+      include: [{ model: User, as: 'FavoritedUsers' }]
+    })
+      .then(restaurants => {
+        // 整理restaurant資料
+        const data = restaurants.map(restaurant => ({
+          ...restaurant.toJSON(), // 將restaurant轉換成普通物件
+          description: restaurant.description.substring(0, 40) + '...', // 將description截取40個字
+          favoritedCount: restaurant.FavoritedUsers.length, // 取得restaurant被追蹤的數字
+          isFavorited: favoritedRestaurantsId?.includes(restaurant.id) || false // 判斷該餐廳是否被登入者追蹤
+        }))
+          .sort((a, b) => b.favoritedCount - a.favoritedCount) // 按追蹤人數降冪排列
+          .slice(0, length) // 取得restaurants陣列的前10筆
+
+        return res.render('top-restaurants', { restaurants: data })
+      })
+      .catch(err => next(err))
   }
 }
 
