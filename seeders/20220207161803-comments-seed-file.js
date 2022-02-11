@@ -28,33 +28,56 @@ module.exports = {
       })).map(item => item.id)
 
     // set a bulkInsert target to seed comments and record comments for each restaurant
-    const commentsTable = {}
+    const restComments = {}
+    // a list which stores each restaurant each user has commented
+    const userComments = Array.from({ length: seedUsers.length }, () => ({}))
+
+    // generate a set of seed comments and count each comment
     const seedComments = Array.from({ length: DEFAULT_MAX_COMMENTS }, () => {
+      const currentUserIndex = Math.floor(Math.random() * seedUsers.length)
+
       const restaurantId = seedRestaurants[Math.floor(Math.random() * seedRestaurants.length)]
-      // count comment for each restaurant
-      commentsTable[restaurantId] = isNaN(commentsTable[restaurantId])
+      const userId = seedUsers[currentUserIndex]
+      // records a restaurant he/she commented
+      userComments[currentUserIndex][restaurantId] = true
+      // counts comment for each restaurant
+      restComments[restaurantId] = isNaN(restComments[restaurantId])
         ? 1
-        : ++commentsTable[restaurantId]
+        : ++restComments[restaurantId]
 
       return {
         text: faker.lorem.sentence(),
-        user_id: seedUsers[Math.floor(Math.random() * seedUsers.length)],
+        user_id: userId,
         restaurant_id: restaurantId,
         created_at: new Date(),
         updated_at: new Date()
       }
     })
 
-    // update comment count according to seed settings
+    // update comment count for each restaurant
     seedRestaurants.forEach(async restId => {
-      if (typeof commentsTable[restId] === 'number') {
+      if (typeof restComments[restId] === 'number') {
         const queryStatement = `
-        UPDATE Restaurants SET commented_count = ${commentsTable[restId]} 
+        UPDATE Restaurants SET commented_count = ${restComments[restId]}
         WHERE id = ${restId}
         `
         await queryInterface.sequelize.query(queryStatement)
       }
     })
+
+    // update restaurant comment count for each user
+    userComments.forEach(async (list, index) => {
+      const queryStatement = `
+      UPDATE Users SET rest_comment_count = ${Object.keys(list).length}
+      WHERE id = ${seedUsers[index]}
+      `
+      await queryInterface.sequelize.query(queryStatement)
+    })
+
+    // update comment count for each user
+    // seedUsers.forEach(async userId => {
+
+    // })
 
     // generate each record to table Comments according to the target and the settings
     await queryInterface.bulkInsert('Comments', seedComments)
@@ -71,14 +94,28 @@ module.exports = {
     // delete all records from Comments Table
     await queryInterface.bulkDelete('Comments', null)
 
-    // generate seed restaurant
-    const seedRestaurants = (await queryInterface.sequelize.query(
-      'SELECT `id` FROM `Restaurants`',
-      {
+    // obtain each restaurant ID from all exist seed users
+    const seedUsers = (await queryInterface.sequelize.query(
+      'SELECT `id` FROM `Users`', {
         type: queryInterface.sequelize.QueryTypes.SELECT
       })).map(item => item.id)
 
-    // reset each comment count for each restaurant
+    // obtain each restaurant ID from all exist seed restaurants
+    const seedRestaurants = (await queryInterface.sequelize.query(
+      'SELECT `id` FROM `Restaurants`', {
+        type: queryInterface.sequelize.QueryTypes.SELECT
+      })).map(item => item.id)
+
+    // reset restaurant comment count for each user
+    seedUsers.forEach(async userId => {
+      const queryStatement = `
+      UPDATE Users SET rest_comment_count = 0 
+      WHERE id = ${userId}`
+
+      await queryInterface.sequelize.query(queryStatement)
+    })
+
+    // reset comment count for each restaurant
     seedRestaurants.forEach(async restId => {
       const queryStatement = `
       UPDATE Restaurants SET commented_count = 0 

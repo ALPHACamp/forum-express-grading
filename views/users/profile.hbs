@@ -12,7 +12,7 @@
     <a href="/users/{{user.id}}/edit" class="btn btn-primary">edit</a>
   {{/ifCond}}
     <div class="mt-3">
-      <p class="card-text">{{user.commentCount}} 已評論餐廳</p>
+      <p class="card-text">{{user.restCommentCount}} 已評論餐廳</p>
       <p class="card-text">{{user.favoriteCount}} 收藏的餐廳</p>
       <p class="card-text">{{user.followingCount}} followings(追蹤者)</p>
       <p class="card-text">{{user.followerCount}} followers(追隨者)</p>
@@ -52,7 +52,7 @@
   <div class="col-md-9">
     <div class="card mt-3">
       <div class="card-header">
-        {{user.commentCount}}間已評論餐廳
+        {{user.restCommentCount}}間已評論餐廳
       </div>
       <div class="card-body d-flex flex-wrap">
       {{#each user.Comments}}
