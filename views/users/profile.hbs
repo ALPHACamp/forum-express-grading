@@ -5,37 +5,91 @@
   {{else}}
     <img src="https://res.cloudinary.com/dqfxgtyoi/image/upload/v1644154630/github/defaultAvatar_uapauy.png" style="width: 18rem; height: 18rem; border-radius:50%;">
   {{/if}}
-  <div class="card-body mx-3">
+  <div class="card-body mx-5">
     <h5 class="card-title">{{user.name}}</h5>
     <p class="card-text">{{user.email}}</p>
   {{#ifCond user.id currentUser.id}}
     <a href="/users/{{user.id}}/edit" class="btn btn-primary">edit</a>
   {{/ifCond}}
-    <p class="card-text mt-3">{{commentedRestaurantsCounts}} 已評論餐廳</p>
+    <div class="mt-3">
+      <p class="card-text">{{user.commentCount}} 已評論餐廳</p>
+      <p class="card-text">{{user.favoriteCount}} 收藏的餐廳</p>
+      <p class="card-text">{{user.followingCount}} followings(追蹤者)</p>
+      <p class="card-text">{{user.followerCount}} followers(追隨者)</p>
+    </div>
   </div>
 </div>
+
 {{!-- comment section --}}
-<div class="card mt-3">
-  <div class="card-header">
-    {{commentedRestaurantsCounts}}間已評論餐廳
-  </div>
-  <div class="card-body d-flex flex-wrap">
-   {{#each user.Comments}}
-    <div class="col-md-3">
-      <div class="card mb-3 mx-2 shadow-sm">
-        <a href="/restaurants/{{this.Restaurant.id}}">
-          <img class="card-img-top img-fluid" src="{{this.Restaurant.image}}" alt="Card image cap" width="286px" height="180px" style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
-        </a>
+<div class="row">
+  <div class="col-md-3">
+
+    <div class="col-md-auto">
+      <div class="card mt-3">
+        <div class="card-header">
+          {{user.followingCount}} followings (追蹤者)
+        </div>
         <div class="card-body">
-          <p class="card-text">
-            <a href="/restaurants/{{this.Restaurant.id}}">
-                {{this.Restaurant.name}}
-            </a>
-          </p>
+          <h5 class="card-title">following Test</h5>
         </div>
       </div>
     </div>
-    {{/each}}
+
+    <div class="col-md-auto">
+      <div class="card mt-3">
+        <div class="card-header">
+          {{user.followerCount}} followers (追隨者)
+        </div>
+        <div class="card-body">
+          <h5 class="card-title">follower Test</h5>
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+
+  <div class="col-md-9">
+    <div class="card mt-3">
+      <div class="card-header">
+        {{user.commentCount}}間已評論餐廳
+      </div>
+      <div class="card-body d-flex flex-wrap">
+      {{#each user.Comments}}
+        <div class="col-md-2">
+          
+          <div class="card mb-3 mx-2 shadow-sm">
+            <a href="/restaurants/{{this.Restaurant.id}}">
+              <img class="card-img-top img-fluid" src="{{this.Restaurant.image}}" alt="Card image cap" width="286px" height="180px" style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+            </a>
+            <div class="card-body">
+              <p class="card-text">
+                <a href="/restaurants/{{this.Restaurant.id}}">
+                    {{this.Restaurant.name}}
+                </a>
+              </p>
+            </div>
+          </div>
+        </div>
+        {{/each}}
+
+      </div>
+    </div>
+
+
+    <div class="col-md-auto">
+      <div class="card mt-3">
+        <div class="card-header">
+          {{user.favoriteCount}} 收藏的餐廳
+        </div>
+        <div class="card-body">
+          <h5 class="card-title">favorite Test</h5>
+        </div>
+      </div>
+    </div>
 
   </div>
 </div>
+
+
+
