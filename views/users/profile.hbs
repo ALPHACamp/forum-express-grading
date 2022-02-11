@@ -8,3 +8,19 @@
     </a>
   </div>
 </div>
+
+{{!-- comment for restaurant --}}
+<div class="mt-5 mb-3">
+  {{count}} 已評論餐廳
+</div>
+<div class="list-group d-inline-flex flex-row">
+  {{#each comment}}
+    <a href="/restaurants/{{this.Restaurant.id}}" class="list-group-item list-group-item-action">
+      <img src="{{this.Restaurant.image}}" style="width:7em; height:7em" alt="restaurant image">
+    </a>
+  {{/each}}
+</div>
+
+  
+
+  
