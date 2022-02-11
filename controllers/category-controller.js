@@ -3,12 +3,9 @@ const { Category } = require('../models')
 const categoryController = {
   getCategories: async (req, res, next) => {
     try {
-      const category = await Category.findByPk(req.params.id, { raw: true })
+      const category = req.params.id ? await Category.findByPk(req.params.id, { raw: true }) : null
       const categories = await Category.findAll({ raw: true })
-      if (category === null) {
-        return res.render('admin/categories', { categories })
-      }
-      return res.render('admin/category', { categories, category })
+      return res.render('admin/categories', { categories, category })
     } catch (error) {
       next(error)
     }
