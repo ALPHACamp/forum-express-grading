@@ -117,16 +117,24 @@ const restaurantController = {
   // Render Top 10 restaurants
   getTopRestaurants: (req, res, next) => {
     const DEFAULT_MAX_TOP_NUMBER = 10
+
     return Restaurant.findAll({
-      // include: { model: User, as: 'FavoritedUsers' },
-      limit: DEFAULT_MAX_TOP_NUMBER
+      include: [
+        { model: User, as: 'FavoritedUsers' }
+      ]
     })
       .then(restaurants => {
+        const userId = authHelpers.getUserId(req)
         const results = restaurants
           .map(restaurant => ({
             ...restaurant.toJSON(),
+            isFavorited: restaurant.FavoritedUsers.some(fu => fu.id === userId),
+            favoritedCount: restaurant.FavoritedUsers.length,
             description: restaurant.description.substring(0, 50)
           }))
+          .sort((a, b) => b.favoritedCount - a.favoritedCount)
+          .slice(0, DEFAULT_MAX_TOP_NUMBER)
+
         return res.render('top-restaurants', { restaurants: results })
       })
       .catch(error => next(error))

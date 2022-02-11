@@ -1,5 +1,5 @@
 {{> restaurant-tabs route='topRestaurants'}}
-<h1>人氣餐廳</h1>
+<h1>Top 10 人氣餐廳</h1>
 <hr />  
 <div class="row">
   {{#each restaurants}}
@@ -16,7 +16,7 @@
               {{this.name}}
             </a>
           </p>
-          <span class="bg-secondary badge">收藏數：{{this.favoriteCount}}</span>
+          <span class="bg-secondary badge">收藏數：{{this.favoritedCount}}</span>
           <p class="card-text" style="font-size: 1rem;">{{this.description}}</p>
 
           <div class="d-flex">
