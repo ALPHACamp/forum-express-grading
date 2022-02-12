@@ -4,7 +4,7 @@ const categoryController = {
     return Promise.all([
       Category.findAll({ raw: true }),
       req.params.id ? Category.findByPk(req.params.id, { raw: true }) : null,
-      // Restaurant.getCountByCategory()
+      Restaurant.getCountByCategory()
     ])
       .then(([categories, category, restaurantCount]) => {
         restaurantCount.forEach(categoryId => {

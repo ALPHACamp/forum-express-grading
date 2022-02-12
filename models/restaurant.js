@@ -23,13 +23,13 @@ module.exports = (sequelize, DataTypes) => {
         as: 'LikedUsers'
       })
     }
-    // static getCountByCategory = (async () => {
-    //   return await Restaurant.findAll({
-    //     group: ['categoryId'],
-    //     attributes: ['categoryId', [sequelize.fn('COUNT', 'categoryId'), 'amount']],
-    //     raw: true
-    //   })
-    // })
+    static getCountByCategory = (async () => {
+      return await Restaurant.findAll({
+        group: ['categoryId'],
+        attributes: ['categoryId', [sequelize.fn('COUNT', 'categoryId'), 'amount']],
+        raw: true
+      })
+    })
   };
   Restaurant.init({
     name: DataTypes.STRING,

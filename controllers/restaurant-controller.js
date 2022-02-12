@@ -108,56 +108,27 @@ const restaurantController = {
       })
       .catch(err => next(err))
   },
-  getTopRestaurants: (req, res, next) => {
-    const resultArray = []
 
+  getTopRestaurants: (req, res, next) => {
     return Restaurant.findAll({
-      include: { model: User, as: 'FavoritedUsers' },
-      nest: true
+      include: [
+        Category,
+        { model: User, as: 'FavoritedUsers' }]
     })
       .then(restaurants => {
-        const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
-
-        const result = restaurants.map(r => ({
-          ...r.dataValues,
-          description: r.description.substring(0, 100) + '...',
-          favoritedCount: r.FavoritedUsers.length,
-          isFavorited: favoritedRestaurantsId?.some(id => id === r.id) || false
-        }))
+        const topCount = 10 // 取 top 10
+        const result = restaurants
+          .map(restaurant => ({
+            ...restaurant.toJSON(),
+            description: restaurant.description.substring(0, 50),
+            favoritedCount: restaurant.FavoritedUsers.length,
+            isFavorited: req.user.FavoritedRestaurants.some(f => f.id === restaurant.id),
+            // isLiked: req.user.LikedRestaurants.some(l => l.id === restaurant.id) // R05test no
+          }))
           .sort((a, b) => b.favoritedCount - a.favoritedCount)
-
-        for (let i = 0; i < result.length; i++) {
-          if (i < 10) {
-            resultArray.push(result[i])
-          } else break
-        }
-
-        return res.render('top-restaurants', {
-          restaurants: resultArray
-        })
+        res.render('top-restaurants', { restaurants: result.slice(0, (topCount)) })
       })
       .catch(err => next(err))
-
-    // getTopRestaurants: (req, res, next) => {
-    //   return Restaurant.findAll({
-    //     include:
-    //       { model: User, as: 'FavoritedUsers' },
-    //     nest: true
-    //   })
-    //     .then(restaurants => {
-    //       const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
-    //       const topCount = 10 // 取 top 10
-    //       const result = restaurants
-    //         .map(restaurant => ({
-    //           ...restaurant.toJSON(),
-    //           description: restaurant.description.substring(0, 50),
-    //           favoritedCount: restaurant.FavoritedUsers.length,
-    //           isFavorited: favoritedRestaurantsId?.some(id => id === restaurant.id) || false
-    //         }))
-    //         .sort((a, b) => b.favoritedCount - a.favoritedCount)
-    //       return res.render('top-restaurants', { restaurants: result.slice(0, (topCount)) })
-    //     })
-    //     .catch(err => next(err))
   }
 }
 module.exports = restaurantController
