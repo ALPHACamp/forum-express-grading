@@ -47,8 +47,6 @@ function ifCond (value1, operator, value2, options) {
       return value1 === value2 ? options.fn(this) : options.inverse(this)
     case '!==':
       return value1 !== value2 ? options.fn(this) : options.inverse(this)
-    default:
-      return options.inverse(this)
   }
 }
 
