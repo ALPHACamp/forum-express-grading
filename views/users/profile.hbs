@@ -1,0 +1,41 @@
+<div class="card mb-3">
+  <div class="row g-0">
+    <div class="col-md-4">
+      <img
+        src="{{#if user.image}}{{user.image}}{{else}} https://cdn-icons.flaticon.com/png/512/3177/premium/3177440.png?token=exp=1644638958~hmac=d994f54f0ea7d73063a71dfdd5e072ca {{/if}}"
+        class="img-fluid rounded-start" alt="...">
+    </div>
+    <div class="col-md-8">
+      <div class="card-body">
+        <h5 class="card-title">{{user.name}}</h5>
+        <p class="card-text">{{user.email}}</p>
+        {{#ifCond currentUser.id user.id}}
+        <a class="btn btn-primary" href="/users/{{user.id}}/edit">Edit</a>
+        {{/ifCond}}
+        <a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    {{#if reviewCounts}}{{reviewCounts}}則評論{{else}} 無評論 {{/if}}
+  </div>
+  <div class="card-body">
+    <ul class="d-flex flex-wrap align-items-center">
+      {{#if reviews}}
+        {{#each reviews}}
+      <li class="m-3" style="max-width: 150px; list-style-type: none;">
+        <a href="/restaurants/{{this.restaurantId}}">
+          <img src="{{this.Restaurant.image}}" class="w-100" alt="restaurant img">
+        </a>
+      </li>
+        {{/each}}
+      {{else}}
+      <h5 class="card-title">尚無評論</h5>
+      {{/if}}
+    </ul>
+  </div>
+</div>
+

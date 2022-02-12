@@ -1,7 +1,7 @@
 const express = require('express')
-const app = require('../app')
 const router = express.Router()
 const passport = require('../config/passport')
+const upload = require('../middleware/multer')
 
 const restaurantController = require('../controllers/restaurant-controller')
 const userController = require('../controllers/user-controller')
@@ -24,6 +24,10 @@ router.get('/', (req, res) => { res.redirect('/restaurants') })
 
 router.delete('/comments/:id', authenticated, commentController.deleteComment)
 router.post('/comments', authenticated, commentController.postComment)
+
+router.put('/users/:id', authenticated, upload.single('image'), userController.putUser)
+router.get('/users/:id/edit', authenticated, userController.editUser)
+router.get('/users/:id', authenticated, userController.getUser)
 
 router.use('/', generalErrorHandler)
 
