@@ -33,7 +33,7 @@
           {{#each user.Followings}}
           <div class="col-md-4">         
             <div class="card mb-3 mx-2 shadow-sm">
-              <a href="/restaurants/{{this.id}}">
+              <a href="/users/{{this.id}}">
                 <img class="card-img-top img-fluid" src="{{this.image}}" alt="Card image cap" width="286px" height="180px" style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
               </a>
             </div>
@@ -53,7 +53,7 @@
           {{#each user.Followers}}
             <div class="col-md-4">         
               <div class="card mb-3 mx-2 shadow-sm">
-                <a href="/restaurants/{{this.id}}">
+                <a href="/users/{{this.id}}">
                   <img class="card-img-top img-fluid" src="{{this.image}}" alt="Card image cap" width="286px" height="180px" style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
                 </a>
               </div>
