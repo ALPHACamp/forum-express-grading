@@ -166,7 +166,7 @@ const userController = {
     const { name } = req.body
     if (!name) throw new Error('User name is required!')
     const { file } = req
-    Promise.all([
+    return Promise.all([
       User.findByPk(req.params.id),
       localFileHandler(file)
     ])
