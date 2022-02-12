@@ -50,7 +50,6 @@ const commentController = {
       })
       .then(deletedComment => {
         // continue to find the same record for counting number of all type comment
-        console.log('level1: ', deletedComment, deletedComment.userId, deletedComment.restaurantId)
         return Promise.all([
           Comment.findOne({
             where: {
@@ -64,7 +63,6 @@ const commentController = {
       })
       .then(([comment, restaurant, user]) => {
         // decrement comment count for each restaurant and each user
-        console.log('level2: ', restaurant, user)
         return Promise.all([
           restaurant.decrement('commentedCount'),
           (!comment) ? user.decrement('restCommentCount') : null
