@@ -46,8 +46,6 @@ module.exports = {
         }
         queryString = JSON.stringify(query)
       }
-      query.created_at = new Date()
-      query.updated_at = new Date()
 
       favoriteUsers[restaurantId] = isNaN(favoriteUsers[restaurantId])
         ? 1
@@ -60,6 +58,12 @@ module.exports = {
       seederQueryArray.push(query)
     }
 
+    seederQueryArray.forEach(query => {
+      query.created_at = new Date()
+      query.updated_at = new Date()
+    })
+
+    console.log(seederQueryArray)
     // update favorite count for each user
     seedUsers.forEach(async userId => {
       // each user with favorite list
