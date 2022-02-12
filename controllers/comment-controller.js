@@ -19,17 +19,24 @@ const commentController = {
         if (!user) throw new Error('User did\'n exist')
         // both restaurant and user exist
         return Promise.all([
-          restaurant.increment('commentedCount'),
-          user.increment('restCommentCount')
+          Comment.findOne({ where: { userId, restaurantId } }),
+          restaurant,
+          user
         ])
       })
-      .then(() =>
-        Comment.create({
+      .then(([comment, restaurant, user]) => {
+        return Promise.all([
+          (!comment) ? user.increment('restCommentCount') : null,
+          restaurant.increment('commentedCount')
+        ])
+      })
+      .then(() => {
+        return Comment.create({
           text,
           userId,
           restaurantId
         })
-      )
+      })
       .then(() => res.redirect(`/restaurants/${restaurantId}`))
       .catch(error => next(error))
   },
@@ -42,19 +49,25 @@ const commentController = {
         return comment.destroy()
       })
       .then(deletedComment => {
+        // continue to find the same record for counting number of all type comment
+        console.log('level1: ', deletedComment, deletedComment.userId, deletedComment.restaurantId)
         return Promise.all([
+          Comment.findOne({
+            where: {
+              userId: deletedComment.userId,
+              restaurantId: deletedComment.restaurantId
+            }
+          }),
           Restaurant.findByPk(deletedComment.restaurantId),
           User.findByPk(deletedComment.userId)
         ])
       })
-      .then(([restaurant, user]) => {
+      .then(([comment, restaurant, user]) => {
+        // decrement comment count for each restaurant and each user
+        console.log('level2: ', restaurant, user)
         return Promise.all([
-          restaurant.update({
-            commentedCount: --restaurant.commentedCount
-          }),
-          user.update({
-            restCommentCount: --user.restCommentCount
-          })
+          restaurant.decrement('commentedCount'),
+          (!comment) ? user.decrement('restCommentCount') : null
         ])
       })
       .then(([restaurant, _]) => {
