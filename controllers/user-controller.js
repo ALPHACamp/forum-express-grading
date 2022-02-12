@@ -66,7 +66,6 @@ const userController = {
   editUser: (req, res, next) => {
     const currentUserId = helpers.getUser(req).id
     const editUserId = Number(req.params.id)
-    console.log('Cannot edit others profile!')
     if (currentUserId !== editUserId) throw new Error('Cannot edit others profile!')
     return User.findByPk(req.params.id, {
       raw: true,
