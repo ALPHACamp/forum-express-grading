@@ -31,7 +31,7 @@ module.exports = {
 
     const seederQueryArray = []
     let query = {}
-    // generate a set of seed comments and count each comment
+    // generate a set of seed favorites and count each favorite
     for (let index = 0; index < DEFAULT_MAX_FAVORITES; index++) {
       let queryString = Object.keys(query).length ? JSON.stringify(query) : '[]'
       let userId = 0
@@ -63,7 +63,6 @@ module.exports = {
       query.updated_at = new Date()
     })
 
-    console.log(seederQueryArray)
     // update favorite count for each user
     seedUsers.forEach(async userId => {
       // each user with favorite list

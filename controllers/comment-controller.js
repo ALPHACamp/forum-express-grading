@@ -18,7 +18,10 @@ const commentController = {
         if (!restaurant) throw new Error('Restaurant didn\'t exist!')
         if (!user) throw new Error('User did\'n exist')
         // both restaurant and user exist
-        return restaurant.increment('commentedCount')
+        return Promise.all([
+          restaurant.increment('commentedCount'),
+          user.increment('restCommentCount')
+        ])
       })
       .then(() =>
         Comment.create({
@@ -39,14 +42,22 @@ const commentController = {
         return comment.destroy()
       })
       .then(deletedComment => {
-        return Restaurant.findByPk(deletedComment.restaurantId)
+        return Promise.all([
+          Restaurant.findByPk(deletedComment.restaurantId),
+          User.findByPk(deletedComment.userId)
+        ])
       })
-      .then(restaurant => {
-        return restaurant.update({
-          commentedCount: --restaurant.commentedCount
-        })
+      .then(([restaurant, user]) => {
+        return Promise.all([
+          restaurant.update({
+            commentedCount: --restaurant.commentedCount
+          }),
+          user.update({
+            restCommentCount: --user.restCommentCount
+          })
+        ])
       })
-      .then(restaurant => {
+      .then(([restaurant, _]) => {
         req.flash('success_messages', '成功移除留言')
         res.redirect(`/restaurants/${restaurant.id}`)
       })

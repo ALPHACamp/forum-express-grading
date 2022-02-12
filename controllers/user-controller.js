@@ -88,8 +88,8 @@ const userController = {
         // Comments.forEach(item => console.log(item.restaurant_id))
         // console.log('hia: ', Comments, Comments.length)
         targetUser = targetUser.toJSON()
-        console.log(targetUser)
         targetUser.Comments = Comments
+        console.log(targetUser)
         return res.render('users/profile', {
           user: targetUser
         })
@@ -140,6 +140,7 @@ const userController = {
     const userId = authHelpers.getUserId(req)
 
     return Promise.all([
+      User.findByPk(userId),
       Restaurant.findByPk(restaurantId),
       Favorite.findOne({
         where: {
@@ -148,15 +149,23 @@ const userController = {
         }
       })
     ])
-      .then(([restaurant, favorite]) => {
+      .then(([user, restaurant, favorite]) => {
+        if (!user) throw new Error('User didn\'t exist')
         if (!restaurant) throw new Error('Restaurant didn\'t exist')
         if (favorite) throw new Error('You have favorited this restaurant!')
 
-        return Favorite.create({
+        // count favorite for each user and each restaurant
+        return Promise.all([
+          user.increment('favoriteCount'),
+          restaurant.increment('favoritedCount')
+        ])
+      })
+      .then(() =>
+        Favorite.create({
           userId,
           restaurantId
         })
-      })
+      )
       .then(() => res.redirect('back'))
       .catch(error => next(error))
   },
@@ -175,6 +184,21 @@ const userController = {
         if (!favorite) throw new Error('You haven\'t favorited this restaurant')
 
         return favorite.destroy()
+      })
+      .then(deletedFavorite => {
+        // count favorite
+        return Promise.all([
+          User.decrement('favoriteCount', {
+            where: {
+              id: deletedFavorite.userId
+            }
+          }),
+          Restaurant.decrement('favoritedCount', {
+            where: {
+              id: deletedFavorite.restaurantId
+            }
+          })
+        ])
       })
       .then(() => res.redirect('back'))
       .catch(error => next(error))
