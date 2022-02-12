@@ -67,18 +67,10 @@ const userController = {
         ]
       }),
       Comment.findAll({
-        attributes: [
-          'user_id',
-          'restaurant_id'
-        ],
-        where: {
-          userId: targetUserId
-        },
+        attributes: ['user_id', 'restaurant_id'],
+        where: { userId: targetUserId },
         include: [Restaurant],
-        group: [
-          'user_id',
-          'restaurant_id'
-        ],
+        group: ['user_id', 'restaurant_id'],
         raw: true,
         nest: true
       })
@@ -90,7 +82,7 @@ const userController = {
 
         targetUser = targetUser.toJSON()
         targetUser.Comments = Comments
-
+        console.log(targetUser)
         // console.log('hi:', targetUser.FavoritedRestaurants.length)
         return res.render('users/profile', {
           user: targetUser
@@ -144,10 +136,7 @@ const userController = {
     return Promise.all([
       Restaurant.findByPk(restaurantId),
       Favorite.findOne({
-        where: {
-          userId,
-          restaurantId
-        }
+        where: { userId, restaurantId }
       })
 
     ])
@@ -163,14 +152,10 @@ const userController = {
       .then(() => {
         return Promise.all([
           User.increment('favoriteCount', {
-            where: {
-              id: userId
-            }
+            where: { id: userId }
           }),
           Restaurant.increment('favoritedCount', {
-            where: {
-              id: Number(restaurantId)
-            }
+            where: { id: Number(restaurantId) }
           })
         ])
       })
@@ -183,28 +168,20 @@ const userController = {
     // check whether the restaurant exists in favorite Table
     // If the restaurant exists, then remove it from the favorite Table
     return Favorite.findOne({
-      where: {
-        userId,
-        restaurantId
-      }
+      where: { userId, restaurantId }
     })
       .then(favorite => {
         if (!favorite) throw new Error('You haven\'t favorited this restaurant')
         return favorite.destroy()
       })
       .then(deletedFavorite => {
-        console.log('favorite', deletedFavorite)
         // count favorite
         return Promise.all([
           User.decrement('favoriteCount', {
-            where: {
-              id: deletedFavorite.userId
-            }
+            where: { id: deletedFavorite.userId }
           }),
           Restaurant.decrement('favoritedCount', {
-            where: {
-              id: Number(deletedFavorite.restaurantId)
-            }
+            where: { id: Number(deletedFavorite.restaurantId) }
           })
         ])
       })
@@ -220,10 +197,7 @@ const userController = {
     return Promise.all([
       Restaurant.findByPk(restaurantId),
       Like.findOne({
-        where: {
-          userId,
-          restaurantId
-        }
+        where: { userId, restaurantId }
       })
     ])
       .then(([restaurant, like]) => {
@@ -245,10 +219,7 @@ const userController = {
     // check whether the restaurant exists in like Table
     // If the restaurant exists, then remove it from the like Table
     return Like.destroy({
-      where: {
-        userId,
-        restaurantId
-      }
+      where: { userId, restaurantId }
     })
       .then(result => {
         if (!result) throw new Error('You haven\'t liked this restaurant')
@@ -288,10 +259,7 @@ const userController = {
     return Promise.all([
       User.findByPk(followingId),
       Followship.findOne({
-        where: {
-          followerId,
-          followingId
-        }
+        where: { followerId, followingId }
       })
     ])
       .then(([user, following]) => {
@@ -303,6 +271,16 @@ const userController = {
           followingId
         })
       })
+      .then(followship => {
+        return Promise.all([
+          User.increment('followingCount', {
+            where: { id: followship.followerId }
+          }),
+          User.increment('followerCount', {
+            where: { id: followship.followingId }
+          })
+        ])
+      })
       .then(() => res.redirect('back'))
       .catch(error => next(error))
   },
@@ -311,19 +289,28 @@ const userController = {
     const followingId = req.params.userId
     // The current User
     const followerId = authHelpers.getUserId(req)
-
+    // prevent user from following himself or herself
+    if (followingId === followerId) throw new Error('You cannot unfollow youself!!')
     // Check whether the target user exists in the following list
     // if the user exists, then remove it from the followship table
-    return Followship.destroy({
-      where: {
-        followerId,
-        followingId
-      }
+    return Followship.findOne({
+      where: { followerId, followingId }
     })
-      .then(result => {
-        if (!result) throw new Error('You haven\'t followed this user!')
-        return res.redirect('back')
+      .then(followship => {
+        if (!followship) throw new Error('You haven\'t followed this user!')
+        return followship.destroy()
       })
+      .then(deletedFollowship => {
+        return Promise.all([
+          User.decrement('followingCount', {
+            where: { id: deletedFollowship.followerId }
+          }),
+          User.decrement('followerCount', {
+            where: { id: deletedFollowship.followingId }
+          })
+        ])
+      })
+      .then(() => res.redirect('back'))
       .catch(error => next(error))
   }
 }

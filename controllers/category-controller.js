@@ -44,9 +44,7 @@ const categoryController = {
     const { id } = req.params
 
     return Category.destroy({
-      where: {
-        id
-      }
+      where: { id }
     })
       .then(result => {
         if (!result) throw new Error('Category doesn\'t exist!')

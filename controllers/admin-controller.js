@@ -114,9 +114,7 @@ const adminController = {
     const { id } = req.params
 
     return Restaurant.destroy({
-      where: {
-        id
-      }
+      where: { id }
     })
       .then(result => {
         if (!result) throw new Error('Restaurant didn\'t exist')
