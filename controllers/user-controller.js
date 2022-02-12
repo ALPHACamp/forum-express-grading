@@ -38,7 +38,7 @@ const userController = {
     res.redirect('/signin')
   },
   getUser: (req, res, next) => {
-    const currentUser = req.user
+    const nowUser = req.user
     const userId = Number(req.params.id)
     return Promise.all([
       User.findByPk(userId, { raw: true }),
@@ -50,12 +50,13 @@ const userController = {
       })
     ])
       .then(([user, comments]) => {
+        console.log(nowUser)
         const reviewCounts = comments.count
         const reviews = comments.rows
         if (!user) throw new Error("User didn't exist")
         return res.render('users/profile', {
           user,
-          currentUser,
+          nowUser,
           reviewCounts,
           reviews
         })

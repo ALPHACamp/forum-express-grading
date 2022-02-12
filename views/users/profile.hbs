@@ -9,7 +9,7 @@
       <div class="card-body">
         <h5 class="card-title">{{user.name}}</h5>
         <p class="card-text">{{user.email}}</p>
-        {{#ifCond currentUser.id user.id}}
+        {{#ifCond nowUser.id user.id}}
         <a class="btn btn-primary" href="/users/{{user.id}}/edit">Edit</a>
         {{/ifCond}}
         <a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
