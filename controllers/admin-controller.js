@@ -79,6 +79,7 @@ const adminController = {
       const restaurant = await Restaurant.findByPk(req.params.id)
       if (!restaurant) throw new Error("Restaurant didn't exist!")
       await restaurant.destroy()
+      req.flash('success_messages', 'restaurant was successfully to delete')
       res.redirect('/admin/restaurants')
     } catch (error) {
       next(error)
