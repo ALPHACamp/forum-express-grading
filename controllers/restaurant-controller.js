@@ -108,10 +108,12 @@ const restaurantController = {
       })
       .catch(err => next(err))
   },
+
   getTopRestaurants: (req, res, next) => {
     return Restaurant.findAll({
       include:
         { model: User, as: 'FavoritedUsers' },
+      nest: true
     })
       .then(restaurants => {
         const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
