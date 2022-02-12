@@ -7,10 +7,8 @@ module.exports = {
     })
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.removeColumn('Comments', 'text')
-    await queryInterface.addColumn('Comments', 'text', {
-      type: Sequelize.STRING,
-      allowNull: false
+    await queryInterface.changeColumn('Comments', 'text', {
+      type: Sequelize.STRING
     })
   }
 }
