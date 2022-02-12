@@ -147,15 +147,15 @@ const userController = {
         restaurantId: req.params.restaurantId
       }
     })
-    .then(favorite => {
-      if(!favorite) {
-        throw new Error("You haven't favorited this restaurant!")
-      }
+      .then(favorite => {
+        if (!favorite) {
+          throw new Error("You haven't favorited this restaurant!")
+        }
 
-      return favorite.destroy()
-    })
-    .then(() => res.redirect('back'))
-    .catch(err => next(err))
+        return favorite.destroy()
+      })
+      .then(() => res.redirect('back'))
+      .catch(err => next(err))
   }
 
 }
