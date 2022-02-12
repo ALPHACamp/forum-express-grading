@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs')
-const { User } = require('../models')
+const { User, Comment, Restaurant } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const userController = {
@@ -20,7 +20,7 @@ const userController = {
         password: hash
       }))
       .then(() => {
-        req.flash('success_messages', '成功註冊帳號！')
+        req.flash('success_messages', '成功註冊帳號!')
         res.redirect('/signin')
       })
       .catch(err => next(err))
@@ -29,23 +29,36 @@ const userController = {
     res.render('signin')
   },
   signIn: (req, res) => {
-    req.flash('success_messages', '成功登入！')
+    req.flash('success_messages', '成功登入!')
     res.redirect('/restaurants')
   },
   logout: (req, res) => {
-    req.flash('success_messages', '登出成功！')
+    req.flash('success_messages', '登出成功!')
     req.logout()
     res.redirect('/signin')
   },
   getUser: (req, res, next) => {
     const currentUser = req.user
-    return User.findByPk(req.params.id, {
-      raw: true,
-      nest: true
-    })
-      .then(user => {
+    const userId = Number(req.params.id)
+    return Promise.all([
+      User.findByPk(userId, { raw: true }),
+      Comment.findAndCountAll({
+        include: Restaurant,
+        where: { userId },
+        raw: true,
+        nest: true
+      })
+    ])
+      .then(([user, comments]) => {
+        const reviewCounts = comments.count
+        const reviews = comments.rows
         if (!user) throw new Error("User didn't exist")
-        return res.render('users/profile', { user, currentUser })
+        return res.render('users/profile', {
+          user,
+          currentUser,
+          reviewCounts,
+          reviews
+        })
       })
       .catch(err => next(err))
   },
@@ -61,12 +74,14 @@ const userController = {
       .catch(err => next(err))
   },
   putUser: (req, res, next) => {
-    const userId = req.user.id
+    const currentUserId = req.user.id
+    const editUserId = req.params.id
+    if (currentUserId !== editUserId) throw new Error('Cannot edit others profile!')
     const { name } = req.body
     if (!name) throw new Error('User name is required!')
     const { file } = req
     return Promise.all([
-      User.findByPk(req.params.id),
+      User.findByPk(editUserId),
       imgurFileHandler(file)
     ])
       .then(([user, filePath]) => {
@@ -78,7 +93,7 @@ const userController = {
       })
       .then(() => {
         req.flash('success_messages', '使用者資料編輯成功')
-        res.redirect(`/users/${userId}`)
+        res.redirect(`/users/${currentUserId}`)
       })
       .catch(err => next(err))
   }
