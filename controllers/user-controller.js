@@ -74,8 +74,8 @@ const userController = {
       .catch(err => next(err))
   },
   putUser: (req, res, next) => {
-    const currentUserId = req.user.id
-    const editUserId = req.params.id
+    const currentUserId = Number(req.user.id)
+    const editUserId = Number(req.params.id)
     if (currentUserId !== editUserId) throw new Error('Cannot edit others profile!')
     const { name } = req.body
     if (!name) throw new Error('User name is required!')
