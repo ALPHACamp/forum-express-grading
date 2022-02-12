@@ -50,3 +50,8 @@ git push origin R01           # 上傳本地進度
 * 第二組帳號沒有 admin 權限：
   * email: user1@example.com
   * password: 12345678
+
+## 待處理問題
+1. 評論排序
+2. dashboard資訊
+3. 使用者頁面
