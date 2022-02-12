@@ -23,6 +23,27 @@
   <hr>
 </div>
 {{!-- Comment --}}
+<h3 class="mb-3">所有評論：</h3>
+<div class="ms-4">
+  {{#if restaurant.Comments}}
+    {{#each restaurant.Comments}}
+    <blockquote class="blockquote mb-0">
+      <h4><a href="/users/{{this.User.id}}">{{this.User.name}}</a></h4>
+      <p class="ms-3">{{this.text}}</p>
+      <footer class="blockquote-footer text-end">
+        <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{DateTime this.createdAt}}">
+          {{relativeTimeFromNow this.createdAt}}
+        </span>
+      </footer>
+    </blockquote>
+    <hr />
+    {{/each}}
+  {{else}}
+  <blockquote class="blockquote my-5">
+    <p class="text-secondary">目前還沒有任何留言，趕快成為第一個吧！</p>
+  </blockquote>
+  {{/if}}
+</div>
 <form action="/comments" method="POST">
   <div class="form-row mb-3">
     <label class="form-label" for="text">留下評論：</label>
