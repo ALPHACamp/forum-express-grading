@@ -20,10 +20,7 @@ router.get('/users/:id/edit', authenticated, userController.editUser)
 router.get('/users/:id', authenticated, userController.getUser)
 router.put('/users/:id', authenticated, upload.single('image'), userController.putUser)
 
-router.get('/users/:id/edit', authenticated, userController.editUser)
-router.get('/users/:id', authenticated, userController.getUser)
-router.put('/users/:id', authenticated, upload.single('image'), userController.putUser)
-
+router.get('/restaurants/top', authenticated, restController.getTopRestaurants)
 router.get('/restaurants/feeds', authenticated, restController.getFeeds)
 router.get('/restaurants/:id', authenticated, restController.getRestaurant)
 router.get('/restaurants/:id/dashboard', authenticated, restController.getDashboard)
