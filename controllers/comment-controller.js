@@ -18,15 +18,25 @@ const commentController = {
         if (!restaurant) throw new Error('Restaurant didn\'t exist!')
         if (!user) throw new Error('User did\'n exist')
         // both restaurant and user exist
-        return restaurant.increment('commentCounts')
+        return Promise.all([
+          Comment.findOne({ where: { userId, restaurantId } }),
+          restaurant,
+          user
+        ])
       })
-      .then(() =>
-        Comment.create({
+      .then(([comment, restaurant, user]) => {
+        return Promise.all([
+          (!comment) ? user.increment('restCommentCount') : null,
+          restaurant.increment('commentedCount')
+        ])
+      })
+      .then(() => {
+        return Comment.create({
           text,
           userId,
           restaurantId
         })
-      )
+      })
       .then(() => res.redirect(`/restaurants/${restaurantId}`))
       .catch(error => next(error))
   },
@@ -39,14 +49,26 @@ const commentController = {
         return comment.destroy()
       })
       .then(deletedComment => {
-        return Restaurant.findByPk(deletedComment.restaurantId)
+        // continue to find the same record for counting number of all type comment
+        return Promise.all([
+          Comment.findOne({
+            where: {
+              userId: deletedComment.userId,
+              restaurantId: deletedComment.restaurantId
+            }
+          }),
+          Restaurant.findByPk(deletedComment.restaurantId),
+          User.findByPk(deletedComment.userId)
+        ])
       })
-      .then(restaurant => {
-        return restaurant.update({
-          commentCounts: --restaurant.commentCounts
-        })
+      .then(([comment, restaurant, user]) => {
+        // decrement comment count for each restaurant and each user
+        return Promise.all([
+          restaurant.decrement('commentedCount'),
+          (!comment) ? user.decrement('restCommentCount') : null
+        ])
       })
-      .then(restaurant => {
+      .then(([restaurant, _]) => {
         req.flash('success_messages', '成功移除留言')
         res.redirect(`/restaurants/${restaurant.id}`)
       })
