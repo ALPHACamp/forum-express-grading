@@ -30,7 +30,6 @@ module.exports = {
     // a list which stores each restaurant each user has commented
     const userComments = Array.from({ length: seedUsers.length }, () => ({}))
 
-    // generate a set of seed comments and count each comment
     const seedComments = Array.from({ length: DEFAULT_MAX_COMMENTS }, () => {
       const currentUserIndex = Math.floor(Math.random() * seedUsers.length)
 
@@ -56,8 +55,8 @@ module.exports = {
     seedRestaurants.forEach(async restId => {
       if (typeof restComments[restId] === 'number') {
         const queryStatement = `
-        UPDATE Restaurants SET commented_count = ${restComments[restId]}
-        WHERE id = ${restId}
+          UPDATE Restaurants SET commented_count = ${restComments[restId]}
+          WHERE id = ${restId}
         `
         await queryInterface.sequelize.query(queryStatement)
       }
@@ -66,8 +65,8 @@ module.exports = {
     // update restaurant comment count for each user
     userComments.forEach(async (list, index) => {
       const queryStatement = `
-      UPDATE Users SET rest_comment_count = ${Object.keys(list).length}
-      WHERE id = ${seedUsers[index]}
+        UPDATE Users SET rest_comment_count = ${Object.keys(list).length}
+        WHERE id = ${seedUsers[index]}
       `
       await queryInterface.sequelize.query(queryStatement)
     })

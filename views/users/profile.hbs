@@ -80,10 +80,27 @@
     <div class="col-md-auto">
       <div class="card mt-3">
         <div class="card-header">
-          {{user.favoriteCount}} 收藏的餐廳
+        {{user.favoriteCount}} 收藏的餐廳
         </div>
-        <div class="card-body">
-          <h5 class="card-title">favorite Test</h5>
+        <div class="card-body d-flex flex-wrap">
+        {{#each user.FavoritedRestaurants}}
+        <div class="col-md-2">
+          
+          <div class="card mb-3 mx-2 shadow-sm">
+            <a href="/restaurants/{{this.id}}">
+              <img class="card-img-top img-fluid" src="{{this.image}}" alt="Card image cap" width="286px" height="180px" style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+            </a>
+            <div class="card-body">
+              <p class="card-text">
+                <a href="/restaurants/{{this.id}}">
+                    {{this.name}}
+                </a>
+              </p>
+            </div>
+          </div>
+        </div>
+        {{/each}}
+
         </div>
       </div>
     </div>

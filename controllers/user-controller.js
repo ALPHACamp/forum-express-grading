@@ -56,36 +56,41 @@ const userController = {
   // Get a user profile with id
   getUser: (req, res, next) => {
     const targetUserId = req.params.id
-    // Get a user with all comment records of restaurant for himself or herself
-    return User.findByPk(targetUserId, {
-      include: [
-        {
-          model: Comment,
-          include: Restaurant
-        }
-      ]
-    })
-      .then(targetUser => {
-        // targetUser is the user record with all comment records
-        // Remove repeated comment for same restaurant
-        const simpleHashTable = {}
-        const comments = targetUser.Comments || []
-        for (let index = 0; index < comments.length; index++) {
-          const key = comments[index].restaurantId.toString()
-          if (simpleHashTable === {} || !simpleHashTable[key]) {
-            simpleHashTable[key] = true
-          } else {
-            comments.splice(index, 1)
-            index--
-          }
-        }
-        targetUser = targetUser.toJSON()
-        // Get number of commentd restaurant for the user
-        const commentedRestaurantsCounts = Object.keys(simpleHashTable).length || 0
 
+    // Get a user with all comment records of restaurant for himself or herself
+    return Promise.all([
+      User.findByPk(targetUserId, {
+        include: [
+          { model: Restaurant, as: 'FavoritedRestaurants' },
+          { model: User, as: 'Followings' },
+          { model: User, as: 'Followers' }
+        ]
+      }),
+      Comment.findAll({
+        attributes: [
+          'user_id',
+          'restaurant_id'
+        ],
+        where: {
+          userId: targetUserId
+        },
+        include: [Restaurant],
+        group: [
+          'user_id',
+          'restaurant_id'
+        ],
+        raw: true,
+        nest: true
+      })
+
+    ])
+      .then(([targetUser, Comments]) => {
+        // Comments.forEach(item => console.log(item.restaurant_id))
+        // console.log('hia: ', Comments, Comments.length)
+        targetUser = targetUser.toJSON()
+        targetUser.Comments = Comments
         return res.render('users/profile', {
-          user: targetUser,
-          commentedRestaurantsCounts
+          user: targetUser
         })
       })
       .catch(error => next(error))
