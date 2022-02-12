@@ -27,11 +27,16 @@
 <div class="ms-4">
   {{#if restaurant.Comments}}
     {{#each restaurant.Comments}}
+      {{#if ../user.isAdmin}}
+      <form action="/comments/{{this.id}}?_method=DELETE" method="POST" class="float-end">
+        <button type="submit" class="btn btn-danger" onclick="return confirm(`確定要刪除 {{this.User.name}} 的評論嗎？`)">Delete</button>
+      </form>
+      {{/if}}
     <blockquote class="blockquote mb-0">
       <h4><a href="/users/{{this.User.id}}">{{this.User.name}}</a></h4>
       <p class="ms-3">{{this.text}}</p>
-      <footer class="blockquote-footer text-end">
-        <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{DateTime this.createdAt}}">
+      <footer class="blockquote-footer">
+        <span data-bs-toggle="tooltip" data-bs-placement="right" title="{{DateTime this.createdAt}}">
           {{relativeTimeFromNow this.createdAt}}
         </span>
       </footer>
