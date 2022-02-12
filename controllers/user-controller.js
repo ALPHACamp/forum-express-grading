@@ -87,9 +87,11 @@ const userController = {
       .then(([targetUser, Comments]) => {
         // Comments.forEach(item => console.log(item.restaurant_id))
         // console.log('hia: ', Comments, Comments.length)
+
         targetUser = targetUser.toJSON()
         targetUser.Comments = Comments
-        console.log(targetUser)
+
+        // console.log('hi:', targetUser.FavoritedRestaurants.length)
         return res.render('users/profile', {
           user: targetUser
         })
@@ -140,7 +142,6 @@ const userController = {
     const userId = authHelpers.getUserId(req)
 
     return Promise.all([
-      User.findByPk(userId),
       Restaurant.findByPk(restaurantId),
       Favorite.findOne({
         where: {
@@ -148,24 +149,31 @@ const userController = {
           restaurantId
         }
       })
+
     ])
-      .then(([user, restaurant, favorite]) => {
-        if (!user) throw new Error('User didn\'t exist')
+      .then(([restaurant, favorite]) => {
         if (!restaurant) throw new Error('Restaurant didn\'t exist')
         if (favorite) throw new Error('You have favorited this restaurant!')
 
-        // count favorite for each user and each restaurant
-        return Promise.all([
-          user.increment('favoriteCount'),
-          restaurant.increment('favoritedCount')
-        ])
-      })
-      .then(() =>
-        Favorite.create({
+        return Favorite.create({
           userId,
           restaurantId
         })
-      )
+      })
+      .then(() => {
+        return Promise.all([
+          User.increment('favoriteCount', {
+            where: {
+              id: userId
+            }
+          }),
+          Restaurant.increment('favoritedCount', {
+            where: {
+              id: Number(restaurantId)
+            }
+          })
+        ])
+      })
       .then(() => res.redirect('back'))
       .catch(error => next(error))
   },
@@ -182,10 +190,10 @@ const userController = {
     })
       .then(favorite => {
         if (!favorite) throw new Error('You haven\'t favorited this restaurant')
-
         return favorite.destroy()
       })
       .then(deletedFavorite => {
+        console.log('favorite', deletedFavorite)
         // count favorite
         return Promise.all([
           User.decrement('favoriteCount', {
@@ -195,7 +203,7 @@ const userController = {
           }),
           Restaurant.decrement('favoritedCount', {
             where: {
-              id: deletedFavorite.restaurantId
+              id: Number(deletedFavorite.restaurantId)
             }
           })
         ])
@@ -269,10 +277,12 @@ const userController = {
   // Handling following/unfollowing
   addFollowing: (req, res, next) => {
     // The target user who current user wants to follow
-    const followingId = req.params.userId
+    const followingId = Number(req.params.userId)
     // The current User
-    const followerId = authHelpers.getUserId(req)
+    const followerId = Number(authHelpers.getUserId(req))
 
+    // prevent user from following himself or herself
+    if (followingId === followerId) throw new Error('You cannot follow youself!!')
     // Check whether the target user exists
     // Check whether the target user exists in following list of current user
     return Promise.all([

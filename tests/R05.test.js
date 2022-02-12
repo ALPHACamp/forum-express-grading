@@ -107,7 +107,7 @@ describe('# R05: TOP 10 人氣餐廳 ', function () {
         })
         const res = mockResponse()
         const next = mockNext
-
+        
         // 測試 userController.addFavorite 函式
         await this.userController.addFavorite(req, res, next)
         // 取得餐廳排序資料
