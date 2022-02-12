@@ -35,13 +35,21 @@ const defaultNavOption = (selectedType, currentType) => {
 }
 
 /**
- * @param {String | Number} selectedOption
- * @param {String | Number} currentOption
+ * @param {String | Number} value1
+ * @param {String} operator
+ * @param {String | Number} value2
  * @param {Object} options
  * @return {String}
  */
-function ifCond (selectedOption, currentOption, options) {
-  return selectedOption === currentOption ? options.fn(this) : options.inverse(this)
+function ifCond (value1, operator, value2, options) {
+  switch (operator) {
+    case '===':
+      return value1 === value2 ? options.fn(this) : options.inverse(this)
+    case '!==':
+      return value1 !== value2 ? options.fn(this) : options.inverse(this)
+    default:
+      return options.inverse(this)
+  }
 }
 
 exports = module.exports = {

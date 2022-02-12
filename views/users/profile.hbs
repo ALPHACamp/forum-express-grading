@@ -8,7 +8,7 @@
   <div class="card-body mx-5">
     <h5 class="card-title">{{user.name}}</h5>
     <p class="card-text">{{user.email}}</p>
-  {{#ifCond user.id currentUser.id}}
+  {{#ifCond user.id '===' currentUser.id}}
     <a href="/users/{{user.id}}/edit" class="btn btn-primary">edit</a>
   {{/ifCond}}
     <div class="mt-3">

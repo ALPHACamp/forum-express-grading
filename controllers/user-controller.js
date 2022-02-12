@@ -77,13 +77,9 @@ const userController = {
 
     ])
       .then(([targetUser, Comments]) => {
-        // Comments.forEach(item => console.log(item.restaurant_id))
-        // console.log('hia: ', Comments, Comments.length)
-
         targetUser = targetUser.toJSON()
         targetUser.Comments = Comments
-        console.log(targetUser)
-        // console.log('hi:', targetUser.FavoritedRestaurants.length)
+
         return res.render('users/profile', {
           user: targetUser
         })
