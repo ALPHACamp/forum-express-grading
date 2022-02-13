@@ -39,6 +39,9 @@ router.get('/restaurants/:id/dashboard', authenticated, restController.getDashbo
 router.delete('/comments/:id', authenticatedAdmin, commentController.deleteComment)
 router.post('/comments', authenticated, commentController.postComment)
 
+// user
+router.get('/users/:id', authenticated, userController.getUser)
+
 router.get('/', (req, res) => res.redirect('/restaurants'))
 
 // 錯誤處理 middleware
