@@ -57,7 +57,7 @@ const userController = {
   },
   editUser: async (req, res, next) => {
     const id = Number(req.params.id)
-    if (id !== req.user.id) return res.redirect(`/users/${req.user.id}/edit`)
+    // if (id !== req.user.id) return res.redirect(`/users/${req.user.id}/edit`)
     try {
       const user = await User.findByPk(id, { raw: true })
       if (!user) throw new Error("User didn't exist!")
