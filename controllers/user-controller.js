@@ -47,8 +47,10 @@ const userController = {
     }
   },
   editUser: async (req, res, next) => {
+    const id = Number(req.params.id)
+    if (id !== req.user.id) return res.redirect(`/users/${req.user.id}/edit`)
     try {
-      const user = await User.findByPk(req.params.id, { raw: true })
+      const user = await User.findByPk(id, { raw: true })
       if (!user) throw new Error("User didn't exist!")
       res.render('users/edit', { user })
     } catch (error) {
@@ -56,16 +58,18 @@ const userController = {
     }
   },
   putUser: async (req, res, next) => {
+    const id = Number(req.params.id)
     const { name } = req.body
     try {
+      if (id !== req.user.id) throw new Error('僅可修改自己的資料！')
       if (!name) throw new Error('User name is required!')
-      const user = await User.findByPk(req.params.id)
+      const user = await User.findByPk(id)
       if (!user) throw new Error("User didn't exist!")
       const { file } = req
       const filePath = await imgurFileHandler(file)
       await user.update({ name, image: filePath || user.filePath })
       req.flash('success_messages', '使用者資料編輯成功')
-      res.redirect(`/users/${req.params.id}`)
+      res.redirect(`/users/${id}`)
     } catch (error) {
       next(error)
     }
