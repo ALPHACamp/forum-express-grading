@@ -13,6 +13,7 @@ const userController = require('../controllers/user-controller')
 const commentController = require('../controllers/comment-controller')
 
 const admin = require('./modules/admin')
+const users = require('./modules/users')
 
 // 管理員
 router.use('/admin', authenticatedAdmin, admin)
@@ -40,8 +41,7 @@ router.delete('/comments/:id', authenticatedAdmin, commentController.deleteComme
 router.post('/comments', authenticated, commentController.postComment)
 
 // user
-router.get('/users/:id', authenticated, userController.getUser)
-router.get('/users/:id/edit', authenticated, userController.editUser)
+router.use('/users', authenticated, users)
 
 router.get('/', (req, res) => res.redirect('/restaurants'))
 

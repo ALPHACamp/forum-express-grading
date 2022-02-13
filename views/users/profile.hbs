@@ -1,15 +1,15 @@
-<div class="row">
-  <div class="col-md-4">
-    <img class="img-responsive center-block" src="{{this.user.image}}"
-      style="width: 250px; margin-bottom: 25px; transition: opacity 0.5s; opacity:0;"
-      onload="this.style.opacity=1;">
-  </div>
-  <div class="col-md-8">
-    <h5>{{user.name}}</h5>
-    <p style="white-space: break-spaces;">{{user.email}}</p>
-    {{#if user.self}}
-      <a class="btn btn-primary" href="/users/{{user.id}}/edit">edit</a>
-    {{/if}}
-    <a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
+<div class="card mb-3 p-4" style="width:100%; height: 50vh;">
+  <div class="row g-0">
+    <div class="col-md-4">
+      <img src="{{user.image}}" class="img-fluid rounded-start" alt="...">
+    </div>
+    <div class="col-md-6" style="margin-left: 50px;">
+      <h5>{{user.name}}</h5>
+      <p style="white-space: break-spaces;">{{user.email}}</p>
+      {{#if user.self}}
+        <a class="btn btn-primary" href="/users/{{user.id}}/edit">edit</a>
+      {{/if}}
+      <a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
+    </div>
   </div>
 </div>
