@@ -1,0 +1,16 @@
+<div class="card mb-3 p-4" style="width:100%;">
+  <div class="row g-0">
+    <div class="col-md-4">
+      <img src="{{user.image}}" class="img-fluid rounded-start d-block mx-auto"
+        style="height:250px;" alt="...">
+    </div>
+    <div class="col-md-6" style="margin-left: 50px;">
+      <h5>{{user.name}}</h5>
+      <p style="white-space: break-spaces;">{{user.email}}</p>
+      {{#if user.self}}
+        <a class="btn btn-primary" href="/users/{{user.id}}/edit">edit</a>
+      {{/if}}
+      <a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
+    </div>
+  </div>
+</div>
