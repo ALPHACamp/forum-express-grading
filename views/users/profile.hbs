@@ -7,10 +7,29 @@
     <div class="col-md-6" style="margin-left: 50px;">
       <h5>{{user.name}}</h5>
       <p style="white-space: break-spaces;">{{user.email}}</p>
+      <p>{{#if filteredComments.length}}{{filteredComments.length}}{{else}}0{{/if}} 已評論餐廳</p>
       {{#if user.self}}
         <a class="btn btn-primary" href="/users/{{user.id}}/edit">edit</a>
       {{/if}}
       <a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
     </div>
+  </div>
+</div>
+<div class="row g-0 border">
+  <div class="col-md-12 border-bottom px-3 d-flex">
+    <p class="mt-3">
+      {{#if filteredComments.length}}{{filteredComments.length}}{{else}}0{{/if}}
+        已評論餐廳 － 共 {{#if commentCounts}}{{commentCounts}}{{else}}0{{/if}} 則評論
+    </p>
+  </div>
+  <div class="col-md-12 bg-white"
+    style="height:80px; overflow-x: auto; line-height: 20px;display: flex;">
+    {{#each filteredComments}}
+      <a href="/restaurants/{{this.Restaurant.id}}">
+        <img src="{{this.Restaurant.image}}" class="rounded-1"
+          style="margin-right:20px; height:45px;width:45px; position: relative; top:50%; transform: translate(50%,-50%); "
+          alt="">
+      </a>
+    {{/each}}
   </div>
 </div>
