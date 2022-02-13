@@ -57,6 +57,16 @@ const userController = {
         res.render('users/profile', { user })
       })
       .catch(err => next(err))
+  },
+  editUser: (req, res, next) => {
+    return User.findByPk(req.params.id, { raw: true })
+      .then(user => {
+        if (!user) throw new Error("User didn't exist!")
+        //  Whether user is self
+        if (user.id !== getUser(req).id) throw new Error("Can't edit others!")
+        res.render('users/edit', { user })
+      })
+      .catch(err => next(err))
   }
 }
 

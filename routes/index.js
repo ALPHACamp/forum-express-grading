@@ -41,6 +41,7 @@ router.post('/comments', authenticated, commentController.postComment)
 
 // user
 router.get('/users/:id', authenticated, userController.getUser)
+router.get('/users/:id/edit', authenticated, userController.editUser)
 
 router.get('/', (req, res) => res.redirect('/restaurants'))
 
