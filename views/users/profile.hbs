@@ -6,12 +6,33 @@
     <div class="col-md-8">
       <div class="card-body">
         <h5 class="card-title">{{pageUser.name}}</h5>
-        <p class="card-text">{{pageUser.email}}</p>
+        <p class="card-text">
+          {{pageUser.email}} <br />
+          {{commentCounts}} 已評論餐廳
+          </p>
         {{#ifCond user.id pageUser.id}}
           <a class="btn btn-primary" href="/users/{{user.id}}/edit">edit</a>
         {{/ifCond}}
         <a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
       </div>
+    </div>
+  </div>
+</div>
+<div class="card">
+  <div class="card-header">
+    {{commentCounts}} 已評論餐廳
+  </div>
+  <div class="card-body">
+    <div class="row">
+      {{#if restaurants}}
+        {{#each restaurants}}
+        <a href="/restaurants/{{this.id}}" class="col-md-2">
+          <img src="{{this.image}}" class="img-thumbnail" alt="{{this.name}}">
+        </a>
+        {{/each}}
+      {{else}}
+        <h2 class="text-center text-secondary my-2">這個人目前還沒有任何評論喔！</h2>
+      {{/if}}
     </div>
   </div>
 </div>
