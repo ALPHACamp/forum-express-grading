@@ -2,6 +2,8 @@ const bcrypt = require('bcryptjs') // 載入 bcrypt
 const db = require('../models')
 const { User } = db
 
+const { getUser } = require('../helpers/auth-helpers')
+
 const userController = {
   signUpPage: (req, res) => {
     // 取得錯誤處理當下所發出的 form body
@@ -51,7 +53,7 @@ const userController = {
       .then(user => {
         if (!user) throw new Error("User didn't exist!")
         //  Whether user is self
-        user.self = user.email === req.user.email
+        user.self = user.id === getUser(req).id
         res.render('users/profile', { user })
       })
       .catch(err => next(err))
