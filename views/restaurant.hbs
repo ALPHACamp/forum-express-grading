@@ -18,13 +18,22 @@
     <p style="white-space: break-spaces;">{{restaurant.description}}</p>
     <a class="btn btn-primary" href="/restaurants/{{restaurant.id}}/dashboard">Dashboard</a>
     {{#if isFavorited }}
-    <form action="/favorite/{{restaurant.id}}?_method=DELETE" method="POST" style="display: contents;">
-      <button type="submit" class="btn btn-danger">移除最愛</button>
-    </form>
+      <form action="/favorite/{{restaurant.id}}?_method=DELETE" method="POST" style="display: contents;">
+        <button type="submit" class="btn btn-danger">移除最愛</button>
+      </form>
     {{else}}
-    <form action="/favorite/{{restaurant.id}}" method="POST" style="display: contents;">
-      <button type="submit" class="btn btn-primary">加到最愛</button>
-    </form>
+      <form action="/favorite/{{restaurant.id}}" method="POST" style="display: contents;">
+        <button type="submit" class="btn btn-primary">加到最愛</button>
+      </form>
+    {{/if}}
+    {{#if isLiked }}
+      <form action="/like/{{restaurant.id}}?_method=DELETE" method="POST" style="display: contents;">
+        <button type="submit" class="btn btn-danger">Unlike</button>
+      </form>
+    {{else}}
+     <form action="/like/{{restaurant.id}}" method="POST" style="display: contents;">
+        <button type="submit" class="btn btn-primary">Like</button>
+      </form>
     {{/if}}
   </div>
   <hr>
@@ -32,17 +41,17 @@
 
 <h3 class="mb-3">所有評論：</h3>
 {{#each restaurant.Comments}}
-{{#if ../user.isAdmin}}
-<form action="/comments/{{this.id}}?_method=DELETE" method="POST" class="float-end">
-  <button type="submit" class="btn btn-danger">Delete</button>
-</form>
-{{/if}}
-<blockquote class="blockquote mb-0">
-  <h4><a href="/users/{{this.User.id}}">{{this.User.name}}</a></h4>
-  <p>{{this.text}}</p>
-  <footer class="blockquote-footer">{{relativeTimeFromNow this.createdAt}}</footer>
-</blockquote>
-<hr />
+  {{#if ../user.isAdmin}}
+    <form action="/comments/{{this.id}}?_method=DELETE" method="POST" class="float-end">
+      <button type="submit" class="btn btn-danger">Delete</button>
+    </form>
+  {{/if}}
+  <blockquote class="blockquote mb-0">
+    <h4><a href="/users/{{this.User.id}}">{{this.User.name}}</a></h4>
+    <p>{{this.text}}</p>
+    <footer class="blockquote-footer">{{relativeTimeFromNow this.createdAt}}</footer>
+  </blockquote>
+  <hr />
 {{/each}}
 
 <form action="/comments" method="POST">
