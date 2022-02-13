@@ -1,5 +1,6 @@
 const { Restaurant, Category, Comment, User } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
+const helpers = require('../helpers/auth-helpers')
 
 const restaurantController = {
   getRestaurants: (req, res, next) => {
@@ -8,6 +9,9 @@ const restaurantController = {
     const page = Number(req.query.page) || 1
     const limit = Number(req.query.limit) || DEFAULT_LIMIT
     const offset = getOffset(limit, page)
+    const nowUser = helpers.getUser(req)
+    const nowUserArrFavorRest = Array.from(nowUser.FavoritedRestaurants)
+    const nowUserArrLikeRest = Array.from(nowUser.LikedRestaurants)
 
     return Promise.all([
       Restaurant.findAndCountAll({
@@ -23,11 +27,13 @@ const restaurantController = {
       Category.findAll({ raw: true })
     ])
       .then(([restaurants, categories]) => {
-        const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
+        const favoritedRestaurantsId = nowUser && nowUserArrFavorRest.map(fr => fr.id)
+        const likedRestaurantsId = nowUser && nowUserArrLikeRest.map(lr => lr.id)
         const data = restaurants.rows.map(r => ({
           ...r,
           description: r.description.substring(0, 50),
-          isFavorited: favoritedRestaurantsId.includes(r.id)
+          isFavorited: favoritedRestaurantsId.includes(r.id),
+          isLiked: likedRestaurantsId.includes(r.id)
         }))
         return res.render('restaurants', {
           restaurants: data,
@@ -39,11 +45,13 @@ const restaurantController = {
       .catch(err => next(err))
   },
   getRestaurant: (req, res, next) => {
+    const nowUser = helpers.getUser(req)
     return Restaurant.findByPk(req.params.id, {
       include: [
         Category,
         { model: Comment, include: User },
-        { model: User, as: 'FavoritedUsers' }
+        { model: User, as: 'FavoritedUsers' },
+        { model: User, as: 'LikedUsers' }
       ]
     })
       .then(restaurant => {
@@ -51,10 +59,12 @@ const restaurantController = {
         return restaurant.increment('viewCounts')
       })
       .then(restaurant => {
-        const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id)
+        const isFavorited = restaurant.FavoritedUsers.some(f => f.id === nowUser.id)
+        const isLiked = restaurant.LikedUsers.some(f => f.id === nowUser.id)
         res.render('restaurant', {
           restaurant: restaurant.toJSON(),
-          isFavorited
+          isFavorited,
+          isLiked
         })
       })
       .catch(err => next(err))
