@@ -21,7 +21,6 @@ router.get('/restaurants/feeds', authenticated, restaurantController.getFeeds)
 router.get('/restaurants/:id/dashboard', authenticated, restaurantController.getDashboard)
 router.get('/restaurants/:id', authenticated, restaurantController.getRestaurant)
 router.get('/restaurants', authenticated, restaurantController.getRestaurants)
-router.get('/', (req, res) => { res.redirect('/restaurants') })
 
 router.delete('/comments/:id', authenticated, commentController.deleteComment)
 router.post('/comments', authenticated, commentController.postComment)
@@ -31,10 +30,12 @@ router.delete('/favorite/:restaurantId', authenticated, userController.removeFav
 router.post('/like/:restaurantId', authenticated, userController.addLike)
 router.delete('/like/:restaurantId', authenticated, userController.removeLike)
 
+router.get('/users/top', authenticated, userController.getTopUsers)
 router.put('/users/:id', authenticated, upload.single('image'), userController.putUser)
 router.get('/users/:id/edit', authenticated, userController.editUser)
 router.get('/users/:id', authenticated, userController.getUser)
 
+router.get('/', (req, res) => { res.redirect('/restaurants') })
 router.use('/', generalErrorHandler)
 
 module.exports = router
