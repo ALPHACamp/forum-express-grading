@@ -41,6 +41,10 @@ router.get('/restaurants/:id/dashboard', authenticated, restController.getDashbo
 router.delete('/comments/:id', authenticatedAdmin, commentController.deleteComment)
 router.post('/comments', authenticated, commentController.postComment)
 
+// 我的最愛
+router.post('/favorite/:restaurantId', authenticated, userController.addFavorite)
+router.delete('/favorite/:restaurantId', authenticated, userController.removeFavorite)
+
 // user
 router.use('/users', authenticated, users)
 
