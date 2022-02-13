@@ -47,11 +47,9 @@ const userController = {
         where: { userId: id }
       })
       const restaurants = comments.rows.map(item => {
-        console.log(item)
         return item.Restaurant
       })
       if (!pageUser) throw new Error("User didn't exist!")
-      console.log(restaurants)
       res.render('users/profile', { pageUser, restaurants, commentCounts: comments.count })
     } catch (error) {
       next(error)
