@@ -1,14 +1,32 @@
-<div class="card p-4 shadow-sm">
+<div class="card shadow-sm">
   <div class="row">
     <div class="col-6">
-      <img class="img-responsive center-block" src="{{user.image}}" 
-        style="width: 100%; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;" onerror="this.onerror=null;this.src='/image/no-image.png';">
+      <img class="img-responsive center-block" src="{{user.image}}"
+        style="width: 100%; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;"
+        onerror="this.onerror=null;this.src='/image/no-image.png';">
     </div>
-    <div class="col-6">
+    <div class="col-6 my-3">
       <h3>{{user.name}}</h3>
       <p>{{user.email}}</p>
+      <p><strong>{{user.Comments.length}}</strong>已評論餐廳</p>
       <a href="/users/{{user.id}}/edit">
-        <button type="button" class="btn btn-primary">Edit</button>
+        <button type="button" class="btn btn-primary my-2">Edit</button>
       </a>
     </div>
   </div>
+</div>
+<div class="card shadow-sm mt-3">
+  <div class="card-header">
+    <strong>{{user.Comments.length}}</strong>已評論餐廳
+  </div>
+  <div class="row">
+  <ul class="card-body">
+    {{#each user.Comments}}
+    <a class="text-decoration-none" href="/restaurants/{{this.Restaurant.id}}">
+    <img class="img-responsive center-block my-1" src="{{this.Restaurant.image}}" 
+      style="max-width: 50px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;" onerror="this.onerror=null;this.src='/image/no-image.png';">
+    </a>
+    {{/each}}
+  </ul>
+  </div>
+</div>
