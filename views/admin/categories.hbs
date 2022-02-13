@@ -1,0 +1,49 @@
+{{>admin-tabs route='categories'}}
+<div class="d-flex align-items-center pt-3 pb-5 my-3">
+  {{#if category}}
+  <form class="row" action="/admin/categories/{{category.id}}?_method=PUT" method="POST">
+    <div class="col-auto">
+      <input type="text" class="form-control" name="name" placeholder="Category Name" value="{{category.name}}">
+    </div>
+    <div class="col-auto">
+      <button class="btn btn-warning" type="submit">Update</button>
+      <a class="btn btn-link link-secondary" href="/admin/categories">or Create New</a>
+    </div>
+  </form>
+  {{else}}
+  <form class="row" action="/admin/categories" method="POST">
+    <div class="col-auto">
+      <input type="text" class="form-control" name="name" placeholder="Category Name">
+    </div>
+    <div class="col-auto">
+      <button class="btn btn-success" type="submit">Create</button>
+    </div>
+  </form>
+  {{/if}}
+</div>
+
+<table class="table align-middle">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Category Name</th>
+      <th scope="col">#</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each categories}}
+    <tr>
+      <th scope="row">{{this.id}}</th>
+      <td>{{this.name}}</td>
+      <td>
+        <button type="button" class="btn btn-link">
+          <a href="/admin/categories/{{this.id}}" class="btn-btn-link link-primary">Edit</a>
+        </button>
+        <form action="/admin/categories/{{this.id}}?_method=DELETE" method="post" style="display: inline;">
+          <button type="submit" class="btn btn-link link-danger">Delete</button>
+        </form>
+      </td>
+    </tr>
+    {{/each}}
+  </tbody>
+</table>
