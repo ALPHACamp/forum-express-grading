@@ -59,7 +59,7 @@ describe('# R01', () => {
       // 修改 adminController 中的資料庫連線設定，由連向真實的資料庫 -> 改為連向模擬的 User table
       this.adminController = createControllerProxy('../controllers/admin-controller', { User: this.UserMock })
     })
-    
+
     // 開始測試
     context('# [顯示使用者清單]', () => {
       it(' GET /admin/users ', async () => {
@@ -91,7 +91,7 @@ describe('# R01', () => {
             isAdmin: true, // 是管理者
           }]
         )
-        
+
         // 將 adminController 中的 User db 取代成 User mock db
         this.adminController = createControllerProxy('../controllers/admin-controller', { User: this.UserMock })
       })
@@ -192,4 +192,4 @@ describe('# R01', () => {
       })
     })
   })
-})
+}) 
