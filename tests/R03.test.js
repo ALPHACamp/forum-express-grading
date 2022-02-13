@@ -42,7 +42,7 @@ describe('# R03', () => {
         // res.render 的第 1 個參數要是 'users/profile' 
         // res.render 的第 2 個參數要是 user，其 id 屬性的值應是 1
         res.render.getCall(0).args[0].should.equal('users/profile')
-        res.render.getCall(0).args[1].user.id.should.equal(1)
+        res.render.getCall(0).args[1].pageUser.id.should.equal(1)
       })
       
       // 測試完畢，清除資料
