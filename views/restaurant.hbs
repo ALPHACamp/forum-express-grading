@@ -5,7 +5,8 @@
   </div>
   <div class="col-md-4">
     <img class="img-responsive center-block mb-5" src="{{restaurant.image}}"
-      style="width: 250px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;" onerror="this.onerror=null;this.src='/image/no-image.png';">
+      style="width: 250px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;"
+      onerror="this.onerror=null;this.src='/image/no-image.png';">
     <div class="well">
       <ul class="list-unstyled">
         <li><strong>Opening Hour:</strong> {{restaurant.openingHours}}</li>
@@ -16,26 +17,38 @@
   </div>
   <div class="col-md-8">
     <p style="white-space: break-spaces;">{{restaurant.description}}</p>
-  <a class="btn btn-primary" href="/restaurants/{{restaurant.id}}/dashboard">Dashboard</a>
-  {{#if isFavorited }}
-  <form action="/favorite/{{restaurant.id}}?_method=DELETE" method="POST" style="display: contents;">
-    <button type="submit" class="btn btn-danger">移除最愛</button>
-  </form>
-  {{else}}
-  <form action="/favorite/{{restaurant.id}}" method="POST" style="display: contents;">
-    <button type="submit" class="btn btn-primary">加到最愛</button>
-  </form>
-  {{/if}}
+    <div class="d-flex">
+      <a class="btn btn-primary m-1" href="/restaurants/{{restaurant.id}}/dashboard" >Dashboard</a>
+      {{#if isFavorited }}
+      <form action="/favorite/{{restaurant.id}}?_method=DELETE" method="POST" style="display: contents;">
+        <button type="submit" class="btn btn-danger m-1">移除最愛</button>
+      </form>
+      {{else}}
+      <form action="/favorite/{{restaurant.id}}" method="POST" style="display: contents;">
+        <button type="submit" class="btn btn-primary m-1">加到最愛</button>
+      </form>
+      {{/if}}
+      {{#if isLiked}}
+      <form action="/like/{{restaurant.id}}?_method=DELETE" method="POST" style="display: contents;">
+        <button type="submit" class="btn btn-danger m-1">Unlike</button>
+      </form>
+      {{else}}
+      <form action="/like/{{restaurant.id}}" method="POST" style="display: contents;">
+        <button type="submit" class="btn btn-primary m-1">Like</button>
+      </form>
+      {{/if}}
+    </div>
   </div>
+
   <hr>
 </div>
 <h3 class="mb-3">所有評論：</h3>
 {{#each restaurant.Comments}}
 {{#if ../user.isAdmin}}
-    <form action="/comments/{{this.id}}?_method=DELETE" method="POST" class="float-end">
-      <button type="submit" class="btn btn-danger">Delete</button>
-    </form>
-  {{/if}}
+<form action="/comments/{{this.id}}?_method=DELETE" method="POST" class="float-end">
+  <button type="submit" class="btn btn-danger">Delete</button>
+</form>
+{{/if}}
 <blockquote class="blockquote mb-0">
   <h4><a href="/users/{{this.User.id}}">{{this.User.name}}</a></h4>
   <p>{{this.text}}</p>
