@@ -24,7 +24,14 @@ router.post('/signup', userController.signUp)
 
 // 登入
 router.get('/signin', userController.signInPage)
-router.post('/signin', passport.authenticate('local', { failureRedirect: '/signin', failureFlash: true }), userController.signIn)
+router.post(
+  '/signin',
+  passport.authenticate('local', {
+    failureRedirect: '/signin',
+    failureFlash: true
+  }),
+  userController.signIn
+)
 
 // 登出
 router.get('/logout', userController.logout)
@@ -44,6 +51,10 @@ router.post('/comments', authenticated, commentController.postComment)
 // 我的最愛
 router.post('/favorite/:restaurantId', authenticated, userController.addFavorite)
 router.delete('/favorite/:restaurantId', authenticated, userController.removeFavorite)
+
+// Like
+router.post('/like/:restaurantId', authenticated, userController.addLike)
+router.delete('/like/:restaurantId', authenticated, userController.removeLike)
 
 // user
 router.use('/users', authenticated, users)
