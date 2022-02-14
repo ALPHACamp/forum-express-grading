@@ -1,8 +1,10 @@
 const { Restaurant, Category, Comment, User } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
+const { getUser } = require('../helpers/auth-helpers')
 
 const restaurantController = {
   getRestaurants: (req, res, next) => {
+    const user = getUser(req)
     const categoryId = Number(req.query.categoryId) || ''
     const DEFAULT_LIMIT = 9
     const page = Number(req.query.page) || 1
@@ -21,11 +23,13 @@ const restaurantController = {
       Category.findAll({ raw: true })
     ])
       .then(([restaurants, categories]) => {
-        const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
+        const favoritedRestaurantsId = user && user.FavoritedRestaurants.map(fr => fr.id)
+        const likedRestaurantsId = user && user.LikedRestaurants.map(lr => lr.id)
         const data = restaurants.rows.map(restaurant => ({
           ...restaurant,
           description: restaurant.description.substring(0, 50),
-          isFavorited: favoritedRestaurantsId.includes(restaurant.id)
+          isFavorited: favoritedRestaurantsId.includes(restaurant.id),
+          isLiked: likedRestaurantsId.includes(restaurant.id)
         }))
         return res.render('restaurants', {
           restaurants: data,
@@ -37,8 +41,14 @@ const restaurantController = {
       .catch(err => next(err))
   },
   getRestaurant: (req, res, next) => {
+    const userId = getUser(req).id
     return Restaurant.findByPk(req.params.id, {
-      include: [Category, { model: Comment, include: User }, { model: User, as: 'FavoritedUsers' }],
+      include: [
+        Category,
+        { model: Comment, include: User },
+        { model: User, as: 'FavoritedUsers' },
+        { model: User, as: 'LikedUsers' }
+      ],
       order: [[{ model: Comment }, 'createdAt', 'DESC']],
       nest: true
     })
@@ -48,7 +58,8 @@ const restaurantController = {
       })
       .then(restaurant => {
         restaurant = restaurant.toJSON()
-        restaurant.isFavorited = restaurant.FavoritedUsers.some(fr => fr.id === req.user.id)
+        restaurant.isFavorited = restaurant.FavoritedUsers.some(fu => fu.id === userId)
+        restaurant.isLiked = restaurant.LikedUsers.some(lu => lu.id === userId)
         res.render('restaurant', { restaurant })
       })
       .catch(err => next(err))
