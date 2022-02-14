@@ -20,19 +20,16 @@ const restaurantController = {
         offset
       })
       const categories = await Category.findAll({ raw: true })
-      const data = restaurants.rows.map(item => {
-        if (item.description === '') {
-          return {
-            ...item,
-            description: '　'
-          }
-        }
+      const FavoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
+      const data = restaurants.rows.map(r => {
+        const description = r.description === '' ? '　' : r.description.substring(0, 50)
         return {
-          ...item,
-          description: item.description.substring(0, 50)
+          ...r,
+          description,
+          // 先確認 req.user 是否存在，之後取出喜歡清單的所有餐廳列表，並比對與目前餐廳 id 是否相同
+          isFavorited: FavoritedRestaurantsId.includes(r.id)
         }
       })
-      console.log(data[0])
       res.render('restaurants', {
         restaurants: data,
         categories,
@@ -48,12 +45,14 @@ const restaurantController = {
       const restaurant = await Restaurant.findByPk(req.params.id, {
         include: [
           Category,
-          { model: Comment, include: User }
+          { model: Comment, include: User },
+          { model: User, as: 'FavoritedUsers' }
         ]
       })
       if (!restaurant) throw new Error("Restaurant didn't exist!")
+      const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id)
       await restaurant.increment('viewCounts')
-      res.render('restaurant', { restaurant: restaurant.toJSON() })
+      res.render('restaurant', { restaurant: restaurant.toJSON(), isFavorited })
     } catch (error) {
       next(error)
     }
