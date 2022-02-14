@@ -107,6 +107,26 @@ const restaurantController = {
         })
       })
       .catch(err => next(err))
+  },
+  getTopRestaurants: (req, res, next) => {
+    return Restaurant.findAll({
+      include: [{ model: User, as: 'FavoritedUsers' }]
+    })
+      .then(restaurants => {
+        const favoritedRestaurantId = req.user && req.user.FavoritedRestaurants.map(r => r.id)
+        const result = restaurants
+          .map(restaurant => ({
+          // 將sequelize資料轉成前端可使用JSON資料
+            ...restaurant.toJSON(),
+            favoritedCount: restaurant.FavoritedUsers.length,
+            description: restaurant.description.substring(0, 50),
+            isFavorited: favoritedRestaurantId?.some(id => id === restaurant.id)
+          }))
+          .sort((a, b) => b.favoritedCount - a.favoritedCount) // 利用sort排序資料
+          .slice(0, 10) // 切割出前10個項目
+        res.render('top-restaurants', { restaurants: result })
+      })
+      .catch(err => next(err))
   }
 }
 module.exports = restaurantController
