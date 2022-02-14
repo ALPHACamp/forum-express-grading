@@ -18,7 +18,7 @@
           <td>{{this.email}}</td>
           <td>{{#if this.isAdmin}}admin{{else}}user{{/if}}</td>
           <td>
-            <button class="btn btn-link text-decoration-none" {{#ifCond ../user.id this.id}}
+            <button class="btn btn-link text-decoration-none" {{#ifCond ../userLogin.id this.id}}
               onclick="return confirm('警告：將自己設定為一般使用者')" {{/ifCond}}>
               {{#if this.isAdmin}}
                 set as user
