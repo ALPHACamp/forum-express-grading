@@ -42,7 +42,6 @@ const userController = {
       .then(user => {
         if (!user) throw new Error("User didn't exist!")
         user = user.toJSON()
-        console.log('restaurant', user.Comments)
         res.render('users/profile', { user })
       })
       .catch(err => next(err))
@@ -150,6 +149,20 @@ const userController = {
         return like.destroy()
       })
       .then(() => res.redirect('back'))
+      .catch(err => next(err))
+  },
+  getTopUsers: (req, res, next) => {
+    return User.findAll({
+      include: [{ model: User, as: 'Followers' }]
+    })
+      .then(users => {
+        users = users.map(user => ({
+          ...user.toJSON(),
+          followerCount: user.Followers.length,
+          isFollowed: req.user.Followings.some(f => f.id === user.id)
+        }))
+        res.render('top-users', { users: users })
+      })
       .catch(err => next(err))
   }
 }
