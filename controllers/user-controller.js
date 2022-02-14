@@ -172,7 +172,7 @@ const userController = {
         const result = users
         // 整理 users 資料，把每個 user 項目都拿出來處理一次，並把新陣列儲存在 users 裡
           .map(user => ({
-            // 整理格式
+          // 整理格式
             ...user.toJSON(),
             // 計算追蹤者人數
             followerCount: user.Followers.length,

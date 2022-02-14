@@ -55,7 +55,7 @@ describe('# R05: TOP 10 人氣餐廳 ', function () {
           // 回應中應包含字串'Top 10 人氣餐廳'
           // 若請求路徑正確，controller 執行後，會呼叫 res.render
           // res.render 回傳的 view 樣板裡應包含字串'Top 10 人氣餐廳'
-          res.text.should.include('Top 10 人氣餐廳') 
+          res.text.should.include('Top 10 人氣餐廳')
           done()
         })
     })
