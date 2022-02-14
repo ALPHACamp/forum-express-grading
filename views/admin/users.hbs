@@ -1,0 +1,45 @@
+{{>admin-tabs route='users'}}
+
+{{!-- 項目欄位名稱 --}}
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Name</th>
+      <th scope="col">Email</th>
+      <th scope="col">Role</th>
+      <th scope="col">#</th>
+    </tr>
+  </thead>
+
+  {{!-- 各欄位項目 --}}
+  <tbody>
+    {{!-- 用 each 將使用者的資訊傳入 --}}
+    {{#each users}}
+    <tr>
+      <th scope="row">{{this.id}}</th>
+      <td>{{this.name}}</td>
+      <td>{{this.email}}</td>
+
+      {{!-- 判斷是身分別為管理者為admin或一般user --}}
+      {{!-- form action為/admin/users 代表等一下會由/index/routes 中的/admin/users/：id路由處理
+      該路由會執行controller中，adminController.toggleAdmin的動作 --}}
+      <form action="/admin/users/{{this.id}}?_method=PATCH" method="POST">
+        {{#if this.isAdmin}}
+        <td>Admin</td>
+        {{!-- 如果他是Admin的話就給他一個可以切換成一般user的按鈕 --}}
+        {{!-- 這邊會經由/admin/users/:id路由來去執行adminController.toggleAdmin的動作 --}}
+        <td>
+          <button class="btn btn-primary" type="submit">set as user</button>
+        </td>
+        {{else}}
+        <td>User</td>
+        <td>
+          <button class="btn btn-primary" type="submit">set as admin</button>
+        </td>
+        {{/if}}
+      </form>
+    </tr>
+    {{/each}}
+  </tbody>
+</table>
