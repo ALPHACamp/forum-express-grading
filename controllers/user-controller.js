@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs')
 const db = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
-const { User, Comment, Restaurant } = db
+const { User, Comment, Restaurant, Favorite } = db
 const userController = {
   signUpPage: (req, res) => {
     res.render('signup')
@@ -79,6 +79,42 @@ const userController = {
       await user.update({ name, image: filePath || user.filePath })
       req.flash('success_messages', '使用者資料編輯成功')
       res.redirect(`/users/${id}`)
+    } catch (error) {
+      next(error)
+    }
+  },
+  addFavorite: async (req, res, next) => {
+    const { restaurantId } = req.params
+    try {
+      const restaurant = await Restaurant.findByPk(restaurantId)
+      const favorite = await Favorite.findOne({
+        where: {
+          userId: req.user.id,
+          restaurantId
+        }
+      })
+      if (!restaurant) throw new Error("Restaurant didn't exist!")
+      if (favorite) throw new Error('You have favorited this restaurant!')
+      Favorite.create({
+        userId: req.user.id,
+        restaurantId
+      })
+      res.redirect('back')
+    } catch (error) {
+      next(error)
+    }
+  },
+  removeFavorite: async (req, res, next) => {
+    try {
+      const favorite = await Favorite.findOne({
+        where: {
+          userId: req.user.id,
+          restaurantId: req.params.restaurantId
+        }
+      })
+      if (!favorite) throw new Error("You haven't favorited this restaurant")
+      await favorite.destroy()
+      res.redirect('back')
     } catch (error) {
       next(error)
     }
