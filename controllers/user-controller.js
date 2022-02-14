@@ -50,7 +50,16 @@ const userController = {
     res.redirect('/signin')
   },
   getUser: (req, res, next) => {
-    return Promise.all([User.findByPk(req.params.id, { raw: true }), Comment.findAll({ where: { userId: req.params.id }, include: Restaurant, order: [['createdAt', 'DESC']], raw: true, nest: true })])
+    return Promise.all([
+      User.findByPk(req.params.id, { raw: true }),
+      Comment.findAll({
+        where: { userId: req.params.id },
+        include: Restaurant,
+        order: [['createdAt', 'DESC']],
+        raw: true,
+        nest: true
+      })
+    ])
       .then(([user, comments]) => {
         if (!user) throw new Error("User didn't exist!")
         //  Whether user is self
@@ -100,12 +109,7 @@ const userController = {
     const { restaurantId } = req.params
     return Promise.all([
       Restaurant.findByPk(restaurantId),
-      Favorite.findOne({
-        where: {
-          userId: req.user.id,
-          restaurantId
-        }
-      })
+      Favorite.findOne({ where: { userId: req.user.id, restaurantId } })
     ])
       .then(([restaurant, favorite]) => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
