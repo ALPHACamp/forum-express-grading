@@ -20,10 +20,19 @@ const restaurantController = {
         offset
       })
       const categories = await Category.findAll({ raw: true })
-      const data = restaurants.rows.map(item => ({
-        ...item,
-        description: item.description.substring(0, 50)
-      }))
+      const data = restaurants.rows.map(item => {
+        if (item.description === '') {
+          return {
+            ...item,
+            description: '　'
+          }
+        }
+        return {
+          ...item,
+          description: item.description.substring(0, 50)
+        }
+      })
+      console.log(data[0])
       res.render('restaurants', {
         restaurants: data,
         categories,
@@ -58,6 +67,31 @@ const restaurantController = {
       })
       if (!restaurant) throw new Error("Restaurant didn't exist!")
       res.render('dashboard', { restaurant })
+    } catch (error) {
+      next(error)
+    }
+  },
+  getFeeds: async (req, res, next) => {
+    try {
+      const restaurants = await Restaurant.findAll({
+        limit: 10,
+        order: [['createdAt', 'DESC']],
+        raw: true,
+        nest: true,
+        include: [Category]
+      })
+      const comments = await Comment.findAll({
+        limit: 10,
+        order: [['createdAt', 'DESC']],
+        raw: true,
+        nest: true,
+        include: [User, Restaurant]
+      })
+      const data = restaurants.map(item => ({
+        ...item,
+        description: item.description.substring(0, 50)
+      }))
+      res.render('feeds', { restaurants: data, comments })
     } catch (error) {
       next(error)
     }
