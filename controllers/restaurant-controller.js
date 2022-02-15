@@ -20,14 +20,16 @@ const restaurantController = {
         offset
       })
       const categories = await Category.findAll({ raw: true })
-      const FavoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
+      const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
+      const likedRestaurantsId = req.user && req.user.LikedRestaurants.map(lr => lr.id)
       const data = restaurants.rows.map(r => {
         const description = r.description === '' ? '　' : r.description.substring(0, 50)
         return {
           ...r,
           description,
-          // 先確認 req.user 是否存在，之後取出喜歡清單的所有餐廳列表，並比對與目前餐廳 id 是否相同
-          isFavorited: FavoritedRestaurantsId.includes(r.id)
+          // 比對與目前餐廳 id 是否相同
+          isFavorited: favoritedRestaurantsId.includes(r.id),
+          isLiked: likedRestaurantsId.includes(r.id)
         }
       })
       res.render('restaurants', {
@@ -46,13 +48,15 @@ const restaurantController = {
         include: [
           Category,
           { model: Comment, include: User },
-          { model: User, as: 'FavoritedUsers' }
+          { model: User, as: 'FavoritedUsers' },
+          { model: User, as: 'LikedUsers' }
         ]
       })
       if (!restaurant) throw new Error("Restaurant didn't exist!")
       const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id)
+      const isLiked = restaurant.LikedUsers.some(l => l.id === req.user.id)
       await restaurant.increment('viewCounts')
-      res.render('restaurant', { restaurant: restaurant.toJSON(), isFavorited })
+      res.render('restaurant', { restaurant: restaurant.toJSON(), isFavorited, isLiked })
     } catch (error) {
       next(error)
     }
