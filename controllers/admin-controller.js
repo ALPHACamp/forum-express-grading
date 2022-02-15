@@ -20,14 +20,16 @@ const adminController = {
     const { name, tel, address, openingHours, description, categoryId } = req.body
 
     // name 是必填，若發先是空值就會終止程式碼，並在畫面顯示錯誤提示
-    if (!name) throw new Error('Restaurant name is required!')
+    if (!name) throw new Error('請輸入餐廳名稱')
 
     // 把取出的檔案傳給 file-helper 處理後
     const { file } = req
     return imgurFileHandler(file)
-      .then(filePath => Restaurant.create({ name, tel, address, openingHours, description, image: filePath || null, categoryId }))
+      .then(filePath =>
+        Restaurant.create({ name, tel, address, openingHours, description, image: file ? filePath : null, categoryId })
+      )
       .then(() => {
-        req.flash('success_messages', 'restaurant was successfully created')
+        req.flash('success_messages', '餐廳新增成功')
         res.redirect('/admin/restaurants')
       })
       .catch(err => next(err))
@@ -36,7 +38,7 @@ const adminController = {
   getRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, { raw: true, nest: true, include: [Category] })
       .then(restaurant => {
-        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        if (!restaurant) throw new Error('餐廳不存在')
         res.render('admin/restaurant', { restaurant })
       })
       .catch(err => next(err))
@@ -45,7 +47,7 @@ const adminController = {
   editRestaurant: (req, res, next) => {
     Promise.all([Restaurant.findByPk(req.params.id, { raw: true }), Category.findAll({ raw: true })])
       .then(([restaurant, categories]) => {
-        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        if (!restaurant) throw new Error('餐廳不存在')
         res.render('admin/edit-restaurant', { restaurant, categories })
       })
       .catch(err => next(err))
@@ -54,18 +56,25 @@ const adminController = {
   putRestaurant: (req, res, next) => {
     const { name, tel, address, openingHours, description, categoryId } = req.body
     const id = req.params.id
-    if (!name) throw new Error('Restaurant name is required!')
+    if (!name) throw new Error('請輸入餐廳名稱')
 
     const { file } = req // 把檔案取出來
     return Promise.all([Restaurant.findByPk(id), imgurFileHandler(file)])
       .then(([restaurant, filePath]) => {
-        if (!restaurant) throw new Error("Restaurant didn't exist!")
-        // 如果 filePath 是 Truthy (使用者有上傳新照片) 就用 filePath，是 Falsy (使用者沒有上傳新照片) 就沿用原本資料庫內的值
-        return restaurant.update({ name, tel, address, openingHours, description, image: filePath || restaurant.image, categoryId })
+        if (!restaurant) throw new Error('餐廳不存在')
+        return restaurant.update({
+          name,
+          tel,
+          address,
+          openingHours,
+          description,
+          image: file ? filePath : restaurant.image,
+          categoryId
+        })
       })
       .then(() => {
         req.flash('success_animation', id)
-        req.flash('success_messages', 'restaurant was successfully to update')
+        req.flash('success_messages', '餐廳更新成功')
         res.redirect('/admin/restaurants')
       })
       .catch(err => next(err))
@@ -74,7 +83,7 @@ const adminController = {
   deleteRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id)
       .then(restaurant => {
-        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        if (!restaurant) throw new Error('餐廳不存在')
         return restaurant.destroy()
       })
       .then(() => res.redirect('/admin/restaurants'))

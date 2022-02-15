@@ -53,7 +53,7 @@ const restaurantController = {
       nest: true
     })
       .then(restaurant => {
-        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        if (!restaurant) throw new Error("餐廳不存在")
         return restaurant.increment('viewCounts')
       })
       .then(restaurant => {
@@ -70,7 +70,7 @@ const restaurantController = {
       nest: true
     })
       .then(restaurant => {
-        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        if (!restaurant) throw new Error("餐廳不存在")
         res.render('dashboard', { restaurant: restaurant.toJSON() })
       })
       .catch(err => next(err))
