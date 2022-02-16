@@ -1,0 +1,27 @@
+<div class="row">
+  <div class="col-md-12">
+    <h1>{{restaurant.name}}</h1>
+  </div>
+  <div class="col-md-4">
+    <img
+      class="img-responsive center-block"
+      src="{{restaurant.image}}"
+      style="width: 250px; margin-bottom: 25px; transition: opacity 0.5s; opacity:0;"
+      onload="this.style.opacity=1;"
+    />
+    <br />
+    <div class="well">
+      <ul class="list-unstyled">
+        <li><strong>Opening Hour:</strong> {{restaurant.openingHours}}</li>
+        <li><strong>Tel:</strong> {{restaurant.tel}}</li>
+        <li><strong>Address:</strong> {{restaurant.address}}</li>
+      </ul>
+    </div>
+  </div>
+  <div class="col-md-8">
+    <p style="white-space: break-spaces;">{{restaurant.description}}</p>
+  </div>
+  <hr />
+</div>
+<a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
+<!-- 這裡值得特別說明的是：在 Back 按鈕上，我們寫了一行 JavaScript 語法 histroy.back() ，這個方法是 JavaScript 裡的 window 物件提供給我們的，等同於你點擊了瀏覽器的上一頁按鈕。你可以把 window.history.back() 貼到 Devtools 的 Console 裡玩玩看。 -->
