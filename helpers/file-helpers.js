@@ -2,6 +2,10 @@
 // fs 是 File system 的縮寫，以下的邏輯主要是從官方文件說明中，查找到取出檔案的方法，再組合而成
 
 const fs = require('fs') // 引入 fs 模組
+const imgur = require('imgur')
+const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
+imgur.setClientId(IMGUR_CLIENT_ID)
+
 const localFileHandler = file => { // file 是 multer 處理完的檔案
   return new Promise((resolve, reject) => {
     if (!file) return resolve(null)
@@ -12,6 +16,17 @@ const localFileHandler = file => { // file 是 multer 處理完的檔案
       .catch(err => reject(err))
   })
 }
+const imgurFileHandler = file => {
+  return new Promise((resolve, reject) => {
+    if (!file) return resolve(null)
+    return imgur.uploadFile(file.path)
+      .then(img => {
+        resolve(img?.link || null) // 檢查 img 是否存在
+      })
+      .catch(err => reject(err))
+  })
+}
 module.exports = {
-  localFileHandler
+  localFileHandler,
+  imgurFileHandler
 }
