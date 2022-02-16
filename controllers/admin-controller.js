@@ -99,7 +99,7 @@ const adminController = {
       if (!user) throw new Error("User didn't exists")
 
       const { email, isAdmin } = user.dataValues
-      if (email === process.env.SUPERUSER_EMAIL) {
+      if (email === 'root@example.com') {
         req.flash('error_messages', '禁止變更 root 權限')
         return res.redirect('back')
       }
