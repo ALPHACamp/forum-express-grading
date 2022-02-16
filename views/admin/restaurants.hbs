@@ -1,9 +1,16 @@
 <h1>餐廳後台</h1>
-{{> admin-tabs}}
-<br />
+<ul class="nav nav-tabs my-4">
+  <li class="nav-item">
+    <a class="nav-link active" href="/admin/restaurants">Restaurants</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="/admin/users">Users</a>
+  </li>
+</ul>
 <a href="/admin/restaurants/create">
   <button type="button" class="btn btn-primary">New Restaurant</button>
 </a>
+<br />
 <br />
 <table class="table align-middle">
   <thead class="thead-dark">
