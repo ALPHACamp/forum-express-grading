@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const passport = require('../config/passport') // 引入 Passport，需要他幫忙做驗證
-const restController = require('../controllers/restaurants-controller')
+const restController = require('../controllers/restaurant-controller')
 const userController = require('../controllers/user-controller')
 const admin = require('./modules/admin')
 const { authenticated, authenticatedAdmin } = require('../middleware/auth')
