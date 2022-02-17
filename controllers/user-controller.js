@@ -1,6 +1,8 @@
 const bcrypt = require('bcryptjs')
 const db = require('../models')
 const { User, Restaurant, Favorite, Like } = db
+const { getUser } = require('../helpers/auth-helpers')
+const { imgurFileHandler } = require('../helpers/file-helpers')
 const userController = {
   signUpPage: (req, res) => {
     res.render('signup')
@@ -107,6 +109,45 @@ const userController = {
         return like.destroy()
       })
       .then(() => res.redirect('back'))
+      .catch(err => next(err))
+  },
+  getUser: (req, res, next) => {
+    return User.findByPk(req.params.id, { raw: true })
+      .then(user => {
+        if (!user) throw new Error("User didn't exist!")
+        //  Whether user is self
+        user.self = user.id === getUser(req).id
+        res.render('users/profile', { user })
+      })
+      .catch(err => next(err))
+  },
+  editUser: (req, res, next) => {
+    return User.findByPk(req.params.id, { raw: true })
+      .then(user => {
+        if (!user) throw new Error("User didn't exist!")
+        //  Whether user is self
+        if (user.id !== getUser(req).id) throw new Error("Can't edit others!")
+        res.render('users/edit', { user })
+      })
+      .catch(err => next(err))
+  },
+  putUser: (req, res, next) => {
+    const id = req.params.id
+    const { name } = req.body
+    const { file } = req // 把檔案取出來
+    if (!name.trim()) throw new Error("Name can't be empty!")
+
+    return Promise.all([User.findByPk(id), imgurFileHandler(file)])
+      .then(([user, filePath]) => {
+        if (!user) throw new Error("User didn't exist!")
+        //  Whether user is self
+        if (user.id !== getUser(req).id) throw new Error("Can't edit others!")
+        return user.update({ name: name.trim(), image: filePath || user.image })
+      })
+      .then(() => {
+        req.flash('success_messages', '使用者資料編輯成功')
+        res.redirect(`/users/${id}`)
+      })
       .catch(err => next(err))
   }
 }

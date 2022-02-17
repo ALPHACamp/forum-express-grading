@@ -1,0 +1,20 @@
+<div class="card" style="width: 100%;">
+  <div class="row no-gutters">
+    <div class="col-md-4">
+      <img
+        src="{{user.image}}"
+        alt="user's avatar"
+        class="img-responsive center-block"
+        style="width: 250px; height: 250px; border-radius:50%; object-fit: cover;"
+        onload="this.style.opacity=1;"
+      />
+    </div>
+    <div class="col-md-8">
+      <div class="card-body">
+        <h5 class="card-title">{{user.name}}</h5>
+        <p class="card-text">{{user.email}}</p>
+        <a href="/users/{{user.id}}/edit" class="btn btn-primary">Edit</a>
+      </div>
+    </div>
+  </div>
+</div>
