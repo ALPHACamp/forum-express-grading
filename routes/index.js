@@ -6,6 +6,7 @@ const userController = require('../controllers/user-controller')
 const admin = require('./modules/admin')
 const { authenticated, authenticatedAdmin } = require('../middleware/auth')
 const { generalErrorHandler } = require('../middleware/error-handler')
+const commentController = require('../controllers/comment-controller')
 
 router.use('/admin', authenticatedAdmin, admin)
 router.get('/signup', userController.signUpPage)
@@ -15,6 +16,7 @@ router.post('/signin', passport.authenticate('local', { failureRedirect: '/signi
 router.get('/logout', userController.logout)
 router.get('/restaurants/:id', authenticated, restController.getRestaurant)
 router.get('/restaurants', authenticated, restController.getRestaurants)
+router.post('/comments', authenticated, commentController.postComment)
 router.get('/', (req, res) => res.redirect('/restaurants'))
 router.use('/', generalErrorHandler)
 
