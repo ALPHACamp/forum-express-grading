@@ -1,6 +1,7 @@
 const { Restaurant, Category, Comment, User } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
 const { getUser } = require('../helpers/auth-helpers')
+const Sequelize = require('sequelize')
 
 const restaurantController = {
   getRestaurants: (req, res, next) => {
@@ -46,20 +47,24 @@ const restaurantController = {
       include: [
         Category,
         { model: Comment, include: User },
-        { model: User, as: 'FavoritedUsers' },
-        { model: User, as: 'LikedUsers' }
+        { model: User, as: 'FavoritedUsers', where: { id: userId }, required: false },
+        { model: User, as: 'LikedUsers', where: { id: userId }, required: false }
       ],
+      attributes: {
+        include: [
+          [Sequelize.fn('', Sequelize.col('FavoritedUsers.id')), 'isFavorited'],
+          [Sequelize.fn('', Sequelize.col('LikedUsers.id')), 'isLiked']
+        ]
+      },
       order: [[{ model: Comment }, 'createdAt', 'DESC']],
       nest: true
     })
       .then(restaurant => {
-        if (!restaurant) throw new Error("餐廳不存在")
+        if (!restaurant) throw new Error('餐廳不存在')
         return restaurant.increment('viewCounts')
       })
       .then(restaurant => {
         restaurant = restaurant.toJSON()
-        restaurant.isFavorited = restaurant.FavoritedUsers.some(fu => fu.id === userId)
-        restaurant.isLiked = restaurant.LikedUsers.some(lu => lu.id === userId)
         res.render('restaurant', { restaurant })
       })
       .catch(err => next(err))
@@ -70,7 +75,7 @@ const restaurantController = {
       nest: true
     })
       .then(restaurant => {
-        if (!restaurant) throw new Error("餐廳不存在")
+        if (!restaurant) throw new Error('餐廳不存在')
         res.render('dashboard', { restaurant: restaurant.toJSON() })
       })
       .catch(err => next(err))

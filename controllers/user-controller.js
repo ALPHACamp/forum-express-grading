@@ -86,9 +86,6 @@ const userController = {
         //  Whether user is self
         user.self = user.id === getUser(req).id
 
-        // calculate comment count
-        // const commentCounts = comments.count.reduce((accumulator, currentRest) => accumulator + currentRest.count, 0)
-
         res.render('users/profile', { user, filteredComments: comments, commentCounts })
       })
       .catch(err => next(err))
