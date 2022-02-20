@@ -71,6 +71,7 @@ const userController = {
           }
         },
         include: Restaurant,
+        order: [['created_at', 'DESC']],
         group: ['restaurant_id'],
         raw: true,
         nest: true
