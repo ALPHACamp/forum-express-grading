@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs') // 載入 bcrypt
-const db = require('../models')
-const { User, Comment, Restaurant, Favorite, Like } = db
+const { User, Comment, Restaurant, Favorite, Like } = require('../models')
+const Sequelize = require('sequelize')
 
 const { getUser } = require('../helpers/auth-helpers')
 const { imgurFileHandler } = require('../helpers/file-helpers')
@@ -49,14 +49,29 @@ const userController = {
     req.logout()
     res.redirect('/signin')
   },
-  getUser: (req, res, next) => {
+  getUser: async (req, res, next) => {
     const userId = req.params.id
+
     return Promise.all([
       User.findByPk(userId, { raw: true }),
-      Comment.findAll({
-        where: { userId },
+      Comment.findAndCountAll({
+        where: {
+          id: {
+            // 取得排列後的 id 順序 ， 此版本不支援 subquery 使用 IN,LIMIT，因此再外加一層
+            [Sequelize.Op.in]: Sequelize.literal(`(
+              SELECT orderedComment.id
+              FROM ( 
+                SELECT Comment.id
+                FROM Comments AS Comment
+                WHERE Comment.user_id="${userId}"
+                ORDER BY Comment.created_at DESC
+                LIMIT 9999999
+              ) AS orderedComment
+            )`)
+          }
+        },
         include: Restaurant,
-        order: [['createdAt', 'DESC']],
+        group: ['restaurant_id'],
         raw: true,
         nest: true
       })
@@ -65,15 +80,11 @@ const userController = {
         if (!user) throw new Error('使用者不存在')
         //  Whether user is self
         user.self = user.id === getUser(req).id
-        // filter repeat by checking first item
-        const checkArray = []
-        const filteredComments = comments.filter(comment => {
-          const id = comment.Restaurant.id
-          if (checkArray.includes(id)) return false
-          checkArray.push(id)
-          return true
-        })
-        res.render('users/profile', { user, filteredComments, commentCounts: comments.length })
+
+        // calculate comment count
+        const commentCounts = comments.count.reduce((accumulator, currentRest) => accumulator + currentRest.count, 0)
+
+        res.render('users/profile', { user, filteredComments: comments.rows, commentCounts })
       })
       .catch(err => next(err))
   },
