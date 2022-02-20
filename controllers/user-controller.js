@@ -54,38 +54,42 @@ const userController = {
 
     return Promise.all([
       User.findByPk(userId, { raw: true }),
-      Comment.findAndCountAll({
+      Comment.findAll({
         where: {
           id: {
-            // 取得排列後的 id 順序 ， 此版本不支援 subquery 使用 IN,LIMIT，因此再外加一層
+            // 取得排列後的 id
             [Sequelize.Op.in]: Sequelize.literal(`(
-              SELECT orderedComment.id
-              FROM ( 
-                SELECT Comment.id
-                FROM Comments AS Comment
-                WHERE Comment.user_id="${userId}"
-                ORDER BY Comment.created_at DESC
-                LIMIT 9999999
-              ) AS orderedComment
+              SELECT CommentB.id
+              FROM
+              Comments AS CommentB,
+              (
+                SELECT restaurant_id,MAX(created_at) AS created_at
+                FROM Comments
+                WHERE user_id="${userId}"
+                GROUP BY restaurant_id
+              ) AS CommentA
+              WHERE
+                CommentB.restaurant_id = CommentA.restaurant_id AND CommentB.created_at = CommentA.created_at
             )`)
           }
         },
         include: Restaurant,
         order: [['created_at', 'DESC']],
-        group: ['restaurant_id'],
         raw: true,
         nest: true
-      })
+      }),
+      Comment.count({ where: { userId } })
     ])
-      .then(([user, comments]) => {
+      .then(([user, comments, commentCounts]) => {
+        console.log(comments, commentCounts)
         if (!user) throw new Error('使用者不存在')
         //  Whether user is self
         user.self = user.id === getUser(req).id
 
         // calculate comment count
-        const commentCounts = comments.count.reduce((accumulator, currentRest) => accumulator + currentRest.count, 0)
+        // const commentCounts = comments.count.reduce((accumulator, currentRest) => accumulator + currentRest.count, 0)
 
-        res.render('users/profile', { user, filteredComments: comments.rows, commentCounts })
+        res.render('users/profile', { user, filteredComments: comments, commentCounts })
       })
       .catch(err => next(err))
   },
