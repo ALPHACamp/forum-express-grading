@@ -104,6 +104,11 @@ const restaurantController = {
         })
       })
       .catch(err => next(err))
+  },
+  getTopRestaurant: (req, res, next) => {
+    Restaurant.findAll({ raw: true }).then(restaurants => {
+      res.render('top-restaurants', { restaurants })
+    })
   }
 }
 
