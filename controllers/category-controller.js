@@ -10,14 +10,14 @@ const categoryController = {
   },
   postCategory: (req, res, next) => {
     const { name } = req.body
-    if (!name) throw new Error('name is not define')
+    if (!name) throw new Error('Category name is required!e')
 
     Category.create({
       name
     })
       .then(() => {
         req.flash('success_messages', 'categories was successfully created')
-        res.redirect('admin/categories')
+        res.redirect('/admin/categories')
       })
       .catch(err => next(err))
   }
