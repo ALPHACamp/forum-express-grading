@@ -11,6 +11,8 @@ router.put('/restaurants/:id', upload.single('image'), adminController.putRestau
 router.delete('/restaurants/:id', adminController.deleteRestaurant) // 刪除1間餐廳
 router.get('/restaurants', adminController.getRestaurants) // 瀏覽全部餐廳的資訊
 router.post('/restaurants', upload.single('image'), adminController.postRestaurant) // post新增餐廳表單
+router.patch('/users/:id', adminController.patchUser) // 修改User的權限
+router.get('/users', adminController.getUsers) // 瀏覽全部User
 
 // 設定 fallback 路由(其他路由條件都不符合時，最終會通過的路由)
 router.get('/', (req, res) => res.redirect('/admin/restaurants'))

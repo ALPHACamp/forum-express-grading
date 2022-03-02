@@ -1,4 +1,4 @@
-const { Restaurant } = require('../models')
+const { Restaurant, User } = require('../models')
 // 上面是解構賦值的寫法，等於下面這種寫法的簡寫
 // const db = require('../models')
 // const Restaurant = db.Restaurant
@@ -17,7 +17,7 @@ const adminController = {
   },
   // 新增餐廳表單頁面
   createRestaurant: (req, res) => {
-    return res.render('admin/create-restaurant') // *******為甚麼這裡要return？
+    return res.render('admin/create-restaurant')
   },
   // 新增餐廳資料給db
   postRestaurant: (req, res, next) => {
@@ -102,12 +102,39 @@ const adminController = {
       .catch(err => next(err))
   },
   deleteRestaurant: (req, res, next) => {
-    return Restaurant.findByPk(req.params.id) // *******為甚麼這裡要return？
+    return Restaurant.findByPk(req.params.id)
       .then(restaurant => {
         if (!restaurant) throw new Error('這間餐廳不存在!') // *******避免找不到餐廳而導致程式出錯，還是需要加一個判斷排除錯誤
         return restaurant.destroy()
       })
       .then(() => res.redirect('/admin/restaurants'))
+      .catch(err => next(err))
+  },
+  getUsers: (req, res, next) => {
+    return User.findAll({
+      raw: true
+      // nest: true
+    })
+      .then(users => {
+        res.render('admin/users', { users })
+      })
+      .catch(err => next(err))
+  },
+  patchUser: (req, res, next) => {
+    return User.findByPk(req.params.id)
+      .then(user => {
+        if (!user) throw new Error('這位使用者不存在!')
+        // 用email去判斷，如果抓到的user是 root@example.com 就無法更動權限
+        if (user.email === 'root@example.com') {
+          req.flash('error_messages', '禁止變更 root 權限')
+          return res.redirect('back')
+        }
+        return user.update({ isAdmin: !user.isAdmin }) // 用!user.isAdmin去切換isAdmin的true or false
+      })
+      .then(() => {
+        req.flash('success_messages', '使用者權限變更成功')
+        res.redirect('/admin/users')
+      })
       .catch(err => next(err))
   }
 }
