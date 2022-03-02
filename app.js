@@ -1,10 +1,12 @@
 const path = require('path')
 const express = require('express')
+const Handlebars = require('handlebars')
 const routes = require('./routes')
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config()
 }
 const handlebars = require('express-handlebars')
+const { allowInsecurePrototypeAccess } = require('@handlebars/allow-prototype-access')
 const flash = require('connect-flash')
 const session = require('express-session')
 const app = express()
@@ -15,7 +17,7 @@ const handlebarsHelpers = require('./helpers/handlebars-helpers')
 const { getUser } = require('./helpers/auth-helpers')
 const methodOverride = require('method-override')
 
-app.engine('hbs', handlebars({ extname: '.hbs', helpers: handlebarsHelpers }))
+app.engine('hbs', handlebars({ extname: '.hbs', helpers: handlebarsHelpers, handlebars: allowInsecurePrototypeAccess(Handlebars) }))
 app.set('view engine', 'hbs')
 app.use(express.urlencoded({ extended: true }))
 app.use(session({ secret: SESSION_SECRET, resave: false, saveUninitialized: false }))
