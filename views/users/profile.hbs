@@ -1,0 +1,16 @@
+<div class="card mb-3">
+  <div class="row g-0">
+    <div class="col-md-4">
+      <img src="{{user.avatar}}" class="img-fluid rounded-start" alt="{{user.name}}'s avatar">
+    </div>
+    <div class="col-md-8">
+      <div class="card-body">
+        <h3 class="card-title">{{user.name}}</h5>
+        <span class="card-text">{{user.email}}</span>
+      </div>
+      <div class="button-container m-3">
+        <a href="/users/{{user.id}}/edit" class="btn btn-primary">edit</a>
+      </div>
+    </div>
+  </div>
+</div>

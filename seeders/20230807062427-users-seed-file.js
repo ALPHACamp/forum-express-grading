@@ -2,6 +2,7 @@
 
 // for setting password
 const bcrypt = require('bcryptjs')
+const defaultAvatar = 'https://i.imgur.com/TtMC6Kd.png'
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
@@ -11,21 +12,24 @@ module.exports = {
       is_admin: true,
       name: 'admin',
       created_at: new Date(),
-      updated_at: new Date()
+      updated_at: new Date(),
+      avatar: defaultAvatar
     }, {
       email: 'user1@example.com',
       password: await bcrypt.hash('12345678', 10),
       is_admin: false,
       name: 'user1',
       created_at: new Date(),
-      updated_at: new Date()
+      updated_at: new Date(),
+      avatar: defaultAvatar
     }, {
       email: 'user2@example.com',
       password: await bcrypt.hash('12345678', 10),
       is_admin: false,
       name: 'user2',
       created_at: new Date(),
-      updated_at: new Date()
+      updated_at: new Date(),
+      avatar: defaultAvatar
     }], {})
   },
 
