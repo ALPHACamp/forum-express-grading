@@ -1,7 +1,10 @@
-const { Restaurant } = require('../models')
+const { Restaurant, User } = require('../models')
 const { localFileHandler } = require('../helpers/file-helper')
 
 const adminController = {
+
+  /**       使用者管理餐廳部分        **/
+
   getRestaurants: (req, res, next) => {
     Restaurant.findAll({ raw: true })
       .then(restaurants => res.render('admin/restaurants', { restaurants }))
@@ -78,8 +81,35 @@ const adminController = {
       })
       .then(() => res.redirect('/admin/restaurants'))
       .catch(err => next(err))
-  }
+  },
 
+  /**         使用者管理使用者部分        **/
+  getUsers: (req, res, next) => {
+    return User.findAll({ raw: true })
+      .then(users => {
+        users.forEach(user => {
+          if (user.isAdmin === 0) user.role = 'user'
+          if (user.isAdmin === 1) user.role = 'admin'
+        })
+        return res.render('admin/users', { users })
+      })
+      .catch(err => next(err))
+  },
+  patchUser: (req, res, next) => { // 注意如果把當前管理者改掉會跳出後臺管理
+    return User.findByPk(req.params.id) // 注意全部最後都return 回來 1.確保執行2.確保自動化測試
+      .then(user => {
+        if (!user) throw new Error('')
+        if (user.email === 'root@example.com') {
+          req.flash('error_messages', '禁止變更 root 權限')
+          return res.redirect('back')
+        }
+        return user.update({ isAdmin: !user.isAdmin })
+      })
+      .then(() => {
+        req.flash('success_messages', '使用者權限變更成功')
+        return res.redirect('/admin/users')
+      }).catch(err => next(err))
+  }
 }
 
 module.exports = adminController
