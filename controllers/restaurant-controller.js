@@ -25,7 +25,7 @@ const restaurantController = {
       .then(([restaurants, categories]) => {
         const data = restaurants.rows.map(r => ({
           ...r,
-          description: r.description
+          description: r.description.substring(0, 50)
         }))
         // console.log(data)
         return res.render('restaurants', {
