@@ -1,0 +1,12 @@
+<div class="row">
+  <div class="col-md-3 avatar-image mb-5">
+   <img src="{{user.image}}" alt="avatar" style="width:250px; height:250px; border-radius:50%;">
+  </div>
+  <div class="col">
+    <h3>{{user.name}}</h3>
+    <p>{{user.email}}</p>
+    <a class="btn btn-outline-secondary" href="/users/{{user.id}}/edit">Edit</a>
+    <a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
+  </div>
+  <hr>
+</div>

@@ -1,0 +1,8 @@
+<form action="/users/{{user.id}}?_method=PUT" method="POST" enctype="multipart/form-data">
+  <h4>Name</h4>
+  <input class="form-control my-3" type="text" id="name" name="name" value="{{user.name}}">
+  <h4>Image</h4>
+  <input class="form-control my-3" type="file" id="image" name="image">
+  <button type="submit" class="btn btn-primary">Submit</button>
+  <a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
+</form> 
