@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs') // 載入 bcrypt
 const db = require('../models')
-const { User } = db
+const { User, Comment, Restaurant } = db
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const userController = {
@@ -40,12 +40,14 @@ const userController = {
   },
   getUser: (req, res, next) => {
     return User.findByPk(req.params.id, {
-      raw: true,
-      nest: true
+      include: { model: Comment, include: Restaurant }
     })
       .then(user => {
         if (!user) throw new Error("User is didn't exist")
-        res.render('users/profile', { user })
+        // 用array.length來判斷留言次數
+        const defaultCount = 0
+        const commentCount = user.Comments.length || defaultCount
+        res.render('users/profile', { user: user.toJSON(), commentCount })
       })
       .catch(err => next(err))
   },

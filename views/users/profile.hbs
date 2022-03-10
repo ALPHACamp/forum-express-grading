@@ -1,12 +1,26 @@
-<div class="row">
-  <div class="col-md-3 avatar-image mb-5">
-   <img src="{{user.image}}" alt="avatar" style="width:250px; height:250px; border-radius:50%;">
-  </div>
-  <div class="col">
+<div class="card flex-row" style="width: auto;">
+  <img class="card-img-top " src="{{user.image}}" alt="avatar" style="width:250px; height:250px; border-radius:50%;">
+  <div class="card-body mt-4">
     <h3>{{user.name}}</h3>
     <p>{{user.email}}</p>
+    <p>{{ commentCount }}間已評論餐廳</p>
     <a class="btn btn-outline-secondary" href="/users/{{user.id}}/edit">Edit</a>
     <a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
   </div>
-  <hr>
 </div>
+
+<div class="card mt-2">
+  <div class="card-header">
+    <p>{{ commentCount }}間已評論餐廳</p>
+  </div>
+  <div class="card-body">
+  {{#each user.Comments}}
+  <a href="/restaurants/{{this.Restaurant.id}}">
+    <div class="card-image mt-1" style="display:inline-block;">
+      <img src="{{this.Restaurant.image}}" alt="restaurant" style="width:80px; height:80px;">
+    </div>
+  </a>
+{{/each}}
+  </div>
+</div>
+
