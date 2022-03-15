@@ -41,7 +41,8 @@ const userController = {
     return User.findByPk(req.params.id, {
       nest: true,
       include: { model: Comment, include: Restaurant },
-      where: { userId: req.params.id }
+      where: { userId: req.params.id },
+      order: [[{ model: Comment }, 'createdAt', 'DESC']]
     })
       .then(user => {
         if (!user) throw new Error('User doesn\'t exist!')
