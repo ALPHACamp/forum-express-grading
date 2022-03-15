@@ -1,4 +1,4 @@
-<div class="row mb-5">
+<div class="row mb-3">
   <div class="col-md-4">
     <img class="img-responsive center-block mb-5" src="{{user.image}}"
       style="width: 300px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
@@ -8,5 +8,23 @@
     <p>{{user.email}}</p>
     <a class="btn btn-primary" href="/users/{{user.id}}/edit">Edit</a>
   </div>
+  <hr>
 </div>
+{{!-- Comment --}}
+{{#if user.Comments}}
+  <h4 class="mb-3">{{arrayLength user.Comments}} 已評論餐廳</h4>
+{{else}}
+  <h4>尚未評論餐廳</h4>
+{{/if}}
+<div class="d-flex mb-3">
+{{#each user.Comments}}
+  <div class="me-4">
+    <a href="/restaurants/{{this.Restaurant.id}}">
+      <img src="{{this.Restaurant.image}}" width="100px">
+    </a>
+  </div>
+{{/each}}
+</div>
+<hr>
+
 <a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
