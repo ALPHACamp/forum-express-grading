@@ -45,7 +45,7 @@ const userController = {
         if (!user) throw new Error("User is didn't exist")
         // 用array.length來判斷留言次數
         const defaultCount = 0
-        const commentCount = user.Comments.length || defaultCount
+        const commentCount = user.Comments?.length || defaultCount
         res.render('users/profile', { user: user.toJSON(), commentCount })
       })
       .catch(err => next(err))
