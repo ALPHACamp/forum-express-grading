@@ -1,25 +1,23 @@
 <div class="row mb-3">
   <div class="col-md-4">
-    <img class="img-responsive center-block mb-5" src="{{viewUser.image}}"
+    <img class="img-responsive center-block mb-5" src="{{user.image}}"
       style="width: 300px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
   </div>
   <div class="col-md-8">
-    <h2>{{viewUser.name}}</h2>
-    <p>{{viewUser.email}}</p>
-    {{#ifCond viewUser.id user.id}}
-      <a class="btn btn-primary" href="/users/{{viewUser.id}}/edit">Edit</a>
-    {{/ifCond}}
+    <h2>{{user.name}}</h2>
+    <p>{{user.email}}</p>
+    <a class="btn btn-primary" href="/users/{{user.id}}/edit">Edit</a>
   </div>
   <hr>
 </div>
 {{!-- Comment --}}
-{{#if viewUser.Comments}}
-  <h4 class="mb-3">{{arrayLength viewUser.Comments}} 已評論餐廳</h4>
+{{#if user.Comments}}
+  <h4 class="mb-3">{{arrayLength user.Comments}} 已評論餐廳</h4>
 {{else}}
   <h4>尚未評論餐廳</h4>
 {{/if}}
 <div class="d-flex mb-3">
-{{#each viewUser.Comments}}
+{{#each user.Comments}}
   <div class="me-4">
     <a href="/restaurants/{{this.Restaurant.id}}">
       <img src="{{this.Restaurant.image}}" width="100px">

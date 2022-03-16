@@ -47,7 +47,9 @@ const userController = {
       .then(user => {
         if (!user) throw new Error('User doesn\'t exist!')
 
-        res.render('users/profile', { viewUser: user.toJSON() })
+        res.render('users/profile', {
+          user: user.toJSON()
+        })
       })
       .catch(err => next(err))
   },
@@ -55,9 +57,6 @@ const userController = {
     return User.findByPk(req.params.id, { raw: true })
       .then(user => {
         if (!user) throw new Error('User doesn\'t exist!')
-        if (req.user.id !== Number(req.params.id)) {
-          return res.redirect(`/users/${req.user.id}`)
-        }
 
         res.render('users/edit', { user })
       })
