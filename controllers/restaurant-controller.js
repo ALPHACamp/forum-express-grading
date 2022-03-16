@@ -1,8 +1,8 @@
 const { Restaurant, Category, Comment, User } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
+
 const restaurantController = {
   getRestaurants: (req, res, next) => {
-    console.log('req.user: ', req.user)
     const DEFAULT_LIMIT = 9
     const categoryId = Number(req.query.categoryId) || ''
 
@@ -23,11 +23,13 @@ const restaurantController = {
       Category.findAll({ raw: true })
     ])
       .then(([restaurants, categories]) => {
+        const likedRestaurants = req.user && req.user.LikedRestaurants.map(lr => lr.id)
         const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
         const data = restaurants.rows.map(r => ({
           ...r,
           description: r.description.substring(0, 50),
-          isFavorited: favoritedRestaurantsId.includes(r.id)
+          isFavorited: favoritedRestaurantsId.includes(r.id),
+          isLiked: likedRestaurants.includes(r.id)
         }))
         return res.render('restaurants', {
           restaurants: data,
@@ -41,7 +43,12 @@ const restaurantController = {
     return Restaurant.findByPk(req.params.id, {
       include: [
         Category,
-        { model: Comment, include: User }
+        { model: Comment, include: User },
+        { model: User, as: 'FavoritedUsers' },
+        { model: User, as: 'LikedUsers' }
+      ],
+      order: [
+        [{ model: Comment }, 'createdAt', 'DESC']
       ]
     })
       .then(restaurant => {
@@ -49,7 +56,10 @@ const restaurantController = {
         return restaurant.increment('viewCounts')
       })
       .then(restaurant => {
-        res.render('restaurant', { restaurant: restaurant.toJSON() })
+        console.log(restaurant)
+        const isFavorited = restaurant.FavoritedUsers.some(fr => fr.id === req.user.id)
+        const isLiked = restaurant.LikedUsers.some(lr => lr.id === req.user.id)
+        res.render('restaurant', { restaurant: restaurant.toJSON(), isFavorited, isLiked })
       })
       .catch(err => next(err))
   },
@@ -83,8 +93,6 @@ const restaurantController = {
       })
     ])
       .then(([restaurants, comments]) => {
-        console.log('restaurants', restaurants)
-        console.log('restaurants', restaurants[0].description)
         const data = restaurants.map(r => ({
           ...r,
           description: r.description.substring(0, 50)
