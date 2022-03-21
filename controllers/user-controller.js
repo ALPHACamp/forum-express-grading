@@ -1,9 +1,10 @@
 const bcrypt = require('bcryptjs')
-const db = require('../models')
-const { User } = db // const User = db.User
-// const User = require('../models').User
+// const user = require('../models/user') output=>[Function (anonymous)]
+// const db = require('../models')
+const { User } = require('../models')
 const userController = {
   signUpPage: (req, res) => {
+    // console.log(db)
     res.render('signup')
   },
   signUp: (req, res) => {
