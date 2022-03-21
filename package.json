@@ -15,10 +15,10 @@
   },
   "dependencies": {
     "express": "^4.17.1",
-    "express-handlebars": "^5.3.3",
+    "express-handlebars": "^6.0.3",
     "mysql2": "^2.2.5",
     "sequelize": "^6.3.5",
-    "sequelize-cli": "^6.2.0"
+    "sequelize-cli": "^6.4.1"
   },
   "devDependencies": {
     "chai": "^4.2.0",
