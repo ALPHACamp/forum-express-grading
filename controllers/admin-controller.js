@@ -1,4 +1,4 @@
-const { Restaurant } = require('../models')
+const { Restaurant, User } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const adminController = {
@@ -90,6 +90,37 @@ const adminController = {
       })
       .then(() => res.redirect('/admin/restaurants'))
       .catch(err => next(err))
+  },
+
+  getUsers: async (req, res) => {
+    const users = await User.findAll({ raw: true })
+    res.render('admin/users', { users })
+  },
+
+  patchUser: async (req, res, next) => {
+    const id = req.params.id
+    const user = await User.findByPk(id)
+    if (user.email === 'root@example.com' || user.name === 'admin') {
+      req.flash('error_messages', '禁止變更 root 權限')
+      return res.redirect('back')
+    }
+
+    try {
+      if (user) {
+        if (user.isAdmin === true) {
+          await user.update({ isAdmin: false })
+        } else {
+          await user.update({ isAdmin: true })
+        }
+        req.flash('success_messages', '使用者權限變更成功')
+        res.redirect('/admin/users')
+      } else {
+        req.flash('error_messages', '沒有這個user')
+        res.redirect('/admin/users')
+      }
+    } catch (err) {
+      next(err)
+    }
   }
 }
 module.exports = adminController
