@@ -1,4 +1,12 @@
 {{>admin-tabs route='categories'}}
+
+<div class="new-category mt-3">
+  <form action="/admin/categories" class="d-flex flex-row" method="POST">
+    <input type="text" name="name" id="name" class="me-2" placeholder="Category Name" style="padding:0 6px;">
+    <button type="submit" class="btn btn-success">Create</button>
+  </form>
+</div>
+
 <table class="table align-middle mt-3">
   <thead class="thead-dark">
     <tr>
