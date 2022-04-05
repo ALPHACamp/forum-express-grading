@@ -1,0 +1,25 @@
+<div class="d-flex flex-row justify-content-evenly">
+  <div class="user-image-wrapper">
+    <img src="{{ user.image }}" alt="user-avatar">
+  </div>
+  <div class="user-info-wrapper d-flex flex-column">
+    <span class="user-name">{{ user.name }}</span>
+    <span class="user-email">{{ user.email }}</span>
+    <span><span>{{user.Comments.length}}</span> 已評論餐廳</span>
+    <a href="/users/{{ user.id }}/edit" class="btn btn-primary">edit</a>
+  </div>
+</div>
+
+<div class="d-flex flex-column">
+  <div class="title">
+    <h5><span>{{user.Comments.length}}</span> 已評論餐廳</h5>
+  </div>
+  <div class="commented-restaurants-wrapper">
+    {{!-- display each restaurant which was commented here --}}
+    {{#each comments}}
+    <a href="/restaurants/{{this.Restaurant.id}}">
+      <img src="{{this.Restaurant.image}}" alt="">
+    </a>
+    {{/each}}
+  </div>
+</div>

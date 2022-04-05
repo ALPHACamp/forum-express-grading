@@ -1,6 +1,8 @@
 const bcrypt = require('bcryptjs')
+const { imgurFileHandler } = require('../helpers/file-helpers')
+const { getUser } = require('../helpers/auth-helpers')
 const db = require('../models')
-const { User } = db
+const { User, Comment, Restaurant } = db
 
 const userController = {
   signUpPage: (req, res) => {
@@ -35,6 +37,62 @@ const userController = {
     req.flash('success_messages', '登出成功！')
     req.logout()
     res.redirect('/signin')
+  },
+  getUser: async (req, res, next) => {
+    const id = Number(req.params.id)
+    const loginUserId = Number(getUser(req).id)
+    try {
+      if (id !== loginUserId) {
+        req.flash('error_messages', '無此權限')
+        return res.redirect('back')
+      }
+      const user = await User.findByPk(loginUserId, {
+        include: Comment
+      })
+      const comments = await Comment.findAll({
+        where: { userId: loginUserId },
+        include: Restaurant,
+        raw: true,
+        nest: true
+      })
+      if (!user) throw new Error('user do not exist !')
+      res.render('users/profile', { user: user.toJSON(), comments })
+    } catch (err) {
+      next(err)
+    }
+  },
+  editUser: async (req, res, next) => {
+    const id = Number(req.params.id)
+    const loginUserId = Number(getUser(req).id)
+    try {
+      if (id !== loginUserId) throw new Error('無此權限')
+      const user = await User.findByPk(loginUserId)
+      if (!user) throw new Error('user do not exist !')
+      res.render('users/edit', { user: user.toJSON() })
+    } catch (err) {
+      next(err)
+    }
+  },
+  putUser: async (req, res, next) => {
+    const id = Number(req.params.id)
+    const loginUserId = Number(getUser(req).id)
+    const { name } = req.body
+    const { file } = req
+    try {
+      if (id !== loginUserId) throw new Error('無此權限')
+      const user = await User.findByPk(loginUserId)
+      if (!user) throw new Error('user do not exist !')
+      if (!name) throw new Error('name is required !')
+      const filePath = await imgurFileHandler(file)
+      await user.update({
+        name,
+        image: filePath || null
+      })
+      req.flash('success_messages', '使用者資料編輯成功')
+      res.redirect(`/users/${loginUserId}`)
+    } catch (err) {
+      next(err)
+    }
   }
 }
 module.exports = userController
