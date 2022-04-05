@@ -2,11 +2,11 @@
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     const restaurants = await queryInterface.sequelize.query(
-      'SELECT id FROM restaurants;',
+      'SELECT id FROM Restaurants;',
       { type: queryInterface.sequelize.QueryTypes.SELECT }
     )
     const users = await queryInterface.sequelize.query(
-      'SELECT id FROM users;',
+      'SELECT id FROM Users;',
       { type: queryInterface.sequelize.QueryTypes.SELECT }
     )
     await queryInterface.bulkInsert('Comments',
