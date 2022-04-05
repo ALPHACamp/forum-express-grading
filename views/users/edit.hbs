@@ -1,0 +1,15 @@
+<div class="container">
+  <form action="/users/{{ user.id }}?_method=PUT" method="POST" enctype="multipart/form-data" class="d-flex flex-column">
+    <div class="name-input-wrapper d-flex flex-column mb-3">
+      <label for="name">Name</label>
+      <input type="text" name="name" id="name" value="{{ user.name }}">
+    </div>
+    <div class="image-input-wrapper d-flex flex-column mb-3">
+      <label for="image">Image</label>
+      <input type="file" name="image" id="image">
+    </div>
+    <div class="button-wrapper">
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
+  </form>
+</div>

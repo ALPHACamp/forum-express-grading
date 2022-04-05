@@ -1,0 +1,10 @@
+<div class="d-flex flex-row justify-content-evenly">
+  <div class="user-image-wrapper">
+    <img src="{{ user.image }}" alt="user-avatar">
+  </div>
+  <div class="user-info-wrapper d-flex flex-column">
+    <span class="user-name">{{ user.name }}</span>
+    <span class="user-email">{{ user.email }}</span>
+    <a href="/users/{{ user.id }}/edit" class="btn btn-primary">edit</a>
+  </div>
+</div>
