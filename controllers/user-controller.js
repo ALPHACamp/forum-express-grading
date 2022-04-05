@@ -2,7 +2,7 @@ const bcrypt = require('bcryptjs')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 const { getUser } = require('../helpers/auth-helpers')
 const db = require('../models')
-const { User } = db
+const { User, Comment, Restaurant } = db
 
 const userController = {
   signUpPage: (req, res) => {
@@ -46,9 +46,17 @@ const userController = {
         req.flash('error_messages', '無此權限')
         return res.redirect('back')
       }
-      const user = await User.findByPk(loginUserId)
+      const user = await User.findByPk(loginUserId, {
+        include: Comment
+      })
+      const comments = await Comment.findAll({
+        where: { userId: loginUserId },
+        include: Restaurant,
+        raw: true,
+        nest: true
+      })
       if (!user) throw new Error('user do not exist !')
-      res.render('users/profile', { user: user.toJSON() })
+      res.render('users/profile', { user: user.toJSON(), comments })
     } catch (err) {
       next(err)
     }
