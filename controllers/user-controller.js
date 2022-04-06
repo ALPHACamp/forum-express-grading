@@ -2,7 +2,7 @@ const bcrypt = require('bcryptjs')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 const { getUser } = require('../helpers/auth-helpers')
 const db = require('../models')
-const { User, Comment, Restaurant, Favorite } = db
+const { User, Comment, Restaurant, Favorite, Like } = db
 
 const userController = {
   signUpPage: (req, res) => {
@@ -131,6 +131,44 @@ const userController = {
       })
       .then(() => res.redirect('back'))
       .catch(err => next(err))
+  },
+
+  addLike: async (req, res, next) => {
+    try {
+      const { restaurantId } = req.params
+      const restaurant = await Restaurant.findByPk(restaurantId)
+      const like = await Like.findOne({
+        where: {
+          userId: req.user.id,
+          restaurantId
+        }
+      })
+      if (!restaurant) throw new Error("Restaurant didn't exist!")
+      if (like) throw new Error('You have liked this restaurant!')
+      await Like.create({
+        userId: req.user.id,
+        restaurantId
+      })
+      res.redirect('back')
+    } catch (err) {
+      next(err)
+    }
+  },
+
+  removeLike: async (req, res, next) => {
+    try {
+      const like = await Like.findOne({
+        where: {
+          userId: req.user.id,
+          restaurantId: req.params.restaurantId
+        }
+      })
+      if (!like) throw new Error("You haven't liked this restaurant")
+      await like.destroy()
+      res.redirect('back')
+    } catch (err) {
+      next(err)
+    }
   }
 }
 module.exports = userController
