@@ -4,16 +4,14 @@ const bcrypt = require('bcryptjs')
 
 const db = require('../models')
 const User = db.User
-// set up Passport strategy
+
 passport.use(
   new LocalStrategy(
-    // customize user field
     {
       usernameField: 'email',
       passwordField: 'password',
-      passReqToCallback: true // 把 req 傳入下面的 callback
+      passReqToCallback: true
     },
-    // authenticate user
     (req, email, password, cb) => {
       User.findOne({ where: { email } }).then(user => {
         if (!user) {
@@ -37,13 +35,12 @@ passport.use(
     }
   )
 )
-// serialize and deserialize user
 passport.serializeUser((user, cb) => {
   cb(null, user.id)
 })
 passport.deserializeUser((id, cb) => {
   User.findByPk(id).then(user => {
-    user = user.toJSON() // 轉換成單純的 JSON 物件，無法操作 update 或 delete 等 sequelize 的功能
+    user = user.toJSON()
     return cb(null, user)
   })
 })

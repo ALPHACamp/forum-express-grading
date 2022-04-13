@@ -23,7 +23,7 @@ const userController = {
         })
       )
       .then(() => {
-        req.flash('success_messages', '成功註冊帳號！') // req.flash 每次啓動都會對系統，發動 request，所以整個路由又會跑一遍，所以 response 可以拿得到 res.locals.success_messages
+        req.flash('success_messages', '成功註冊帳號！')
         res.redirect('/signIn')
       })
       .catch(err => next(err))

@@ -1,6 +1,4 @@
-// 本地端處理沒問題！但是到 Heroku 后要換成 imgur 因爲 heroku 上沒有 upload folder 而且 heroku 會不定時清楚文件夾，因爲沒付費
-const fs = require('fs') // 引入 fs 模組 nodejs 的 file system
-
+const fs = require('fs')
 const localFileHandler = file => {
   // file 是 multer 處理完的檔案
   return new Promise((resolve, reject) => {
@@ -14,11 +12,9 @@ const localFileHandler = file => {
   })
 }
 
-// 部署在 heroku 需要靠 imgur 來協助儲存 upload 檔案
 const imgur = require('imgur')
 const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
 imgur.setClientId(IMGUR_CLIENT_ID)
-
 const imgurFileHandler = file => {
   return new Promise((resolve, reject) => {
     if (!file) return resolve(null)

@@ -1,5 +1,5 @@
 const getUser = req => {
-  return req.user || null // 等同於 condition ? value1 : value2
+  return req.user || null
 }
 
 const ensureAuthenticated = req => {
