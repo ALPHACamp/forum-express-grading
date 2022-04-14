@@ -2,8 +2,12 @@ const bcrypt = require('bcryptjs')
 const { User } = require('../models')
 
 const userController = {
-  signUpPage: (req, res) => {
-    return res.render('signup')
+  signUpPage: async (req, res, next) => {
+    try {
+      return res.render('signup')
+    } catch (err) {
+      next(err)
+    }
   },
   signUP: async (req, res, next) => {
     try {
@@ -21,6 +25,30 @@ const userController = {
       })
 
       req.flash('success_messages', '帳號成功註冊！')
+      return res.redirect('/signin')
+    } catch (err) {
+      next(err)
+    }
+  },
+  signInPage: async (req, res, next) => {
+    try {
+      return res.render('signin')
+    } catch (err) {
+      next(err)
+    }
+  },
+  signIn: async (req, res, next) => {
+    try {
+      req.flash('success_messages', '成功登入！')
+      return res.redirect('/restaurants')
+    } catch (err) {
+      next(err)
+    }
+  },
+  logOut: async (req, res, next) => {
+    try {
+      req.flash('success_messages', '成功登出！')
+      req.logout()
       return res.redirect('/signin')
     } catch (err) {
       next(err)
