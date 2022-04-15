@@ -1,11 +1,11 @@
 const express = require('express')
 const routes = require('./routes')
-const exphbs = require('express-handlebars')
+const handlebars = require('express-handlebars')
 
 const app = express()
 const port = process.env.PORT || 3000
 
-app.engine('hbs', exphbs.engine({ extname: '.hbs' }))
+app.engine('.hbs', handlebars({ extname: '.hbs' }))
 
 app.set('view engine', '.hbs')
 app.use(routes)
