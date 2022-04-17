@@ -7,6 +7,7 @@ const SESSION_SECRET = 'secret'
 // const db = require('./models') for testing
 const flash = require('connect-flash')
 const session = require('express-session')
+const passport = require('./config/passport')
 app.engine('.hbs', engine({ extname: '.hbs' }))
 app.set('view engine', '.hbs')
 app.set('views', './views')
@@ -16,6 +17,8 @@ app.use(session({
   resave: false,
   saveUninitialized: true
 }))
+app.use(passport.initialize()) // 增加這行，初始化 Passport
+app.use(passport.session()) // 增加這行，啟動 session 功能
 app.use(flash())
 app.use((req, res, next) => {
   res.locals.success_messages = req.flash('success_messages')

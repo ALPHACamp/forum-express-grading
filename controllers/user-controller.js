@@ -25,6 +25,18 @@ const userController = {
         res.redirect('/signin')
       })
       .catch(err => next(err)) // 呼叫 next() 並傳入 err 當作參數的寫法，會觸發 Express 內建的 Error Handler 。在此我們接住前面拋出的錯誤，造呼叫專門做錯誤處理的customized middleware (error-handlebar)
+  },
+  signInPage: (req, res) => {
+    res.render('signin')
+  },
+  signIn: (req, res) => {
+    req.flash('success_messages', '成功登入')
+    res.redirect('/restaurants') // 沒有任何的邏輯，就直接轉址，是因為用 Passport 的 middleware 幫我們完成了使用者驗證邏輯，當 userController.signIn 收到 request 時，就一定是登入後的使用者了
+  },
+  logout: (req, res) => {
+    req.flash('success_messages', '登出成功！')
+    req.logout()
+    res.redirect('/signin')
   }
 }
 
