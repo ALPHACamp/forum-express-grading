@@ -3,11 +3,25 @@ const routes = require('./routes')
 const { engine } = require('express-handlebars')
 const app = express()
 const port = process.env.PORT || 3000
+const SESSION_SECRET = 'secret'
 // const db = require('./models') for testing
+const flash = require('connect-flash')
+const session = require('express-session')
 app.engine('.hbs', engine({ extname: '.hbs' }))
 app.set('view engine', '.hbs')
 app.set('views', './views')
-app.use(express.urlencoded({ extended: true }))
+app.use(express.urlencoded({ extended: true })) // Express v4.16 以後的版本已內建 body-parser
+app.use(session({
+  secret: SESSION_SECRET,
+  resave: false,
+  saveUninitialized: true
+}))
+app.use(flash())
+app.use((req, res, next) => {
+  res.locals.success_messages = req.flash('success_messages')
+  res.locals.error_messages = req.flash('error_messages')
+  next()
+})
 app.use(routes)
 app.listen(port, () => {
   console.info(`Forum app listening on port ${port}!`)
