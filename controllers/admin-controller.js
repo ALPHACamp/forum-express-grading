@@ -85,6 +85,21 @@ const adminController = {
     } catch (err) {
       next(err)
     }
+  },
+  deleteRestaurant: async (req, res, next) => {
+    try {
+      const { id } = req.params
+      const restaurant = await Restaurant.findByPk(id)
+
+      if (!restaurant) throw new Error('該餐廳不存在。')
+
+      await restaurant.destroy()
+
+      req.flash('success_messages', '該餐廳已被成功被刪除。')
+      return res.redirect('/admin/restaurants')
+    } catch (err) {
+      next(err)
+    }
   }
 }
 
