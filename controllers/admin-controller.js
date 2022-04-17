@@ -23,7 +23,7 @@ const adminController = {
   postRestaurant: async (req, res, next) => {
     try {
       const { name, tel, address, openingHours, description } = req.body
-      if (!name) throw new Error('名字為必填項目！')
+      if (!name) throw new Error('名字為必填欄位！')
 
       await Restaurant.create({
         name,
@@ -47,6 +47,41 @@ const adminController = {
       if (!restaurant) throw new Error('該餐廳不存在。')
 
       return res.render('admin/restaurant', { restaurant })
+    } catch (err) {
+      next(err)
+    }
+  },
+  editRestaurant: async (req, res, next) => {
+    try {
+      const { id } = req.params
+      const restaurant = await Restaurant.findByPk(id, { raw: true })
+
+      if (!restaurant) throw new Error('該餐廳不存在。')
+
+      return res.render('admin/edit-restaurant', { restaurant })
+    } catch (err) {
+      next(err)
+    }
+  },
+  putRestaurant: async (req, res, next) => {
+    try {
+      const { id } = req.params
+      const { name, tel, address, openingHours, description } = req.body
+
+      if (!name) throw new Error('名字為必填欄位！')
+
+      const restaurant = await Restaurant.findByPk(id)
+
+      await restaurant.update({
+        name,
+        tel,
+        address,
+        openingHours,
+        description
+      })
+
+      req.flash('success_messages', '該餐廳已被成功修改。')
+      return res.redirect('/admin/restaurants')
     } catch (err) {
       next(err)
     }

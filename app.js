@@ -2,6 +2,7 @@ const express = require('express')
 const handlebars = require('express-handlebars')
 const session = require('express-session')
 const flash = require('connect-flash')
+const methodOverride = require('method-override')
 
 const passport = require('./config/passport')
 const routes = require('./routes')
@@ -23,6 +24,8 @@ app.use(session({
 }))
 
 app.use(flash())
+app.use(methodOverride('_method'))
+
 app.use(passport.initialize())
 app.use(passport.session())
 app.use((req, res, next) => {
