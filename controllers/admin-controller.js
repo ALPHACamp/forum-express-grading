@@ -34,7 +34,19 @@ const adminController = {
       })
 
       req.flash('success_messages', '該餐廳已被成功創建。')
-      res.redirect('/admin/restaurants')
+      return res.redirect('/admin/restaurants')
+    } catch (err) {
+      next(err)
+    }
+  },
+  getRestaurant: async (req, res, next) => {
+    try {
+      const { id } = req.params
+      const restaurant = await Restaurant.findByPk(id, { raw: true })
+
+      if (!restaurant) throw new Error('該餐廳不存在。')
+
+      return res.render('admin/restaurant', { restaurant })
     } catch (err) {
       next(err)
     }
