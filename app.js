@@ -27,6 +27,7 @@ app.use(session({
 app.use(flash())
 app.use(methodOverride('_method'))
 app.use('/upload', express.static(path.join(__dirname, 'upload')))
+console.log(__dirname)
 
 app.use(passport.initialize())
 app.use(passport.session())
