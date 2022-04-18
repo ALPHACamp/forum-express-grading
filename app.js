@@ -6,6 +6,7 @@ const app = express()
 const port = process.env.PORT || 3000
 
 app.engine('hbs', handlebars({ extname: 'hbs' }))
+app.use(express.urlencoded({ extended: true }))
 app.set('view engine', 'hbs')
 app.use(routes)
 
