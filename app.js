@@ -21,7 +21,7 @@ app.use((req, res, next) => {
   next()
 })
 
-app.engine('hbs', handlebars({ extname: '.hbs', helpers: handlebarsHelpers })) 
+app.engine('hbs', handlebars({ extname: '.hbs', helpers: handlebarsHelpers }))
 app.set('view engine', 'hbs')
 app.use(express.urlencoded({ extended: true }))
 app.use(routes)
