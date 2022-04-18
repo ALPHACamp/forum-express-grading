@@ -4,6 +4,12 @@ const getUser = req => {
   return req.user || null // 若 req.user 存在就回傳 req.user，不存在的話函式就會回傳空值
 }
 
+//  Passport 提供的 isAuthenticated()
+// 把 req.isAuthenticated 再包裝成一支 ensureAuthenticated 函式並導出
+const ensureAuthenticated = req => {
+  return req.isAuthenticated()
+}
 module.exports = {
-  getUser
+  getUser,
+  ensureAuthenticated
 }

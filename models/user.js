@@ -17,7 +17,8 @@ module.exports = (sequelize, DataTypes) => {
   User.init({ // 呼叫 User.init 方法來定義欄位，包括 name, email 跟 password，型態都是 DataTypes.STRING
     name: DataTypes.STRING,
     email: DataTypes.STRING,
-    password: DataTypes.STRING
+    password: DataTypes.STRING,
+    isAdmin: DataTypes.BOOLEAN
   }, {
     sequelize,
     modelName: 'User',
