@@ -5,6 +5,7 @@ const adminController = require('../../controllers/admin-controller')
 const { authenticatedAdmin } = require('../../middleware/auth')
 //
 router.get('/restaurants/create', authenticatedAdmin, adminController.createRestaurant)
+router.get('/restaurants/:id', adminController.getRestaurant)
 router.get('/restaurants', authenticatedAdmin, adminController.getRestaurants)
 router.post('/restaurants', adminController.postRestaurant)
 router.get('', (req, res) => res.redirect('/admin/restaurants'))
