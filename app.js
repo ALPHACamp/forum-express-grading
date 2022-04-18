@@ -3,6 +3,7 @@ const routes = require('./routes')
 const handlebars = require('express-handlebars')
 const flash = require('connect-flash')
 const session = require('express-session')
+const methodOverride = require('method-override')
 const app = express()
 const port = process.env.PORT || 3000
 const SESSION_SECRET = 'secret'
@@ -20,7 +21,7 @@ app.use((req, res, next) => {
   res.locals.user = getUser(req)
   next()
 })
-
+app.use(methodOverride('_method'))
 app.engine('hbs', handlebars({ extname: '.hbs', helpers: handlebarsHelpers }))
 app.set('view engine', 'hbs')
 app.use(express.urlencoded({ extended: true }))
