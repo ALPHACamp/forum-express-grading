@@ -37,6 +37,6 @@ Object.keys(db).forEach(modelName => {
 })
 // 第四段：匯出需要的物件
 db.sequelize = sequelize // 代表連線資料庫的 instance。這個 instance 擁有一些屬性如 queryInterface、config 等
-db.Sequelize = Sequelize // 表 Sequelize 函式庫本身, 可以用 db.Sequelize 存取到 Sequelize 這個 class 
+db.Sequelize = Sequelize // 表 Sequelize 函式庫本身, 可以用 db.Sequelize 存取到 Sequelize 這個 class
 
 module.exports = db
