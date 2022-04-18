@@ -2,10 +2,10 @@ const express = require('express')
 
 const router = express.Router()
 
-// 新增，載入 controller
+const admin = require('./modules/admin') // 新增這行，載入 admin.js
+const restController = require('../controllers/restaurant-controller')// 新增，載入 controller
 
-const restController = require('../controllers/restaurant-controller')
-
+router.use('/admin', admin) // 新增後台
 // 新增
 
 router.get('/restaurants', restController.getRestaurants)
