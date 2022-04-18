@@ -35,6 +35,36 @@ const adminController = {
         res.render('admin/restaurant', { restaurant })
       })
       .catch(err => next(err))
+  },
+  editRestaurant: (req, res, next) => {
+    Restaurant.findByPk(req.params.id, {
+      raw: true
+    })
+      .then(restaurant => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        res.render('admin/edit-restaurant', { restaurant })
+      })
+      .catch(err => next(err))
+  },
+  putRestaurant: (req, res, next) => {
+    const { name, tel, address, openingHours, description } = req.body
+    if (!name) throw new Error('Restaurant name is required!')
+    Restaurant.findByPk(req.params.id) // 這一段我們沒有設定 { raw: true } 來整理成乾淨的資料，這是因為這邊會需要用到 restaurant.update 這個方法，如果加上參數就會把 sequelize 提供的這個方法過濾掉，會無法使用
+      .then(restaurant => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        return restaurant.update({
+          name,
+          tel,
+          address,
+          openingHours,
+          description
+        })
+      })
+      .then(() => {
+        req.flash('success_messages', 'restaurant was successfully to update')
+        res.redirect('/admin/restaurants')
+      })
+      .catch(err => next(err))
   }
 }
 
