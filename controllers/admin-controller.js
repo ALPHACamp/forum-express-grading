@@ -1,5 +1,5 @@
 const { Restaurant } = require('../models')
-const { localFileHandler } = require('../helpers/file-helpers')
+const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const adminController = {
   getRestaurants: async (req, res, next) => {
@@ -27,7 +27,7 @@ const adminController = {
       if (!name) throw new Error('名字為必填欄位！')
 
       const { file } = req
-      const filePath = await localFileHandler(file)
+      const filePath = await imgurFileHandler(file)
 
       await Restaurant.create({
         name,
@@ -78,7 +78,7 @@ const adminController = {
 
       const [restaurant, filePath] = await Promise.all([
         Restaurant.findByPk(id),
-        localFileHandler(file)
+        imgurFileHandler(file)
       ])
 
       if (!restaurant) throw new Error('該餐廳不存在！')
