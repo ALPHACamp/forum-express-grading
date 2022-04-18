@@ -12,6 +12,8 @@ const userController = {
   signUP: async (req, res, next) => {
     try {
       const { name, email, password, passwordCheck } = req.body
+      if (!name || !email || !password || !passwordCheck) throw new Error('所有欄位都需填寫！')
+
       if (password !== passwordCheck) throw new Error('兩次密碼不相符！')
 
       const user = await User.findOne({ where: { email } })

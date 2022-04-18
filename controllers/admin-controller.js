@@ -1,4 +1,5 @@
 const { Restaurant } = require('../models')
+const { localFileHandler } = require('../helpers/file-helpers')
 
 const adminController = {
   getRestaurants: async (req, res, next) => {
@@ -25,12 +26,16 @@ const adminController = {
       const { name, tel, address, openingHours, description } = req.body
       if (!name) throw new Error('名字為必填欄位！')
 
+      const { file } = req
+      const filePath = await localFileHandler(file)
+
       await Restaurant.create({
         name,
         tel,
         address,
         openingHours,
-        description
+        description,
+        image: filePath || null
       })
 
       req.flash('success_messages', '該餐廳已被成功創建。')
@@ -66,18 +71,25 @@ const adminController = {
   putRestaurant: async (req, res, next) => {
     try {
       const { id } = req.params
+      const { file } = req
       const { name, tel, address, openingHours, description } = req.body
 
       if (!name) throw new Error('名字為必填欄位！')
 
-      const restaurant = await Restaurant.findByPk(id)
+      const [restaurant, filePath] = await Promise.all([
+        Restaurant.findByPk(id),
+        localFileHandler(file)
+      ])
+
+      if (!restaurant) throw new Error('該餐廳不存在！')
 
       await restaurant.update({
         name,
         tel,
         address,
         openingHours,
-        description
+        description,
+        image: filePath || restaurant.image
       })
 
       req.flash('success_messages', '該餐廳已被成功修改。')

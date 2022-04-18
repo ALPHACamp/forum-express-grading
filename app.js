@@ -1,3 +1,4 @@
+const path = require('path')
 const express = require('express')
 const handlebars = require('express-handlebars')
 const session = require('express-session')
@@ -25,6 +26,7 @@ app.use(session({
 
 app.use(flash())
 app.use(methodOverride('_method'))
+app.use('/upload', express.static(path.join(__dirname, 'upload')))
 
 app.use(passport.initialize())
 app.use(passport.session())
