@@ -35,7 +35,7 @@ const categoryController = {
   deleteCategory: (req, res, next) => {
     return Category.findByPk(req.params.id)
       .then(category => {
-        if (!category) throw new Error("Category didn't exist!") // 反查，確認要刪除的類別存在，再進行下面刪除動作
+        if (!category) throw new Error("Category didn't exist!")
         return category.destroy()
       })
       .then(() => res.redirect('/admin/categories'))

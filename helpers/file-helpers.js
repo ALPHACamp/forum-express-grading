@@ -21,13 +21,12 @@ const imgurFileHandler = file => {
     return imgur
       .uploadFile(file.path)
       .then(img => {
-        resolve(img?.link || null) // 完全等同於 resolve(img => img ? img.link || null)
+        resolve(img?.link || null)
       })
       .catch(err => reject(err))
   })
 }
 
-// return promise 處理完的東西，出去可以往下可直接接 then
 module.exports = {
   localFileHandler,
   imgurFileHandler

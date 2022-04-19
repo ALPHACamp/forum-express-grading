@@ -6,7 +6,6 @@ const adminController = {
     return Restaurant.findAll({
       raw: true,
       nest: true,
-      // 如果有接加入 include 的部分，抓取其他關聯 model 的資料，必須用 nest 才可以把資料變成單純的 toJSON() 文件
       include: [Category]
     })
       .then(restaurants => res.render('admin/restaurants', { restaurants }))
@@ -53,7 +52,6 @@ const adminController = {
       .catch(err => next(err))
   },
   editRestaurant: (req, res, next) => {
-    // 這部分用 Promise.all 使 promise 并發執行
     Promise.all([
       Restaurant.findByPk(req.params.id, { raw: true }),
       Category.findAll({ raw: true })
