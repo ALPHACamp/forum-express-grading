@@ -1,3 +1,4 @@
+const path = require('path') // 引入 path 套件(node.js 的原生模組)
 const express = require('express')
 const routes = require('./routes')
 const { engine } = require('express-handlebars')
@@ -25,6 +26,7 @@ app.use(passport.initialize()) // 增加這行，初始化 Passport
 app.use(passport.session()) // 增加這行，啟動 session 功能
 app.use(flash())
 app.use(methodOverride('_method'))
+app.use('/upload', express.static(path.join(__dirname, 'upload'))) // 因為是靜態檔案，所以不需要像其他的路由一樣寫 controller 邏輯
 app.use((req, res, next) => {
   res.locals.success_messages = req.flash('success_messages')
   res.locals.error_messages = req.flash('error_messages')
