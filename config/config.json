@@ -7,7 +7,7 @@
     "dialect": "mysql"
   },
   "production": {
-    "use_env_variable": "87871dff53ebca28272d3@ec2-52-73-155-171.compute-1.amazonaws.com:5432/d77an289t8cr92"
+    "use_env_variable": "CLEARDB_DATABASE_URL"
   },
   "travis": {
     "username": "travis",
