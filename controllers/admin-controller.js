@@ -30,7 +30,8 @@ const adminController = {
           openingHours,
           description,
           image: filePath || null,
-          categoryId
+          categoryId,
+          viewCounts: 0
         })
       })
       .then(() => {

@@ -22,7 +22,7 @@ const restaurantController = {
     })
       .then(async restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
-        await restaurant.increment('viewCounts')
+        await restaurant.increment({ view_counts: 1 })
         res.render('restaurant', {
           restaurant: restaurant.toJSON()
         })
