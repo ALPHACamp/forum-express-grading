@@ -65,7 +65,8 @@ const adminController = {
       .catch(err => next(err))
   },
   putRestaurant: (req, res, next) => {
-    const { name, tel, address, openingHours, description } = req.body
+    const { name, tel, address, openingHours, description, categoryId } =
+      req.body
     const { file } = req
     Promise.all([imgurFileHandler(file), Restaurant.findByPk(req.params.id)])
       .then(([filePath, restaurant]) => {
@@ -76,7 +77,8 @@ const adminController = {
           address,
           openingHours,
           description,
-          image: filePath || restaurant.image
+          image: filePath || restaurant.image,
+          categoryId
         })
       })
       .then(() => {
