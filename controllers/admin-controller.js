@@ -127,7 +127,7 @@ const adminController = {
       const user = await User.findByPk(id)
       if (!user) throw new Error('該使用者不存在。')
 
-      if (user.email === 'root@example.com') {
+      if (user.email === process.env.ROOT_ADMIN) {
         req.flash('error_messages', '禁止變更 root 權限')
         return res.redirect('back')
       }
