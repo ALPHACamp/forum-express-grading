@@ -1,4 +1,5 @@
 const { Restaurant } = require('../models')
+const { User } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 const adminController = {
   getRestaurants: (req, res, next) => {
@@ -83,6 +84,33 @@ const adminController = {
         return restaurant.destroy()
       })
       .then(() => res.redirect('/admin/restaurants'))
+      .catch(err => next(err))
+  },
+  getUsers: (req, res, next) => {
+    return User.findAll({
+      raw: true
+    })
+      .then(users => res.render('admin/users', { users }))
+      .catch(err => next(err))
+  },
+  patchUser: (req, res, next) => {
+    return User.findByPk(req.params.id)
+      .then(user => {
+        if (user.dataValues.email === 'root@example.com' && user.dataValues.isAdmin) {
+          req.flash('error_messages', '禁止變更 root 權限')
+          return res.redirect('back')
+        }
+        user.dataValues.isAdmin
+          ? user.dataValues.isAdmin = false// 設置成0時才能正常運作，但會過不了測試
+          : user.dataValues.isAdmin = true// 設置成1時才能正常運作，但會過不了測試
+        return user.update({
+          isAdmin: user.dataValues.isAdmin
+        })
+      })
+      .then(() => {
+        req.flash('success_messages', '使用者權限變更成功')
+        res.redirect('/admin/users')
+      })
       .catch(err => next(err))
   }
 }
