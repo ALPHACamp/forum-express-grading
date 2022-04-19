@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router()
 
 const adminController = require('../../controllers/admin-controller')
+const categoryController = require('../../controllers/category-controller')
 const upload = require('../../middleware/multer')
 
 router.patch('/users/:id', adminController.patchUser)
@@ -21,6 +22,7 @@ router.post(
   upload.single('image'),
   adminController.postRestaurant
 )
+router.get('/categories', categoryController.getCategories)
 router.get('/', (req, res) => res.redirect('/admin/restaurants'))
 
 module.exports = router
