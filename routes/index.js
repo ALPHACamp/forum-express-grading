@@ -23,6 +23,11 @@ router.post(
 router.get('/logout', userController.logout)
 router.get('/restaurants', authenticated, restController.getRestaurants)
 router.get('/restaurants/:id', authenticated, restController.getRestaurant)
+router.get(
+  '/restaurants/:id/dashboard',
+  authenticated,
+  restController.getDashboard
+)
 router.get('/', (req, res) => res.redirect('/restaurants'))
 router.use('/', generalErrorHandler) // 這行加在哪都沒差，因爲 res.redirect('back')，進來不管是走哪個路由只要都會先經過 '/'，所以一定會進到 generalErrorHandler 去判斷是否有錯誤。
 
