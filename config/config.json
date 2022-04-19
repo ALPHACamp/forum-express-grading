@@ -7,7 +7,7 @@
     "dialect": "mysql"
   },
   "production": {
-    "use_env_variable": "postgres://mflngggstnrgtz:ca171d503cd93ca16e984f36538c5fb0fbf7e39cb3d87871dff53ebca28272d3@ec2-52-73-155-171.compute-1.amazonaws.com:5432/d77an289t8cr92"
+    "use_env_variable": "87871dff53ebca28272d3@ec2-52-73-155-171.compute-1.amazonaws.com:5432/d77an289t8cr92"
   },
   "travis": {
     "username": "travis",
