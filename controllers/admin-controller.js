@@ -1,3 +1,4 @@
+const req = require('express/lib/request')
 const { Restaurant } = require('../models')
 const adminController = {
   getRestaurants: async (req, res, next) => {
@@ -24,6 +25,15 @@ const adminController = {
       })
       req.flash('success_messages', 'restaurant was successfully created')
       res.redirect('/admin/restaurants')
+    } catch (err) {
+      next(err)
+    }
+  },
+  getRestaurant: async (req, res, next) => {
+    try {
+      const restaurant = await Restaurant.findByPk(req.params.id, { raw: true })
+      if (!restaurant) throw new Error('')
+      res.render('admin/restaurant', { restaurant })
     } catch (err) {
       next(err)
     }
