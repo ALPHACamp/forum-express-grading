@@ -7,10 +7,8 @@ const userController = {
     res.render('signup')
   },
   signUp: (req, res, next) => {
-    // 驗證：password and confirm password do not match
     if (req.body.password !== req.body.passwordCheck) throw new Error('Passwords do not match!')
 
-    // 驗證重複email了
     User.findOne({ where: { email: req.body.email } })
       .then(user => {
         if (user) throw new Error('Email already exist!')
@@ -27,6 +25,18 @@ const userController = {
         res.redirect('/signin')
       })
       .catch(error => next(error))
+  },
+  signInPage: (req, res) => {
+    res.render('signin')
+  },
+  signIn: (req, res) => {
+    req.flash('success_messages', 'login sucessfully!')
+    res.redirect('/')
+  },
+  logout: (req, res) => {
+    req.flash('success_messages', 'logout successcully!')
+    req.logout()
+    res.redirect('/signin')
   }
 }
 
