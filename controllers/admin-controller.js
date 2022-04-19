@@ -1,4 +1,4 @@
-const { Restaurant, User } = require('../models')
+const { Restaurant, User, Category } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const adminController = {
@@ -6,7 +6,8 @@ const adminController = {
     try {
       const restaurants = await Restaurant.findAll({
         raw: true,
-        nest: true
+        nest: true,
+        include: [Category]
       })
 
       return res.render('admin/restaurants', { restaurants })
@@ -47,7 +48,11 @@ const adminController = {
   getRestaurant: async (req, res, next) => {
     try {
       const { id } = req.params
-      const restaurant = await Restaurant.findByPk(id, { raw: true })
+      const restaurant = await Restaurant.findByPk(id, { 
+        raw: true,
+        nest: true,
+        include: [Category]
+      })
 
       if (!restaurant) throw new Error('該餐廳不存在。')
 
