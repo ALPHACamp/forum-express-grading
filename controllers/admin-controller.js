@@ -9,6 +9,24 @@ const adminController = {
     } catch (err) {
       next(err)
     }
+  },
+  createRestaurant: (req, res) => res.render('admin/create-restaurant'),
+  postRestaurant: async (req, res, next) => {
+    try {
+      const { name, tel, address, openingHours, descriptions } = req.body
+      if (!name) throw new Error('Restaurant name is required')
+      await Restaurant.create({
+        name,
+        tel,
+        address,
+        openingHours,
+        descriptions
+      })
+      req.flash('success_messages', 'restaurant was successfully created')
+      res.redirect('/admin/restaurants')
+    } catch (err) {
+      next(err)
+    }
   }
 }
 module.exports = adminController
