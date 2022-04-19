@@ -17,14 +17,15 @@ const adminController = {
   },
   createRestaurant: async (req, res, next) => {
     try {
-      return res.render('admin/create-restaurant')
+      const categories = await Category.findAll({ raw: true })
+      return res.render('admin/create-restaurant', { categories })
     } catch (err) {
       next(err)
     }
   },
   postRestaurant: async (req, res, next) => {
     try {
-      const { name, tel, address, openingHours, description } = req.body
+      const { name, tel, address, openingHours, description, categoryId } = req.body
       if (!name) throw new Error('名字為必填欄位！')
 
       const { file } = req
@@ -36,7 +37,8 @@ const adminController = {
         address,
         openingHours,
         description,
-        image: filePath || null
+        image: filePath || null,
+        categoryId
       })
 
       req.flash('success_messages', '該餐廳已被成功創建。')
@@ -48,7 +50,7 @@ const adminController = {
   getRestaurant: async (req, res, next) => {
     try {
       const { id } = req.params
-      const restaurant = await Restaurant.findByPk(id, { 
+      const restaurant = await Restaurant.findByPk(id, {
         raw: true,
         nest: true,
         include: [Category]
@@ -64,11 +66,14 @@ const adminController = {
   editRestaurant: async (req, res, next) => {
     try {
       const { id } = req.params
-      const restaurant = await Restaurant.findByPk(id, { raw: true })
+      const [restaurant, categories] = await Promise.all([
+        Restaurant.findByPk(id, { raw: true }),
+        Category.findAll({ raw: true })
+      ])
 
       if (!restaurant) throw new Error('該餐廳不存在。')
 
-      return res.render('admin/edit-restaurant', { restaurant })
+      return res.render('admin/edit-restaurant', { restaurant, categories })
     } catch (err) {
       next(err)
     }
@@ -77,7 +82,7 @@ const adminController = {
     try {
       const { id } = req.params
       const { file } = req
-      const { name, tel, address, openingHours, description } = req.body
+      const { name, tel, address, openingHours, description, categoryId } = req.body
 
       if (!name) throw new Error('名字為必填欄位！')
 
@@ -94,7 +99,8 @@ const adminController = {
         address,
         openingHours,
         description,
-        image: filePath || restaurant.image
+        image: filePath || restaurant.image,
+        categoryId
       })
 
       req.flash('success_messages', '該餐廳已被成功修改。')
