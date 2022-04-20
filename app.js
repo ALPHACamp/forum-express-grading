@@ -1,6 +1,9 @@
 const path = require('path') // 引入 path 套件(node.js 的原生模組)
 const express = require('express')
 const routes = require('./routes')
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
 const { engine } = require('express-handlebars')
 const app = express()
 const port = process.env.PORT || 3000

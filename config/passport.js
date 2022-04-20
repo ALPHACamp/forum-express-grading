@@ -34,9 +34,7 @@ passport.serializeUser((user, cb) => {
 })
 passport.deserializeUser((id, cb) => {
   User.findByPk(id).then(user => {
-    console.log(user)
     user = user.toJSON() // Sequalize 打包後的物件，多包裝了幾層，並加上一些內建的參數與方法，讓我們可以直接透過 Sequalize 操作這筆資料，例如刪除或更新 user，不過我們的專案不會用到這些功能，所以就可以運用 toJSON() 這個小技巧來整理格式，把資料簡化變更我們比較容易取用的樣子。
-    console.log(user) // 暫時添加
     return cb(null, user)
   })
 })
