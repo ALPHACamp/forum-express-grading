@@ -21,13 +21,29 @@ const restaurantController = {
     try {
       const { id } = req.params
       const restaurant = await Restaurant.findByPk(id, {
+        nest: true,
+        include: [Category]
+      })
+      if (!restaurant) throw new Error('該餐廳不存在！')
+
+      await restaurant.increment('view_counts')
+
+      return res.render('restaurant', { restaurant: restaurant.toJSON() })
+    } catch (err) {
+      next(err)
+    }
+  },
+  getDashboard: async (req, res, next) => {
+    try {
+      const { id } = req.params
+      const restaurant = await Restaurant.findByPk(id, {
         raw: true,
         nest: true,
         include: [Category]
       })
       if (!restaurant) throw new Error('該餐廳不存在！')
 
-      return res.render('restaurant', { restaurant })
+      res.render('dashboard', { restaurant })
     } catch (err) {
       next(err)
     }
