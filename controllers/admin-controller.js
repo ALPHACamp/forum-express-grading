@@ -1,5 +1,6 @@
 const { Restaurant } = require('../models')
-const { localFileHandler } = require('../helpers/file-helpers')
+const { imgurFileHandler } = require('../helpers/file-helpers')
+
 //
 const adminController = {
   getRestaurants: (req, res, next) => {
@@ -8,7 +9,6 @@ const adminController = {
     })
       .then(restaurants => {
         res.render('admin/restaurants', { restaurants })
-        console.log({ restaurants })
       })
       .catch(err => next(err))
   },
@@ -19,7 +19,7 @@ const adminController = {
     const { name, tel, address, openingHours, description } = req.body
     if (!name) throw new Error('Restaurant name is required!')
     const { file } = req
-    localFileHandler(file)
+    imgurFileHandler(file)
       .then(filePath => Restaurant.create({
         name,
         tel,
@@ -35,11 +35,11 @@ const adminController = {
       .catch(err => next(err))
   },
   getRestaurant: (req, res, next) => {
-    Restaurant.findByPk(req.params.id, { // 去資料庫用 id 找一筆資料
-      raw: true // 找到以後整理格式再回傳
+    Restaurant.findByPk(req.params.id, { 
+      raw: true 
     })
       .then(restaurant => {
-        if (!restaurant) throw new Error("Restaurant didn't exist!") //  如果找不到，回傳錯誤訊息，後面不執行
+        if (!restaurant) throw new Error("Restaurant didn't exist!") 
         res.render('admin/restaurant', { restaurant })
       })
       .catch(err => next(err))
@@ -60,7 +60,7 @@ const adminController = {
     const { file } = req
     Promise.all([
       Restaurant.findByPk(req.params.id),
-      localFileHandler(file)
+      imgurFileHandler(file)
     ])
       .then(([restaurant, filePath]) => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
