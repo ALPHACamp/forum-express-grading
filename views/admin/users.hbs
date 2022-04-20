@@ -24,17 +24,24 @@
         <td>{{this.name}}</td>
         <td>{{this.email}}</td>
         <td>
-          {{#if this.isAdmin}} <span>admin</span> 
-            {{else}} <span>user</span>
-          {{/if}}
+        {{#if this.isAdmin}} 
+          <span>admin</span> 
         </td>  
-        {{!--  TODO: 待確認  跟著 isAdmin的狀態修改文字 --}}
         <td>
           <form action="/admin/users/{{this.id}}?_method=PATCH" method="POST">
-            <button type="submit" class="btn btn-link link-danger" >跟著isAdmin的狀態修改文字</button>
+            <button type="submit" class="btn btn-link link-danger" >set as user </button>
+          </form>
+        </td>
+            {{else}} 
+            <span>user</span>
+        </td>  
+        <td>
+          <form action="/admin/users/{{this.id}}?_method=PATCH" method="POST">
+            <button type="submit" class="btn btn-link link-danger" >set as admin </button>
           </form>
         </td>
 
+        {{/if}}
       </tr>
     {{/each}}
   </tbody>
