@@ -1,6 +1,9 @@
 const express = require('express')
 const path = require('path')
 const routes = require('./routes')
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
 const handlebars = require('express-handlebars')
 const session = require('express-session')
 const flash = require('connect-flash')
