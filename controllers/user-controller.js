@@ -1,5 +1,4 @@
-const db = require('../models')
-const { User } = db
+const { User, Comment, Restaurant } = require('../models')
 const bcrypt = require('bcryptjs')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
@@ -43,14 +42,20 @@ const userController = {
   },
   getUser: (req, res, next) => {
     const userParamsId = Number(req.params.id)
-    return (
-      User.findByPk(userParamsId, { raw: true })
-        .then(user => {
-          if (!user) throw new Error('User is not applied !')
-          res.render('users/profile', { user })
-        })
-        .catch(err => next(err))
-    )
+    return User.findByPk(userParamsId, {
+      include: [{ model: Comment, include: Restaurant }]
+    })
+      .then(user => {
+        user = user.toJSON()
+        user.commentedRestaurants = user.Comments && user.Comments.reduce((accumulate, comment) => {
+          if (!accumulate.some(restaurant => restaurant.id === comment.restaurantId)
+          ) { accumulate.push(comment.Restaurant) }
+          return accumulate
+        }, [])
+        if (!user) throw new Error('User is not applied !')
+        res.render('users/profile', { user })
+      })
+      .catch(err => next(err))
   },
   editUser: (req, res, next) => {
     const userParamsId = Number(req.params.id)
