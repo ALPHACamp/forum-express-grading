@@ -14,11 +14,11 @@ const adminController = {
     return res.render('admin/create-restaurant')
   },
   postRestaurant: (req, res, next) => {
-    const { name, tel, address, openingHours, description } = req.body // 從 req.body 拿出表單裡的資料
-    if (!name) throw new Error('Restaurant name is required!') // name 是必填，若發現是空值就會終止程式碼，並在畫面顯示錯誤提示
-    const { file } = req // 把檔案取出來，也可以寫成 const file = req.file
-    return imgurFileHandler(file) // 把取出的檔案傳給 file-helper 處理後
-      .then(filePath => Restaurant.create({ // 再 create 這筆餐廳資料,產生一個新的 Restaurant 物件實例，並存入資料庫
+    const { name, tel, address, openingHours, description } = req.body
+    if (!name) throw new Error('Restaurant name is required!')
+    const { file } = req
+    return imgurFileHandler(file)
+      .then(filePath => Restaurant.create({
         name,
         tel,
         address,
