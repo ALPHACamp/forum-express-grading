@@ -23,7 +23,6 @@ const restaurantController = {
       Category.findAll({ raw: true })
     ])
       .then(([restaurants, categories]) => {
-        // const data = restaurants.map(r => ({
         const data = restaurants.rows.map(r => ({
           ...r,
           description: r.description.substring(0, 50)

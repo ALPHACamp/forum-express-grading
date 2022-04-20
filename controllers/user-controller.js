@@ -42,31 +42,22 @@ const userController = {
     res.redirect('/signin')
   },
   getUser: (req, res, next) => {
-    const userId = Number(req.user.id)
     const userParamsId = Number(req.params.id)
-    if (userId !== userParamsId) {
-      throw new Error('User is not allow to edit the profile of other people !')
-    }
     return (
       User.findByPk(userParamsId, { raw: true })
-        // return User.findByPk(req.user.id, { raw: true })
         .then(user => {
           if (!user) throw new Error('User is not applied !')
-          return res.render('users/profile', user)
+          res.render('users/profile', { user })
         })
         .catch(err => next(err))
     )
   },
   editUser: (req, res, next) => {
-    const userId = Number(req.user.id)
     const userParamsId = Number(req.params.id)
-    if (userId !== userParamsId) {
-      throw new Error('User is not allow to edit the profile of other people !')
-    }
     return User.findByPk(userParamsId, { raw: true })
       .then(user => {
         if (!user) throw new Error('User is not applied !')
-        return res.render('users/edit', user)
+        return res.render('users/edit', { user })
       })
       .catch(err => next(err))
   },
@@ -76,9 +67,13 @@ const userController = {
     const { name } = req.body
     const { file } = req
     if (userId !== userParamsId) {
-      throw new Error('User is not allow to edit the profile of other people !')
+      req.flash(
+        'error_messages',
+        'User is not allow to edit the profile of other people !'
+      )
+      return res.redirect(`/users/${userId}`)
     }
-    Promise.all([User.findByPk(userParamsId), imgurFileHandler(file)])
+    return Promise.all([User.findByPk(userParamsId), imgurFileHandler(file)])
       .then(([user, filePath]) => {
         if (!user) throw new Error('User is not exits !')
         return user.update({
@@ -86,7 +81,10 @@ const userController = {
           image: filePath || user.image
         })
       })
-      .then(user => res.render('users/profile', { user: user.toJSON() }))
+      .then(() => {
+        req.flash('success_messages', '使用者資料編輯成功')
+        res.redirect(`/users/${userParamsId}`)
+      })
       .catch(err => next(err))
   }
 }
