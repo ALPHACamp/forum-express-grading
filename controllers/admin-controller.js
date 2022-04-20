@@ -98,7 +98,17 @@ const adminController = {
     return User.findAll({
       raw: true
     })
-      .then(users => res.render('admin/users', { users }))
+      .then(users => {
+        users.forEach(user => {
+          user.isAdmin === 0
+            ? user.isAdmin = false
+            : user.isAdmin = true
+        })
+        return users
+      })
+      .then(users =>
+        res.render('admin/users', { users })
+      )
       .catch(err => next(err))
   },
   patchUser: (req, res, next) => {
