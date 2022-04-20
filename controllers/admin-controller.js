@@ -53,18 +53,27 @@ const adminController = {
         if (!restaurant) throw new Error('Restaurant did not exist!')
         restaurant = Object.assign(restaurant, editRestaurant)
         return restaurant.save()
-      // 教案的做法 return restaurant.update({
-      //   name,
-      //     tel,
-      //     address,
-      //     openingHours,
-      //     description
-      // })
+        // 教案的做法 return restaurant.update({
+        //   name,
+        //     tel,
+        //     address,
+        //     openingHours,
+        //     description
+        // })
       })
       .then(() => {
         req.flash('success_messages', 'restaurant was successfully to update')
         res.redirect('/admin/restaurants')
       })
+      .catch(err => next(err))
+  },
+  deleteRestaurant: (req, res, next) => {
+    return Restaurant.findByPk(req.params.id)
+      .then(restaurant => {
+        if (!restaurant) throw new Error('Restaurant did not exist!')
+        return restaurant.destroy()
+      })
+      .then(() => res.redirect('/admin/restaurants'))
       .catch(err => next(err))
   }
 }
