@@ -1,4 +1,4 @@
-const { Restaurant } = require('../models')
+const { Restaurant, User } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 //
@@ -87,6 +87,33 @@ const adminController = {
       })
       .then(() => res.redirect('/admin/restaurants'))
       .catch(err => next(err))
+  },
+  getUsers: (req, res, next) => {
+    return User.findAll({
+      raw: true
+    })
+      .then(users => {
+        res.render('admin/restaurants', { users })
+      })
+      .catch(err => next(err))
+  },
+  patchUser: (req, res, next) => {
+    const { id } = req.params
+    return User.findByPk(id)
+      .then(user => {
+        if (user.email === 'root@example.com') {
+          req.flash('error_messages', '禁止變更 root 權限')
+          return res.redirect('back')
+        } else {
+          req.flash('success_messages', '使用者權限變更成功')
+          return user.update({
+            isAdmin: !user.isAdmin
+          })
+        }
+      })
+      .then(() => res.redirect('/admin/users'))
+      .catch(err => next(err))
   }
 }
+
 module.exports = adminController
