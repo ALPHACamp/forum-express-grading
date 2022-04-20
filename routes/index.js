@@ -19,7 +19,7 @@ router.post('/signin', passport.authenticate('local', {
 }), userController.signIn)
 
 router.get('/restaurants', authenticated, restController.getRestaurants)
-
+router.get('/logout', userController.logout)
 router.get('/', (req, res) => res.redirect('/restaurants'))
 router.use('/', generalErrorHandler)
 
