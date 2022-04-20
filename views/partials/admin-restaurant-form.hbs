@@ -8,7 +8,9 @@
   <label class="form-label" for="categoryId">Category</label>
   <select class="form-control" id="categoryId" name="categoryId">
     {{#each categories}}
-    <option value="{{this.id}}">{{this.name}}</option>
+    <option value="{{this.id}}" {{#ifCond this.id ../restaurant.categoryId}} selected {{/ifCond}}>
+      {{this.name}}
+    </option>
     {{/each}}
   </select>
 </div>
@@ -40,7 +42,4 @@
   <input class="form-control" type="file" class="form-control-file" id="image" name="image">
 </div>
 <button type="submit" class="btn btn-primary">Submit</button>
-// 補上 back 按鈕
 <a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
-
-<button type="submit" class="btn btn-primary">Submit</button>
