@@ -28,7 +28,7 @@ const userController = {
   },
   signIn: (req, res) => {
     req.flash('success_messages', '成功登入！')
-    res.redirect('/restaurants')
+    if (req.user.isAdmin) { return res.redirect('/admin/restaurants') } else { return res.redirect('/restaurants') }
   },
   logout: (req, res) => {
     req.flash('success_messages', '登出成功！')
