@@ -1,6 +1,7 @@
 const db = require('../models')
 const { User } = db
 const bcrypt = require('bcryptjs')
+const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const userController = {
   signUpPage: (req, res) => {
@@ -55,6 +56,38 @@ const userController = {
         })
         .catch(err => next(err))
     )
+  },
+  editUser: (req, res, next) => {
+    const userId = Number(req.user.id)
+    const userParamsId = Number(req.params.id)
+    if (userId !== userParamsId) {
+      throw new Error('User is not allow to edit the profile of other people !')
+    }
+    return User.findByPk(userParamsId, { raw: true })
+      .then(user => {
+        if (!user) throw new Error('User is not applied !')
+        return res.render('users/edit', user)
+      })
+      .catch(err => next(err))
+  },
+  putUser: (req, res, next) => {
+    const userId = Number(req.user.id)
+    const userParamsId = Number(req.params.id)
+    const { name } = req.body
+    const { file } = req
+    if (userId !== userParamsId) {
+      throw new Error('User is not allow to edit the profile of other people !')
+    }
+    Promise.all([User.findByPk(userParamsId), imgurFileHandler(file)])
+      .then(([user, filePath]) => {
+        if (!user) throw new Error('User is not exits !')
+        return user.update({
+          name,
+          image: filePath || user.image
+        })
+      })
+      .then(user => res.render('users/profile', { user: user.toJSON() }))
+      .catch(err => next(err))
   }
 }
 
