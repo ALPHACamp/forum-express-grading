@@ -1,4 +1,5 @@
 // 重要 每次打開都要設定 nvm use 14.16.0 node版本
+const path = require('path')
 const express = require('express')
 const routes = require('./routes')
 const handlebars = require('express-handlebars')
@@ -18,6 +19,7 @@ app.use(passport.initialize()) // 增加這行，初始化 Passport
 app.use(passport.session()) // 增加這行，啟動session 一定要放在 session()後
 app.use(flash())
 app.use(methodOverride('_method'))
+app.use('/upload', express.static(path.join(__dirname, 'upload')))
 app.use((req, res, next) => {
   res.locals.success_messages = req.flash('success_messages')
   res.locals.error_messages = req.flash('error_messages')
