@@ -1,3 +1,4 @@
+const path = require('path')
 const express = require('express')
 const handlebars = require('express-handlebars') // 引入 express-handlebars
 const routes = require('./routes')
@@ -17,12 +18,15 @@ app.engine('hbs', handlebars({ extname: 'hbs', helpers: handlebarsHelpers }))
 app.use(express.urlencoded({ extended: true }))
 app.set('view engine', 'hbs')
 
-app.use(session({ secret: SESSION_SECRET, resave: false, saveUninitialized: false }))
+app.use(
+  session({ secret: SESSION_SECRET, resave: false, saveUninitialized: false })
+)
 app.use(passport.initialize())
 app.use(passport.session())
 
 app.use(flash())
 app.use(methodOverride('_method'))
+app.use('/upload', express.static(path.join(__dirname, 'upload')))
 
 app.use((req, res, next) => {
   res.locals.success_messages = req.flash('success_messages')
