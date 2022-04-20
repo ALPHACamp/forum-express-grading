@@ -39,6 +39,22 @@ const userController = {
     req.flash('success_messages', '登出成功！')
     req.logout()
     res.redirect('/signin')
+  },
+  getUser: (req, res, next) => {
+    const userId = Number(req.user.id)
+    const userParamsId = Number(req.params.id)
+    if (userId !== userParamsId) {
+      throw new Error('User is not allow to edit the profile of other people !')
+    }
+    return (
+      User.findByPk(userParamsId, { raw: true })
+        // return User.findByPk(req.user.id, { raw: true })
+        .then(user => {
+          if (!user) throw new Error('User is not applied !')
+          return res.render('users/profile', user)
+        })
+        .catch(err => next(err))
+    )
   }
 }
 

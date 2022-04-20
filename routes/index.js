@@ -35,6 +35,7 @@ router.delete(
   authenticatedAdmin,
   commentController.deleteComment
 )
+router.get('/users/:id', authenticated, userController.getUser)
 router.get('/', (req, res) => res.redirect('/restaurants'))
 router.use('/', generalErrorHandler)
 
