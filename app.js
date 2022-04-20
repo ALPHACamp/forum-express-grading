@@ -7,6 +7,7 @@ const session = require('express-session')
 const passport = require('passport')
 const handlebarsHelpers = require('./helpers/handlebars-helper')
 const { getUser } = require('./helpers/auth-helpers')
+const methodOverride = require('method-override')
 
 const app = express()
 const port = process.env.PORT || 3000
@@ -16,6 +17,7 @@ app.use(session({ secret: SESSION_SECRET, resave: false, saveUnintialized: false
 app.use(passport.initialize()) // 增加這行，初始化 Passport
 app.use(passport.session()) // 增加這行，啟動session 一定要放在 session()後
 app.use(flash())
+app.use(methodOverride('_method'))
 app.use((req, res, next) => {
   res.locals.success_messages = req.flash('success_messages')
   res.locals.error_messages = req.flash('error_messages')
