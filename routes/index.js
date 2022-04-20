@@ -30,6 +30,11 @@ router.get(
   restController.getDashboard
 )
 router.post('/comments', authenticated, commentController.postComment)
+router.delete(
+  '/comments/:id',
+  authenticatedAdmin,
+  commentController.deleteComment
+)
 router.get('/', (req, res) => res.redirect('/restaurants'))
 router.use('/', generalErrorHandler)
 
