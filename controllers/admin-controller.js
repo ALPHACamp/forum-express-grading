@@ -100,11 +100,8 @@ const adminController = {
           req.flash('error_messages', '禁止變更 root 權限')
           return res.redirect('back')
         }
-        user.dataValues.isAdmin
-          ? user.dataValues.isAdmin = 0// 設置成0時才能正常運作，但會過不了測試
-          : user.dataValues.isAdmin = 1// 設置成1時才能正常運作，但會過不了測試
         return user.update({
-          isAdmin: user.dataValues.isAdmin
+          isAdmin: !user.dataValues.isAdmin
         })
       })
       .then(() => {
