@@ -4,9 +4,10 @@ const router = express.Router()
 const admin = require('./modules/admin')
 const restController = require('../controllers/restaurant-controller')
 const userController = require('../controllers/user-controller')
+const commentController = require('../controllers/​​comment-controller')
 const { generalErrorHandler } = require('../middleware/error-handler')
 const passport = require('../config/passport')
-const { authenticated, authenticatedAdmin } = require('../middleware/auth') //
+const { authenticated, authenticatedAdmin } = require('../middleware/auth')
 
 router.use('/admin', authenticatedAdmin, admin)
 router.get('/signup', userController.signUpPage)
@@ -28,7 +29,8 @@ router.get(
   authenticated,
   restController.getDashboard
 )
+router.post('/comments', authenticated, commentController.postComment)
 router.get('/', (req, res) => res.redirect('/restaurants'))
-router.use('/', generalErrorHandler) // 這行加在哪都沒差，因爲 res.redirect('back')，進來不管是走哪個路由只要都會先經過 '/'，所以一定會進到 generalErrorHandler 去判斷是否有錯誤。
+router.use('/', generalErrorHandler)
 
 module.exports = router
