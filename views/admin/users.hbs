@@ -1,0 +1,41 @@
+<h1>餐廳後台</h1>
+<nav class="nav">
+  <p style="display:flex; align-items:baseline; justify-content:space-between;">
+    <a class="nav-link" href="/admin/restaurants">Restaurants</a>
+    |
+    <a class="nav-link" href="/admin/users">Users</a>
+  </p>
+</nav>
+
+<table class="table align-middle">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Name</th>
+      <th scope="col">Email</th>
+      <th scope="col">Role</th>
+      <th scope="col">#</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each users}}
+      <tr>
+        <th scope="row">{{this.id}}</th>
+        <td>{{this.name}}</td>
+        <td>{{this.email}}</td>
+        <td>
+          {{#if this.isAdmin}} <span>admin</span> 
+            {{else}} <span>user</span>
+          {{/if}}
+        </td>  
+        {{!--  TODO: 待確認  跟著 isAdmin的狀態修改文字 --}}
+        <td>
+          <form action="/admin/users/{{this.id}}?_method=PATCH" method="POST">
+            <button type="submit" class="btn btn-link link-danger" >跟著isAdmin的狀態修改文字</button>
+          </form>
+        </td>
+
+      </tr>
+    {{/each}}
+  </tbody>
+</table>
