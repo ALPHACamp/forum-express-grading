@@ -101,9 +101,10 @@ const adminController = {
     const { id } = req.params
     return User.findByPk(id)
       .then(user => {
-        if (user.email === 'root@example.com') {
-          req.flash('error_messages', '禁止變更 root 權限')
-          return res.redirect('back')
+        if (!user) {
+          throw new Error('使用者不存在')
+        } else if (user.email === 'root@example.com') {
+          throw new Error('禁止變更 root 權限')
         } else {
           req.flash('success_messages', '使用者權限變更成功')
           return user.update({
