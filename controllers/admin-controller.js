@@ -1,10 +1,11 @@
-const { Restaurant } = require('../models')
-const { User } = require('../models')
+const { Restaurant, User, Category } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 const adminController = {
   getRestaurants: (req, res, next) => {
     Restaurant.findAll({
-      raw: true // 把 Sequelize 包裝過的一大包物件轉換成格式比較單純的 JS 原生物件，再把資料傳到 view 裡
+      raw: true, // 把 Sequelize 包裝過的一大包物件轉換成格式比較單純的 JS 原生物件，再把資料傳到 view 裡
+      nest: true, // 預設情形下，Sequelize 只會返回屬於餐廳本身的資料，不包含它關聯的資料。設定 include 後，在 restaurants 裡會多一包 Category 物件，而加了 nest: true 就能夠把資料整理成比較容易取用的結構。
+      include: [Category] // 使用 model 的關聯資料時，需要透過 include 把關聯資料拉進來，關聯資料才會被拿到 findAll 的回傳值裡。
     })
       .then(restaurants => res.render('admin/restaurants', { restaurants }))
       .catch(err => next(err))
@@ -35,7 +36,9 @@ const adminController = {
   },
   getRestaurant: (req, res, next) => {
     Restaurant.findByPk(req.params.id, { // 去資料庫用 id 找一筆資料
-      raw: true // 把從資料庫傳來的資料轉換成 JS 原生物件
+      raw: true, // 把從資料庫傳來的資料轉換成 JS 原生物件
+      nest: true,
+      include: [Category]
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!") //  如果找不到，回傳錯誤訊息，後面不執行
