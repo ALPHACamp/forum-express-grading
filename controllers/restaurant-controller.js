@@ -27,6 +27,18 @@ const restaurantController = {
         return res.render('restaurant', { restaurant })
       })
       .catch(err => next(err))
+  },
+  getDashboard: (req, res, next) => {
+    return Restaurant.findByPk(req.params.id, {
+      include: Category
+    })
+      .then(restaurant => {
+        restaurant.update({
+          viewCounts: restaurant.viewCounts + 1
+        })
+        res.render('dashboard', { restaurant: restaurant.toJSON() })
+      })
+      .catch(err => next(err))
   }
 }
 
