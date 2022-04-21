@@ -1,6 +1,5 @@
 const express = require('express')
 const router = express.Router()
-const { authenticatedAdmin } = require('../../middleware/auth')
 const adminController = require('../../controllers/admin-controller')
 const upload = require('../../middleware/multer')
 
@@ -19,6 +18,8 @@ router.post(
   upload.single('image'),
   adminController.postRestaurant
 )
+router.get('/users', adminController.getUsers)
+router.patch('/users/:id', adminController.patchUser)
 router.get('/', (req, res) => {
   res.redirect('/admin/restaurants')
 })
