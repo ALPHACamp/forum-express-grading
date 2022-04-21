@@ -9,7 +9,6 @@ const restaurantController = {
     const offset = getOffset(limit, page)
     const categoryId = Number(req.query.categoryId) || ''
     return Promise.all([
-      // Restaurant.findAll({
       Restaurant.findAndCountAll({
         include: Category,
         where: {
