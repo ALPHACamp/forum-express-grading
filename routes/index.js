@@ -32,6 +32,7 @@ router.get(
   restController.getDashboard
 )
 router.post('/comments', authenticated, commentController.postComment)
+router.get('/users/top', authenticated, userController.getTopUsers)
 router.delete(
   '/comments/:id',
   authenticatedAdmin,
@@ -57,6 +58,12 @@ router.delete(
 )
 router.post('/like/:restaurantId', authenticated, userController.addLike)
 router.delete('/like/:restaurantId', authenticated, userController.removeLike)
+router.post('/following/:userId', authenticated, userController.addFollowing)
+router.delete(
+  '/following/:userId',
+  authenticated,
+  userController.removeFollowing
+)
 router.get('/', (req, res) => res.redirect('/restaurants'))
 router.use('/', generalErrorHandler)
 
