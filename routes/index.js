@@ -32,6 +32,7 @@ router.get(
   restController.getDashboard
 )
 router.post('/comments', authenticated, commentController.postComment)
+router.get('/users/top', authenticated, userController.getTopUsers)
 router.delete(
   '/comments/:id',
   authenticatedAdmin,
