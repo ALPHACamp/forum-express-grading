@@ -1,4 +1,5 @@
 const { Restaurant } = require('../models')
+const { User } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 const adminController = {
   getRestaurants: (req, res, next) => {
@@ -91,7 +92,23 @@ const adminController = {
       .catch(err => next(err))
   },
   getUsers: (req, res, next) => {
-    res.render('admin/admin-users')
+    return User.findAll({ raw: true })
+      .then(users => res.render('admin/admin-users', { users }))
+      .catch(err => next(err))
+  },
+  patchcUser: (req, res, next) => {
+    const id = req.params.id
+    return User.findByPk(id)
+      .then(user => {
+        if (user.dataValues.email === 'root@example.com') throw new Error('禁止變更 root 權限')
+        if (user.dataValues.isAdmin === false) return User.update({ isAdmin: true }, { where: { id } })
+        if (user.dataValues.isAdmin === true) return User.update({ isAdmin: false }, { where: { id } })
+      })
+      .then(() => {
+        req.flash('success_messages', '使用者權限變更成功')
+        res.redirect('/admin/users')
+      })
+      .catch(err => next(err))
   }
 }
 module.exports = adminController

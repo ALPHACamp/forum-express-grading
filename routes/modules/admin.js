@@ -12,6 +12,7 @@ router.get('/restaurants', adminController.getRestaurants)
 router.post('/restaurants', upload.single('image'), adminController.postRestaurant)
 
 router.get('/users', adminController.getUsers)
+router.patch('/users/:id', adminController.patchcUser)
 
 router.get('/', (req, res) => res.render('admin/index'))
 module.exports = router
