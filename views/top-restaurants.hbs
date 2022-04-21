@@ -1,0 +1,72 @@
+{{!-- {{> restaurant-tabs route='topRestaurants'}}
+<h1>人氣餐廳</h1>
+<hr/>
+<div class="row" style="text-align: center;">
+  {{#each restaurants}}
+    <div class="col-md-6">
+      <a href="/restaurants/{{this.id}}">
+        {{#if this.image}}
+          <img src="{{this.image}}" width="140px" height="140px" style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;" />
+        {{else}}
+          <img src="https://via.placeholder.com/140" width="140px" height="140px" />
+        {{/if}}
+      </a>
+      <h2>{{this.name}}</h2>
+      <span class="bg-secondary badge">收藏數：{{this.favoritedCount}}</span>
+      <a class='btn btn-primary' href='/restaurants/{{this.id}}'>Show</a>
+      <p class='card-text text-truncate'>{{this.description}}</p>
+      <p>
+        {{#if isFavorited}}
+          <form action="/favorite/{{this.id}}?_method=DELETE" method="POST">
+            <button type="submit" class="btn btn-danger m-1">移除最愛</button>
+          </form>
+        {{else}}
+          <form action="/favorite/{{this.id}}" method="POST">
+            <button type="submit" class="btn btn-primary m-1">加到最愛</button>
+          </form>
+        {{/if}}
+      </p>
+    </div>
+  {{/each}}
+</div> --}}
+
+{{> restaurant-tabs route='topRestaurants'}}
+<h1>人氣餐廳</h1>
+<hr />  
+<div class="row">
+  {{#each restaurants}}
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card mb-4 shadow-sm flex-row">
+        <a href="/restaurants/{{this.id}}">
+          <img class="card-img-top img-fluid" src="{{this.image}}" alt="Card image cap" width="286px" height="180px"
+            style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+        </a>
+        <div class="card-body w-75">
+          <p class="card-text">
+            <a href="/restaurants/{{this.id}}">
+              {{this.name}}
+            </a>
+          </p>
+          <span class="bg-secondary badge">收藏數：{{this.favoritedCount}}</span>
+          <p class="card-text" style="font-size: 1rem;">{{this.description}}</p>
+
+          <div class="d-flex">
+        
+            <a type="button" class="btn btn-primary m-1" href="/restaurants/{{this.id}}">SHOW</a>
+            {{#if this.isFavorited}}
+            <form action="/favorite/{{this.id}}?_method=DELETE" method="POST">
+              <button type="submit" class="btn btn-danger m-1">移除最愛</button>
+            </form>
+            {{else}}
+            <form action="/favorite/{{this.id}}" method="POST">
+              <button type="submit" class="btn btn-primary m-1">加到最愛</button>
+            </form>
+            {{/if}}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {{/each}}
+</div>
