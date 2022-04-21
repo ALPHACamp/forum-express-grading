@@ -19,8 +19,8 @@ app.use(express.urlencoded({ extended: true }))
 app.use(session({ secret: SESSION_SECRET, resave: false, saveUninitialized: false }))
 app.use(flash())
 app.use((req, res, next) => {
-  res.locals.success_massages = req.flash('success_massages')
-  res.locals.error_massages = req.flash('error_massages')
+  res.locals.success_messages = req.flash('success_messages')
+  res.locals.error_messages = req.flash('error_messages')
   next()
 })
 
