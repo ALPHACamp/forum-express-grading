@@ -1,0 +1,40 @@
+{{> admin-nav}}
+<table class="table table-lg">
+  <thead>
+    <tr class="table-dark">
+      <th scope="col">#</th>
+      <th scope="col">Name</th>
+      <th scope="col">Email</th>
+      <th scope="col">Role</th>
+      <th scope="col">#</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each users}}
+    <tr class="pt-5">
+      <th scope="row" class="align-middle">{{this.id}}</th>
+      <td class="align-middle">{{this.name}}</td>
+      <td class="align-middle">{{this.email}}</td>
+      <td class="align-middle">
+        {{#if this.isAdmin}}
+        admin
+        {{else}}
+        user
+        {{/if}}
+      </td>
+      <form action="/admin/users/{{this.id}}?_method=patch" method="post">
+        <td>
+          <button class="btn btn-link" onclick="return confirm(`確定要修改權限嗎？`)">
+            Set as
+            {{#if this.isAdmin}}
+            user
+            {{else}}
+            admin
+            {{/if}}
+          </button>
+        </td>
+      </form>
+    </tr>
+    {{/each}}
+  </tbody>
+</table>
