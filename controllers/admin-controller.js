@@ -1,5 +1,5 @@
-const { Restaurant } = require('../models') // 新增這裡
-const { localFileHandler } = require('../helpers/file-helpers')
+const { Restaurant, User } = require('../models')
+const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const adminController = {
   getRestaurants: (req, res, next) => {
@@ -16,7 +16,7 @@ const adminController = {
     const { name, tel, address, openingHours, description } = req.body
     if (!name) throw new Error('Restaurant name is required!')
     const { file } = req
-    localFileHandler(file)
+    imgurFileHandler(file)
       .then(filePath => Restaurant.create({
       // 產生一個新的 Restaurant 物件實例，並存入資料庫
         name,
@@ -61,7 +61,7 @@ const adminController = {
     Promise.all([
       // 非同步處理
       Restaurant.findByPk(req.params.id), // 去資料庫查有沒有這間餐廳
-      localFileHandler(file) // 把檔案傳到 file-helper 處理
+      imgurFileHandler(file) // 把檔案傳到 file-helper 處理
     ])
       .then(([restaurant, filePath]) => {
         // 以上兩樣事都做完以後
@@ -90,6 +90,30 @@ const adminController = {
       })
       .then(() => res.redirect('/admin/restaurants'))
       .catch(err => next(err))
+  },
+  getUsers: (req, res, next) => {
+    return User.findAll({ raw: true })
+      .then(users => res.render('admin/users', { users }))
+      .catch(err => next(err))
+  },
+  patchUser: (req, res, next) => {
+    const id = req.params.id
+    return User.findByPk(id)
+      .then(user => {
+        if (!user) throw new Error("User didn't exist!")
+        if (user.email === 'root@example.com') {
+          req.flash('error_messages', '禁止變更 root 權限')
+          return res.redirect('back')
+        }
+        user.isAdmin = !user.isAdmin
+        return user.update({ isAdmin: user.isAdmin })
+      })
+      .then(() => {
+        req.flash('success_messages', '使用者權限變更成功')
+        res.redirect('/admin/users')
+      })
+      .catch(err => next(err))
   }
 }
+
 module.exports = adminController
