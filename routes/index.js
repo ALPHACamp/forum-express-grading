@@ -6,13 +6,14 @@ const restController = require('../controllers/restaurant-controller')
 const userController = require('../controllers/user-controller')
 
 const { authenticated } = require('../middleware/auth')
+const { authenticatedAdmin } = require('../middleware/auth')
 // 錯誤處理
 const { generalErrorHandler } = require('../middleware/error-handler')
 const passport = require('../config/passport')
 const admin = require('./modules/admin')
 // 條件較多的 route 盡量往前面
 
-router.use('/admin', admin)
+router.use('/admin', authenticatedAdmin, admin)
 // 註冊
 router.get('/signup', userController.signUpPage)
 router.post('/signup', userController.signUp)
