@@ -3,6 +3,11 @@ const router = express.Router()
 const adminController = require('../../controllers/admin-controller')
 const upload = require('../../middleware/multer')
 
+// 顯示使用者清單
+router.get('/users', adminController.getUsers)
+// 修改使用者權限
+router.patch('/users/:id', adminController.patchUser)
+
 router.get('/restaurants/create', adminController.createRestaurant)
 router.get('/restaurants/:id/edit', adminController.editRestaurant)
 router.get('/restaurants/:id', adminController.getRestaurant)
