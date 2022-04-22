@@ -1,19 +1,7 @@
-<h1>餐廳後台</h1>
-<ul class="nav nav-tabs">
-  <li class="nav-item">
-    <a class="nav-link" href="/admin/restaurants">Restaurants</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" href="/admin/users">Users</a>
-  </li>
-  <li class="ms-auto">
-    <a href='/admin/restaurants/create'>
-      <button type="button" class="btn btn-primary">New Restaurant</button>
-    </a>
-  </li>
-</ul>
-<br />
-<br />
+{{>admin-tabs route='restaurants'}}
+<a href='/admin/restaurants/create'>
+  <button type="button" class="btn btn-primary">New Restaurant</button>
+</a>
 <table class="table table-striped align-middle">
   <thead class="table-dark">
     <tr>
@@ -26,7 +14,6 @@
     </tr>
   </thead>
   <tbody>
-    {{#if restaurants}}
     {{#each restaurants}}
       <tr>
         <th scope="row">{{this.id}}</th>
@@ -49,25 +36,5 @@
         </td>
       </tr>
     {{/each}}
-    {{/if}}
-    {{#if users}}
-    {{#each users}}
-      <tr>
-        <th scope="row">{{this.id}}</th>
-        <td>{{this.name}}</td>
-        <td>
-            <form action="/admin/users/{{this.id}}?_method=PATCH" method="POST" style="display: inline;">
-              <button type="submit" class="btn btn-link">           
-                {{#if this.isAdmin}}
-                  set as Users
-                {{else}}
-                  set as Admin
-                {{/if}}
-              </button>
-            </form>
-        </td>
-      </tr>
-    {{/each}}
-    {{/if}}
   </tbody>
 </table>

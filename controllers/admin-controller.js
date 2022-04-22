@@ -105,7 +105,7 @@ const adminController = {
       raw: true
     })
       .then(users => {
-        res.render('admin/restaurants', { users })
+        res.render('admin/users', { users })
       })
       .catch(err => next(err))
   },
