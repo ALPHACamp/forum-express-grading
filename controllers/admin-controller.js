@@ -107,8 +107,7 @@ const adminController = {
           req.flash('error_messages', '禁止變更 root 權限')
           return res.redirect('back')
         }
-        user.isAdmin = !user.isAdmin
-        return user.update({ isAdmin: user.isAdmin })
+        return user.update({ isAdmin: !user.isAdmin })
       })
       .then(
         () => {
