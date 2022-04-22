@@ -1,6 +1,9 @@
 const bcrypt = require('bcryptjs')
 const { User } = require('../models')
 
+const { getUser } = require('../helpers/auth-helpers')
+const { imgurFileHandler } = require('../helpers/file-helpers')
+
 const userController = {
   signUpPage: async (req, res, next) => {
     try {
@@ -52,6 +55,59 @@ const userController = {
       req.flash('success_messages', '成功登出！')
       req.logout()
       return res.redirect('/signin')
+    } catch (err) {
+      next(err)
+    }
+  },
+  getUser: async (req, res, next) => {
+    try {
+      const { id } = req.params
+      const user = await User.findByPk(id, {
+        raw: true
+      })
+
+      if (!user) throw new Error('該使用者不存在！')
+
+      return res.render('users/profile', { user })
+    } catch (err) {
+      next(err)
+    }
+  },
+  editUser: async (req, res, next) => {
+    try {
+      const userId = getUser(req).id
+      const id = Number(req.params.id)
+
+      if (id !== userId) {
+        req.flash('error_messages', '無法編輯除了自己以外的使用者！')
+        return res.redirect(`/users/${userId}`)
+      }
+
+      const user = await User.findByPk(id, { raw: true })
+      return res.render('users/edit', { user })
+    } catch (err) {
+      next(err)
+    }
+  },
+  putUser: async (req, res, next) => {
+    try {
+      const { id } = req.params
+      const { name } = req.body
+      if (!name) throw new Error('User name is required!')
+
+      const { file } = req
+      const [filePath, user] = await Promise.all([
+        imgurFileHandler(file),
+        User.findByPk(id)
+      ])
+
+      await user.update({
+        name,
+        image: filePath || user.image
+      })
+
+      req.flash('success_messages', '使用者資料編輯成功')
+      return res.redirect(`/users/${id}`)
     } catch (err) {
       next(err)
     }
