@@ -43,14 +43,13 @@ const restaurantController = {
     try {
       const { id } = req.params
       const restaurant = await Restaurant.findByPk(id, {
-        nest: true,
         include: [Category, {
           model: Comment, include: [User]
         }]
       })
       if (!restaurant) throw new Error('該餐廳不存在！')
 
-      await restaurant.increment('view_counts')
+      await restaurant.increment('viewCounts')
 
       return res.render('restaurant', { restaurant: restaurant.toJSON() })
     } catch (err) {
