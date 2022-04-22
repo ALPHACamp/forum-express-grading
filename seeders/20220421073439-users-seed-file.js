@@ -16,13 +16,6 @@ module.exports = {
       name: 'user1',
       created_at: new Date(),
       updated_at: new Date()
-    }, {
-      email: 'user2@example.com',
-      password: await bcrypt.hash('12345678', 10),
-      is_admin: false,
-      name: 'user2',
-      created_at: new Date(),
-      updated_at: new Date()
     }], {})
   },
   down: async (queryInterface, Sequelize) => { // 清空資料表中所有資料
