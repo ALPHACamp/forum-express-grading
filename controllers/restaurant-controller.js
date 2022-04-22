@@ -53,11 +53,13 @@ const restaurantController = {
   },
   getDashboard: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
-      include: Category,
-      raw: true,
-      nest: true
+      include: [Category, Comment]
     })
-      .then(restaurant => res.render('dashboard', { restaurant }))
+      .then(restaurant => {
+        const commentCounts = restaurant.dataValues.Comments.length
+
+        res.render('dashboard', { restaurant: restaurant.toJSON(), commentCounts })
+      })
       .catch(err => next(err))
   }
 }
