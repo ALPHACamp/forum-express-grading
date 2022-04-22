@@ -8,6 +8,7 @@ const authenticated = (req, res, next) => {
 }
 const authenticatedAdmin = (req, res, next) => {
   // if (req.isAuthenticated)
+  console.log(getUser(req).isAdmin)
   if (ensureAuthenticated(req)) {
     if (getUser(req).isAdmin) return next()
     res.redirect('/')
