@@ -1,0 +1,1 @@
+web: NODE_ENNV=production node app.js
