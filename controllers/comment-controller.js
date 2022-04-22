@@ -25,6 +25,18 @@ const commentController = {
     } catch (err) {
       next(err)
     }
+  },
+  deleteComment: async (req, res, next) => {
+    try {
+      const { id } = req.params
+      const comment = await Comment.findByPk(id)
+      if (!comment) throw new Error('該條評論不存在！')
+      const deletedComment = await comment.destroy()
+
+      return res.redirect(`/restaurants/${deletedComment.restaurantId}`)
+    } catch (err) {
+      next(err)
+    }
   }
 }
 
