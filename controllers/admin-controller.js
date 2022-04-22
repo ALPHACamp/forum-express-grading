@@ -91,7 +91,7 @@ const adminController = {
       raw: true
     })
       .then(users => {
-        console.log('admin/users')
+        // console.log('admin/users')
         res.render('admin/users', { users })
       })
       .catch(err => next(err))
