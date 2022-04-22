@@ -99,7 +99,10 @@ const adminController = {
   patchUser: (req, res, next) => {
     return User.findByPk(req.params.id)
       .then(user => {
-        if (!user) throw new Error("沒有找到該名使用者")
+        if (!user) {
+          req.flash('error_messages', '沒有找到該名使用者')
+          return res.redirect('back')
+        }
         if (user.email === 'root@example.com') {
           req.flash('error_messages', '禁止變更 root 權限')
           return res.redirect('back')
