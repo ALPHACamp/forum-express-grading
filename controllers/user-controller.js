@@ -28,9 +28,9 @@ const userController = {
   signInPage: (req, res) => {
     return res.render('signin')
   },
-  signIn: (req, res, next) => {
+  signIn: (req, res) => {
     req.flash('success_messages', 'Logged in successfully.')
-    return res.redirect('restaurants')
+    res.redirect('/restaurants')
   },
   logout: (req, res) => {
     req.flash('success_messages', 'Logged out successfully.')
