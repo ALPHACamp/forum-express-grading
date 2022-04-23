@@ -16,9 +16,12 @@
     class="form-control" 
     id="categoryId" 
     name="categoryId">
-      <option value="" disabled selected>---請選擇---</option>
+    <option value="" disabled selected>---請選擇---</option>
     {{#each categories}}
-      <option value="{{this.id}}">{{this.name}}</option>
+      <option value="{{this.id}}" {{#ifCond this.id ../restaurant.categoryId}}
+      selected {{/ifCond}}>
+        {{this.name}}
+      </option>
     {{/each}}
   </select>
 </div>

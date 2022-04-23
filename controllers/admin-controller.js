@@ -15,24 +15,29 @@ const adminController = {
     return Category.findAll({
       raw: true
     })
-      .then(categories => res.render('admin/create-restaurant', { categories }))
+      .then(categories =>
+        res.render('admin/create-restaurant', { categories })
+      )
       .catch(err => next(err))
   },
   postRestaurant: (req, res, next) => {
-    const { name, tel, address, openingHours, description, categoryId } = req.body
+    const { name, tel, address, openingHours, description, categoryId } =
+      req.body
     if (!name) throw new Error('Restaurant name is required!')
     const { file } = req
     imgurFileHandler(file)
-      .then(filePath => Restaurant.create({
-      // 產生一個新的 Restaurant 物件實例，並存入資料庫
-        name,
-        tel,
-        address,
-        openingHours,
-        description,
-        image: filePath || null,
-        categoryId
-      }))
+      .then(filePath =>
+        Restaurant.create({
+          // 產生一個新的 Restaurant 物件實例，並存入資料庫
+          name,
+          tel,
+          address,
+          openingHours,
+          description,
+          image: filePath || null,
+          categoryId
+        })
+      )
       .then(() => {
         req.flash('success_messages', 'Restaurant was successfully created!') // 在畫面顯示成功提示
         res.redirect('/admin/restaurants') // 新增完成後導回後台首頁
@@ -54,16 +59,18 @@ const adminController = {
   },
   editRestaurant: (req, res, next) => {
     return Promise.all([
-      Restaurant.findByPk(req.params.id, { raw: true })
+      Restaurant.findByPk(req.params.id, { raw: true }),
+      Category.findAll({ raw: true })
     ])
-      .then((restaurant, categories) => {
-        if (!restaurant) throw new Error("Restaurant didn't exist!")
+      .then(([restaurant, categories]) => {
+        if (!restaurant) throw new Error("Restaurant doesn't exist!")
         res.render('admin/edit-restaurant', { restaurant, categories })
       })
       .catch(err => next(err))
   },
   putRestaurant: (req, res, next) => {
-    const { name, tel, address, openingHours, description, categoryId } = req.body
+    const { name, tel, address, openingHours, description, categoryId } =
+      req.body
     if (!name) throw new Error('Restaurant name is required!')
     const { file } = req
     Promise.all([
