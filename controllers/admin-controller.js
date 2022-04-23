@@ -1,5 +1,5 @@
 // controller 是一種 object
-const { Restaurant } = require('../models')
+const { Restaurant, User } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const adminController = {
@@ -84,6 +84,17 @@ const adminController = {
         return restaurant.destroy()
       })
       .then(() => res.redirect('/admin/restaurants'))
+      .catch(err => next(err))
+  },
+  getUsers: (req, res, next) => {
+    res.render('admin/users')
+    User.findAll({
+      raw: true
+    })
+      .then(users => {
+        console.log(users)
+        // res.render('admin/users')
+      })
       .catch(err => next(err))
   }
 }
