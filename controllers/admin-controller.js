@@ -1,4 +1,4 @@
-const { Restaurant } = require('../models')
+const { Restaurant, User } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const adminController = {
@@ -83,6 +83,22 @@ const adminController = {
       })
       .then(() => res.redirect('/admin/restaurants'))
       .catch(err => next(err))
+  },
+  getUsers: (req, res, next) => {
+    User.findAll({ raw: true })
+      .then(users => res.render('admin/users', { users }))
+      .catch(err => next(err))
+  },
+  patchUser: async (req, res, next) => {
+    const user = await User.findByPk(req.params.id)
+    if (user.email === 'root@example.com') {
+      req.flash('error_messages', 'Can not change root identity!')
+      return res.redirect('/admin/users')
+    }
+    return user.update({
+      isAdmin: !user.isAdmin
+    })
+      .then(() => res.redirect('/admin/users'))
   }
 }
 module.exports = adminController
