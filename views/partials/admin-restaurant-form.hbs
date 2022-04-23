@@ -10,6 +10,18 @@
     required
   />
 </div>
+<div class="form-row mb-3">
+  <label class="form-label" for="categoryId">Category</label>
+  <select 
+    class="form-control" 
+    id="categoryId" 
+    name="categoryId">
+      <option value="" disabled selected>---請選擇---</option>
+    {{#each categories}}
+      <option value="{{this.id}}">{{this.name}}</option>
+    {{/each}}
+  </select>
+</div>
 <div class='form-row mb-3'>
   <label class='form-label' for='tel'>Tel</label>
   <input
