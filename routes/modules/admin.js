@@ -9,7 +9,7 @@ router.get('/categories/:id', categoryController.getCategories)
 router.put('/categories/:id', categoryController.putCategory)
 router.get('/categories', categoryController.getCategories)
 router.post('/categories', categoryController.postCategory)
-
+router.delete('/categories/:id', categoryController.deleteCategory)
 //
 router.get('/users', adminController.getUsers)
 router.patch('/users/:id', adminController.patchUser)
