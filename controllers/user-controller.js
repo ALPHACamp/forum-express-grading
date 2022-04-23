@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs')
-const { User } = require('../models')
+const db = require('../models/index')
+const { User, Comment, Restaurant } = require('../models')
 
 const { getUser } = require('../helpers/auth-helpers')
 const { imgurFileHandler } = require('../helpers/file-helpers')
@@ -61,14 +62,34 @@ const userController = {
   },
   getUser: async (req, res, next) => {
     try {
-      const { id } = req.params
-      const user = await User.findByPk(id, {
-        raw: true
-      })
+      const userId = req.params.id
+      const [rawUser, comments] = await Promise.all([
+        User.findByPk(userId),
+        Comment.findAll({
+          where: { userId },
+          attributes: [
+            'restaurant_id',
+            [
+              db.sequelize.fn('count', db.sequelize.col('restaurant_id')),
+              'comments'
+            ]
+          ],
+          include: [Restaurant],
+          group: ['restaurant_id'],
+          raw: true,
+          nest: true
+        })
+      ])
 
-      if (!user) throw new Error('該使用者不存在！')
+      if (!rawUser) throw new Error('該使用者不存在！')
 
-      return res.render('users/profile', { user })
+      const totalComments = comments.reduce((accumulator, curValue) => {
+        return accumulator + curValue.comments
+      }, 0)
+
+      const user = { ...rawUser.toJSON() }
+
+      return res.render('users/profile', { user, comments, totalComments })
     } catch (err) {
       next(err)
     }
