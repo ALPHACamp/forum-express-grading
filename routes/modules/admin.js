@@ -6,6 +6,7 @@ const categoryController = require('../../controllers/category-controller')
 const { authenticatedAdmin } = require('../../middleware/auth')
 //
 router.get('/categories', categoryController.getCategories)
+router.post('/categories', categoryController.postCategory)
 //
 router.get('/users', adminController.getUsers)
 router.patch('/users/:id', adminController.patchUser)
