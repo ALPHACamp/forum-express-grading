@@ -43,17 +43,16 @@ const userController = {
       raw: true
     })
       .then(user => {
-        res.render('users/profile', user)
+        res.render('users/profile', { user })
       })
       .catch(err => next(err))
   },
   editUser: (req, res, next) => {
-    if (Number(req.params.id) !== req.user.id) {
-      return res.redirect(`/users/${req.user.id}`)
-    }
-    return User.findByPk(req.params.id)
+    return User.findByPk(req.params.id, {
+      raw: true
+    })
       .then(user => {
-        res.render('users/edit', user)
+        res.render('users/edit', { user })
       })
       .catch(err => next(err))
   },
@@ -66,7 +65,7 @@ const userController = {
     ])
       .then(([user, filePath]) => {
         if (!user) throw new Error("User didn't exist!")
-        return user.update({ // 修改這筆資料
+        return user.update({
           name,
           image: filePath || user.image
         })
