@@ -1,0 +1,13 @@
+<div class="w-100" style="height: 250px;">
+  <form action="/users/{{user.id}}?_method=PUT" method="post" enctype="multipart/form-data">
+    <div class=" card-body d-flex flex-column">
+      <label for="name">Name</label>
+      <input class="mt-1" type="text" id="name" name="name" value="{{user.name}}">
+      <div class="form-row mb-3">
+        <label class="form-label" for="image">Image</label>
+        <input class="form-control" type="file" class="form-control-file" id="image" name="image">
+      </div>
+      <button type="submit" class="btn btn-primary mt-2" style="width: 100px;">edit</button>
+    </div>
+  </form>
+</div>
