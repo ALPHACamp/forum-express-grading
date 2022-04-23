@@ -7,3 +7,16 @@
     <a href="/users/{{user.id}}/edit" class="btn btn-primary">edit</a>
   </div>
 </div>
+<div class="card">
+  <div class="card-header">
+    Featured
+  </div>
+  <div class="card-body">
+    {{#each restaurant}}
+    <a href="/restaurants/{{this.id}}">
+      <img class="card-img-top img-fluid" src="{{this.image}}" alt="Card image cap"
+        style="transition: opacity 0.5s; opacity:0; width: 100px; heigh: 100px;" onload="this.style.opacity=1;">
+    </a>
+    {{/each}}
+  </div>
+</div>

@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs') // 載入 bcrypt
 const { imgurFileHandler } = require('../helpers/file-helpers')
-const { User } = require('../models')
+const { User, Comment, Restaurant } = require('../models')
 const userController = {
   signUpPage: (req, res) => {
     res.render('signup')
@@ -26,7 +26,7 @@ const userController = {
       })
       .catch(err => next(err)) // 接住前面拋出的錯誤，呼叫專門做錯誤處理的 middleware
   },
-  signInPage: (req, res) => {
+  signInPage: async function (req, res) {
     res.render('signin')
   },
   signIn: (req, res) => {
@@ -38,14 +38,32 @@ const userController = {
     req.logout()
     res.redirect('/signin')
   },
-  getUser: (req, res, next) => {
-    return User.findByPk(req.params.id, {
-      raw: true
-    })
-      .then(user => {
-        res.render('users/profile', { user })
+  getUser: async function (req, res, next) {
+    try {
+      const user = await User.findByPk(req.params.id, {
+        raw: true
       })
-      .catch(err => next(err))
+      const restaurantList = await Comment.findAll({
+        where: {
+          userId: req.params.id
+        },
+        raw: true,
+        nest: true,
+        include: [Restaurant]
+      })
+      const restaurantIdList = Array.from(new Set(restaurantList.map(item =>
+        item.Restaurant.id
+      )))
+      const restaurant = await Restaurant.findAll({
+        where: {
+          id: restaurantIdList
+        },
+        raw: true
+      })
+      res.render('users/profile', { user, restaurant })
+    } catch (err) {
+      next(err)
+    }
   },
   editUser: (req, res, next) => {
     return User.findByPk(req.params.id, {
@@ -56,25 +74,18 @@ const userController = {
       })
       .catch(err => next(err))
   },
-  putUser: (req, res, next) => {
+  putUser: async function (req, res, next) {
     const { name } = req.body
     const { file } = req
-    Promise.all([
-      User.findByPk(req.params.id),
-      imgurFileHandler(file)
-    ])
-      .then(([user, filePath]) => {
-        if (!user) throw new Error("User didn't exist!")
-        return user.update({
-          name,
-          image: filePath || user.image
-        })
-      })
-      .then(() => {
-        req.flash('success_messages', '使用者資料編輯成功')
-        res.redirect(`/users/${req.params.id}`)
-      })
-      .catch(err => next(err))
+    const user = await User.findByPk(req.params.id)
+    const filePath = await imgurFileHandler(file)
+    if (!user) throw new Error("User didn't exist!")
+    await user.update({
+      name,
+      image: filePath || user.image
+    })
+    req.flash('success_messages', '使用者資料編輯成功')
+    res.redirect(`/users/${req.params.id}`)
   }
 }
 module.exports = userController
