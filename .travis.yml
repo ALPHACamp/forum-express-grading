@@ -13,8 +13,13 @@ env:
 before_install:
   - mysql -e 'CREATE DATABASE IF NOT EXISTS forum default character set utf8mb4 collate utf8mb4_unicode_ci;'
   - npm install sequelize-cli -g
+  - CREATE TABLE IF NOT EXISTS `comments` (
+    `text: DataTypes.STRING,
+    `userId: DataTypes.INTEGER,
+    `restaurantId: DataTypes.INTEGER
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 # 在執行測試之前的指令
 before_script:
-  - sequelize db:migrate:all
+  - sequelize db:migrate
   - sequelize db:seed:all
