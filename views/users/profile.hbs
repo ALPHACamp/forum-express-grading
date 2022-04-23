@@ -1,0 +1,39 @@
+<div class="card mb-3" style="max-width: 800px;">
+  <div class="row g-0">
+    <div class="col-md-6">
+      <img class="img-responsive center-block" src="{{ user.image }}"
+        style="width: 360px; margin-bottom: 25px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+    </div>
+
+    <div class="col-md-6">
+      <div class="card-body">
+        <h5 class="card-title">{{ user.name }}</h5>
+        <p class="card-text">{{ user.email }}</p>
+        <p class="card-text">總共留下 <strong>{{ totalComments }}</strong> 則評論
+        </p>
+        <a class="btn btn-primary" href="/users/{{ user.id }}/edit" role="button">Edit</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card" style="max-width: 800px;">
+  <div class="card-header">
+    <span>評論過 <strong>{{ comments.length }}</strong> 個餐廳</span>
+    <span>共 <strong>{{ totalComments }}</strong> 則評論</span>
+  </div>
+  <div class="card-header">
+    <div class="card-body">
+      <div class="row align-items-center me-2"></div>
+      {{#if comments.length}}
+      {{#each comments}}
+      <a href="/restaurants/{{this.Restaurant.id}}"><img src="{{this.Restaurant.image}}" width="80" height="80"
+          class="m-2"></a>
+      {{/each}}
+      {{else}}
+      <p class="card-text">尚無評論過的餐廳資料。</p>
+      {{/if}}
+    </div>
+  </div>
+</div>
+</div>
