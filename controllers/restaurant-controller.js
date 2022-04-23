@@ -58,15 +58,23 @@ const restaurantController = {
   },
   getDashboard: async (req, res, next) => {
     try {
-      const { id } = req.params
-      const restaurant = await Restaurant.findByPk(id, {
-        raw: true,
-        nest: true,
-        include: [Category]
-      })
+      const restaurantId = req.params.id
+      const [restaurant, comment] = await Promise.all([
+        Restaurant.findByPk(restaurantId, {
+          raw: true,
+          nest: true,
+          include: [Category]
+        }),
+        Comment.findAndCountAll({
+          where: { restaurantId },
+          raw: true,
+          nest: true
+        })
+      ])
+
       if (!restaurant) throw new Error('該餐廳不存在！')
 
-      res.render('dashboard', { restaurant })
+      res.render('dashboard', { restaurant, comments: comment.count })
     } catch (err) {
       next(err)
     }
