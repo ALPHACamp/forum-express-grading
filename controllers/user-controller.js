@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs') // 載入 bcrypt
 const { imgurFileHandler } = require('../helpers/file-helpers')
-const { User, Comment, Restaurant } = require('../models')
+const { User, Comment, Restaurant, Favorite } = require('../models')
 const userController = {
   signUpPage: (req, res) => {
     res.render('signup')
@@ -8,7 +8,6 @@ const userController = {
   signUp: (req, res, next) => { // 修改這裡
     // 如果兩次輸入的密碼不同，就建立一個 Error 物件並拋出
     if (req.body.password !== req.body.passwordCheck) throw new Error('Passwords do not match!')
-
     // 確認資料裡面沒有一樣的 email，若有，就建立一個 Error 物件並拋出
     User.findOne({ where: { email: req.body.email } })
       .then(user => {
@@ -60,12 +59,19 @@ const userController = {
         },
         raw: true
       })
-      res.render('users/profile', { user, restaurant })
+      const numOfRestaurant = restaurant.length
+      const commentExist = Boolean(restaurant.length)
+      res.render('users/profile', { user, restaurant, numOfRestaurant, commentExist })
     } catch (err) {
       next(err)
     }
   },
   editUser: (req, res, next) => {
+    if (req.user !== undefined) {
+      if (Number(req.params.id) !== req.user.id) {
+        return res.redirect(`/users/${req.params.id}`)
+      }
+    }
     return User.findByPk(req.params.id, {
       raw: true
     })
@@ -86,6 +92,42 @@ const userController = {
     })
     req.flash('success_messages', '使用者資料編輯成功')
     res.redirect(`/users/${req.params.id}`)
+  },
+  addFavorite: (req, res, next) => {
+    const { restaurantId } = req.params
+    return Promise.all([
+      Restaurant.findByPk(restaurantId),
+      Favorite.findOne({
+        where: {
+          userId: req.user.id,
+          restaurantId
+        }
+      })
+    ])
+      .then(([restaurant, favorite]) => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        if (favorite) throw new Error('You have favorited this restaurant!')
+        return Favorite.create({
+          userId: req.user.id,
+          restaurantId
+        })
+      })
+      .then(() => res.redirect('back'))
+      .catch(err => next(err))
+  },
+  removeFavorite: (req, res, next) => {
+    return Favorite.findOne({
+      where: {
+        userId: req.user.id,
+        restaurantId: req.params.restaurantId
+      }
+    })
+      .then(favorite => {
+        if (!favorite) throw new Error("You haven't favorited this restaurant")
+        return favorite.destroy()
+      })
+      .then(() => res.redirect('back'))
+      .catch(err => next(err))
   }
 }
 module.exports = userController
