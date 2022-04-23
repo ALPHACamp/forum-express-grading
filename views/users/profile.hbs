@@ -12,11 +12,15 @@
     {{numOfRestaurant}}已評論餐廳
   </div>
   <div class="card-body">
+    {{#if commentExist}}
     {{#each restaurant}}
     <a href="/restaurants/{{this.id}}">
       <img class="card-img-top img-fluid" src="{{this.image}}" alt="Card image cap"
         style="transition: opacity 0.5s; opacity:0; width: 100px; heigh: 100px;" onload="this.style.opacity=1;">
     </a>
     {{/each}}
+    {{else}}
+    <h3>目前沒有評論的餐廳</h3>
+    {{/if}}
   </div>
 </div>

@@ -61,7 +61,8 @@ const userController = {
         raw: true
       })
       const numOfRestaurant = restaurant.length
-      res.render('users/profile', { user, restaurant, numOfRestaurant })
+      const commentExist = Boolean(restaurant.length)
+      res.render('users/profile', { user, restaurant, numOfRestaurant, commentExist })
     } catch (err) {
       next(err)
     }
