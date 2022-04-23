@@ -15,10 +15,25 @@
   <tbody>
     {{#each users}}
     <tr>
-      <th scope="row">1</th>
-      <td>root</td>
-      <td>Otto</td>
-      <td>@mdo</td>
+      <th scope="row">{{this.id}}</th>
+      <td>{{this.name}}</td>
+      <td>{{this.email}}</td>
+      {{#if this.isAdmin}}
+        <td>admin</td>
+      {{else}}
+        <td>user</td>
+      {{/if}}
+      {{#if ../isUserAdmin}}
+        {{#if this.isAdmin}}
+          <td>
+            <a class="btn btn-link" href="/admin/users/{{this.id}}">set as user</a>
+          </td>
+        {{else}}
+          <td>
+            <a class="btn btn-link" href="/admin/users/{{this.id}}">set as admin</a>
+          </td>
+        {{/if}}
+      {{/if}}
     </tr>
     {{/each}}
   </tbody>
