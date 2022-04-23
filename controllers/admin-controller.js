@@ -116,7 +116,10 @@ const adminController = {
         if (!user) {
           throw new Error('使用者不存在')
         } else if (user.email === 'root@example.com') {
-          throw new Error('禁止變更 root 權限')
+          require('../middleware/error-handler').generalErrorHandler('禁止變更 root 權限', req, res, next)
+          // throw '禁止變更 root 權限'
+          // next(new Error('禁止變更 root 權限'))
+          // next('禁止變更 root 權限')
         } else {
           req.flash('success_messages', '使用者權限變更成功')
           return user.update({
