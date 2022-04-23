@@ -60,12 +60,18 @@ const userController = {
         },
         raw: true
       })
-      res.render('users/profile', { user, restaurant })
+      const numOfRestaurant = restaurant.length
+      res.render('users/profile', { user, restaurant, numOfRestaurant })
     } catch (err) {
       next(err)
     }
   },
   editUser: (req, res, next) => {
+    if (req.user !== undefined) {
+      if (Number(req.params.id) !== req.user.id) {
+        return res.redirect(`/users/${req.params.id}`)
+      }
+    }
     return User.findByPk(req.params.id, {
       raw: true
     })
