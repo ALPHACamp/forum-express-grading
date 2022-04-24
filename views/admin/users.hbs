@@ -28,11 +28,13 @@
                 user
                 {{/if}}</td>
             <td>
-                {{#if isAdmin}}
-                <a>set as user</a>
-                {{else}}
-                <a>set as admin</a>
-                {{/if}}
+                <a href="">
+                    {{#if isAdmin}}
+                    set as user
+                    {{else}}
+                    set as admin
+                    {{/if}}
+                </a>
             </td>
         </tr>
         {{/each}}
