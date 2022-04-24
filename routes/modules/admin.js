@@ -14,6 +14,9 @@ router.get('/categories/:id', categoryController.getCategories)
 // 送出編輯後的表單資料
 router.put('/categories/:id', categoryController.putCategory)
 
+// 刪除單一分類
+router.delete('/categories/:id', categoryController.deleteCategory)
+
 // 瀏覽所有分類
 router.get('/categories', categoryController.getCategories)
 // 瀏覽編輯分類的表單
