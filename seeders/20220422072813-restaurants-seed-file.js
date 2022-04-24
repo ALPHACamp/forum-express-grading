@@ -1,6 +1,6 @@
 'use strict'
 const faker = require('faker')
-const queryString= process.env.NODE_ENV === 'production'?'SELECT id FROM public."Categories";':'SELECT id FROM Categories;'
+const queryString = process.env.NODE_ENV === 'production' ? 'SELECT id FROM public."Categories";' : 'SELECT id FROM Categories;'
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     const categories = await queryInterface.sequelize.query(
