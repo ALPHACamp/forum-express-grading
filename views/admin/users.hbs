@@ -23,20 +23,18 @@
       {{else}}
         <td>user</td>
       {{/if}}
-      {{#if ../isUserAdmin}}
-        {{#if this.isAdmin}}
-          <td>
-            <form action="/admin/users/{{this.id}}?_method=PUT" method="POST">
-              <button type="submit" class="btn btn-link">set as user</button>
-            </form>
-          </td>
-        {{else}}
-          <td>
-            <form action="/admin/users/{{this.id}}?_method=PUT" method="POST">
-              <button type="submit" class="btn btn-link">set as admin</button>
-            </form>
-          </td>
-        {{/if}}
+      {{#if this.isAdmin}}
+        <td>
+          <form action="/admin/users/{{this.id}}?_method=PUT" method="POST">
+            <button type="submit" class="btn btn-link">set as user</button>
+          </form>
+        </td>
+      {{else}}
+        <td>
+          <form action="/admin/users/{{this.id}}?_method=PUT" method="POST">
+            <button type="submit" class="btn btn-link">set as admin</button>
+          </form>
+        </td>
       {{/if}}
     </tr>
     {{/each}}

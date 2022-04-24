@@ -87,17 +87,18 @@ const adminController = {
       .catch(err => next(err))
   },
   getUsers: (req, res, next) => {
-    const isUserAdmin = res.locals.user.isAdmin
-    User.findAll({
+    return User.findAll({
       raw: true
     })
-      .then(users => res.render('admin/users', { users, isUserAdmin }))
+      .then(users => {
+        res.render('admin/users', { users })
+      })
       .catch(err => next(err))
   },
   patchUser: (req, res, next) => {
     // const isUserAdmin = res.locals.user.isAdmin
     console.log('patchUser')
-    User.findByPk(req.params.id)
+    return User.findByPk(req.params.id)
       .then(user => {
         console.log(user.dataValues)
         if (user.dataValues.isAdmin) {
