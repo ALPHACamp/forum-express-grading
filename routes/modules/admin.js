@@ -12,6 +12,7 @@ router.patch('/users/:id', adminController.patchUser)
 // 瀏覽所有分類
 router.get('/categories', categoryController.getCategories)
 // 瀏覽編輯分類的表單
+router.post('/categories', categoryController.postCategory)
 
 router.get('/restaurants/create', adminController.createRestaurant)
 router.get('/restaurants/:id/edit', adminController.editRestaurant)
