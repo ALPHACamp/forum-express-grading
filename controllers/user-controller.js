@@ -39,29 +39,64 @@ const userController = {
   },
   getUser: async function (req, res, next) {
     try {
+      // edit button
+      let personal
+      req.user.id.toString() === req.params.id
+        ? personal = true
+        : personal = false
+      // 評論的餐廳
       const user = await User.findByPk(req.params.id, {
         raw: true
       })
-      const restaurantList = await Comment.findAll({
+      const restaurantData = await Comment.findAll({
         where: {
           userId: req.params.id
         },
+        attributes: ['Restaurant.id', 'Restaurant.image'],
         raw: true,
         nest: true,
-        include: [Restaurant]
+        include: [{ model: Restaurant, attributes: [] }],
+        group: ['id']
       })
-      const restaurantIdList = Array.from(new Set(restaurantList.map(item =>
-        item.Restaurant.id
-      )))
-      const restaurant = await Restaurant.findAll({
-        where: {
-          id: restaurantIdList
-        },
-        raw: true
+      const restaurant = {
+        data: restaurantData,
+        count: restaurantData.length,
+        exist: restaurantData.length >= 1
+      }
+      // FavoriteRestaurant
+      const favorRestaurants = {
+        data: req.user.FavoritedRestaurants,
+        count: req.user.FavoritedRestaurants.length,
+        exist: (req.user.FavoritedRestaurants.length) >= 1
+      }
+      // Following
+      const followings = {
+        data: req.user.Followings,
+        count: req.user.Followings.length,
+        exist: (req.user.Followings.length) >= 1
+      }
+      // Follower
+      const followers = {
+        data: req.user.Followers,
+        count: req.user.Followers.length,
+        exist: (req.user.Followers.length) >= 1
+      }
+      res.render('users/profile', {
+        personal,
+        user,
+        restaurant: restaurant.data,
+        numOfRestaurant: restaurant.count,
+        commentExist: restaurant.exist,
+        favorRestaurants: favorRestaurants.data,
+        numOfFRestaurant: favorRestaurants.count,
+        fRestaurantsExist: favorRestaurants.exist,
+        followings: followings.data,
+        numOfFollowings: followings.count,
+        followingsExist: followings.exist,
+        followers: followers.data,
+        numOfFollowers: followers.count,
+        followersExist: followers.exist
       })
-      const numOfRestaurant = restaurant.length
-      const commentExist = Boolean(restaurant.length)
-      res.render('users/profile', { user, restaurant, numOfRestaurant, commentExist })
     } catch (err) {
       next(err)
     }

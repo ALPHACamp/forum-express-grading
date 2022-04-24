@@ -1,26 +1,112 @@
 <div class="card d-flex flex-row w-100" style="height: 250px;">
-  <img src="{{user.image}}" class="card-img-top w-25" alt="...">
+  {{#if user.image}}
+  <img src="{{user.image}}" width="250px" height="250px" style="transition: opacity 0.5s; opacity:0;"
+    onload="this.style.opacity=1;" />
+  {{else}}
+  <img src="https://via.placeholder.com/250" width="250px" height="250px" />
+  {{/if}}
   <div class="card-body">
     <h5 class="card-title">{{user.name}}</h5>
     <p class="card-text">{{user.email}}
     </p>
+    {{#if personal}}
     <a href="/users/{{user.id}}/edit" class="btn btn-primary">edit</a>
+    {{/if}}
   </div>
 </div>
-<div class="card">
-  <div class="card-header">
-    {{numOfRestaurant}}已評論餐廳
-  </div>
-  <div class="card-body">
-    {{#if commentExist}}
-    {{#each restaurant}}
-    <a href="/restaurants/{{this.id}}">
-      <img class="card-img-top img-fluid" src="{{this.image}}" alt="Card image cap"
-        style="transition: opacity 0.5s; opacity:0; width: 100px; heigh: 100px;" onload="this.style.opacity=1;">
-    </a>
-    {{/each}}
-    {{else}}
-    <h3>目前沒有評論的餐廳</h3>
-    {{/if}}
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-4">
+      <div class="d-flex flex-column">
+        <div class="card">
+          <div class="card-header">
+            {{numOfFollowings}} following(追蹤者)
+          </div>
+          <div class="card-body">
+            {{#if followingsExist}}
+            {{#each followings}}
+            <a href="/users/{{this.id}}">
+              {{#if this.image}}
+              <img src="{{this.image}}" width="70px" height="70px" style="transition: opacity 0.5s; opacity:0;"
+                onload="this.style.opacity=1;" />
+              {{else}}
+              <img src="https://via.placeholder.com/70" width="70px" height="70px" />
+              {{/if}}
+            </a>
+            {{/each}}
+            {{else}}
+            <h3>目前沒有Following</h3>
+            {{/if}}
+          </div>
+        </div>
+        <div class="card mt-4">
+          <div class="card-header">
+            {{numOfFollowers}}follwers(追隨者)
+          </div>
+          <div class="card-body">
+            {{#if followersExist}}
+            {{#each followers}}
+            <a href="/users/{{this.id}}">
+              {{#if this.image}}
+              <img src="{{this.image}}" width="70px" height="70px" style="transition: opacity 0.5s; opacity:0;"
+                onload="this.style.opacity=1;" />
+              {{else}}
+              <img src="https://via.placeholder.com/70" width="70px" height="70px" />
+              {{/if}}
+            </a>
+            {{/each}}
+            {{else}}
+            <h3>目前沒有Follower</h3>
+            {{/if}}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-8">
+      <div class="d-flex flex-column">
+        <div class="card">
+          <div class="card-header">
+            {{numOfRestaurant}}已評論餐廳
+          </div>
+          <div class="card-body">
+            {{#if commentExist}}
+            {{#each restaurant}}
+            <a href="/restaurants/{{this.id}}">
+              {{#if this.image}}
+              <img src="{{this.image}}" width="140px" height="140px" style="transition: opacity 0.5s; opacity:0;"
+                onload="this.style.opacity=1;" />
+              {{else}}
+              <img src="https://via.placeholder.com/140" width="140px" height="140px" />
+              {{/if}}
+            </a>
+            {{/each}}
+            {{else}}
+            <h3>目前沒有評論的餐廳</h3>
+            {{/if}}
+          </div>
+        </div>
+        <div class="card mt-3">
+          <div class="card-header">
+            {{numOfFRestaurant}}收藏的餐廳
+          </div>
+          <div class="card-body">
+            {{#if fRestaurantsExist}}
+            {{#each favorRestaurants}}
+            <a href="/restaurants/{{this.id}}">
+              {{#if this.image}}
+              <img src="{{this.image}}" width="140px" height="140px" style="transition: opacity 0.5s; opacity:0;"
+                onload="this.style.opacity=1;" />
+              {{else}}
+              <img src="https://via.placeholder.com/140" width="140px" height="140px" />
+              {{/if}}
+            </a>
+            {{/each}}
+            {{else}}
+            <h3>目前沒有收藏的餐廳</h3>
+            {{/if}}
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
