@@ -107,10 +107,6 @@ const userController = {
       .then(([restaurant, favorite]) => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         if (favorite) throw new Error('You have favorited this restaurant!')
-<<<<<<< HEAD
-
-=======
->>>>>>> R03
         return Favorite.create({
           userId: req.user.id,
           restaurantId
@@ -128,10 +124,6 @@ const userController = {
     })
       .then(favorite => {
         if (!favorite) throw new Error("You haven't favorited this restaurant")
-<<<<<<< HEAD
-
-=======
->>>>>>> R03
         return favorite.destroy()
       })
       .then(() => res.redirect('back'))
