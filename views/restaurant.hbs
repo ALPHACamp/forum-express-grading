@@ -17,17 +17,26 @@
   <div class="col-md-8">
     <p style="white-space: break-spaces;">{{restaurant.description}}</p>
     <a class="btn btn-primary" href="/restaurants/{{restaurant.id}}/dashboard" role="button">Dashboard</a>
+    {{#if isFavorited }}
+    <form action="/favorite/{{restaurant.id}}?_method=DELETE" method="POST" style="display: contents;">
+      <button type="submit" class="btn btn-danger">移除最愛</button>
+    </form>
+    {{else}}
+    <form action="/favorite/{{restaurant.id}}" method="POST" style="display: contents;">
+      <button type="submit" class="btn btn-primary">加到最愛</button>
+    </form>
+    {{/if}}
   </div>
   <hr>
 </div>
 
 <h3 class="mb-3">所有評論：</h3>
 {{#each restaurant.Comments}}
-  {{#if ../user.isAdmin}}
-  <form action="/comments/{{this.id}}?_method=DELETE" method="POST" class="float-end">
-    <button type="submit" class="btn btn-danger" onclick="return confirm`你確定要刪除該則評論：「{{this.text}}」嗎？`">Delete</button>
-  </form>
-  {{/if}}
+{{#if ../user.isAdmin}}
+<form action="/comments/{{this.id}}?_method=DELETE" method="POST" class="float-end">
+  <button type="submit" class="btn btn-danger" onclick="return confirm`你確定要刪除該則評論：「{{this.text}}」嗎？`">Delete</button>
+</form>
+{{/if}}
 <blockquote class="blockquote mb-0">
   <h4><a href="/users/{{this.User.id}}">{{this.User.name}}</a></h4>
   <p>{{this.text}}</p>
