@@ -1,6 +1,5 @@
 const bcrypt = require('bcryptjs')
-const db = require('../models/index')
-const { User, Comment, Restaurant } = require('../models')
+const { User, Comment, Restaurant, sequelize } = require('../models')
 
 const { getUser } = require('../helpers/auth-helpers')
 const { imgurFileHandler } = require('../helpers/file-helpers')
@@ -67,11 +66,12 @@ const userController = {
         User.findByPk(userId),
         Comment.findAll({
           where: { userId },
+          // 指定回傳的資料欄位
           attributes: [
             'restaurant_id',
             [
-              db.sequelize.fn('count', db.sequelize.col('restaurant_id')),
-              'comments'
+              sequelize.fn('COUNT', sequelize.col('restaurant_id')),
+              'restaurant_comments'
             ]
           ],
           include: [Restaurant],
@@ -84,7 +84,7 @@ const userController = {
       if (!rawUser) throw new Error('該使用者不存在！')
 
       const totalComments = comments.reduce((accumulator, curValue) => {
-        return accumulator + curValue.comments
+        return accumulator + curValue.restaurant_comments
       }, 0)
 
       const user = { ...rawUser.toJSON() }
