@@ -91,20 +91,24 @@ const adminController = {
       raw: true
     })
       .then(users => {
+        if (!users) throw new Error('can not find users!')
         res.render('admin/users', { users })
       })
       .catch(err => next(err))
   },
   patchUser: (req, res, next) => {
-    // const isUserAdmin = res.locals.user.isAdmin
-    console.log('patchUser')
     return User.findByPk(req.params.id)
       .then(user => {
-        console.log(user.dataValues)
+        if (user.dataValues.email === 'root@example.com') {
+          req.flash('error_messages', '禁止變更 root 權限')
+          return res.redirect('back')
+        }
         if (user.dataValues.isAdmin) {
           user.update({ isAdmin: false })
+          req.flash('success_messages', '使用者權限變更成功')
         } else {
           user.update({ isAdmin: true })
+          req.flash('success_messages', '使用者權限變更成功')
         }
       })
       .then(() => res.redirect('/admin/users'))
