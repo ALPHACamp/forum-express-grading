@@ -22,20 +22,25 @@
             <th scope="row">{{this.id}}</th>
             <td>{{this.name}}</td>
             <td>{{this.email}}</td>
-            <td>{{#if isAdmin}}
+            <td>{{#if this.isAdmin}}
                 admin
                 {{else}}
                 user
                 {{/if}}</td>
-            <td>
-                <a href="">
-                    {{#if isAdmin}}
+
+            <form action="/admin/users/{{this.id}}?_method=PATCH" method="POST">
+                <td>
+                    <button type="submit" class="btn btn-link">
+                    {{#if this.isAdmin}}
                     set as user
                     {{else}}
                     set as admin
                     {{/if}}
-                </a>
-            </td>
+                    </button>
+                </td>
+            </form>
+
+
         </tr>
         {{/each}}
     </tbody>
