@@ -215,6 +215,7 @@ const userController = {
           .map(user => ({
             ...user.toJSON(),
             followerCount: user.Followers.length,
+            myself: user.id !== req.user.id,
             isFollowed: req.user.Followings.some(f => f.id === user.id)
           }))
           .sort((a, b) => b.followerCount - a.followerCount)
@@ -224,6 +225,9 @@ const userController = {
   },
   addFollowing: (req, res, next) => {
     const { userId } = req.params
+    if (userId === req.user.id.toString()) {
+      return res.redirect('back')
+    }
     Promise.all([
       User.findByPk(userId),
       Followship.findOne({
