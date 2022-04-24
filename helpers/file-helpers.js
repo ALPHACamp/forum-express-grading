@@ -25,6 +25,6 @@ const imgurFileHandler = file => {
 }
 
 module.exports = {
-  localFileHandler, // 增加逗點
-  imgurFileHandler // 新增這一行
+  localFileHandler,
+  imgurFileHandler
 }

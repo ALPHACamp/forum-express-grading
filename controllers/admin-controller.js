@@ -1,5 +1,5 @@
 const { Restaurant, User } = require('../models')
-const { imgurFileHandler  } = require('../helpers/file-helpers')
+const { imgurFileHandler } = require('../helpers/file-helpers')
 const adminController = {
   getRestaurants: (req, res, next) => {
     Restaurant.findAll({
@@ -15,7 +15,7 @@ const adminController = {
     const { name, tel, address, openingHours, description } = req.body
     if (!name) throw new Error('Restaurant name is required!')
     const { file } = req
-    imgurFileHandler (file) // 把取出的檔案傳給 file-helper 處理後
+    imgurFileHandler(file) // 把取出的檔案傳給 file-helper 處理後
       .then(filePath => Restaurant.create({ // 再 create 這筆餐廳資料
         name,
         tel,
@@ -40,7 +40,7 @@ const adminController = {
       })
       .catch(err => next(err))
   },
-  editRestaurant: (req, res, next) => { // 新增這段
+  editRestaurant: (req, res, next) => {
     Restaurant.findByPk(req.params.id, {
       raw: true
     })
@@ -93,7 +93,7 @@ const adminController = {
   },
   patchUser: (req, res, next) => {
     return User.findByPk(req.params.id)
-      .then((user) => {
+      .then(user => {
         if (!user) throw new Error("User didn't exist!")
         if (user.email === 'root@example.com') {
           req.flash('error_messages', '禁止變更 root 權限')

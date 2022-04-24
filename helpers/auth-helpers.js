@@ -6,5 +6,5 @@ const ensureAuthenticated = req => {
 }
 module.exports = {
   getUser,
-  ensureAuthenticated // 新增這裡
+  ensureAuthenticated
 }
