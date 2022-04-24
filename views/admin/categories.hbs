@@ -1,37 +1,31 @@
-{{> admin-tabs}}
-<a href='/admin/restaurants/create'>
-  <button type='button' class='btn btn-primary mt-3'>New Restaurant</button>
-</a>
-<br />
-<br />
+{{>admin-tabs route='categories'}}
+
 <table class='table align-middle'>
   <thead class='thead-dark'>
     <tr>
       <th scope='col'>#</th>
-      <th scope='col'>Name</th>
-      <th scope='col'>Category</th>
+      <th scope='col'>Category Name</th>
       <th scope='col'></th>
     </tr>
   </thead>
   <tbody>
-    {{#each restaurants}}
+    {{#each categories}}
       <tr>
         <th scope='row'>{{this.id}}</th>
         <td>{{this.name}}</td>
-        <td>{{this.Category.name}}</td>
         <td>
           <button type='button' class='btn btn-link'>
             <a
               class='btn btn-link link-primary'
-              href='/admin/restaurants/{{this.id}}'
+              href='/admin/categories/{{this.id}}'
             >
-              Show
+              Edit
             </a>
           </button>
           <button type='button' class='btn btn-link'>
             <a
               class='btn btn-link link-primary'
-              href='/admin/restaurants/{{this.id}}/edit'
+              href='/admin/categories/{{this.id}}/edit'
             >
               Edit
             </a>
