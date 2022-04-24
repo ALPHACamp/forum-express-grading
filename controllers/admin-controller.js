@@ -93,6 +93,21 @@ const adminController = {
     })
       .then(users => res.render('admin/users', { users, isUserAdmin }))
       .catch(err => next(err))
+  },
+  patchUser: (req, res, next) => {
+    // const isUserAdmin = res.locals.user.isAdmin
+    console.log('patchUser')
+    User.findByPk(req.params.id)
+      .then(user => {
+        console.log(user.dataValues)
+        if (user.dataValues.isAdmin) {
+          user.update({ isAdmin: false })
+        } else {
+          user.update({ isAdmin: true })
+        }
+      })
+      .then(() => res.redirect('/admin/users'))
+      .catch(err => next(err))
   }
 }
 
