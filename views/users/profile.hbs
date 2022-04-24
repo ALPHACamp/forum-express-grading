@@ -1,0 +1,26 @@
+<div class="card d-flex flex-row w-100" style="height: 250px;">
+  <img src="{{user.image}}" class="card-img-top w-25" alt="...">
+  <div class="card-body">
+    <h5 class="card-title">{{user.name}}</h5>
+    <p class="card-text">{{user.email}}
+    </p>
+    <a href="/users/{{user.id}}/edit" class="btn btn-primary">edit</a>
+  </div>
+</div>
+<div class="card">
+  <div class="card-header">
+    {{numOfRestaurant}}已評論餐廳
+  </div>
+  <div class="card-body">
+    {{#if commentExist}}
+    {{#each restaurant}}
+    <a href="/restaurants/{{this.id}}">
+      <img class="card-img-top img-fluid" src="{{this.image}}" alt="Card image cap"
+        style="transition: opacity 0.5s; opacity:0; width: 100px; heigh: 100px;" onload="this.style.opacity=1;">
+    </a>
+    {{/each}}
+    {{else}}
+    <h3>目前沒有評論的餐廳</h3>
+    {{/if}}
+  </div>
+</div>
