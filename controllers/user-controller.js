@@ -39,6 +39,32 @@ const userController = {
   },
   getUser: async function (req, res, next) {
     try {
+      console.log(req.user)
+      if (req.user === undefined) {
+        const user = await User.findByPk(req.params.id, {
+          raw: true
+        })
+        const restaurantList = await Comment.findAll({
+          where: {
+            userId: req.params.id
+          },
+          raw: true,
+          nest: true,
+          include: [Restaurant]
+        })
+        const restaurantIdList = Array.from(new Set(restaurantList.map(item =>
+          item.Restaurant.id
+        )))
+        const restaurant = await Restaurant.findAll({
+          where: {
+            id: restaurantIdList
+          },
+          raw: true
+        })
+        const numOfRestaurant = restaurant.length
+        const commentExist = Boolean(restaurant.length)
+        res.render('users/profile', { user, restaurant, numOfRestaurant, commentExist })
+      }
       // edit button
       let personal
       req.user.id.toString() === req.params.id
