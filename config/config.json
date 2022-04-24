@@ -4,16 +4,19 @@
     "password": "password",
     "database": "forum",
     "host": "127.0.0.1",
-    "dialect": "mysql"
+    "dialect": "mysql",
+    "rootemail": "root@example.com"
   },
   "production": {
-    "use_env_variable": "CLEARDB_DATABASE_URL"
+    "use_env_variable": "CLEARDB_DATABASE_URL",
+    "rootemail": "root@example.com"
   },
   "travis": {
     "username": "travis",
     "database": "forum",
     "host": "127.0.0.1",
     "dialect": "mysql",
-    "logging": false
+    "logging": false,
+    "rootemail": "root@example.com"
   }
 }
