@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs')
-const { User, Comment, Restaurant, sequelize } = require('../models')
+const { User, Comment, Restaurant, sequelize, Favorite } = require('../models')
 
 const { getUser } = require('../helpers/auth-helpers')
 const { imgurFileHandler } = require('../helpers/file-helpers')
@@ -129,6 +129,55 @@ const userController = {
 
       req.flash('success_messages', '使用者資料編輯成功')
       return res.redirect(`/users/${id}`)
+    } catch (err) {
+      next(err)
+    }
+  },
+  addFavorite: async (req, res, next) => {
+    try {
+      const { restaurantId } = req.params
+      const userId = req.user.id
+
+      const [restaurant, favorite] = await Promise.all([
+        Restaurant.findByPk(restaurantId),
+        Favorite.findOne({
+          where: {
+            restaurantId,
+            userId
+          }
+        })
+      ])
+
+      if (!restaurant) throw new Error('無法收藏不存在的餐廳！')
+      if (favorite) throw new Error('你已經收藏過此餐廳！')
+
+      await Favorite.create({
+        userId,
+        restaurantId
+      })
+
+      return res.redirect('back')
+    } catch (err) {
+      next(err)
+    }
+  },
+  removeFavorite: async (req, res, next) => {
+    try {
+      const { restaurantId } = req.params
+      const userId = req.user.id
+
+      const favorite = await Favorite.findOne({
+        where: {
+          restaurantId,
+          userId
+        }
+      })
+
+      if (!favorite) throw new Error('你尚未收藏此餐廳！')
+
+      await favorite.destroy()
+
+      return res.redirect('back')
     } catch (err) {
       next(err)
     }
