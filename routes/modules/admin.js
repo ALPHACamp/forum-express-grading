@@ -9,6 +9,11 @@ router.get('/users', adminController.getUsers)
 // 修改使用者權限
 router.patch('/users/:id', adminController.patchUser)
 
+// 取得編輯表單
+router.get('/categories/:id', categoryController.getCategories)
+// 送出編輯後的表單資料
+router.put('/categories/:id', categoryController.putCategory)
+
 // 瀏覽所有分類
 router.get('/categories', categoryController.getCategories)
 // 瀏覽編輯分類的表單
