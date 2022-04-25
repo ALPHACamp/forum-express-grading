@@ -25,6 +25,7 @@ router.post(
 )
 router.get('/logout', userController.logout)
 
+router.get('/restaurants/:id', authenticated, restController.getRestaurant)
 router.get('/restaurants', authenticated, restController.getRestaurants)
 router.get('/', (req, res) => res.redirect('/restaurants'))
 router.use('/', generalErrorHandler)
