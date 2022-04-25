@@ -19,6 +19,8 @@ router.post(
   upload.single('image'),
   adminController.postRestaurant
 )
+router.get('/categories/:id', categoryController.getCategories)
+router.put('/categories/:id', categoryController.putCategory)
 router.post('/categories', categoryController.postCategories)
 router.get('/categories', categoryController.getCategories)
 router.get('/users', adminController.getUsers)
