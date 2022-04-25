@@ -10,7 +10,7 @@ const adminController = {
       .then(restaurants => res.render('admin/restaurants', { restaurants }))
       .catch(err => next(err))
   },
-  createRestaurant: (req, res, next) => { 
+  createRestaurant: (req, res, next) => {
     return Category.findAll({
       raw: true
     })
