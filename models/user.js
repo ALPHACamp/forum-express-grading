@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate (models) {
-      // define association here
+      User.hasMany(models.Comment, { foreignKey: 'userId' })
     }
   }
   User.init({ // 呼叫 User.init 方法來定義欄位，包括 name, email 跟 password，型態都是 DataTypes.STRING
