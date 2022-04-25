@@ -56,9 +56,7 @@ const restaurantController = {
       include: [Category, Comment]
     })
       .then(restaurant => {
-        const commentCounts = restaurant.dataValues.Comments.length
-
-        res.render('dashboard', { restaurant: restaurant.toJSON(), commentCounts })
+        res.render('dashboard', { restaurant: restaurant.toJSON() })
       })
       .catch(err => next(err))
   }
