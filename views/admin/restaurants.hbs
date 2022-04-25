@@ -1,15 +1,4 @@
-<h1>餐廳後台</h1>
-<div class="row">
-  <div class="col">
-    <ul class="nav">
-      <li class="nav-item">
-        <a class="nav-link active" aria-current="page" href="/admin/restaurants">Restaurants</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="/admin/users">Users</a>
-      </li>
-    </ul>
-  </div>
+{{>admin-tabs route='restaurants'}}
   <div class="col d-flex flex-row-reverse">
     <a href='/admin/restaurants/create'>
       <button type="button" class="btn btn-primary">New Restaurant</button>
