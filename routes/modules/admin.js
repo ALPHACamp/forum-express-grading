@@ -19,6 +19,7 @@ router.post(
   upload.single('image'),
   adminController.postRestaurant
 )
+router.post('/categories', categoryController.postCategories)
 router.get('/categories', categoryController.getCategories)
 router.get('/users', adminController.getUsers)
 router.patch('/users/:id', adminController.patchUser)
