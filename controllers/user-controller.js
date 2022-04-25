@@ -67,6 +67,7 @@ const userController = {
     ])
       .then(([user, filePath]) => {
         if (!user) throw new Error("User didn't exist!")
+        if (user.id !== Number(req.user.id)) throw new Error("Don't revise other user data!")
         return user.update({
           name,
           image: filePath || user.image
