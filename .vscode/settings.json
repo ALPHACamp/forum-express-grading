@@ -6,6 +6,7 @@
     "resave",
     "rootemail",
     "signin",
-    "signup"
+    "signup",
+    "unstyled"
   ]
 }
