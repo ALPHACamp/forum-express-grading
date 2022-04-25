@@ -1,8 +1,6 @@
 const { Restaurant, User } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
-const path = require('path')
-const env = process.env.NODE_ENV || 'development'
-const config = require(path.resolve(__dirname, '../config/config.json'))[env]
+const { config } = require('../helpers/config-helpers')
 
 const adminController = {
   getRestaurants: (req, res, next) => {
