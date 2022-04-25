@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs')
-const { User, Comment, Restaurant, sequelize, Favorite } = require('../models')
+const { User, Comment, Restaurant, Favorite, Like, sequelize } = require('../models')
 
 const { getUser } = require('../helpers/auth-helpers')
 const { imgurFileHandler } = require('../helpers/file-helpers')
@@ -136,7 +136,7 @@ const userController = {
   addFavorite: async (req, res, next) => {
     try {
       const { restaurantId } = req.params
-      const userId = req.user.id
+      const userId = getUser(req).id
 
       const [restaurant, favorite] = await Promise.all([
         Restaurant.findByPk(restaurantId),
@@ -164,7 +164,7 @@ const userController = {
   removeFavorite: async (req, res, next) => {
     try {
       const { restaurantId } = req.params
-      const userId = req.user.id
+      const userId = getUser(req).id
 
       const favorite = await Favorite.findOne({
         where: {
@@ -177,6 +177,54 @@ const userController = {
 
       await favorite.destroy()
 
+      return res.redirect('back')
+    } catch (err) {
+      next(err)
+    }
+  },
+  addLike: async (req, res, next) => {
+    try {
+      const { restaurantId } = req.params
+      const userId = getUser(req).id
+
+      const [restaurant, like] = await Promise.all([
+        Restaurant.findByPk(restaurantId),
+        Like.findOne({
+          where: {
+            restaurantId,
+            userId
+          }
+        })
+      ])
+
+      if (!restaurant) throw new Error('無法喜愛不存在的餐廳！')
+      if (like) throw new Error('你已喜愛過此餐廳！')
+
+      await Like.create({
+        restaurantId,
+        userId
+      })
+
+      return res.redirect('back')
+    } catch (err) {
+      next(err)
+    }
+  },
+  removeLike: async (req, res, next) => {
+    try {
+      const { restaurantId } = req.params
+      const userId = getUser(req).id
+
+      const like = await Like.findOne({
+        where: {
+          restaurantId,
+          userId
+        }
+      })
+
+      if (!like) throw new Error('你尚未喜愛過此餐廳！')
+
+      await like.destroy()
       return res.redirect('back')
     } catch (err) {
       next(err)
