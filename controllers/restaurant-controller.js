@@ -1,19 +1,32 @@
 const { Restaurant, Category } = require('../models')
 const restaurantController = {
   getRestaurants: (req, res) => {
-    return Restaurant.findAll({
-      raw: true,
-      include: Category,
-      nest: true
-    }).then(restaurants => {
-      const data = restaurants.map(r => {
-        return { ...r, description: r.description.substring(0, 50) }
+    const categoryId = Number(req.query.categoryId) || '' // 從網址上拿下來的參數是字串
+    const where = {}
+    if (categoryId) where.categoryId = categoryId
+    return Promise.all([
+      Restaurant.findAll({
+        include: Category,
+        where: where,
+        // where: { // 新增查詢條件
+        //   ...categoryId ? { categoryId } : {} // 檢查 categoryId 是否為空值
+        // },
+        nest: true,
+        raw: true
+      }),
+      Category.findAll({ raw: true })
+    ])
+      .then(([restaurants, categories]) => {
+        const data = restaurants.map(r => ({
+          ...r,
+          description: r.description.substring(0, 50)
+        }))
+        return res.render('restaurants', {
+          restaurants: data,
+          categories,
+          categoryId
+        })
       })
-      // console.log(data) // [{...},{...}]
-      return res.render('restaurants', {
-        restaurants: data
-      })
-    })
   },
   getRestaurant: async (req, res, next) => {
     try {
@@ -38,9 +51,6 @@ const restaurantController = {
       raw: true
     })
     if (!restaurant) throw new Error("Restaurant didn't exist!")
-    // console.log('restaurant', restaurant.viewCounts)
-
-    // console.log('restaurant2', typeof (restaurant.viewCounts))
     res.render('dashboard', {
       restaurant
     })
