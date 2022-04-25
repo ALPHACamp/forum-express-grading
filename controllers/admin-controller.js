@@ -1,17 +1,25 @@
-const { Restaurant, User } = require('../models')
+const { Restaurant, User, Category } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const adminController = {
   getRestaurants: (req, res, next) => {
-    Restaurant.findAll({ raw: true })
+    Restaurant.findAll({
+      raw: true,
+      nest: true,
+      include: [Category]
+    })
       .then(restaurants => res.render('admin/restaurants', { restaurants }))
       .catch(err => next(err))
   },
-  createRestaurant: (req, res) => {
-    res.render('admin/create-restaurant')
+  createRestaurant: (req, res, next) => {
+    return Category.findAll({
+      raw: true
+    })
+      .then(categories => res.render('admin/create-restaurant', { categories }))
+      .catch(err => next(err))
   },
   postRestaurant: (req, res, next) => {
-    const { name, tel, address, openingHours, description } = req.body
+    const { name, tel, address, openingHours, description, categoryId } = req.body
     if (!name) throw new Error('Restaurant name is required!')
 
     imgurFileHandler(req.file)
@@ -22,7 +30,8 @@ const adminController = {
           address,
           openingHours,
           description,
-          image: filePath || null
+          image: filePath || null,
+          categoryId
         })
       })
       .then(() => {
@@ -33,7 +42,9 @@ const adminController = {
   },
   getRestaurant: (req, res, next) => {
     Restaurant.findByPk(req.params.id, { // 去資料庫用 id 找一筆資料
-      raw: true // 找到以後整理格式再回傳
+      raw: true, // 找到以後整理格式再回傳
+      nest: true,
+      include: [Category]
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!") //  如果找不到，回傳錯誤訊息，後面不執行
@@ -41,18 +52,19 @@ const adminController = {
       })
       .catch(err => next(err))
   },
-  editRestaurant: (req, res, next) => { // 新增這段
-    Restaurant.findByPk(req.params.id, {
-      raw: true
-    })
-      .then(restaurant => {
-        if (!restaurant) throw new Error("Restaurant didn't exist!")
-        res.render('admin/edit-restaurant', { restaurant })
+  editRestaurant: (req, res, next) => {
+    return Promise.all([
+      Restaurant.findByPk(req.params.id, { raw: true }),
+      Category.findAll({ raw: true })
+    ])
+      .then(([restaurant, categories]) => {
+        if (!restaurant) throw new Error("Restaurant doesn't exist!")
+        res.render('admin/edit-restaurant', { restaurant, categories })
       })
       .catch(err => next(err))
   },
   putRestaurant: (req, res, next) => {
-    const { name, tel, address, openingHours, description } = req.body
+    const { name, tel, address, openingHours, description, categoryId } = req.body
     if (!name) throw new Error('Restaurant name is required!')
     Promise.all([
       Restaurant.findByPk(req.params.id),
@@ -66,7 +78,8 @@ const adminController = {
           address,
           openingHours,
           description,
-          image: filePath || restaurant.image
+          image: filePath || restaurant.image,
+          categoryId
         })
       })
       .then(() => {
