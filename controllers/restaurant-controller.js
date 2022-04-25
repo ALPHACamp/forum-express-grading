@@ -107,7 +107,8 @@ const restaurantController = {
       }
       const rawRestaurants = await Restaurant.findAll(
         {
-          include: [{ model: User, as: 'FavoritedUsers' }]
+          include: [{ model: User, as: 'FavoritedUsers' }],
+          limit: 10
         }
       )
       const restaurants = rawRestaurants.map(user => ({
