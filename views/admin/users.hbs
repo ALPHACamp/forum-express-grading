@@ -1,16 +1,5 @@
-<h1>餐廳後台</h1>
-<ul class='nav nav-pills nav-fill mb-3'>
-  <li class='nav-item'>
-    <a
-      class='nav-link'
-      aria-current='page'
-      href='/admin/restaurants'
-    >Restaurants</a>
-  </li>
-  <li class='nav-item'>
-    <a class='nav-link active' href='/admin/users'>Users</a>
-  </li>
-</ul>
+{{> admin-tabs route='users'}}
+
 <a href='/signup'>
   <button type='button' class='btn btn-primary'>New User</button>
 </a>
