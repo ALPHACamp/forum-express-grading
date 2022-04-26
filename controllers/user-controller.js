@@ -1,7 +1,5 @@
 const bcrypt = require('bcryptjs')
-const db = require('../models')
-const { User, Comment, Restaurant } = db
-
+const { User, Restaurant, Comment, Favorite } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const userController = {
@@ -42,28 +40,43 @@ const userController = {
   },
   getUser: (req, res, next) => {
     return User.findByPk(req.params.id, {
-      include: [{ model: Comment, include: Restaurant }]
+      include: [
+        { model: Comment, include: Restaurant }
+      ]
     })
       .then(user => {
         if (!user) throw new Error("User didn't exist!")
 
-        res.render('users/profile', { user: user.toJSON() })
+        user = user.toJSON()
+
+        user.commentedRestaurants = user.Comments && user.Comments.reduce((acc, c) => {
+          if (!acc.some(r => r.id === c.restaurantId)) {
+            acc.push(c.Restaurant)
+          }
+          return acc
+        }, [])
+
+        res.render('users/profile', {
+          user
+        })
       })
       .catch(err => next(err))
   },
   editUser: (req, res, next) => {
-    return User.findByPk(req.params.id, { raw: true })
+    return User.findByPk(req.params.id)
       .then(user => {
         if (!user) throw new Error("User didn't exist!")
-        res.render('users/edit', { user })
+
+        res.render('users/edit', { user: user.toJSON() })
       })
       .catch(err => next(err))
   },
   putUser: (req, res, next) => {
-    const { name } = req.body
-    if (!name) throw new Error('User name is required!')
-
+    if (Number(req.params.id) !== Number(req.user.id)) {
+      res.redirect(`/users/${req.params.id}`)
+    }
     const { file } = req
+
     return Promise.all([
       User.findByPk(req.params.id),
       imgurFileHandler(file)
@@ -72,7 +85,7 @@ const userController = {
         if (!user) throw new Error("User didn't exist!")
 
         return user.update({
-          name,
+          name: req.body.name,
           image: filePath || user.image
         })
       })
@@ -81,7 +94,46 @@ const userController = {
         res.redirect(`/users/${req.params.id}`)
       })
       .catch(err => next(err))
+  },
+  addFavorite: (req, res, next) => {
+    const { restaurantId } = req.params
+    return Promise.all([
+      Restaurant.findByPk(restaurantId),
+      Favorite.findOne({
+        where: {
+          userId: req.user.id,
+          restaurantId
+        }
+      })
+    ])
+      .then(([restaurant, favorite]) => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        if (favorite) throw new Error('You have favorited this restaurant!')
+
+        return Favorite.create({
+          userId: req.user.id,
+          restaurantId
+        })
+      })
+      .then(() => res.redirect('back'))
+      .catch(err => next(err))
+  },
+  removeFavorite: (req, res, next) => {
+    return Favorite.findOne({
+      where: {
+        userId: req.user.id,
+        restaurantId: req.params.restaurantId
+      }
+    })
+      .then(favorite => {
+        if (!favorite) throw new Error("You haven't favorited this restaurant")
+
+        return favorite.destroy()
+      })
+      .then(() => res.redirect('back'))
+      .catch(err => next(err))
   }
+
 }
 
 module.exports = userController
