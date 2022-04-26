@@ -12,7 +12,7 @@ const adminController = {
       .catch(err => next(err))
   },
   createRestaurant: (req, res, next) => {
-    return Category.findAll({
+    return Category.findAll({ // 這段這樣寫，是因為用hndlebars的#each 來渲染
       raw: true
     })
       .then(categories => res.render('admin/create-restaurant', { categories }))
@@ -55,7 +55,7 @@ const adminController = {
   editRestaurant: (req, res, next) => { // 新增這段
     return Promise.all([
       Restaurant.findByPk(req.params.id, { raw: true }),
-      Category.findAll({ raw: true })
+      Category.findAll({ raw: true }) // 這段也是為了handlebars
     ])
       .then(([restaurant, categories]) => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
