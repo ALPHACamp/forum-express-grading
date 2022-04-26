@@ -1,17 +1,19 @@
 <div class="card mb-3" style="max-width: 800px;">
   <div class="row g-0">
     <div class="col-md-6">
-      <img class="img-responsive center-block" src="{{ user.image }}"
+      <img class="img-responsive center-block" src="{{ profileUser.image }}"
         style="width: 360px; margin-bottom: 25px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
     </div>
 
     <div class="col-md-6">
       <div class="card-body">
-        <h5 class="card-title">{{ user.name }}</h5>
-        <p class="card-text">{{ user.email }}</p>
+        <h5 class="card-title">{{ profileUser.name }}</h5>
+        <p class="card-text">{{ profileUser.email }}</p>
         <p class="card-text">總共留下 <strong>{{ totalComments }}</strong> 則評論
         </p>
+        {{#ifCond user.id profileUser.id}}
         <a class="btn btn-primary" href="/users/{{ user.id }}/edit" role="button">Edit</a>
+        {{/ifCond}}
       </div>
     </div>
   </div>

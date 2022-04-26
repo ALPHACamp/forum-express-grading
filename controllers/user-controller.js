@@ -61,7 +61,8 @@ const userController = {
   },
   getUser: async (req, res, next) => {
     try {
-      const userId = req.params.id
+      const user = getUser(req)
+      const userId = Number(req.params.id)
       const [rawUser, comments] = await Promise.all([
         User.findByPk(userId),
         Comment.findAll({
@@ -87,9 +88,9 @@ const userController = {
         return accumulator + curValue.restaurant_comments
       }, 0)
 
-      const user = { ...rawUser.toJSON() }
+      const profileUser = { ...rawUser.toJSON() }
 
-      return res.render('users/profile', { user, comments, totalComments })
+      return res.render('users/profile', { user, profileUser, comments, totalComments })
     } catch (err) {
       next(err)
     }
