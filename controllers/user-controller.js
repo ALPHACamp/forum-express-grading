@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs')
-const { User, Comment, Restaurant, Favorite, Like, sequelize } = require('../models')
+const { User, Comment, Restaurant, Favorite, Like, Followship, sequelize } = require('../models')
 
 const { getUser } = require('../helpers/auth-helpers')
 const { imgurFileHandler } = require('../helpers/file-helpers')
@@ -236,13 +236,63 @@ const userController = {
         include: [{ model: User, as: 'Followers' }]
       })
 
-      const users = await rawUsers.map(user => ({
-        ...user.toJSON(),
-        followerCount: user.Followers.length,
-        isFollowed: req.user.Followings.some(f => f.id === user.id)
-      }))
+      const users = await rawUsers
+        .map(user => ({
+          ...user.toJSON(),
+          followerCount: user.Followers.length,
+          isFollowed: req.user.Followings.some(f => f.id === user.id)
+        }))
+        .sort((a, b) => b.followerCount - a.followerCount)
 
-      return res.render('top-users', { users: users })
+      return res.render('top-users', { users })
+    } catch (err) {
+      next(err)
+    }
+  },
+  addFollowing: async (req, res, next) => {
+    try {
+      const id = getUser(req).id
+      const { userId } = req.params
+
+      const [user, followship] = await Promise.all([
+        User.findByPk(userId),
+        Followship.findOne({
+          where: {
+            followerId: id,
+            followingId: userId
+          }
+        })
+      ])
+
+      if (!user) throw new Error('該使用者不存在！')
+      if (followship) throw new Error('你已追蹤該使用者！')
+
+      await Followship.create({
+        followerId: id,
+        followingId: userId
+      })
+
+      return res.redirect('back')
+    } catch (err) {
+      next(err)
+    }
+  },
+  removeFollowing: async (req, res, next) => {
+    try {
+      const id = getUser(req).id
+      const { userId } = req.params
+
+      const followship = await Followship.findOne({
+        where: {
+          followerId: id,
+          followingId: userId
+        }
+      })
+
+      if (!followship) throw new Error('你尚未追蹤該使用者！')
+
+      await followship.destroy()
+      return res.redirect('back')
     } catch (err) {
       next(err)
     }
