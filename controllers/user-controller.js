@@ -1,7 +1,6 @@
 const bcrypt = require('bcryptjs')
-const db = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
-const { User } = db
+const { Restaurant, Comment, User } = require('../models')
 
 const userController = {
   signUpPage: (req, res) => {
@@ -38,15 +37,21 @@ const userController = {
     res.redirect('/signin')
   },
   getUser: async (req, res) => {
-    // 要瀏覽profile頁 抓出user:id 渲染users/profile
     try {
       const user = await User.findByPk(req.params.id, {
-        raw: true
+        include: [
+          { model: Comment, include: Restaurant }
+        ]
       })
       if (!user) throw new Error("user didn't exist!")
-      console.log('user', user)
+      const amount = await Comment.findAndCountAll({
+        where: {
+          user_id: user.dataValues.id
+        }
+      })
       return res.render('users/profile', {
-        user
+        user: user.toJSON(),
+        amount: amount.count
       })
     } catch (err) {
       console.log(err)
@@ -54,7 +59,7 @@ const userController = {
   },
   editUser: (req, res, next) => {
     return User.findByPk(req.params.id, { raw: true })
-      .then((user) => {
+      .then(user => {
         if (!user) throw new Error("user doesn't exist!")
         console.log(user)
         return res.render('users/edit', { user })
