@@ -1,0 +1,40 @@
+<h1>餐廳後台</h1>
+<ul class="nav nav-tabs">
+  <li class="nav-item">
+    <a class="nav-link" aria-current="page" href="./restaurants">Restaurants</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="./users">Users</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="./categories">Categories</a>
+  </li>
+</ul>
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Category Name</th>
+      <th scope="col">#</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each categories}}
+    <tr>
+      <th scope="row">{{ this.id }}</th>
+      <td>{{ this.name }}</td>
+      <td>
+        <button type="button" class="btn btn-link">
+          <a class="btn btn-link link-primary" href="/admin/categories/{{this.id}}/edit">
+            Edit
+          </a>
+        </button>
+        <form action="/admin/categories/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
+          <button type="submit" class="btn btn-link link-danger"
+            onclick="return confirm(`確定要刪除 {{ this.name }} 嗎？`)">Delete</button>
+        </form>
+      </td>
+    </tr>
+    {{/each}}
+  </tbody>
+</table>

@@ -3,7 +3,7 @@ const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const adminController = {
   getRestaurants: (req, res, next) => {
-    Restaurant.findAll({
+    return Restaurant.findAll({
       raw: true,
       nest: true,
       include: [Category]
