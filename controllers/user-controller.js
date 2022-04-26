@@ -52,6 +52,11 @@ const userController = {
       .catch(err => next(err))
   },
   editUser: (req, res, next) => {
+    if (Number(req.params.id) !== req.user.id) {
+      req.flash('error_messages', '不能編輯他人的資料')
+      return res.redirect(`/users/${req.params.id}`)
+    }
+
     return User.findByPk(req.params.id, { raw: true })
       .then(user => {
         if (!user) throw new Error("User didn't exist!")
