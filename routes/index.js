@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-
+const upload = require('../middleware/multer')
 const restController = require('../controllers/restaurant-controller')
 const userController = require('../controllers/user-controller')
 const commentController = require('../controllers/​​comment-controller')
@@ -20,6 +20,9 @@ router.get('/signin', userController.signInPage)
 router.post('/signin', passport.authenticate('local', { failureRedirect: '/signin', failureFlash: true }), userController.signIn)
 // logout
 router.get('/logout', userController.logout)
+router.get('/users/:id/edit', userController.editUser)
+router.put('/users/:id', upload.single('image'), userController.putUser)
+router.get('/users/:id', userController.getUser)
 
 router.get('/restaurants/:id/dashboard', authenticated, restController.getDashboard)
 router.get('/restaurants/:id', authenticated, restController.getRestaurant)
