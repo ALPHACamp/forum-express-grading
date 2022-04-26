@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs')
 const { User, Restaurant, Comment, Favorite } = require('../models')
+const { getUser } = require('../helpers/auth-helpers')
 
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
@@ -64,7 +65,8 @@ const userController = {
       .catch(err => next(err))
   },
   editUser: (req, res, next) => {
-    if (Number(req.params.id) !== req.user.id) {
+    const userId = getUser(req).id
+    if (Number(req.params.id) !== userId) {
       req.flash('error_messages', '不能編輯他人的資料')
       return res.redirect(`/users/${req.params.id}`)
     }
