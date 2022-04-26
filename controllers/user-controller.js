@@ -1,5 +1,7 @@
 const bcrypt = require('bcryptjs')
 const { User, Restaurant, Comment, Favorite } = require('../models')
+const { getUser } = require('../helpers/auth-helpers')
+
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const userController = {
@@ -63,20 +65,24 @@ const userController = {
       .catch(err => next(err))
   },
   editUser: (req, res, next) => {
-    return User.findByPk(req.params.id)
+    const userId = getUser(req).id
+    if (Number(req.params.id) !== userId) {
+      req.flash('error_messages', '不能編輯他人的資料')
+      return res.redirect(`/users/${req.params.id}`)
+    }
+
+    return User.findByPk(req.params.id, { raw: true })
       .then(user => {
         if (!user) throw new Error("User didn't exist!")
-
-        res.render('users/edit', { user: user.toJSON() })
+        res.render('users/edit', { user })
       })
       .catch(err => next(err))
   },
   putUser: (req, res, next) => {
-    if (Number(req.params.id) !== Number(req.user.id)) {
-      res.redirect(`/users/${req.params.id}`)
-    }
-    const { file } = req
+    const { name } = req.body
+    if (!name) throw new Error('User name is required!')
 
+    const { file } = req
     return Promise.all([
       User.findByPk(req.params.id),
       imgurFileHandler(file)
@@ -85,7 +91,7 @@ const userController = {
         if (!user) throw new Error("User didn't exist!")
 
         return user.update({
-          name: req.body.name,
+          name,
           image: filePath || user.image
         })
       })
@@ -133,7 +139,5 @@ const userController = {
       .then(() => res.redirect('back'))
       .catch(err => next(err))
   }
-
 }
-
 module.exports = userController
