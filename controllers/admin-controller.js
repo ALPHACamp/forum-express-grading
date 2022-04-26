@@ -99,7 +99,7 @@ const adminController = {
   patchUser: (req, res, next) => {
     return User.findByPk(req.params.id)
       .then(user => {
-        if (user.dataValues.email === 'root@example.com') {
+        if (user.dataValues.email === process.env.ROOT_ACCOUNT) {
           req.flash('error_messages', '禁止變更 root 權限')
           return res.redirect('back')
         }
