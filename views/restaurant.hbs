@@ -16,8 +16,19 @@
   </div>
   <div class="col-md-8">
     <p style="white-space: break-spaces;">{{restaurant.description}}</p>
+    <a class="btn btn-outline-primary" href="/restaurants/{{restaurant.id}}/dashboard">Dashboard</a>
   </div>
+  <br>
   <hr>
 </div>
-<a class="btn btn-outline-primary" href="/restaurants/{{restaurant.id}}/dashboard">Dashboard</a>
-<a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
+
+
+<form action="/comments" method="POST">
+  <div class="form-row mb-3">
+    <label class="form-label" for="text">留下評論：</label>
+    <textarea class="form-control" id="text" name="text" rows="3"></textarea>
+  </div>
+  <input type="hidden" name="restaurantId" value="{{restaurant.id}}" />
+  <button type="submit" class="btn btn-primary">Submit</button>
+  <a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
+</form>
