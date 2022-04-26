@@ -38,39 +38,45 @@ const userController = {
     res.redirect('/signin')
   },
   getUser: (req, res, next) => {
-    /* if (parseInt(req.params.id) !== req.user.id) { next(new Error('禁止的操作')) }
-    測試完還原 */
-    return User.findByPk(req.params.id, {
-      include: { model: Comment, include: { model: Restaurant } }
-    })
-      .then(user => {
-        res.render('users/profile', { user: user.toJSON() })
+    const paramsId = parseInt(req.params.id)
+    if ((!req.user) || (req.user.id === paramsId)) {
+      return User.findByPk(paramsId, {
+        include: { model: Comment, include: { model: Restaurant } }
       })
-      .catch(err => next(err))
+        .then(user => {
+          res.render('users/profile', { user: user.toJSON() })
+        })
+        .catch(err => next(err))
+    }
+    return res.redirect('/')
   },
   editUser: (req, res, next) => {
-    /* if (parseInt(req.params.id) !== req.user.id) { next(new Error('禁止的操作')) }
-    測試完還原 */
-    return User.findByPk(req.params.id)
-      .then(user => {
-        res.render('users/edit', { user: user.toJSON() })
-      })
-      .catch(err => next(err))
+    const paramsId = parseInt(req.params.id)
+    if ((!req.user) || (req.user.id === paramsId)) {
+      return User.findByPk(paramsId)
+        .then(user => {
+          res.render('users/edit', { user: user.toJSON() })
+        })
+        .catch(err => next(err))
+    }
+    return res.redirect('/')
   },
   putUser: (req, res, next) => {
-    /* if (parseInt(req.params.id) !== req.user.id) { next(new Error('禁止的操作')) }
-    測試完還原 */
+    const paramsId = parseInt(req.params.id)
     const { name } = req.body
     const { file } = req
-    return Promise.all([User.findByPk(req.params.id), imgurFileHandler(file)])
-      .then(([user, filePath]) => {
-        return user.update({ name, image: filePath })
-      })
-      .then(() => {
-        req.flash('success_messages', '使用者資料編輯成功')
-        res.redirect(`/users/${req.user.id}`)
-      })
-      .catch(err => next(err))
+    if ((!req.user) || (req.user.id === paramsId)) {
+      return Promise.all([User.findByPk(paramsId), imgurFileHandler(file)])
+        .then(([user, filePath]) => {
+          return user.update({ name, image: filePath })
+        })
+        .then(() => {
+          req.flash('success_messages', '使用者資料編輯成功')
+          res.redirect(`/users/${req.user.id}`)
+        })
+        .catch(err => next(err))
+    }
+    return res.redirect('/')
   }
 }
 //

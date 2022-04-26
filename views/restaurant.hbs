@@ -28,9 +28,9 @@
       <button type="submit" class="btn btn-danger">Delete</button>
     </form>
   {{/if}}
-  <blockquote class="blockquote mb-0">
+  <blockquote class="blockquote mb-0" >
     <h4><a href="/users/{{this.User.id}}">{{this.User.name}}</a></h4>
-    <p>{{this.text}}</p>
+    <p id="{{this.id}}">{{this.text}}</p>
     <footer class="blockquote-footer">{{relativeTimeFromNow this.createdAt}}</footer>
   </blockquote>
   <hr/>
