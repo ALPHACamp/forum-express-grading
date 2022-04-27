@@ -8,6 +8,7 @@ const admin = require('./modules/admin')
 const users = require('./modules/users')
 const restaurants = require('./modules/restaurants')
 const comments = require('./modules/comments')
+const favorite = require('./modules/favorite')
 //
 router.get('/signup', userController.signUpPage)
 router.post('/signup', userController.signUp)
@@ -23,6 +24,7 @@ router.use('/restaurants', authenticated, restaurants)
 //
 router.use('/comments', comments)
 //
+router.use('/favorite', authenticated, favorite)
 router.use('/', (req, res) => res.redirect('/restaurants'))
 router.use('/', generalErrorHandler)
 //
