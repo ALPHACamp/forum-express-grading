@@ -1,11 +1,10 @@
-<div class="row">
+<div class="row mb-5">
   <div class="col-md-12">
     <h1>{{restaurant.name}}</h1>
     <p>[{{restaurant.Category.name}}]</p>
   </div>
   <div class="col-md-4">
-    <img class="img-responsive center-block" src="{{restaurant.image}}" style="width: 250px; margin-bottom: 25px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
-    <br>
+    <img class="img-responsive center-block mb-5" src="{{restaurant.image}}" style="width: 250px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
     <div class="well">
       <ul class="list-unstyled">
         <li><strong>Opening Hour:</strong> {{restaurant.openingHours}}</li>
@@ -16,6 +15,7 @@
   </div>
   <div class="col-md-8">
     <p style="white-space: break-spaces;">{{restaurant.description}}</p>
+    <a href="/restaurants/{{restaurant.id}}/dashboard" class="btn btn-primary">Dashboard</a>
   </div>
   <hr>
 </div>
