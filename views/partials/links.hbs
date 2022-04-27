@@ -1,5 +1,11 @@
-<div class="d-flex flex-row">
-  <a href="/admin/restaurants" class="btn btn-link">Restaurants</a>
-  <span class="mt-2">|</span>
-  <a href="/admin/users" class="btn btn-link">Users</a>
-</div>
+<ul class="nav nav-tabs mb-3">
+  <li class="nav-item">
+    <a href="/admin/restaurants" class="nav-link {{#ifCond route 'restaurants'}}active{{/ifCond}}">Restaurants</a>
+  </li>
+  <li class="nav-item">
+    <a href="/admin/users" class="nav-link {{#ifCond route 'users'}}active{{/ifCond}}" >Users</a>
+  </li>
+  <li class="nav-item">
+    <a href="/admin/categories" class="nav-link {{#ifCond route 'categories'}}active{{/ifCond}}">Categories</a>
+  </li>
+</ul>
