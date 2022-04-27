@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs')
 const db = require('../models')
-const { User } = db
+const { User, Restaurant, Comment } = db
+const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const userController = {
   signUpPage: (req, res) => {
@@ -37,6 +38,44 @@ const userController = {
     req.flash('success_messages', '登出成功！')
     req.logout()
     res.redirect('/signin')
+  },
+  getUser: (req, res, next) => {
+    return User.findByPk(req.params.id, {
+      include: [
+        Comment,
+        { model: Comment, include: Restaurant }
+      ]
+    })
+      .then(user => {
+        let commentLen = 0
+        if (user.toJSON().Comments) commentLen = user.toJSON().Comments.length
+        res.render('users/profile', {
+          user: user.toJSON(),
+          commentCounts: commentLen /*user.toJSON().Comments.length */
+        })
+      })
+      .catch(err => next(err))
+  },
+  editUser: (req, res, next) => {
+    return User.findByPk(req.params.id, { raw: true })
+      .then(user => res.render('users/edit', { user }))
+      .catch(err => next(err))
+  },
+  putUser: (req, res, next) => {
+    const { name } = req.body
+    if (!name) throw new Error('Name is required!')
+    return Promise.all([User.findByPk(req.params.id), imgurFileHandler(req.file)])
+      .then(([user, imagePath]) => {
+        return user.update({
+          name,
+          image: imagePath || user.image
+        })
+      })
+      .then(() => {
+        req.flash('success_messages', '使用者資料編輯成功')
+        res.redirect(`/users/${req.params.id}`)
+      })
+      .catch(err => next(err))
   }
 }
 
