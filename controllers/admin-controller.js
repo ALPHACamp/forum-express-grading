@@ -16,10 +16,10 @@ const adminController = {
       limit,
       include: [Category]
     })
-      .then(restaurants => res.render('admin/restaurants', { 
+      .then(restaurants => res.render('admin/restaurants', {
         restaurants: restaurants.rows,
         pagination: getPagination(limit, page, restaurants.count)
-       }))
+      }))
       .catch(err => next(err))
   },
   createRestaurant: (req, res, next) => {
