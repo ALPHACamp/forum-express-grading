@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs')
 const { User, Comment, Restaurant } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
+const { getUser } = require('../helpers/auth-helpers')
 
 const userController = {
   signUpPage: (req, res) => {
@@ -53,7 +54,14 @@ const userController = {
   },
 
   editUser: (req, res, next) => {
-    return User.findByPk(req.params.id, { raw: true })
+    const id = Number(req.params.id)
+    const userId = getUser(req).id
+
+    if (userId !== id) {
+      req.flash('error_messages', '您沒有權限瀏覽該頁面！')
+      return res.redirect('/restaurants')
+    }
+    return User.findByPk(id, { raw: true })
       .then(user => {
         if (!user) throw new Error("User didn't exist!")
         return res.render('users/edit', { user })
