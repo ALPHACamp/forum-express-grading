@@ -8,6 +8,8 @@ const commentController = require('../controllers/comment-controllers')
 const { generalErrorHandler } = require('../middleware/error-handler')
 const { authenticated, authenticatedAdmin } = require('../middleware/auth')
 
+const upload = require('../middleware/multer')
+
 const admin = require('./modules/admin')
 
 router.use('/admin', authenticatedAdmin, admin)
@@ -23,6 +25,10 @@ router.get('/restaurants/:id', authenticated, restController.getRestaurant)
 router.get('/restaurants', authenticated, restController.getRestaurants)
 router.post('/comments', authenticated, commentController.postComment)
 router.delete('/comments/:id', authenticated, commentController.deleteComment)
+
+router.get('/users/:id', authenticated, userController.getUser)
+router.get('/users/:id/edit', authenticated, userController.editUser)
+router.put('/users/:id', authenticated, upload.single('image'), userController.putUser)
 
 router.get('/', (req, res) => {
   res.redirect('/restaurants')
