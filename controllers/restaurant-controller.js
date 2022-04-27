@@ -1,6 +1,9 @@
 const { Restaurant, Category } = require('../models')
 
 const restaurantController = {
+  test: (req, res) => {
+    res.send('test restController.test')
+  },
   getRestaurants: (req, res) => {
     return Restaurant.findAll({
       include: Category,
