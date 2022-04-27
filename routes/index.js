@@ -29,6 +29,8 @@ router.get('/logout', userController.logout)
 router.get('/restaurants/:id', authenticated, restController.getRestaurant)
 router.get('/restaurants', authenticated, restController.getRestaurants)
 
+// 加入管理員刪除評論
+router.delete('/comments/:id', authenticatedAdmin, commentController.deleteComment)
 // 加入留言route
 router.post('/comments', authenticated, commentController.postComment)
 
