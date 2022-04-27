@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const passport = require('passport')
+const upload = require('../middleware/multer')
 
 const admin = require('./modules/admin')
 
@@ -31,6 +32,15 @@ router.get(
 )
 router.get('/restaurants/:id', authenticated, restController.getRestaurant)
 router.get('/restaurants', authenticated, restController.getRestaurants)
+
+router.get('/users/:id/edit', authenticated, userController.editUser)
+router.put(
+  '/users/:id',
+  authenticated,
+  upload.single('image'),
+  userController.putUser
+)
+router.get('/users/:id', authenticated, userController.getUser)
 
 router.post('/comments', authenticated, commentController.postComment)
 router.delete(
