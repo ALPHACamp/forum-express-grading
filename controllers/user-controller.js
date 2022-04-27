@@ -1,7 +1,8 @@
 const bcrypt = require('bcryptjs')
 const db = require('../models')
-const { User, Comment, Restaurant } = db
+const { User, Comment, Restaurant, Favorite } = db
 const { imgurFileHandler } = require('../helpers/file-helpers')
+const { getUser } = require('../helpers/auth-helpers')
 //
 const userController = {
   signUpPage: (req, res) => {
@@ -39,7 +40,7 @@ const userController = {
   },
   getUser: (req, res, next) => {
     const paramsId = parseInt(req.params.id)
-    if ((!req.user) || (req.user.id === paramsId)) {
+    if (getUser(req).id === paramsId) {
       return User.findByPk(paramsId, {
         include: { model: Comment, include: { model: Restaurant } }
       })
@@ -48,24 +49,24 @@ const userController = {
         })
         .catch(err => next(err))
     }
-    return res.redirect('/')
+    return next(new Error('發生錯誤，無權限的操作'))
   },
   editUser: (req, res, next) => {
     const paramsId = parseInt(req.params.id)
-    if ((!req.user) || (req.user.id === paramsId)) {
+    if (getUser(req).id === paramsId) {
       return User.findByPk(paramsId)
         .then(user => {
           res.render('users/edit', { user: user.toJSON() })
         })
         .catch(err => next(err))
     }
-    return res.redirect('/')
+    return next(new Error('發生錯誤，無權限的操作'))
   },
   putUser: (req, res, next) => {
     const paramsId = parseInt(req.params.id)
     const { name } = req.body
     const { file } = req
-    if ((!req.user) || (req.user.id === paramsId)) {
+    if (getUser(req).id === paramsId) {
       return Promise.all([User.findByPk(paramsId), imgurFileHandler(file)])
         .then(([user, filePath]) => {
           return user.update({ name, image: filePath })
@@ -76,7 +77,45 @@ const userController = {
         })
         .catch(err => next(err))
     }
-    return res.redirect('/')
+    return next(new Error('發生錯誤，無權限的操作'))
+  },
+  addFavorite: (req, res, next) => {
+    const { restaurantId } = req.params
+    return Promise.all([
+      Restaurant.findByPk(restaurantId),
+      Favorite.findOne({
+        where: {
+          userId: req.user.id,
+          restaurantId
+        }
+      })
+    ])
+      .then(([restaurant, favorite]) => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        if (favorite) throw new Error('You have favorited this restaurant!')
+
+        return Favorite.create({
+          userId: req.user.id,
+          restaurantId
+        })
+      })
+      .then(() => res.redirect('back'))
+      .catch(err => next(err))
+  },
+  removeFavorite: (req, res, next) => {
+    return Favorite.findOne({
+      where: {
+        userId: req.user.id,
+        restaurantId: req.params.restaurantId
+      }
+    })
+      .then(favorite => {
+        if (!favorite) throw new Error("You haven't favorited this restaurant")
+
+        return favorite.destroy()
+      })
+      .then(() => res.redirect('back'))
+      .catch(err => next(err))
   }
 }
 //
