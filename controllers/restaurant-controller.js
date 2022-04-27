@@ -11,7 +11,7 @@ const restaurantController = {
         ...r,
         description: r.description.substring(0, 50)
       }))
-      return res.render('admin/restaurants', {
+      return res.render('restaurants', {
         restaurants: data
       })
     })
