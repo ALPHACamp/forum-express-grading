@@ -1,6 +1,7 @@
 const { Restaurant, Category } = require('../models')
 
 const restaurantController = {
+  // 首頁
   getRestaurants: (req, res, next) => {
     return Restaurant.findAll({
       include: Category,
@@ -13,6 +14,20 @@ const restaurantController = {
           description: r.description.substring(0, 50)
         }))
         res.render('restaurants', { restaurants: data })
+      })
+      .catch(err => next(err))
+  },
+  // 餐廳各自的詳細資料
+  getRestaurant: (req, res, next) => {
+    console.log('getRestaurant')
+    return Restaurant.findByPk(req.params.id, {
+      include: Category,
+      raw: true,
+      nest: true
+    })
+      .then(restaurant => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        res.render('restaurant', { restaurant })
       })
       .catch(err => next(err))
   }
