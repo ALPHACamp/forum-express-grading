@@ -1,0 +1,14 @@
+<div class="card mb-3 mx-auto mt-4" style="max-width: 960px;">
+  <div class="row g-0">
+    <div class="col-md-4">
+      <img src="{{user.image}}" class="img-fluid rounded-start" style="width:100%; height:100%; " alt="Profile_image">
+    </div>
+    <div class="col-md-8 ps-5 pt-4">
+      <div class="card-body">
+        <h2 class="card-title">{{user.name}}</h2>
+        <p class="card-text mt-4">{{user.email}}</p>
+        <a class="btn btn-primary mt-4" href="/users/{{user.id}}/edit">edit</a>
+      </div>
+    </div>
+  </div>
+</div>
