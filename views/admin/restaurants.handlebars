@@ -1,47 +1,39 @@
-<h1>餐廳後台</h1>
-<ul class="nav nav-pills align-items-center mb-3">
-  <li class="nav-item">
-    <a class="nav-link px-0" aria-current="page" href="/admin/restaurants">Restaurants</a>
-  </li>
-  <li class="px-2">|</li>
-  <li class="nav-item">
-    <a class="nav-link px-0" href="/admin/users">Users</a>
-  </li>
-</ul>
+{{>admin-tabs route='restaurants'}}
 <a href='/admin/restaurants/create'>
   <button type="button" class="btn btn-primary">New Restaurant</button>
 </a>
 <br />
 <br />
 <table class="table align-middle">
-  <thead class="thead-dark">
+  <thead class="table-dark">
     <tr>
       <th scope="col">#</th>
       <th scope="col">Name</th>
+      <th scope="col">Category</th>
       <th scope="col"></th>
     </tr>
   </thead>
   <tbody>
-    {{#each restaurants}}
-      <tr>
-        <th scope="row">{{this.id}}</th>
-        <td>{{this.name}}</td>
-        <td>
-          <button type="button" class="btn btn-link">
-            <a class="btn btn-link link-primary" href="/admin/restaurants/{{this.id}}">
-              Show
-            </a>
-          </button>
-          <button type="button" class="btn btn-link">
-            <a class="btn btn-link link-primary" href="/admin/restaurants/{{this.id}}/edit">
-              Edit
-            </a>
-          </button>
-          <form action="/admin/restaurants/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
-            <button type="submit" class="btn btn-link link-danger" onclick="return confirm(`確定要刪除 {{ this.name }} 嗎？`)">Delete</button>
-          </form>
-        </td>
-      </tr>
-    {{/each}}
+    <div class="row mt-3">
+      {{#each restaurants}}
+      <div class="col-md-4">
+        <div class="card mb-4 shadow-sm">
+          <a href="/restaurants/{{this.id}}">
+            <img class="card-img-top img-fluid" src="{{this.image}}" alt="Card image cap" width="286px" height="180px"
+              style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+          </a>
+          <div class="card-body">
+            <p class="card-text">
+              <a href="/restaurants/{{this.id}}">
+                {{this.name}}
+              </a>
+            </p>
+            <span class="badge bg-secondary">{{this.Category.name}}</span>
+            <p class="card-text text-truncate">{{this.description}}</p>
+          </div>
+        </div>
+      </div>
+      {{/each}}
+</div> 
   </tbody>
 </table>
