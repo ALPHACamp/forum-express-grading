@@ -1,4 +1,5 @@
 const { Restaurant, Category } = require('../models')
+
 const restaurantController = {
   getRestaurants: (req, res) => {
     return Restaurant.findAll({
@@ -17,14 +18,25 @@ const restaurantController = {
   },
   getRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
-      include: Category, // 拿出關聯的 Category model
-      nest: true,
-      raw: true
+      include: Category
+    })
+      .then(restaurant => {
+        return restaurant.increment('view_counts')
+      })
+      .then(restaurant => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        res.render('restaurant', { restaurant: restaurant.toJSON() })
+      })
+      .catch(err => next(err))
+  },
+  getDashboard: (req, res, next) => {
+    return Restaurant.findByPk(req.params.id, {
+      include: Category
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
-        res.render('restaurant', {
-          restaurant
+        res.render('dashboard', {
+          restaurant: restaurant.toJSON()
         })
       })
       .catch(err => next(err))
