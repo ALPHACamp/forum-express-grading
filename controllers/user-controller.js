@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs')
 const db = require('../models')
-const { User } = db
+const { User, Restaurant, Comment } = db
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const userController = {
@@ -40,8 +40,20 @@ const userController = {
     res.redirect('/signin')
   },
   getUser: (req, res, next) => {
-    return User.findByPk(req.params.id, { raw: true })
-      .then(user => res.render('users/profile', { user }))
+    return User.findByPk(req.params.id, {
+      include: [
+        Comment,
+        { model: Comment, include: Restaurant }
+      ]
+    })
+      .then(user => {
+        let commentLen = 0
+        if (user.toJSON().Comments) commentLen = user.toJSON().Comments.length
+        res.render('users/profile', {
+          user: user.toJSON(),
+          commentCounts: commentLen /*user.toJSON().Comments.length */
+        })
+      })
       .catch(err => next(err))
   },
   editUser: (req, res, next) => {

@@ -8,8 +8,25 @@
         <div class="col-md-8">
           <h4>{{user.name}}</h4>
           <h6>{{user.email}}</h6>
+          <h6>{{#if commentCounts}}{{commentCounts}} 個已評論餐廳{{else}}沒有任何評論{{/if}}</h6>
           <a href="/users/{{user.id}}/edit" class="btn btn-primary">edit</a>
         </div>
+      </div>
+    </div>
+    <div class="card mt-3">
+      <div class="card-header">
+        <h6>已評論餐廳</h6>
+      </div>
+      <div class="card-body">
+        {{#if commentCounts}}
+        {{#each user.Comments}}
+        <a href="/restaurants/{{this.restaurantId}}">
+          <img src="{{this.Restaurant.image}}" class="p-1" style="width: 100px;">
+        </a>
+        {{/each}}
+        {{else}}
+        <h6>沒有任何評論</h6>
+        {{/if}}
       </div>
     </div>
   </div>
