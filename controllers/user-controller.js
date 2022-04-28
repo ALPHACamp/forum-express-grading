@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs')
 const { User, Restaurant, Comment } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
+const { getUser } = require('../helpers/auth-helpers')
 
 const userController = {
   signUpPage: (req, res) => {
@@ -39,6 +40,7 @@ const userController = {
   getUser: async (req, res, next) => {
     try {
       const userId = req.params.id
+      const authenticatedUserId = getUser(req).id
       const [user, comments] = await Promise.all([
         User.findByPk(req.params.id),
         Comment.findAndCountAll({
@@ -57,6 +59,9 @@ const userController = {
         }
       })
       if (!user) throw new Error("User did't exist")
+      if (user.id !== authenticatedUserId) {
+        throw new Error('Unable to access this profile')
+      }
       res.render('users/profile', {
         user: user.toJSON(),
         comments: newComments,
@@ -69,7 +74,11 @@ const userController = {
   editUser: async (req, res, next) => {
     try {
       const user = await User.findByPk(req.params.id)
+      const authenticatedUserId = getUser(req).id
       if (!user) throw new Error("User did't exist")
+      if (user.id !== authenticatedUserId) {
+        throw new Error('Unable to access this profile')
+      }
       res.render('users/edit', { user: user.toJSON() })
     } catch (err) {
       next(err)
@@ -77,11 +86,9 @@ const userController = {
   },
   putUser: async (req, res, next) => {
     try {
-      console.log(req.body)
       const { name } = req.body
       if (!name) throw new Error('User name is required')
       const { file } = req
-      console.log(file)
       const [user, filePath] = await Promise.all([
         User.findByPk(req.params.id),
         imgurFileHandler(file)
