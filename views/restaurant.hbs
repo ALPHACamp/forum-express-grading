@@ -1,21 +1,22 @@
-<div class="row mt-3">
-  {{#each restaurants}}
+<div class="row mb-5">
+  <div class="col-md-12">
+    <h1>{{restaurant.name}}</h1>
+    <p>[{{restaurant.Category.name}}]</p>
+  </div>
   <div class="col-md-4">
-    <div class="card mb-4 shadow-sm">
-      <a href="/restaurants/{{this.id}}">
-        <img class="card-img-top img-fluid" src="{{this.image}}" alt="Card image cap" width="286px" height="180px"
-          style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
-      </a>
-      <div class="card-body">
-        <p class="card-text">
-          <a href="/restaurants/{{this.id}}">
-            {{this.name}}
-          </a>
-        </p>
-        <span class="badge bg-secondary">{{this.Category.name}}</span>
-        <p class="card-text text-truncate">{{this.description}}</p>
-      </div>
+    <img class="img-responsive center-block mb-5" src="{{restaurant.image}}"
+      style="width: 250px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+    <div class="well">
+      <ul class="list-unstyled">
+        <li><strong>Opening Hour:</strong> {{restaurant.openingHours}}</li>
+        <li><strong>Tel:</strong> {{restaurant.tel}}</li>
+        <li><strong>Address:</strong> {{restaurant.address}}</li>
+      </ul>
     </div>
   </div>
-  {{/each}}
+  <div class="col-md-8">
+    <p style="white-space: break-spaces;">{{restaurant.description}}</p>
+  </div>
+  <hr>
 </div>
+<a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
