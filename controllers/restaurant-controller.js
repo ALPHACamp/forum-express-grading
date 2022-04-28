@@ -28,6 +28,9 @@ const restaurantController = {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         res.render('restaurant', { restaurant })
       })
+      .then(() => {
+        Restaurant.increment('view_counts', { where: { id: req.params.id } })
+      })
       .catch(err => next(err))
   },
   getDashboard: (req, res, next) => {
