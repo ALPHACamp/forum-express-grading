@@ -1,0 +1,15 @@
+<form action="/users/{{user.id}}?_method=PUT" method="POST" enctype="multipart/form-data">
+  <label for="name" class="form-label">Name</label>
+  <div class="input-group mb-3">
+    <input type="text" class="form-control" name="name" id="basic-url" aria-describedby="basic-addon3"
+      value="{{user.name}}">
+  </div>
+  <label class="form-label" for="image">上傳頭貼</label>
+  <div class="input-group mb-3">
+    <input type="file" class="form-control" name="image" id="image">
+  </div>
+  <button type="submit" class="btn btn-primary mb-3">Submit</button>
+</form>
+<div class="mb-3">
+  <a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
+</div>
