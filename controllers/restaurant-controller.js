@@ -36,7 +36,7 @@ const restaurantController = {
   },
   getRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
-      include: [ 
+      include: [
         Category,
         { model: Comment, include: User }
       ]
