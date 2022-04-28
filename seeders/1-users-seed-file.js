@@ -3,7 +3,7 @@ const bcrypt = require('bcryptjs')
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.bulkInsert('Users', [{ // 一次新增三筆資料
-      email: 'root@example.com',
+      email: process.env.ROOT_ACCOUNT,
       password: await bcrypt.hash('12345678', 10),
       is_admin: true,
       name: 'root',
