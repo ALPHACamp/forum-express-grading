@@ -46,9 +46,9 @@ const userController = {
       if (!user) throw new Error("user didn't exist!")
       let restaurantName = []
       let restaurantId = []
-      user.Comments.map(comment => {
+      user.Comments.forEach(comment => {
         restaurantName.push(comment.Restaurant.name)
-        return restaurantId.push(comment.Restaurant.id)
+        restaurantId.push(comment.Restaurant.id)
       })
       restaurantName = [...new Set(restaurantName)]
       restaurantId = [...new Set(restaurantId)]
