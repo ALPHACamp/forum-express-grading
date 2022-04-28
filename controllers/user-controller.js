@@ -39,7 +39,7 @@ const userController = {
   },
   getUser: (req, res, next) => {
     const id = req.params.id
-    Promise.all([
+    return Promise.all([
       User.findByPk(id, { raw: true }),
       Comment.findAndCountAll({
         where: { userId: id },
