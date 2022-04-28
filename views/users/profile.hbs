@@ -8,7 +8,7 @@
         <div class="col-md-8">
           <h4>{{user.name}}</h4>
           <h6>{{user.email}}</h6>
-          <h6>{{#if commentCounts}}{{commentCounts}} 已評論餐廳{{else}}沒有任何評論{{/if}}</h6>
+          <h6>{{#if user.Comments.length}}{{user.Comments.length}} 已評論餐廳{{else}}沒有任何評論{{/if}}</h6>
           <a href="/users/{{user.id}}/edit" class="btn btn-primary">edit</a>
         </div>
       </div>
@@ -18,7 +18,7 @@
         <h6>已評論餐廳</h6>
       </div>
       <div class="card-body">
-        {{#if commentCounts}}
+        {{#if user.Comments.length}}
           {{#each user.Comments}}
             <a href="/restaurants/{{this.restaurantId}}" class='text-decoration-none'>
               <img src="{{this.Restaurant.image}}" class="p-1" style="width: 80px;">
