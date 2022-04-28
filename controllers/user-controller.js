@@ -41,7 +41,9 @@ const userController = {
   getUser: (req, res, next) => {
     const paramsId = parseInt(req.params.id)
     if (getUser(req).id === paramsId) {
-      return User.findByPk(paramsId)
+      return User.findByPk(paramsId, {
+        include: { model: Comment, include: { model: Restaurant } }
+      })
         .then(user => {
           res.render('users/profile', { user: user.toJSON() })
         })
