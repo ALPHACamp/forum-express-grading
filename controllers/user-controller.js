@@ -1,6 +1,5 @@
 const bcrypt = require('bcryptjs')
-const db = require('../models')
-const { User } = db
+const { User, Restaurant, Comment } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const userController = {
@@ -37,7 +36,9 @@ const userController = {
     res.redirect('/signin')
   },
   getUser: (req, res, next) => {
-    return User.findByPk(req.params.id)
+    return User.findByPk(req.params.id, {
+      include: { model: Comment, include: Restaurant }
+    })
       .then(user => {
         if (!user) throw new Error('User not exist.')
         res.render('users/profile', { user: user.toJSON() })
@@ -45,7 +46,6 @@ const userController = {
       .catch(err => next(err))
   },
   editUser: (req, res, next) => {
-    req.session.user_id = req.params.id
     return User.findByPk(req.params.id)
       .then(user => {
         if (!user) throw new Error('User not exist.')
@@ -63,6 +63,7 @@ const userController = {
     ])
       .then(([user, filePath]) => {
         if (!user) throw new Error("User didn't exist!")
+        if (user.id !== req.user.id) throw new Error('You do not have permission to do that.')
         return user.update({
           name,
           image: filePath || user.image
