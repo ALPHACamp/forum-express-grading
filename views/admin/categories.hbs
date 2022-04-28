@@ -17,7 +17,7 @@
       <th scope="row">{{this.id}}</th>
       <td>{{this.name}}</td>
       <td>
-        <a href="/admin/categories/{{this.id}}" class="btn btn-link link-parimary">Edit</a>
+        <a href="/admin/categories/{{this.id}}" class="btn btn-link link-primary">Edit</a>
         <form action="/admin/categories/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
           <button type="submit" class="btn btn-link link-danger"
             onclick="return confirm(`確定要刪除 {{ this.name }} 嗎？`)">Delete</button>
