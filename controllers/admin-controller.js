@@ -1,4 +1,9 @@
+<<<<<<< HEAD
 const { Restaurant, User, Category } = require('../models')
+=======
+const { Restaurant } = require('../models')
+const { User } = require('../models')
+>>>>>>> R01
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const adminController = {
@@ -102,6 +107,7 @@ const adminController = {
   },
   patchUser: (req, res, next) => {
     return User.findByPk(req.params.id)
+<<<<<<< HEAD
       .then(user => {
         if (user.email === 'root@example.com') {
           req.flash('error_messages', '禁止變更 root 權限')
@@ -110,6 +116,16 @@ const adminController = {
         const isAdmin = !user.isAdmin
         req.flash('success_messages', '使用者權限變更成功')
         return user.update({ isAdmin })
+=======
+      .then(users => {
+        if (users.email === 'root@example.com') {
+          req.flash('error_messages', '禁止變更 root 權限')
+          return res.redirect('back')
+        }
+        users.isAdmin === false ? (users.isAdmin = true) : (users.isAdmin = false)
+        req.flash('success_messages', '使用者權限變更成功')
+        return users.update({ isAdmin: users.isAdmin })
+>>>>>>> R01
       })
       .then(() => res.redirect('/admin/users'))
       .catch(err => next(err))
