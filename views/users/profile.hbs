@@ -1,0 +1,26 @@
+<div class="row mb-5 bg-white">
+  <div class="col">
+    <img class="img-fluid" src="{{user.image}}">
+  </div>
+  <div class="col-md-8 ">
+    <h1>{{user.name}}</h1>
+    <p>{{user.email}}</p>
+    <a href="/users/{{user.id}}/edit"><button class="btn btn-primary">Edit</button></a>
+    
+  </div>
+  <br/>
+</div>
+<!--comments-->
+
+<div class="card">
+  <div class="card-header">
+    Comments
+  </div>
+  <div class="card-body overflow-auto" style="height:180px">
+    {{#each user.Comments}}
+    <a href="/restaurants/{{this.Restaurant.id}}#{{this.id}}">
+      <img src="{{this.Restaurant.image}}" style="max-height:75px">
+    </a>
+    {{/each}}
+  </div>
+</div>
