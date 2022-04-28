@@ -41,5 +41,15 @@ const restController = {
       })
       .catch(err => next(err))
   }
+  /* getDashboard: async (req, res, next) => {
+    const restaurant = await Restaurant.findByPk(req.params.id, {
+      include: Category
+    })
+    const restaurantadd = restaurant.increment('view_counts')
+    const restaurantCounts = await Restaurant.findByPk(restaurantadd.id, {
+      include: Category
+    })
+    await res.render('dashboard', { restaurant: restaurantCounts.toJSON() })
+  } */
 }
 module.exports = restController
