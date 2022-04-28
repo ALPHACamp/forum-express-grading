@@ -52,10 +52,7 @@ const userController = {
   editUser: (req, res, next) => {
     const userId = req.params.id
 
-    if (Number(getUser(req).id) !== userId) {
-      req.flash('error_messages', '你沒有權限編輯此頁面！')
-      return res.redirect('/restaurants')
-    }
+    if (Number(getUser(req).id) !== Number(userId)) throw new Error('你沒有權限編輯此頁面！')
     return User.findByPk(userId, { raw: true })
       .then(user => {
         if (!user) throw new Error("User didn't exist!")
