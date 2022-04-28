@@ -4,12 +4,15 @@ const { authenticated, authenticatedAdmin } = require('../middleware/auth')
 const userController = require('../controllers/user-controller')
 const passport = require('../config/passport')
 const { generalErrorHandler } = require('../middleware/error-handler')
+//
 const admin = require('./modules/admin')
 const users = require('./modules/users')
 const restaurants = require('./modules/restaurants')
 const comments = require('./modules/comments')
 const favorite = require('./modules/favorite')
 const like = require('./modules/like')
+const following = require('./modules/following')
+// const { admin, users, restaurants, comments, favorite, like, following } = require('./modules')
 //
 router.get('/signup', userController.signUpPage)
 router.post('/signup', userController.signUp)
@@ -28,6 +31,8 @@ router.use('/comments', comments)
 router.use('/favorite', authenticated, favorite)
 //
 router.use('/like', authenticated, like)
+//
+router.use('/following', authenticated, following)
 //
 router.use('/', (req, res) => res.redirect('/restaurants'))
 router.use('/', generalErrorHandler)
