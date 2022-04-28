@@ -1,8 +1,7 @@
 const passport = require('passport')
 const LocalStrategy = require('passport-local')
 const bcrypt = require('bcryptjs')
-const db = require('../models')
-const User = db.User
+const { User, Restaurant } = require('../models')
 
 passport.use(new LocalStrategy(
   {
@@ -27,10 +26,13 @@ passport.serializeUser((user, cb) => {
 })
 // 用使用者的序列化 id 去資料庫找對應的 id 的資料
 passport.deserializeUser((id, cb) => {
-  User.findByPk(id).then(user => {
-    user = user.toJSON()
-    return cb(null, user)
+  User.findByPk(id, {
+    include: [
+      { model: Restaurant, as: 'FavoritedRestaurants' }
+    ]
   })
+    .then(user => cb(null, user.toJSON()))
+    .catch(err => cb(err))
 })
 
 module.exports = passport
