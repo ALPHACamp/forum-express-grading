@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 const { Restaurant, Comment, User } = require('../models')
-
+const { getUser } = require('../helpers/auth-helpers')
 const userController = {
   signUpPage: (req, res) => {
     res.render('signup')
@@ -36,35 +36,63 @@ const userController = {
     req.logout()
     res.redirect('/signin')
   },
-  getUser: async (req, res) => {
-    try {
-      const user = await User.findByPk(req.params.id, {
-        include: [
-          { model: Comment, include: Restaurant }
-        ]
-      })
+  getUser: (req, res) => {
+    return User.findByPk(req.params.id, {
+      include: [
+        { model: Comment, include: Restaurant }
+      ]
+    }).then(user => {
       if (!user) throw new Error("user didn't exist!")
       let restaurantName = []
       let restaurantId = []
-      user.Comments.forEach(comment => {
-        restaurantName.push(comment.Restaurant.name)
-        restaurantId.push(comment.Restaurant.id)
-      })
       restaurantName = [...new Set(restaurantName)]
       restaurantId = [...new Set(restaurantId)]
       const restaurantList = restaurantName.map((item, index) => ({ name: item, id: restaurantId[index] }))
-      const restaurantCount = restaurantList.length
+      // console.log('req.user.id', Number(req.user.id)) 即便找的到id，測試的時候仍會顯示 Cannot read property 'id' of undefined
+      const id = Number(getUser(req).id)
+      const email = getUser(req).email
       return res.render('users/profile', {
         user: user.toJSON(),
-        id: Number(req.user.id),
-        email: req.user.email,
-        restaurantCount,
+        id,
+        email,
+        restaurantCount: restaurantList.length,
         restaurantList
       })
-    } catch (err) {
-      console.log(err)
-    }
+    })
   },
+  //   try {
+  //     const user = await User.findByPk(req.params.id, {
+  //       include: [
+  //         { model: Comment, include: Restaurant }
+  //       ]
+  //     })
+  //     if (!user) throw new Error("user didn't exist!")
+  //     let restaurantName = []
+  //     let restaurantId = []
+  //     // console.log('user.Comments', user.Comments)
+  //     // console.log('user.Comments[0]', user.Comments[0].Restaurant.id)
+  //     // console.log('user.Comments[0]', user.Comments[0].Restaurant.name)
+  //     // const restaurantList = user.Comments.map(comment => {
+  //     //   return { name: comment.Restaurant.name, id: comment.Restaurant.id }
+  //     // })
+  //     user.Comments.forEach(comment => {
+  //       restaurantName.push(comment.Restaurant.name)
+  //       restaurantId.push(comment.Restaurant.id)
+  //     })
+  //     restaurantName = [...new Set(restaurantName)]
+  //     restaurantId = [...new Set(restaurantId)]
+  //     const restaurantList = restaurantName.map((item, index) => ({ name: item, id: restaurantId[index] }))
+  //     return res.render('users/profile', {
+  //       user: user.toJSON(),
+  //       id: Number(req.user.id),
+  //       email: req.user.email,
+  //       restaurantCount: restaurantList.length,
+  //       restaurantList
+  //     })
+  //   } catch (err) {
+  //     console.log(err)
+  //   }
+  // },
   editUser: (req, res, next) => {
     return User.findByPk(req.params.id, { raw: true })
       .then(user => {
