@@ -1,15 +1,28 @@
-  <div class="card mb-3">
-    <div class="row g-0">
-      <div class="col-md-4 w-25 p-3">
-        <img class="img-responsive center-block" src="{{user.image}}"
-          style="width: 250px; margin-bottom: 25px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
-      </div>
-      <div class="col-md-8">
-        <div class="card-body">
-          <h5 class="card-title">{{user.name}}</h5>
-          <p class="card-text">{{user.email}}</p>
-          <a href="/users/{{user.id}}/edit" class="btn btn-primary">Edit</a>
-        </div>
+<div class="card mb-3">
+  <div class="row g-0">
+    <div class="col-md-4 w-25 p-3">
+      <img class="img-responsive center-block" src="{{user.image}}"
+        style="width: 250px; margin-bottom: 25px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+    </div>
+    <div class="col-md-8">
+      <div class="card-body">
+        <h5 class="card-title">{{user.name}}</h5>
+        <p class="card-text">{{user.email}}</p>
+        <a href="/users/{{user.id}}/edit" class="btn btn-primary">Edit</a>
       </div>
     </div>
+  </div>
+</div>
+</div>
+<div class="card">
+  <div class="card-header">
+    {{comment.count}}則餐廳評論
+  </div>
+  <div class="card-body">
+  <ul class="list-group list-group-horizontal">
+    {{#each comment.rows}}
+    <li class="list-group-item"><a href="/restaurants/{{this.restaurantId}}"><img src="{{Restaurant.image}}" alt="Card image cap" width="100px" height="80px"
+          style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;"></a></li>
+    {{/each}}
+  </ul>
   </div>
