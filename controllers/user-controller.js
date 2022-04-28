@@ -44,14 +44,22 @@ const userController = {
         ]
       })
       if (!user) throw new Error("user didn't exist!")
-      const amount = await Comment.findAndCountAll({
-        where: {
-          user_id: user.dataValues.id
-        }
+      let restaurantName = []
+      let restaurantId = []
+      user.Comments.map(comment => {
+        restaurantName.push(comment.Restaurant.name)
+        return restaurantId.push(comment.Restaurant.id)
       })
+      restaurantName = [...new Set(restaurantName)]
+      restaurantId = [...new Set(restaurantId)]
+      const restaurantList = restaurantName.map((item, index) => ({ name: item, id: restaurantId[index] }))
+      const restaurantCount = restaurantList.length
       return res.render('users/profile', {
         user: user.toJSON(),
-        amount: amount.count
+        id: Number(req.user.id),
+        email: req.user.email,
+        restaurantCount,
+        restaurantList
       })
     } catch (err) {
       console.log(err)
@@ -61,7 +69,7 @@ const userController = {
     return User.findByPk(req.params.id, { raw: true })
       .then(user => {
         if (!user) throw new Error("user doesn't exist!")
-        console.log(user)
+        // console.log(user)
         return res.render('users/edit', { user })
       })
       .catch(err => next(err))
@@ -70,6 +78,7 @@ const userController = {
     const { name } = req.body
     if (!name) throw new Error('User name is required!')
     const { file } = req
+    // console.log(req.user)
     return Promise.all([
       User.findByPk(req.params.id),
       imgurFileHandler(file)

@@ -6,19 +6,20 @@
     <div class="well">
       <ul class="list-unstyled">
         <li><strong>name</strong> {{user.name}}</li>
-        <li><strong>email</strong> {{user.email}}</li>
-      </ul>
+        <li><strong>email</strong> {{user.email}}
     </div>
   </div>
-  <div class="col-md-4">
-    <a class="btn btn-primary" href="/users/{{user.id}}/edit">edit</a>
-  </div>
+  {{#ifCond user.id id }}
+    <div class="col-md-4">
+      <a class="btn btn-primary" href="/users/{{user.id}}/edit">edit</a>
+    </div>
+  {{/ifCond}}
   <hr>
   {{!-- Comment --}}
-  <h3 class="mb-3">{{ amount }}已評論餐廳</h3>
-  {{#each user.Comments}}
+  <h3 class="mb-3">{{ restaurantCount }}已評論餐廳</h3>
+  {{#each restaurantList}}
     <blockquote class="blockquote mb-0">
-      <h4><a href="/restaurants/{{this.Restaurant.id}}">{{this.Restaurant.name}}</a></h4>
+      <h4><a href="/restaurants/{{this.id}}">{{this.name}}</a></h4>
     </blockquote>
     <hr />
   {{/each}}
