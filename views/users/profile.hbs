@@ -1,0 +1,18 @@
+<div class="row mb-5">
+  <div class="col-md-4">
+    <img class="img-responsive center-block mb-5" src="{{user.image}}" style="width: 250px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+  </div>
+  <div class="col-md-4">
+    <div class="well">
+      <ul class="list-unstyled">
+        <li><strong>name</strong> {{user.name}}</li>
+        <li><strong>email</strong> {{user.email}}</li>
+      </ul>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <a class="btn btn-primary" href="/users/{{user.id}}/edit">edit</a>
+  </div>
+  <hr>
+</div>
+<a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a> 
