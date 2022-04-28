@@ -17,7 +17,7 @@
   <hr>
   {{!-- Comment --}}
   <h3 class="mb-3">{{ restaurantCount }}已評論餐廳</h3>
-  {{#each restaurantList}}
+  {{#each restaurantListSet}}
     <blockquote class="blockquote mb-0">
       <h4><a href="/restaurants/{{this.id}}">{{this.name}}</a></h4>
     </blockquote>

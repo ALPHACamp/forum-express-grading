@@ -43,11 +43,11 @@ const userController = {
       ]
     }).then(user => {
       if (!user) throw new Error("user didn't exist!")
-      let restaurantName = []
-      let restaurantId = []
-      restaurantName = [...new Set(restaurantName)]
-      restaurantId = [...new Set(restaurantId)]
-      const restaurantList = restaurantName.map((item, index) => ({ name: item, id: restaurantId[index] }))
+      const restaurantList = user.Comments.map(comment => {
+        return ({ name: comment.Restaurant.name, id: comment.Restaurant.id })
+      })
+      const restaurantListSet = [...new Set(restaurantList.map(item => JSON.stringify(item)))].map(item => JSON.parse(item))
+      // console.log('restaurantListSet', restaurantListSet)
       // console.log('req.user.id', Number(req.user.id)) 即便找的到id，測試的時候仍會顯示 Cannot read property 'id' of undefined
       const id = Number(getUser(req).id)
       const email = getUser(req).email
@@ -55,8 +55,8 @@ const userController = {
         user: user.toJSON(),
         id,
         email,
-        restaurantCount: restaurantList.length,
-        restaurantList
+        restaurantCount: restaurantListSet.length,
+        restaurantListSet
       })
     })
   },
