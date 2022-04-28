@@ -46,9 +46,7 @@ const userController = {
       .then(user => {
         if (!user) throw new Error("User didn't exist!")
         const id = getUser(req).id
-        const userData = user.toJSON()
-        const commentCounts = userData.Comments.length
-        return res.render('users/profile', { user: user.toJSON(), id, commentCounts })
+        return res.render('users/profile', { user: user.toJSON(), id })
       })
       .catch(err => next(err))
   },

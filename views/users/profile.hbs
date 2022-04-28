@@ -6,7 +6,7 @@
     <ul class="list-unstyled">
       <li>{{ user.name }}</li>
       <li>{{ user.email }}</li>
-      <li>{{ commentCounts }}已評論餐廳</li>
+      <li>{{ user.Comments.length }}已評論餐廳</li>
       {{#ifCond user.id id}}
       <li class="mt-5">
         <a href="/users/{{ id }}/edit" class="btn btn-primary">edit</a>
@@ -17,7 +17,7 @@
 </div>
 <div class="card mt-4">
   <div class="card-header">
-    {{ commentCounts }}已評論餐廳
+    {{ user.Comments.length }}已評論餐廳
   </div>
   <div class="card-body">
     <div class="px-2 pt-2 d-flex flex-wrap">
