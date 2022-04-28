@@ -19,7 +19,6 @@ const restaurantController = {
   },
   // 餐廳各自的詳細資料
   getRestaurant: (req, res, next) => {
-    console.log('getRestaurant')
     return Restaurant.findByPk(req.params.id, {
       include: Category,
       raw: true,
@@ -28,6 +27,21 @@ const restaurantController = {
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         res.render('restaurant', { restaurant })
+      })
+      .then(() => {
+        Restaurant.increment('view_counts', { where: { id: req.params.id } })
+      })
+      .catch(err => next(err))
+  },
+  getDashboard: (req, res, next) => {
+    return Restaurant.findByPk(req.params.id, {
+      include: Category,
+      raw: true,
+      nest: true
+    })
+      .then(restaurant => {
+        console.log(restaurant)
+        res.render('dashboard', { restaurant })
       })
       .catch(err => next(err))
   }
