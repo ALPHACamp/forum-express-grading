@@ -62,12 +62,12 @@ const userController = {
     if (!req.body.name) throw new Error('Name is required!')
     return Promise.all([
       User.findByPk(req.params.id),
-      imgurFileHandler(req.file)
+      req.file ? imgurFileHandler(req.file) : req.user.image
     ])
-      .then(([user, filePath]) => {
+      .then(([user, image]) => {
         return user.update({
           name,
-          image: filePath || user.image
+          image
         })
       })
       .then(() => {
