@@ -23,12 +23,12 @@ if (config.use_env_variable) {
 
 // 動態引入其他 models
 fs.readdirSync(__dirname)
-  .filter((file) => {
+  .filter(file => {
     return (
       file.indexOf('.') !== 0 && file !== basename && file.slice(-3) === '.js'
     )
   })
-  .forEach((file) => {
+  .forEach(file => {
     const model = require(path.join(__dirname, file))(
       sequelize,
       Sequelize.DataTypes
@@ -37,7 +37,7 @@ fs.readdirSync(__dirname)
   })
 
 // 設定 Models 之間的關聯
-Object.keys(db).forEach((modelName) => {
+Object.keys(db).forEach(modelName => {
   if (db[modelName].associate) {
     db[modelName].associate(db)
   }
