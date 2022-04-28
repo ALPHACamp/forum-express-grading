@@ -1,4 +1,4 @@
-<div class="row mb-5">
+<div class="row mb-3">
   <div class="col-md-12">
     <h1>{{restaurant.name}}</h1>
     <p>[{{restaurant.Category.name}}]</p>
@@ -19,8 +19,6 @@
   </div>
   <hr>
 </div>
-
-{{!-- Comment --}}
 <h3 class="mb-3">所有評論：</h3>
 {{#each restaurant.Comments}}
   {{#if ../user.isAdmin}}
@@ -35,7 +33,6 @@
   </blockquote>
   <hr />
 {{/each}}
-
 <form action="/comments" method="POST">
   <div class="form-row mb-3">
     <label class="form-label" for="text">留下評論：</label>
