@@ -1,0 +1,14 @@
+<div class="card w-50 mx-auto">
+  <div class="row align-items-center justify-content-between" style="height: 300px;">
+    <div class="col-md-5">
+      <img src="{{user.image}}" class="ms-1 rounded-circle" alt="avatar" style="height: 250px; width: 250px;">
+    </div>
+    <div class="col-md-6">
+      <div class="card-body">
+        <h5 class="card-title">{{user.name}}</h5>
+        <p class="card-text">{{user.email}}</p>
+        <a class="btn btn-primary mt-5 btn-sm" href="/users/{{user.id}}/edit">edit</a>
+      </div>
+    </div>
+  </div>
+</div>
