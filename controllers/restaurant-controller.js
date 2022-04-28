@@ -19,7 +19,6 @@ const restaurantController = {
   },
   // 餐廳各自的詳細資料
   getRestaurant: (req, res, next) => {
-    console.log('getRestaurant')
     return Restaurant.findByPk(req.params.id, {
       include: Category,
       raw: true,
@@ -32,7 +31,16 @@ const restaurantController = {
       .catch(err => next(err))
   },
   getDashboard: (req, res, next) => {
-    res.render('dashboard')
+    return Restaurant.findByPk(req.params.id, {
+      include: Category,
+      raw: true,
+      nest: true
+    })
+      .then(restaurant => {
+        console.log(restaurant)
+        res.render('dashboard', { restaurant })
+      })
+      .catch(err => next(err))
   }
 }
 module.exports = restaurantController
