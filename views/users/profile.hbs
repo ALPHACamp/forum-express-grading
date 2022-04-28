@@ -19,11 +19,15 @@
     {{comment.count}}則餐廳評論
   </div>
   <div class="card-body">
-  <ul class="list-group list-group-horizontal">
-    {{#each comment.rows}}
-    <li class="list-group-item"><a href="/restaurants/{{this.restaurantId}}"><img src="{{Restaurant.image}}" alt="Card image cap" width="100px" height="80px"
-          style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;"></a></li>
-    {{/each}}
-  </ul>
+    {{#ifCond comment.count 0}}
+    <h5>您尚未有任何評論</h5>
+    {{else}}
+    <ul class="list-group list-group-horizontal">
+      {{#each comment.rows}}
+      <li class="list-group-item"><a href="/restaurants/{{this.restaurantId}}"><img src="{{Restaurant.image}}"
+            alt="Card image cap" width="100px" height="80px" style="transition: opacity 0.5s; opacity:0;"
+            onload="this.style.opacity=1;"></a></li>
+      {{/each}}
+    </ul>
+    {{/ifCond}}
   </div>
-  
