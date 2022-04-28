@@ -98,14 +98,15 @@ const userController = {
           restaurantId
         })
       })
-      .then(() => res.redirect('back'))
+      .then(() => res.redirect(`back#${restaurantId}`))
       .catch(err => next(err))
   },
   removeFavorite: (req, res, next) => {
+    const { restaurantId } = req.params
     return Favorite.findOne({
       where: {
         userId: req.user.id,
-        restaurantId: req.params.restaurantId
+        restaurantId
       }
     })
       .then(favorite => {
@@ -113,7 +114,7 @@ const userController = {
 
         return favorite.destroy()
       })
-      .then(() => res.redirect('back'))
+      .then(() => res.redirect(`back#${restaurantId}`))
       .catch(err => next(err))
   },
   addLike: (req, res, next) => {
@@ -136,23 +137,22 @@ const userController = {
           restaurantId
         })
       })
-      .then(() => {
-        res.redirect('back')
-      })
+      .then(() => res.redirect(`back#${restaurantId}`))
       .catch(err => next(err))
   },
   removeLike: (req, res, next) => {
+    const { restaurantId } = req.params
     return Like.findOne({
       where: {
         userId: req.user.id,
-        restaurantId: req.params.restaurantId
+        restaurantId
       }
     })
       .then(like => {
         if (!like) throw new Error("You haven't liked this restaurant")
         return like.destroy()
       })
-      .then(() => res.redirect('back'))
+      .then(() => res.redirect(`back#${restaurantId}`))
       .catch(err => next(err))
   }
 }

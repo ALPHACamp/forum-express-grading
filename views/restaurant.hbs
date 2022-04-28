@@ -18,20 +18,20 @@
     <a class="btn btn-primary" href="/restaurants/{{restaurant.id}}/dashboard">Dashboard</a>
     {{#if isFavorited }}
       <form action="/favorite/{{restaurant.id}}?_method=DELETE" method="POST" style="display: contents;">
-        <button type="submit" class="btn btn-danger">移除最愛</button>
+        <button type="submit" class="btn "><i class="fa-solid fa-heart"></i></button>
       </form>
     {{else}}
       <form action="/favorite/{{restaurant.id}}" method="POST" style="display: contents;">
-        <button type="submit" class="btn btn-primary">加到最愛</button>
+        <button type="submit" class="btn "><i class="fa-regular fa-heart"></i></button>
       </form>
     {{/if}}
     {{#if isLiked }}
       <form action="/like/{{restaurant.id}}?_method=DELETE" method="POST" style="display: contents;">
-        <button type="submit" class="btn btn-danger">Unlike</button>
+        <button type="submit" class="btn "><i class="fa-solid fa-thumbs-up"></i></button>
       </form>
     {{else}}
       <form action="/like/{{restaurant.id}}" method="POST" style="display: contents;">
-        <button type="submit" class="btn btn-primary">Like</button>
+        <button type="submit" class="btn "><i class="fa-regular fa-thumbs-up"></i></button>
       </form>
     {{/if}}
   </div>
@@ -48,7 +48,7 @@
   {{/if}}
   <blockquote class="blockquote mb-0" >
     <h4><a href="/users/{{this.User.id}}">{{this.User.name}}</a></h4>
-    <p id="{{this.id}}">{{this.text}}</p>
+    <div id="{{this.id}}">{{this.text}}</div>
     <footer class="blockquote-footer">{{relativeTimeFromNow this.createdAt}}</footer>
   </blockquote>
   <hr/>
