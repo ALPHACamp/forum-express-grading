@@ -11,6 +11,9 @@
         <li><strong>Opening Hour:</strong> {{restaurant.openingHours}}</li>
         <li><strong>Tel:</strong> {{restaurant.tel}}</li>
         <li><strong>Address:</strong> {{restaurant.address}}</li>
+          <a href="/restaurants/{{restaurant.id}}/dashboard">
+            <button type="button" class="btn btn-primary" style="margin-top: 30px;">Dashboard</button>
+          </a>
       </ul>
     </div>
   </div>
@@ -19,4 +22,6 @@
   </div>
   <hr>
 </div>
-<a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
+<div>
+  <a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
+</div>
