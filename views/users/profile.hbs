@@ -1,7 +1,7 @@
-<div class="card w-50 mx-auto">
-  <div class="row align-items-center justify-content-between" style="height: 300px;">
-    <div class="col-md-5">
-      <img src="{{user.image}}" class="ms-1 rounded-circle" alt="avatar" style="height: 250px; width: 250px;">
+<div class="card mx-auto">
+  <div class="row align-items-center">
+    <div class="col-md-3">
+      <img src="{{user.image}}" class="img-fluid rounded-start" alt="avatar" style="height: 250px; width: 250px;">
     </div>
     <div class="col-md-6">
       <div class="card-body">
@@ -10,5 +10,17 @@
         <a class="btn btn-primary mt-5 btn-sm" href="/users/{{user.id}}/edit">edit</a>
       </div>
     </div>
+  </div>
+</div>
+<div class="card mx-auto mt-3">
+  <div class="card-header">
+    {{length user.Comments}} 家已評論餐廳
+  </div>
+  <div class="card-body">
+    {{#each user.Comments}}
+    <a href="/restaurants/{{this.Restaurant.id}}" class="me-2" style="text-decoration:none;">
+      <img class="rounded" style="height: 100px; width: 100px;" src="{{this.Restaurant.image}}" alt="{{this.Restaurant.name}}">
+    </a>
+    {{/each}}
   </div>
 </div>
