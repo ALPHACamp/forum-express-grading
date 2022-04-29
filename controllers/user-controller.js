@@ -43,56 +43,23 @@ const userController = {
       ]
     }).then(user => {
       if (!user) throw new Error("user didn't exist!")
-      const restaurantList = user.Comments.map(comment => {
+      const restaurantList = user.Comments && user.Comments.map(comment => {
         return ({ name: comment.Restaurant.name, id: comment.Restaurant.id })
       })
-      const restaurantListSet = [...new Set(restaurantList.map(item => JSON.stringify(item)))].map(item => JSON.parse(item))
-      // console.log('restaurantListSet', restaurantListSet)
+      const restaurantListSet = restaurantList && [...new Set(restaurantList.map(item => JSON.stringify(item)))].map(item => JSON.parse(item))
       // console.log('req.user.id', Number(req.user.id)) 即便找的到id，測試的時候仍會顯示 Cannot read property 'id' of undefined
       const id = Number(getUser(req).id)
       const email = getUser(req).email
+      const restaurantCount = restaurantListSet && restaurantListSet.length
       return res.render('users/profile', {
         user: user.toJSON(),
         id,
         email,
-        restaurantCount: restaurantListSet.length,
+        restaurantCount,
         restaurantListSet
       })
     })
   },
-  //   try {
-  //     const user = await User.findByPk(req.params.id, {
-  //       include: [
-  //         { model: Comment, include: Restaurant }
-  //       ]
-  //     })
-  //     if (!user) throw new Error("user didn't exist!")
-  //     let restaurantName = []
-  //     let restaurantId = []
-  //     // console.log('user.Comments', user.Comments)
-  //     // console.log('user.Comments[0]', user.Comments[0].Restaurant.id)
-  //     // console.log('user.Comments[0]', user.Comments[0].Restaurant.name)
-  //     // const restaurantList = user.Comments.map(comment => {
-  //     //   return { name: comment.Restaurant.name, id: comment.Restaurant.id }
-  //     // })
-  //     user.Comments.forEach(comment => {
-  //       restaurantName.push(comment.Restaurant.name)
-  //       restaurantId.push(comment.Restaurant.id)
-  //     })
-  //     restaurantName = [...new Set(restaurantName)]
-  //     restaurantId = [...new Set(restaurantId)]
-  //     const restaurantList = restaurantName.map((item, index) => ({ name: item, id: restaurantId[index] }))
-  //     return res.render('users/profile', {
-  //       user: user.toJSON(),
-  //       id: Number(req.user.id),
-  //       email: req.user.email,
-  //       restaurantCount: restaurantList.length,
-  //       restaurantList
-  //     })
-  //   } catch (err) {
-  //     console.log(err)
-  //   }
-  // },
   editUser: (req, res, next) => {
     return User.findByPk(req.params.id, { raw: true })
       .then(user => {
