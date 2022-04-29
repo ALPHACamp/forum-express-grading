@@ -36,13 +36,22 @@ const userController = {
     req.logout()
     res.redirect('/signin')
   },
+
   getUser: (req, res, next) => {
-    return User.findByPk(req.params.id, {
-      include: [
-        { model: Comment, include: Restaurant }
-      ]
-    })
-      .then(user => res.render('users/profile', { user: user.toJSON() }))
+    const id = req.params.id
+    return Promise.all([
+      User.findByPk(id, { raw: true }),
+      Comment.findAndCountAll({
+        where: { userId: id },
+        include: Restaurant,
+        nest: true,
+        raw: true
+      })
+    ])
+      .then(([user, comment]) => {
+        console.log('comment', comment)
+        res.render('users/profile', { user, comment })
+      })
       .catch(err => next(err))
   },
   editUser: (req, res, next) => {
