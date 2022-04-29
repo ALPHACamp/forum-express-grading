@@ -5,7 +5,22 @@
   <div class="col-md-8">
     <h1>{{user.name}}</h1>
     <p>{{user.email}}</p>
+    <p>{{comments.count}}已評論餐廳</p>
     <a class="btn btn-outline-secondary" href="{{user.id}}/edit">Edit</a>
   </div>
   <hr>
 </div>
+
+<h3 class="mb-3">{{comments.count}}已評論餐廳</h3>
+<blockquote class="blockquote mb-0 row">
+  {{#each comments.rows}}
+    <div class="col-md-2">
+      <div class="card mb-4 shadow-sm">
+        <a href="/restaurants/{{this.restaurantId}}">
+          <img class="card-img-top img-fluid" src="{{this.Restaurant.image}}" alt="Card image cap" width="143px" height="90px"
+            style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+        </a>
+      </div>
+    </div>
+  {{/each}}
+</blockquote>
