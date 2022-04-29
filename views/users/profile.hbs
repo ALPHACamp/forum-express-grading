@@ -9,7 +9,9 @@
           <h4>{{user.name}}</h4>
           <h6>{{user.email}}</h6>
           <h6>{{#if commentCounts}}{{commentCounts}} 個已評論餐廳{{else}}沒有任何評論{{/if}}</h6>
+          {{#if isLoggerId}}
           <a href="/users/{{user.id}}/edit" class="btn btn-primary">edit</a>
+          {{/if}}
         </div>
       </div>
     </div>

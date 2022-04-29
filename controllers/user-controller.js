@@ -48,9 +48,11 @@ const userController = {
       .then(user => {
         let commentLen = 0
         if (user.toJSON().Comments) commentLen = user.toJSON().Comments.length
+        const isLoggerId = req.user.id === user.id
         res.render('users/profile', {
           user: user.toJSON(),
-          commentCounts: commentLen /*user.toJSON().Comments.length */
+          commentCounts: commentLen, /*user.toJSON().Comments.length */
+          isLoggerId
         })
       })
       .catch(err => next(err))
