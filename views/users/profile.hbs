@@ -1,0 +1,24 @@
+<div class="card w-100">
+  <div class="card-body">
+    <img src="{{user.image}}" alt="image" class="img-thumbnail">
+    <h5 class="card-title">{{user.name}}</h5>
+    <p class="card-text">{{user.email}}</p>
+   {{#ifCond user.id user.id }}
+    <a href="/users/{{user.id}}/edit" class="btn btn-primary">edit</a>
+    {{/ifCond}}
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+      {{user.Comments.length}} 
+      已評論餐廳
+  </div>
+  <div class="card-body">
+    {{#each user.Comments}}
+    <a href="/restaurants/{{this.Restaurant.id}}" class="text-decoration-none">
+    <img src="{{this.Restaurant.image}}" width="60" height="60">
+    {{/each}}
+    </a>
+  </div>
+</div>
