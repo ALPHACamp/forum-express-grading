@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs')
 const { User, Restaurant, Comment, Favorite, Like } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
-const { getUser } = require('../helpers/auth-helpers')
+const { authUser } = require('../helpers/auth-helpers')
 
 const userController = {
   signUpPage: (req, res) => {
@@ -39,13 +39,12 @@ const userController = {
   },
   getUser: async (req, res, next) => {
     try {
-      const userId = req.params.id
-      const authenticatedUserId = getUser(req).id
+      authUser(req)
       const [user, comments] = await Promise.all([
         User.findByPk(req.params.id),
         Comment.findAndCountAll({
           include: Restaurant,
-          where: { userId },
+          where: { userId: req.params.id },
           raw: true,
           nest: true
         })
@@ -59,9 +58,6 @@ const userController = {
         }
       })
       if (!user) throw new Error("User did't exist")
-      if (user.id !== authenticatedUserId) {
-        throw new Error('Unable to access this profile')
-      }
       res.render('users/profile', {
         user: user.toJSON(),
         comments: newComments,
@@ -73,12 +69,9 @@ const userController = {
   },
   editUser: async (req, res, next) => {
     try {
+      authUser(req)
       const user = await User.findByPk(req.params.id)
-      const authenticatedUserId = getUser(req).id
       if (!user) throw new Error("User did't exist")
-      if (user.id !== authenticatedUserId) {
-        throw new Error('Unable to access this profile')
-      }
       res.render('users/edit', { user: user.toJSON() })
     } catch (err) {
       next(err)
@@ -86,6 +79,7 @@ const userController = {
   },
   putUser: async (req, res, next) => {
     try {
+      authUser(req)
       const { name } = req.body
       if (!name) throw new Error('User name is required')
       const { file } = req
@@ -146,7 +140,6 @@ const userController = {
       ])
       if (!restaurant) throw new Error("Restaurant did't exist")
       if (like) throw new Error('You have liked this restaurant already')
-      console.log(like)
       await Like.create({
         userId: req.user.id,
         restaurantId
