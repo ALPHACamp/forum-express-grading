@@ -100,7 +100,7 @@ const adminController = {
         return restaurant.destroy()
       })
       .then(() => {
-        req.flash('success_messages', 'The restaurant was created succesfully.')
+        req.flash('success_messages', 'The restaurant was deleted succesfully.')
         res.redirect('/admin/restaurants')
       })
       .catch(err => next(err))
