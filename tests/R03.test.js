@@ -3,7 +3,7 @@ const sinon = require('sinon')
 const should = chai.should()
 
 const helpers = require('../helpers/auth-helpers')
-const { createModelMock, createControllerProxy, mockRequest, mockResponse, mockNext } = require('../helpers/unit-test-helper');
+const { createModelMock, createControllerProxy, mockRequest, mockResponse, mockNext } = require('../helpers/unit-test-helper')
 
 describe('# R03', () => {
   describe('# R03: 建立 User Profile', function () {
@@ -15,13 +15,13 @@ describe('# R03', () => {
           .stub(helpers, 'ensureAuthenticated')
           .returns(true)
         this.getUser = sinon.stub(helpers, 'getUser').returns({ id: 1 })
-       // 製作假資料
-       // 本 context 會用這筆資料進行測試
+        // 製作假資料
+        // 本 context 會用這筆資料進行測試
         this.UserMock = createModelMock('User', [{
           id: 1,
           email: 'root@example.com',
           name: 'admin',
-          isAdmin: false,
+          isAdmin: false
         }])
 
         // 修改 userController 中的資料庫連線設定，由連向真實的資料庫 -> 改為連向模擬的 User table
@@ -36,25 +36,14 @@ describe('# R03', () => {
         const next = mockNext
 
         // 測試作業指定的 userController.getUser 函式
-<<<<<<< HEAD
         await this.userController.getUser(req, res, next)
 
         // getUser 正確執行的話，應呼叫 res.render
         // res.render 的第 1 個參數要是 'users/profile'
-=======
-        await this.userController.getUser(req, res, next);
-
-        // getUser 正確執行的話，應呼叫 res.render
-        // res.render 的第 1 個參數要是 'users/profile' 
->>>>>>> 37322b4 (feat:add R03.test.js)
         // res.render 的第 2 個參數要是 user，其 id 屬性的值應是 1
         res.render.getCall(0).args[0].should.equal('users/profile')
         res.render.getCall(0).args[1].user.id.should.equal(1)
       })
-<<<<<<< HEAD
-=======
-      
->>>>>>> 37322b4 (feat:add R03.test.js)
       // 測試完畢，清除資料
       after(async () => {
         // 清除模擬驗證資料
@@ -77,7 +66,7 @@ describe('# R03', () => {
           id: 1,
           email: 'root@example.com',
           name: 'admin',
-          isAdmin: false,
+          isAdmin: false
         }])
 
         // 連向模擬的 User table
@@ -122,7 +111,7 @@ describe('# R03', () => {
             id: 1,
             email: 'root@example.com',
             name: 'admin',
-            isAdmin: false,
+            isAdmin: false
           }]
         )
 
@@ -131,25 +120,25 @@ describe('# R03', () => {
       })
 
       it(' PUT /users/:id ', async () => {
-        // 模擬 request & response & next 
+        // 模擬 request & response & next
         // 對 PUT /users/1 發出 request，並夾帶 body.name = amdin2, user.id = 1
         const req = mockRequest({
-          user: {id: 1},
+          user: { id: 1 },
           params: { id: 1 },
-          body: { name: 'admin2' },
-        }) 
+          body: { name: 'admin2' }
+        })
         const res = mockResponse()
         const next = mockNext
 
         // 測試作業指定的 userController.putUser 函式
         await this.userController.putUser(req, res, next)
 
-        // putUser 正確執行的話，應呼叫 req.flash 
+        // putUser 正確執行的話，應呼叫 req.flash
         // req.flash 的參數應與下列字串一致
-        req.flash.calledWith('success_messages','使用者資料編輯成功').should.be.true
+        req.flash.calledWith('success_messages', '使用者資料編輯成功').should.be.true
         // putUser 執行完畢，應呼叫 res.redirect 並重新導向 /users/1
         res.redirect.calledWith('/users/1').should.be.true
-        // putUser 執行完畢後，id:1 使用者的 name 應該已被修改 
+        // putUser 執行完畢後，id:1 使用者的 name 應該已被修改
         // 將假資料撈出，比對確認有成功修改到
         const user = await this.UserMock.findOne({ where: { id: 1 } })
         user.name.should.equal('admin2')
