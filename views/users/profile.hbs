@@ -22,28 +22,18 @@
     </div>
   </div>
 
-  <div class='card mt-5'>
-    <div class='card-header'>
-      {{#if user.Comments.length}}
-        已評論過的餐廳：{{user.Comments.length}}
-      {{else}}
-        尚未評論餐廳
-      {{/if}}
-    </div>
-    <div class='card-body' style='min-height: 100px;'>
-      {{#each user.Comments}}
-        <a
-          href='/restaurants/{{this.Restaurant.id}}'
-          class='text-decoration-none'
-        >
-          <img
-            src='{{this.Restaurant.image}}'
-            class='center-block img-responsive img-thumbnail m-2'
-            style='width: 80px; height:80px'
-            alt='restaurant-image'
-          />
-        </a>
-      {{/each}}
+  <div class='card md-8'>
+    <div class='card'>
+      <div class="card-header">
+      <strong>已評論過的餐廳：{{user.Comments.length}}</strong>
+      </div>
+      <div class="card-body">
+        {{#each user.Comments}}
+          <a href="/restaurants/{{this.Restaurant.id}}" class="text-decoration-none">
+            <img src="{{this.Restaurant.image}}" width="60" height="avatar" style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;" /> 
+          </a>
+          {{/each}}
+      </div>
     </div>
   </div>
 </div>

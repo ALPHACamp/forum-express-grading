@@ -41,12 +41,6 @@ const userController = {
     res.redirect('/signin')
   },
   getUser: (req, res, next) => {
-    const id = Number(req.params.id)
-    const userId = getUser(req).id
-    if (id !== userId) {
-      req.flash('error_messages', '您沒有存取該頁面的權限！')
-      return res.redirect('/restaurants')
-    }
     return User.findByPk(req.params.id, {
       include: [
         { model: Comment, include: Restaurant }
