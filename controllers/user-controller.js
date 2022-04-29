@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs')
-const { User, Restaurant, Comment, Favorite } = require('../models')
+const { User, Restaurant, Comment, Favorite, Like } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 const { getUser } = require('../helpers/auth-helpers')
 
@@ -10,7 +10,9 @@ const userController = {
   signUp: (req, res, next) => {
     // 修改這裡
     // 如果兩次輸入的密碼不同，就建立一個 Error 物件並拋出
-    if (req.body.password !== req.body.passwordCheck) { throw new Error('Passwords do not match!') }
+    if (req.body.password !== req.body.passwordCheck) {
+      throw new Error('Passwords do not match!')
+    }
 
     // 確認資料裡面沒有一樣的 email，若有，就建立一個 Error 物件並拋出
     User.findOne({ where: { email: req.body.email } })
@@ -126,6 +128,44 @@ const userController = {
         if (!favorite) throw new Error("You haven't favorited this restaurant")
 
         return favorite.destroy()
+      })
+      .then(() => res.redirect('back'))
+      .catch(err => next(err))
+  },
+  addLike: (req, res, next) => {
+    const { restaurantId } = req.params
+    return Promise.all([
+      Restaurant.findByPk(restaurantId),
+      Like.findOne({
+        where: {
+          userId: req.user.id,
+          restaurantId
+        }
+      })
+    ])
+      .then(([restaurant, like]) => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        if (like) throw new Error('You have liked this restaurant already!')
+
+        return Like.create({
+          userId: req.user.id,
+          restaurantId
+        })
+      })
+      .then(() => res.redirect('back'))
+      .catch(err => next(err))
+  },
+  removeLike: (req, res, next) => {
+    return Like.findOne({
+      where: {
+        userId: req.user.id,
+        restaurantId: req.params.restaurantId
+      }
+    })
+      .then(like => {
+        if (!like) throw new Error("You haven't liked this restaurant!")
+
+        return like.destroy()
       })
       .then(() => res.redirect('back'))
       .catch(err => next(err))
