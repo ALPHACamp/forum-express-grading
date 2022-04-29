@@ -24,10 +24,12 @@ const restaurantController = {
     ])
       .then(([restaurants, categories]) => {
         const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
-        const data = restaurants.rows.map(r => ({
-          ...r, // 展開運算子
-          description: r.description.substring(0, 50), // 覆蓋原本description，讓它限制在50字以內
-          isFavorited: favoritedRestaurantsId.includes(r.id)
+        const likedRestaurantsId = req.user && req.user.LikedRestaurants.map(like => like.id)
+        const data = restaurants.rows.map(restaurant => ({
+          ...restaurant,
+          description: restaurant.description.substring(0, 50),
+          isFavorited: favoritedRestaurantsId.includes(restaurant.id),
+          isLiked: likedRestaurantsId.includes(restaurant.id)
         }))
         return res.render('restaurants', {
           restaurants: data,
@@ -43,16 +45,19 @@ const restaurantController = {
       include: [
         Category,
         { model: Comment, include: User },
-        { model: User, as: 'FavoritedUsers' }
+        { model: User, as: 'FavoritedUsers' },
+        { model: User, as: 'LikedUsers' }
       ]
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         restaurant.increment('view_counts')
         const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id) // f => favoritedUser，some()回傳T or F
+        const isLiked = restaurant.LikedUsers.some(l => l.id === req.user.id)
         res.render('restaurant', {
           restaurant: restaurant.toJSON(),
-          isFavorited
+          isFavorited,
+          isLiked
         })
       })
       .catch(err => next(err))
