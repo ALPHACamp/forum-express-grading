@@ -1,0 +1,27 @@
+{{>restaurant-tabs route="topRestaurants"}}
+<h1>Top 10 人氣餐廳</h1>
+<hr />
+
+{{#each restaurants}}
+<div class="row border border-2 border-info py-2 rounded-3 bg-white">
+    <div class="col-md-3">
+       <a href="/restaurants/{{this.id}}"><img src="{{this.image}}"></a>
+    </div> 
+    <div class="col">
+        <a href="/restaurants/{{this.id}}"><h2 class="my-0">{{this.name}}</h2></a>
+        {{#if this.isFavorited}}
+            <form action="/favorite/{{this.id}}?_method=DELETE" method="POST" >
+                <span class="badge rounded-pill bg-danger"><i class="fa-solid fa-heart text-white"></i> {{this.favoritedCount}}</span>
+                <button type="submit" class="btn m-1" ><i class="fa-solid fa-heart text-danger fs-4"></i></button>
+            </form>
+        {{else}}
+            <form action="/favorite/{{this.id}}" method="POST" >
+                <span class="badge rounded-pill bg-danger"><i class="fa-solid fa-heart text-white"></i> {{this.favoritedCount}}</span>
+                <button type="submit" class="btn m-1"><i class="fa-regular fa-heart fs-4" ></i></button>
+            </form>
+        {{/if}}
+        <p>{{this.description}}</p>
+    </div>   
+</div>
+<br/>
+{{/each}}

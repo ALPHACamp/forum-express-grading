@@ -98,7 +98,7 @@ const userController = {
           restaurantId
         })
       })
-      .then(() => res.redirect(`back#${restaurantId}`))
+      .then(() => res.redirect(`${req.get('Referrer')}#restaurant${restaurantId}`))
       .catch(err => next(err))
   },
   removeFavorite: (req, res, next) => {
@@ -114,7 +114,7 @@ const userController = {
 
         return favorite.destroy()
       })
-      .then(() => res.redirect(`back#${restaurantId}`))
+      .then(() => res.redirect(`${req.get('Referrer')}#restaurant${restaurantId}`))
       .catch(err => next(err))
   },
   addLike: (req, res, next) => {
@@ -137,7 +137,7 @@ const userController = {
           restaurantId
         })
       })
-      .then(() => res.redirect(`back#${restaurantId}`))
+      .then(() => res.redirect(`${req.get('Referrer')}#restaurant${restaurantId}`))
       .catch(err => next(err))
   },
   removeLike: (req, res, next) => {
@@ -152,7 +152,7 @@ const userController = {
         if (!like) throw new Error("You haven't liked this restaurant")
         return like.destroy()
       })
-      .then(() => res.redirect(`back#${restaurantId}`))
+      .then(() => res.redirect(`${req.get('Referrer')}#restaurant${restaurantId}`))
       .catch(err => next(err))
   },
   getTopUsers: (req, res, next) => {

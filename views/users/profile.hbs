@@ -18,7 +18,7 @@
   </div>
   <div class="card-body overflow-auto" style="height:180px">
     {{#each user.Comments}}
-    <a href="/restaurants/{{this.Restaurant.id}}#{{this.id}}">
+    <a href="/restaurants/{{this.Restaurant.id}}#comment{{this.id}}">
       <img src="{{this.Restaurant.image}}" style="max-height:75px">
     </a>
     {{/each}}
