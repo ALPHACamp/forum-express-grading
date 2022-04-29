@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs')
 // const user = require('../models/user') output=>[Function (anonymous)]
-const db = require('../models')
-const { User } = db
+const { User } = require('../models/')
+const { imgurFileHandler } = require('../helpers/file-helpers')
 const userController = {
   signUpPage: (req, res) => { // 負責 render 註冊的頁面
     res.render('signup')
@@ -37,6 +37,42 @@ const userController = {
     req.flash('success_messages', '登出成功！')
     req.logout()
     res.redirect('/signin')
+  },
+  getUser: (req, res, next) => {
+    return User.findByPk(req.params.id, { raw: true })
+      .then(user => res.render('users/profile', { user }))
+      .catch(err => next(err))
+  },
+  editUser: (req, res, next) => {
+    const id = Number(req.params.id)
+    return User.findByPk(id, { raw: true })
+      .then(user => {
+        return res.render('users/edit', { user })
+      })
+      .catch(err => next(err))
+  },
+  putUser: (req, res, next) => {
+    const { name } = req.body
+    const id = Number(req.params.id)
+    const { file } = req
+    if (!name) throw new Error('User name is required!')
+    return Promise.all([
+      User.findByPk(id),
+      imgurFileHandler(file)
+    ])
+      .then(([user, filePath]) => {
+        if (!user) throw new Error("User doesn't exist!")
+        if (req.user.id !== id) throw new Error('Cannot change other user\'s name')
+        return user.update({
+          name,
+          image: filePath || user.image
+        })
+      })
+      .then(() => {
+        req.flash('success_messages', '使用者資料編輯成功')
+        res.redirect(`/users/${id}`)
+      })
+      .catch(err => next(err))
   }
 }
 
