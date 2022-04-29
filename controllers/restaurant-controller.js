@@ -34,6 +34,7 @@ const restController = {
       })
   },
   getRestaurant: (req, res, next) => {
+    const restaurantId = req.params.id
     return Restaurant.findByPk(req.params.id, {
       include: [
         Category,
@@ -42,9 +43,9 @@ const restController = {
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
-        restaurant.increment('view_counts')
-        res.render('restaurant', { restaurant: restaurant.toJSON() })
+        return restaurant.increment('view_counts')
       })
+      .then(restaurant => res.render('restaurant', { restaurant: restaurant.toJSON() }))
       .catch(err => next(err))
   },
   getDashboard: (req, res, next) => {
@@ -58,16 +59,31 @@ const restController = {
         res.render('dashboard', { restaurant })
       })
       .catch(err => next(err))
+  },
+  getFeeds: (req, res, next) => {
+    return Promise.all([
+      Restaurant.findAll({
+        limit: 10,
+        order: [['createdAt', 'DESC']],
+        include: [Category],
+        raw: true,
+        nest: true
+      }),
+      Comment.findAll({
+        limit: 10,
+        order: [['createdAt', 'DESC']],
+        include: [User, Restaurant],
+        raw: true,
+        nest: true
+      })
+    ])
+      .then(([restaurants, comments]) => {
+        res.render('feeds', {
+          restaurants,
+          comments
+        })
+      })
+      .catch(err => next(err))
   }
-  /* getDashboard: async (req, res, next) => {
-    const restaurant = await Restaurant.findByPk(req.params.id, {
-      include: Category
-    })
-    const restaurantadd = restaurant.increment('view_counts')
-    const restaurantCounts = await Restaurant.findByPk(restaurantadd.id, {
-      include: Category
-    })
-    await res.render('dashboard', { restaurant: restaurantCounts.toJSON() })
-  } */
 }
 module.exports = restController
