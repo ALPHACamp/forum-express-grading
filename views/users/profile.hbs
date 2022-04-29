@@ -1,0 +1,23 @@
+<div class="card mb-3" style="display: flex; flex-direction: row;">
+  <img src="{{user.image}}" class="card-img-top" alt="還沒上圖唷！" style="width: 300px; height: 300px;" onload="this.style.opacity=1;">
+  <div class="card-body">
+    <h5 class="card-title">{{user.name}}</h5>
+    <p class="card-text">{{user.email}}</p>
+    <p class="card-text">{{user.Comments.length}} 已評論餐廳</p>
+    <a href="/users/{{user.id}}/edit">
+      <button type="submit" class="btn btn-primary" style="margin-top: 30px;">edit</button>
+    </a>
+  </div>
+</div>
+<div class="card mb-3">
+  <div class="card-body">
+    <p>{{user.Comments.length}} 已評論餐廳</p>
+  </div>
+  <div class="card-body">
+    {{#each user.Comments}}
+    <img style="height: 100px; margin: 10px;" src="{{this.Restaurant.image}}" alt="沒有圖！" srcset="">
+    {{/each}}
+  </div>
+</div>
+
+
