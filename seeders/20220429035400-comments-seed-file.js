@@ -10,19 +10,15 @@ module.exports = {
       'SELECT id FROM Restaurants;',
       { type: queryInterface.sequelize.QueryTypes.SELECT }
     )
-    await queryInterface.bulkInsert('Comments', [{
-      text: 'good drink.',
-      user_id: users[Math.floor(Math.random() * users.length)].id,
-      restaurant_id: restaurants[Math.floor(Math.random() * restaurants.length)].id,
-      created_at: new Date(),
-      updated_at: new Date()
-    }, {
-      text: 'good eat.',
-      user_id: users[Math.floor(Math.random() * users.length)].id,
-      restaurant_id: restaurants[Math.floor(Math.random() * restaurants.length)].id,
-      created_at: new Date(),
-      updated_at: new Date()
-    }], {})
+    await queryInterface.bulkInsert('Comments',
+      Array.from({ length: 30 }, () => ({
+        text: 'good drink.',
+        user_id: users[Math.floor(Math.random() * users.length)].id,
+        restaurant_id: restaurants[Math.floor(Math.random() * restaurants.length)].id,
+        created_at: new Date(),
+        updated_at: new Date()
+      }))
+    )
   },
   down: async (queryInterface, Sequelize) => {
     await queryInterface.bulkDelete('Comments', null, {})
