@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs')
 const { imgurFileHandler } = require('../helpers/file-helpers')
-const { Restaurant, Comment, User, Favorite, Like } = require('../models')
+const { Restaurant, Comment, User, Favorite, Like, Followship } = require('../models')
 const { getUser } = require('../helpers/auth-helpers')
 const userController = {
   signUpPage: (req, res) => {
@@ -182,8 +182,45 @@ const userController = {
           // 判斷目前登入使用者是否已追蹤該 user 物件
           isFollowed: req.user.Followings.some(f => f.id === user.id)
         }))
+        users = users.sort((a, b) => b.followerCount - a.followerCount)
         res.render('top-users', { users: users })
       })
+      .catch(err => next(err))
+  },
+  addFollowing: (req, res, next) => {
+    const { userId } = req.params
+    Promise.all([
+      User.findByPk(userId),
+      Followship.findOne({
+        where: {
+          followerId: req.user.id, // 現在登入的user = 我
+          followingId: req.params.userId // 想追蹤的人的id = 他
+        }
+      })
+    ])
+      .then(([user, followship]) => {
+        if (!user) throw new Error("User didn't exist!")
+        if (followship) throw new Error('You are already following this user!')
+        return Followship.create({
+          followerId: req.user.id,
+          followingId: userId
+        })
+      })
+      .then(() => res.redirect('back'))
+      .catch(err => next(err))
+  },
+  removeFollowing: (req, res, next) => {
+    Followship.findOne({
+      where: {
+        followerId: req.user.id,
+        followingId: req.params.userId
+      }
+    })
+      .then(followship => {
+        if (!followship) throw new Error("You haven't followed this user!")
+        return followship.destroy()
+      })
+      .then(() => res.redirect('back'))
       .catch(err => next(err))
   }
 }
