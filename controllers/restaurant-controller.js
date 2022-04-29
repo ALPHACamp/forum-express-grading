@@ -100,8 +100,8 @@ const restaurantController = {
   },
   getTopRestaurants: (req, res, next) => {
     return Restaurant.findAll({
-      limit: 10,
-      include: [{ model: User, as: 'FavoritedUsers' }]
+      include: [{ model: User, as: 'FavoritedUsers' }],
+      limit: 10
     })
       .then(restaurants => {
         const userId = helpers.getUser(req).id
