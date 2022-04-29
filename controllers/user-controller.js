@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs')
-const { User, Restaurant, Comment, Favorite, Like } = require('../models')
+const { User, Restaurant, Comment, Favorite, Like, Followship } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 const { authUser } = require('../helpers/auth-helpers')
 
@@ -162,13 +162,41 @@ const userController = {
   },
   getTopUsers: async (req, res, next) => {
     try {
-      let users = await User.findAll({ include: [{ model: User, as: 'Followers' }] })
-      users = users.map(user => ({
+      const users = await User.findAll({ include: [{ model: User, as: 'Followers' }] })
+      const result = users.map(user => ({
         ...user.toJSON(),
         followerCount: user.Followers.length,
         isFollowed: req.user.Followings.some(f => f.id === user.id)
       }))
-      res.render('top-users', { users: users })
+        .sort((a, b) => b.followerCount - a.followerCount)
+      res.render('top-users', { users: result })
+    } catch (err) {
+      next(err)
+    }
+  },
+  addFollowing: async (req, res, next) => {
+    try {
+      const { userId } = req.params
+      const [user, followship] = await Promise.all([
+        User.findByPk(userId),
+        Followship.findOne({
+          where: { followerId: req.user.id, followingId: userId }
+        })
+      ])
+      if (!user) throw new Error("User didn't exist!")
+      if (followship) throw new Error('You are already following this user!')
+      await Followship.create({ followerId: req.user.id, followingId: userId })
+      res.redirect('back')
+    } catch (err) {
+      next(err)
+    }
+  },
+  removeFollowing: async (req, res, next) => {
+    try {
+      const followship = await Followship.findOne({ where: { followerId: req.user.id, followingId: req.params.userId } })
+      if (!followship) throw new Error("You haven't followed this user!")
+      await followship.destroy()
+      res.redirect('back')
     } catch (err) {
       next(err)
     }
