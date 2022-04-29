@@ -39,6 +39,12 @@ const userController = {
     res.redirect('/signin')
   },
   getUser: (req, res, next) => {
+    let isLoggerId = null // show edit button or not 
+    let LoggerId = -1
+
+    if (req.user) {
+      LoggerId = req.user.id // 1st login no reg.user 
+    }
     return User.findByPk(req.params.id, {
       include: [
         Comment,
@@ -47,13 +53,16 @@ const userController = {
     })
       .then(user => {
         let commentLen = 0
-        if (user.toJSON().Comments) commentLen = user.toJSON().Comments.length
-        const isLoggerId = req.user.id === user.id
+        if (user) {
+          if (user.toJSON().Comments) commentLen = user.toJSON().Comments.length
+          isLoggerId = (LoggerId === user.toJSON().id) ? LoggerId : null
+        }
         res.render('users/profile', {
           user: user.toJSON(),
           commentCounts: commentLen, /*user.toJSON().Comments.length */
           isLoggerId
-        })
+        }
+        )
       })
       .catch(err => next(err))
   },
