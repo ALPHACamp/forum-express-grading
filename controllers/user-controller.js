@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs')
 // const user = require('../models/user') output=>[Function (anonymous)]
-const { User } = require('../models/')
+const { User, Restaurant, Comment } = require('../models/')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 const userController = {
   signUpPage: (req, res) => { // 負責 render 註冊的頁面
@@ -39,8 +39,19 @@ const userController = {
     res.redirect('/signin')
   },
   getUser: (req, res, next) => {
-    return User.findByPk(req.params.id, { raw: true })
-      .then(user => res.render('users/profile', { user }))
+    return User.findByPk(req.params.id, {
+      include: [{ model: Comment, include: Restaurant }]
+    })
+      .then(user => {
+        console.log(user.toJSON().Comments)
+        // const commentRestaurantImages = []
+        // const commentCount = user.toJSON().Comments.length
+        // user.toJSON().Comments.forEach(commentRestaurantImage => {
+        //   commentRestaurantImages.push(commentRestaurantImage.Restaurant.image)
+        // })
+        user = user.toJSON()
+        res.render('users/profile', { user })
+      })
       .catch(err => next(err))
   },
   editUser: (req, res, next) => {

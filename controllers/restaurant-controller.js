@@ -54,7 +54,6 @@ const restaurantController = {
       raw: true
     })
       .then(restaurant => {
-        console.log(restaurant.viewCounts, restaurant)
         res.render('dashboard', {
           restaurant, viewCounts: restaurant.viewCounts
         })
