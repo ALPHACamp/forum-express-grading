@@ -35,6 +35,7 @@ router.get(
 router.get('/restaurants/:id', authenticated, restController.getRestaurant)
 router.get('/restaurants', authenticated, restController.getRestaurants)
 
+router.get('/users/top', authenticated, userController.getTopUsers)
 router.get('/users/:id/edit', authenticated, userController.editUser)
 router.put(
   '/users/:id',
@@ -57,7 +58,7 @@ router.delete('/favorite/:restaurantId', authenticated, userController.removeFav
 router.post('/like/:restaurantId', authenticated, userController.addLike)
 router.delete('/like/:restaurantId', authenticated, userController.removeLike)
 
-router.use('/', (req, res) => {
+router.get('/', (req, res) => {
   res.redirect('/restaurants')
 })
 router.use('/', generalErrorHandler)
