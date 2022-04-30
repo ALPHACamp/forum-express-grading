@@ -56,7 +56,6 @@ const restaurantController = {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id)
         const isLiked = restaurant.LikedUsers.some(l => l.id === req.user.id)
-        console.log(isFavorited)
         res.render('restaurant', {
           restaurant: restaurant.toJSON(),
           isFavorited,
@@ -75,7 +74,6 @@ const restaurantController = {
       nest: true
     })
       .then(restaurant => {
-        console.log(restaurant)
         res.render('dashboard', { restaurant })
       })
       .catch(err => next(err))
@@ -118,7 +116,7 @@ const restaurantController = {
           isFavorited: getUser(req)?.FavoritedRestaurants.some(f => f.id === restaurant.id)
         }))
         restaurants = restaurants.slice(0, limit)
-        console.log(restaurants)
+
         restaurants = restaurants.sort((a, b) => b.favoritedCount - a.favoritedCount)
 
         res.render('top-restaurants', { restaurants })
