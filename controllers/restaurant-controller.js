@@ -105,23 +105,21 @@ const restaurantController = {
       })
       .catch(err => next(err))
   },
-  getTopRestaurant: (req, res, next) => {
+  getTopRestaurants: (req, res, next) => {
     // 提取前十個
     const limit = 10
-    console.log('--getTopRestaurant--')
-    console.log(getUser(req))
     return Restaurant.findAll({
       include: [{ model: User, as: 'FavoritedUsers' }]
     })
       .then(restaurants => {
         restaurants = restaurants.map(restaurant => ({
           ...restaurant.toJSON(),
-          favoriteCount: restaurant.FavoritedUsers.length,
+          favoritedCount: restaurant.FavoritedUsers.length,
           isFavorited: getUser(req).FavoritedRestaurants.some(f => f.id === restaurant.id)
         }))
         restaurants = restaurants.slice(0, limit)
         console.log(restaurants)
-        restaurants = restaurants.sort((a, b) => b.favoriteCount - a.favoriteCount)
+        restaurants = restaurants.sort((a, b) => b.favoritedCount - a.favoritedCount)
 
         res.render('top-restaurants', { restaurants })
       })
