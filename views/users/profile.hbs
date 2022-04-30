@@ -1,12 +1,12 @@
 <div class="card mb-4 shadow-sm">
-  <div class="row mb-5">
+  <div class="row m-3">
     <div class="col-md-4">
       {{#if user.image}}
       <img src="{{user.image}}" width="300px" height="300px" style="transition: opacity 0.5s; opacity:0;"
         onload="this.style.opacity=1;" />
       {{else}}
-      <img src="https://via.placeholder.com/300" width="300px" height="300px" style="transition: opacity 0.5s; opacity:0;"
-        onload="this.style.opacity=1;" />
+      <img src="https://via.placeholder.com/300" width="300px" height="300px"
+        style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;" />
       {{/if}}
     </div>
     <div class="col-md-8">
@@ -14,7 +14,25 @@
       <p class="card-text">
         {{user.email}}
       </p>
+      <p class="card-text">{{user.Comments.length}} 已評論餐廳</p>
       <a href="/users/{{user.id}}/edit"><button type="submit" class="btn btn-primary">edit</button></a>
+    </div>
+  </div>
+</div>
+
+<div class="card mt-4 shadow-sm">
+  <div class="card-header">
+    {{ user.Comments.length }} 已評論餐廳
+  </div>
+  <div class="card-body">
+    <div class="d-flex flex-wrap">
+      {{#each user.Comments}}
+      <div class="m-3">
+        <a href="/restaurants/{{ this.Restaurant.id }}">
+          <img src="{{ this.Restaurant.image }}" alt="" style="width:120px;height:120px" class="rounded">
+        </a>
+      </div>
+      {{/each}}
     </div>
   </div>
 </div>
