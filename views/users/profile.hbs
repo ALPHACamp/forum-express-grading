@@ -1,0 +1,61 @@
+<div class="row">
+  
+  <div class="col-md-4">
+    <img class="img-responsive center-block" src="{{user.image}}" style="width: 250px; margin-bottom: 25px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+    <br>
+  </div>
+  <div class="col-md-8">
+    <h1>{{user.name}}</h1>
+    <p>{{user.email}}</p>
+    <a class="btn btn-primary mb-3" href="/users/{{user.id}}/edit">edit</a>    
+  </div>
+  
+</div>
+
+
+<div class="card">
+  <div class="card-header">
+    {{commentCounts}} 已評論餐廳
+  </div>
+
+  <div class="card-body">
+    {{#each restaurants}}
+    <a href="/restaurants/{{this.id}}" style="text-decoration:none;">
+    <img class="mt-2" src="{{this.image}}" alt="Card image cap" width="70" height="70"
+      style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+
+    </a>
+    {{/each}}
+
+
+
+
+             
+            
+
+            
+            
+
+
+
+
+    
+  </div>
+  
+
+
+    {{!-- <div class="col-md-1">
+      <img class="card-img-top img-fluid pl-1 pt-1" src="https://loremflickr.com/320/240/restaurant,food/?random=17.25048415793946" alt="Card image cap" width="60" height="60"
+            style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+    </div> --}}
+
+    
+
+    
+    
+
+
+  {{!-- <ul class="list-group list-group-flush">
+    <li class="list-group-item">An item</li>
+  </ul> --}}
+</div>

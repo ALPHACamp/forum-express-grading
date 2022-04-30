@@ -15,12 +15,13 @@ module.exports = (sequelize, DataTypes) => {
     }
   };
   Comment.init({
-    text: DataTypes.STRING,
+    text: DataTypes.TEXT,
     user_id: DataTypes.INTEGER,
     restaurant_id: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'Comment',
+    tableName: 'Comments',
     underscored: true
   })
   return Comment
