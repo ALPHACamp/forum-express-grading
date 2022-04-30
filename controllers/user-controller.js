@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs')
 const db = require('../models')
 
-const { User } = db
+const { User, Comment, Restaurant } = db
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const userController = {
@@ -41,12 +41,26 @@ const userController = {
   },
   getUser: (req, res, next) => {
     // if (req.params.id.toString() !== req.user.id.toString()) throw new Error('User id error.')
-    return User.findByPk(req.params.id)
-      .then(user => {
-        if (!user) throw new Error("User doesn't exist!")
-        return res.render('users/profile', { user: user.toJSON() })
+    return Promise.all([
+      User.findByPk(req.params.id),
+      Comment.findAndCountAll({
+        where: { userId: req.params.id },
+        include: Restaurant
       })
-      .catch(err => next(err))
+    ]).then(([user, comments]) => {
+      if (!user) throw new Error("User doesn't exist!")
+      return res.render('users/profile', {
+        user: user.toJSON(),
+        commentCounts: comments.count,
+        restaurants: comments.rows.map(r => r.Restaurant.toJSON())
+      })
+    })
+    // return User.findByPk(req.params.id)
+    //   .then(user => {
+    //     if (!user) throw new Error("User doesn't exist!")
+    //     return res.render('users/profile', { user: user.toJSON() })
+    //   })
+    //   .catch(err => next(err))
   },
   editUser: (req, res, next) => {
     // if (req.params.id.toString() !== req.user.id.toString()) throw new Error('User id error.')
