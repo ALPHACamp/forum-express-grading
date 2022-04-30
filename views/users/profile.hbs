@@ -1,0 +1,42 @@
+<div class="card mb-3">
+  <div class="row">
+    <div class="col-md-4">
+      <img class="img-responsive center-block" src="{{user.image}}"
+        style="width: 250px; margin-bottom: 25px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+    </div>
+    <div class="col-md-8">
+      <div class="card-body">
+        <h4 class="card-title">{{user.name}}</h4>
+        <p class="card-text">{{user.email}}</p>
+        {{#if user.Comments.length }}
+        <p class="card-text">{{user.Comments.length}} 已評論餐廳</p>
+        {{else}}
+        <p class="card-text">沒有評論過的餐廳！</p>
+        {{/if}}
+        <a href="/users/{{user.id}}/edit" class="btn btn-primary">Edit</a>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="card mb-3">
+  <div class="card-header">
+    {{#if user.Comments.length }}
+    <p class="card-text">{{user.Comments.length}} 已評論餐廳</p>
+    {{else}}
+    <p class="card-text">沒有評論過的餐廳！</p>
+    {{/if}}
+  </div>
+  <div class="card-body">
+
+    {{#if user.Comments.length }}
+      {{#each user.Comments}}
+        <a href="/restaurants/{{this.Restaurant.id}}" class="text-decoration-none">
+          <img class="img-fluid" src="{{this.Restaurant.image}}" alt="restaurant image" width="100px" height="100px"
+            style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+        </a>
+      {{/each}}
+    {{else}}
+    <p class="card-text">這個人還沒有踏上尋找餐廳的路程！</p>
+    {{/if}}   
+  </div>
+</div>
