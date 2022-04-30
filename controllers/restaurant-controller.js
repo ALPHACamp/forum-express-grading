@@ -1,5 +1,6 @@
 const { Restaurant, Category, Comment, User } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
+const { getUser } = require('../helpers/auth-helpers')
 
 const restaurantController = {
   // 首頁
@@ -105,7 +106,26 @@ const restaurantController = {
       .catch(err => next(err))
   },
   getTopRestaurant: (req, res, next) => {
-    res.render('top-restaurants')
+    // 提取前十個
+    const limit = 10
+    console.log('--getTopRestaurant--')
+    console.log(getUser(req))
+    return Restaurant.findAll({
+      include: [{ model: User, as: 'FavoritedUsers' }]
+    })
+      .then(restaurants => {
+        restaurants = restaurants.map(restaurant => ({
+          ...restaurant.toJSON(),
+          favoriteCount: restaurant.FavoritedUsers.length,
+          isFavorited: getUser(req).FavoritedRestaurants.some(f => f.id === restaurant.id)
+        }))
+        restaurants = restaurants.slice(0, limit)
+        console.log(restaurants)
+        restaurants = restaurants.sort((a, b) => b.favoriteCount - a.favoriteCount)
+
+        res.render('top-restaurants', { restaurants })
+      })
+      .catch(err => next(err))
   }
 }
 
