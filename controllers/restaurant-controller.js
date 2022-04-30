@@ -63,10 +63,10 @@ const restaurantController = {
         where: { restaurantId: req.params.id }
       })
     ])
-    .then(([restaurant, comments]) => {
-      if (!restaurant) throw new Error('The restaurant does not exit.')
-      res.render('dashboard', { restaurant, commentCounts: comments.count })
-    })
+      .then(([restaurant, comments]) => {
+        if (!restaurant) throw new Error('The restaurant does not exit.')
+        res.render('dashboard', { restaurant, commentCounts: comments.count })
+      })
     // return Restaurant.findByPk(req.params.id, {
     //   raw: true,
     //   nest: true,
