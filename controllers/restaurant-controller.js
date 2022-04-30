@@ -115,7 +115,7 @@ const restaurantController = {
         restaurants = restaurants.map(restaurant => ({
           ...restaurant.toJSON(),
           favoritedCount: restaurant.FavoritedUsers.length,
-          isFavorited: getUser(req).FavoritedRestaurants.some(f => f.id === restaurant.id)
+          isFavorited: getUser(req)?.FavoritedRestaurants.some(f => f.id === restaurant.id)
         }))
         restaurants = restaurants.slice(0, limit)
         console.log(restaurants)
