@@ -1,8 +1,7 @@
 const passport = require('passport')
 const LocalStrategy = require('passport-local')
 const bcrypt = require('bcryptjs')
-const db = require('../models')
-const User = db.User
+const { User, Restaurant } = require('../models')
 // set up Passport strategy
 passport.use(new LocalStrategy( // passport.use(new LocalStrategy(option 設定客製化選項, function登入的認證程序))
   // customize user field
@@ -33,9 +32,12 @@ passport.serializeUser((user, cb) => {
   cb(null, user.id)
 })
 passport.deserializeUser((id, cb) => {
-  User.findByPk(id).then(user => {
-    user = user.toJSON() // Sequalize 打包後的物件，多包裝了幾層，並加上一些內建的參數與方法，讓我們可以直接透過 Sequalize 操作這筆資料，例如刪除或更新 user，不過我們的專案不會用到這些功能，所以就可以運用 toJSON() 這個小技巧來整理格式，把資料簡化變更我們比較容易取用的樣子。
-    return cb(null, user)
+  return User.findByPk(id, {
+    include: [
+      { model: Restaurant, as: 'FavoritedRestaurants' }
+    ]
   })
+    .then(user => cb(null, user.toJSON()))
+    .catch(err => cb(err))
 })
 module.exports = passport

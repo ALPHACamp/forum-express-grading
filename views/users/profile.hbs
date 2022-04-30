@@ -3,7 +3,7 @@
     <img src="{{user.image}}" alt="image" class="img-thumbnail">
     <h5 class="card-title">{{user.name}}</h5>
     <p class="card-text">{{user.email}}</p>
-   {{#ifCond user.id user.id }}
+   {{#ifCond user.id user.id}}
     <a href="/users/{{user.id}}/edit" class="btn btn-primary">edit</a>
     {{/ifCond}}
   </div>
