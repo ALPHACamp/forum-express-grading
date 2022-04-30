@@ -41,8 +41,7 @@ const restaurantController = {
       include: [
         Category,
         { model: Comment, include: User }
-      ],
-      nest: true
+      ]
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
@@ -57,11 +56,7 @@ const restaurantController = {
       .catch(err => next(err))
   },
   getDashboard: (req, res, next) => {
-    return Restaurant.findByPk(req.params.id, {
-      include: Category,
-      nest: true,
-      raw: true
-    })
+    return Restaurant.findByPk(req.params.id, { raw: true })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
 
