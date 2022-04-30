@@ -97,7 +97,7 @@ const userController = {
   addFavorite: (req, res, next) => {
     const { restaurantId } = req.params
 
-    Promise.all([
+    return Promise.all([
       Restaurant.findByPk(restaurantId),
       Favorite.findOne({
         where: {
@@ -119,7 +119,7 @@ const userController = {
       .catch(err => next(err))
   },
 
-  removeFavortie: (req, res, next) => {
+  removeFavorite: (req, res, next) => {
     return Favorite.findOne({
       where: {
         userId: req.user.id,
