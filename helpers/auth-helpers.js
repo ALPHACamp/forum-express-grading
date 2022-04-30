@@ -3,8 +3,9 @@ const getUser = req => {
 }
 
 const authUser = req => {
-  if (req.user === undefined) throw new Error('Unable to access this profile')
-  if (req.user.id !== Number(req.params.id)) {
+  if (req?.params?.id === undefined) throw new Error('Unable to access this profile')
+  if (req?.user?.id === undefined) throw new Error('Unable to access this profile')
+  if (Number(req.user.id) !== Number(req.params.id)) {
     throw new Error('Unable to access this profile')
   }
 }
