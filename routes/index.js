@@ -8,6 +8,7 @@ const commentController = require('../controllers/comment-controller')
 
 const { authenticated } = require('../middleware/auth')
 const { authenticatedAdmin } = require('../middleware/auth')
+const upload = require('../middleware/multer')
 // 錯誤處理
 const { generalErrorHandler } = require('../middleware/error-handler')
 const passport = require('../config/passport')
@@ -20,15 +21,22 @@ router.get('/signup', userController.signUpPage)
 router.post('/signup', userController.signUp)
 // 登入
 router.get('/signin', userController.signInPage)
-router.post('/signin', passport.authenticate('local', { failureRedirect: '/signin', failureFlash: true }), userController.signIn) // 注意是 Post
+router.post('/signin', passport.authenticate('local', { failureRedirect: '/signin', failureFlash: true }), userController.signIn)
 router.get('/logout', userController.logout)
 
+// 餐廳瀏覽
 router.get('/restaurants/:id/dashboard', authenticated, restController.getDashboard)
 router.get('/restaurants/:id', authenticated, restController.getRestaurant)
 router.get('/restaurants', authenticated, restController.getRestaurants)
 
+// 留言
 router.delete('/comments/:id', authenticatedAdmin, commentController.deleteComment)
 router.post('/comments', authenticated, commentController.postComment)
+
+// profile
+router.get('/users/:id/edit', authenticated, userController.editUser)
+router.get('/users/:id', authenticated, userController.getUser)
+router.put('/users/:id', upload.single('image'), authenticated, userController.putUser)
 
 router.use('/', (req, res) => res.redirect('/restaurants'))
 router.use('/', generalErrorHandler)
