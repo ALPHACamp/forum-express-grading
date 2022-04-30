@@ -24,7 +24,8 @@ const restController = {
         const data = restaurants.rows.map(r => ({
           ...r,
           description: r.description.substring(0, 50),
-          isFavorited: req.user && req.user.FavoritedRestaurants.map(fr => fr.id).includes(r.id)
+          isFavorited: req.user && req.user.FavoritedRestaurants.map(fr => fr.id).includes(r.id),
+          isLiked: req.user && req.user.LikedRestaurants.map(lr => lr.id).includes(r.id)
         }))
         return res.render('restaurants', {
           restaurants: data,
