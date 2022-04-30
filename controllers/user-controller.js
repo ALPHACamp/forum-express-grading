@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs')
 const { User } = require('../models')
 const { localFileHandler } = require('../helpers/file-helpers')
+const { getUser } = require('../helpers/auth-helpers')
 
 const userController = {
   signUpPage: (req, res) => {
@@ -46,7 +47,13 @@ const userController = {
       .catch(err => next(err))
   },
   editUser: (req, res, next) => {
-    return User.findByPk(req.params.id, { raw: true })
+    const userId = getUser(req).id
+    const id = req.params.id
+    if (Number(id) !== userId) {
+      req.flash('error_messages', '您不能修改他人資料')
+      return res.redirect(`/users/${userId}`)
+    }
+    return User.findByPk(id, { raw: true })
       .then(user => {
         if (!user) throw new Error("User is didn't exist!")
         res.render('users/edit', { user })
@@ -58,7 +65,7 @@ const userController = {
     const { name } = req.body
     if (!name) throw new Error('Name and email is required!')
     const { file } = req
-    Promise.all([
+    return Promise.all([
       User.findByPk(id),
       localFileHandler(file)
     ])
@@ -66,7 +73,7 @@ const userController = {
         if (!user) throw new Error("User didn't exist!")
         return user.update({
           name,
-          avatar: filePath || null
+          avatar: filePath || user.avatar
         })
       })
       .then(() => {
