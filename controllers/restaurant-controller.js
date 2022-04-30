@@ -34,7 +34,6 @@ const restController = {
       })
   },
   getRestaurant: (req, res, next) => {
-    const restaurantId = req.params.id
     return Restaurant.findByPk(req.params.id, {
       include: [
         Category,
