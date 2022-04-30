@@ -38,7 +38,10 @@ const restaurantController = {
       .catch(err => next(err))
   },
   getRestaurant: (req, res, next) => {
-    Restaurant.findByPk(req.params.id)
+    Restaurant.findByPk(req.params.id, {
+      nest: true,
+      include: [Category]
+    })
       .then(restaurant => {
         if (!restaurant) throw new Error('The restaurant does not exist.')
         return restaurant.increment('viewCounts')
