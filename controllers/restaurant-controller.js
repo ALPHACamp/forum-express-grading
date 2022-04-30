@@ -42,7 +42,7 @@ const restaurantController = {
       nest: true,
       include: [
         Category,
-        { model: Comment, include: User}
+        { model: Comment, include: User }
       ]
     })
       .then(restaurant => {
