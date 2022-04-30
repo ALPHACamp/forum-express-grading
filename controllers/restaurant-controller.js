@@ -18,14 +18,27 @@ const restaurantController = {
       })
   },
   getRestaurant: (req, res, next) => {
+    Restaurant.findByPk(req.params.id)
+      .then(restaurant => {
+        if (!restaurant) throw new Error('The restaurant does not exist.')
+        console.log(restaurant.toJSON())
+        restaurant.update({
+          viewCounts: restaurant.toJSON().viewCounts + 1
+        })
+        return restaurant.toJSON()
+      })
+      .then(restaurant => res.render('restaurant', { restaurant }))
+      .catch(err => next(err))
+  },
+  getRestaurantDashboard: (req, res, next) => {
     Restaurant.findByPk(req.params.id, {
       raw: true,
       nest: true,
       include: [Category]
     })
       .then(restaurant => {
-        if (!restaurant) throw new Error('The restaurant does not exist.')
-        res.render('admin/restaurant', { restaurant })
+        if (!restaurant) throw new Error('The restaurant does not exit.')
+        res.render('dashboard', { restaurant })
       })
       .catch(err => next(err))
   }
