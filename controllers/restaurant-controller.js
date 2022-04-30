@@ -21,13 +21,13 @@ const restaurantController = {
     Restaurant.findByPk(req.params.id)
       .then(restaurant => {
         if (!restaurant) throw new Error('The restaurant does not exist.')
-        console.log(restaurant.toJSON())
-        restaurant.update({
-          viewCounts: restaurant.toJSON().viewCounts + 1
-        })
-        return restaurant.toJSON()
+        // restaurant.update({
+        //   viewCounts: restaurant.toJSON().viewCounts + 1
+        // })
+        // return restaurant.toJSON()
+        return restaurant.increment('viewCounts')
       })
-      .then(restaurant => res.render('restaurant', { restaurant }))
+      .then(restaurant => res.render('restaurant', { restaurant: restaurant.toJSON() }))
       .catch(err => next(err))
   },
   getDashboard: (req, res, next) => {
