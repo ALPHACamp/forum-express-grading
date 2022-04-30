@@ -103,6 +103,9 @@ const restaurantController = {
         })
       })
       .catch(err => next(err))
+  },
+  getTopRestaurant: (req, res, next) => {
+    res.render('top-restaurants')
   }
 }
 
