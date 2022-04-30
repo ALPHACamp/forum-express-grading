@@ -53,16 +53,30 @@ const restaurantController = {
       .catch(err => next(err))
   },
   getDashboard: (req, res, next) => {
-    return Restaurant.findByPk(req.params.id, {
-      raw: true,
-      nest: true,
-      include: [Category]
-    })
-      .then(restaurant => {
-        if (!restaurant) throw new Error('The restaurant does not exit.')
-        res.render('dashboard', { restaurant })
+    return Promise.all([
+      Restaurant.findByPk(req.params.id, {
+        raw: true,
+        nest: true,
+        include: [Category]
+      }),
+      Comment.findAndCountAll({
+        where: { restaurantId: req.params.id }
       })
-      .catch(err => next(err))
+    ])
+    .then(([restaurant, comments]) => {
+      if (!restaurant) throw new Error('The restaurant does not exit.')
+      res.render('dashboard', { restaurant, commentCounts: comments.count })
+    })
+    // return Restaurant.findByPk(req.params.id, {
+    //   raw: true,
+    //   nest: true,
+    //   include: [Category]
+    // })
+    //   .then(restaurant => {
+    //     if (!restaurant) throw new Error('The restaurant does not exit.')
+    //     res.render('dashboard', { restaurant })
+    //   })
+    //   .catch(err => next(err))
   }
 }
 
