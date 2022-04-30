@@ -30,8 +30,8 @@ const restaurantController = {
       .then(restaurant => res.render('restaurant', { restaurant }))
       .catch(err => next(err))
   },
-  getRestaurantDashboard: (req, res, next) => {
-    Restaurant.findByPk(req.params.id, {
+  getDashboard: (req, res, next) => {
+    return Restaurant.findByPk(req.params.id, {
       raw: true,
       nest: true,
       include: [Category]
