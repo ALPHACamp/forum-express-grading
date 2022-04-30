@@ -47,7 +47,6 @@ describe('# R04: Like / Unlike', function () {
       // 建立了一個模擬的 Like table，裡面目前是空的
       this.mockLikeData = []
       this.likeMock = createModelMock('Like', this.mockLikeData)
-
       // 連向模擬的 Like table
       this.userController = createControllerProxy('../controllers/user-controller', {
         Like: this.likeMock,
