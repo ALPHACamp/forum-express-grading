@@ -21,6 +21,18 @@ const commentController = {
         res.redirect(`/restaurants/${restaurantId}`)
       })
       .catch(err => next(err))
+  },
+  deleteComment: (req, res, next) => {
+    return Comment.findByPk(req.params.id)
+      .then(comment => {
+        if (!comment) throw new Error("comment doesn't exist!")
+        return comment.destroy()
+      })
+      .then((deletedComment) => {
+        // deletedComment是return comment.destroy()
+        res.redirect(`/restaurants/${deletedComment.restaurantId}`)
+      })
+      .catch(err => next(err))
   }
 }
 
