@@ -1,5 +1,6 @@
 const { Restaurant, Category, Comment, User } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
+const { getUser } = require('../helpers/auth-helpers')
 
 const restaurantController = {
   // 首頁
@@ -55,7 +56,6 @@ const restaurantController = {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id)
         const isLiked = restaurant.LikedUsers.some(l => l.id === req.user.id)
-        console.log(isFavorited)
         res.render('restaurant', {
           restaurant: restaurant.toJSON(),
           isFavorited,
@@ -74,7 +74,6 @@ const restaurantController = {
       nest: true
     })
       .then(restaurant => {
-        console.log(restaurant)
         res.render('dashboard', { restaurant })
       })
       .catch(err => next(err))
@@ -101,6 +100,26 @@ const restaurantController = {
           restaurants,
           comments
         })
+      })
+      .catch(err => next(err))
+  },
+  getTopRestaurants: (req, res, next) => {
+    // 提取前十個
+    const limit = 10
+    return Restaurant.findAll({
+      include: [{ model: User, as: 'FavoritedUsers' }]
+    })
+      .then(restaurants => {
+        restaurants = restaurants.map(restaurant => ({
+          ...restaurant.toJSON(),
+          favoritedCount: restaurant.FavoritedUsers.length,
+          isFavorited: getUser(req)?.FavoritedRestaurants.some(f => f.id === restaurant.id)
+        }))
+        restaurants = restaurants.slice(0, limit)
+
+        restaurants = restaurants.sort((a, b) => b.favoritedCount - a.favoritedCount)
+
+        res.render('top-restaurants', { restaurants })
       })
       .catch(err => next(err))
   }

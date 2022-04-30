@@ -127,14 +127,12 @@ const adminController = {
       req.params.id ? Category.findByPk(req.params.id, { raw: true }) : null
     ])
       .then(([categories, category]) => {
-        console.log(category)
         res.render('admin/categories', { categories, category })
       })
       .catch(err => next(err))
   },
   postCategories: (req, res, next) => {
     const { name } = req.body
-    console.log(name)
     if (!name) throw new Error('category name is required!')
 
     return Category.create({
