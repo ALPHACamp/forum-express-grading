@@ -1,0 +1,27 @@
+<div class="row mb-5">
+  <div class="col-md-4">
+    <img class="img-responsive center-block mb-5" src="{{user.image}}" style="width: 250px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+  </div>
+  <div class="col-md-4">
+    <div class="well">
+      <ul class="list-unstyled">
+        <li><strong>name</strong> {{user.name}}</li>
+        <li><strong>email</strong> {{user.email}}
+    </div>
+  </div>
+  {{#ifCond user.id id }}
+    <div class="col-md-4">
+      <a class="btn btn-primary" href="/users/{{user.id}}/edit">edit</a>
+    </div>
+  {{/ifCond}}
+  <hr>
+  {{!-- Comment --}}
+  <h3 class="mb-3">{{ restaurantCount }}已評論餐廳</h3>
+  {{#each restaurantListSet}}
+    <blockquote class="blockquote mb-0">
+      <h4><a href="/restaurants/{{this.id}}">{{this.name}}</a></h4>
+    </blockquote>
+    <hr />
+  {{/each}}
+</div>
+<a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
