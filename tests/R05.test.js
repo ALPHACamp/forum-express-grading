@@ -112,7 +112,7 @@ describe('# R05: TOP 10 人氣餐廳 ', function () {
         await this.userController.addFavorite(req, res, next)
         // 取得餐廳排序資料
         await this.restController.getTopRestaurants(req, res, next)
-        
+
         // addFavorite 執行完畢後，應呼叫 res.render
         // res.render 的第 2 個參數要包含 restaurants
         // restaurant 當中的第 2 筆資料 favoritedCount 屬性的值應是 1 (被 1 個使用者加入最愛了)
