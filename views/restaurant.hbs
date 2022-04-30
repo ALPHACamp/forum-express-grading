@@ -12,8 +12,17 @@
         <li><strong>Tel:</strong> {{restaurant.tel}}</li>
         <li><strong>Address:</strong> {{restaurant.address}}</li>
           <a href="/restaurants/{{restaurant.id}}/dashboard">
-            <button type="submit" class="btn btn-primary" style="margin-top: 30px;">Dashboard</button>
+            <button type="submit" class="btn btn-primary" style="margin-top: 50px;">Dashboard</button>
           </a>
+          {{#if isFavorited }}
+          <form action="/favorite/{{restaurant.id}}?_method=DELETE" method="POST" style="display: contents;">
+            <button type="submit" class="btn btn-danger" style="margin-top: 50px;">移除最愛</button>
+          </form>
+          {{else}}
+          <form action="/favorite/{{restaurant.id}}" method="POST" style="display: contents;">
+            <button type="submit" class="btn btn-primary" style="margin-top: 50px;">加到最愛</button>
+          </form>
+          {{/if}}
       </ul>
     </div>
   </div>
