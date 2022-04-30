@@ -28,7 +28,7 @@ const commentController = {
         if (!comment) throw new Error("comment doesn't exist!")
         return comment.destroy()
       })
-      .then((deletedComment) => {
+      .then(deletedComment => {
         // deletedComment是return comment.destroy()
         res.redirect(`/restaurants/${deletedComment.restaurantId}`)
       })

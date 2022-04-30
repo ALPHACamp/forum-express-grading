@@ -1,6 +1,5 @@
-const { Restaurant } = require('../models')
-const { User } = require('../models')
-const { Category } = require('../models')
+const { Restaurant, User, Category } = require('../models')
+
 // 本地上傳檔案 const { localFileHandler } = require('../helpers/file-helpers')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 const adminController = {
