@@ -21,6 +21,7 @@ const restaurantController = {
     Restaurant.findByPk(req.params.id)
       .then(restaurant => {
         if (!restaurant) throw new Error('The restaurant does not exist.')
+<<<<<<< HEAD
         console.log(restaurant.toJSON())
         restaurant.update({
           viewCounts: restaurant.toJSON().viewCounts + 1
@@ -32,6 +33,19 @@ const restaurantController = {
   },
   getRestaurantDashboard: (req, res, next) => {
     Restaurant.findByPk(req.params.id, {
+=======
+        // restaurant.update({
+        //   viewCounts: restaurant.toJSON().viewCounts + 1
+        // })
+        // return restaurant.toJSON()
+        return restaurant.increment('viewCounts')
+      })
+      .then(restaurant => res.render('restaurant', { restaurant: restaurant.toJSON() }))
+      .catch(err => next(err))
+  },
+  getDashboard: (req, res, next) => {
+    return Restaurant.findByPk(req.params.id, {
+>>>>>>> R02
       raw: true,
       nest: true,
       include: [Category]
