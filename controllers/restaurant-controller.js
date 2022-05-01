@@ -25,9 +25,11 @@ const restaurantController = {
       })
     ])
       .then(([restaurants, categories]) => {
+        const FavoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
         const data = restaurants.rows.map(r => ({
           ...r,
-          description: r.description.substring(0, 50)
+          description: r.description.substring(0, 50),
+          isFavorited: FavoritedRestaurantsId.includes(r.id)
         }))
         return res.render('restaurants', {
           restaurants: data,
@@ -42,12 +44,18 @@ const restaurantController = {
     return Restaurant.findByPk(req.params.id, {
       include: [
         Category,
-        { model: Comment, include: User }
+        { model: Comment, include: User },
+        { model: User, as: 'FavoritedUsers' } // 找到所有Favorited這間餐廳的User
       ]
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
-        res.render('restaurant', { restaurant: restaurant.toJSON() })
+        // 比對FavoritedUsers陣列中有沒有登入者的id並回傳布林值
+        const isFavorited = restaurant.FavoritedUsers.some(fu => fu.id === req.user.id)
+        res.render('restaurant', {
+          restaurant: restaurant.toJSON(),
+          isFavorited
+        })
         return restaurant.increment('view_counts')
       })
       .catch(err => next(err))
