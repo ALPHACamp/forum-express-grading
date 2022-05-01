@@ -14,6 +14,7 @@ router.post('/restaurants', upload.single('image'), adminController.postRestaura
 router.patch('/users/:id', adminController.patchUser) // 修改使用者權限
 router.get('/users', adminController.getUsers) // 顯示使用者清單
 router.get('/categories', categoryController.getCategories)
+router.post('/categories', categoryController.postCategory)
 router.use('/', (req, res) => res.redirect('/admin/restaurants'))
 
 module.exports = router
