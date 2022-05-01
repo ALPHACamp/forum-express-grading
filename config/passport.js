@@ -1,7 +1,7 @@
 const passport = require('passport')
 const LocalStrategy = require('passport-local')
 const bcrypt = require('bcryptjs')
-const { User, Restaurant, Followship } = require('../models')
+const { User, Restaurant } = require('../models')
 
 // set up Passport strategy
 passport.use(new LocalStrategy(
@@ -32,8 +32,8 @@ passport.deserializeUser((id, cb) => {
     include: [
       { model: Restaurant, as: 'FavoritedRestaurants' },
       { model: Restaurant, as: 'LikedRestaurants' },
-      { model: Followship, as: 'Followers' },
-      { model: Followship, as: 'Followerings' }
+      { model: User, as: 'Followers' },
+      { model: User, as: 'Followings' }
     ]
   })
     .then(user => cb(null, user.toJSON()))
