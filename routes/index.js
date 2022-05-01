@@ -20,6 +20,8 @@ router.post('/favorite/:restaurantId', authenticated, userController.addFavorite
 router.delete('/favorite/:restaurantId', authenticated, userController.removeFavorite)
 router.post('/like/:restaurantId', authenticated, userController.addLike)
 router.delete('/like/:restaurantId', authenticated, userController.removeLike)
+router.post('/following/:userId', authenticated, userController.addFollowing)
+router.delete('/following/:userId', authenticated, userController.removeFollowing)
 router.post('/signin', passport.authenticate('local', { failureRedirect: '/signin', failureFlash: true }), userController.signIn) // 注意是 Post, 請 Passport 直接做身份驗證
 router.get('/logout', userController.logout)
 router.get('/users/top', authenticated, userController.getTopUsers)
