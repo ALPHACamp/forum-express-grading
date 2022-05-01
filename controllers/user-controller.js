@@ -1,6 +1,7 @@
+const { User, Comment, Restaurant } = require('../models')
 const bcrypt = require('bcryptjs')
-const db = require('../models')
-const { User } = db
+const { imgurFileHandler } = require('../helpers/file-helpers')
+// const helpers = require('../helpers/auth-helpers')
 
 const userController = {
   signUpPage: (req, res) => {
@@ -37,6 +38,60 @@ const userController = {
     req.flash('success_messages', '登出成功！')
     req.logout()
     res.redirect('/signin')
+  },
+  getUser: (req, res, next) => {
+    // const userId = Number(req.user.id)
+    const userParamsId = Number(req.params.id)
+    return User.findByPk(userParamsId, {
+      include: [{ model: Comment, include: Restaurant }]
+    })
+      .then(user => {
+        user = user.toJSON()
+        user.commentedRestaurants = user.Comments && user.Comments.reduce((accumulate, comment) => {
+          if (!accumulate.some(restaurant => restaurant.id === comment.restaurantId)
+          ) { accumulate.push(comment.Restaurant) }
+          return accumulate
+        }, [])
+        if (!user) throw new Error('User is not applied !')
+        res.render('users/profile', { user })
+      })
+      .catch(err => next(err))
+  },
+  editUser: (req, res, next) => {
+    // if (helpers.getUser(req).id !== Number(req.params.id)) return res.redirect('back')
+    const userParamsId = Number(req.params.id)
+    return User.findByPk(userParamsId, { raw: true })
+      .then(user => {
+        if (!user) throw new Error('User is not applied !')
+        return res.render('users/edit', { user })
+      })
+      .catch(err => next(err))
+  },
+  putUser: (req, res, next) => {
+    const userId = Number(req.user.id)
+    const userParamsId = Number(req.params.id)
+    const { name } = req.body
+    const { file } = req
+    if (userId !== userParamsId) {
+      req.flash(
+        'error_messages',
+        'User is not allow to edit the profile of other people !'
+      )
+      return res.redirect(`/users/${userId}`)
+    }
+    return Promise.all([User.findByPk(userParamsId), imgurFileHandler(file)])
+      .then(([user, filePath]) => {
+        if (!user) throw new Error('User is not exits !')
+        return user.update({
+          name,
+          image: filePath || user.image
+        })
+      })
+      .then(() => {
+        req.flash('success_messages', '使用者資料編輯成功')
+        res.redirect(`/users/${userParamsId}`)
+      })
+      .catch(err => next(err))
   }
 }
 

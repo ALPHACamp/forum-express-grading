@@ -1,0 +1,27 @@
+<div class="d-flex">
+  <div class="col-md-3">
+    <img src="{{user.image}}" alt="user-avatar" style="width:100%;">
+  </div>
+  <div class="card-md-9">
+    <h3>{{user.name}}</h3>
+    <p>{{user.email}}</p>
+    <p><b>{{user.commentCount}}</b> 已評論餐廳</p>
+    <a href="/users/{{user.id}}/edit" class="btn btn-primary">edit</a>
+    {{!-- "只有自己能編輯自己的資料" --}}
+    {{#if user.isUser}}
+      <a href="/users/{{user.id}}/edit" class="btn btn-primary">edit</a>
+    {{/if}}
+  </div>
+</div>
+
+  <div class="card mt-4">
+    <div class="card-header"><b>{{user.commentCount}}</b>
+      已評論餐廳</div>
+    <div class="card-body">
+      {{#each user.Comments}}
+      <a href="/restaurants/{{this.Restaurant.id}}">
+        <img class="mx-2" src="{{this.Restaurant.image}}" style="width: 70px; height: 70px">
+      </a>
+      {{/each}}
+    </div>
+  </div>
