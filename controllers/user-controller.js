@@ -1,6 +1,8 @@
 const bcrypt = require('bcryptjs')
-const db = require('../models')
-const { User } = db
+const { User, Comment, Restaurant } = require('../models')
+const { localFileHandler } = require('../helpers/file-helpers')
+const { getUser, userAuth } = require('../helpers/auth-helpers')
+
 const userController = {
   signUpPage: (req, res) => {
     res.render('signup')
@@ -35,6 +37,54 @@ const userController = {
     req.flash('success_messages', '登出成功！')
     req.logout()
     res.redirect('/signin')
+  },
+  getUser: (req, res, next) => {
+    return User.findByPk(req.params.id, {
+      include: [{ model: Comment, include: Restaurant }]
+    })
+      .then(user => {
+        const isUser = userAuth(req.params.id, getUser(req).id)
+        if (!user) throw new Error("User is didn't exist!")
+        res.render('users/profile', { user: user.toJSON(), isUser })
+      })
+      .catch(err => next(err))
+  },
+  editUser: (req, res, next) => {
+    const userId = getUser(req).id
+    const paramsId = req.params.id
+    const isUser = userAuth(paramsId, userId)
+    if (!isUser) {
+      req.flash('error_messages', '您不能修改他人資料')
+      return res.redirect(`/users/${userId}`)
+    }
+    return User.findByPk(paramsId, { raw: true })
+      .then(user => {
+        if (!user) throw new Error("User is didn't exist!")
+        res.render('users/edit', { user })
+      })
+      .catch(err => next(err))
+  },
+  putUser: (req, res, next) => {
+    const id = req.params.id
+    const { name } = req.body
+    if (!name) throw new Error('Name and email is required!')
+    const { file } = req
+    return Promise.all([
+      User.findByPk(id),
+      localFileHandler(file)
+    ])
+      .then(([user, filePath]) => {
+        if (!user) throw new Error("User didn't exist!")
+        return user.update({
+          name,
+          avatar: filePath || user.avatar
+        })
+      })
+      .then(() => {
+        req.flash('success_messages', '使用者資料編輯成功')
+        res.redirect(`/users/${id}`)
+      })
+      .catch(err => next(err))
   }
 }
 module.exports = userController
