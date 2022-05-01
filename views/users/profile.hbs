@@ -1,17 +1,31 @@
-<div class="container d-flex justify-content-center">
-  <div class="card mb-3" style="width: 680px">
-    <div class="row g-0 d-flex align-items-center">
-      <div class="col-md-5 d-flex align-items-center" style="height: 250px;">
-        <img src="{{user.avatar}}" class="img-fluid rounded-start" alt="avatar">
-      </div>
-      <div class="col-md-7">
-        <div class="card-body">
-          <h5 class="card-title">{{user.name}}</h5>
-          <p class="card-text">{{user.email}}</p>
-          <a href="/users/{{user.id}}/edit" class="btn btn-primary">Edit</a>
-        </div>
+<div class="card mb-3">
+  <div class="row g-0 d-flex align-items-center">
+    <div class="col-md-5 d-flex align-items-center" style="height: 250px;">
+      <img src="{{user.avatar}}" class="img-fluid rounded-start" alt="avatar">
+    </div>
+    <div class="col-md-7">
+      <div class="card-body">
+        <h5 class="card-title">{{user.name}}</h5>
+        <p class="card-text">{{user.email}}</p>
+        <p class="card-test">{{#if user.Comments.length}}{{user.Comments.length}}已評論餐廳{{else}}沒有任何評論{{/if}}</p>
+        {{#if isUser}}<a href="/users/{{user.id}}/edit" class="btn btn-primary">Edit</a>{{/if}}
       </div>
     </div>
   </div>
 </div>
-<hr>
+<div class="card">
+  <div class="card-header">
+    {{#if user.Comments.length}}{{user.Comments.length}}已評論餐廳{{else}}沒有任何評論{{/if}}
+  </div>
+  <div class="card-body">
+    <blockquote class="blockquote mb-0 row">
+      {{#each user.Comments}}
+      <div class="d-flex align-items-center col-2 mb-3">
+        <a href="/restaurants/{{this.Restaurant.id}}">
+          <img src={{this.Restaurant.image}} class="img-fluid rounded-start" alt="image">
+        </a>
+      </div>
+      {{/each}}
+    </blockquote>
+  </div>
+</div>

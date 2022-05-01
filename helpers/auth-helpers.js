@@ -4,7 +4,13 @@ const getUser = req => {
 const ensureAuthenticated = req => {
   return req.isAuthenticated()
 }
+
+const userAuth = (paramsId, userId) => {
+  return Number(paramsId) === userId
+}
+
 module.exports = {
   getUser,
-  ensureAuthenticated
+  ensureAuthenticated,
+  userAuth
 }
