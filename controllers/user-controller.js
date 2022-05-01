@@ -182,8 +182,6 @@ const userController = {
       .catch(err => next(err))
   },
   addFollowing: (req, res, next) => {
-    console.log(req.params)
-    console.log(req.user.id)
     const { userId } = req.params
     return Promise.all([
       User.findByPk(userId),
