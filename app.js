@@ -6,10 +6,10 @@ const session = require('express-session')
 const flash = require('connect-flash')
 const passport = require('./config/passport')
 const app = express()
-const port = process.env.PORT || 3000
 const { getUser } = require('./helpers/auth-helpers')
 const handlebarshelpers = require('./helpers/handlebars-helpers')
 const methodOverride = require('method-Override')
+const { PORT = 3000, LOCAL_ADDRESS = '0.0.0.0' } = process.env
 
 app.engine('hbs', handlebars({ extname: '.hbs', helpers: handlebarshelpers }))
 app.set('view engine', 'hbs')
@@ -28,8 +28,8 @@ app.use((req, res, next) => {
 })
 app.use(routes)
 
-app.listen(port, () => {
-  console.info(`Example app listening on port ${port}!`)
+app.listen(PORT, LOCAL_ADDRESS, () => {
+  console.info(`Example app listening on port ${PORT}!`)
 })
 
 module.exports = app
