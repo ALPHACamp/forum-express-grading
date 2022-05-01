@@ -1,16 +1,5 @@
 <h1>使用者權限管理</h1>
-
-<div class="d-flex justify-content-between mb-2">
-  {{!-- 預留之後"新增使用者"的功能按鈕 --}}
-  <a href='/admin/users/create'>
-    <button type="button" class="btn btn-info">New User</button>
-  </a>
-
-  <a href='/admin/restaurants'>
-    <button type="button" class="btn btn-info">餐廳清單管理</button>
-  </a>
-</div>
-
+{{>admin-tabs route='users'}}
 <table class="table">
   <thead class="thead-dark">
     <tr>
