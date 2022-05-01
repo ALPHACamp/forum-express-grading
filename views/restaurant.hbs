@@ -46,7 +46,21 @@
     <textarea class="form-control" id="text" name="text" rows="3"></textarea>
   </div>
   <input type="hidden" name="restaurantId" value="{{restaurant.id}}" />
+
+  <div>
   <button type="submit" class="btn btn-primary">Submit</button>
-  <a class="btn btn-primary" href="/restaurants/{{restaurant.id}}/dashboard">Dashboard</a>    
-  <a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
-</form>
+  </form>
+  <a class="btn btn-outline-primary" href="/restaurants/{{restaurant.id}}/dashboard">Dashboard</a>  
+
+  {{#if isFavorited }}
+      <form action="/favorite/{{restaurant.id}}?_method=DELETE" method="POST" style="display: contents;">
+        <button type="submit" class="btn btn-outline-danger">移除最愛</button>
+      </form>
+    {{else}}
+      <form action="/favorite/{{restaurant.id}}" method="POST" style="display: contents;">
+        <button type="submit" class="btn btn-outline-primary">加到最愛</button>
+      </form>
+    {{/if}}
+    
+  <a class="btn btn-outline-secondary" href="/restaurants">Back</a>
+</div>
