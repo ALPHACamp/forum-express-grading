@@ -25,6 +25,7 @@ router.delete('/following/:userId', authenticated, userController.removeFollowin
 router.post('/signin', passport.authenticate('local', { failureRedirect: '/signin', failureFlash: true }), userController.signIn) // 注意是 Post, 請 Passport 直接做身份驗證
 router.get('/logout', userController.logout)
 router.get('/users/top', authenticated, userController.getTopUsers)
+router.get('/restaurants/top', authenticated, restController.getTopRestaurants)
 router.get('/restaurants/:id/dashboard', authenticated, restController.getDashboard)
 router.get('/restaurants/feeds', authenticated, restController.getFeeds)
 router.get('/restaurants/:id', authenticated, restController.getRestaurant)
