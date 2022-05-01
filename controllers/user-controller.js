@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs')
-const { User, Restaurant, Comment, Favorite, Like } = require('../models')
+const { User, Restaurant, Comment, Favorite, Like, Followship } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const userController = {
@@ -145,6 +145,62 @@ const userController = {
         return like.destroy()
       })
       .then(() => res.redirect('back'))
+      .catch(err => next(err))
+  },
+  getTopUsers: (req, res, next) => {
+    return User.findAll({
+      include: [{ model: User, as: 'Followers' }] // 找使用者以及被使用者追蹤的
+    })
+      .then(users => {
+        users = users.map(user => ({
+          ...user.toJSON(),
+          // 這個req.user 被多少人追蹤 , follower的 foreignkey(資料池)是 following
+          followerCount: user.Followers.length,
+          // 在 req.user的 follower 找看有沒有自己
+          isFollowed: req.user.Followings.some(f => f.id === user.id)
+        }))
+        users = users.sort((a, b) => b.followerCount - a.followerCount)
+        res.render('top-users', { users: users })
+      })
+      .catch(err => next(err))
+  },
+  addFollowing: (req, res, next) => {
+    const { userId } = req.params
+    Promise.all([User.findByPk(userId), Followship.findOne(
+      { // 看是否追蹤過目標使用者
+        where: {
+          followerId: req.user.id, // 自己
+          followingId: req.params.userId // 對方
+        }
+      })
+    ])
+      .then(([user, followship]) => {
+        if (!user) throw new Error("User doesn't exist!")
+        if (followship) throw new Error('You are already following this user!')
+        return Followship.create({
+          followerId: req.user.id, // 自己
+          followingId: userId // 對方
+        })
+      })
+      .then(() => {
+        res.redirect('back')
+      })
+      .catch(err => next(err))
+  },
+  removeFollowing: (req, res, next) => {
+    Followship.findOne({
+      where: {
+        followerId: req.user.id,
+        followingId: req.params.userId
+      }
+    })
+      .then(followship => {
+        if (!followship) throw new Error("You haven't followed this user!")
+        return followship.destroy()
+      })
+      .then(() => {
+        res.redirect('back')
+      })
       .catch(err => next(err))
   }
 }
