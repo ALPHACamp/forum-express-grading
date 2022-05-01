@@ -1,4 +1,4 @@
-const { Restaurant, Category, Comment, User } = require('../models')
+const { Restaurant, Category, Comment, User, Favorite } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
 
 const restaurantController = {
@@ -25,10 +25,12 @@ const restaurantController = {
     ])
       .then(([restaurants, categories]) => {
         const FavoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
+        const LikedRestaurantsId = req.user && req.user.LikedRestaurants.map(lr => lr.id)
         const data = restaurants.rows.map(r => ({
           ...r,
           description: r.description.substring(0, 50),
-          isFavorited: FavoritedRestaurantsId.includes(r.id)
+          isFavorited: FavoritedRestaurantsId.includes(r.id),
+          isLiked: LikedRestaurantsId.includes(r.id)
         }))
         return res.render('restaurants', {
           restaurants: data,
@@ -45,7 +47,8 @@ const restaurantController = {
       include: [
         Category,
         { model: Comment, include: User },
-        { model: User, as: 'FavoritedUsers' }
+        { model: User, as: 'FavoritedUsers' },
+        { model: User, as: 'LikedUsers' }
       ]
     })
       .then(restaurant => {
@@ -54,27 +57,37 @@ const restaurantController = {
       })
       .then(restaurant => {
         const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id)
+        const isLiked = restaurant.LikedUsers.some(l => l.id === req.user.id)
         return res.render('restaurant', {
           restaurant: restaurant.toJSON(),
-          isFavorited
+          isFavorited,
+          isLiked
         })
       })
       .catch(err => next(err))
   },
   getDashboard: (req, res, next) => {
+    const restaurantId = req.params.id
     return Promise.all([
-      Restaurant.findByPk(req.params.id, {
+      Restaurant.findByPk(restaurantId, {
         raw: true,
         nest: true,
         include: [Category]
       }),
       Comment.findAndCountAll({
-        where: { restaurantId: req.params.id }
+        where: { restaurantId }
+      }),
+      Favorite.findAndCountAll({
+        where: { restaurantId }
       })
     ])
-      .then(([restaurant, comments]) => {
+      .then(([restaurant, comments, favorites]) => {
         if (!restaurant) throw new Error('The restaurant does not exit.')
-        res.render('dashboard', { restaurant, commentCounts: comments.count })
+        res.render('dashboard', {
+          restaurant,
+          commentCounts: comments.count,
+          favoriteCounts: favorites.count
+        })
       })
   },
   getFeeds: (req, res, next) => {
