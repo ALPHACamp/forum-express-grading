@@ -7,10 +7,10 @@ const passport = require('../config/passport')
 
 const restController = require('../controllers/restaurant-controller')
 const userController = require('../controllers/user-controller')
-const { authenticated } = require('../middleware/auth')
+const { authenticated, authenticatedAdmin } = require('../middleware/auth')
 const { generalErrorHandler } = require('../middleware/error-handler')
 const admin = require('./modules/admin') // 新增這行，載入 admin.js
-router.use('/admin', admin) // 新增這行
+router.use('/admin', authenticatedAdmin, admin) // 新增這行
 router.get('/signup', userController.signUpPage)
 router.post('/signup', userController.signUp)
 router.get('/signin', userController.signInPage)
