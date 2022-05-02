@@ -11,6 +11,10 @@ const handlebarshelpers = require('./helpers/handlebars-helpers')
 const methodOverride = require('method-override')
 const { PORT = 3000 } = process.env
 
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
+
 app.engine('hbs', handlebars({ extname: '.hbs', helpers: handlebarshelpers }))
 app.set('view engine', 'hbs')
 app.use(express.urlencoded({ extended: true }))
