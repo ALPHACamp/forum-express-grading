@@ -2,7 +2,7 @@
   "name": "forum-express-grading",
   "version": "3.0.0",
   "engines": {
-    "node": "12.11.1"
+    "node": "16.13.1"
   },
   "main": "app.js",
   "scripts": {
