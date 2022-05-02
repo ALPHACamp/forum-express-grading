@@ -1,10 +1,10 @@
 {
   "name": "forum-express-grading",
   "version": "3.0.0",
-  "main": "correct_file_name.js",
+  "main": "index.js",
   "scripts": {
-    "start": "node correct_file_name.js",
-    "dev": "nodemon app.js",
+    "start": "node index.js",
+    "dev": "nodemon index.js",
     "lint": "eslint \"**/*.js\" --fix",
     "test": "mocha tests --exit --recursive --timeout 5000"
   },
