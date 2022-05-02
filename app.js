@@ -9,7 +9,7 @@ const app = express()
 const { getUser } = require('./helpers/auth-helpers')
 const handlebarshelpers = require('./helpers/handlebars-helpers')
 const methodOverride = require('method-Override')
-const { LOCAL_ADDRESS = '0.0.0.0' } = process.env
+const { LOCAL_ADDRESS } = process.env
 
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config()
