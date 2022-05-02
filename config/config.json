@@ -7,7 +7,7 @@
     "dialect": "mysql"
   },
   "production": {
-    "use_env_variable": "mysql://b1e9b52ffd6869:1f0f596b@us-cdbr-east-05.cleardb.net/heroku_2add19c36caf383?reconnect=true"
+    "use_env_variable": "CLEARDB_DATABASE_URL"
   },
   "travis": {
     "username": "travis",
