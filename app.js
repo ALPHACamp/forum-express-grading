@@ -28,7 +28,7 @@ app.use((req, res, next) => {
 })
 app.use(routes)
 
-app.listen(3000, LOCAL_ADDRESS, () => {
+app.listen(PORT, LOCAL_ADDRESS, () => {
   console.info(`Example app listening on port ${PORT}!`)
 })
 
