@@ -9,11 +9,6 @@ const app = express()
 const { getUser } = require('./helpers/auth-helpers')
 const handlebarshelpers = require('./helpers/handlebars-helpers')
 const methodOverride = require('method-Override')
-const { LOCAL_ADDRESS } = process.env
-
-if (process.env.NODE_ENV !== 'production') {
-  require('dotenv').config()
-}
 
 app.engine('hbs', handlebars({ extname: '.hbs', helpers: handlebarshelpers }))
 app.set('view engine', 'hbs')
@@ -32,7 +27,7 @@ app.use((req, res, next) => {
 })
 app.use(routes)
 
-app.listen(3000, LOCAL_ADDRESS, () => {
+app.listen(3000, '0.0.0.0', () => {
   console.log('Example app listening on port 3000!')
 })
 
