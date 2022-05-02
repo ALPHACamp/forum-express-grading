@@ -8,6 +8,7 @@ const { generalErrorHandler } = require('../middleware/error-handler')
 const { authenticated, authenticatedAdmin } = require('../middleware/auth')
 
 router.use('/admin', authenticatedAdmin, admin)
+router.use('/', generalErrorHandler)
 
 router.get('/signup', userController.signUpPage)
 router.post('/signup', userController.signUp)
@@ -16,5 +17,5 @@ router.get('/', (req, res) => res.redirect('/restaurants'))
 router.get('/signin', userController.signInPage)
 router.post('/signin', passport.authenticate('local', { failureRedirect: '/signin', failureFlash: true }), userController.signIn)
 router.get('/logout', userController.logout)
-router.use('/', generalErrorHandler)
+
 module.exports = router
