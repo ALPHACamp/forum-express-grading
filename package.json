@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "react-scripts start",
     "start": "serve -s build",
+    "build": "react-scripts build",
     "lint": "eslint \"**/*.js\" --fix",
     "test": "mocha tests --exit --recursive --timeout 5000"
   },
