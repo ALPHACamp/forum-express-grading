@@ -8,7 +8,7 @@ const passport = require('./config/passport')
 const app = express()
 const { getUser } = require('./helpers/auth-helpers')
 const handlebarshelpers = require('./helpers/handlebars-helpers')
-const methodOverride = require('method-Override')
+const methodOverride = require('method-override')
 const { PORT = 3000 } = process.env
 
 app.engine('hbs', handlebars({ extname: '.hbs', helpers: handlebarshelpers }))
