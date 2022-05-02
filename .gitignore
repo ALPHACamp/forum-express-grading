@@ -4,3 +4,9 @@ upload/
 
 .DS_Store
 .env
+
+tests/
+
+.travis.yml
+
+.eslintrc.yml
