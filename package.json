@@ -1,9 +1,6 @@
 {
   "name": "forum-express-grading",
   "version": "3.0.0",
-  "engines": {
-    "node": "16.13.1"
-  },
   "main": "app.js",
   "scripts": {
     "dev": "nodemon app.js",
