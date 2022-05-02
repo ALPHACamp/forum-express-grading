@@ -3,8 +3,8 @@
   "version": "3.0.0",
   "main": "app.js",
   "scripts": {
-    "start": "serve -s node app.js",
-    "dev": "nodemon app.js",
+    "dev": "react-scripts start",
+    "start": "serve -s build",
     "lint": "eslint \"**/*.js\" --fix",
     "test": "mocha tests --exit --recursive --timeout 5000"
   },
