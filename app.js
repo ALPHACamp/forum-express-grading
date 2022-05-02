@@ -9,8 +9,7 @@ const app = express()
 const { getUser } = require('./helpers/auth-helpers')
 const handlebarshelpers = require('./helpers/handlebars-helpers')
 const methodOverride = require('method-Override')
-const { LOCAL_ADDRESS = '0.0.0.0' } = process.env
-const PORT = process.env.PORT || 3000
+const { PORT = 3000, LOCAL_ADDRESS = '0.0.0.0' } = process.env
 
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config()
@@ -34,7 +33,7 @@ app.use((req, res, next) => {
 app.use(routes)
 
 app.listen(PORT, LOCAL_ADDRESS, () => {
-  console.info(`Example app listening on port ${PORT}!`)
+  console.log(`Example app listening on port ${PORT}!`)
 })
 
 module.exports = app
