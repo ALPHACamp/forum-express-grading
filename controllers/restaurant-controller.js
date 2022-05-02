@@ -18,16 +18,23 @@ const restaurantController = {
   getRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
       include: Category, // 拿出關聯的 Category model
-      nest: true,
-      raw: true
+      nest: true
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
+        restaurant.increment('viewCount')
         res.render('restaurant', {
-          restaurant
+          restaurant: restaurant.toJSON()
         })
       })
       .catch(err => next(err))
+  },
+  getDashboard: (req, res, next) => {
+    return Restaurant.findByPk(req.params.id, { raw: true, nest: true, include: Category })
+      .then(restaurant => {
+        if (!restaurant) throw new Error("Restaurant doesn't exist!")
+        res.render('dashboard', { restaurant })
+      })
   }
 }
 module.exports = restaurantController

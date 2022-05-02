@@ -19,10 +19,12 @@ module.exports = (sequelize, DataTypes) => {
     address: DataTypes.STRING,
     openingHours: DataTypes.STRING,
     description: DataTypes.TEXT,
-    image: DataTypes.STRING
+    image: DataTypes.STRING,
+    viewCount: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'Restaurant',
+    tableName: 'Restaurants',
     underscored: true
   })
   return Restaurant
