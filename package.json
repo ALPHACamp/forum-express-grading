@@ -3,7 +3,7 @@
   "version": "3.0.0",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js",
+    "start": "serve -s build",
     "dev": "nodemon app.js",
     "lint": "eslint \"**/*.js\" --fix",
     "test": "mocha tests --exit --recursive --timeout 5000"
@@ -27,7 +27,8 @@
     "passport": "^0.4.1",
     "passport-local": "^1.0.0",
     "sequelize": "^6.3.5",
-    "sequelize-cli": "^6.2.0"
+    "sequelize-cli": "^6.2.0",
+    "serve": "^13.0.2"
   },
   "devDependencies": {
     "chai": "^4.2.0",
