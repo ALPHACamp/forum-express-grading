@@ -29,7 +29,7 @@ app.use((req, res, next) => {
 app.use(routes)
 
 app.listen(PORT, () => {
-  console.log(`Example app listening on port ${PORT
+  console.info(`Example app listening on port ${PORT
     }!`)
 })
 
