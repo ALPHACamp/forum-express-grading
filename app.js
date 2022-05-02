@@ -9,7 +9,7 @@ const app = express()
 const { getUser } = require('./helpers/auth-helpers')
 const handlebarshelpers = require('./helpers/handlebars-helpers')
 const methodOverride = require('method-Override')
-const port = process.env.Port || 3000
+const port = process.env.PORT || 3000
 app.engine('hbs', handlebars({ extname: '.hbs', helpers: handlebarshelpers }))
 app.set('view engine', 'hbs')
 app.use(express.urlencoded({ extended: true }))
