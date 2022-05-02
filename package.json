@@ -3,7 +3,7 @@
   "version": "3.0.0",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js",
+    "start": "NODE_ENV=production node app.js",
     "dev": "nodemon app.js",
     "lint": "eslint \"**/*.js\" --fix",
     "test": "mocha tests --exit --recursive --timeout 5000"
