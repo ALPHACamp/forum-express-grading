@@ -12,6 +12,10 @@ const methodOverride = require('method-Override')
 const { LOCAL_ADDRESS = '0.0.0.0' } = process.env
 const PORT = process.env.PORT || 3000
 
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
+
 app.engine('hbs', handlebars({ extname: '.hbs', helpers: handlebarshelpers }))
 app.set('view engine', 'hbs')
 app.use(express.urlencoded({ extended: true }))
