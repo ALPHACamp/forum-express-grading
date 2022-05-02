@@ -9,8 +9,8 @@ const app = express()
 const { getUser } = require('./helpers/auth-helpers')
 const handlebarshelpers = require('./helpers/handlebars-helpers')
 const methodOverride = require('method-Override')
-const port = process.env.PORT || 3000
-const LOCAL_ADDRESS = process.env.LOCAL_ADDRESS || '0.0.0.0'
+const { PORT = 3000, LOCAL_ADDRESS = '0.0.0.0' } = process.env
+
 app.engine('hbs', handlebars({ extname: '.hbs', helpers: handlebarshelpers }))
 app.set('view engine', 'hbs')
 app.use(express.urlencoded({ extended: true }))
@@ -28,8 +28,9 @@ app.use((req, res, next) => {
 })
 app.use(routes)
 
-app.listen(port, LOCAL_ADDRESS, () => {
-  console.log(`Example app listening on port ${port}!`)
+app.listen(PORT, LOCAL_ADDRESS, () => {
+  console.log(`Example app listening on port ${PORT
+}!`)
 })
 
 module.exports = app
