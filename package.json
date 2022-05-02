@@ -1,9 +1,9 @@
 {
   "name": "forum-express-grading",
   "version": "3.0.0",
-  "main": "app.js",
+  "main": "correct_file_name.js",
   "scripts": {
-    "start": "node app.js",
+    "start": "node correct_file_name.js",
     "dev": "nodemon app.js",
     "lint": "eslint \"**/*.js\" --fix",
     "test": "mocha tests --exit --recursive --timeout 5000"
