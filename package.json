@@ -4,6 +4,7 @@
   "main": "app.js",
   "scripts": {
     "start": "serve -s build",
+    "build": "react-scripts build",
     "dev": "nodemon app.js",
     "lint": "eslint \"**/*.js\" --fix",
     "test": "mocha tests --exit --recursive --timeout 5000"
