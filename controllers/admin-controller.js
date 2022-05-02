@@ -1,6 +1,7 @@
 const { Restaurant } = require('../models')
-const { imgurFileHandler } = require('../helpers/file-helpers')
 const { User } = require('../models')
+// 本地上傳檔案 const { localFileHandler } = require('../helpers/file-helpers')
+const { imgurFileHandler } = require('../helpers/file-helpers')
 const adminController = {
   getRestaurants: (req, res, next) => {
     Restaurant.findAll({
@@ -13,9 +14,9 @@ const adminController = {
     return res.render('admin/create-restaurant')
   },
   postRestaurant: (req, res, next) => {
-    const { name, tel, address, openingHours, description } = req.body
-    if (!name) throw new Error('Restaurant name is required!')
+    const { name, tel, address, openingHours, description } = req.body // 從 req.body 拿出表單裡的資料
     const { file } = req
+    if (!name) throw new Error('Restaurant name is required!') // name 是必填，若發先是空值就會終止程式碼，並在畫面顯示錯誤提示
     imgurFileHandler(file)
       .then(filePath => Restaurant.create({
         name,
@@ -26,46 +27,46 @@ const adminController = {
         image: filePath || null
       }))
       .then(() => {
-        req.flash('success_messages', 'restaurant was successfully created')
-        res.redirect('/admin/restaurants')
+        req.flash('success_messages', 'restaurant was successfully created') // 在畫面顯示成功提示
+        res.redirect('/admin/restaurants') // 新增完成後導回後台首頁
       })
       .catch(err => next(err))
   },
   getRestaurant: (req, res, next) => {
-    Restaurant.findByPk(req.params.id, { // 去資料庫用 id 找一筆資料
-      raw: true // 找到以後整理格式再回傳
-    })
+    Restaurant.findByPk(req.params.id, { raw: true })
       .then(restaurant => {
-        if (!restaurant) throw new Error("Restaurant didn't exist!") //  如果找不到，回傳錯誤訊息，後面不執行
-        res.render('admin/restaurant', { restaurant })
+        if (!restaurant) {
+          throw new Error("Restaurant didn't exist!")
+        }
+        res.render('admin/restaurant', { restaurant: restaurant })
       })
       .catch(err => next(err))
   },
-  editRestaurant: (req, res, next) => { // 新增這段
+  editRestaurant: (req, res, next) => {
     Restaurant.findByPk(req.params.id, {
       raw: true
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
-        res.render('admin/edit-restaurant', { restaurant })
+        res.render('admin/edit-restaurant', { restaurant: restaurant })
       })
       .catch(err => next(err))
   },
   putRestaurant: (req, res, next) => {
     const { name, tel, address, openingHours, description } = req.body
     if (!name) throw new Error('Restaurant name is required!')
-    const { file } = req // 把檔案取出來
-    Promise.all([ // 非同步處理
-      Restaurant.findByPk(req.params.id), imgurFileHandler(file)])
-      .then(([restaurant, filePath]) => { // 以上兩樣事都做完以後
+    // const file = req.file
+    const { file } = req
+    Promise.all([Restaurant.findByPk(req.params.id), imgurFileHandler(file)])
+      .then(([restaurant, filePath]) => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
-        return restaurant.update({ // 修改這筆資料
+        return restaurant.update({
           name,
           tel,
           address,
           openingHours,
           description,
-          image: filePath || restaurant.image // 如果 filePath 是 Truthy (使用者有上傳新照片) 就用 filePath，是 Falsy (使用者沒有上傳新照片) 就沿用原本資料庫內的值
+          image: filePath || restaurant.image
         })
       })
       .then(() => {
@@ -74,7 +75,7 @@ const adminController = {
       })
       .catch(err => next(err))
   },
-  deleteRestaurant: (req, res, next) => { // 新增以下
+  deleteRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id)
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
@@ -87,7 +88,7 @@ const adminController = {
     return User.findAll({
       raw: true
     })
-      .then(users => res.render('admin.users', { users: users }))
+      .then(users => res.render('admin/users', { users: users }))
       .catch(err => next(err))
   },
   patchUser: (req, res, next) => {
@@ -107,5 +108,4 @@ const adminController = {
       .catch(err => next(err))
   }
 }
-
 module.exports = adminController
