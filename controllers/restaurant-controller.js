@@ -1,5 +1,7 @@
 const { Restaurant, Category, Comment, User } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
+const helpers = require('../helpers/auth-helpers')
+
 const restaurantController = {
   getRestaurants: (req, res, next) => {
     const DEFAULT_LIMIT = 9
@@ -65,12 +67,14 @@ const restaurantController = {
   },
   getDashboard: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
-      include: Category,
-      nest: true,
-      raw: true
+      include: [
+        Category,
+        { model: Comment, include: User },
+        { model: User, as: 'FavoritedUsers' }
+      ]
     })
       .then(restaurant => {
-        res.render('dashboard', { restaurant })
+        res.render('dashboard', { restaurant: restaurant.toJSON() })
       })
       .catch(err => next(err))
   },
@@ -96,6 +100,28 @@ const restaurantController = {
           restaurants,
           comments
         })
+      })
+      .catch(err => next(err))
+  },
+  getTopRestaurants: (req, res, next) => {
+    return Restaurant.findAll({
+      include: [{ model: User, as: 'FavoritedUsers' }]
+    })
+      .then(restaurants => {
+        const userId = helpers.getUser(req).id
+        const limit = 10
+        const result = restaurants
+          .map(restaurant => ({
+            ...restaurant.toJSON(),
+            description: restaurant.description.substring(0, 50),
+            favoritedCount: restaurant.FavoritedUsers.length,
+            isFavorited: restaurant.FavoritedUsers.some(
+              user => Number(user.id) === Number(userId)
+            )
+          }))
+          .sort((a, b) => b.favoritedCount - a.favoritedCount)
+          .slice(0, limit)
+        res.render('top-restaurants', { restaurants: result })
       })
       .catch(err => next(err))
   }
