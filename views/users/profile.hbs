@@ -1,10 +1,14 @@
 <div class="card w-100">
   <div class="card-body">
+    <div class="col">
     <img src="{{user.image}}" alt="image" class="img-thumbnail" style="height: 300px; width= 300px;">
+    </div>
+    <div>
     <h5 class="card-title">{{user.name}}</h5>
     <p class="card-text">{{user.email}}</p>
     <p class="card-text">{{user.Comments.length}} 則已評論網站</p>
     <a href="/users/{{user.id}}/edit" class="btn btn-primary">edit</a>
+    </div>
   </div>
   <div class="card">
     <div class="card-header">
