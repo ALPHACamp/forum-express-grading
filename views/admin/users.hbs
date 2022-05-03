@@ -1,17 +1,4 @@
-<div style="display: flex;">
-  <div style="margin-right:20px ;">
-    <h1>餐廳後台</h1>
-    <a href='/admin/restaurants/create'>
-      <button type="button" class="btn btn-primary">New Restaurant</button>
-    </a>
-  </div>
-  <div>
-    <h1>使用者清單</h1>
-    <a href='/admin/users'>
-      <button type="button" class="btn btn-primary">Users</button>
-    </a>
-  </div>
-</div>
+<h1>使用者名單</h1>
 <br />
 <br />
 <table class="table align-middle">
@@ -23,22 +10,22 @@
     </tr>
   </thead>
   <tbody>
-    {{#each restaurants}}
+    {{#each users}}
     <tr>
       <th scope="row">{{this.id}}</th>
       <td>{{this.name}}</td>
       <td>
         <button type="button" class="btn btn-link">
-          <a class="btn btn-link link-primary" href="/admin/restaurants/{{this.id}}">
+          <a class="btn btn-link link-primary" href="/admin/users/{{this.id}}">
             Show
           </a>
         </button>
         <button type="button" class="btn btn-link">
-          <a class="btn btn-link link-primary" href="/admin/restaurants/{{this.id}}/edit">
+          <a class="btn btn-link link-primary" href="/admin/users/{{this.id}}/edit">
             Edit
           </a>
         </button>
-        <form action="/admin/restaurants/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
+        <form action="/admin/users/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
           <button type="submit" class="btn btn-link link-danger"
             onclick="return confirm(`確定要刪除{{this.name}}嗎?`)">Delete</button>
         </form>
