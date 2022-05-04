@@ -6,8 +6,7 @@
     <div class="well">
       <ul class="list-unstyled">
         <li><strong>email:</strong> {{user.email}}</li>
-        <li><strong>password:</strong> {{user.password}}</li>
-        <li><strong>是否為管理者:</strong> {{user.isAdmin}}</li>
+        <li><strong>是否為管理者:</strong> {{#if user.isAdmin}} 是 {{else}}否{{/if}}</li>
       </ul>
     </div>
   </div>

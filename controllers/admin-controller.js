@@ -90,6 +90,24 @@ const adminController = {
       if (!user) throw new Error("User didn't exist!")
       res.render('admin/user', { user })
     }).catch(err => next(err))
+  },
+  editUser: (req, res, next) => {
+    User.findByPk(req.params.id, { raw: true }).then(user => {
+      if (!user) throw new Error("User didn't exist!")
+      res.render('admin/edit-user', { user })
+    }).catch(err => next(err))
+  },
+  patchUser: (req, res, next) => {
+    const { isAdmin } = req.body
+    User.findByPk(req.params.id).then(user => {
+      if (!user) throw new Error("User didn't exist!")
+      return user.update({
+        isAdmin
+      })
+    }).then(() => {
+      req.flash('success_messages', 'successfully to change')
+      res.redirect('/admin/users')
+    }).catch(err => next(err))
   }
 }
 module.exports = adminController

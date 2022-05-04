@@ -1,0 +1,23 @@
+<div class="row">
+  <div class="col-md-12">
+    <h1>{{user.name}}</h1>
+  </div>
+  <div class="col-md-4">
+    <div class="well">
+      <form action="/admin/users/{{user.id}}?_method=PUT" method="POST">
+        <ul class="list-unstyled">
+          <li><strong>email:</strong>{{user.email}} </li>
+          <li><strong>是否為管理者:</strong>
+            <input type="radio" name="isAdmin" id="isAdmin" value="1" {{#if user.isAdmin}} checked {{/if}}>
+            <label for="isAdmin">管理者</label>
+            <input type="radio" name="isAdmin" id="notAdmin" value="0">
+            <label for="notAdmin">非管理者</label>
+          </li>
+        </ul>
+        <button type="submit" class="btn btn-outline-secondary">Submit</button>
+      </form>
+    </div>
+  </div>
+  <hr>
+</div>
+<a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
