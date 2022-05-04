@@ -41,8 +41,9 @@ const userController = {
     res.redirect('/signin')
   },
   getUser: (req, res, next) => {
+    // TODO: profile 會有 header 顯示非當前 user 的 email 問題，之後修
     return User.findByPk(
-      getUser(req).id, {
+      req.params.id, {
         include: [
           { model: Comment, include: Restaurant }
         ]
