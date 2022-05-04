@@ -1,0 +1,24 @@
+{{#if category}}
+<form action="/admin/categories/{{category.id}}?_method=PUT" method="POST" class="d-flex flex-row">
+  <div>
+    <label for="inputCategory" class="visually-hidden">Category</label>
+    <input type="text" class="form-control" id="inputCategory" name="name" placeholder="Category">
+  </div>
+  <div class="mx-4">
+    <button type="submit" class="btn btn-warning mb-3">Update</button>
+  </div>
+  <div>
+    <a href="/admin/categories/" class="btn btn-link link-secondary">or Create new</a>
+  </div>
+</form>
+{{else}}
+<form action="/admin/categories" method="POST" class="d-flex flex-row">
+  <div>
+    <label for="inputCategory" class="visually-hidden">Category</label>
+    <input type="text" class="form-control" id="inputCategory" name="name" placeholder="Category">
+  </div>
+  <div class="mx-4">
+    <button type="submit" class="btn btn-success mb-3">Create</button>
+  </div>
+</form>
+{{/if}}
