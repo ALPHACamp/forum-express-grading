@@ -79,33 +79,19 @@ const adminController = {
       .catch(err => next(err))
   },
   getUsers: (req, res, next) => {
-    User.findAll({ raw: true }).then(users => {
+    return User.findAll({ raw: true }).then(users => {
       res.render('admin/users', {
         users
       })
     }).catch(err => next(err))
   },
-  getUser: (req, res, next) => {
-    User.findByPk(req.params.id, { raw: true }).then(user => {
-      if (!user) throw new Error("User didn't exist!")
-      res.render('admin/user', { user })
-    }).catch(err => next(err))
-  },
-  editUser: (req, res, next) => {
-    User.findByPk(req.params.id, { raw: true }).then(user => {
-      if (!user) throw new Error("User didn't exist!")
-      res.render('admin/edit-user', { user })
-    }).catch(err => next(err))
-  },
   patchUser: (req, res, next) => {
-    const { isAdmin } = req.body
-    User.findByPk(req.params.id).then(user => {
-      if (!user) throw new Error("User didn't exist!")
-      return user.update({
-        isAdmin
-      })
-    }).then(() => {
-      req.flash('success_messages', 'successfully to change')
+    return User.findByPk(req.params.id).then(user => {
+      if (user.name === 'root') return req.flash('error_messages', '禁止變更 root 權限')
+      return req.user.isAdmin
+    }).then(user => {
+      if (user.name === 'root') return res.redirect('back')
+      req.flash('success_messages', '使用者權限變更成功')
       res.redirect('/admin/users')
     }).catch(err => next(err))
   }

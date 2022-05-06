@@ -6,7 +6,9 @@
     <tr>
       <th scope="col">#</th>
       <th scope="col">Name</th>
-      <th scope="col"></th>
+      <th scope="col">Email</th>
+      <th scope="col">Role</th>
+      <th scope="col">#</th>
     </tr>
   </thead>
   <tbody>
@@ -14,17 +16,16 @@
     <tr>
       <th scope="row">{{this.id}}</th>
       <td>{{this.name}}</td>
+      <td>{{this.email}}</td>
       <td>
-        <button type="button" class="btn btn-link">
-          <a class="btn btn-link link-primary" href="/admin/users/{{this.id}}">
-            Show
-          </a>
-        </button>
-        <button type="button" class="btn btn-link">
-          <a class="btn btn-link link-primary" href="/admin/users/{{this.id}}/edit">
-            Edit
-          </a>
-        </button>
+        {{#if this.isAdmin}}admin{{else}}user{{/if}}
+      </td>
+      <td>
+        <form action="/admin/users/{{this.id}}?_method=PATCH" method="POST">
+          <button class="btn btn-outline-primary" type="submit">
+            {{#if this.isAdmin}}set as user{{else}}set as admin{{/if}}
+          </button>
+        </form>
       </td>
     </tr>
     {{/each}}
