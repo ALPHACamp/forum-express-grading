@@ -1,5 +1,6 @@
 const { Restaurant, Category, Comment, User } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
+
 const restaurantController = {
   getRestaurants: (req, res, next) => {
     const DEFAULT_LIMIT = 9
@@ -91,6 +92,29 @@ const restaurantController = {
         })
       })
       .catch(err => next(err))
+  },
+  getTopRestaurants: (req, res, next) => {
+    return Restaurant.findAll({
+      include: [Category, { model: User, as: 'FavoritedUsers' }]
+    })
+      .then(restaurants => {
+        // 整理 users 資料，把每個 user 項目都拿出來處理一次，並把新陣列儲存在 users 裡
+        const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
+        const result = restaurants.map(restaurant => ({
+          // 整理格式
+          ...restaurant.toJSON(),
+          // 計算追蹤者人數
+          description: restaurant.description.substring(0, 100),
+          favoritedCount: restaurant.FavoritedUsers.length,
+          // 判斷目前登入使用者是否已追蹤該 user 物件
+          isFavorited: req.user && favoritedRestaurantsId.includes(restaurant.id)
+        }))
+          .sort((a, b) => b.favoritedCount - a.favoritedCount)
+          .slice(0, 10)
+        res.render('top-restaurants', { restaurants: result })
+      })
+      .catch(err => next(err))
+      // 撈出所有 User 與 followers 資料
   }
 }
 module.exports = restaurantController
