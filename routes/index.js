@@ -2,13 +2,18 @@ const express = require('express')
 const router = express.Router()
 const restController = require('../controllers/restaurant-controller')
 const admin = require('./modules/admin')
-router.get('/', (req, res) => {
-  res.send('Hello World!')
-})
+const userController = require('../controllers/user-controller')
+const { generalErrorHandler } = require('../middleware/error-handler')
+const passport = require('../config/passport')
+const { authenticated } = require('../middleware/auth')
 
 router.use('/admin', admin)
-router.get('/restaurants', restController.getRestaurants)
-
+router.get('/signup', userController.signUpPage)
+router.post('/signup', userController.signUp)
+router.get('/signin', userController.signInPage)
+router.post('/signin', passport.authenticate('local', { failureRedirect: '/signin', failureFlash: true }), userController.signIn)
+router.get('/logout', userController.logout)
+router.get('/restaurants', authenticated, restController.getRestaurants)
 router.use('/', (req, res) => res.redirect('/restaurants'))
-
+router.use('/', generalErrorHandler)
 module.exports = router
