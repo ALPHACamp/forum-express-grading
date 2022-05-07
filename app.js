@@ -5,11 +5,11 @@ const handlebars = require('express-handlebars')
 const app = express()
 const flash = require('connect-flash')
 const session = require('express-session')
-const port = process.env.PORT || 3000
 const passport = require('./config/passport')
 const { getUser } = require('./helpers/auth-helpers')
 const handlebarsHelpers = require('./helpers/handlebars-helpers')
 const methodOverride = require('method-override')
+const { PORT = 3000, LOCAL_ADDRESS = '0.0.0.0' } = process.env
 
 const SESSION_SECRET = 'secret'
 app.use(express.urlencoded({ extended: true }))
@@ -29,8 +29,9 @@ app.use((req, res, next) => {
 })
 app.use(routes)
 
-app.listen(port, () => {
-  console.info(`Example app listening on port ${port}!`)
+app.listen(PORT, LOCAL_ADDRESS, () => {
+  console.info(`Example app listening on port ${PORT
+}!`)
 })
 
 module.exports = app
