@@ -40,7 +40,8 @@
           </a>
         </button>
         <form action="/admin/categories/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
-          <button type="submit" class="btn btn-link link-danger">Delete</button>
+          <button type="submit" class="btn btn-link link-danger"
+            onclick="return confirm(`確定刪除{{this.name}}`)">Delete</button>
         </form>
       </td>
     </tr>
