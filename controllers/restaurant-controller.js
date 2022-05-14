@@ -36,12 +36,13 @@ const restaurantController = {
   getRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
       include: [Category, {
-        model: Comment, include: User
-      }]
+        model: Comment,
+        include: User
+      }],
+      order: [[{ model: Comment }, 'updatedAt', 'DESC']]
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
-        console.log(restaurant)
         return restaurant.increment(
           'viewCounts', { by: 1 }
         ).then(restaurant => {

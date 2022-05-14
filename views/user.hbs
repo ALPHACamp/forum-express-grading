@@ -1,0 +1,11 @@
+<div style="display: flex;">
+  <div style="margin-right: 10px;">
+    <img class="img-responsive center-block mb-5" src="{{user.image}}"
+      style="width: 250px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+  </div>
+  <div>
+    <h1>{{user.name}}</h1>
+    <p>{{user.email}}</p>
+    <a href="/users/{{user.id}}/edit" type="button" class="btn btn-primary">edit</a>
+  </div>
+</div>
