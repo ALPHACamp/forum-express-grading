@@ -39,12 +39,12 @@ const userController = {
   },
   getUser: (req, res, next) => {
     return User.findByPk(req.params.id, { nest: true, raw: true }).then(
-      user => res.render('user', user)
+      user => res.render('users/profile', user)
     ).catch(err => next(err))
   },
   editUser: (req, res, next) => {
     return User.findByPk(req.params.id, { nest: true, raw: true }).then(
-      user => res.render('edit-user', user)
+      user => res.render('users/edit-user', user)
     ).catch(err => next(err))
   },
   putUser: (req, res, next) => {
