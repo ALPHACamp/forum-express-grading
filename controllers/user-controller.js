@@ -44,7 +44,7 @@ const userController = {
   },
   editUser: (req, res, next) => {
     return User.findByPk(req.params.id, { nest: true, raw: true }).then(
-      user => res.render('users/edit-user', user)
+      user => res.render('users/edit', user)
     ).catch(err => next(err))
   },
   putUser: (req, res, next) => {
