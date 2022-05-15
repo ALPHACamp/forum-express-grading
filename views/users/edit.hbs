@@ -1,0 +1,19 @@
+<div class="row mb-5">
+  <div class="col-md-4">
+    <div class="well">
+      <form action="/users/{{user.id}}?_method=PUT" method="POST" enctype="multipart/form-data">
+        <div>
+          <div class="form-row mb-3">
+            <label for="name" class="form-label">Name:</label>
+            <input name="name" id="name" value="{{user.name}}">
+          </div>
+          <div class="form-row mb-3">
+            <label class="form-label" for="user-image">Image:</label>
+            <input class="form-control" type="file" class="form-control-file" id="user-image" name="image">
+          </div>
+        </div>
+        <button href="/users/{{user.id}}/edit" type="submit" class="btn btn-primary">submit</button>
+      </form>
+    </div>
+  </div>
+</div>
