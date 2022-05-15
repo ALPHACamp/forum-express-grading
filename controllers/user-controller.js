@@ -39,17 +39,16 @@ const userController = {
   getUser: (req, res, next) => {
     return User.findByPk(req.params.id, { include: [{ model: Comment, include: Restaurant }] }).then(
       user => {
-        console.log(user)
         if (!user) throw new Error("User didn't exist!")
         res.render('users/profile', { user: user.toJSON() })
       }
     ).catch(err => next(err))
   },
   editUser: (req, res, next) => {
-    return User.findByPk(req.params.id, { nest: true, raw: true }).then(
+    return User.findByPk(req.params.id).then(
       user => {
         if (!user) throw new Error("User didn't exist!")
-        res.render('users/edit', user)
+        res.render('users/edit', { user: user.toJSON() })
       }
     ).catch(err => next(err))
   },
@@ -64,8 +63,9 @@ const userController = {
         image: filePath || user.image
       })
     }).then(user => {
-      req.flash('success_messages', 'user was successfully to update')
-      res.redirect(`/users/${user.id}`)
+      req.flash('success_messages', '使用者資料編輯成功')
+      res.redirect(`/users/${req.params.id
+        }`)
     }).catch(err => next(err))
   }
 }
