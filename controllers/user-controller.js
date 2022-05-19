@@ -30,6 +30,18 @@ const userController = {
         res.redirect('/signin')
       })
       .catch(err => next(err))
+  },
+  signInPage: (req, res) => {
+    res.render('signin')
+  },
+  signIn: (req, res) => {
+    req.flash('success_messages', '登入成功!')
+    res.redirect('/restaurants')
+  },
+  logout: (req, res) => {
+    req.logout()
+    req.flash('success_messages', '成功登出!')
+    res.redirect('/signin')
   }
 }
 
