@@ -24,7 +24,8 @@ async (req, email, password, done) => {
 
   passport.deserializeUser(async (id, done) => {
     try {
-      const user = await User.findByPk(id)
+      let user = await User.findByPk(id)
+      user = await user.toJSON()
       return done(null, user)
     } catch (error) {
       done(error, false)
