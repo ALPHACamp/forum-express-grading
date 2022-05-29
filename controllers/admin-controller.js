@@ -10,16 +10,21 @@ const adminController = {
       next(error)
     }
   },
-  createRestaurant: (req, res) => {
-    return res.render('admin/create-restaurant')
+  createRestaurant: async (req, res, next) => {
+    try {
+      const categories = await Category.findAll({ raw: true })
+      return res.render('admin/create-restaurant', { categories })
+    } catch (error) {
+      next(error)
+    }
   },
   postRestaurant: async (req, res, next) => {
     try {
-      const { name, tel, address, openingHours, description } = req.body
+      const { name, tel, address, openingHours, description, categoryId } = req.body
       const { file } = req
       const filePath = await imgurFileHandler(file)
       if (!name) throw new Error('Restaurant name is required!')
-      await Restaurant.create({ name, tel, address, openingHours, description, image: filePath || null })
+      await Restaurant.create({ name, tel, address, openingHours, description, image: filePath || null, categoryId })
       req.flash('success_messages', 'restaurant was successfully created')
       res.redirect('/admin/restaurants')
     } catch (error) {
@@ -40,8 +45,9 @@ const adminController = {
     try {
       const restId = req.params.id
       const restaurant = await Restaurant.findByPk(restId, { raw: true })
+      const categories = await Category.findAll({ raw: true })
       if (!restaurant) throw new Error("Restaurant didn't exist!")
-      return res.render('admin/edit-restaurant', { restaurant })
+      return res.render('admin/edit-restaurant', { restaurant, categories })
     } catch (error) {
       next(error)
     }
@@ -50,7 +56,7 @@ const adminController = {
     try {
       const restId = req.params.id
       const { file } = req
-      const { name, tel, address, openingHours, description } = req.body
+      const { name, tel, address, openingHours, description, categoryId } = req.body
       if (!name) throw new Error('Restaurant name is required!')
       const filePath = await imgurFileHandler(file)
       const restaurant = await Restaurant.findByPk(restId)
@@ -61,7 +67,8 @@ const adminController = {
         address,
         openingHours,
         description,
-        image: filePath || restaurant.image
+        image: filePath || restaurant.image,
+        categoryId
       })
       req.flash('success_messages', 'restaurant was successfully to update')
       res.redirect('/admin/restaurants')
