@@ -12,6 +12,16 @@ const adminController = {
   createRestaurant: (req, res) => {
     return res.render('admin/create-restaurant')
   },
+  getRestaurant: async (req, res, next) => {
+    try {
+      const restId = req.params.id
+      const restaurant = await Restaurant.findByPk(restId, { raw: true })
+      if (!restaurant) throw new Error("Restaurant didn't exist!")
+      return res.render('admin/restaurant', { restaurant })
+    } catch (error) {
+      next(error)
+    }
+  },
   postRestaurant: async (req, res, next) => {
     try {
       const { name, tel, address, openingHours, description } = req.body
@@ -23,12 +33,12 @@ const adminController = {
       next(error)
     }
   },
-  getRestaurant: async (req, res, next) => {
+  editRestaurant: async (req, res, next) => {
     try {
       const restId = req.params.id
       const restaurant = await Restaurant.findByPk(restId, { raw: true })
       if (!restaurant) throw new Error("Restaurant didn't exist!")
-      return res.render('admin/restaurant', { restaurant })
+      return res.render('admin/edit-restaurant', { restaurant })
     } catch (error) {
       next(error)
     }
@@ -53,12 +63,14 @@ const adminController = {
       next(error)
     }
   },
-  editRestaurant: async (req, res, next) => {
+  deleteRestaurant: async (req, res, next) => {
     try {
       const restId = req.params.id
-      const restaurant = await Restaurant.findByPk(restId, { raw: true })
+      const restaurant = await Restaurant.findByPk(restId)
       if (!restaurant) throw new Error("Restaurant didn't exist!")
-      return res.render('admin/edit-restaurant', { restaurant })
+      await restaurant.destroy()
+      req.flash('success_messages', 'restaurant was successfully delete')
+      res.redirect('/admin/restaurants')
     } catch (error) {
       next(error)
     }
