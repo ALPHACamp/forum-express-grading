@@ -21,17 +21,17 @@
       <td>{{this.Category.name}}</td>
       <td>
         <button type="button" class="btn btn-link">
-          <a class="btn btn-link link-primary" style="text-decoration:none" href="/admin/restaurants/{{this.id}}">
+          <a class="btn btn-link link-primary" style="text-decoration:none;" href="/admin/restaurants/{{this.id}}">
             Show
           </a>
         </button>
         <button type="button" class="btn btn-link">
-          <a class="btn btn-link link-primary" style="text-decoration:none" href="/admin/restaurants/{{this.id}}/edit">
+          <a class="btn btn-link link-primary" style="text-decoration:none;" href="/admin/restaurants/{{this.id}}/edit">
             Edit
           </a>
         </button>
         <form action="/admin/restaurants/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
-          <button type="submit" class="btn btn-link link-danger" style="text-decoration:none"
+          <button type="submit" class="btn btn-link link-danger" style="text-decoration:none;"
             onclick="return confirm(`確定要刪除 {{ this.name }} 嗎？`)">Delete</button>
         </form>
       </td>

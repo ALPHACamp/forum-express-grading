@@ -37,12 +37,12 @@
       <td>{{this.name}}</td>
       <td>
         <button type="button" class="btn btn-link">
-          <a class="btn btn-link link-primary" style="text-decoration:none" href="/admin/categories/{{this.id}}">
+          <a class="btn btn-link link-primary" style="text-decoration:none;" href="/admin/categories/{{this.id}}">
             Edit
           </a>
         </button>
         <form action="/admin/categories/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
-          <button type="submit" class="btn btn-link link-danger" style="text-decoration:none">Delete</button>
+          <button type="submit" class="btn btn-link link-danger" style="text-decoration:none;">Delete</button>
         </form>
       </td>
     </tr>
