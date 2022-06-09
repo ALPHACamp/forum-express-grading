@@ -42,5 +42,4 @@ const categoryController = {
       .catch(err => next(err))
   }
 }
-
 module.exports = categoryController
