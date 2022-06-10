@@ -68,6 +68,35 @@ const restaurantController = {
         res.render('dashboard', { restaurant: restaurant.toJSON() })
       })
       .catch(err => next(err))
+  },
+  getFeeds: (req, res, next) => {
+    return Promise.all([
+      Restaurant.findAll({
+        limit: 10,
+        order: [['createdAt', 'DESC']],
+        include: [Category],
+        raw: true,
+        nest: true
+      }),
+      Comment.findAll({
+        limit: 10,
+        order: [['createdAt', 'DESC']],
+        include: [User, Restaurant],
+        raw: true,
+        nest: true
+      })
+    ])
+      .then(([restaurants, comments]) => {
+        const data = restaurants.map(r => ({
+          ...r,
+          description: r.description.split('.', 4).toString() + '. . .'
+        }))
+        res.render('feeds', {
+          restaurants: data,
+          comments
+        })
+      })
+      .catch(err => next(err))
   }
 }
 module.exports = restaurantController
