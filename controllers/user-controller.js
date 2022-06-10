@@ -1,7 +1,6 @@
 const bcrypt = require('bcryptjs')
 const { User, Comment, Restaurant } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
-const { getUser } = require('../helpers/auth-helpers')
 
 const userController = {
   signUpPage: (req, res) => {
@@ -52,10 +51,8 @@ const userController = {
     })
       .then(user => {
         if (!user) throw new Error("User didn't exist!")
-        const currentUser = getUser(req)
         res.render('users/profile', {
-          user: user.toJSON(), // 點擊任意使用者連結所獲得的資料
-          currentUser // 現在登入的使用者資料
+          user: user.toJSON()
         })
       })
       .catch(err => next(err))

@@ -23,8 +23,8 @@
               {{/if}}</strong>
           </p>
           {{!-- 當點擊使用者的連結時，判斷是否為目前登入者本人，是的話可以編輯 profile 資料頁面，否則就只能瀏覽而已  --}}
-          {{#ifCond user.id currentUser.id}}
-          <a class="btn btn-primary" href="/users/{{currentUser.id}}/edit">edit</a>
+          {{#ifCond user.id loginUser.id}}
+          <a class="btn btn-primary" href="/users/{{user.id}}/edit">edit</a>
           {{/ifCond}}
         </div>
       </div>
