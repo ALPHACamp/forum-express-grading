@@ -9,6 +9,7 @@ const restaurantController = {
       const limit = Number(req.query.limit) || DEFAULT_LIMIT
       const offset = getOffset(limit, page)
       const categoryId = req.query.categoryId || ''
+      console.log(categoryId)
       const restaurants = await Restaurant.findAndCountAll({
         raw: true,
         nest: true,
@@ -21,7 +22,7 @@ const restaurantController = {
       const data = await restaurants.rows.map(restaurant => ({
         ...restaurant, description: restaurant.description.substring(0, 50) + '...'
       }))
-      return res.render('restaurants', { restaurants: data, categories, categoryId, pagination: getPagination(limit, page, restaurants.count) })
+      return res.render('restaurants', { restaurants: data, categories, categoryId: categoryId === '' ? '' : Number(categoryId), pagination: getPagination(limit, page, restaurants.count) })
     } catch (error) {
       next(error)
     }
