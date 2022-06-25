@@ -1,22 +1,56 @@
 <div class="row">
   <div class="col-md-12">
-    <h1>{{restaurant.name}}</h1>
-    <p>[{{restaurant.Category.name}}]</p>
+    <h1>
+      {{restaurant.name}}
+    </h1>
+    <p>
+      [
+      {{#ifCond restaurant.Category.name null}}
+        No Category
+      {{else}}
+        {{restaurant.Category.name}}
+      {{/ifCond}}
+      ]
+    </p>
   </div>
   <div class="col-md-4">
-    <img class="img-responsive center-block" src="{{restaurant.image}}" style="width: 250px; margin-bottom: 25px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
-    <br>
+    <img
+      class="img-responsive center-block"
+      src="{{restaurant.image}}"
+      style="width: 250px; margin-bottom: 25px; transition: opacity 0.5s; opacity:0;"
+      onload="this.style.opacity=1;"
+    />
+    <br />
     <div class="well">
       <ul class="list-unstyled">
-        <li><strong>Opening Hour:</strong> {{restaurant.openingHours}}</li>
-        <li><strong>Tel:</strong> {{restaurant.tel}}</li>
-        <li><strong>Address:</strong> {{restaurant.address}}</li>
+        <li>
+          <strong>
+            Opening Hour:
+          </strong>
+          {{restaurant.openingHours}}
+        </li>
+        <li>
+          <strong>
+            Tel:
+          </strong>
+          {{restaurant.tel}}
+        </li>
+        <li>
+          <strong>
+            Address:
+          </strong>
+          {{restaurant.address}}
+        </li>
       </ul>
     </div>
   </div>
   <div class="col-md-8">
-    <p style="white-space: break-spaces;">{{restaurant.description}}</p>
+    <p style="white-space: break-spaces;">
+      {{restaurant.description}}
+    </p>
   </div>
-  <hr>
+  <hr />
 </div>
-<a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
+<a class="btn btn-outline-secondary" href="javascript:history.back()">
+  Back
+</a>

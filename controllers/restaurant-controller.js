@@ -31,6 +31,7 @@ const restaurantController = {
       const restId = req.params.id
       const restaurant = await Restaurant.findByPk(restId, { include: [Category] })
       if (!restaurant) throw new Error("Restaurant didn't exist!")
+      console.log(restaurant.Category)
       await restaurant.increment('viewCounts')
       return res.render('restaurant', { restaurant: restaurant.toJSON() })
     } catch (error) {
