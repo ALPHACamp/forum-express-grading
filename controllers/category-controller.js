@@ -1,4 +1,4 @@
-const { Category } = require('../models')
+const { Category, Restaurant } = require('../models')
 const categoryController = {
   getCategories: async (req, res, next) => {
     try {
@@ -38,8 +38,11 @@ const categoryController = {
   deleteCategory: async (req, res, next) => {
     try {
       const categoryId = req.params.id
+      if (categoryId === '0') throw new Error('Cannot delete default category')
       const category = await Category.findByPk(categoryId)
       if (!category) throw new Error("Category didn't exist!")
+      const restaurants = await Restaurant.findAll({ where: { categoryId } })
+      await restaurants.forEach(restaurant => restaurant.update({ categoryId: 0 }))
       await category.destroy()
       req.flash('success_messages', 'Category was successfully deleted')
       return res.redirect('/admin/categories')
