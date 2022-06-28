@@ -1,8 +1,10 @@
 const express = require('express')
 const router = express.Router()
-const restaurantController = require('../controllers/restaurant-controller')
+const restController = require('../controllers/restaurant-controller')
+const admin = require('./modules/admin') // 新增這行，載入 admin.js
 
-router.get('/restaurants', restaurantController.getRestaurants)
+router.use('/admin', admin) // 新增這行
+router.get('/restaurants', restController.getRestaurants)
 router.use('/', (req, res) => res.redirect('/restaurants'))
 
 module.exports = router
