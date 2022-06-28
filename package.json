@@ -19,6 +19,8 @@
     "express-handlebars": "^5.3.3",
     "express-session": "^1.17.2",
     "mysql2": "^2.2.5",
+    "passport": "^0.4.1",
+    "passport-local": "^1.0.0",
     "sequelize": "^6.21.1",
     "sequelize-cli": "^6.2.0"
   },
