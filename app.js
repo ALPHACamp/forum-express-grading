@@ -2,8 +2,10 @@ const express = require('express')
 const handlebars = require('express-handlebars') // 引入 express-handlebars
 const session = require('express-session')
 const flash = require('connect-flash')
+
 const routes = require('./routes')
 const passport = require('./config/passport')
+const { getUser } = require('./helpers/auth-helper')
 
 const app = express()
 const port = process.env.PORT || 3000
@@ -25,7 +27,7 @@ app.use(flash())
 app.use((req, res, next) => {
   res.locals.success_messages = req.flash('success_messages')
   res.locals.error_messages = req.flash('error_messages') // 設定 warning_msg 訊息
-  res.locals.user = req.user // 加這行
+  res.locals.user = getUser(req) // 加這行
   next()
 })
 app.use(routes)
