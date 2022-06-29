@@ -26,7 +26,7 @@ const userController = {
       .catch(err => next(err))
   },
   signInPage: (req, res) => {
-    res.render('signIn')
+    res.render('signin')
   },
   signIn: (req, res) => {
     req.flash('success_messages', '成功登入！')
