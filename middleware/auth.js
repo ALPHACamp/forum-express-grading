@@ -10,7 +10,7 @@ const authenticatedAdmin = (req, res, next) => {
     if (getUser(req).isAdmin) return next()
     res.redirect('/')
   }
-  res.redirect('/login')
+  res.redirect('/signin')
 }
 
 module.exports = {
