@@ -7,7 +7,7 @@ const methodOverride = require('method-override')
 
 const routes = require('./routes')
 const passport = require('./config/passport')
-const { getUser } = require('./helpers/auth-helper')
+const { getUser } = require('./helpers/auth-helpers')
 const handlebarsHelpers = require('./helpers/handlebars-helper')
 
 if (process.env.NODE_ENV !== 'production') {
