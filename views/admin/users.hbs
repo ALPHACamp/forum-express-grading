@@ -28,8 +28,7 @@
       <td>{{#if this.isAdmin}}admin{{else}}user{{/if}}</td>
       <td>
         <form action="/admin/users/{{this.id}}?_method=PATCH" method="POST" style="display: inline;">
-          <button type="submit" class="btn btn-link" onclick="return confirm(`確定要更改 {{ this.name }} 的權限嗎？`)">set as
-            {{#if this.isAdmin}}user{{else}}admin{{/if}}</button>
+          <button type="submit" class="btn btn-link">set as {{#if this.isAdmin}}user{{else}}admin{{/if}}</button>
         </form>
       </td>
     </tr>
