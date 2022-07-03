@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs')
 const { User } = require('../models')
+const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const userController = {
   signUpPage: (req, res) => {
@@ -33,6 +34,41 @@ const userController = {
     req.flash('success_messages', '登出成功！')
     req.logout()
     res.redirect('/signin')
+  },
+  getUser: async (req, res, next) => {
+    try {
+      const id = req.params.id
+      const user = await User.findByPk(id, { raw: true })
+      if (!user) throw new Error('使用者不存在！')
+      return res.render('users/profile', { user })
+    } catch (error) {
+      next(error)
+    }
+  },
+  editUser: async (req, res, next) => {
+    try {
+      const id = req.params.id
+      const user = await User.findByPk(id, { raw: true })
+      if (!user) throw new Error('使用者不存在！')
+      return res.render('users/edit', { user })
+    } catch (error) {
+      next(error)
+    }
+  },
+  putUser: async (req, res, next) => {
+    try {
+      const id = req.params.id
+      const { name } = req.body
+      const { file } = req
+      const user = await User.findByPk(id)
+      const filePath = await imgurFileHandler(file)
+      if (!user) throw new Error('使用者不存在！')
+      await user.update({ name: name || user.name, image: filePath || user.image })
+      req.flash('success_messages', '使用者資料編輯成功')
+      res.redirect(`/users/${req.params.id}`)
+    } catch (error) {
+      next(error)
+    }
   }
 }
 
