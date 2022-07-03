@@ -1,0 +1,75 @@
+const bcrypt = require('bcryptjs')
+const { User } = require('../models')
+const { imgurFileHandler } = require('../helpers/file-helpers')
+
+const userController = {
+  signUpPage: (req, res) => {
+    res.render('signup')
+  },
+  signUp: async (req, res, next) => {
+    try {
+      if (req.body.password !== req.body.passwordCheck) throw new Error('Passwords do not match!')
+      const user = await User.findOne({ where: { email: req.body.email } })
+      if (user) throw new Error('Email already exists!')
+      const hash = await bcrypt.hash(req.body.password, 10)
+      await User.create({
+        name: req.body.name,
+        email: req.body.email,
+        password: hash
+      })
+      req.flash('success_messages', '成功註冊帳號！')
+      res.redirect('/signin')
+    } catch (error) {
+      next(error)
+    }
+  },
+  signInPage: (req, res) => {
+    res.render('signin')
+  },
+  signIn: (req, res) => {
+    req.flash('success_messages', '成功登入！')
+    res.redirect('/restaurants')
+  },
+  logout: (req, res) => {
+    req.flash('success_messages', '登出成功！')
+    req.logout()
+    res.redirect('/signin')
+  },
+  getUser: async (req, res, next) => {
+    try {
+      const id = req.params.id
+      const user = await User.findByPk(id, { raw: true })
+      if (!user) throw new Error('使用者不存在！')
+      return res.render('users/profile', { user })
+    } catch (error) {
+      next(error)
+    }
+  },
+  editUser: async (req, res, next) => {
+    try {
+      const id = req.params.id
+      const user = await User.findByPk(id, { raw: true })
+      if (!user) throw new Error('使用者不存在！')
+      return res.render('users/edit', { user })
+    } catch (error) {
+      next(error)
+    }
+  },
+  putUser: async (req, res, next) => {
+    try {
+      const id = req.params.id
+      const { name } = req.body
+      const { file } = req
+      const user = await User.findByPk(id)
+      const filePath = await imgurFileHandler(file)
+      if (!user) throw new Error('使用者不存在！')
+      await user.update({ name: name || user.name, image: filePath || user.image })
+      req.flash('success_messages', '使用者資料編輯成功')
+      res.redirect(`/users/${req.params.id}`)
+    } catch (error) {
+      next(error)
+    }
+  }
+}
+
+module.exports = userController
