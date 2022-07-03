@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs')
-const { User } = require('../models')
+const { User, Restaurant, Comment } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const userController = {
@@ -38,8 +38,9 @@ const userController = {
   getUser: async (req, res, next) => {
     try {
       const id = req.params.id
-      const user = await User.findByPk(id, { raw: true })
+      let user = await User.findByPk(id, { nest: true, include: [{ model: Comment, include: Restaurant }] })
       if (!user) throw new Error('使用者不存在！')
+      user = await user.toJSON()
       return res.render('users/profile', { user })
     } catch (error) {
       next(error)
