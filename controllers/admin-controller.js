@@ -21,7 +21,7 @@ const adminController = {
     }
 
     const { file } = req
-    imgurFileHandler(file)
+    return imgurFileHandler(file)
       .then(filePath => Restaurant.create({
         name,
         tel,
@@ -37,7 +37,7 @@ const adminController = {
       .catch(err => next(err))
   },
   getRestaurant: (req, res, next) => {
-    Restaurant.findByPk(req.params.id, {
+    return Restaurant.findByPk(req.params.id, {
       raw: true
     })
       .then(restaurant => {
@@ -47,7 +47,7 @@ const adminController = {
       .catch(err => next(err))
   },
   editRestaurant: (req, res, next) => {
-    Restaurant.findByPk(req.params.id, {
+    return Restaurant.findByPk(req.params.id, {
       raw: true
     })
       .then(restaurant => {
@@ -63,7 +63,7 @@ const adminController = {
     }
 
     const { file } = req
-    Promise.all([
+    return Promise.all([
       Restaurant.findByPk(req.params.id),
       imgurFileHandler(file)
     ])
