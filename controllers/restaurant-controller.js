@@ -1,7 +1,7 @@
 const { Restaurant, Category } = require('../models')
 
 const restaurantController = {
-  getRestaurants: (req, res) => {
+  getRestaurants: (req, res, next) => {
     return Restaurant.findAll({
       include: Category,
       raw: true,
@@ -24,8 +24,8 @@ const restaurantController = {
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!") //  如果找不到，回傳錯誤訊息，後面不執行
-        
-        return res.render('restaurant', restaurant)
+
+        return res.render('restaurant', { restaurant })
       })
       .catch(err => next(err))
   }
