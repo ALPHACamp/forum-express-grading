@@ -3,18 +3,19 @@ const { imgurFileHelper } = require('../helpers/file-helpers')
 
 const adminController = {
   getRestaurants: (req, res, next) => {
-    Restaurant.findAll({ 
+    Restaurant.findAll({
       raw: true,
       nest: true,
       include: [Category]
-     })
+    })
       .then(restaurants => {
-        res.render('admin/restaurants', { restaurants })})
+        res.render('admin/restaurants', { restaurants })
+      })
       .catch(err => next(err))
   },
   createRestaurant: (req, res, next) => {
     Category.findAll({ raw: true })
-      .then(categories => res.render('admin/create-restaurant', { categories }))    
+      .then(categories => res.render('admin/create-restaurant', { categories }))
   },
   postRestaurant: (req, res, next) => {
     const { name, tel, address, openingHours, description, categoryId } = req.body // 從 req.body 拿出表單裡的資料
@@ -51,9 +52,9 @@ const adminController = {
   },
   editRestaurant: (req, res, next) => {
     Promise.all([
-      Restaurant.findByPk(req.params.id, {      raw: true    }),
+      Restaurant.findByPk(req.params.id, { raw: true }),
       Category.findAll({ raw: true })
-    ])    
+    ])
       .then(([restaurant, categories]) => {
         if (!restaurant) throw new Error("Restaurant didn't exist!") //  如果找不到，回傳錯誤訊息，後面不執行
         res.render('admin/edit-restaurant', { restaurant, categories })
@@ -119,7 +120,7 @@ const adminController = {
       })
       .then(() => {
         req.flash('success_messages', '使用者權限變更成功')
-        return res.redirect('/admin/users')
+        res.redirect('/admin/users')
       })
       .catch(err => next(err))
   }
