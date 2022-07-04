@@ -9,12 +9,12 @@ const admin = require('./modules/admin')
 const restController = require('../controllers/restaurant-controller')
 const userController = require('../controllers/user-controller')
 
-const { authenticated } = require('../middleware/auth')
+const { authenticated, authenticatedAdmin } = require('../middleware/auth')
 const { generalErrorHandler } = require('../middleware/error-handler')
 
 // Router settings
 // admins
-router.use('/admin', admin)
+router.use('/admin', authenticatedAdmin, admin)
 // users
 router.get('/logout', userController.logout)
 router.get('/signup', userController.signUpPage)
