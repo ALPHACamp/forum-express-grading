@@ -9,13 +9,26 @@ const userController = {
   signUpPage: (req, res) => {
     res.render('signup')
   },
-  signUp: async (req, res) => {
-    await User.create({
-      name: req.body.name,
-      email: req.body.email,
-      password: bcrypt.hashSync(req.body.password, 10)
-    })
-    return res.redirect('/signin')
+  signUp: async (req, res, next) => {
+    try {
+      const { name, email, password, passwordCheck } = req.body
+
+      // Check if password equals passwordCheck
+      if (password !== passwordCheck) throw new Error('Passwords does not match Password Check!')
+
+      // Check if email already signed up
+      const userFound = await User.findOne({ where: { email } })
+      if (userFound) throw new Error('Email already exists!')
+
+      // Create new user
+      await User.create({
+        name,
+        email,
+        password: bcrypt.hashSync(password, 10)
+      })
+      req.flash('success_messages', 'Sign up succeed!')
+      return res.redirect('/signin')
+    } catch (err) { next(err) }
   }
 }
 
