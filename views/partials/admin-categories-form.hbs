@@ -1,0 +1,12 @@
+<form action="/admin/categories/{{#if category}}{{category.id}}/edit?_method=PUT{{/if}}" method="POST" class="row mb-4">
+  <div class="col-2">
+    <input class="form-control" type="text" name="name" id="name" placeholder="Enter name" value="{{category.name}}"
+      required>
+  </div>
+  <div class="col-2">
+    <button type="submit" class="btn {{#if category}}btn-warning{{else}}btn-success{{/if}}">
+      {{#if category}}Update{{else}}Create{{/if}}
+    </button>
+    {{#if category}}<a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>{{/if}}
+  </div>
+</form>

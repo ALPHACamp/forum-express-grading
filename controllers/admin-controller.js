@@ -16,6 +16,7 @@ const adminController = {
   createRestaurant: (req, res, next) => {
     Category.findAll({ raw: true })
       .then(categories => res.render('admin/create-restaurant', { categories }))
+      .catch(err => next(err))
   },
   postRestaurant: (req, res, next) => {
     const { name, tel, address, openingHours, description, categoryId } = req.body // 從 req.body 拿出表單裡的資料
