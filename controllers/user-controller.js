@@ -6,9 +6,7 @@ const { User } = db
 
 // User Controller
 const userController = {
-  signUpPage: (req, res) => {
-    res.render('signup')
-  },
+  signUpPage: (req, res) => res.render('signup'),
   signUp: async (req, res, next) => {
     try {
       const { name, email, password, passwordCheck } = req.body
@@ -29,6 +27,16 @@ const userController = {
       req.flash('success_messages', 'Sign up succeed!')
       return res.redirect('/signin')
     } catch (err) { next(err) }
+  },
+  signInPage: (req, res) => res.render('signin'),
+  signIn: (req, res) => {
+    req.flash('success_messages', 'Sign in succeed!')
+    res.redirect('/restaurants')
+  },
+  logout: (req, res) => {
+    req.flash('success_messages', 'Log out succeed!')
+    req.logout()
+    res.redirect('/signin')
   }
 }
 
