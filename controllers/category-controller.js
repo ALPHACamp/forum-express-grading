@@ -33,6 +33,19 @@ const categoryController = {
         res.redirect('/admin/categories') // 新增完成後導回後台首頁
       })
       .catch(err => next(err))
+  },
+  deleteCategory: (req, res, next) => {
+    return Category.findByPk(req.params.id)
+      .then(category => {
+        if (!category) throw new Error("Category didn't exist!")
+
+        return category.destroy()
+      })
+      .then(() => {
+        req.flash('success_messages', 'Category was successfully deleted') // 在畫面顯示成功提示
+        res.redirect('/admin/categories') // 新增完成後導回後台首頁
+      })
+      .catch(err => next(err))
   }
 }
 
