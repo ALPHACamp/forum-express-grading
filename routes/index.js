@@ -3,7 +3,9 @@ const router = express.Router()
 
 // import controller modules
 const restaurantController = require('../controllers/restaurant-controller')
+const admin = require('./modules/admin')
 
+router.use('/admin', admin)
 /**
  * as server gets request '/restaurants'
  * this request will pass to the function 'getRestaurants' which is in object restaurantController
