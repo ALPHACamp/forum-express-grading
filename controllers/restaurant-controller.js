@@ -18,9 +18,11 @@ const restaurantController = {
         offset
       })
       const categories = await Category.findAll({ raw: true })
+      const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
       const data = await restaurants.rows.map(restaurant => ({
         ...restaurant,
-        description: restaurant.description.substring(0, 50) + '...'
+        description: restaurant.description.substring(0, 50) + '...',
+        isFavorited: favoritedRestaurantsId.includes(restaurant.id)
       }))
       return res.render('restaurants', { restaurants: data, categories, categoryId: categoryId === '' ? '' : Number(categoryId), pagination: getPagination(limit, page, restaurants.count) })
     } catch (error) {
@@ -33,12 +35,16 @@ const restaurantController = {
       const restaurant = await Restaurant.findByPk(restId, {
         include: [
           Category,
-          { model: Comment, include: User }
+          { model: Comment, include: User },
+          { model: User, as: 'FavoritedUsers' }
         ]
       })
       if (!restaurant) throw new Error("Restaurant didn't exist!")
+      const isFavorited = restaurant.FavoritedUsers.some(
+        favoriteRestaurant => favoriteRestaurant.id === req.user.id
+      )
       await restaurant.increment('viewCounts')
-      return res.render('restaurant', { restaurant: restaurant.toJSON() })
+      return res.render('restaurant', { restaurant: restaurant.toJSON(), isFavorited })
     } catch (error) {
       next(error)
     }
