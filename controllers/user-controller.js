@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs')
-const { User, Restaurant, Comment, Favorite } = require('../models')
+const { User, Restaurant, Comment, Favorite, Like } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const userController = {
@@ -83,7 +83,7 @@ const userController = {
       })
       if (!restaurant) throw new Error("Restaurant didn't exist!")
       if (favorite) throw new Error('You have favorited this restaurant!')
-      // restaurant.increment('favoriteCounts')
+      restaurant.increment('favoriteCounts')
       await Favorite.create({
         userId: req.user.id,
         restaurantId
@@ -105,8 +105,44 @@ const userController = {
       })
       if (!restaurant) throw new Error("Restaurant didn't exist!")
       if (!favorite) throw new Error("You haven't favorited this restaurant")
-      // restaurant.decrement('favoriteCounts')
+      restaurant.decrement('favoriteCounts')
       await favorite.destroy()
+      return res.redirect('back')
+    } catch (error) {
+      next(error)
+    }
+  },
+  addLike: async (req, res, next) => {
+    try {
+      const { restaurantId } = req.params
+      const restaurant = await Restaurant.findByPk(restaurantId)
+      const like = await Like.findOne({
+        where: {
+          userId: req.user.id,
+          restaurantId
+        }
+      })
+      if (!restaurant) throw new Error("Restaurant didn't exist!")
+      if (like) throw new Error('You have liked this restaurant!')
+      await Like.create({
+        userId: req.user.id,
+        restaurantId
+      })
+      return res.redirect('back')
+    } catch (error) {
+      next(error)
+    }
+  },
+  removeLike: async (req, res, next) => {
+    try {
+      const like = await Like.findOne({
+        where: {
+          userId: req.user.id,
+          restaurantId: req.params.restaurantId
+        }
+      })
+      if (!like) throw new Error("You haven't liked this restaurant")
+      await like.destroy()
       return res.redirect('back')
     } catch (error) {
       next(error)

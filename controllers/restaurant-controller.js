@@ -18,11 +18,13 @@ const restaurantController = {
         offset
       })
       const categories = await Category.findAll({ raw: true })
-      const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
+      const favoritedRestaurantsId = req.user?.FavoritedRestaurants ? req.user.FavoritedRestaurants.map(fr => fr.id) : []
+      const likedRestaurantsId = req.user?.LikedRestaurants ? req.user.LikedRestaurants.map(lr => lr.id) : []
       const data = await restaurants.rows.map(restaurant => ({
         ...restaurant,
         description: restaurant.description.substring(0, 50) + '...',
-        isFavorited: favoritedRestaurantsId.includes(restaurant.id)
+        isFavorited: favoritedRestaurantsId.includes(restaurant.id),
+        isLiked: likedRestaurantsId.includes(restaurant.id)
       }))
       return res.render('restaurants', { restaurants: data, categories, categoryId: categoryId === '' ? '' : Number(categoryId), pagination: getPagination(limit, page, restaurants.count) })
     } catch (error) {
@@ -36,15 +38,19 @@ const restaurantController = {
         include: [
           Category,
           { model: Comment, include: User },
-          { model: User, as: 'FavoritedUsers' }
+          { model: User, as: 'FavoritedUsers' },
+          { model: User, as: 'LikedUsers' }
         ]
       })
       if (!restaurant) throw new Error("Restaurant didn't exist!")
       const isFavorited = restaurant.FavoritedUsers.some(
         favoriteRestaurant => favoriteRestaurant.id === req.user.id
       )
+      const isLiked = restaurant.LikedUsers.some(
+        likeRestaurant => likeRestaurant.id === req.user.id
+      )
       await restaurant.increment('viewCounts')
-      return res.render('restaurant', { restaurant: restaurant.toJSON(), isFavorited })
+      return res.render('restaurant', { restaurant: restaurant.toJSON(), isFavorited, isLiked })
     } catch (error) {
       next(error)
     }
