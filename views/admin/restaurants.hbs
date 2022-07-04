@@ -29,7 +29,8 @@
           </a>
         </button>
         <form action="/admin/restaurants/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
-          <button type="submit" class="btn btn-link link-danger">Delete</button>
+          <button type="submit" class="btn btn-link link-danger"
+            onclick="return confirm(`Are you sure to delete {{ this.name }} ?`)">Delete</button>
         </form>
       </td>
     </tr>
