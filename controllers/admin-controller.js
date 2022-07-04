@@ -9,7 +9,7 @@ const adminController = {
       .catch(err => next(err))
   },
   getRestaurant: (req, res, next) => {
-    Restaurant.findByPk(req.params.id, { // find a restaurant by primary key
+    Restaurant.findByPk(req.params.rest_id, { // find a restaurant by primary key
       raw: true // transform to plain object
     })
       .then(restaurant => {
@@ -36,6 +36,37 @@ const adminController = {
         res.redirect('/admin/restaurants') // 新增完成後導回後台首頁
       })
       .catch(err => next(err))
+  },
+  editRestaurant: (req, res, next) => {
+    Restaurant.findByPk(req.params.rest_id, { // find a restaurant by primary key
+      raw: true
+    })
+      .then(restaurant => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!") // didnot find a restaurant
+        else res.render('admin/edit-restaurant', { restaurant }) // find a restaurant successfully
+      })
+      .catch(err => next(err))
+  },
+  putRestaurant: (req, res, next) => {
+    const { name, tel, address, openingHours, description } = req.body
+    if (!name) throw new Error('Restaurant name is required!')
+    Restaurant.findByPk(req.params.rest_id)
+      .then(restaurant => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        return restaurant.update({
+          name,
+          tel,
+          address,
+          openingHours,
+          description
+        })
+      })
+      .then(() => {
+        req.flash('success_messages', 'restaurant was updated successfully')
+        res.redirect('/admin/restaurants')
+      })
+      .catch(err => next(err))
   }
+
 }
 module.exports = adminController
