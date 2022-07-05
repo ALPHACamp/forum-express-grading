@@ -38,6 +38,35 @@ const restaurantController = {
       })
       .catch(err => next(err))
   },
+  getFeeds: (req, res, next) => {
+    const RESTAURANT_LIMIT = 10
+    const COMMIT_LIMIT = 15
+
+    return Promise.all([
+      Restaurant.findAll({
+        limit: RESTAURANT_LIMIT,
+        order: [['createdAt', 'DESC']],
+        include: [Category],
+        raw: true,
+        nest: true
+      }),
+      Comment.findAll({
+        limit: COMMIT_LIMIT,
+        order: [['createdAt', 'DESC']],
+        include: [Restaurant, User],
+        raw: true,
+        nest: true
+      })
+    ])
+      .then(([restaurants, comments]) => {
+        if (!restaurants.length || !comments.length) {
+          throw new Error("Content isn't available.")
+        }
+
+        res.render('feeds', { restaurants, comments })
+      })
+      .catch(err => next(err))
+  },
   getRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
       include: [
