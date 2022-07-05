@@ -1,6 +1,7 @@
 const express = require('express')
 const handlebars = require('express-handlebars')
 const session = require('express-session')
+const passport = require('./config/passport')
 const flash = require('connect-flash')
 const routes = require('./routes')
 
@@ -15,6 +16,8 @@ app.set('view engine', 'hbs')
 
 app.use(express.urlencoded({ extended: true }))
 app.use(session({ secret: SESSION_SECRET, resave: false, saveUninitialized: false }))
+app.use(passport.initialize()) // init passport
+app.use(passport.session()) // turn on session function
 app.use(flash())
 
 app.use((req, res, next) => {
