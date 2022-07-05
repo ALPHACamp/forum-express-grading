@@ -33,7 +33,10 @@ passport.serializeUser((user, done) => {
 
 passport.deserializeUser((id, done) => {
   User.findByPk(id)
-    .then(user => done(null, user))
+    .then(user => {
+      user = user.toJSON()
+      return done(null, user)
+    })
 })
 
 module.exports = passport
