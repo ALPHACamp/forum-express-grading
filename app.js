@@ -1,6 +1,6 @@
 const path = require('path')
 const express = require('express')
-const handlebars = require('express-handlebars')
+const { engine } = require('express-handlebars')
 const flash = require('connect-flash')
 const methodOverride = require('method-override')
 const session = require('express-session')
@@ -16,7 +16,7 @@ const port = process.env.PORT || 3000
 
 require('./models/index')
 
-app.engine('handlebars', handlebars({ defaultLayout: 'main', helpers: handlebarsHelpers }))
+app.engine('handlebars', engine({ defaultLayout: 'main', helpers: handlebarsHelpers }))
 app.set('view engine', 'handlebars')
 
 app.use(express.urlencoded({ extended: true }))
