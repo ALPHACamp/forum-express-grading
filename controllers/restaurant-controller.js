@@ -60,13 +60,7 @@ const restaurantController = {
         nest: true
       })
     ])
-      .then(([restaurants, comments]) => {
-        if (!restaurants.length || !comments.length) {
-          throw new Error("Content isn't available.")
-        }
-
-        res.render('feeds', { restaurants, comments })
-      })
+      .then(([restaurants, comments]) => res.render('feeds', { restaurants, comments }))
       .catch(err => next(err))
   },
   getRestaurant: (req, res, next) => {
