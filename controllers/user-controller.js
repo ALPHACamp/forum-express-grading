@@ -7,11 +7,11 @@ const userController = {
     res.render('signup')
   },
   signUp: (req, res, next) => {
-    if (req.body.password !== req.body.passwordCheck) throw new Error('密碼與密碼確認不相符！')
+    if (req.body.password !== req.body.passwordCheck) throw new Error('密碼 或 email 不正確！')
 
     User.findOne({ where: { email: req.body.email } })
       .then(user => {
-        if (user) throw new Error('此 email 已經被使用！')
+        if (user) throw new Error('密碼 或 email 不正確！')
         return bcrypt.hash(req.body.password, 10)
       })
       .then(hash => User.create({
