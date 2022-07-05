@@ -1,5 +1,5 @@
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
-const { Restaurant, Category } = require('../models')
+const { Restaurant, Category, User, Comment } = require('../models')
 
 const restaurantController = {
   getRestaurants: (req, res, next) => {
@@ -40,10 +40,20 @@ const restaurantController = {
   },
   getRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
-      include: Category
+      include: [
+        Category,
+        {
+          model: Comment,
+          include: User
+        }
+      ],
+      order: [
+        [{ model: Comment }, 'createdAt', 'DESC']
+      ]
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!") //  如果找不到，回傳錯誤訊息，後面不執行
+        console.log(restaurant.Comments)
 
         return restaurant.increment('viewCounts', { by: 1 })
       })
