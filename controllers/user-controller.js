@@ -12,6 +12,7 @@ const userController = {
         email: req.body.email,
         password: hash
       }))
+      // cannot redirect to signin
       .then(() => {
         res.redirect('/signin')
       })
