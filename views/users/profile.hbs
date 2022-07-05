@@ -1,0 +1,12 @@
+<div class="row">
+  <div class="col-md-4">
+    <img class="img-responsive center-block" src="{{user.image}}"
+      style="width: 100%; margin-bottom: 25px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">    
+  </div>
+  <div class="col-md-auto">
+    <h5>{{user.name}}</h5>
+    <p>{{user.email}}</p>
+    <br>
+    <a href="/users/{{user.id}}/edit" class="btn btn-primary">Edit</a>
+  </div>
+</div>

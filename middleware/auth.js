@@ -17,7 +17,16 @@ const authenticatedAdmin = (req, res, next) => {
   res.redirect('/signin')
 }
 
+const authenticatedOwner = (req, res, next) => {
+  if (helpers.getUser(req).id === Number(req.params.id)) {
+    return next()
+  }
+  req.flash('error_messages', '只有帳號擁有者才能存取。')
+  res.redirect('back')
+}
+
 module.exports = {
   authenticated,
-  authenticatedAdmin
+  authenticatedAdmin,
+  authenticatedOwner
 }
