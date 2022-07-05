@@ -5,6 +5,7 @@ const router = express.Router()
 const admin = require('./modules/admin')
 const restaurantController = require('../controllers/restaurant-controller')
 const userController = require('../controllers/user-controller')
+const { generalErrorHandler } = require('../middleware/error-handler')
 
 router.use('/admin', admin)
 router.get('/signup', userController.signUpPage)
@@ -19,5 +20,6 @@ router.get('/restaurants', restaurantController.getRestaurants)
  * if all routers above are not allow to get into, this fallback router is the only one to enter
  */
 router.use('/', (req, res) => res.redirect('/restaurants'))
+router.use('/', generalErrorHandler)
 
 module.exports = router
