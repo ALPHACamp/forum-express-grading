@@ -1,7 +1,8 @@
 // FilePath: controllers/admin-controllers.js
 // Include modules
 const { Restaurant } = require('../models')
-const { localFileHandler } = require('../helpers/file-helpers')
+const { imgurFileHandler } = require('../helpers/file-helpers')
+const fileHandler = imgurFileHandler
 
 // Controller
 const adminController = {
@@ -22,7 +23,7 @@ const adminController = {
 
       // Create new restaurant
       const { file } = req // Get image file
-      const filePath = await localFileHandler(file)
+      const filePath = await fileHandler(file)
       await Restaurant.create({
         name,
         tel,
@@ -57,7 +58,7 @@ const adminController = {
 
       // Update restaurant info
       const { file } = req
-      const filePath = await localFileHandler(file)
+      const filePath = await fileHandler(file)
       const restaurant = await Restaurant.findByPk(req.params.id)
 
       if (!restaurant) throw new Error('Restaurant did not exist!')
