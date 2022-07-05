@@ -1,6 +1,7 @@
 // FilePath: controllers/admin-controllers.js
 // Include modules
 const { Restaurant } = require('../models')
+const { localFileHandler } = require('../helpers/file-helpers')
 
 // Controller
 const adminController = {
@@ -14,13 +15,22 @@ const adminController = {
     res.render('admin/create-restaurant')
   },
   postRestaurant: async (req, res, next) => {
-    const { name, tel, address, openingHours, description } = req.body
-
     try {
       // Check if required info got null
+      const { name, tel, address, openingHours, description } = req.body
       if (!name) throw new Error('Restaurant name is required!')
+
       // Create new restaurant
-      await Restaurant.create({ name, tel, address, openingHours, description })
+      const { file } = req // Get image file
+      const filePath = await localFileHandler(file)
+      await Restaurant.create({
+        name,
+        tel,
+        address,
+        openingHours,
+        description,
+        image: filePath || null
+      })
       req.flash('success_messages', 'restaurant was successfully created')
       res.redirect('/admin/restaurants')
     } catch (err) { next(err) }
@@ -41,12 +51,24 @@ const adminController = {
   },
   putRestaurant: async (req, res, next) => {
     try {
+      // Check if required info got null
       const { name, tel, address, openingHours, description } = req.body
       if (!name) throw new Error('Restaurant name is required!')
 
+      // Update restaurant info
+      const { file } = req
+      const filePath = await localFileHandler(file)
       const restaurant = await Restaurant.findByPk(req.params.id)
+
       if (!restaurant) throw new Error('Restaurant did not exist!')
-      restaurant.update({ name, tel, address, openingHours, description })
+      restaurant.update({
+        name,
+        tel,
+        address,
+        openingHours,
+        description,
+        image: filePath || restaurant.image
+      })
       req.flash('success_messages', 'Restaurant was successfully updated')
       res.redirect('/admin/restaurants')
     } catch (err) { next(err) }
