@@ -1,7 +1,33 @@
 const { Restaurant } = require('../models')
+const { User } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const adminController = {
+  patchUser: async (req, res, next) => {
+    try {
+      // find a user by primary key
+      const user = await User.findByPk(req.params.user_id)
+      await user.update({
+        isAdmin: user.isAdmin ? 0 : 1
+      })
+      const users = await User.findAll({
+        raw: true
+      })
+      res.render('admin/users', { users })
+    } catch (error) {
+      throw new Error('patchUser error')
+    }
+  },
+  getUsers: async (req, res, next) => {
+    try {
+      const users = await User.findAll({
+        raw: true
+      })
+      res.render('admin/users', { users })
+    } catch (error) {
+      throw new Error('getUsers error')
+    }
+  },
   getRestaurants: (req, res, next) => {
     Restaurant.findAll({
       raw: true
