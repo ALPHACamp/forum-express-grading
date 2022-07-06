@@ -22,15 +22,23 @@ const adminController = {
     if (!name) throw new Error('Restaurant name is required!')
 
     Restaurant.create({
-      name: name,
-      tel: tel,
-      address: address,
-      opening_hours: openingHours,
-      description: description
+      name,
+      tel,
+      address,
+      openingHours,
+      description
     })
       .then(() => {
         req.flash('success_messages', 'restaurant was successfully created')
         res.redirect('/admin/restaurants')
+      })
+      .catch(err => next(err))
+  },
+  getRestaurant: (req, res, next) => {
+    Restaurant.findByPk(req.params.id, { raw: true })
+      .then(restaurant => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        res.render('admin/restaurant', { restaurant })
       })
       .catch(err => next(err))
   }
