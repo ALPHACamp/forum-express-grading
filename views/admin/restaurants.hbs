@@ -19,29 +19,20 @@
         <td>{{this.name}}</td>
         <td>
           <button type='button' class='btn btn-link'>
-            <a
-              class='btn btn-link link-primary'
-              href='/admin/restaurants/{{this.id}}'
-            >
+            <a class='btn btn-link link-primary' href='/admin/restaurants/{{this.id}}'>
               Show
             </a>
           </button>
           <button type='button' class='btn btn-link'>
-            <a
-              class='btn btn-link link-primary'
-              href='/admin/restaurants/{{this.id}}/edit'
-            >
+            <a class='btn btn-link link-primary' href='/admin/restaurants/{{this.id}}/edit'>
               Edit
             </a>
           </button>
-          <form
-            action='/admin/restaurants/{{this.id}}?_method=DELETE'
-            method='POST'
-            style='display: inline;'
-          >
+          <form action='/admin/restaurants/{{this.id}}?_method=DELETE' method='POST' style='display: inline;'>
             <button
               type='submit'
               class='btn btn-link link-danger'
+              onclick='return confirm(`Are you sure to deleting {{this.name}} ?`)'
             >Delete</button>
           </form>
         </td>

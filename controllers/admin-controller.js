@@ -63,6 +63,18 @@ const adminController = {
       })
       .catch((error) => next(error))
   },
+  deleteRestaurant: (req, res, next) => {
+    // 1. find by primary key: id
+    // not necessary to change data into plain object, don't add { raw: true }
+    return Restaurant.findByPk(req.params.id)
+      .then((restaurant) => {
+        if (!restaurant) throw new Error(`This restaurant doesn't exist!`)
+        // 2. if this restaurant exists, destroy it
+        return restaurant.destroy()
+      })
+      .then(() => res.redirect('/admin/restaurants'))
+      .catch((error) => next(error))
+  },
 }
 
 module.exports = adminController
