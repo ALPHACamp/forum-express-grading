@@ -8,6 +8,7 @@ const admin = require('./modules/admin')
 // import controller modules
 const restaurantController = require('../controllers/restaurant-controller')
 const userController = require('../controllers/user-controller')
+const { authenticated } = require('../middleware/auth')
 const { generalErrorHandler } = require('../middleware/error-handler')
 
 router.use('/admin', admin)
@@ -17,10 +18,12 @@ router.get('/signin', userController.signInPage)
 router.post('/signin', passport.authenticate('local', { failureRedirect: 'signin', failureFlash: true }), userController.signIn)
 router.get('/logout', userController.logout)
 /**
- * as server gets request '/restaurants'
- * this request will pass to the function 'getRestaurants' which is in object restaurantController
+ * as server gets request `/restaurants`
+ * this request will go through middleware `authenticated`
+ * pass authentication process,
+ * this request will be passed to the function `getRestaurants` which is in object restaurantController
  */
-router.get('/restaurants', restaurantController.getRestaurants)
+router.get('/restaurants', authenticated, restaurantController.getRestaurants)
 /**
  * set fallback router
  * if all routers above are not allow to get into, this fallback router is the only one to enter
