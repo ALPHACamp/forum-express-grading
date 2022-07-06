@@ -23,6 +23,7 @@ router.get('/restaurants/:id/dashboard', authenticated, restController.getDashbo
 router.get('/restaurants/:id', authenticated, restController.getRestaurant)
 router.get('/restaurants', authenticated, restController.getRestaurants)
 
+router.get('/users/top', authenticated, userController.getTopUsers)
 router.get('/users/:id/edit', authenticated, authenticatedOwner, userController.editUser)
 router.put('/users/:id', upload.single('image'), authenticated, authenticatedOwner, userController.putUser)
 router.get('/users/:id', authenticated, userController.getUser)
