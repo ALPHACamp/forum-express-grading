@@ -23,4 +23,10 @@
   <textarea class="form-control" id="description" name="description" rows="3">{{restaurant.description}}</textarea>
 </div>
 
+<div class="form-row mb-3">
+  <label class="form-label" for="image">Image</label>
+  <input class="form-control form-control-file" type="file" name="image" id="image" value="{{restaurant.image}}">
+</div>
+
 <button type="submit" class="btn btn-primary">Submit</button>
+<a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
