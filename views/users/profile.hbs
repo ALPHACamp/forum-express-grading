@@ -16,12 +16,12 @@
       <div class="card-header"><strong>{{user.Comments.length}}</strong> 已評論餐廳</div>
       <div class="card-body">
         {{#if user.Comments.length}}
-        {{#each user.Comments}}
-        <a href="/restaurants/{{this.Restaurant.id}}"><img src="{{this.Restaurant.image}}" class="card-img-top m-3"
-            alt="..." style="width: 4rem; height: 4rem;"></a>
-        {{/each}}
+          {{#each user.Comments}}
+            <a href="/restaurants/{{this.Restaurant.id}}"><img src="{{this.Restaurant.image}}" class="card-img-top m-3"
+                alt="..." style="width: 4rem; height: 4rem;"></a>
+          {{/each}}
         {{else}}
-        <p>未有評論</p>
+          <p>未有評論</p>
         {{/if}}
       </div>
     </div>
