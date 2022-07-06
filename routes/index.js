@@ -2,20 +2,24 @@ const express = require('express')
 const router = express.Router()
 // passport will authenticate user's identity in the router post('/signin')
 // if user pass this authentication, this user's request will be sent to controller 'signIn'
-const passport =  require('../config/passport')
+const passport = require('../config/passport')
 const admin = require('./modules/admin')
 
 // import controller modules
 const restaurantController = require('../controllers/restaurant-controller')
 const userController = require('../controllers/user-controller')
-const { authenticated } = require('../middleware/auth')
+const { authenticated, authenticatedAdmin } = require('../middleware/auth')
 const { generalErrorHandler } = require('../middleware/error-handler')
 
-router.use('/admin', admin)
+router.use('/admin', authenticatedAdmin, admin)
 router.get('/signup', userController.signUpPage)
 router.post('/signup', userController.signUp)
 router.get('/signin', userController.signInPage)
-router.post('/signin', passport.authenticate('local', { failureRedirect: 'signin', failureFlash: true }), userController.signIn)
+router.post(
+  '/signin',
+  passport.authenticate('local', { failureRedirect: 'signin', failureFlash: true }),
+  userController.signIn
+)
 router.get('/logout', userController.logout)
 /**
  * as server gets request `/restaurants`
