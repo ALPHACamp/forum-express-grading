@@ -23,6 +23,15 @@ const adminController = {
       })
       .catch((error) => next(error))
   },
+  getRestaurant: (req, res, next) => {
+    Restaurant.findByPk(req.params.id, { raw: true })
+      .then((restaurant) => {
+        if (!restaurant) throw new Error(`This restaurant doesn't exist!`)
+
+        res.render('admin/restaurant', { restaurant })
+      })
+      .catch((error) => next(error))
+  },
 }
 
 module.exports = adminController
