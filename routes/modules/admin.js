@@ -17,6 +17,7 @@ router.get('/users', adminController.getUsers)
 
 router.get('/categories/:id', categoryController.getCategories) // 新增這行
 router.put('/categories/:id', categoryController.putCategory) // 新增這行
+router.delete('/categories/:id', categoryController.deleteCategory)
 router.get('/categories', categoryController.getCategories)
 router.post('/categories', categoryController.postCategory)
 router.get('/', (req, res) => res.redirect('/admin/restaurants'))
