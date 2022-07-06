@@ -11,7 +11,7 @@ const userController = {
 
     if (password !== passwordCheck) { throw new Error('Password does not match') }
 
-    User.findOne({ email }).then(user => {
+    User.findOne({ where: { email } }).then(user => {
       if (user) throw new Error('This email has been registered.')
       return bcrypt.hash(password, 10)
     })
@@ -25,6 +25,18 @@ const userController = {
         res.redirect('/signin')
       })
       .catch(err => next(err))
+  },
+  signInPage: (req, res) => {
+    res.render('signin')
+  },
+  signIn: (req, res) => {
+    req.flash('success_messages', 'Login successfully!')
+    return res.redirect('/')
+  },
+  logout: (req, res) => {
+    req.flash('success_messages', 'Logout successfully!')
+    req.logout()
+    res.redirect('/signin')
   }
 }
 
