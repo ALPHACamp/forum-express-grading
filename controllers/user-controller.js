@@ -21,10 +21,24 @@ const userController = {
         password: hash
       })
       req.flash('success_messages', 'Account register successfully!')
-      res.redirect('/signup')
+      res.redirect('/signin')
     } catch (err) {
       next(err)
     }
+  },
+  signInPage: (req, res) => {
+    res.render('signin')
+  },
+  signIn: (req, res) => {
+    req.flash('success_messages', 'Login successfully!')
+    res.redirect('/restaurants')
+  },
+  logout: (req, res, next) => {
+    req.flash('success_messages', 'Logout successfully!')
+    req.logout(err => {
+      if (err) return next(err)
+    })
+    res.redirect('/signin')
   }
 }
 
