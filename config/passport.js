@@ -24,13 +24,16 @@ passport.use(new LocalStrategy(
   }
 ))
 // serialize and deserialize user
-passport.serializeUser((user, cb) => {
-  cb(null, user.id)
+passport.serializeUser((user, done) => done(null, user.id))
+
+passport.deserializeUser(async (id, done) => {
+  try {
+    let user = await User.findByPk(id)
+    user = await user.toJSON()
+    return done(null, user)
+  } catch (error) {
+    done(error, false)
+  }
 })
-passport.deserializeUser((id, cb) => {
-  User.findByPk(id).then(user => {
-    console.log(user)  //暫時添加
-    return cb(null, user)
-  })
-})
+
 module.exports = passport
