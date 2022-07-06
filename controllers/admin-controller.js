@@ -13,6 +13,26 @@ const adminController = {
     Restaurant.findAll({ raw: true }) // 用findAll在sequelize找到的是物件(實體)，所以要用raw:true 去把撈到的資料轉換成簡單的js物件
       .then(restaurants => res.render('admin/restaurants', { restaurants }))
       .catch(err => next(err))
+  },
+  createRestaurant: (req, res) => {
+    res.render('admin/create-restaurant')
+  },
+  postRestaurant: (req, res, next) => {
+    const { name, tel, address, openingHours, description } = req.body
+    if (!name) throw new Error('Restaurant name is required!')
+
+    Restaurant.create({
+      name: name,
+      tel: tel,
+      address: address,
+      opening_hours: openingHours,
+      description: description
+    })
+      .then(() => {
+        req.flash('success_messages', 'restaurant was successfully created')
+        res.redirect('/admin/restaurants')
+      })
+      .catch(err => next(err))
   }
 }
 
