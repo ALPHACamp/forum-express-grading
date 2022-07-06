@@ -103,6 +103,27 @@ const restaurantController = {
         return res.render('dashboard', { restaurant })
       })
       .catch(err => next(err))
+  },
+  getTopRestaurants: (req, res, next) => {
+    const RESTAURANT_LIMIT = 10
+
+    return Restaurant.findAll({
+      include: [
+        { model: User, as: 'FavoritedUsers' }
+      ]
+    })
+      .then(restaurants => {
+        const result = restaurants
+          .map(r => ({
+            ...r.toJSON(),
+            favoritedCount: r.FavoritedUsers.length,
+            isFavorited: req.user?.FavoritedRestaurants.some(fr => fr.id === r.id)
+          }))
+          .sort((a, b) => b.favoritedCount - a.favoritedCount)
+          .splice(0, RESTAURANT_LIMIT - 1)
+
+        res.render('top-restaurants', { restaurants: result })
+      })
   }
 }
 
