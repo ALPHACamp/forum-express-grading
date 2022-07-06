@@ -1,11 +1,31 @@
 // FilePath: controllers/admin-controllers.js
 // Include modules
-const { Restaurant } = require('../models')
+const { Restaurant, User } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 const fileHandler = imgurFileHandler
 
 // Controller
 const adminController = {
+  getUsers: async (req, res, next) => {
+    try {
+      const users = await User.findAll({ raw: true })
+      res.render('admin/users', { users })
+    } catch (err) { next(err) }
+  },
+  patchUser: async (req, res, next) => {
+    try {
+      const userId = req.params.id
+      const user = await User.findByPk(userId)
+      if (!user) throw new Error('User not exists!')
+      if (user.email === 'root@example.com') {
+        req.flash('error_messages', '禁止變更 root 權限')
+        return res.redirect('back')
+      }
+      await user.update({ isAdmin: !user.isAdmin })
+      req.flash('success_messages', '使用者權限變更成功')
+      return res.redirect('/admin/users')
+    } catch (err) { next(err) }
+  },
   getRestaurants: async (req, res, next) => {
     try {
       const restaurants = await Restaurant.findAll({ raw: true })
