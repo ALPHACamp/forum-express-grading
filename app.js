@@ -3,6 +3,9 @@ const express = require('express')
 const handlebars = require('express-handlebars')
 const { getUser } = require('./helpers/auth-helpers')
 const routes = require('./routes')
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
 const flash = require('connect-flash')
 const methodOverride = require('method-override')
 const session = require('express-session')
