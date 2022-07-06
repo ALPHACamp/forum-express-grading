@@ -8,9 +8,10 @@ const userController = {
   },
   signUp: (req, res, next) => {
     if (req.body.password !== req.body.passwordCheck) throw new Error('Passwords do not match!')
-
+    console.log(('Passwords do not match!'))
     User.findOne({ where: { email: req.body.email } })
       .then(user => {
+        console.log('Email already exists!')
         if (user) throw new Error('Email already exists!')
 
         return bcrypt.hash(req.body.password, 10)
