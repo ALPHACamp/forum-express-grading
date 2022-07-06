@@ -21,6 +21,7 @@ const userController = {
         }))
       .then(() => {
         req.flash('success_messages', '成功註冊帳號！')
+        res.redirect('/signin')
       })
       .catch(err => next(err))
   },
