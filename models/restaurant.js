@@ -5,9 +5,10 @@ const {
 module.exports = (sequelize, DataTypes) => {
   class Restaurant extends Model {
     static associate (models) {
-      // define association here
+      Restaurant.belongsTo(models.Category, { foreignKey: 'CategoryId' })
     }
   }
+
   Restaurant.init({
     name: DataTypes.STRING,
     tel: DataTypes.STRING,
