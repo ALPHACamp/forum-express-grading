@@ -21,8 +21,16 @@ const adminController = {
       description
     }).then(() => {
       req.flash('success_messages', 'You have created a restaurant!')
-      res.render('/admin/restaurants')
+      res.render('admin/restaurants')
     }).catch(err => { throw new Error(err) })
+  },
+  getRestaurant: (req, res, next) => {
+    Restaurant.findByPk(req.params.id, { raw: true })
+      .then(restaurant => {
+        if (!restaurant) throw new Error('Restaurant does not exist')
+        res.render('admin/restaurant', { restaurant })
+      })
+      .catch(err => { throw new Error(err) })
   }
 }
 
