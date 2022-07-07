@@ -1,4 +1,6 @@
 const { Restaurant } = require('../models')
+const { localFileHandler } = require('../helpers/file-helpers')
+
 const adminController = {
   getRestaurants: (req, res, next) => {
     Restaurant.findAll({ raw: true })
@@ -16,12 +18,25 @@ const adminController = {
     // make sure restaurant name is not null
     if (!name) throw new Error('Restaurant name is required field!')
 
-    Restaurant.create({ name, tel, address, openingHours, description })
-      .then(() => {
-        req.flash('success_messages', 'You have created restaurant successfully!')
-        res.redirect('/admin/restaurants')
+    // take out image file
+    const { file } = req
+    // pass image file to middleware: file-helpers
+    // create this restaurant
+    localFileHandler(file).then((filePath) =>
+      Restaurant.create({
+        name,
+        tel,
+        address,
+        openingHours,
+        description,
+        image: filePath || null,
       })
-      .catch((error) => next(error))
+        .then(() => {
+          req.flash('success_messages', 'You have created restaurant successfully!')
+          res.redirect('/admin/restaurants')
+        })
+        .catch((error) => next(error))
+    )
   },
   getRestaurant: (req, res, next) => {
     Restaurant.findByPk(req.params.id, { raw: true })
@@ -48,14 +63,25 @@ const adminController = {
     // 2. make sure restaurant name is not null
     if (!name) throw new Error('Restaurant name is required field!')
 
-    // 3. find by primary key: id
+    // 3. deal with two Promise at the same time
+    // 3-1. find by primary key: id
     // `restaurant` is insatnce of Restaurant
     // not necessary to change data into plain object, don't add { raw: true }
-    // 4. update data getting from req.body
-    Restaurant.findByPk(req.params.id)
-      .then((restaurant) => {
+    // 3-2. take out image file from req, and pass to middleware: localFileHandler
+    // get filePath
+    // 4. update data getting from req.body and localFileHandler
+    const { file } = req
+    Promise.all([Restaurant.findByPk(req.params.id), localFileHandler(file)])
+      .then(([restaurant, filePath]) => {
         if (!restaurant) throw new Error(`This restaurant doesn't exist!`)
-        return restaurant.update({ name, tel, address, openingHours, description })
+        return restaurant.update({
+          name,
+          tel,
+          address,
+          openingHours,
+          description,
+          image: filePath || restaurant.image,
+        })
       })
       .then(() => {
         req.flash('success_messages', 'Restaurant was updated successfully!')
