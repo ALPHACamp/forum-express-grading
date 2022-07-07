@@ -1,0 +1,32 @@
+<h1>餐廳後台</h1>
+<br />
+<br />
+{{> admin-tab route='users'}}
+<table class="table align-middle">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Name</th>
+      <th scope="col">Email</th>
+      <th scope="col">Role</th>
+      <th scope="col">Admin</th>
+      <th scope="col"></th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each users}}
+    <tr>
+      <th scope="row" style="width:10%;">{{this.id}}</th>
+      <td style="width:20%;">{{this.name}}</td>
+      <td style="width:30%;">{{this.email}}</td>
+      <td style="width:20%;">{{#checkAdminNow this.isAdmin}}{{/checkAdminNow}}</td>
+      <td style="width:20%;">
+        <form action="/admin/users/{{this.id}}?_method=PATCH" method="POST" style="display: inline;">
+          <button type="submit" class="btn btn-link link-danger">set as {{#checkAdmin
+            this.isAdmin}}{{/checkAdmin}}</button>
+        </form>
+      </td>
+    </tr>
+    {{/each}}
+  </tbody>
+</table>
