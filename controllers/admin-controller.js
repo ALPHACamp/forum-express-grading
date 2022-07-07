@@ -14,16 +14,53 @@ const adminController = {
   },
   postRestaurant: async (req, res, next) => {
     try {
-      const { name, tel, address, openingHour, description } = req.body
+      const { name, tel, address, openingHours, description } = req.body
       if (!name) throw new Error('Restaurant name is required!')
       await Restaurant.create({
         name,
         tel,
         address,
-        openingHour,
+        openingHours,
         description
       })
       req.flash('success_message', 'Restaurant created successfully!')
+      res.redirect('/admin/restaurants')
+    } catch (err) {
+      next(err)
+    }
+  },
+  getRestaurant: async (req, res, next) => {
+    try {
+      const restaurant = await Restaurant.findByPk(req.params.id, { raw: true })
+      if (!restaurant) throw new Error('Restaurant not exist!')
+      res.render('admin/restaurant', { restaurant })
+    } catch (err) {
+      next(err)
+    }
+  },
+  editRestaurant: async (req, res, next) => {
+    try {
+      const restaurant = await Restaurant.findByPk(req.params.id, { raw: true })
+      if (!restaurant) throw new Error('Restaurant not exist!')
+      res.render('admin/edit-restaurant', { restaurant })
+    } catch (err) {
+      next(err)
+    }
+  },
+  putRestaurant: async (req, res, next) => {
+    try {
+      const { name, tel, address, openingHours, description } = req.body
+      if (!name) throw new Error('Restaurant name is required!')
+      const restaurant = await Restaurant.findByPk(req.params.id)
+      if (!restaurant) throw new Error('Restaurant not exist!')
+      await restaurant.update({
+        name,
+        tel,
+        address,
+        openingHours,
+        description
+      })
+      req.flash('success_message', 'Restaurant updated successfully!')
       res.redirect('/admin/restaurants')
     } catch (err) {
       next(err)
