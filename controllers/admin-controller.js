@@ -1,5 +1,5 @@
 const { Restaurant } = require('../models')
-const { localFileHandler } = require('../helpers/file-helpers')
+const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const adminController = {
   getRestaurants: (req, res, next) => {
@@ -22,7 +22,7 @@ const adminController = {
     const { file } = req
     // pass image file to middleware: file-helpers
     // create this restaurant
-    localFileHandler(file).then((filePath) =>
+    imgurFileHandler(file).then((filePath) =>
       Restaurant.create({
         name,
         tel,
@@ -71,7 +71,7 @@ const adminController = {
     // get filePath
     // 4. update data getting from req.body and localFileHandler
     const { file } = req
-    Promise.all([Restaurant.findByPk(req.params.id), localFileHandler(file)])
+    Promise.all([Restaurant.findByPk(req.params.id), imgurFileHandler(file)])
       .then(([restaurant, filePath]) => {
         if (!restaurant) throw new Error(`This restaurant doesn't exist!`)
         return restaurant.update({
