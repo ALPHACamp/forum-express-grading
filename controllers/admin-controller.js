@@ -21,7 +21,7 @@ const adminController = {
       description
     }).then(() => {
       req.flash('success_messages', 'You have created a restaurant!')
-      res.render('admin/restaurants')
+      res.redirect('/admin/restaurants')
     }).catch(err => { throw new Error(err) })
   },
   getRestaurant: (req, res, next) => {
@@ -40,7 +40,6 @@ const adminController = {
       })
       .catch(err => next(err))
   },
-
   putRestaurant: (req, res, next) => {
     const { name, tel, address, openingHours, description } = req.body
     if (!name) throw new Error('Restaurant name is required!')
@@ -54,6 +53,19 @@ const adminController = {
           openingHours,
           description
         })
+      })
+      .then(() => {
+        req.flash('success_messages', 'restaurant was successfully to update')
+        res.redirect('/admin/restaurants')
+      })
+      .catch(err => next(err))
+  },
+  deleteRestaurant: (req, res, next) => {
+    Restaurant.findByPk(req.params.id)
+      .then(restaurant => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+
+        return restaurant.destroy()
       })
       .then(() => {
         req.flash('success_messages', 'restaurant was successfully to update')
