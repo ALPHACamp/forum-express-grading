@@ -1,4 +1,3 @@
-const e = require('connect-flash')
 const { ensureAuthenticated, getUser } = require('../helpers/auth-helpers')
 
 const authenticated = (req, res, next) => {
