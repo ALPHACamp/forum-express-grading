@@ -62,7 +62,19 @@ const adminController = {
         })
       })
       .then(() => {
-        req.flash('sucess_message', 'restaurant was successfully to update')
+        req.flash('success_message', 'restaurant was successfully to update')
+        res.redirect('/admin/restaurants')
+      })
+      .catch(err => next(err))
+  },
+  deleteRestaurant: (req, res) => {
+    Restaurant.findByPk(req.params.id)
+      .then(restaurant => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        return restaurant.destroy()
+      })
+      .then(() => {
+        req.flash('success_message', 'restaurant was successfully to update')
         res.redirect('/admin/restaurants')
       })
       .catch(err => next(err))
