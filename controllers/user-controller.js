@@ -23,7 +23,7 @@ const userController = {
         res.redirect('/signin')
       })
       .catch(err => next(err))
-  }, // 新增以下程式碼
+  },
   signInPage: (req, res) => {
     res.render('signin')
   },
