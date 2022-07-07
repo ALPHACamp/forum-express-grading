@@ -1,4 +1,5 @@
 const fs = require('fs') // 引入 fs 模組
+const imgur = require('imgur')
 const localFileHandler = file => { // file 是 multer 處理完的檔案
   return new Promise((resolve, reject) => {
     if (!file) return resolve(null)
@@ -9,6 +10,19 @@ const localFileHandler = file => { // file 是 multer 處理完的檔案
       .catch(err => reject(err))
   })
 }
+
+const imgurFileHandler = file => {
+  return new Promise((resolve, reject) => {
+    if (!file) return resolve(null)
+    return imgur.uploadFile(file.path)
+      .then(img => {
+        resolve(img?.link || null) // 檢查img是否存在
+      })
+      .catch(err => reject(err))
+  })
+}
+
 module.exports = {
-  localFileHandler
+  localFileHandler,
+  imgurFileHandler
 }
