@@ -14,7 +14,7 @@ const adminController = {
   createRestaurant: (req, res) => {
     return res.render('admin/create-restaurant')
   },
-  postRestaurants: (req, res, next) => {
+  postRestaurant: (req, res, next) => {
     const { name, tel, address, openingHours, description } = req.body
     if (!name) throw new Error('Restaurant name is required!')
     const { file } = req
@@ -57,10 +57,10 @@ const adminController = {
     const { name, tel, address, openingHours, description } = req.body
     if (!name) throw new Error('Restaurant name is required!')
     const { file } = req
-    Promise.all(
-      [Restaurant.findByPk(req.params.id),
-        localFileHandler(file)]
-    )
+    Promise.all([
+      Restaurant.findByPk(req.params.id),
+      localFileHandler(file)
+    ])
       .then(([restaurant, filePath]) => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         return restaurant.update({

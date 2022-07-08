@@ -1,0 +1,21 @@
+diff a/config/config.json b/config/config.json	(rejected hunks)
+@@ -7,11 +7,7 @@
+     "dialect": "mysql"
+   },
+   "production": {
+-    "username": "root",
+-    "password": null,
+-    "database": "database_production",
+-    "host": "127.0.0.1",
+-    "dialect": "mysql"
++    "use_env_variable": "CLEARDB_DATABASE_URL"
+   },
+   "travis": {
+     "username": "travis",
+@@ -20,4 +16,4 @@
+     "dialect": "mysql",
+     "logging": false
+   }
+-}
++}
+\ No newline at end of file
