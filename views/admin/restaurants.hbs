@@ -1,4 +1,9 @@
 <h1>餐廳後台</h1>
+<div class="my-3 ">
+  <a href="/admin/restaurants">Restaurants</a>
+  <span>|</span>
+  <a href="/admin/users">Users</a>
+</div>
 <a href='/admin/restaurants/create'>
   <button type="button" class="btn btn-primary">New Restaurant</button>
 </a>
@@ -29,8 +34,8 @@
           </a>
         </button>
         <form action="/admin/restaurants/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
-        <button type="submit" class="btn btn-link link-danger"
-          onclick="return confirm(`確定要刪除 {{ this.name }} 嗎？`)">Delete</button>
+          <button type="submit" class="btn btn-link link-danger"
+            onclick="return confirm(`確定要刪除 {{ this.name }} 嗎？`)">Delete</button>
         </form>
       </td>
     </tr>
