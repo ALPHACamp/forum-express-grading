@@ -111,6 +111,7 @@ const adminController = {
         req.flash('success_messages', 'this user is successfully updated!')
         return res.redirect('/admin/users')
       })
+      .catch(err => next(err))
   }
 }
 module.exports = adminController
