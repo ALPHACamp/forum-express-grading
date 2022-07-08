@@ -100,7 +100,7 @@ const adminController = {
     return User.findByPk(id)
       .then(user => {
         if (user.email === 'root@example.com') {
-          req.flash('error_messages', "this user can't be modified!")
+          req.flash('error_messages', '禁止變更 root 權限')
           return res.redirect('back')
         }
         user.update({
@@ -108,7 +108,7 @@ const adminController = {
         })
       })
       .then(() => {
-        req.flash('success_messages', 'this user is successfully updated!')
+        req.flash('success_messages', '使用者權限變更成功')
         return res.redirect('/admin/users')
       })
       .catch(err => next(err))
