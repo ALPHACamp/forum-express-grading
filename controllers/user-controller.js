@@ -12,7 +12,6 @@ const userController = {
     User.findOne({ where: { email: req.body.email } })
       .then(user => {
         if (user) throw new Error('Email already exists!')
-
         return bcrypt.hash(req.body.password, 10)
       })
       .then(hash => User.create({
