@@ -36,13 +36,16 @@ const adminController = {
       res.render('admin/restaurants', { restaurants })
     } catch (err) { next(err) }
   },
-  createRestaurant: (req, res) => {
-    res.render('admin/create-restaurant')
+  createRestaurant: async (req, res, next) => {
+    try {
+      const categories = await Category.findAll({ raw: true })
+      res.render('admin/create-restaurant', { categories })
+    } catch (err) { next(err) }
   },
   postRestaurant: async (req, res, next) => {
     try {
       // Check if required info got null
-      const { name, tel, address, openingHours, description } = req.body
+      const { name, tel, address, openingHours, description, categoryId } = req.body
       if (!name) throw new Error('Restaurant name is required!')
 
       // Create new restaurant
@@ -54,7 +57,8 @@ const adminController = {
         address,
         openingHours,
         description,
-        image: filePath || null
+        image: filePath || null,
+        categoryId
       })
       req.flash('success_messages', 'restaurant was successfully created')
       res.redirect('/admin/restaurants')
@@ -73,15 +77,18 @@ const adminController = {
   },
   editRestaurant: async (req, res, next) => {
     try {
-      const restaurant = await Restaurant.findByPk(req.params.id, { raw: true })
+      const [restaurant, categories] = await Promise.all([
+        Restaurant.findByPk(req.params.id, { raw: true }),
+        Category.findAll({ raw: true })
+      ])
       if (!restaurant) throw new Error('Restaurant did not exist!')
-      res.render('admin/edit-restaurant', { restaurant })
+      res.render('admin/edit-restaurant', { restaurant, categories })
     } catch (err) { next(err) }
   },
   putRestaurant: async (req, res, next) => {
     try {
       // Check if required info got null
-      const { name, tel, address, openingHours, description } = req.body
+      const { name, tel, address, openingHours, description, categoryId } = req.body
       if (!name) throw new Error('Restaurant name is required!')
 
       // Update restaurant info
@@ -96,7 +103,8 @@ const adminController = {
         address,
         openingHours,
         description,
-        image: filePath || restaurant.image
+        image: filePath || restaurant.image,
+        categoryId
       })
       req.flash('success_messages', 'Restaurant was successfully updated')
       res.redirect('/admin/restaurants')
