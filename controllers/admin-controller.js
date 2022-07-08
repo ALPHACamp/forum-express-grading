@@ -88,24 +88,29 @@ const adminController = {
       .then(() => res.redirect('/admin/restaurants'))
       .catch(err => next(err))
   },
+  getUsers: (req, res, next) => {
+    return User.findAll({
+      raw: true
+    })
+      .then(users => res.render('admin/users', { users }))
+      .catch(err => next(err))
+  },
   patchUser: (req, res, next) => {
     const id = req.params.id
     return User.findByPk(id)
       .then(user => {
-        if (!user) throw new Error("User didn't exist!")
         if (user.email === 'root@example.com') {
-          req.flash('error_message', " this user can't be modified")
+          req.flash('error_messages', "this user can't be modified!")
           return res.redirect('back')
         }
-        return User.update({
-          isAdmin: !user.is_admin
+        user.update({
+          isAdmin: !user.isAdmin
         })
       })
       .then(() => {
-        req.flash('success_message', 'this user is successfully updated!')
-        res.redirect('/admin/users')
+        req.flash('success_messages', 'this user is successfully updated!')
+        return res.redirect('/admin/users')
       })
-      .catch(err => next(err))
   }
 }
 module.exports = adminController
