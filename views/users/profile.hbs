@@ -1,0 +1,19 @@
+<div class="d-flex row">
+  <div class="col-md-4 ">
+    <img class="img-responsive center-block" src="{{user.image}}"
+      style="width: 250px; margin-bottom: 25px; transition: opacity 0.5s; opacity:0; border-radius:50%"
+      onload="this.style.opacity=1;">
+  </div>
+  <div class="col-md-8">
+    <h1 class="mt-2">{{user.name}}</h1>
+    <h3 class="mt-5">{{user.email}}</h2>
+
+      {{#ifCond user.id user2.id}}
+      <a class="btn btn-block btn-primary mt-5" href="/users/{{user2.id}}/edit">
+        Edit
+      </a>
+      {{/ifCond}}
+
+
+  </div>
+</div>
