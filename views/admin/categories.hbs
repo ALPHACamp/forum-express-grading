@@ -1,33 +1,32 @@
-{{>admin-tabs route='restaurants'}}
+{{>admin-tabs route='categories'}}
 
-<br />
-<div class="mt-3">
-  <a href='/admin/restaurants/create'>
-    <button type="button" class="btn btn-primary">New Restaurant</button>
-  </a>
-</div>
+
+<form class="row g-3">
+  <div class="col-auto">
+    <label for="inputPassword2" class="visually-hidden">Category Name</label>
+    <input type="password" class="form-control" id="inputPassword2" placeholder="Category Name">
+  </div>
+  <div class="col-auto">
+    <button type="submit" class="btn btn-success mb-3">Create</button>
+  </div>
+</form>
+
+
 <br />
 <table class="table align-middle">
   <thead>
-    <tr class="table-dark">
+    <tr>
       <th scope="col">#</th>
-      <th scope="col">Name</th>
-      <th scope="col">Category</th>
-      <th scope="col"></th>
+      <th scope="col">Category Name</th>
+      <th scope="col">#</th>
     </tr>
   </thead>
   <tbody>
-    {{#each restaurants}}
+    {{#each categories}}
     <tr>
       <th scope="row">{{this.id}}</th>
       <td>{{this.name}}</td>
-      <td>{{this.Category.name}}</td>
       <td>
-        <button type="button" class="btn btn-link">
-          <a class="btn btn-link link-primary" href="/admin/restaurants/{{this.id}}">
-            Show
-          </a>
-        </button>
         <button type="button" class="btn btn-link">
           <a class="btn btn-link link-primary" href="/admin/restaurants/{{this.id}}/edit">
             Edit
