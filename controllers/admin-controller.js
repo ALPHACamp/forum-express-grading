@@ -1,4 +1,4 @@
-const { Restaurant } = require('../models')
+const { Restaurant, User } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const adminController = {
@@ -100,6 +100,35 @@ const adminController = {
       })
       .then(() => res.redirect('/admin/restaurants'))
       .catch(err => next(err))
+  },
+
+  getUsers: (req, res, next) => {
+    return User.findAll({ raw: true })
+      .then(users => {
+        return res.render('admin/users', { users })
+      })
+      .catch(err => next(err))
+  },
+
+  patchUser: (req, res, next) => {
+    // 去資料庫用 id 找一筆 user 資料
+    return User.findByPk(req.params.id)
+      .then(user => {
+        if (!user) throw new Error("user didn't exist!") //  如果找不到，回傳錯誤訊息，後面不執行
+        // 如果 user 為最高權限，則禁止修改
+        if (user.email === 'root@example.com') {
+          req.flash('error_messages', '禁止變更 root 權限')
+          return res.redirect('back')
+        }
+        // 如果 user 不是最高權限，則可以修改權限
+        return user.update({ isAdmin: !user.isAdmin })
+      })
+      .then(() => {
+        req.flash('success_messages', '使用者權限變更成功')
+        return res.redirect('/admin/users')
+      })
+      .catch(err => next(err))
   }
 }
+
 module.exports = adminController
