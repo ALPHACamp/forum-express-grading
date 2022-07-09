@@ -1,7 +1,34 @@
-const { Restaurant } = require('../models')
+const { User, Restaurant } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const adminController = {
+  getUsers: async (req, res, next) => {
+    try {
+      const users = await User.findAll({ raw: true })
+      return res.render('admin/users', { users })
+    } catch (error) {
+      next(error)
+    }
+  },
+  patchUser: async (req, res, next) => {
+    try {
+      const userId = req.params.id
+      const user = await User.findByPk(userId)
+
+      if (!user) throw new Error('This user does not exist!')
+
+      if (user.email === 'root@example.com') {
+        req.flash('error_messages', '禁止變更 root 權限')
+        return res.redirect('back')
+      }
+
+      user.isAdmin ? await user.update({ isAdmin: false }) : await user.update({ isAdmin: true })
+      req.flash('success_messages', '使用者權限變更成功')
+      return res.redirect('/admin/users')
+    } catch (error) {
+      next(error)
+    }
+  },
   getRestaurants: (req, res, next) => {
     Restaurant.findAll({ raw: true })
       .then((restaurants) => {
