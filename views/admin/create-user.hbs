@@ -1,0 +1,23 @@
+<div class="mb-4 text-center">
+  <h1 class="h3 font-weight-normal mb-3">Create New User/Admin</h1>
+</div>
+<form action="/admin/users" method="POST" style="width: 100%;">
+  <div class="form-row mb-3">
+    <label class="form-label" for="name">Name</label>
+    <input type="text" id="name" name="name" class="form-control" placeholder="Name" required autofocus>
+  </div>
+  <div class="form-row mb-3">
+    <label class="form-label" for="email">Email</label>
+    <input type="text" id="email" name="email" class="form-control" placeholder="Email" required>
+  </div>
+  <div class="form-row mb-3">
+    <label class="form-label" for="password">Password</label>
+    <input type="text" id="password" name="password" class="form-control" placeholder="Password" required value="12345678">
+  </div>
+  <div class="form-row mb-3 form-check">
+    <label class="form-check-label" for="isAdmin">isAdmin</label>
+    <input type="checkbox" id="isAdmin" name="isAdmin" class="form-check-input">
+  </div>
+  <button class="btn btn-primary btn-block" type="submit">Submit</button>
+  <a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
+</form>
