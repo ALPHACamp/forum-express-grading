@@ -6,6 +6,10 @@ const methodOverride = require('method-override')
 const session = require('express-session')
 const passport = require('./config/passport')
 
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
+
 const { getUser } = require('./helpers/auth-helpers')
 const handlebarsHelper = require('./helpers/handlebars-helpers')
 
