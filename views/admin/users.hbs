@@ -1,0 +1,32 @@
+{{> admin-backstage-header}}
+<a href='/admin/users/create'>
+  <button type="button" class="btn btn-primary">New User/Admin</button>
+</a>
+<br />
+<br />
+<table class="table align-middle">
+  <thead class="thead-dark">
+    <tr class="table-dark">
+      <th scope="col">#</th>
+      <th scope="col">Name</th>
+      <th scope="col">Email</th>
+      <th scope="col">Role</th>
+      <th scope="col">Role Switch</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each users}}
+      <tr>
+        <th scope="row">{{this.id}}</th>
+        <td>{{this.name}}</td>
+        <td>{{this.email}}</td>
+        <td>{{this.role}}</td>
+        <td>
+          <form action="/admin/users/{{this.id}}?_method=PATCH" method="POST" style="display: inline;">
+            <button type="submit" class="btn btn-link text-decoration-none" onclick="return confirm(`Are you sure to change role of {{this.name}}?`)">{{this.roleSwitch}}</button>
+          </form>
+        </td>
+      </tr>
+    {{/each}}
+  </tbody>
+</table>
