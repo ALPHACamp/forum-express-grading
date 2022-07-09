@@ -9,7 +9,7 @@ module.exports = {
     return isAdmin === 1 ? 'admin' : 'user'
   },
   // handlebar 判斷相等方式
-  tabActiveChange: function (a, b, options) {
+  ifCond: function (a, b, options) {
     return a === b ? options.fn(this) : options.inverse(this)
   }
 }
