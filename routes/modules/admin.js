@@ -12,6 +12,8 @@ router.put('/restaurants/:id', multer.single('image'), adminController.putRestau
 router.delete('/restaurants/:id', adminController.deleteRestaurant)
 router.get('/restaurants', adminController.getRestaurants)
 router.post('/restaurants', multer.single('image'), adminController.postRestaurant)
+router.patch('/users/:id', adminController.patchUser)
+router.get('/users', adminController.getUsers)
 router.get('/', (req, res) => {
   res.redirect('/admin/restaurants')
 })
