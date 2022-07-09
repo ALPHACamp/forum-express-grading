@@ -1,0 +1,36 @@
+<div class="row">
+  <div class="col-md-4 align-self-center">
+    <img class="img-responsive center-block mb-5 mx-auto" src="{{user.image}}"
+      style="width: 250px; transition: opacity 0.5s; opacity:0; border-radius: 50%;" onload="this.style.opacity=1;" />
+  </div>
+  <div class="col-md-8">
+    <div class="well">
+      <ul class="list-unstyled">
+        <li class="mb-3 fs-2">
+          <strong>
+            {{user.name}}
+          </strong>
+        </li>
+        <li class="mb-5">
+          <strong>
+            {{user.email}}
+          </strong>
+        </li>
+      </ul>
+    </div>
+    <div class="d-flex">
+      {{#ifCond user.id reqUserId}}
+      <a class="btn btn-primary mx-1" href="/users/{{user.id}}/edit">
+        Edit
+      </a>
+      <a class="btn btn-outline-secondary mx-1" href="/">
+        Back
+      </a>
+      {{else}}
+      <a class="btn btn-outline-secondary mx-1" href="javascript:history.back()">
+        Back
+      </a>
+      {{/ifCond}}
+    </div>
+  </div>
+</div>
