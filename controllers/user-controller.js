@@ -5,7 +5,7 @@ const to = require('await-to-js').default
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const db = require('../models')
-const { User } = db
+const { User, Restaurant, Comment } = db
 const userController = {
   signUpPage: (req, res) => {
     res.render('signup')
@@ -43,15 +43,22 @@ const userController = {
     res.redirect('/signin')
   },
   getUser: async (req, res, next) => {
-    const [err, user] = await to(User.findByPk(req.params.id, { raw: true }))
-    if (err, !user) {
+    const [errUser, user] =
+      await to(User.findByPk(req.params.id, {
+        include: [{
+          model: Comment,
+          include: Restaurant
+        }]
+      }))
+
+    if (errUser || !user) {
       req.flash('error_messages', '使用者不存在！')
       res.redirect('/users/' + req.user.id)
       return
     }
 
     const reqUserId = req.user?.id || undefined
-    res.render('users/profile', { user, reqUserId })
+    res.render('users/profile', { user: user.toJSON(), reqUserId })
   },
   editUser: async (req, res, next) => {
     /* temporary ignore the check to PASS R03.test.js
