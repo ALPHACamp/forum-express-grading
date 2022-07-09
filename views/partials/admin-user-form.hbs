@@ -1,0 +1,28 @@
+<div class="form-row mb-3">
+  <label class="form-label" for="name">Name</label>
+  <input type="text" id="name" name="name" class="form-control" placeholder="Name" value="{{user.name}}" required
+    autofocus>
+</div>
+<div class="form-row mb-3">
+  <label class="form-label" for="email">Email</label>
+  <input type="text" id="email" name="email" class="form-control" placeholder="Email" value="{{user.email}}" required>
+</div>
+<div class="form-row mb-3">
+  <label class="form-label" for="password">Original Password</label>
+  <input type="password" id="password" name="password" class="form-control" value="" required>
+</div>
+<div class="form-row mb-3">
+  <label class="form-label" for="newPassword">New Password</label>
+  <input type="password" id="newPassword" name="newPassword" class="form-control" placeholder="newPassword" required>
+</div>
+<div class="form-row mb-3">
+  <label class="form-label" for="newPasswordCheck">New Password Check</label>
+  <input type="password" id="newPasswordCheck" name="newPasswordCheck" class="form-control" placeholder="Password Check"
+    required>
+</div>
+<div class="form-row mb-3">
+  <input type="checkbox" id="isAdmin" name="isAdmin" {{#if user.isAdmin}}checked{{/if}}>
+  <label class="form-label" for="isAdmin">Is Admin ?</label>
+</div>
+<button class="btn btn-primary btn-block" type="submit">Submit</button>
+<a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
