@@ -1,18 +1,15 @@
 {{>admin-tabs route='categories'}}
 
-
-<form class="row g-3">
-  <div class="col-auto">
-    <label for="inputPassword2" class="visually-hidden">Category Name</label>
-    <input type="password" class="form-control" id="inputPassword2" placeholder="Category Name">
-  </div>
-  <div class="col-auto">
-    <button type="submit" class="btn btn-success mb-3">Create</button>
-  </div>
-</form>
-
-
-<br />
+<div class="d-flex align-items-center pt-3 pb-5 my-3 text-white-50 bg-purple">
+  <form class="row" action="/admin/categories" method="POST">
+    <div class="col-auto">
+      <input class="form-control" type="text" placeholder="Category Name" name="name">
+    </div>
+    <div class="col-auto">
+      <button class="btn btn-success" type="submit">Create</button>
+    </div>
+  </form>
+</div>
 <table class="table align-middle">
   <thead>
     <tr>
