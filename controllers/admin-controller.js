@@ -50,11 +50,15 @@ const adminController = {
       })
       .catch(err => next(err))
   },
-  createRestaurant: (req, res) => {
-    return res.render('admin/create-restaurant')
+  createRestaurant: (req, res, next) => { // go to create restaurant page
+    return Category.findAll({
+      raw: true
+    })
+      .then(categories => res.render('admin/create-restaurant', { categories }))
+      .catch(err => next(err))
   },
-  postRestaurant: (req, res, next) => {
-    const { name, tel, address, openingHours, description } = req.body
+  postRestaurant: (req, res, next) => { // post of create restaurant page
+    const { name, tel, address, openingHours, description, categoryId } = req.body
     if (!name) throw new Error('Restaurant name is required!')
 
     const { file } = req // = const file = req.file
@@ -65,7 +69,8 @@ const adminController = {
         address,
         openingHours,
         description,
-        image: filePath || null
+        image: filePath || null,
+        categoryId
       })
       )
       .then(() => {
@@ -74,18 +79,19 @@ const adminController = {
       })
       .catch(err => next(err))
   },
-  editRestaurant: (req, res, next) => {
-    Restaurant.findByPk(req.params.rest_id, { // find a restaurant by primary key
-      raw: true
-    })
-      .then(restaurant => {
-        if (!restaurant) throw new Error("Restaurant didn't exist!") // didnot find a restaurant
-        else res.render('admin/edit-restaurant', { restaurant }) // find a restaurant successfully
+  editRestaurant: (req, res, next) => { // go to edit restaurant page
+    return Promise.all([
+      Restaurant.findByPk(req.params.rest_id, { raw: true }),
+      Category.findAll({ raw: true })
+    ])
+      .then(([restaurant, categories]) => {
+        if (!restaurant) throw new Error("Restaurant doesn't exist!") // didn't find a restaurant
+        res.render('admin/edit-restaurant', { restaurant, categories })
       })
       .catch(err => next(err))
   },
-  putRestaurant: (req, res, next) => {
-    const { name, tel, address, openingHours, description } = req.body
+  putRestaurant: (req, res, next) => { // put of edit restaurant page
+    const { name, tel, address, openingHours, description, categoryId } = req.body
     if (!name) throw new Error('Restaurant name is required!')
 
     const { file } = req // = const file = req.file
@@ -101,7 +107,8 @@ const adminController = {
           address,
           openingHours,
           description,
-          image: filePath || restaurant.image
+          image: filePath || restaurant.image,
+          categoryId
         })
       })
       .then(() => {
