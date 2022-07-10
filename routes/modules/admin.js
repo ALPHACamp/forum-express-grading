@@ -15,6 +15,7 @@ router.post('/restaurants', upload.single('image'), adminController.postRestaura
 router.get('/restaurants', adminController.getRestaurants) // show all restaurants
 router.get('/users', adminController.getUsers) // show all users
 router.get('/categories', categoryController.getCategories) // show all categories
+router.post('/categories', categoryController.postCategory) // create new category into database
 router.get('/', (req, res) => res.redirect('/admin/restaurants'))
 
 router.use('/', generalErrorHandler)
