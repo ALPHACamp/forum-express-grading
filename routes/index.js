@@ -16,7 +16,8 @@ router.get('/signin', userController.signInPage)
 router.post('/signin', passport.authenticate('local', { failureRedirect: '/signin', failureFlash: true }), userController.signIn) // 注意是 post
 router.get('/logout', userController.logout)
 
-router.get('/restaurants', authenticated, restController.getRestaurants)
+router.get('/restaurants/:id', authenticated, restController.getRestaurant) // render a restaurant
+router.get('/restaurants', authenticated, restController.getRestaurants) // render all restaurants
 router.use('/', (req, res) => res.redirect('/restaurants'))
 
 router.use('/', generalErrorHandler)

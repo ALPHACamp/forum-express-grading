@@ -18,6 +18,21 @@ const restaurantController = {
     } catch (error) {
       next(error)
     }
+  },
+  getRestaurant: async (req, res, next) => {
+    try {
+      const restaurant = await Restaurant.findByPk(req.params.id, {
+        include: [Category], // 拿出關聯的 Category model
+        nest: true,
+        raw: true
+      })
+      if (!restaurant) throw new Error("Restaurant didn't exist!") // didnot find a restaurant
+      return res.render('restaurant', {
+        restaurant
+      })
+    } catch (error) {
+      next(error)
+    }
   }
 }
 module.exports = restaurantController
