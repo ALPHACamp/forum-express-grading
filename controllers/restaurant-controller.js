@@ -21,13 +21,29 @@ const restaurantController = {
   },
   getRestaurant: async (req, res, next) => {
     try {
-      const restaurant = await Restaurant.findByPk(req.params.id, {
-        include: [Category], // 拿出關聯的 Category model
+      let restaurant = await Restaurant.findByPk(req.params.rest_id, {
+        include: [Category],
+        nest: true
+      })
+      if (!restaurant) throw new Error("Restaurant didn't exist!") // didnot find a restaurant
+      await restaurant.increment('viewCounts', { by: 1 })
+      restaurant = restaurant.toJSON()
+      return res.render('restaurant', {
+        restaurant
+      })
+    } catch (error) {
+      next(error)
+    }
+  },
+  getDashboard: async (req, res, next) => {
+    try {
+      const restaurant = await Restaurant.findByPk(req.params.rest_id, {
+        include: [Category],
         nest: true,
         raw: true
       })
       if (!restaurant) throw new Error("Restaurant didn't exist!") // didnot find a restaurant
-      return res.render('restaurant', {
+      return res.render('dashboard', {
         restaurant
       })
     } catch (error) {
