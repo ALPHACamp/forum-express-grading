@@ -20,7 +20,11 @@
       <td>{{this.email}}</td>
       <td>{{#if this.isAdmin}}admin{{else}}user{{/if}}</td>
       <td>
-        
+        <form action="/admin/users/{{this.id}}?_method=PATCH" method="POST" style="display: inline;">
+          <button type="submit" class="btn btn-link" style="text-decoration:none;">
+            {{#if this.isAdmin}}set as user{{else}}set as admin{{/if}}
+          </button>
+        </form>
       </td>
     </tr>
     {{/each}}
