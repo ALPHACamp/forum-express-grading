@@ -1,5 +1,5 @@
 const { imgurFileHandler } = require('../helpers/file-helpers')
-const { Restaurant } = require('../models')
+const { Restaurant, User } = require('../models')
 
 const adminController = {
   getRestaurants: (req, res, next) => {
@@ -36,7 +36,7 @@ const adminController = {
       raw: true // 找到以後整理格式再回傳
     })
       .then(restaurant => {
-        if (!restaurant) throw new Error("Restaurant didn't exist!") // 若找不到則回傳錯誤訊息
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
         res.render('admin/restaurant', { restaurant })
       })
       .catch(err => next(err))
@@ -83,6 +83,29 @@ const adminController = {
         return restaurant.destroy()
       })
       .then(() => res.redirect('/admin/restaurants'))
+      .catch(err => next(err))
+  },
+  getUsers: (req, res, next) => {
+    return User.findAll({
+      raw: true
+    })
+      .then(users => res.render('admin/users', { users }))
+      .catch(err => next(err))
+  },
+  patchUser: (req, res, next) => {
+    return User.findByPk(req.params.id)
+      .then(user => {
+        if (!user) throw new Error("user didn't exist!")
+        if (user.email === 'root@example.com') {
+          req.flash('error_messages', '禁止變更 root 權限')
+          return res.redirect('back')
+        }
+        return user.update({ isAdmin: !user.isAdmin })
+      })
+      .then(() => {
+        req.flash('success_messages', '使用者權限變更成功')
+        res.redirect('/admin/users')
+      })
       .catch(err => next(err))
   }
 }
