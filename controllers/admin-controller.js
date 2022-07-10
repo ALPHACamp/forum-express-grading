@@ -108,7 +108,7 @@ const adminController = {
     try {
       const user = await User.findByPk(req.params.id)
       if (user.email === 'root@example.com') {
-        req.flash('error_messages', '禁止變更root權限')
+        req.flash('error_messages', '禁止變更 root 權限')
         return res.redirect('back')
       } else {
         await user.update({ isAdmin: !user.isAdmin })
