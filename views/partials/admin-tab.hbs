@@ -1,3 +1,4 @@
+<h1>餐廳後台</h1>
 <ul class="nav nav-tabs">
   <li class="nav-item">
     <a class="nav-link {{#ifCond route 'restaurants'}}active{{/ifCond}}" aria-current="page"
@@ -5,5 +6,8 @@
   </li>
   <li class="nav-item">
     <a class="nav-link {{#ifCond route 'users'}}active{{/ifCond}}" href="/admin/users">Users</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link {{#ifCond route 'categories'}}active{{/ifCond}}" href="/admin/categories">Categories</a>
   </li>
 </ul>
