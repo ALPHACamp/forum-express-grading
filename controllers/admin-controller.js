@@ -1,4 +1,5 @@
 const { Restaurant } = require('../models')
+const { User } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const adminController = {
@@ -87,6 +88,13 @@ const adminController = {
         req.flash('success_messages', 'restaurant was successfully to delete!')
         res.redirect('admin/restaurants')
       })
+      .catch(err => next(err))
+  },
+  getUsers: (req, res, next) => {
+    User.findAll({
+      raw: true
+    })
+      .then(users => res.render('admin/users', { users }))
       .catch(err => next(err))
   }
 }
