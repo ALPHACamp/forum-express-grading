@@ -1,4 +1,4 @@
-const { Restaurant } = require('../models')
+const { Restaurant, User } = require('../models')
 // const { localFileHandler } = require('../helpers/file-helpers')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
@@ -85,6 +85,24 @@ const adminController = {
       })
       .then(() => res.redirect('/admin/restaurants'))
       .catch(err => next(err))
+  },
+  getUsers: async (req, res, next) => {
+    try {
+      const users = await User.findAll({ raw: true })
+      users.map(user => {
+        if (user.isAdmin) {
+          user.role = 'Admin'
+          user.roleSwitch = 'Set as user'
+        } else {
+          user.role = 'User'
+          user.roleSwitch = 'Set as admin'
+        }
+        return user
+      })
+      res.render('admin/users', { users })
+    } catch (error) {
+      next(error)
+    }
   }
 }
 module.exports = adminController

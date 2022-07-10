@@ -16,7 +16,14 @@ const app = express()
 const port = process.env.PORT || 3000
 const SESSION_SECRET = 'secret'
 
-app.engine('hbs', handlebars({ extname: '.hbs', helpers: handlebarsHelpers }))
+app.engine('hbs', handlebars({
+  extname: '.hbs',
+  helpers: handlebarsHelpers,
+  runtimeOptions: {
+    allowProtoPropertiesByDefault: true,
+    allowProtoMethodsByDefault: true
+  }
+}))
 app.set('view engine', 'hbs')
 app.use(express.urlencoded({ extended: true }))
 
