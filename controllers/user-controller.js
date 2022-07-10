@@ -1,7 +1,8 @@
 const bcrypt = require('bcryptjs') // 載入 bcrypt
 const db = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
-const { User } = db
+const { User, Comment, Restaurant } = db
+const { getUser } = require('../helpers/auth-helpers')
 const userController = {
   signUpPage: (req, res) => {
     res.render('signup')
@@ -40,14 +41,14 @@ const userController = {
     res.redirect('/signin')
   },
   getUser: (req, res, next) => {
-    // console.log('res.locals.user', res.locals.user)
-    // const reqUser = req.user
-    return User.findByPk(req.params.id, { raw: true })
-      .then(user2 => {
-        if (!user2) throw new Error("User didn't exist!")
-        // console.log('reqUser', reqUser)
-        // console.log(user)
-        return res.render('users/profile', { user2 })
+    const reqUser = getUser(req)
+    return User.findByPk(req.params.id, {
+      include: [{ model: Comment, include: Restaurant }],
+      order: [[{ model: Comment }, 'createdAt', 'DESC']]
+    })
+      .then(currentUser => {
+        if (!currentUser) throw new Error("User didn't exist!")
+        return res.render('users/profile', { user: reqUser, currentUser: currentUser.toJSON() })
       })
       .catch(err => next(err))
   },
