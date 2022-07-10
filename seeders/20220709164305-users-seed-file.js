@@ -1,21 +1,31 @@
 'use strict'
-const faker = require('faker')
+const bcrypt = require('bcryptjs')
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.bulkInsert('Restaurants',
-      Array.from({ length: 50 }, () => ({
-        name: faker.name.findName(),
-        tel: faker.phone.phoneNumber(),
-        address: faker.address.streetAddress(),
-        opening_hours: '08:00',
-        image: `https://loremflickr.com/320/240/restaurant,food/?random=${Math.random() * 100}`,
-        description: faker.lorem.text(),
-        created_at: new Date(),
-        updated_at: new Date()
-      }))
-    )
+    await queryInterface.bulkInsert('Users', [{ // 一次新增三筆資料
+      email: 'root@example.com',
+      password: await bcrypt.hash('12345678', 10),
+      is_admin: true,
+      name: 'root',
+      created_at: new Date(),
+      updated_at: new Date()
+    }, {
+      email: 'user1@example.com',
+      password: await bcrypt.hash('12345678', 10),
+      is_admin: false,
+      name: 'user1',
+      created_at: new Date(),
+      updated_at: new Date()
+    }, {
+      email: 'user2@example.com',
+      password: await bcrypt.hash('12345678', 10),
+      is_admin: false,
+      name: 'user2',
+      created_at: new Date(),
+      updated_at: new Date()
+    }], {})
   },
-  down: async (queryInterface, Sequelize) => {
-    await queryInterface.bulkDelete('Restaurants', null, {})
+  down: async (queryInterface, Sequelize) => { // 清空資料表中所有資料
+    await queryInterface.bulkDelete('Users', null, {})
   }
 }
