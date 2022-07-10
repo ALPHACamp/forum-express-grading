@@ -103,6 +103,21 @@ const adminController = {
     } catch (error) {
       next(error)
     }
+  },
+  patchUser: async (req, res, next) => {
+    try {
+      const user = await User.findByPk(req.params.id)
+      if (user.email === 'root@example.com') {
+        req.flash('error_messages', '禁止變更root權限')
+        return res.redirect('back')
+      } else {
+        await user.update({ isAdmin: !user.isAdmin })
+        req.flash('success_messages', '使用者權限變更成功')
+        return res.redirect('/admin/users')
+      }
+    } catch (error) {
+      next(error)
+    }
   }
 }
 module.exports = adminController
