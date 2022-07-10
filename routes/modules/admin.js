@@ -17,6 +17,7 @@ router.get('/users', adminController.getUsers) // show all users
 
 router.get('/categories/:cat_id', categoryController.getCategories) // show edit page
 router.put('/categories/:cat_id', categoryController.putCategory) // update a category into database
+router.delete('/categories/:cat_id', categoryController.deleteCategory) // delete a category from database
 router.get('/categories', categoryController.getCategories) // show create page
 router.post('/categories', categoryController.postCategory) // create new category into database
 router.get('/', (req, res) => res.redirect('/admin/restaurants'))
