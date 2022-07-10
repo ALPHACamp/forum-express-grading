@@ -4,7 +4,7 @@ const { imgurFileHandler } = require('../helpers/file-helpers')
 const adminController = {
   patchUser: async (req, res, next) => {
     try {
-      const user = await User.findByPk(req.params.id)
+      const user = await User.findByPk(req.params.user_id)
       if (user.email !== 'root@example.com') {
         await user.update({
           isAdmin: !user.isAdmin
