@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const adminController = require('../../controllers/admin-controller')
+const categoryController = require('../../controllers/category-controller')
 const upload = require('../../middleware/multer')
 const { generalErrorHandler } = require('../../middleware/error-handler')
 
@@ -13,6 +14,7 @@ router.patch('/users/:id', adminController.patchUser) // switch admin <=> user
 router.post('/restaurants', upload.single('image'), adminController.postRestaurant) // create a restaurant
 router.get('/restaurants', adminController.getRestaurants) // show all restaurants
 router.get('/users', adminController.getUsers) // show all users
+router.get('/categories', categoryController.getCategories) // show all categories
 router.get('/', (req, res) => res.redirect('/admin/restaurants'))
 
 router.use('/', generalErrorHandler)
