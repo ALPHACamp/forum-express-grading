@@ -1,5 +1,6 @@
 const { Restaurant, User, Category } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
+const { SetRootRoleError } = require('../helpers/error-helpers')
 const adminController = {
   getRestaurants: (req, res, next) => {
     Restaurant.findAll({
@@ -109,12 +110,6 @@ const adminController = {
   patchUser: (req, res, next) => {
     const id = req.params.id
     const email = 'root@example.com'
-    class SetRootRoleError extends Error {
-      constructor(message) {
-        super(message)
-        this.name = SetRootRoleError
-      }
-    }
     return User.findByPk(id)
       .then(user => {
         if (!user) throw new Error("this user didn't exist!")
