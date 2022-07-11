@@ -11,6 +11,7 @@ router.delete('/restaurants/:id', adminController.deleteRestaurant)
 router.patch('/users/:id', adminController.patchUser)
 router.get('/users', adminController.getUsers)
 router.get('/categories', categoryController.getCategories)
+router.post('/categories', categoryController.postCategory)
 router.get('/restaurants', adminController.getRestaurants) // 修改這行，新增 authenticatedAdmin 參數
 router.post('/restaurants', upload.single('image'), adminController.postRestaurant)
 router.use('/', (req, res) => res.redirect('/admin/restaurants'))
