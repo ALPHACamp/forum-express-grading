@@ -1,0 +1,16 @@
+<div class="card mb-3 mx-auto mt-4" style="max-width: 960px;">
+  <div class="row g-0">
+    <div class="col-md-4">
+      <img src="{{targetUser.image}}" alt="profile_picture">
+    </div>
+    <div class="col-md-8 ps-5 pt-4">
+      <div class="card-body">
+        <h2 class="card-title">{{targetUser.name}}</h2>
+        <p class="card-text mt-4">{{targetUser.email}}</p>
+        {{#ifCond targetUser.id user.id}}
+        <a class="btn btn-primary" href="/users/{{targetUser.id}}/edit">Edit</a>
+        {{/ifCond}}
+      </div>
+    </div>
+  </div>
+</div>
