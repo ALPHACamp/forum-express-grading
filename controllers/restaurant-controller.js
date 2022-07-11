@@ -1,21 +1,32 @@
 const { Restaurant, Category } = require('../models')
 const restaurantController = {
-  getRestaurants: (req, res) => {
-    return Restaurant.findAll({
-      include: Category, //拿出關聯的 Category model
-      nest: true,
-      raw: true
-    }).then(restaurants => {
-      const data = restaurants.map(r => ({
-        ...r,
-        description: r.description.substring(0, 50)
-      }))
-      return res.render('restaurants', {
-        restaurants: data
+  getRestaurants: (req, res, next) => {
+    const categoryId = Number(req.query.categoryId) || ''
+    return Promise.all([
+      Restaurant.findAll({
+        include: Category,
+        where: {
+          ...categoryId ? { categoryId } : {}
+        },
+        nest: true,
+        raw: true
+      }),
+      Category.findAll({ raw: true })
+    ])
+      .then(([restaurants, categories]) => {
+        const data = restaurants.map(restaurant => ({
+          ...restaurant,
+          description: restaurant.description.substring(0, 50)
+        }))
+        return res.render('restaurants', {
+          restaurants: data,
+          categories,
+          categoryId
+        })
       })
-    })
+      .catch(err => next(err))
   },
-  getRestaurant: (req, res) => {
+  getRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
       include: Category,
       nest: true
@@ -26,9 +37,9 @@ const restaurantController = {
         restaurant.viewCounts += 1
         return restaurant.save()
       })
-      .catch(err => console.log(err))
+      .catch(err => next(err))
   },
-  getDashboard: (req, res) => {
+  getDashboard: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
       raw: true,
       include: Category,
@@ -38,7 +49,7 @@ const restaurantController = {
         if (!restaurant) throw new Error("Restaurant doesn't exist!")
         return res.render('dashboard', { restaurant })
       })
-      .catch(err => console.log(err))
+      .catch(err => next(err))
   }
 }
 module.exports = restaurantController
