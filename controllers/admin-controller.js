@@ -8,11 +8,23 @@ const adminController = {
       })
       .catch(err => next(err))
   },
-  createRestaurant: (req, res, next) => {
-    return res.render('admin/create-restaurant')
+  createRestaurant: async (req, res, next) => {
+    try {
+      const categories = await Category.findAll({ raw: true })
+      return res.render('admin/create-restaurant', { categories })
+    } catch (err) {
+      next(err)
+    }
   },
   postRestaurant: (req, res, next) => {
-    const { name, tel, address, openingHours, description } = req.body
+    const {
+      name,
+      tel,
+      address,
+      openingHours,
+      description,
+      categoryId
+    } = req.body
     if (!name) {
       throw new Error('Restaurant name is required')
     }
@@ -25,6 +37,7 @@ const adminController = {
           address,
           openingHours,
           description,
+          categoryId,
           image: filePath || null
         })
       )
@@ -49,17 +62,33 @@ const adminController = {
       .catch(err => next(err))
   },
   editRestaurant: (req, res, next) => {
-    Restaurant.findByPk(req.params.id, { raw: true })
-      .then(restaurant => {
+    Promise.all([
+      Restaurant.findByPk(req.params.id, {
+        raw: true
+      }),
+      Category.findAll({ raw: true })
+    ])
+      .then(([restaurant, categories]) => {
         if (!restaurant) {
           throw new Error("Restaurant didn't exist")
         }
-        res.render('admin/edit-restaurant', { restaurant })
+        console.log(restaurant)
+        res.render('admin/edit-restaurant', {
+          restaurant,
+          categories
+        })
       })
       .catch(err => next(err))
   },
   putRestaurant: (req, res, next) => {
-    const { name, tel, address, openingHours, description } = req.body
+    const {
+      name,
+      tel,
+      address,
+      openingHours,
+      description,
+      categoryId
+    } = req.body
     if (!name) {
       throw new Error('Restaurant name is required')
     }
@@ -75,6 +104,7 @@ const adminController = {
           address,
           openingHours,
           description,
+          categoryId,
           image: filePath || restaurant.image
         })
       })
