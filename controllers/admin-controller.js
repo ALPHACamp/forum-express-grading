@@ -90,28 +90,31 @@ const adminController = {
       })
       .catch(err => next(err))
   },
-  getUsers: (req, res, next) => {
-    return User.findAll({
-      raw: true
-    })
-      .then(users => res.render('admin/users', { users }))
-      .catch(err => next(err))
+  getUsers: async (req, res, next) => {
+    try {
+      const users = await User.findAll({
+        raw: true
+      })
+      return res.render('admin/users', { users })
+    } catch (error) {
+      throw new Error('getUsers Error')
+    }
   },
-  patchUser: (req, res, next) => {
-    return User.findByPk(req.params.id)
-      .then(user => {
-        if (!user) throw new Error("User didn't exist!")
-        if (user.email === 'root@example.com') {
-          req.flash('error_messages', '禁止變更 root 權限')
-          return res.redirect('back')
-        }
-        return user.update({ isAdmin: !user.isAdmin })
-      })
-      .then(() => {
+  patchUser: async (req, res, next) => {
+    try {
+      const user = await User.findByPk(req.params.id)
+      if (!user) throw new Error("User didn't exist!")
+
+      if (user.email === 'root@example.com') {
+        req.flash('error_messages', '禁止變更 root 權限')
+        return res.redirect('back')
+      } else {
+        await user.update({ isAdmin: !user.isAdmin })
         req.flash('success_messages', '使用者權限變更成功')
-        return res.redirect('/admin/users')
-      })
-      .catch(err => next(err))
+        return res.redirect('/admin/users') }
+    } catch (error) {
+      throw new Error('patchUser')
+    }
   }
 }
 module.exports = adminController
