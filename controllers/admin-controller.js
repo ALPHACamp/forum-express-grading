@@ -42,34 +42,42 @@ const adminController = {
       })
       .catch((error) => next(error))
   },
-  createRestaurant: (req, res) => {
-    return res.render('admin/create-restaurant')
+  createRestaurant: async (req, res) => {
+    try {
+      const categories = await Category.findAll({ raw: true })
+      return res.render('admin/create-restaurant', { categories })
+    } catch (error) {
+      next(error)
+    }
   },
-  postRestaurant: (req, res, next) => {
-    const { name, tel, address, openingHours, description } = req.body
+  postRestaurant: async (req, res, next) => {
+    try {
+      const { name, tel, address, openingHours, description, categoryId } = req.body
 
-    // make sure restaurant name is not null
-    if (!name) throw new Error('Restaurant name is required field!')
+      // make sure restaurant name is not null
+      if (!name) throw new Error('Restaurant name is required field!')
 
-    // take out image file
-    const { file } = req
-    // pass image file to middleware: file-helpers
-    // create this restaurant
-    imgurFileHandler(file).then((filePath) =>
-      Restaurant.create({
+      // take out image file
+      const { file } = req
+
+      // pass image file to middleware: file-helpers
+      // create this restaurant
+      const filePath = await imgurFileHandler(file)
+      await Restaurant.create({
         name,
         tel,
         address,
         openingHours,
         description,
         image: filePath || null,
+        categoryId,
       })
-        .then(() => {
-          req.flash('success_messages', 'You have created restaurant successfully!')
-          res.redirect('/admin/restaurants')
-        })
-        .catch((error) => next(error))
-    )
+
+      req.flash('success_messages', 'You have created restaurant successfully!')
+      return res.redirect('/admin/restaurants')
+    } catch (error) {
+      next(error)
+    }
   },
   getRestaurant: (req, res, next) => {
     Restaurant.findByPk(req.params.id, {
@@ -86,17 +94,19 @@ const adminController = {
       .catch((error) => next(error))
   },
   editRestaurant: (req, res, next) => {
-    Restaurant.findByPk(req.params.id, { raw: true })
-      .then((restaurant) => {
-        if (!restaurant) throw new Error(`This restaurant doesn't exist!`)
+    // do find one restaurant and do find all categories at the same time
+    // more efficient
+    return Promise.all([Restaurant.findByPk(req.params.id, { raw: true }), Category.findAll({ raw: true })])
+      .then(([restaurant, categories]) => {
+        if (!restaurant) throw new Error('This restaurant has not been created!')
 
-        res.render('admin/edit-restaurant', { restaurant })
+        res.render('admin/edit-restaurant', { restaurant, categories })
       })
       .catch((error) => next(error))
   },
   putRestaurant: (req, res, next) => {
     // 1. take out data from req.body
-    const { name, tel, address, openingHours, description } = req.body
+    const { name, tel, address, openingHours, description, categoryId } = req.body
 
     // 2. make sure restaurant name is not null
     if (!name) throw new Error('Restaurant name is required field!')
@@ -119,6 +129,7 @@ const adminController = {
           openingHours,
           description,
           image: filePath || restaurant.image,
+          categoryId,
         })
       })
       .then(() => {
