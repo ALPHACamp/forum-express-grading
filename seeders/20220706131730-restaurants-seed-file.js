@@ -18,7 +18,8 @@ module.exports = {
         created_at: new Date(),
         updated_at: new Date(),
         // 再隨機分配這些id(有點看不懂)
-        category_id: categories[Math.floor(Math.random() * categories.length)].id
+        category_id: categories[Math.floor(Math.random() * categories.length)].id,
+        view_counts: 0
       }))
     )
   },
