@@ -15,5 +15,22 @@
       {{/ifCond}}
   </div>
 </div>
+<div class="card mt-5">
+  <div class="card-header">
+    {{#if currentUser.Comments}}
+    {{currentUser.Comments.length}} 已評論餐廳
+    {{else}}
+    尚未評論餐廳
+    {{/if}}
+  </div>
+  <div class="card-body">
+    {{#each currentUser.Comments}}
+    <a href="/restaurants/{{this.Restaurant.id}}" class="text-decoration-none">
+      <img class="img-responsive center-block my-1 mx-3" src="{{this.Restaurant.image}}"
+        style="width: 80px;height: 80px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+    </a>
+    {{/each}}
+  </div>
+</div>
 
 {{/if}}
