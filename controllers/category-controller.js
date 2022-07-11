@@ -1,4 +1,4 @@
-const { Category, Restaurant } = require('../models')
+const { Category } = require('../models')
 
 const categoryController = {
   getCategories: (req, res, next) => {
@@ -39,23 +39,12 @@ const categoryController = {
       .catch(err => next(err))
   },
   deleteCategory: (req, res, next) => {
-    // 檢查該分類是否已被使用
-    return Promise.all([
-      Restaurant.findOne({
-        attributes: ['category_id'],
-        where: { category_id: req.params.id },
-        raw: true
-      }),
-      Category.findByPk(req.params.id)
-    ])
-      .then(([restaurants, category]) => {
+    // todo: 檢查是否現有餐廳包含這個類別
+    // 如果餐廳內包含這個類別，把餐廳分類update成"未分類"(要另外新增此類別)，再刪除該分類
+    return Category.findByPk(req.params.id)
+      .then(category => {
         if (!category) throw new Error("Category didn't exist!")
-        // 若為是，則不刪除，將名稱改為未分類
-        if (restaurants) {
-          return category.update({ name: '(未分類)' })
-        } else {
-          return category.destroy()
-        }
+        return category.destroy()
       })
       .then(() => res.redirect('/admin/categories'))
       .catch(err => next(err))
