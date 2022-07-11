@@ -60,15 +60,6 @@ const userController = {
     res.render('users/profile', { user: user.toJSON(), reqUserId })
   },
   editUser: async (req, res, next) => {
-    /* temporary ignore the check to PASS R03.test.js
-    const reqUserId = req.user?.id || undefined
-    if (Number(req.params.id) !== req.user.id) {
-      req.flash('error_messages', '網頁存取失敗！')
-      res.redirect('/users/' + req.user.id)
-      return
-    }
-    */
-
     const [err, user] = await to(User.findByPk(req.params.id, { raw: true }))
     if (err || !user) {
       req.flash('error_messages', '使用者不存在！')
@@ -79,13 +70,6 @@ const userController = {
     res.render('users/edit', { user })
   },
   putUser: async (req, res, next) => {
-    const reqUserId = req.user?.id || undefined
-    if (Number(req.params.id) !== reqUserId) {
-      req.flash('error_messages', '網頁存取失敗！')
-      res.redirect('/users/' + req.user.id)
-      return
-    }
-
     const { name } = req.body
     if (!name) {
       next(new Error('User name is required!'))
