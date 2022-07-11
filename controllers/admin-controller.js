@@ -3,7 +3,7 @@ const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const adminController = { // 修改這裡
   getRestaurants: (req, res, next) => {
-    Restaurant.findAll({
+    return Restaurant.findAll({
       raw: true,
       nest: true, // 增加這裡
       include: [Category] // 增加這裡
@@ -22,7 +22,7 @@ const adminController = { // 修改這裡
     const { name, tel, address, openingHours, description, categoryId } = req.body
     if (!name) throw new Error('Restaurant name is required!')
     const { file } = req // 把檔案取出來，也可以寫成 const file = req.file
-    imgurFileHandler(file) // 把取出的檔案傳給 file-helper 處理後
+    return imgurFileHandler(file) // 把取出的檔案傳給 file-helper 處理後
       .then(filePath => Restaurant.create({ // 再 create 這筆餐廳資料
         name,
         tel,
@@ -39,7 +39,7 @@ const adminController = { // 修改這裡
       .catch(err => next(err))
   },
   getRestaurant: (req, res, next) => {
-    Restaurant.findByPk(req.params.id, { // 去資料庫用 id 找一筆資料
+    return Restaurant.findByPk(req.params.id, { // 去資料庫用 id 找一筆資料
       raw: true, // 找到以後整理格式再回傳
       nest: true, // 增加這裡
       include: [Category] // 增加這裡
@@ -65,7 +65,7 @@ const adminController = { // 修改這裡
     const { name, tel, address, openingHours, description, categoryId } = req.body
     if (!name) throw new Error('Restaurant name is required!')
     const { file } = req // 把檔案取出來
-    Promise.all([ // 非同步處理
+    return Promise.all([ // 非同步處理
       Restaurant.findByPk(req.params.id), // 去資料庫查有沒有這間餐廳
       imgurFileHandler(file) // 把檔案傳到 file-helper 處理
     ])
