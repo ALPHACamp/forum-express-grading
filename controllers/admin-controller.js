@@ -93,50 +93,53 @@ const adminController = {
       })
       .catch((error) => next(error))
   },
-  editRestaurant: (req, res, next) => {
+  editRestaurant: async (req, res, next) => {
     // do find one restaurant and do find all categories at the same time
     // more efficient
-    return Promise.all([Restaurant.findByPk(req.params.id, { raw: true }), Category.findAll({ raw: true })])
-      .then(([restaurant, categories]) => {
-        if (!restaurant) throw new Error('This restaurant has not been created!')
-
-        res.render('admin/edit-restaurant', { restaurant, categories })
-      })
-      .catch((error) => next(error))
+    try {
+      const [restaurant, categories] = await Promise.all([
+        Restaurant.findByPk(req.params.id, { raw: true }),
+        Category.findAll({ raw: true }),
+      ])
+      if (!restaurant) throw new Error('This restaurant has not been created!')
+      return res.render('admin/edit-restaurant', { restaurant, categories })
+    } catch (error) {
+      next(error)
+    }
   },
-  putRestaurant: (req, res, next) => {
-    // 1. take out data from req.body
-    const { name, tel, address, openingHours, description, categoryId } = req.body
+  putRestaurant: async (req, res, next) => {
+    try {
+      // 1. take out data from req.body
+      const { name, tel, address, openingHours, description, categoryId } = req.body
 
-    // 2. make sure restaurant name is not null
-    if (!name) throw new Error('Restaurant name is required field!')
+      // 2. make sure restaurant name is not null
+      if (!name) throw new Error('Restaurant name is required field!')
 
-    // 3. deal with two Promise at the same time
-    // 3-1. find by primary key: id
-    // `restaurant` is insatnce of Restaurant
-    // not necessary to change data into plain object, don't add { raw: true }
-    // 3-2. take out image file from req, and pass to middleware: localFileHandler
-    // get filePath
-    // 4. update data getting from req.body and localFileHandler
-    const { file } = req
-    Promise.all([Restaurant.findByPk(req.params.id), imgurFileHandler(file)])
-      .then(([restaurant, filePath]) => {
-        if (!restaurant) throw new Error(`This restaurant doesn't exist!`)
-        return restaurant.update({
-          name,
-          tel,
-          address,
-          openingHours,
-          description,
-          image: filePath || restaurant.image,
-          categoryId,
-        })
+      // 3. deal with two Promise at the same time
+      // 3-1. find by primary key: id
+      // `restaurant` is insatnce of Restaurant
+      // not necessary to change data into plain object, don't add { raw: true }
+      // 3-2. take out image file from req, and pass to middleware: localFileHandler
+      // get filePath
+      // 4. update data getting from req.body and localFileHandler
+      const { file } = req
+      const [restaurant, filePath] = await Promise.all([Restaurant.findByPk(req.params.id), imgurFileHandler(file)])
+      if (!restaurant) throw new Error(`This restaurant doesn't exist!`)
+
+      await restaurant.update({
+        name,
+        tel,
+        address,
+        openingHours,
+        description,
+        image: filePath || restaurant.image,
+        categoryId,
       })
-      .then(() => {
-        req.flash('success_messages', 'Restaurant was updated successfully!')
-        res.redirect('/admin/restaurants')
-      })
-      .catch((error) => next(error))
+      req.flash('success_messages', 'Restaurant was updated successfully!')
+      return res.redirect('/admin/restaurants')
+    } catch (error) {
+      next(error)
+    }
   },
   deleteRestaurant: (req, res, next) => {
     // 1. find by primary key: id
