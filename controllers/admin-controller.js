@@ -14,12 +14,13 @@ const adminController = {
       next(err)
     }
   },
-  createRestaurant: (req, res) => {
-    res.render('admin/create-restaurant')
+  createRestaurant: async (req, res) => {
+    const categories = await Category.findAll({ raw: true })
+    res.render('admin/create-restaurant', { categories })
   },
   postRestaurant: async (req, res, next) => {
     try {
-      const { name, tel, address, openingHours, description } = req.body
+      const { name, tel, address, openingHours, description, categoryId } = req.body
       if (!name) throw new Error('Restaurant name is required!')
       const { file } = req
       const filePath = await imgurFileHandler(file)
@@ -29,6 +30,7 @@ const adminController = {
         address,
         openingHours,
         description,
+        categoryId,
         image: filePath || null
       })
       req.flash('success_message', 'Restaurant created successfully!')
@@ -52,16 +54,19 @@ const adminController = {
   },
   editRestaurant: async (req, res, next) => {
     try {
-      const restaurant = await Restaurant.findByPk(req.params.id, { raw: true })
+      const [restaurant, categories] = await Promise.all([
+        Restaurant.findByPk(req.params.id, { raw: true }),
+        Category.findAll({ raw: true })
+      ])
       if (!restaurant) throw new Error('Restaurant not exist!')
-      res.render('admin/edit-restaurant', { restaurant })
+      res.render('admin/edit-restaurant', { restaurant, categories })
     } catch (err) {
       next(err)
     }
   },
   putRestaurant: async (req, res, next) => {
     try {
-      const { name, tel, address, openingHours, description } = req.body
+      const { name, tel, address, openingHours, description, categoryId } = req.body
       if (!name) throw new Error('Restaurant name is required!')
       const { file } = req
       const filePath = await imgurFileHandler(file)
@@ -73,6 +78,7 @@ const adminController = {
         address,
         openingHours,
         description,
+        categoryId,
         image: filePath || restaurant.image
       })
       req.flash('success_message', 'Restaurant updated successfully!')
