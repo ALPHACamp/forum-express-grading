@@ -12,9 +12,6 @@
     "type": "git",
     "url": "git+https://github.com/ALPHACamp/forum-express-grading.git"
   },
-  "engines": {
-    "node": "14.16.0"
-  },
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "connect-flash": "^0.1.1",
