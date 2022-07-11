@@ -1,7 +1,7 @@
 <h1>餐廳後台
   {{#if restaurants}}
   <a href='/admin/restaurants/create'>
-    <button type="button" class="btn btn-primary btn-sm" style="margin-left: 20px;">New Restaurant</button>
+    <button type="button" class="btn btn-primary btn-sm" style="margin-left: 30px;">New Restaurant</button>
   </a>
   {{/if}}
 </h1>
@@ -11,6 +11,9 @@
   </li>
   <li class="nav-item">
     <a class="nav-link {{#if users}}active{{/if}}" href="/admin/users">Users</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link {{#if categories}}active{{/if}}" href="/admin/categories">Categories</a>
   </li>
 </ul>
 <br />
