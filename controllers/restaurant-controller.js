@@ -26,6 +26,7 @@ const restaurantController = {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         // 每點一次，就遞增瀏覽數的value
         console.log(restaurant.toJSON())
+        // ,{by: 2} 設定遞增級距
         return restaurant.increment('viewCounts')
       })
       // 取到的非目標型態，所以要再轉成JSON型態
