@@ -1,15 +1,7 @@
-<h1>餐廳後台</h1>
-{{!-- 導覽列 --}}
-<ul class="nav nav-tabs">
-  <li class="nav-item">
-    <a class="nav-link {{#if restaurants}}active{{/if}}" aria-current="page" href="/admin/restaurants">Restaurants</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link {{#if users}}active{{/if}}" href="/admin/users">Users</a>
-  </li>
-</ul>
-
-
+{{>admin-tabs route='users'}}
+<table class="table align-middle">
+  <thead class="thead-dark">
+    
 <br />
 <table class="table align-middle">
   <thead class="thead-dark">
