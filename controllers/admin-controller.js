@@ -3,13 +3,17 @@
 // const Restaurant = db.Restaurant
 
 // 載入 model 寫法2：
-const { Restaurant, User } = require('../models')
+const { Restaurant, User, Category } = require('../models')
 
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const adminController = {
   getRestaurants: (req, res, next) => {
-    Restaurant.findAll({ raw: true }) // 用findAll在sequelize找到的是物件(實體)，所以要用raw:true 去把撈到的資料轉換成簡單的js物件
+    Restaurant.findAll({
+      raw: true, // 用findAll在sequelize找到的是物件(實體)，所以要用raw:true 去把撈到的資料轉換成簡單的js物件
+      nest: true,
+      include: [Category]
+    })
       .then(restaurants => res.render('admin/restaurants', { restaurants }))
       .catch(err => next(err))
   },
@@ -36,7 +40,11 @@ const adminController = {
       .catch(err => next(err))
   },
   getRestaurant: (req, res, next) => {
-    Restaurant.findByPk(req.params.id, { raw: true })
+    Restaurant.findByPk(req.params.id, {
+      raw: true,
+      nest: true,
+      include: [Category]
+    })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         res.render('admin/restaurant', { restaurant })
