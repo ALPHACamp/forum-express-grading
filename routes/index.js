@@ -27,7 +27,10 @@ router.get('/logout', userController.logout)
  * pass authentication process,
  * this request will be passed to the function `getRestaurants` which is in object restaurantController
  */
+
+router.get('/restaurants/:id', authenticated, restaurantController.getRestaurant)
 router.get('/restaurants', authenticated, restaurantController.getRestaurants)
+
 /**
  * set fallback router
  * if all routers above are not allow to get into, this fallback router is the only one to enter

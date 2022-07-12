@@ -11,7 +11,7 @@ const restaurantController = {
       spread operator: copy object r
       description: r.description.substring(0, 50): cover description with shorten one
       */
-      const restaurants = await Restaurant.findAll({ raw: true, nest: true, include: Category })
+      const restaurants = await Restaurant.findAll({ include: Category, raw: true, nest: true })
 
       const data = await restaurants.map((r) => ({
         ...r,
@@ -19,6 +19,17 @@ const restaurantController = {
       }))
 
       return res.render('restaurants', { restaurants: data })
+    } catch (error) {
+      next(error)
+    }
+  },
+  getRestaurant: async (req, res, next) => {
+    try {
+      const restaurant = await Restaurant.findByPk(req.params.id, { include: Category, raw: true, nest: true })
+
+      if (!restaurant) throw new Error('This restaurant does not exist!')
+
+      return res.render('restaurant', { restaurant })
     } catch (error) {
       next(error)
     }
