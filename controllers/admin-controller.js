@@ -1,21 +1,26 @@
-const { Restaurant, User } = require('../models')
+const { Restaurant, User, Category } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const adminController = {
   getRestaurants: async (req, res, next) => {
     try {
-      const restaurants = await Restaurant.findAll({ raw: true })
+      const restaurants = await Restaurant.findAll({
+        raw: true,
+        nest: true,
+        include: [Category]
+      })
       res.render('admin/restaurants', { restaurants })
     } catch (err) {
       next(err)
     }
   },
-  createRestaurant: (req, res) => {
-    res.render('admin/create-restaurant')
+  createRestaurant: async (req, res) => {
+    const categories = await Category.findAll({ raw: true })
+    res.render('admin/create-restaurant', { categories })
   },
   postRestaurant: async (req, res, next) => {
     try {
-      const { name, tel, address, openingHours, description } = req.body
+      const { name, tel, address, openingHours, description, categoryId } = req.body
       if (!name) throw new Error('Restaurant name is required!')
       const { file } = req
       const filePath = await imgurFileHandler(file)
@@ -25,6 +30,7 @@ const adminController = {
         address,
         openingHours,
         description,
+        categoryId,
         image: filePath || null
       })
       req.flash('success_message', 'Restaurant created successfully!')
@@ -35,7 +41,11 @@ const adminController = {
   },
   getRestaurant: async (req, res, next) => {
     try {
-      const restaurant = await Restaurant.findByPk(req.params.id, { raw: true })
+      const restaurant = await Restaurant.findByPk(req.params.id, {
+        raw: true,
+        nest: true,
+        include: [Category]
+      })
       if (!restaurant) throw new Error('Restaurant not exist!')
       res.render('admin/restaurant', { restaurant })
     } catch (err) {
@@ -44,16 +54,19 @@ const adminController = {
   },
   editRestaurant: async (req, res, next) => {
     try {
-      const restaurant = await Restaurant.findByPk(req.params.id, { raw: true })
+      const [restaurant, categories] = await Promise.all([
+        Restaurant.findByPk(req.params.id, { raw: true }),
+        Category.findAll({ raw: true })
+      ])
       if (!restaurant) throw new Error('Restaurant not exist!')
-      res.render('admin/edit-restaurant', { restaurant })
+      res.render('admin/edit-restaurant', { restaurant, categories })
     } catch (err) {
       next(err)
     }
   },
   putRestaurant: async (req, res, next) => {
     try {
-      const { name, tel, address, openingHours, description } = req.body
+      const { name, tel, address, openingHours, description, categoryId } = req.body
       if (!name) throw new Error('Restaurant name is required!')
       const { file } = req
       const filePath = await imgurFileHandler(file)
@@ -65,6 +78,7 @@ const adminController = {
         address,
         openingHours,
         description,
+        categoryId,
         image: filePath || restaurant.image
       })
       req.flash('success_message', 'Restaurant updated successfully!')
