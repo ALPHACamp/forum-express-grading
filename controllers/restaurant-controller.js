@@ -22,10 +22,12 @@ const restaurantController = {
     ])
       .then(([restaurants, categories]) => {
         const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
+        const likedRestaurantsId = req.user && req.user.LikedRestaurants.map(likedRest => likedRest.id)
         const data = restaurants.rows.map(r => ({
           ...r,
           description: r.description.substring(0, 50),
-          isFavorited: favoritedRestaurantsId.includes(r.id)
+          isFavorited: favoritedRestaurantsId.includes(r.id),
+          isLiked: likedRestaurantsId.includes(r.id)
         }))
         return res.render('restaurants', {
           restaurants: data,
@@ -40,7 +42,8 @@ const restaurantController = {
       include: [
         Category,
         { model: Comment, include: User },
-        { model: User, as: 'FavoritedUsers' }
+        { model: User, as: 'FavoritedUsers' },
+        { model: User, as: 'LikedUsers' }
       ],
       order: [[{ model: Comment }, 'createdAt', 'DESC']]
     })
@@ -50,22 +53,28 @@ const restaurantController = {
       })
       .then(restaurant => {
         const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id) // 新增這一行
+        const isLiked = restaurant.LikedUsers.some(l => l.id === req.user.id)
         res.render('restaurant', {
           restaurant: restaurant.toJSON(),
-          isFavorited // 新增這一行
+          isFavorited, // 新增這一行
+          isLiked
         })
       })
       .catch(err => next(err))
   },
   getDashboard: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
-      include: Category,
-      nest: true,
-      raw: true
+      include: [
+        Category,
+        Comment,
+        { model: User, as: 'FavoritedUsers' },
+        { model: User, as: 'LikedUsers' }
+      ]
     })
       .then(restaurant => {
+        console.log(restaurant.toJSON())
         if (!restaurant) throw new Error("Restaurant didn't exist!")
-        return res.render('dashboard', { restaurant })
+        return res.render('dashboard', { restaurant: restaurant.toJSON() })
       })
       .catch(err => next(err))
   },
