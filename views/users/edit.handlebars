@@ -1,0 +1,14 @@
+<div class="container d-flex bg-white p-3">
+  <form action="/users/{{user.id}}?_method=PUT" method="POST" enctype="multipart/form-data">
+    <h1>Edit User Profile</h1>
+    <div class="mb-3">
+      <label for="name" class="form-label">Name</label>
+      <input type="text" value="{{user.name}}" name="name" id="name" class='form-control' />
+    </div>
+    <div class="mb-3">
+      <label for="image" class="form-label">Image</label>
+      <input class="form-control" type="file" id="image" name="image">
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+</div>
