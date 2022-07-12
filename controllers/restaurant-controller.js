@@ -45,23 +45,23 @@ const restaurantController = {
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         // 每點一次，就遞增瀏覽數的value
-        console.log(restaurant.toJSON())
-        // ,{by: 2} 設定遞增級距
         return restaurant.increment('viewCounts')
       })
       // 取到的非目標型態，所以要再轉成JSON型態
-      .then(restaurant => res.render('restaurant', { restaurant: restaurant.toJSON() }))
+      .then(restaurant => {
+        res.render('restaurant', { restaurant: restaurant.toJSON() })
+      })
       .catch(err => next(err))
   },
   getDashboard: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
-      include: Category,
-      nest: true,
-      raw: true
+      include: [Category, Comment]
     })
       .then(restaurant => {
+        restaurant = restaurant.toJSON()
+        const commentCounts = restaurant.Comments.length
         if (!restaurant) throw new Error("Restaurant didn't exist!")
-        return res.render('dashboard', { restaurant })
+        return res.render('dashboard', { restaurant, commentCounts })
       })
       .catch(err => next(err))
   }
