@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs')
-const { User, Comment, Restaurant, Favorite } = require('../models')
+const { User, Comment, Restaurant, Favorite, Like } = require('../models')
 const { getUser } = require('../helpers/auth-helpers')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
@@ -43,6 +43,7 @@ const userController = {
       include: [{ model: Comment, include: Restaurant }]
     })
       .then(targetUser => {
+        console.log(targetUser)
         if (!targetUser) throw new Error("User doesn't exist!")
         res.render('users/profile', {
           targetUser: targetUser.toJSON(), // 查看其他使用者
@@ -117,6 +118,42 @@ const userController = {
       .then(favorite => {
         if (!favorite) throw new Error("The restaurant is not on your list.")
         return favorite.destroy()
+      })
+      .then(() => res.redirect('back'))
+      .catch(err => next(err))
+  },
+  addLike: (req, res, next) => {
+    const { restaurantId } = req.params
+    return Promise.all([
+      Restaurant.findByPk(restaurantId),
+      Like.findOne({
+        where: {
+          userId: req.user.id,
+          restaurantId
+        }
+      })
+    ])
+      .then(([restaurant, like]) => {
+        if (!restaurant) throw new Error("Restaurant doesn't exist!")
+        if (like) throw new Error('The restaurant is already on your like list.')
+        return Like.create({
+          userId: req.user.id,
+          restaurantId
+        })
+      })
+      .then(() => res.redirect('back'))
+      .catch(err => next(err))
+  },
+  removeLike: (req, res, next) => {
+    return Like.findOne({
+      where: {
+        userId: req.user.id,
+        restaurantId: req.params.restaurantId
+      }
+    })
+      .then(like => {
+        if (!like) throw new Error("The restaurant is not on your like list.")
+        return like.destroy()
       })
       .then(() => res.redirect('back'))
       .catch(err => next(err))
