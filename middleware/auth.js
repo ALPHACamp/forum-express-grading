@@ -15,7 +15,13 @@ const authenticatedAdmin = (req, res, next) => {
     res.redirect('/signin')
   }
 }
+const authenticatedLimit = (req, res, next) => {
+  if (helpers.getUser(req).id === Number(req.params.id)) { return next() }
+  req.flash('error_messages', '你沒有權限存取')
+  res.redirect('back')
+}
 module.exports = {
   authenticated,
-  authenticatedAdmin
+  authenticatedAdmin,
+  authenticatedLimit
 }
