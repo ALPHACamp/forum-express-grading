@@ -68,8 +68,18 @@ const restaurantController = {
         raw: true
       })
       if (!restaurant) throw new Error("Restaurant didn't exist!") // didnot find a restaurant
+
+      const comments = await Comment.findAndCountAll(
+        {
+          where: {
+            restaurantId: req.params.rest_id
+          }
+        }
+      )
+
       return res.render('dashboard', {
-        restaurant
+        restaurant,
+        commentCounts: comments.count
       })
     } catch (error) {
       next(error)
