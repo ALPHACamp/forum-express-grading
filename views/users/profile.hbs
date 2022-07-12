@@ -1,0 +1,29 @@
+<div class="card mb-3">
+  <div class="row no-gutters">
+    <div class="col-md-4">
+      {{#if user.image}}
+      <img src="{{user.image}}" width="300px" height="300px" style="transition: opacity 0.5s; opacity:0;"
+        onload="this.style.opacity=1;" alt="Profile_image">
+      {{else}}
+      <img src="https://img95.699pic.com/element/40205/0961.png_300.png" width="300px" height="300px"
+        style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;" alt="Profile_image">
+      {{/if}}
+    </div>
+    <div class="col-md-8">
+      <div class="card-body">
+        <h5 class="card-title">{{user.name}}</h5>
+        <p class="card-text">
+          {{user.email}}
+        </p>
+        <p>
+          {{#ifCond user.id currentUser.id}}
+          <a href="/users/{{user.id}}/edit" class="btn btn-primary mx-1">Edit</a>
+          {{else}}
+          <a href="javascript:history.back()" class="btn btn-outline-secondary mx-1">Back</a>
+          {{/ifCond}}
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
