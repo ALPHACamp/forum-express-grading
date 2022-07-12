@@ -1,5 +1,6 @@
 'use strict'
 const faker = require('faker')
+
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     // 新增以下三行，先去查詢現在 Categories 的 id 有哪些 
