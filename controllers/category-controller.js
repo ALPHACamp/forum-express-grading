@@ -40,6 +40,19 @@ const categoryController = {
       next(error)
     }
   },
+  deleteCategory: async (req, res, next) => {
+    try {
+      const category = await Category.findByPk(req.params.id)
+      if (!category) throw new Error('This category does not exist!')
+
+      await category.destroy()
+
+      req.flash('success_messages', 'You have deleted the category successfully!')
+      return res.redirect('/admin/categories')
+    } catch (error) {
+      next(error)
+    }
+  },
 }
 
 module.exports = categoryController
