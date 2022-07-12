@@ -17,8 +17,8 @@ const categoryController = {
   },
   putCategory: async (req, res, next) => { // update a category into database
     try {
-      let { name } = req.body
-      name = name.trim()
+      const name = req.body.name.trim()
+
       if (!name) throw new Error('Category name is required!')
 
       let category = await Category.findOne(
@@ -38,8 +38,8 @@ const categoryController = {
   },
   postCategory: async (req, res, next) => { // create new category into database
     try {
-      let { name } = req.body
-      name = name.trim()
+      const name = req.body.name.trim()
+
       if (!name) throw new Error('Category name is required!')
       const category = await Category.findOne(
         { where: { name: name } }
