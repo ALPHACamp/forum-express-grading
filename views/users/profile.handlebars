@@ -1,0 +1,30 @@
+<div class="container d-flex flex-row bg-white p-3 mb-3">
+  {{#if user.image}}
+  <img src="{{user.image}}" class="rounded" width="250" alt="it is a user photo">
+  {{else}}
+  <div class="bg-dark text-light p-2 d-flex justify-content-center align-items-center">
+    <i>please upload a profile photo</i>
+  </div>
+  {{/if}}
+  <div class="mx-3">
+    <h1>{{user.name}}</h1>
+    <p>{{user.email}}</p>
+    <a href="/users/{{user.id}}/edit" class="btn btn-primary">edit</a>
+  </div>
+</div>
+<div>
+  <h2>
+    <span class="mx-2">{{#if restaurants}}{{restaurants.length}}{{else}}0{{/if}}</span>
+    已評論過餐廳
+  </h2>
+  {{#if restaurants}}
+  <div class="container d-flex flex-row justify-content-start align-items-center bg-white py-3">
+    {{#each restaurants}}
+    <a href="/restaurants/{{this.id}}">
+      <img src="{{this.image}}" class="rounded me-2" width="90" alt="it is a photo for restaurant {{this.name}}"
+    />
+    </a>
+    {{/each}}
+  </div>
+  {{/if}}
+</div>

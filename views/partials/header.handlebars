@@ -16,6 +16,7 @@
           {{/if}}
           <li class="nav-item d-inline-flex align-items-center">
             <span class="text-white nav-link">Hi, {{ user.email }}</span>
+            <a href="/users/{{user.id}}" class="align-middle text-light text-decoration-none mx-3">Profile</a>
           </li>
           <li class="nav-item">
             <a href="/logout"><button class="btn btn-outline-success my-sm-0 my-2">Logout</button></a>
