@@ -35,6 +35,8 @@
       <th scope="row">{{this.id}}</th>
       <td>{{this.name}}</td>
       <td>
+        {{#ifCond this.name '(未分類)'}}
+        {{else}}
         <button type="button" class="btn btn-link">
           <a class="btn btn-link link-primary" href="/admin/categories/{{this.id}}">
             Edit
@@ -43,6 +45,7 @@
         <form action="/admin/categories/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
           <button type="submit" class="btn btn-link link-danger">Delete</button>
         </form>
+        {{/ifCond}}
       </td>
     </tr>
     {{/each}}
