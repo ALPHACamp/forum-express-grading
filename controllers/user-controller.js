@@ -1,6 +1,5 @@
 const bcrypt = require('bcryptjs')
-const db = require('../models')
-const { User } = db
+const { User, Comment } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const userController = {
@@ -37,12 +36,32 @@ const userController = {
     req.logout()
     res.redirect('/signin')
   },
-  getUser: (req, res, next) => {
+  getUser: async (req, res, next) => {
     // if (Number(req.params.id) !== Number(req.user.id)) throw Error('User could only access their own profile')
-    return User.findByPk(req.params.id)
-      .then(user => {
+    return Promise
+      .all([
+        Comment.findAll({
+          include: [
+            'User',
+            'Restaurant'
+          ],
+          where: {
+            userId: req.params.id
+          },
+          attributes: ['restaurantId'],
+          group: ['restaurantId'],
+          nest: true,
+          raw: true
+        }),
+        User.findByPk(req.params.id)
+      ])
+      .then(([comments, user]) => {
         if (!user) throw new Error('User does not exist')
-        res.render('users/profile', { user: user.toJSON() })
+        console.log('is res.render executed?')
+        res.render('users/profile', {
+          user: user.toJSON(),
+          restaurants: comments.map(item => item.Restaurant)
+        })
       })
       .catch(err => next(err))
   },
