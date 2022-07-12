@@ -21,6 +21,8 @@ router.get('/logout', userController.logout)
 router.get('/restaurants/:rest_id/dashboard', authenticated, restController.getDashboard) // render a dashboard
 router.get('/restaurants/:rest_id', authenticated, restController.getRestaurant) // render a restaurant
 router.get('/restaurants', authenticated, restController.getRestaurants) // render all restaurants
+
+router.delete('/comments/:comment_id', authenticatedAdmin, commentController.deleteComment) // delete a comment by id
 router.post('/comments', authenticated, commentController.postComment) // create a new comment into database
 router.get('/', (req, res) => res.redirect('/restaurants'))
 
