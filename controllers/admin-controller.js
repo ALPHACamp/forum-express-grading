@@ -72,7 +72,6 @@ const adminController = {
         if (!restaurant) {
           throw new Error("Restaurant didn't exist")
         }
-        console.log(restaurant)
         res.render('admin/edit-restaurant', {
           restaurant,
           categories

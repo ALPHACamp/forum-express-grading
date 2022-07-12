@@ -1,12 +1,25 @@
 {{>admin-interface}}
-<form action="/admin/categories" class="row row-cols-lg-auto g-3 align-items-center" method="post">
-    <div class="col-12">
-        <input type="text" class="form-control" name="name" id="name" placeholder="Category Name">
+{{#if category}}
+<form action="/admin/categories/{{category.id}}?_method=PUT" class="row row-cols-lg-auto g-3 align-items-center" method="post">
+    <div class="col-3">
+        <input type="text" class="form-control" name="name" id="name" placeholder="Category Name" value="{{category.name}}" required>
     </div>
-    <div class="col-12">
-        <button type="submit" class="btn btn-primary">Create</button>
+    <div class="col-3">
+        <button type="submit" class="btn btn-outline-warning">Update</button>
+        or
+        <a href="/admin/categories" class="btn btn-link">Create New</a>
     </div>
 </form>
+{{else}}
+<form action="/admin/categories" class="row row-cols-auto g-3 align-items-center mb-3" method="post">
+    <div class="col-3">
+        <input type="text" class="form-control" name="name" id="name" placeholder="Category Name" required>
+    </div>
+    <div class="col-3">
+        <button type="submit" class="btn btn-outline-success">Create</button>
+    </div>
+</form>
+{{/if}}
 <table class="table align-middle">
   <thead class="thead-dark">
     <tr>
