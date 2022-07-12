@@ -9,6 +9,18 @@ const categoryController = {
       next(error)
     }
   },
+  postCategory: async (req, res, next) => {
+    try {
+      const { name } = req.body
+      if (!name) throw new Error('Category name is required field!')
+
+      await Category.create({ name })
+      req.flash('success_messages', 'You have created a new category successfully!')
+      return res.redirect('/admin/categories')
+    } catch (error) {
+      next(error)
+    }
+  },
 }
 
 module.exports = categoryController
