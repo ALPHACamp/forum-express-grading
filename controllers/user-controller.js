@@ -76,6 +76,11 @@ const userController = {
 
   putUser: (req, res, next) => {
     const id = req.params.id
+    const canEdit = req.user.id === Number(id)
+    if (!canEdit) {
+      req.flash('error_messages', '禁止編輯他人資料')
+      return res.redirect(`/users/${id}`)
+    }
     const { name } = req.body
     const { file } = req
     return Promise.all([User.findByPk(id), imgurFileHandler(file)])

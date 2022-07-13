@@ -7,7 +7,9 @@
     <p style="white-space: break-spaces;">{{user.name}}</p>
     <p style="white-space: break-spaces;">{{user.email}}</p>
     <p style="white-space: break-spaces;">{{comment.count}} 個已評論餐廳</p>
+    {{#ifCond operator.id user.id}}
     <a href="/users/{{user.id}}/edit" class="btn btn-info">edit</a>
+    {{/ifCond }}
   </div>
 </div>
 
