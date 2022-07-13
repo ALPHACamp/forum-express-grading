@@ -27,10 +27,13 @@ const restaurantController = {
       ])
       const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
 
+      const likedRestaurantsId = req.user && req.user.LikedRestaurants.map(fr => fr.id)
+
       const data = restaurants.rows.map(r => ({
         ...r,
         description: r.description.substring(0, 50), // show only first 50 characters
-        isFavorited: favoritedRestaurantsId.includes(r.id) // if (r.id in favoritedRestaurantsId) => true
+        isFavorited: favoritedRestaurantsId.includes(r.id), // if (r.id in favoritedRestaurantsId) => true
+        isLiked: likedRestaurantsId.includes(r.id) // if (r.id in likedRestaurantsId) => true
       }))
       return res.render('restaurants', { // go to restaurants.hbs
         restaurants: data,
@@ -49,7 +52,8 @@ const restaurantController = {
           include: [
             Category,
             { model: Comment, include: [User] },
-            { model: User, as: 'FavoritedUsers' }
+            { model: User, as: 'FavoritedUsers' },
+            { model: User, as: 'LikedUsers' }
           ],
           nest: true
         }
@@ -72,7 +76,8 @@ const restaurantController = {
       return res.render('restaurant', {
         restaurant: restaurant.toJSON(),
         comments,
-        isFavorited: restaurant.FavoritedUsers.some(f => f.id === req.user.id)
+        isFavorited: restaurant.FavoritedUsers.some(f => f.id === req.user.id),
+        isLiked: restaurant.LikedUsers.some(f => f.id === req.user.id)
       })
     } catch (error) {
       next(error)

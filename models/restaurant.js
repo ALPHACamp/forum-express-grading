@@ -13,9 +13,14 @@ module.exports = (sequelize, DataTypes) => {
       Restaurant.belongsTo(models.Category, { foreignKey: 'categoryId' })
       Restaurant.hasMany(models.Comment, { foreignKey: 'restaurantId' })
       Restaurant.belongsToMany(models.User, {
-        through: models.Favorite, // 透過 Favorite 表來建立關聯
-        foreignKey: 'restaurantId', // 對 Favorite 表設定 FK
-        as: 'FavoritedUsers' // 幫這個關聯取個暱稱
+        through: models.Favorite, // Favorite is a join table
+        foreignKey: 'restaurantId',
+        as: 'FavoritedUsers' // nickname of this relation
+      })
+      Restaurant.belongsToMany(models.User, {
+        through: models.Like, // Like is a join table
+        foreignKey: 'restaurantId',
+        as: 'LikedUsers' // nickname of this relation
       })
     }
   };
