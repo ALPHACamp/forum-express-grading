@@ -1,6 +1,21 @@
+const { Restaurant, Category } = require('../models')
+
 const restaurantController = {
   getRestaurants: (req, res) => {
-    return res.render('restaurants')
+    return Restaurant.findAll({
+      include: Category,
+      nest: true,
+      raw: true
+    }).then(restaurant => {
+      const data = restaurant.map(r => ({
+        ...r,
+        description: r.description.substring(0, 50)
+      }))
+      console.log(data)
+      return res.render('restaurants', {
+        restaurants: data
+      })
+    })
   }
 }
 module.exports = restaurantController
