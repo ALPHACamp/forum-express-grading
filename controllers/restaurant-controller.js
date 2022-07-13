@@ -1,7 +1,7 @@
 const { Restaurant, Category } = require('../models')
 
 const restaurantController = {
-  getRestaurants: async (req, res) => {
+  getRestaurants: async (req, res, next) => {
     try {
       /*
       Steps:
@@ -13,9 +13,9 @@ const restaurantController = {
       */
       const restaurants = await Restaurant.findAll({ include: Category, raw: true, nest: true })
 
-      const data = await restaurants.map((r) => ({
-        ...r,
-        description: r.description.substring(0, 50),
+      const data = await restaurants.map((item) => ({
+        ...item,
+        description: item.description.substring(0, 50),
       }))
 
       return res.render('restaurants', { restaurants: data })
