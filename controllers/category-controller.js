@@ -43,7 +43,7 @@ const categoryController = {
         res.redirect('/admin/categories')
       })
       .catch(err => next(err))
-  },
+  }
 }
 
 module.exports = categoryController
