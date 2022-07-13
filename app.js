@@ -35,7 +35,7 @@ app.use(express.static('images'))
 app.use((req, res, next) => {
   res.locals.success_messages = req.flash('success_messages') // 設定 success_msg 訊息
   res.locals.error_messages = req.flash('error_messages') // 設定 error_messages 訊息
-  res.locals.warning_msg = req.flash('warning_messages') // 設定 warning_msg 訊息
+  res.locals.warning_messages = req.flash('warning_messages') // 設定 warning_msg 訊息
   res.locals.user = getUser(req)
   res.locals.error = req.flash('error')
   next()

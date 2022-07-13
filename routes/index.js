@@ -24,6 +24,7 @@ router.get('/users/:user_id/edit', authenticated, userController.editUser) // go
 router.get('/users/:user_id', authenticated, userController.getUser) // go to Profile page
 router.put('/users/:user_id', authenticated, upload.single('image'), userController.putUser) // update Profile
 
+router.get('/restaurants/feeds', authenticated, restController.getFeeds) // render top 10 feeds
 router.get('/restaurants/:rest_id/dashboard', authenticated, restController.getDashboard) // render a dashboard
 router.get('/restaurants/:rest_id', authenticated, restController.getRestaurant) // render a restaurant
 router.get('/restaurants', authenticated, restController.getRestaurants) // render all restaurants
@@ -31,6 +32,12 @@ router.get('/restaurants', authenticated, restController.getRestaurants) // rend
 router.delete('/comments/:comment_id', authenticatedAdmin, commentController.deleteComment) // delete a comment by id
 router.post('/comments', authenticated, commentController.postComment) // create a new comment into database
 router.get('/', (req, res) => res.redirect('/restaurants'))
+
+router.post('/favorite/:restaurantId', authenticated, userController.addFavorite) // add a restaurant into join table
+router.delete('/favorite/:restaurantId', authenticated, userController.removeFavorite) // remove a restaurant from join table
+
+router.post('/like/:restaurantId', authenticated, userController.addLike) // add a restaurant into join table
+router.delete('/like/:restaurantId', authenticated, userController.removeLike) // remove a restaurant from join table
 
 router.use('/', generalErrorHandler)
 module.exports = router

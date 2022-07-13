@@ -11,6 +11,16 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate (models) {
       User.hasMany(models.Comment, { foreignKey: 'userId' })
+      User.belongsToMany(models.Restaurant, {
+        through: models.Favorite, // Favorite is a join table
+        foreignKey: 'userId',
+        as: 'FavoritedRestaurants' // nickname of this relation
+      })
+      User.belongsToMany(models.Restaurant, {
+        through: models.Like, // Like is a join table
+        foreignKey: 'userId',
+        as: 'LikedRestaurants' // nickname of this relation
+      })
     }
   };
   User.init({
