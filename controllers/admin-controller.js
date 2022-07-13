@@ -84,7 +84,7 @@ const adminController = {
           categoryId
         })
       })
-      .then(() => {
+      .then(restaurant => {
         req.flash('success_messages', 'Restaurant is successfully updated!')
         res.redirect('/admin/restaurants')
       })
@@ -97,7 +97,7 @@ const adminController = {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         return restaurant.destroy()
       })
-      .then(() => res.redirect('/admin/restaurants'))
+      .then(restDeleted => res.redirect('/admin/restaurants'))
       .catch(next)
   },
   getUsers: (req, res, next) => {

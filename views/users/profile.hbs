@@ -1,0 +1,19 @@
+<div class="card mb-3" style="width: 540px;">
+  <div class="row g-0">
+    <div class="col-md-4">
+      {{#if user.image}}
+      <img src="{{user.image}}" width="250px" height="250px" class="img-fluid rounded-start" alt="User Image">
+      {{else}}
+      <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973461_960_720.png" width="250px"
+        height="250px" class="img-fluid rounded-start" alt="Blank Profile Picture">
+      {{/if}}
+    </div>
+    <div class="col-md-8">
+      <div class="card-body">
+        <h3 class="card-title">{{user.name}}</h3>
+        <p class="card-text">{{user.email}}</p>
+        <a href="/users/{{user.id}}/edit" class="btn btn-primary mt-2">Edit</a>
+      </div>
+    </div>
+  </div>
+</div>

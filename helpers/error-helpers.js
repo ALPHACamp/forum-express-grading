@@ -4,6 +4,15 @@ class SetRootRoleError extends Error {
     this.name = SetRootRoleError
   }
 }
+
+class EditUserProfileError extends Error {
+  constructor(message) {
+    super(message)
+    this.name = EditUserProfileError
+  }
+}
+
 module.exports = {
-  SetRootRoleError
+  SetRootRoleError,
+  EditUserProfileError
 }

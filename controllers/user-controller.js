@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs')
-const db = require('../models')
-const { User } = db
+const { User } = require('../models')
+const { imgurFileHandler } = require('../helpers/file-helpers')
+const { EditUserProfileError } = require('../helpers/error-helpers')
 
 const userController = {
   signUpPage: (req, res) => {
@@ -23,7 +24,7 @@ const userController = {
         req.flash('success_messages', '成功註冊帳號！')
         res.redirect('/signin')
       })
-      .catch(err => next(err))
+      .catch(next)
   },
   signInPage: (req, res) => {
     res.render('signin')
@@ -36,8 +37,55 @@ const userController = {
     req.flash('success_messages', '登出成功！')
     req.logout()
     res.redirect('/signin')
+  },
+  getUser: (req, res, next) => {
+    const id = req.params.id
+    return User.findByPk(id, { raw: true })
+      .then(user => {
+        if (!user) throw new Error("User didn't exist!")
+        return res.render('users/profile', { user })
+      })
+      .catch(next)
+  },
+  editUser: (req, res, next) => {
+    const id = req.params.id
+    return User.findByPk(id, { raw: true })
+      .then(user => {
+        if (!user) throw new Error("User didn't exist!")
+        return res.render('users/edit', { user })
+      })
+      .catch(next)
+  },
+  putUser: (req, res, next) => {
+    const id = req.params.id
+    const userId = req.user.id
+    const { name } = req.body
+    if (!name) throw new Error('Username is required!')
+    const { file } = req
+    if (Number(userId) !== Number(id)) throw new EditUserProfileError('Edit not allowed!')
+    return Promise.all([
+      User.findByPk(id),
+      imgurFileHandler(file)
+    ])
+      .then(([user, filePath]) => {
+        if (!user) throw new Error("User didn't exist!")
+        return user.update({
+          name,
+          image: filePath || user.image
+        })
+      })
+      .then(user => {
+        req.flash('success_messages', '使用者資料編輯成功')
+        return res.redirect(`/users/${id}`)
+      })
+      .catch(err => {
+        if (err.name === EditUserProfileError) {
+          req.flash('error_messages', 'Edit not allowed!')
+          return res.redirect('back')
+        }
+        next(err)
+      })
   }
-
 }
 
 module.exports = userController
