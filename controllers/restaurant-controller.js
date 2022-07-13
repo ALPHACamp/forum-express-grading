@@ -51,7 +51,6 @@ const restaurantController = {
       })
       .then(restaurant => {
         const rest = restaurant.toJSON()
-        console.log(rest)
         return res.render('restaurant', { restaurant: rest })
       })
       .catch(next)

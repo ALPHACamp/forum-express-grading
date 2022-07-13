@@ -1,12 +1,11 @@
 <form action="/users/{{user.id}}?_method=put" method="post" enctype="multipart/form-data">
   <div class="mb-3">
-    <label for="userName" class="form-label">Name</label>
-    <input type="text" class="form-control" name="userName" id="userName" placeholder="Enter username"
-      value="{{user.name}}">
+    <label for="name" class="form-label">Name</label>
+    <input type="text" class="form-control" name="name" id="name" placeholder="Enter username" value="{{user.name}}">
   </div>
   <div class="mb-3">
-    <label for="imageFile" class="form-label">Image</label>
-    <input class="form-control" type="file" name="imageFile" id="imageFile">
+    <label for="image" class="form-label">Image</label>
+    <input class="form-control" type="file" name="image" id="image">
   </div>
   <button type="submit" class="btn btn-primary mt-2">Submit</button>
 </form>

@@ -1,6 +1,6 @@
-<div class="card mb-3" style="width: 540px;">
+<div class="card mb-3" style="width: auto;">
   <div class="row g-0">
-    <div class="col-md-4">
+    <div class="col-md-3">
       {{#if user.image}}
       <img src="{{user.image}}" width="250px" height="250px" class="img-fluid rounded-start" alt="User Image">
       {{else}}
@@ -8,12 +8,31 @@
         height="250px" class="img-fluid rounded-start" alt="Blank Profile Picture">
       {{/if}}
     </div>
-    <div class="col-md-8">
+    <div class="col-md-9">
       <div class="card-body">
         <h3 class="card-title">{{user.name}}</h3>
         <p class="card-text">{{user.email}}</p>
+        <p class="card-text"><strong>{{comments.count}}</strong> 已評論餐廳</p>
         <a href="/users/{{user.id}}/edit" class="btn btn-primary mt-2">Edit</a>
       </div>
     </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <strong>{{comments.count}}</strong> 已評論餐廳
+  </div>
+  <div class="card-body d-flex flex-wrap">
+    {{#each data}}
+    <div class="col-sm-1 ms-5 mt-4">
+      <div class="card mb-4 shadow-sm">
+        <a href="/restaurants/{{this.restaurantId}}">
+          <img class="card-img-top img-fluid" src="{{this.Restaurant.image}}" alt="Card image cap" width="6px"
+            height="6px" style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+        </a>
+      </div>
+    </div>
+    {{/each}}
   </div>
 </div>
