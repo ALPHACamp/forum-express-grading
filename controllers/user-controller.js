@@ -1,7 +1,8 @@
 const bcrypt = require('bcryptjs')
 
-const db = require('../models')
-const { User } = db
+const { User, Restaurant, Comment } = require('../models')
+
+const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const userController = {
   signUpPage: (req, res) => { // 負責 render 註冊的頁面
@@ -38,6 +39,63 @@ const userController = {
     req.flash('success_messages', '登出成功！')
     req.logout()
     res.redirect('/signin')
+  },
+  getUser: (req, res, next) => {
+    return Promise.all([
+      User.findByPk(req.params.id, { raw: true }),
+      Comment.count({
+        where: { userId: req.params.id }
+      }),
+      Comment.findAll({
+        where: { userId: req.params.id },
+        include: [Restaurant],
+        raw: true,
+        nest: true
+      })
+    ])
+      .then(([user, commentNumber, comments]) => {
+        if (!user) throw new Error("User didn't exist!")
+        return res.render('users/profile', {
+          user,
+          commentNumber,
+          comments
+        })
+      })
+      .catch(err => next(err))
+  },
+  editUser: (req, res, next) => {
+    return User.findByPk(req.params.id, { raw: true })
+      .then(user => {
+        if (!user) throw new Error("User didn't exist!")
+        // if (user.id !== req.user.id) throw new Error('Have no access to modify')
+        return res.render('users/edit', { user })
+      })
+      .catch(err => next(err))
+  },
+  putUser: (req, res, next) => {
+    const userId = Number(req.params.id)
+    const { name } = req.body
+    const { file } = req
+    if (!name) throw new Error('User name is required!')
+    if (userId !== req.user.id) throw new Error('Have no access to modify')
+
+    return Promise.all([
+      User.findByPk(req.params.id),
+      imgurFileHandler(file)
+    ])
+      .then(([user, avatarPath]) => {
+        if (!user) throw new Error("User didn't exist!")
+
+        return user.update({
+          name,
+          avatar: avatarPath || user.avatar
+        })
+      })
+      .then(() => {
+        req.flash('success_messages', '使用者資料編輯成功')
+        res.redirect(`/users/${userId}`)
+      })
+      .catch(err => next(err))
   }
 }
 
