@@ -1,7 +1,7 @@
 // 建立一個名為 restaurantController 的object
 // restaurantController object 中有一個方法叫做 getRestaurants，負責「瀏覽餐廳頁面」，也就是去 render 名為 restaurants 的hbs
 
-const { Restaurant, Category } = require('../models')
+const { Restaurant, Category, Comment, User } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
 
 const restaurantController = {
@@ -41,7 +41,10 @@ const restaurantController = {
   },
   getRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
-      include: [Category]
+      include: [
+        Category,
+        { model: Comment, include: User }
+      ]
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
