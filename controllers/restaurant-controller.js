@@ -3,22 +3,32 @@ const { Restaurant, Category } = require('../models')
 const restaurantController = {
   getRestaurants: async (req, res, next) => {
     try {
+      // get categoryId from req query and trun it to number
+      const categoryId = Number(req.query.categoryId) || ''
+
       /*
-      Steps:
-      1. find all restaurants and associated category data set from database
-      2. shorten each restaurant's description in 50 characters
-      3. variable data will get operated restaurants array after mapped
-      spread operator: copy object r
-      description: r.description.substring(0, 50): cover description with shorten one
+      where: { searching condition }
+      if categoryId exists >> where: { categoryId: categoryId }
+        findA all data with this categoryId
+      if categoryId doesn't exist >> where: {}
+        find all data
       */
-      const restaurants = await Restaurant.findAll({ include: Category, raw: true, nest: true })
+      const [restaurants, categories] = await Promise.all([
+        Restaurant.findAll({
+          include: Category,
+          where: { ...(categoryId ? { categoryId } : {}) },
+          raw: true,
+          nest: true,
+        }),
+        Category.findAll({ raw: true }),
+      ])
 
       const data = await restaurants.map((item) => ({
         ...item,
         description: item.description.substring(0, 50),
       }))
 
-      return res.render('restaurants', { restaurants: data })
+      return res.render('restaurants', { restaurants: data, categories, categoryId })
     } catch (error) {
       next(error)
     }
