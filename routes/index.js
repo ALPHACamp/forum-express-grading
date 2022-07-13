@@ -33,5 +33,8 @@ router.delete('/comments/:comment_id', authenticatedAdmin, commentController.del
 router.post('/comments', authenticated, commentController.postComment) // create a new comment into database
 router.get('/', (req, res) => res.redirect('/restaurants'))
 
+router.post('/favorite/:restaurantId', authenticated, userController.addFavorite) // add a restaurant into join table
+router.delete('/favorite/:restaurantId', authenticated, userController.removeFavorite) // remove a restaurant from join table
+
 router.use('/', generalErrorHandler)
 module.exports = router
