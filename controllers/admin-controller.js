@@ -16,7 +16,7 @@ const adminController = {
     const { name, tel, address, openingHours, description } = req.body // 從 req.body 拿出表單裡的資料
     if (!name) throw new Error('Restaurant name is required!') // name 是必填，若發先是空值就會終止程式碼，並在畫面顯示錯誤提示
     const { file } = req
-    imgurFileHandler (file)
+    imgurFileHandler(file)
       .then(filePath => Restaurant.create({
         name,
         tel,
