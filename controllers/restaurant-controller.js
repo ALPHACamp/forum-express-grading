@@ -2,7 +2,7 @@ const { Restaurant, Category } = require('../models')
 
 const restaurantController = {
   getRestaurants: (req, res, next) => {
-    return Restaurant.findAll({ 
+    return Restaurant.findAll({
       include: Category,
       nest: true,
       raw: true
@@ -18,12 +18,22 @@ const restaurantController = {
   },
   getRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
+      include: Category
+    }).then(restaurant => {
+      if (!restaurant) throw new Error("Restaurant didn't exist!")
+      restaurant.increment('view_counts')
+      console.log(restaurant.toJSON())
+      return res.render('restaurant', { restaurant: restaurant.toJSON() })
+    }).catch(err => next(err))
+  },
+  getDashboard: (req, res, next) => {
+    return Restaurant.findByPk(req.params.id, {
       include: Category,
       nest: true,
       raw: true
     }).then(restaurant => {
       if (!restaurant) throw new Error("Restaurant didn't exist!")
-      return res.render('restaurant', { restaurant })
+      return res.render('dashboard', { restaurant })
     }).catch(err => next(err))
   }
 }
