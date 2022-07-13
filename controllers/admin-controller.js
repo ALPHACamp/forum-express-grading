@@ -93,7 +93,7 @@ const adminController = {
         return restaurant.destroy()
       })
       .then(() => {
-        req.flash('success_message', 'restaurant was successfully to update')
+        req.flash('success_message', 'restaurant was successfully to delete')
         res.redirect('/admin/restaurants')
       })
       .catch(err => next(err))
