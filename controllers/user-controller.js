@@ -1,7 +1,6 @@
 const bcrypt = require('bcryptjs')
-const db = require('../models')
+const { Comment, User, Restaurant } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
-const { User } = db
 const userController = {
   signUpPage: (req, res) => {
     res.render('signup')
@@ -46,14 +45,21 @@ const userController = {
     res.redirect('/signin')
   },
 
-  // 不知道為什麼使用以下 promise 寫法跑 test 明明同樣的程式碼，有時候pass 有時候 Error: Timeout of 2000ms exceeded.
-  // 後來將 Timeout 等久一點就正常了，不知道是不是電腦太舊跑太慢？
   getUser: (req, res, next) => {
     const id = req.params.id
-    return User.findByPk(id, { raw: true })
-      .then(user => {
+    return Promise.all([
+      User.findByPk(id, { raw: true }),
+      Comment.findAndCountAll({
+        include: Restaurant, // 拿出關聯的 Category model
+        nest: true,
+        raw: true,
+        where: { user_id: id }
+      })
+    ])
+      .then(([user, comment]) => {
         if (!user) throw new Error("user didn't exist!")
-        return res.render('users/profile', { user })
+        const restaurants = comment.rows.map(r => r.Restaurant)
+        return res.render('users/profile', { user, comment, restaurants })
       })
       .catch(err => next(err))
   },
