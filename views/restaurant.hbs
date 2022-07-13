@@ -3,7 +3,7 @@
     <h1>{{restaurant.name}}</h1>
     <p>[{{restaurant.Category.name}}]</p>
   </div>
-  <div class="col-md-4">
+  <div class="col-md-5">
     <img class="img-responsive center-block mb-5" src="{{restaurant.image}}"
       style="width: 250px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
     <div class="well">
@@ -14,7 +14,7 @@
       </ul>
     </div>
   </div>
-  <div class="col-md-8">
+  <div class="col-md-7">
     <p style="white-space: break-spaces;">{{restaurant.description}}</p>
 
     <a class="btn btn-primary" href="/restaurants/{{restaurant.id}}/dashboard">Dashboard</a>
@@ -30,5 +30,15 @@
       <button type="submit" class="btn btn-primary">Submit</button>
       <a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
     </form>
+    <br />
+    <h3 class="mt-5">所有評論：</h3>
+    {{#each restaurant.Comments}}
+    <blockquote class="blockquote mb-0">
+      <h4><a href="/users/{{this.User.id}}">{{this.User.name}}</a></h4>
+      <p>{{this.text}}</p>
+      <footer class="blockquote-footer">{{relativeTimeFromNow this.createdAt}}</footer>
+    </blockquote>
+    <hr />
+    {{/each}}
   </div>
 </div>
