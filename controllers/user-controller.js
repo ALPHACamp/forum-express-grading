@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs') // 載入 bcrypt
-const { User } = require('../models')
+const { User, Comment, Restaurant } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const userController = {
@@ -41,8 +41,19 @@ const userController = {
   },
   getUser: async (req, res, next) => { // go to Profile page
     try {
-      const user = await User.findByPk(req.params.user_id)
-      res.render('users/profile', { user: user.toJSON() })
+      const user = await User.findByPk(req.params.user_id,
+        {
+          include: [
+            { model: Comment, include: [Restaurant] }
+          ],
+          nest: true
+        }
+      )
+      if (!user) throw new Error("User didn't exist!") // didnot find a user
+
+      return res.render('users/profile',
+        { user: user.toJSON() }
+      )
     } catch (error) {
       next(error)
     }
