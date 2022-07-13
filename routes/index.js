@@ -10,6 +10,8 @@ const admin = require('./modules/admin')
 const { generalErrorHandler } = require('../middleware/error-handler')
 const { authenticated, authenticatedAdmin } = require('../middleware/auth')
 
+const upload = require('../middleware/multer')
+
 router.use('/admin', authenticatedAdmin, admin)
 
 router.get('/signup', userController.signUpPage)
@@ -24,6 +26,10 @@ router.get('/restaurants', authenticated, restController.getRestaurants) // æ”¶å
 
 router.delete('/comments/:id', authenticatedAdmin, commentController.deleteComment)
 router.post('/comments', authenticated, commentController.postComment)
+
+router.get('/users/:id/edit', authenticated, userController.editUser)
+router.get('/users/:id', authenticated, userController.getUser)
+router.put('/users/:id', authenticated, upload.single('avatar'), userController.putUser)
 
 router.use('/', (req, res) => {
   res.redirect('/restaurants')
