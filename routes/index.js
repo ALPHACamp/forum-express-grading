@@ -9,6 +9,8 @@ const commentController = require('../controllers/comment-controller')
 const { authenticated, authenticatedAdmin } = require('../middleware/auth')
 const { generalErrorHandler } = require('../middleware/error-handler')
 
+const upload = require('../middleware/multer')
+
 router.use('/admin', authenticatedAdmin, admin)
 
 router.get('/signup', userController.signUpPage)
@@ -17,6 +19,10 @@ router.post('/signup', userController.signUp)
 router.get('/signin', userController.signInPage)
 router.post('/signin', passport.authenticate('local', { failureRedirect: '/signin', failureFlash: true }), userController.signIn) // 注意是 post
 router.get('/logout', userController.logout)
+
+router.get('/users/:user_id/edit', authenticated, userController.editUser) // go to Profile edit page
+router.get('/users/:user_id', authenticated, userController.getUser) // go to Profile page
+router.put('/users/:user_id', authenticated, upload.single('image'), userController.putUser) // update Profile
 
 router.get('/restaurants/:rest_id/dashboard', authenticated, restController.getDashboard) // render a dashboard
 router.get('/restaurants/:rest_id', authenticated, restController.getRestaurant) // render a restaurant

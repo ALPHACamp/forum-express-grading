@@ -1,0 +1,33 @@
+<div class="row mb-5">
+  <div class="col-md-4">
+    <img src="{{user.image}}" alt="photo" class="w-100">
+  </div>
+
+  <div class="col-md-8 d-flex flex-column">
+    <h1 class="mb-3">{{user.name}}</h1>
+    <div class="mb-3">{{user.email}}</div>
+    <div class="mb-auto">
+      {{user.Comments.length}} 已評論餐廳
+    </div>
+    <div>
+      <a href="/users/{{user.id}}/edit" class="btn btn-primary">edit</a>
+    </div>
+  </div>
+
+</div>
+<div class="row mb-5">
+  <div class="col-md-12">
+    <div class="card">
+      <div class="card-header">
+        {{user.Comments.length}} 已評論餐廳
+      </div>
+      <div class="card-body p-4">
+        {{#each user.Comments}}
+        <a href="/restaurants/{{this.Restaurant.id}}">
+          <img src="{{this.Restaurant.image}}" style="max-width: 5%" class="me-3">
+        </a>
+        {{/each}}
+      </div>
+    </div>
+  </div>
+</div>

@@ -90,7 +90,7 @@ const adminController = {
       })
       .catch(err => next(err))
   },
-  putRestaurant: (req, res, next) => { // put of edit restaurant page
+  putRestaurant: (req, res, next) => { // update a restaurant
     const { name, tel, address, openingHours, description, categoryId } = req.body
     if (!name) throw new Error('Restaurant name is required!')
 
