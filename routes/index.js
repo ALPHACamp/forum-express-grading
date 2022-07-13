@@ -24,6 +24,7 @@ router.get('/users/:user_id/edit', authenticated, userController.editUser) // go
 router.get('/users/:user_id', authenticated, userController.getUser) // go to Profile page
 router.put('/users/:user_id', authenticated, upload.single('image'), userController.putUser) // update Profile
 
+router.get('/restaurants/feeds', authenticated, restController.getFeeds) // render top 10 feeds
 router.get('/restaurants/:rest_id/dashboard', authenticated, restController.getDashboard) // render a dashboard
 router.get('/restaurants/:rest_id', authenticated, restController.getRestaurant) // render a restaurant
 router.get('/restaurants', authenticated, restController.getRestaurants) // render all restaurants
