@@ -1,0 +1,21 @@
+<h1>餐廳後台</h1>
+<ul class='nav nav-tabs my-4'>
+  {{! restaurants }}
+  <li class='nav-item'>
+    <a class='nav-link {{#ifCond route 'restaurants'}}active{{/ifCond}}' href='/admin/restaurants'>
+      <button type='button' class='btn btn-link'>Restaurants</button>
+    </a>
+  </li>
+  {{! users }}
+  <li class='nav-item'>
+    <a class='nav-link {{#ifCond route 'users'}}active{{/ifCond}}' href='/admin/users'>
+      <button type='button' class='btn btn-link'>Users</button>
+    </a>
+  </li>
+  {{! categories }}
+  <li class='nav-item'>
+    <a class='nav-link {{#ifCond route 'categories'}}active{{/ifCond}}' href='/admin/categories'>
+      <button type='button' class='btn btn-link'>Categories</button>
+    </a>
+  </li>
+</ul>
