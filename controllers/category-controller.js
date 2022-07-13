@@ -8,7 +8,6 @@ module.exports = {
         const category = categories.find(category => {
           return category.id === Number(id)
         })
-        console.log(category)
         res.render('admin/categories', { categories, category })
       })
       .catch(err => next(err))
