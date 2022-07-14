@@ -47,19 +47,19 @@ const userController = {
 
   getUser: (req, res, next) => {
     const id = req.params.id
-    return Promise.all([
-      User.findByPk(id, { raw: true }),
-      Comment.findAndCountAll({
-        include: Restaurant, // 拿出關聯的 Category model
-        nest: true,
-        raw: true,
-        where: { user_id: id }
-      })
-    ])
-      .then(([user, comment]) => {
+    return User.findByPk(id, {
+      nest: true,
+      include: { model: Comment, include: Restaurant }
+    })
+      .then(user => {
         if (!user) throw new Error("user didn't exist!")
-        const restaurants = comment.rows.map(r => r.Restaurant)
-        return res.render('users/profile', { user, comment, restaurants })
+        const nonRepeatRestComments = user
+          .toJSON()
+          .Comments.filter(function (comment, index, array) {
+            // 將每一個 comment 重新丟進原 array 確認 index , 若 index 非一次出現的值，則為重複的餐廳
+            return array.findIndex(arr => arr.Restaurant.id === comment.Restaurant.id) === index
+          })
+        return res.render('users/profile', { user: user.toJSON(), comments: nonRepeatRestComments })
       })
       .catch(err => next(err))
   },

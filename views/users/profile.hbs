@@ -6,7 +6,7 @@
   <div class="col-md-8">
     <p style="white-space: break-spaces;">{{user.name}}</p>
     <p style="white-space: break-spaces;">{{user.email}}</p>
-    <p style="white-space: break-spaces;">{{comment.count}} 個已評論餐廳</p>
+    <p style="white-space: break-spaces;">{{comments.length}} 個已評論餐廳</p>
     {{#ifCond operator.id user.id}}
     <a href="/users/{{user.id}}/edit" class="btn btn-info">edit</a>
     {{/ifCond }}
@@ -15,13 +15,14 @@
 
 <div class="row mb-5">
   <div class="col-12">
-    <p style="white-space: break-spaces;">{{comment.count}} 個已評論餐廳</p>
+    <p style="white-space: break-spaces;">{{comments.length}} 個已評論餐廳</p>
   </div>
-  {{#each restaurants}}
+  {{#each comments}}
   <div class="col-md-1 mr-3">
-    <a href="/restaurants/{{this.id}}">
-      <img class="img-responsive center-block mb-5" src="{{this.image}}"
+    <a href="/restaurants/{{this.Restaurant.id}}">
+      <img class="img-responsive center-block mb-1" src="{{this.Restaurant.image}}"
         style="width: 100%; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+      <p>{{this.Restaurant.name}}</p>
     </a>
   </div>
   {{/each}}
