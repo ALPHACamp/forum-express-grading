@@ -49,14 +49,20 @@ const userController = {
       .catch(err => next(err))
   },
   editUser: (req, res, next) => {
-    return res.render('users/edit')
+    const id = Number(req.params.id)
+    return User.findOne({ where: { id }, raw: true })
+      .then(user => {
+        if (!user) throw new Error("user didn't exist!")
+        return res.render('users/edit', { user })
+      })
+      .catch(err => next(err))
   },
   putUser: (req, res, next) => {
     const { name } = req.body
     const { file } = req
     const id = Number(req.params.id)
     if (!name) throw new Error('user name is required!')
-    Promise.all([
+    return Promise.all([
       User.findOne({ where: { id } }),
       imgurFileHandler(file)
     ])
@@ -67,9 +73,9 @@ const userController = {
           image: filePath || user.image
         })
       })
-      .then(user => {
-        req.flash('success_messages', 'user was successfully to update')
-        res.redirect(`/users/${user.id}`)
+      .then(() => {
+        req.flash('success_messages', '使用者資料編輯成功')
+        return res.redirect(`/users/${id}`)
       })
       .catch(err => next(err))
   }
