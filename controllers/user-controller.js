@@ -46,10 +46,10 @@ const userController = {
       const [targetUser, commentedRestaurants] = await Promise.all([
         User.findByPk(req.params.id, { raw: true }),
         Comment.findAll({
-          attributes: ['restaurant_id'],
+          attributes: ['restaurantId'],
           include: Restaurant,
           where: { userId: req.params.id },
-          group: ['restaurant_id'],
+          group: ['restaurantId'],
           nest: true,
           raw: true
         })
