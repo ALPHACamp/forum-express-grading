@@ -1,0 +1,17 @@
+<div class='row mb-5'>
+  <div class='col-md-12'>
+    <h1>{{restaurant.name}}</h1>
+    <p>[{{restaurant.Category.name}}]</p>
+  </div>
+    <div class='col-md-4'>
+      <div class='well'>
+        <ul class='list'>
+          <li>瀏覽次數: {{restaurant.viewCounts}}</li>
+          {{! TODO: add comment & like }}
+          <li>評論數: -</li>
+          <li>收讚數: -</li>
+        </ul>
+      </div>
+      <a href='javascript:history.back()'>回上一頁</a>
+    </div>
+</div>
