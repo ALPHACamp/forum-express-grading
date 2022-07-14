@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs')
-const { Restaurant, Comment, User } = require('../models')
+const db = require('../models')
+const { User } = db
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const userController = {
