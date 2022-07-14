@@ -98,7 +98,7 @@ const adminController = {
       const restaurant = await Restaurant.findByPk(req.params.id)
 
       if (!restaurant) throw new Error('Restaurant did not exist!')
-      restaurant.update({
+      await restaurant.update({
         name,
         tel,
         address,
