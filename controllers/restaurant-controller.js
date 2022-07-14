@@ -22,9 +22,11 @@ const restaurantController = {
       Category.findAll({ raw: true })
     ])
       .then(([restaurants, categories]) => {
+        const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
         const data = restaurants.rows.map(restaurant => ({
           ...restaurant,
-          description: restaurant.description.substring(0, DEFAULT_DESCRIPTION_LENGTH)
+          description: restaurant.description.substring(0, DEFAULT_DESCRIPTION_LENGTH),
+          isFavorited: favoritedRestaurantsId.includes(restaurant.id)
         }))
         return res.render('restaurants', {
           restaurants: data,
@@ -39,12 +41,14 @@ const restaurantController = {
     return Restaurant.findByPk(req.params.id, {
       include: [
         Category,
-        { model: Comment, include: User }
+        { model: Comment, include: User },
+        { model: User, as: 'FavoritedUsers' }
       ]
     })
       .then(restaurant => {
+        const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id)
         if (!restaurant) throw new Error("Restaurant doesn't exist!")
-        res.render('restaurant', { restaurant: restaurant.toJSON() })
+        res.render('restaurant', { restaurant: restaurant.toJSON(), isFavorited })
         restaurant.viewCounts += 1
         return restaurant.save()
       })
