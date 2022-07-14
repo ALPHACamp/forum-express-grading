@@ -1,0 +1,28 @@
+<div class="row mb-1">
+  <div class="col-md-12">
+    {{#if theUser}}
+    <h1>{{theUser.name}}的個人頁面</h1>
+    <img class="img-responsive center-block" src="{{theUser.image}}"
+      style="width: 250px; margin-bottom: 25px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+    {{else}}
+    <h1>{{user.name}}的個人頁面</h1>
+    <img class="img-responsive center-block" src="{{user.image}}"
+      style="width: 250px; margin-bottom: 25px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+    {{/if}}
+    <br>
+  </div>
+  <hr>
+  <ul class="list-group list-group-flush">
+    {{#ifCond theUser.id user.id}}
+    <li class="list-group-item">Email: {{user.email}}
+    </li>
+  </ul>
+  <div class="m-2">
+    <a class="btn btn-primary" href="/users/{{user.id}}/edit">
+      Edit
+    </a>
+    {{/ifCond}}
+    <a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
+  </div>
+  <div class="my-2">收藏數: - {{!-- 收藏數--}}</div>
+</div>
