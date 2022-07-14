@@ -24,7 +24,6 @@ const commentController = {
       if (!comment) throw new Error('This comment does not exist!')
       const deletedComment = await comment.destroy()
 
-      console.log('here', deletedComment)
       return res.redirect(`/restaurants/${deletedComment.restaurantId}`)
     } catch (error) {
       next(error)
