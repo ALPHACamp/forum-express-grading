@@ -44,13 +44,16 @@ const restaurantController = {
       })
   },
   getDashboard: (req, res, next) => {
-    return Restaurant.findByPk(req.params.id, {
-      raw: true,
-      nest: true,
-      include: Category
-    })
-      .then(restaurant => {
-        return res.render('dashboard', { restaurant })
+    return Promise.all([
+      Restaurant.findByPk(req.params.id, {
+        include: Category,
+        raw: true,
+        nest: true
+      }),
+      Comment.count({ where: { restaurantId: req.params.id } })
+    ])
+      .then(([restaurant, comments]) => {
+        res.render('dashboard', { restaurant, comments })
       })
       .catch(err => next(err))
   }
