@@ -1,0 +1,27 @@
+<div class="row">
+  <div class="col-md-12">
+    <div class="card mb-3">
+      <div class="d-flex">
+        <div class="me-3" style="height:300px; width:300px">
+          {{#if targetUser.image}}
+          <img src="{{targetUser.image}}" height="90%" class="rounded-circle m-3" />
+          {{else}}
+          <img src="https://i.imgur.com/fzuZE1k.png" height="90%" class="rounded-circle m-3" />
+          {{/if}}
+        </div>
+        <div class="ms-5" style="height:300px">
+          <div class="card-body">
+            <h5 class="card-title">{{targetUser.name}}</h5>
+            <p class="card-text">{{targetUser.email}}</p>
+            <br />
+            {{#ifCond targetUser.id user.id}}
+            <p>
+              <a href="/users/{{targetUser.id}}/edit" class="btn btn-primary">edit</a>
+            </p>
+            {{/ifCond}}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

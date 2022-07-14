@@ -9,6 +9,7 @@ module.exports = {
       password: bcrypt.hashSync('12345678', 10),
       is_admin: true,
       name: 'root',
+      image: 'https://randomuser.me/api/portraits/women/66.jpg',
       created_at: new Date(),
       updated_at: new Date()
     }, {
@@ -16,6 +17,7 @@ module.exports = {
       password: bcrypt.hashSync('12345678', 10),
       is_admin: false,
       name: 'user1',
+      image: 'https://randomuser.me/api/portraits/men/71.jpg',
       created_at: new Date(),
       updated_at: new Date()
     }, {
@@ -23,6 +25,7 @@ module.exports = {
       password: bcrypt.hashSync('12345678', 10),
       is_admin: false,
       name: 'user2',
+      image: 'https://randomuser.me/api/portraits/women/57.jpg',
       created_at: new Date(),
       updated_at: new Date()
     }])
