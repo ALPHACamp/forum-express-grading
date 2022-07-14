@@ -1,3 +1,4 @@
+require('events').EventEmitter.prototype._maxListeners = 0
 const path = require('path')
 const express = require('express')
 const handlebars = require('express-handlebars')
