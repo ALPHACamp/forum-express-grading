@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs')
-const { User } = require('../models')
+const { User, Comment, Restaurant } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 const { getUser } = require('../helpers/auth-helpers')
 const userController = {
@@ -40,17 +40,18 @@ const userController = {
     res.redirect('/signin')
   },
   getUser: (req, res, next) => {
+    // 已是JSON格式
     const user = getUser(req)
     // 前往的使用者頁面users/:id !== 現在登入的人
     return User.findByPk(req.params.id, {
-      raw: true
+      include: [{ model: Comment, include: Restaurant }]
     })
       .then(theUser => {
         // always先反查
         if (!theUser) throw new Error("User didn't exist!")
 
         res.render('users/profile', {
-          user, theUser
+          user, theUser: theUser.toJSON()
         })
       })
       .catch(err => next(err))
