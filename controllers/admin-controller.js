@@ -1,6 +1,7 @@
 const { Restaurant } = require('../models')
+const { User } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
-
+// const helpers = require('../helpers/auth-helpers')
 const adminController = {
   getRestaurants: (req, res, next) => {
     return Restaurant.findAll({
@@ -61,6 +62,7 @@ const adminController = {
     ])
       .then(([restaurant, filePath]) => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
+        // console.log(restaurant)
         return restaurant.update({
           name,
           tel,
@@ -84,7 +86,38 @@ const adminController = {
       })
       .then(() => res.redirect('/admin/restaurants'))
       .catch(err => next(err))
+  },
+  getUsers: (req, res, next) => {
+    return User.findAll({
+      raw: true
+    })
+      .then(users => res.render('admin/users', { users }))
+      .catch(err => next(err))
+  },
+  patchUser: (req, res, next) => {
+    Promise.all([User.findByPk(req.params.id)])
+      .then(([user]) => {
+        if (!user) throw new Error("user didn't exist!")
+        if (user.email === 'root@example.com') {
+          req.flash('error_messages', 'user was fail to update')
+          return res.redirect('back')
+        }
+        return user.update({ isAdmin: !user.isAdmin })
+      })
+      .then(() => {
+        req.flash('success_messages', 'user was successfully to update')
+        res.redirect('/admin/users')
+      })
+      .catch(err => next(err))
   }
+  // const user = await User.findByPk(req.params.id)
+  // if (user.dataValues.isAdmin === true && user.dataValues.email !== 'root@example.com') {
+  //   user.update({ isAdmin: 0 }, {})
+  // } else {
+  //   user.update({ isAdmin: 1 }, {})
+  // }
+  // req.flash('success_messages', 'user was successfully to update')
+  // res.redirect('/')
 }
 
 module.exports = adminController
