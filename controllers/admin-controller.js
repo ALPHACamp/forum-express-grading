@@ -95,8 +95,8 @@ const adminController = {
       .catch(err => next(err))
   },
   patchUser: (req, res, next) => {
-    Promise.all([User.findByPk(req.params.id)])
-      .then(([user]) => {
+    return User.findByPk(req.params.id)
+      .then(user => {
         if (!user) throw new Error("user didn't exist!")
         if (user.email === 'root@example.com') {
           req.flash('error_messages', '禁止變更 root 權限')
@@ -111,5 +111,4 @@ const adminController = {
       .catch(err => next(err))
   }
 }
-
 module.exports = adminController
