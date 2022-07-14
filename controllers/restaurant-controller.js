@@ -24,10 +24,12 @@ const restaurantController = {
     ])
       .then(([restaurants, categories]) => {
         const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
+        const likedRestaurantsId = req.user && req.user.LikedRestaurants.map(lr => lr.id)
         const data = restaurants.rows.map(r => ({
           ...r,
           description: r.description.substring(0, 50),
-          isFavorited: favoritedRestaurantsId.includes(r.id)
+          isFavorited: favoritedRestaurantsId.includes(r.id),
+          isLiked: likedRestaurantsId.includes(r.id)
         }))
         return res.render('restaurants', {
           restaurants: data,
@@ -39,13 +41,14 @@ const restaurantController = {
       .catch(next)
   },
   getRestaurant: (req, res, next) => {
-    const id = req.params.id
+    const { id } = req.params
     return Restaurant.findByPk(id, {
       nest: true,
       include: [
         Category,
         { model: Comment, include: User },
-        { model: User, as: 'FavoritedUsers' }
+        { model: User, as: 'FavoritedByUsers' },
+        { model: User, as: 'LikedByUsers' }
       ]
     })
       .then(restaurant => {
@@ -53,26 +56,29 @@ const restaurantController = {
         return restaurant.increment('viewCounts')
       })
       .then(restaurant => {
-        const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id)
+        const isFavorited = restaurant.FavoritedByUsers.some(f => f.id === req.user.id)
+        const isLiked = restaurant.LikedByUsers.some(l => l.id === req.user.id)
         const rest = restaurant.toJSON()
         return res.render('restaurant', {
           restaurant: rest,
-          isFavorited
+          isFavorited,
+          isLiked
         })
       })
       .catch(next)
   },
   getDashboard: (req, res, next) => {
-    const id = req.params.id
+    const { id } = req.params
     return Restaurant.findByPk(id, {
       include: [
         Category,
-        { model: Comment, include: User }
+        { model: Comment, include: User },
+        { model: User, as: 'FavoritedByUsers' }
       ]
     })
       .then(restaurant => {
-        const rest = restaurant.toJSON()
         if (!restaurant) throw new Error("Restaurant didn't exist!")
+        const rest = restaurant.toJSON()
         return res.render('dashboard', { restaurant: rest })
       })
       .catch(next)
@@ -81,14 +87,14 @@ const restaurantController = {
     return Promise.all([
       Restaurant.findAll({
         limit: 10,
-        order: ['createdAt', 'DESC'],
+        order: [['createdAt', 'DESC']],
         include: Category,
         raw: true,
         nest: true
       }),
       Comment.findAll({
         limit: 10,
-        order: ['createdAt', 'DESC'],
+        order: [['createdAt', 'DESC']],
         include: [User, Restaurant],
         raw: true,
         nest: true
