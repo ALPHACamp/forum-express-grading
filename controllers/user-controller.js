@@ -2,8 +2,8 @@
 // Include modules
 const bcrypt = require('bcryptjs')
 const db = require('../models')
-const { User } = db
 const { getUser } = require('../helpers/auth-helpers')
+const { User, Comment, Restaurant } = db
 // Options: localFileHandler, imgurFileHandler
 const fileHandler = require('../helpers/file-helpers').imgurFileHandler
 
@@ -45,9 +45,18 @@ const userController = {
     try {
       const targetUser = await User.findByPk(req.params.id, { raw: true })
       if (!targetUser) throw new Error("User didn't exist!")
+
+      const comments = await Comment.findAndCountAll({
+        where: { userId: req.params.id },
+        group: ['restaurantId'],
+        include: [Restaurant],
+        raw: true,
+        nest: true
+      })
       res.render('users/profile', {
         user: getUser(req),
-        targetUser
+        targetUser,
+        comments: comments.rows
       })
     } catch (err) { next(err) }
   },
