@@ -17,7 +17,7 @@
       <th scope="row">{{this.id}}</th>
       <td>{{this.name}}</td>
       <td>{{this.email}}</td>
-      <td>{{this.role}}</td>
+      <td>{{#if this.isAdmin}}admin{{else}}user{{/if}}</td>
       <td>
         {{#unless this.superuser}}
           <form action="/admin/users/{{this.id}}?_method=PATCH" method="POST" style="display: inline;">

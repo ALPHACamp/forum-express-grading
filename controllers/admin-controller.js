@@ -1,5 +1,6 @@
 const { Restaurant, User, Category } = require('../models')
 const { imgurFileHelper } = require('../helpers/file-helpers')
+const { isSuperUser } = require('../helpers/user-helpers')
 
 const adminController = {
   getRestaurants: (req, res, next) => {
@@ -105,14 +106,7 @@ const adminController = {
     return User.findAll({ raw: true })
       .then(users => {
         users.forEach(user => {
-          if (user.email === 'root@example.com') {
-            user.superuser = true
-          }
-          if (!!user.isAdmin === true) {
-            user.role = 'admin'
-          } else {
-            user.role = 'user'
-          }
+          isSuperUser(user)
         })
         res.render('admin/users', { users })
       })
@@ -122,7 +116,8 @@ const adminController = {
     const id = req.params.id
     return User.findByPk(id)
       .then(user => {
-        if (user.email === 'root@example.com') {
+        if (!user) throw new Error("User doesn't exist!")
+        if (isSuperUser(user).superuser) {
           req.flash('error_messages', '禁止變更 root 權限')
           return res.redirect('back')
         }
