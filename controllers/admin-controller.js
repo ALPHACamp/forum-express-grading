@@ -99,25 +99,17 @@ const adminController = {
       .then(([user]) => {
         if (!user) throw new Error("user didn't exist!")
         if (user.email === 'root@example.com') {
-          req.flash('error_messages', 'user was fail to update')
+          req.flash('error_messages', '禁止變更 root 權限')
           return res.redirect('back')
         }
         return user.update({ isAdmin: !user.isAdmin })
       })
       .then(() => {
-        req.flash('success_messages', 'user was successfully to update')
+        req.flash('success_messages', '使用者權限變更成功')
         res.redirect('/admin/users')
       })
       .catch(err => next(err))
   }
-  // const user = await User.findByPk(req.params.id)
-  // if (user.dataValues.isAdmin === true && user.dataValues.email !== 'root@example.com') {
-  //   user.update({ isAdmin: 0 }, {})
-  // } else {
-  //   user.update({ isAdmin: 1 }, {})
-  // }
-  // req.flash('success_messages', 'user was successfully to update')
-  // res.redirect('/')
 }
 
 module.exports = adminController
