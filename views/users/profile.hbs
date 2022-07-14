@@ -13,6 +13,7 @@
           <div class="card-body">
             <h5 class="card-title">{{targetUser.name}}</h5>
             <p class="card-text">{{targetUser.email}}</p>
+            <p class="card-text"><strong>{{comments.length}}</strong> 已評論餐廳</p>
             <br />
             {{#ifCond targetUser.id user.id}}
             <p>
@@ -21,6 +22,25 @@
             {{/ifCond}}
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-12">
+    <br />
+    <div class="card">
+      <div class="card-header">
+        <strong>{{commentedRestaurants.length}}</strong> 已評論餐廳
+      </div>
+      <div class="card-body">
+        {{#each commentedRestaurants}}
+        <a href="/restaurants/{{this.restaurantId}}" class="text-decoration-none" alt="{{this.restaurant.name}}">
+          <img src="{{this.Restaurant.image}}" width="60" height="60" class="avatar m-1"
+            title="{{this.Restaurant.name}}" />
+        </a>
+        {{/each}}
       </div>
     </div>
   </div>
