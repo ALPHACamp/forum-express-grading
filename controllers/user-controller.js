@@ -43,20 +43,22 @@ const userController = {
   },
   getUser: async (req, res, next) => {
     try {
-      const targetUser = await User.findByPk(req.params.id, { raw: true })
-      if (!targetUser) throw new Error("User didn't exist!")
+      const [targetUser, commentedRestaurants] = await Promise.all([
+        User.findByPk(req.params.id, { raw: true }),
+        Comment.findAll({
+          include: Restaurant,
+          where: { userId: req.params.id },
+          group: ['restaurant_id'],
+          nest: true,
+          raw: true
+        })
+      ])
 
-      const comments = await Comment.findAndCountAll({
-        where: { userId: req.params.id },
-        group: ['restaurantId'],
-        include: [Restaurant],
-        raw: true,
-        nest: true
-      })
+      if (!targetUser) throw new Error("User didn't exist!")
       res.render('users/profile', {
         user: getUser(req),
         targetUser,
-        comments: comments.rows
+        commentedRestaurants
       })
     } catch (err) { next(err) }
   },
