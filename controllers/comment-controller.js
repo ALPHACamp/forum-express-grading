@@ -26,7 +26,7 @@ const commentController = {
   deleteComment: (req, res, next) => {
     return Comment.findByPk(req.params.id)
       .then(comment => {
-        if (!comment) throw new Error("Comment didn't exist!'")
+        if (!comment) throw new Error("Comment didn't exist!")
         return comment.destroy()
       })
       .then(deletedComment => res.redirect(`/restaurants/${deletedComment.restaurantId}`))
