@@ -47,7 +47,6 @@ const restaurantController = {
       ]
     })
       .then(restaurant => {
-        console.log(restaurant.Comments)
         if (!restaurant) throw new Error('找不到此餐廳資訊！')
         return restaurant.increment('viewCounts')
       })
