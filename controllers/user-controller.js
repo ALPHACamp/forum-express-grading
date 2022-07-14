@@ -65,9 +65,16 @@ const userController = {
   },
   editUser: async (req, res, next) => {
     try {
-      const user = await User.findByPk(req.params.id, { raw: true })
-      if (!user) throw new Error("User didn't exist!")
-      res.render('users/edit', { user })
+      const loginUser = getUser(req)
+      const targetUser = await User.findByPk(req.params.id, { raw: true })
+
+      if (!targetUser) throw new Error("User didn't exist!")
+      if (loginUser.id !== targetUser.id) {
+        req.flash('error_messages', "No permission to edit other's profile")
+        res.redirect(`/users/${targetUser.id}`)
+      }
+
+      res.render('users/edit', { user: targetUser })
     } catch (err) { next(err) }
   },
   putUser: async (req, res, next) => {
@@ -77,12 +84,15 @@ const userController = {
       if (!name) throw new Error('User name is required!')
 
       // Update user info
+      const loginUser = getUser(req)
       const { file } = req
       const [filePath, user] = await Promise.all([
         fileHandler(file),
         User.findByPk(req.params.id)
       ])
+
       if (!user) throw new Error('User did not exist!')
+      if (loginUser.id !== user.id) throw new Error("No permission to edit other's profile!")
 
       await user.update({
         name,
