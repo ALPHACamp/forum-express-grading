@@ -63,6 +63,32 @@ const restaurantController = {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         return res.render('dashboard', { restaurant })
       })
+  },
+  getFeeds: (req, res, next) => {
+    // 最新動態定義：最新建立的10筆餐廳＆最新建立的10筆評論
+    return Promise.all([
+      Restaurant.findAll({
+        limit: 10,
+        order: [['createdAt', 'DESC']], // order接受的參數是一組陣列，例如[['createdAt', 'DESC'], ['name', 'ASC']]
+        include: [Category],
+        raw: true,
+        nest: true
+      }),
+      Comment.findAll({
+        limit: 10,
+        order: [['createdAt', 'DESC']],
+        include: [User, Restaurant],
+        raw: true,
+        nest: true
+      })
+    ])
+      .then(([restaurants, comments]) => {
+        return res.render('feeds', {
+          restaurants,
+          comments
+        })
+      })
+      .catch(err => next(err))
   }
 }
 module.exports = restaurantController
