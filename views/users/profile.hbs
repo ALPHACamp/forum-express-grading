@@ -8,9 +8,26 @@
         <div class="card-body">
           <h5 class="card-title">{{user.name}}</h5>
           <p class="card-text">{{user.email}}</p>
+          <p class="card-text">{{count}} 已評價餐廳</p>
+          {{#ifCond login_user.id user.id}}
           <a href="/users/{{user.id}}/edit" class="btn btn-primary">Edit</a>
+          {{/ifCond}}
         </div>
       </div>
     </div>
+  </div>
+</div>
+<div class="card text-center mb-3 col-md-12">
+  <div class="card-header">
+    {{count}} 已評價餐廳
+  </div>
+  <div class="card-body">
+    <ul class="list-group list-group-horizontal d-flex flex-wrap">
+      {{#each comments}}
+        <li class="list-group-item m-2"><a href="/restaurants/{{this.restaurantId}}">
+          <img src="{{this.Restaurant.image}}" style="width: 150px;" alt="">
+        </a></li>
+      {{/each}}
+    </ul>
   </div>
 </div>
