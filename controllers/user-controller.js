@@ -38,14 +38,16 @@ const userController = {
     res.redirect('/signin')
   },
   getUser: (req, res, next) => {
-    return Promise.all([
-      User.findByPk(req.params.id, {
-        include: { model: Comment, include: Restaurant }
-      }),
-      Comment.count({ distinct: 'userId', where: { userId: req.params.id } })
-    ])
-      .then(([user, count]) => {
+    return User.findByPk(req.params.id, {
+      distinct: true,
+      include: { model: Comment, include: Restaurant }
+    })
+      .then(user => {
         if (!user) throw new Error("User didn't exist!")
+        let count = ''
+        if (user.toJSON().Comments) {
+          count = user.toJSON().Comments.length
+        }
         res.render('users/profile', { user: user.toJSON(), count })
       })
       .catch(err => next(err))
