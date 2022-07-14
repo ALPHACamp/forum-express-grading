@@ -1,20 +1,31 @@
 const { Restaurant, Category } = require('../models')
 
 const restaurantController = {
-  getRestaurants: (req, res) => {
-    return Restaurant.findAll({
-      include: Category,
-      nest: true,
-      raw: true
-    }).then(restaurant => {
-      const data = restaurant.map(r => ({
-        ...r,
-        description: r.description.substring(0, 50)
-      }))
-      return res.render('restaurants', {
-        restaurants: data
+  getRestaurants: (req, res, next) => {
+    const categoryId = Number(req.query.categoryId) || '' // 新增,從網址拿下來的參數是字串,轉成 Number 再操作
+    return Promise.all([
+      Restaurant.findAll({
+        include: Category,
+        where: { // 新增查詢條件
+          ...categoryId ? { categoryId } : {} // 檢查categoryId是否為空值
+        },
+        nest: true,
+        raw: true
+      }),
+      Category.findAll({ raw: true })
+    ])
+      .then(([restaurant, categories]) => {
+        const data = restaurant.map(r => ({
+          ...r,
+          description: r.description.substring(0, 50)
+        }))
+        return res.render('restaurants', {
+          restaurants: data,
+          categories,
+          categoryId // 新增
+        })
       })
-    })
+      .catch(err => next(err))
   },
   getRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
