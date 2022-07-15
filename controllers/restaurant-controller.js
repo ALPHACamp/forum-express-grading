@@ -1,28 +1,37 @@
 const { Restaurant, Category } = require('../models')
+const { getOffset, getPagination } = require('../helpers/pagination-helper')
 
 const restaurantController = {
   getRestaurants: (req, res, next) => {
-    const categoryId = Number(req.query.categoryId) || '' // 新增,從網址拿下來的參數是字串,轉成 Number 再操作
+    const DEFAULT_LIMIT = 9
+    const categoryId = Number(req.query.categoryId) || ''
+    const page = Number(req.query.page) || 1
+    const limit = Number(req.query.limit) || DEFAULT_LIMIT
+    const offset = getOffset(limit, page)
+
     return Promise.all([
-      Restaurant.findAll({
+      Restaurant.findAndCountAll({ // 修改這裡
         include: Category,
-        where: { // 新增查詢條件
-          ...categoryId ? { categoryId } : {} // 檢查categoryId是否為空值
+        where: {
+          ...categoryId ? { categoryId } : {}
         },
+        limit,
+        offset,
         nest: true,
         raw: true
       }),
       Category.findAll({ raw: true })
     ])
-      .then(([restaurant, categories]) => {
-        const data = restaurant.map(r => ({
+      .then(([restaurants, categories]) => {
+        const data = restaurants.rows.map(r => ({ // 修改這裡，加上 .rows
           ...r,
           description: r.description.substring(0, 50)
         }))
         return res.render('restaurants', {
           restaurants: data,
           categories,
-          categoryId // 新增
+          categoryId,
+          pagination: getPagination(limit, page, restaurants.count) // 修改這裡，把 pagination 資料傳回樣板
         })
       })
       .catch(err => next(err))
