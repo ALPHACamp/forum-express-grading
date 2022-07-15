@@ -151,7 +151,6 @@ const userController = {
   },
   removeLike: (req, res, next) => {
     return Like.findOne({
-      // 請確認這邊要找誰
       where: {
         userId: req.user.id,
         restaurantId: req.params.restaurantId
