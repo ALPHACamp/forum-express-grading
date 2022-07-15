@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs')
 const db = require('../models')
-const { User } = db
+const { User, Comment, Restaurant } = db
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const userController = {
@@ -34,11 +34,12 @@ const userController = {
   },
   getUser: (req, res, next) => {
     return User.findByPk(req.params.id, {
-      raw: true
+      include: { model: Comment, include: Restaurant }
     })
       .then(user => {
         if (!user) throw new Error("This user did'nt exist!")
-        res.render('users/profile', { user })
+        console.log(user.toJSON().Comments)
+        res.render('users/profile', { user: user.toJSON() })
       })
       .catch(err => next(err))
   },
