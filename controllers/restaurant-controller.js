@@ -1,6 +1,5 @@
 const { Restaurant, Category, Comment, User } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
-const Sequelize = require('sequelize')
 
 const restaurantController = {
   getRestaurants: async (req, res, next) => {
@@ -71,15 +70,15 @@ const restaurantController = {
   getDashboard: async (req, res, next) => {
     try {
       const restaurant = await Restaurant.findByPk(req.params.id, {
-        attributes: {
-          include: [[Sequelize.fn('COUNT', Sequelize.col('Comments.id')), 'commentCounts']]
-        },
-        include: [Category, Comment],
-        nest: true,
-        raw: true
+        include: [
+          Category,
+          { model: Comment, include: User },
+          { model: User, as: 'FavoritedUsers' }
+        ]
       })
-      if (!restaurant) throw new Error('Restaurant does not exist!')
-      res.render('dashboard', { restaurant, commentCounts: restaurant.commentCounts })
+
+      if (!restaurant) throw new Error("Restaurant doesn't exist!")
+      res.render('dashboard', { restaurant: restaurant.toJSON() })
     } catch (err) { next(err) }
   },
   getFeeds: async (req, res, next) => {
