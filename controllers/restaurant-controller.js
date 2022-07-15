@@ -64,6 +64,28 @@ const restaurantController = {
       if (!restaurant) throw new Error('Restaurant does not exist!')
       res.render('dashboard', { restaurant, commentCounts: restaurant.commentCounts })
     } catch (err) { next(err) }
+  },
+  getFeeds: async (req, res, next) => {
+    try {
+      const [restaurants, comments] = await Promise.all([
+        Restaurant.findAll({
+          limit: 10,
+          order: [['createdAt', 'DESC']],
+          include: [Category],
+          raw: true,
+          nest: true
+        }),
+        Comment.findAll({
+          limit: 10,
+          order: [['createdAt', 'DESC']],
+          include: [User, Restaurant],
+          raw: true,
+          nest: true
+        })
+      ])
+
+      res.render('feeds', { restaurants, comments })
+    } catch (err) { next(err) }
   }
 }
 
