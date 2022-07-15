@@ -67,7 +67,7 @@ const restaurantController = {
   },
   getFeeds: async (req, res, next) => {
     try {
-      const [restaurants, comments] = await Promise.all([
+      const [resData, comData] = await Promise.all([
         Restaurant.findAll({
           limit: 10,
           order: [['createdAt', 'DESC']],
@@ -83,6 +83,15 @@ const restaurantController = {
           nest: true
         })
       ])
+
+      const restaurants = resData.map(res => ({
+        ...res,
+        description: res.description.substring(0, 70) + ' ...'
+      }))
+      const comments = comData.map(com => ({
+        ...com,
+        text: com.text.substring(0, 70) + ' ...'
+      }))
 
       res.render('feeds', { restaurants, comments })
     } catch (err) { next(err) }

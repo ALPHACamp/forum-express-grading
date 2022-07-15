@@ -7,19 +7,30 @@
       <div class="card-header">
         最新餐廳
       </div>
-      <div class="card-body">
+      <div class="card-body px-auto">
         {{#each restaurants}}
-        <div>
-          <h4>
-            <a class="link-primary" href="/restaurants/{{this.id}}">{{this.name}}</a>
-            <a href="/restaurants?categoryId={{this.categoryId}}">
-              <small class="fs-6 badge bg-secondary ms-2">{{this.Category.name}}</small>
-            </a>
-          </h4>
-          <p class="my-4" style="white-space: break-spaces;">{{this.description}}</p>
-          {{relativeTimeFromNow this.createdAt}}
-          <hr>
+        <div class="row ms-2">
+          <div class="row">
+            <div class="col-md-3">
+              <img src="{{this.image}}" class="img-fluid rounded" width="143px" height="90px" alt="...">
+            </div>
+            <div class="col-md-9">
+              <h5>
+                <a class="link-primary me-2" href="/restaurants/{{this.id}}">{{this.name}}</a>
+              </h5>
+              <a href="/restaurants?categoryId={{this.categoryId}}">
+                <small class="fs-12 badge bg-secondary">{{this.Category.name}}</small>
+              </a>
+            </div>
+          </div>
+          <div class="row">
+            <p class="my-2">
+              {{this.description}}
+            </p>
+            {{relativeTimeFromNow this.createdAt}}
+          </div>
         </div>
+        <hr>
         {{/each}}
       </div>
     </div>
@@ -27,19 +38,29 @@
   <div class="col-md-6">
     <div class="card">
       <div class="card-header">
-        最新評論
+        最新餐廳
       </div>
-      <div class="card-body">
+      <div class="card-body px-auto">
         {{#each comments}}
-        <div>
-          <h4>
-            <a class="link-primary" href="/restaurants/{{this.Restaurant.id}}">{{this.Restaurant.name}}</a>
-          </h4>
-          <p class="my-4" style="white-space: break-spaces;">{{this.text}}</p>
-          - <a class="link-secondary" href="/users/{{this.User.id}}">{{this.User.name}}</a>
-          <small>at {{relativeTimeFromNow this.createdAt}}</small>
-          <hr>
+        <div class="row ms-2">
+          <div class="row">
+            <div class="col-md-3">
+              <img src="{{this.Restaurant.image}}" class="img-fluid rounded" width="143px" height="90px" alt="...">
+            </div>
+            <div class="col-md-9">
+              <h5>
+                <a class="link-primary me-2" href="/restaurants/{{this.restaurantId}}">{{this.Restaurant.name}}</a>
+              </h5>
+            </div>
+          </div>
+          <div class="row">
+            <p class="my-2">
+              {{this.text}}
+            </p>
+            {{relativeTimeFromNow this.createdAt}}
+          </div>
         </div>
+        <hr>
         {{/each}}
       </div>
     </div>
