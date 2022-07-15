@@ -1,0 +1,38 @@
+{{> restaurant-tabs route='topRestaurants'}}
+
+<h1>Top 10 人氣餐廳</h1>
+<hr>
+<div class="d-flex flex-column justify-content-center align-items-center">
+  {{#each restaurants}}
+  <div class="card mb-3" style="width: 540px;">
+    <div class="row g-0">
+      <div class="col-md-4">
+        <a href="/restaurants/{{this.id}}">
+          <img src="{{this.image}}" width="250px" height="250px" class="img-fluid rounded-start" alt="Restaurant Image">
+        </a>
+      </div>
+      <div class="col-md-8">
+        <div class="card-body">
+          <h5 class="card-title ms-1"><a class="btn btn-link" href="/restaurants/{{this.id}}"
+              role="button">{{this.name}}</a>
+          </h5>
+          <span class="badge bg-secondary mt-1 ms-3">收藏數：{{this.favoritedCount}}</span>
+          <p class="card-text text-truncate my-4 ms-3">{{this.description}}</p>
+          <div class="d-flex ms-3">
+            <a class="btn btn-primary mt-1" href="/restaurants/{{this.id}}" role="button" style="height: 38px">Show</a>
+            {{#if this.isFavorited}}
+            <form action="/favorite/{{this.id}}?_method=DELETE" method="POST">
+              <button type="submit" class="btn btn-danger m-1">移除最愛</button>
+            </form>
+            {{else}}
+            <form action="/favorite/{{this.id}}" method="POST">
+              <button type="submit" class="btn btn-primary m-1">加到最愛</button>
+            </form>
+            {{/if}}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {{/each}}
+</div>

@@ -40,19 +40,21 @@ const userController = {
   },
   getUser: (req, res, next) => {
     const { id } = req.params
+    const userId = Number(id)
     return Promise.all([
       User.findByPk(id, { raw: true }),
       Comment.findAndCountAll({
         include: Restaurant,
         where: {
-          ...id ? { id } : {}
+          ...userId ? { userId } : {}
         },
         raw: true,
         nest: true
       })
     ])
       .then(([user, comments]) => {
-        const data = comments.rows.map(c => ({ ...c }))
+        const data = comments.rows
+          .map(c => ({ ...c }))
         if (!user) throw new Error("User didn't exist!")
         return res.render('users/profile', {
           user,
@@ -115,7 +117,7 @@ const userController = {
     ])
       .then(([restaurant, favorite]) => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
-        if (favorite) throw new Error('You have favorited this restaurant!')
+        if (favorite) throw new Error('You already favorited this restaurant!')
         return Favorite.create({
           userId,
           restaurantId
@@ -180,18 +182,21 @@ const userController = {
       .catch(next)
   },
   getTopUsers: (req, res, next) => {
+    const followingsId = req.user && req.user.Followings
     return User.findAll({
-      include: [{ model: User, as: 'Followers' }]
+      include: [{
+        model: User, as: 'Followers'
+      }]
     })
       .then(users => {
-        const result = users
+        const data = users
           .map(user => ({
             ...user.toJSON(),
             followerCount: user.Followers.length,
-            isFollowed: req.user.Followings.some(f => f.id === user.id)
+            isFollowed: followingsId.some(f => f.id === user.id)
           }))
           .sort((a, b) => b.followerCount - a.followerCount)
-        res.render('top-users', { users: result })
+        return res.render('top-users', { users: data })
       })
       .catch(next)
   },
