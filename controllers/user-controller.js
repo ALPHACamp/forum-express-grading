@@ -44,6 +44,7 @@ const userController = {
       .catch(err => next(err))
   },
   editUser: (req, res, next) => {
+    if (req.user.id !== Number(req.params.id)) throw new Error('無權限變更他人帳戶!')
     return User.findByPk(req.params.id, {
       raw: true
     })
@@ -54,6 +55,7 @@ const userController = {
       .catch(err => next(err))
   },
   putUser: (req, res, next) => {
+    if (req.user.id !== Number(req.params.id)) throw new Error('無權限變更他人帳戶!')
     const { name } = req.body
     const { file } = req
     return Promise.all([
