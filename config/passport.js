@@ -30,7 +30,8 @@ passport.deserializeUser((id, cb) => {
   return User.findByPk(id, {
     include: [
       // as是先前在model內定義的名稱
-      { model: Restaurant, as: 'FavoritedRestaurants' }
+      { model: Restaurant, as: 'FavoritedRestaurants' },
+      { model: Restaurant, as: 'LikedRestaurants' }
     ]
   })
     .then(user => cb(null, user.toJSON()))
