@@ -85,7 +85,7 @@ const restaurantController = {
       .then(([restaurants, comments]) => {
         const data = restaurants.map(r => ({
           ...r,
-          description: r.description.substring(0, 50) + '......'
+          description: r.description.substring(0, 50) + '......查看更多'
         }))
         res.render('feeds', {
           restaurants: data,
