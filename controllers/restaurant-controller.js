@@ -23,10 +23,12 @@ const restaurantController = {
       Category.findAll({ raw: true })
     ]).then(([restaurants, categories]) => {
       const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
+      const likedRestaurantsId = req.user && req.user.LikedRestaurants.map(fr => fr.id)
       const data = restaurants.rows.map(r => ({
         ...r,
         description: r.description.substring(0, 50),
-        isFavorited: favoritedRestaurantsId.includes(r.id)
+        isFavorited: favoritedRestaurantsId.includes(r.id),
+        isLiked: likedRestaurantsId.includes(r.id)
       }))
       return res.render('restaurants', {
         restaurants: data,
@@ -47,8 +49,12 @@ const restaurantController = {
         return restaurant.increment('viewCounts')
       })
       .then(restaurant => {
+        // 教案使用使用者去比對: 檢查有收藏此餐廳的使用者列表 有無 與現在的 req.user 相同
         const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id)
-        res.render('restaurant', { restaurant: restaurant.toJSON(), isFavorited })
+        // 嘗試使用另外一種邏輯，先將使用者 like 的餐廳id列出後，再用 some 去比對現在點選的餐廳有無在 like 列表中
+        const likedRestaurantsId = req.user && req.user.LikedRestaurants.map(fr => fr.id)
+        const isLiked = likedRestaurantsId.some(id => id === restaurant.id)
+        res.render('restaurant', { restaurant: restaurant.toJSON(), isFavorited, isLiked })
       })
       .catch(err => next(err))
   },
