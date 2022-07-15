@@ -14,8 +14,9 @@ router.get('/restaurants', authenticatedAdmin, adminController.getRestaurants)
 router.post('/restaurants', upload.single('image'), adminController.postRestaurant)
 router.get('/users', adminController.getUsers)
 router.patch('/users/:id', adminController.patchUser)
-router.get('/categories/:id', categoryController.getCategories) // 新增這行
-router.put('/categories/:id', categoryController.putCategory) // 新增這行
+router.get('/categories/:id', categoryController.getCategories)
+router.put('/categories/:id', categoryController.putCategory)
+router.delete('/categories/:id', categoryController.deleteCategory)
 router.get('/categories', categoryController.getCategories)
 router.post('/categories', categoryController.postCategory)
 router.get('', (req, res) => res.redirect('/admin/restaurants'))
