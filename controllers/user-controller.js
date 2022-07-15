@@ -129,7 +129,7 @@ const userController = {
     const { restaurantId } = req.params
     return Promise.all([
       Restaurant.findByPk(restaurantId),
-      // 請確認這邊要找誰
+      // 確認這個like關聯是否存在, 要包含使用者和餐廳資訊
       Like.findOne({
         where: {
           userId: req.user.id,
