@@ -1,0 +1,27 @@
+<div class="row col-md-12 mx-auto bg-white rounded shadow p-3 mb-5 bg-body">
+  <div class="col-md-4">
+    <img class="rounded mx-auto d-block" src="{{user.image}}"
+      style="width: 250px; height: 250px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+  </div>
+  <div class="col-md-8">
+    <p class="user-name fs-4 fw-bolder">{{ user.name }}</p>
+    <p class="user-email">{{ user.email }}</p>
+    <p class="user-comment fw-bolder">{{ restComments.length }} 已評論餐廳</p>
+    <a class="btn btn-primary" href="/users/{{user.id}}/edit">Edit</a>
+  </div>
+  <hr class="mt-5 mb-5">
+  <div class="col-md-12">
+    <div class="card">
+      <div class="card-header">
+        <p class="user-comment fw-bolder" style="margin-bottom: 0;">{{ restComments.length }} 已評論餐廳</p>
+      </div>
+      <div class="card-body">
+        {{#each restComments}}
+        <a href="/restaurants/{{this.restaurantId}}" class="text-decoration-none" alt="{{this.restaurant.name}}">
+          <img src="{{this.Restaurant.image}}" style="width: 100px; height: 100px;" title="{{this.Restaurant.name}}">
+        </a>
+        {{/each}}
+      </div>
+    </div>
+  </div>
+</div>
