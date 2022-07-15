@@ -1,6 +1,5 @@
 const bcrypt = require('bcryptjs')
-const db = require('../models')
-const { User } = db
+const { User, Comment, Restaurant } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 const { getUser } = require('../helpers/auth-helpers')
 
@@ -40,17 +39,21 @@ const userController = {
     res.redirect('/signin')
   },
   getUser: (req, res, next) => {
-    const authUser = getUser(req)
-
-    return User.findByPk(req.params.id, {
-      raw: true
-    })
-      .then(user => {
+    const userId = req.params.id
+    return Promise.all([
+      User.findByPk(userId, { raw: true }),
+      Comment.findAll({
+        include: Restaurant,
+        where: { userId },
+        attributes: ['restaurant_id'],
+        group: 'restaurant_id',
+        raw: true,
+        nest: true
+      })
+    ])
+      .then(([user, restComments]) => {
         if (!user) throw new Error('使用者不存在！')
-        if (Number(user.id) === Number(authUser.id)) {
-          return res.render('users/profile', { user })
-        }
-        return res.redirect(`/users/${authUser.id}`)
+        return res.render('users/profile', { user, restComments })
       })
       .catch(err => next(err))
   },
@@ -82,8 +85,10 @@ const userController = {
             name,
             image: filePath || user.image
           })
+        } else {
+          req.flash('error_messages', '無法修改其它使用者資料！')
+          return res.redirect(`/users/${authUser.id}`)
         }
-        return res.redirect(`/users/${authUser.id}`)
       })
       .then(() => {
         req.flash('success_messages', '使用者資料編輯成功')
