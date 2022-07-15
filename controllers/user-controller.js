@@ -52,19 +52,16 @@ const userController = {
         where: { userId: req.params.id },
         include: Restaurant,
         raw: true,
-        nest: true,
-        group: ['restaurantId']
+        nest: true
       })
     ])
       .then(([user, comment]) => {
-        const count = comment.count.map(i => i.count).reduce((x, y) => x + y, 0)
         const restaurants = comment.rows.map(r => r.Restaurant)
         if (!user) throw new Error("User didn't exist")
         return res.render('users/profile', {
           user,
-          count,
-          restaurants,
-          restAmount: restaurants.length
+          count: comment.count,
+          restaurants
         })
       })
       .catch(err => next(err))
