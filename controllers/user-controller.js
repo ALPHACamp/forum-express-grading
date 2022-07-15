@@ -33,18 +33,17 @@ const userController = {
     res.redirect('/restaurants')
   },
   getUser: (req, res, next) => {
-    const userId = req.user.id
     return User.findByPk(req.params.id, {
       include: { model: Comment, include: Restaurant }
     })
       .then(user => {
         if (!user) throw new Error("This user did'nt exist!")
-        res.render('users/profile', { user: user.toJSON(), userId })
+        res.render('users/profile', { user: user.toJSON() })
       })
       .catch(err => next(err))
   },
   editUser: (req, res, next) => {
-    if (req.user.id !== Number(req.params.id)) throw new Error('無權限變更他人帳戶!')
+    // if (req.user.id !== Number(req.params.id)) throw new Error('無權限變更他人帳戶!')
     return User.findByPk(req.params.id, {
       raw: true
     })
