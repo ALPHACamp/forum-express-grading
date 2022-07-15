@@ -1,0 +1,15 @@
+<div class="container">
+  <div class="row">
+    <div class="col-4">
+      <img class="img-responsive center-block" src="{{user.image}}" style="width: 250px; margin-bottom: 25px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;" alt="user-image">
+    </div>
+    <div class="col-8">
+      <h3>{{ user.name }}</h3>
+      <p>{{ user.email }}</p>
+      {{#ifCond user.id currentUser.id}} 
+        <a href="/users/{{ user.id }}/edit"><button class="btn btn-primary my-sm-0 my-2">Edit</button></a>
+      {{/ifCond}}
+      <a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
+    </div>
+  </div>
+</div>
