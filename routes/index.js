@@ -8,11 +8,14 @@ const { authenticated, authenticatedAdmin } = require('../middleware/auth')
 const { generalErrorHandler } = require('../middleware/error-handler')
 const admin = require('./modules/admin')
 const categories = require('./modules/categories')
+const users = require('./modules/users')
+const upload = require('../middleware/multer')
 
 router.use('/admin/categories', authenticatedAdmin, categories)
 router.use('/admin', authenticatedAdmin, admin)
+router.use('/users', authenticated, users)
 router.get('/signup', userController.signUpPage)
-router.post('/signup', userController.signUp)
+router.post('/signup', upload.single('image'), userController.signUp)
 router.get('/signin', userController.signInPage)
 router.post(
   '/signin',
