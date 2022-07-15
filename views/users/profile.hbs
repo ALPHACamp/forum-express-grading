@@ -1,0 +1,33 @@
+<div class="card mb-3">
+  <div class="row g-0">
+    <div class="col-md-4">
+      <img src="{{targetUser.image}}" class="img-fluid rounded-start" alt="...">
+    </div>
+    <div class="col-md-8">
+      <div class="card-body ms-5 mt-2">
+        <h5 class="card-title">{{targetUser.name}}</h5>
+        <p class="card-text">{{targetUser.email}}</p>
+        <p>{{targetUser.Comments.length}} 已評論餐廳</p>
+        {{#ifCond targetUser.id user.id}}
+          <a class="btn btn-primary mt-5" href="/users/{{user.id}}/edit">edit</a>
+        {{/ifCond}}
+      </div>
+    </div>
+  </div>
+</div>
+<div class="card">
+  <div class="card-header">
+    {{targetUser.Comments.length}} 已評論餐廳
+  </div>
+  <div class="ps-3 py-3">
+    {{#if targetUser.Comments}}
+      {{#each targetUser.Comments}}
+        <a href="/restaurants/{{this.Restaurant.id}}" style="text-decoration: none;">
+          <img src="{{this.Restaurant.image}}" class="m-3" alt="..." style="width: 80px; height: 80px;">
+        </a>
+      {{/each}}
+    {{else}}
+      <span>尚未評論餐廳</span>
+    {{/if}}
+  </div>
+</div>
