@@ -31,7 +31,9 @@ passport.deserializeUser((id, cb) => {
     include: [
       // as是先前在model內定義的名稱
       { model: Restaurant, as: 'FavoritedRestaurants' },
-      { model: Restaurant, as: 'LikedRestaurants' }
+      { model: Restaurant, as: 'LikedRestaurants' },
+      { model: User, as: 'Followers' },
+      { model: User, as: 'Followings' }
     ]
   })
     .then(user => cb(null, user.toJSON()))
