@@ -1,4 +1,4 @@
-const { Restaurant, Category } = require('../models')
+const { Restaurant, Category, Comment, User } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
 
 const restaurantController = {
@@ -39,7 +39,13 @@ const restaurantController = {
   getRestaurant: (req, res, next) => {
     const id = req.params.id
     return Restaurant.findByPk(id, {
-      include: [Category],
+      include: [
+        Category,
+        { model: Comment, include: User }
+      ],
+      order: [
+        [Comment, 'updated_at', 'desc']
+      ],
       nest: true
     })
       .then(restaurant => {

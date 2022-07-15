@@ -19,7 +19,7 @@ const commentController = {
           restaurantId
         })
       })
-      .then(() => res.redirect(`/restaurant/${restaurantId}`))
+      .then(() => res.redirect(`/restaurants/${restaurantId}`))
       .catch(err => next(err))
   }
 }
