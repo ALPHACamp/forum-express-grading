@@ -2,22 +2,38 @@
   <div class='row g-0'>
     <div class='col-md-4'>
       <img
-        src='{{targetUser.image}}'
+        src='{{pageUser.image}}'
         class='img-fluid rounded-start'
         alt='...'
       />
     </div>
     <div class='col-md-8'>
       <div class='card-body'>
-        <h5 class='card-title'>{{targetUser.name}}</h5>
-        <p class='card-text'>{{targetUser.email}}</p>
-        {{#ifCond targetUser.id user.id}}
+        <h5 class='card-title'>{{pageUser.name}}</h5>
+        <p class='card-text'>{{pageUser.email}}</p>
+        {{#ifCond pageUser.id user.id}}
           <a
             class='btn btn-primary'
-            href='/users/{{targetUser.id}}/edit'
+            href='/users/{{pageUser.id}}/edit'
           >edit</a>
         {{/ifCond}}
       </div>
     </div>
   </div>
 </div>
+
+<div class="card">
+  <div class="card-header">
+    {{pageUser.Comments.length}} 已評論餐廳
+  </div>
+  <div class="ps-3 py-3">
+    {{#if pageUser.Comments}}
+      {{#each pageUser.Comments}}
+        <a href="/restaurants/{{this.Restaurant.id}}" style="text-decoration: none;">
+          <img src="{{this.Restaurant.image}}" class="m-3" alt="..." style="width: 80px; height: 80px;">
+        </a>
+      {{/each}}
+    {{else}}
+      <span>這位使用者還沒有評論任何餐廳喔！</span>
+    {{/if}}
+  </div>

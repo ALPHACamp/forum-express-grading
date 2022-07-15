@@ -2,7 +2,7 @@ const bcrypt = require('bcryptjs') // 載入 bcrypt
 const { localFileHandler } = require('../helpers/file-helpers')
 const { getUser } = require('../helpers/auth-helpers')
 const db = require('../models')
-const { User } = db
+const { User, Comment, Restaurant } = db
 
 const userController = {
   signUpPage: (req, res) => {
@@ -44,11 +44,13 @@ const userController = {
     res.redirect('/signin')
   },
   getUser: (req, res, next) => {
-    return User.findByPk(req.params.id)
-      .then(targetUser => {
-        if (!targetUser) throw new Error("User didn't exist!")
-        targetUser = targetUser.toJSON()
-        res.render('users/profile', { user: getUser(req), targetUser })
+    return User.findByPk(req.params.id, {
+      include: [Comment, { model: Comment, include: Restaurant }]
+    })
+      .then(pageUser => {
+        if (!pageUser) throw new Error("User didn't exist!")
+        pageUser = pageUser.toJSON()
+        res.render('users/profile', { user: getUser(req), pageUser })
       })
       .catch(err => next(err))
   },
