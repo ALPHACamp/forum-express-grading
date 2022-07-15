@@ -12,7 +12,9 @@
         <div>
           <h4>
             <a class="link-primary" href="/restaurants/{{this.id}}">{{this.name}}</a>
-            <small class="fs-6">[{{this.Category.name}}]</small>
+            <a href="/restaurants?categoryId={{this.categoryId}}">
+              <small class="fs-6 badge bg-secondary ms-2">{{this.Category.name}}</small>
+            </a>
           </h4>
           <p class="my-4" style="white-space: break-spaces;">{{this.description}}</p>
           {{relativeTimeFromNow this.createdAt}}
