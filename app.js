@@ -16,7 +16,6 @@ const passport = require('./config/passport')
 const handlebarsHelpers = require('./helpers/handlebars-helpers')
 const { getUser } = require('./helpers/auth-helpers')
 const methodOverride = require('method-override')
-
 app.engine('hbs', handlebars({ extname: '.hbs', helpers: handlebarsHelpers, handlebars: allowInsecurePrototypeAccess(Handlebars) }))
 app.set('view engine', 'hbs')
 app.use(express.urlencoded({ extended: true }))
