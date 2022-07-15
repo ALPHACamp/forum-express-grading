@@ -3,11 +3,7 @@ const request = require('supertest')
 const sinon = require('sinon')
 const should = chai.should()
 
-<<<<<<< HEAD
 const { createModelMock, createControllerProxy, mockRequest, mockResponse, mockNext } = require('../helpers/unit-test-helper')
-=======
-const { createModelMock, createControllerProxy, mockRequest, mockResponse, mockNext } = require('../helpers/unit-test-helper');
->>>>>>> origin/R04-test
 
 describe('# R02: 餐廳資訊整理：Dashboard', function () {
   context('# [Q1: Dashboard - 1 - controller / view / route]', () => {
@@ -18,11 +14,7 @@ describe('# R02: 餐廳資訊整理：Dashboard', function () {
         id: 1,
         email: 'root@example.com',
         name: 'admin',
-<<<<<<< HEAD
         isAdmin: false
-=======
-        isAdmin: false,
->>>>>>> origin/R04-test
       }])
       this.RestaurantMock = createModelMock('Restaurant', [{
         id: 1,
@@ -35,7 +27,6 @@ describe('# R02: 餐廳資訊整理：Dashboard', function () {
       }])
       this.CommentMock = createModelMock('Comment', [{
         id: 1,
-<<<<<<< HEAD
         text: 'gogogo'
       }])
 
@@ -45,17 +36,6 @@ describe('# R02: 餐廳資訊整理：Dashboard', function () {
         Category: this.CategoryMock,
         Restaurant: this.RestaurantMock,
         Comment: this.CommentMock
-=======
-        text: "gogogo"
-      }])
-
-      // 連向模擬的 tables
-      this.restController = createControllerProxy('../controllers/restaurant-controller', { 
-        User: this.UserMock, 
-        Category: this.CategoryMock, 
-        Restaurant: this.RestaurantMock,
-        Comment: this.CommentMock,
->>>>>>> origin/R04-test
       })
     })
 
@@ -64,10 +44,6 @@ describe('# R02: 餐廳資訊整理：Dashboard', function () {
       const req = mockRequest({ params: { id: 1 } }) // 帶入 params.id = 1，對 GET /restaurants/1/dashboard 發出請求
       const res = mockResponse()
       const next = mockNext
-<<<<<<< HEAD
-=======
-      
->>>>>>> origin/R04-test
       // 測試 restController.getDashBoard 函式
       await this.restController.getDashboard(req, res, next)
 
@@ -80,8 +56,4 @@ describe('# R02: 餐廳資訊整理：Dashboard', function () {
       res.render.getCall(0).args[1].restaurant.viewCounts.should.equal(3)
     })
   })
-<<<<<<< HEAD
 })
-=======
-})
->>>>>>> origin/R04-test
