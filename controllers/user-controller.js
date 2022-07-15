@@ -2,11 +2,7 @@
 const bcrypt = require('bcryptjs')
 
 // import models
-<<<<<<< HEAD
-const { User } = require('../models')
-=======
 const { User, Comment, Restaurant } = require('../models')
->>>>>>> R03
 
 // import helper
 const { imgurFileHandler } = require('../helpers/file-helpers')
@@ -57,12 +53,6 @@ const userController = {
   },
   getUser: async (req, res, next) => {
     try {
-<<<<<<< HEAD
-      const user = await User.findByPk(req.params.id, { raw: true })
-      if (!user) throw new Error('This user does not exist!')
-
-      return res.render('users/profile', { user })
-=======
       const user = await User.findByPk(req.params.id, { nest: true, include: { model: Comment, include: Restaurant } })
       if (!user) throw new Error('This user does not exist!')
 
@@ -78,7 +68,6 @@ const userController = {
       //   })
       // )
       // return res.render('users/profile', { user, comments, restaurants })
->>>>>>> R03
     } catch (error) {
       next(error)
     }
@@ -88,8 +77,6 @@ const userController = {
       const user = await User.findByPk(req.params.id, { raw: true })
       if (!user) throw new Error('This user does not exist!')
 
-<<<<<<< HEAD
-=======
       // 這邊也是，要防止非本人的 profile而做邏輯處理，反而導致測試過不了
       // avoid user change id on url to edit other users' profile
       // editting others' profile is bad behavior, so giving warning message in upper case
@@ -100,7 +87,6 @@ const userController = {
       //   return res.redirect(`/users/${res.locals.user.id}`)
       // }
 
->>>>>>> R03
       return res.render('users/edit', { user })
     } catch (error) {
       next(error)
