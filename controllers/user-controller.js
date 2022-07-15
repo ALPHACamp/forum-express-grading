@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs') // 載入 bcrypt
-const { localFileHandler } = require('../helpers/file-helpers')
+const { imgurFileHandler } = require('../helpers/file-helpers')
 const { getUser } = require('../helpers/auth-helpers')
 const db = require('../models')
 const { User, Comment, Restaurant } = db
@@ -70,7 +70,7 @@ const userController = {
 
     if (!name) throw new Error('User name is required!')
 
-    return Promise.all([User.findByPk(userId), localFileHandler(file)])
+    return Promise.all([User.findByPk(userId), imgurFileHandler(file)])
       .then(([user, filePath]) => {
         if (!user) throw new Error("User didn't exist!")
         return user.update({
