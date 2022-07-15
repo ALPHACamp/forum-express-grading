@@ -35,6 +35,8 @@ app.use('/upload', express.static(path.join(__dirname, 'upload')))
 app.use((req, res, next) => {
   res.locals.success_messages = req.flash('success_messages')
   res.locals.error_messages = req.flash('error_messages')
+  res.locals.warning_messages = req.flash('warning_messages')
+
   // as the user pass authentication, Passport will return user
   res.locals.user = getUser(req)
 
