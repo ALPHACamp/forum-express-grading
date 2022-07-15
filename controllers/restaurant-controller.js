@@ -79,6 +79,7 @@ const restaurantController = {
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         const rest = restaurant.toJSON()
+        console.log(rest)
         return res.render('dashboard', { restaurant: rest })
       })
       .catch(next)
