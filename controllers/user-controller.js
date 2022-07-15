@@ -33,13 +33,13 @@ const userController = {
     res.redirect('/restaurants')
   },
   getUser: (req, res, next) => {
+    const userId = req.user.id
     return User.findByPk(req.params.id, {
       include: { model: Comment, include: Restaurant }
     })
       .then(user => {
         if (!user) throw new Error("This user did'nt exist!")
-        console.log(user.toJSON().Comments)
-        res.render('users/profile', { user: user.toJSON() })
+        res.render('users/profile', { user: user.toJSON(), userId })
       })
       .catch(err => next(err))
   },

@@ -32,6 +32,6 @@ const commentController = {
         res.redirect(`/restaurants/${deletedComment.restaurantId}`)
       })
       .catch(err => next(err))
-  },
+  }
 }
 module.exports = commentController
