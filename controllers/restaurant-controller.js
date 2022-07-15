@@ -67,6 +67,29 @@ const restaurantController = {
     } catch (err) {
       next(err)
     }
+  },
+  getFeeds: async (req, res, next) => {
+    try {
+      const [restaurants, comments] = await Promise.all([
+        Restaurant.findAll({
+          raw: true,
+          limit: 10,
+          order: [
+            ['createdAt', 'DESC']
+          ]
+        }),
+        Comment.findAll({
+          raw: true,
+          limit: 10,
+          order: [
+            ['createdAt', 'DESC']
+          ]
+        })
+      ])
+      res.render('feeds', { restaurants, comments })
+    } catch (err) {
+      next(err)
+    }
   }
 }
 
