@@ -60,7 +60,7 @@ const userController = {
         const count = comment.count.map(i => i.count).reduce((x, y) => x + y, 0)
         const restaurants = comment.rows.map(r => r.Restaurant)
         if (!user) throw new Error("User didn't exist")
-        res.render('users/profile', {
+        return res.render('users/profile', {
           user,
           count,
           restaurants,
