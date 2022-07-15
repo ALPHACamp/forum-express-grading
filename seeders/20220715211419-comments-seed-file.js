@@ -12,19 +12,19 @@ module.exports = {
      *   isBetaMember: false
      * }], {});
     */
-    const User = await queryInterface.sequelize.query(
+    const user = await queryInterface.sequelize.query(
       'SELECT id FROM Users;',
       { type: queryInterface.sequelize.QueryTypes.SELECT }
     )
-    const Restaurant = await queryInterface.sequelize.query(
+    const restaurant = await queryInterface.sequelize.query(
       'SELECT id FROM Restaurants;',
       { type: queryInterface.sequelize.QueryTypes.SELECT }
     )
     await queryInterface.bulkInsert('Comments',
       Array.from({ length: 10 }, () => ({
         text: faker.lorem.sentence(),
-        user_id: User[Math.floor(Math.random() * User.length)].id,
-        restaurant_id: Restaurant[Math.floor(Math.random() * Restaurant.length)].id,
+        user_id: user[Math.floor(Math.random() * user.length)].id,
+        restaurant_id: restaurant[Math.floor(Math.random() * restaurant.length)].id,
         created_at: new Date(),
         updated_at: new Date()
       })), {}
