@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
       User.belongsToMany(models.Restaurant, {
         through: models.Favorite,
         foreignKey: 'userId',
-        as: 'FavoritedUsers' // 幫這個關聯取個名稱
+        as: 'FavoritedRestaurants' // 幫這個關聯取個名稱
       })
     }
   };

@@ -112,7 +112,7 @@ const userController = {
         if (!restaurant) throw new Error('餐廳不存在！')
         if (favorite) throw new Error('餐廳已經在最愛！')
 
-        req.flash('success_messages', '餐廳加入最愛成功！')
+        req.flash('success_messages', '餐廳加到最愛成功！')
         return Favorite.create({
           userId,
           restaurantId
@@ -132,7 +132,7 @@ const userController = {
     })
       .then(favorite => {
         if (!favorite) throw new Error('餐廳不在最愛！')
-
+        req.flash('success_messages', '餐廳移除最愛成功！')
         return favorite.destroy()
       })
       .then(() => res.redirect('back'))
