@@ -107,6 +107,30 @@ const restaurantController = {
         })
       })
       .catch(err => next(err))
+  },
+  getTopRestaurants: (req, res, next) => {
+    const TOP = 10
+    return Restaurant.findAll({
+      // 關聯table名稱: FavoritedUsers, 對應到的原始model
+      include: [{ model: User, as: 'FavoritedUsers' }]
+    })
+      .then(restaurants => {
+        // 資料獨立擺出來
+        const result = restaurants
+          .map(restaurant => ({
+            ...restaurant.toJSON(),
+            description: restaurant.description.substring(0, 10) + '...點選「show」查看更多',
+            favoritedCount: restaurant.FavoritedUsers.length,
+            // 判斷目前登入使用者是否已收藏該 restaurants 物件
+            isFavorited: req.user && req.user.FavoritedRestaurants.some(f => f.id === restaurant.id)
+          }))
+          // 排序由多到少
+          .sort((a, b) => b.favoritedCount - a.favoritedCount)
+          .slice(0, TOP)
+
+        res.render('top-restaurants', { restaurants: result })
+      })
+      .catch(err => next(err))
   }
 }
 
