@@ -47,7 +47,7 @@ const restaurantController = {
       ]
     })
       .then(restaurant => {
-        if (!restaurant) throw new Error('找不到此餐廳資訊！')
+        if (!restaurant) throw new Error('找不到餐廳資訊！')
         return restaurant.increment('viewCounts')
       })
       .then(restaurant => res.render('restaurant', { restaurant: restaurant.toJSON() }))
@@ -60,8 +60,38 @@ const restaurantController = {
       include: [Category]
     })
       .then(restaurant => {
-        if (!restaurant) throw new Error('找不到此餐廳資訊！')
+        if (!restaurant) throw new Error('找不到餐廳資訊！')
         return res.render('dashboard', { restaurant })
+      })
+      .catch(err => next(err))
+  },
+  getFeeds: (req, res, next) => {
+    return Promise.all([
+      Restaurant.findAll({
+        limit: 10,
+        order: [['createdAt', 'DESC']],
+        include: [Category],
+        raw: true,
+        nest: true
+      }),
+      Comment.findAll({
+        limit: 10,
+        order: [['createdAt', 'DESC']],
+        include: [User, Restaurant],
+        raw: true,
+        nest: true
+      })
+    ])
+      .then(([restaurants, comments]) => {
+        const restDescData = restaurants.map(r => ({
+          ...r,
+          description: r.description.substring(0, 20) + ' ...'
+        }))
+        const commData = comments.map(c => ({
+          ...c,
+          text: c.text.substring(0, 20) + ' ...'
+        }))
+        return res.render('feeds', { restaurants: restDescData, comments: commData })
       })
       .catch(err => next(err))
   }
