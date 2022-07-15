@@ -26,15 +26,17 @@ const restaurantController = {
       Category.findAll({ raw: true })
     ])
       .then(([restaurants, categories]) => {
-        // 把撈到的 restaurants 資料經過以下兩步驟處理並存成 data，才把 data 交給 hbs
+        // 把撈到的 restaurants 資料經過以下3步驟處理並存成 data，才把 data 交給 hbs
         // 步驟1. 把每一間餐廳的描述受限只有50字
-        // 步驟2. 增加一個叫做 isFavorited 的屬性，其 value 是布林值，看這間餐廳是不是有被使用者收藏（有=1，沒有=0）
+        // 步驟2&3. 增加叫做 isFavorited 和 isLike 的屬性，其 value 是布林值，看這間餐廳是不是有被使用者收藏或喜歡（有=1，沒有=0）
 
         const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
+        const likeRestaurantsId = req.user && req.user.LikeRestaurants.map(lr => lr.id)
         const data = restaurants.rows.map(r => ({
           ...r,
           description: r.description.substring(0, 50),
-          isFavorited: favoritedRestaurantsId.includes(r.id)
+          isFavorited: favoritedRestaurantsId.includes(r.id),
+          isLike: likeRestaurantsId.includes(r.id)
         }))
         return res.render('restaurants', {
           restaurants: data,
@@ -50,7 +52,8 @@ const restaurantController = {
       include: [
         Category,
         { model: Comment, include: User },
-        { model: User, as: 'FavoritedUsers' }
+        { model: User, as: 'FavoritedUsers' },
+        { model: User, as: 'LikeUsers' }
       ]
     })
       .then(restaurant => {
@@ -58,10 +61,12 @@ const restaurantController = {
         return restaurant.increment('view_counts')
       })
       .then(restaurant => {
-        const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id)
+        const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id) // isFavorited 是一個布林值
+        const isLike = restaurant.LikeUsers.some(lu => lu.id === req.user.id) // isLike 是一個布林值
         res.render('restaurant', {
           restaurant: restaurant.toJSON(),
-          isFavorited
+          isFavorited,
+          isLike
         })
       })
       .catch(err => next(err))
