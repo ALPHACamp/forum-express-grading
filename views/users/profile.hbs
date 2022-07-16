@@ -7,18 +7,13 @@
       <div class="card-body">
         <h5 class="card-title">{{ targetUser.name }}</h5>
         <p class="card-text">{{ targetUser.email }}</p>
-<<<<<<< HEAD
-=======
         <p>{{targetUser.Comments.length}} 已評論餐廳</p>
->>>>>>> R03
         {{#ifCond targetUser.id user.id}}
           <a class="btn btn-primary" href="/users/{{user.id}}/edit">edit</a>
         {{/ifCond}}
       </div>
     </div>
   </div>
-<<<<<<< HEAD
-=======
   <div class="card">
     <div class="card-header"> {{targetUser.Comments.length}} 已評論餐廳</div>
     <div class="ps-3">
@@ -33,5 +28,4 @@
       {{/if}}
     </div>
   </div>
->>>>>>> R03
 </div>
