@@ -22,11 +22,11 @@
 </div>
 <div class="card m-2">
   <div class="card-header">
-  <strong>{{commentNumber}} 已評論餐廳</strong>
+  <strong>{{commentCount}} 已評論餐廳</strong>
   </div>
   <div class="card-body">
-    {{#each restaurants}}
-    <a href="/restaurants/{{this.id}}"><img src="{{this.image}}" alt="" style="width: 100px; height:100px;"></a>
+    {{#each comment}}
+    <a href="/restaurants/{{this.Restaurant.id}}"><img src="{{this.Restaurant.image}}" alt="" style="width: 100px; height:100px;"></a>
     {{/each}}
   </div>
 </div>
