@@ -2,7 +2,7 @@
 const bcrypt = require('bcryptjs')
 
 // import models
-const { User, Comment, Restaurant, Favorite } = require('../models')
+const { User, Comment, Restaurant, Favorite, Like } = require('../models')
 
 // import helper
 const { imgurFileHandler } = require('../helpers/file-helpers')
@@ -148,6 +148,47 @@ const userController = {
 
       req.flash('success_messages', 'Successfully remove the restaurant from your favorite!')
       // req.flash('success_messages', `Successfully remove restaurant ${resName} from your favorite!`)
+      return res.redirect('back')
+    } catch (error) {
+      next(error)
+    }
+  },
+  addLike: async (req, res, next) => {
+    try {
+      const { restaurantId } = req.params
+      const [restaurant, like] = await Promise.all([
+        Restaurant.findByPk(restaurantId),
+        Like.findOne({
+          where: {
+            userId: req.user.id,
+            restaurantId,
+          },
+        }),
+      ])
+
+      if (!restaurant) throw new Error('This restaurant does not exist!')
+      if (like) throw new Error('You have liked this restaurant!')
+
+      await Like.create({ userId: req.user.id, restaurantId })
+
+      return res.redirect('back')
+    } catch (error) {
+      next(error)
+    }
+  },
+  removeLike: async (req, res, next) => {
+    try {
+      const like = await Like.findOne({
+        where: {
+          userId: req.user.id,
+          restaurantId: req.params.restaurantId,
+        },
+      })
+
+      if (!like) throw new Error(`You haven't liked this restaurant!`)
+      await like.destroy()
+
+      req.flash('success_messages', 'Successfully remove the restaurant from your like list!')
       return res.redirect('back')
     } catch (error) {
       next(error)

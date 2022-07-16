@@ -40,6 +40,9 @@ router.post('/comments', authenticated, commentController.postComment)
 router.post('/favorite/:restaurantId', authenticated, userController.addFavorite)
 router.delete('/favorite/:restaurantId', authenticated, userController.removeFavorite)
 
+router.post('/like/:restaurantId', authenticated, userController.addLike)
+router.delete('/like/:restaurantId', authenticated, userController.removeLike)
+
 /**
  * set fallback router
  * if all routers above are not allow to get into, this fallback router is the only one to enter

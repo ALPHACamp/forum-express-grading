@@ -45,8 +45,14 @@ const restaurantController = {
       // req.user might be null
       const favoritedRestaurantsId =
         req.user &&
-        (await req.user.FavoritedRestaurants.map((favoriteRestaurant) => {
-          return favoriteRestaurant.id
+        (await req.user.FavoritedRestaurants.map((favoritedRestaurant) => {
+          return favoritedRestaurant.id
+        }))
+
+      const likedRestaurantsId =
+        req.user &&
+        (await req.user.LikedRestaurants.map((likedRestaurant) => {
+          return likedRestaurant.id
         }))
 
       // restaurants { count: 50, row: [{ item }, { item }, ...] }
@@ -54,6 +60,7 @@ const restaurantController = {
         ...item,
         description: item.description.substring(0, 50),
         isFavorited: favoritedRestaurantsId.includes(item.id), // isFavorited: Boolean
+        isLiked: likedRestaurantsId.includes(item.id),
       }))
 
       return res.render('restaurants', {
@@ -69,14 +76,20 @@ const restaurantController = {
   getRestaurant: async (req, res, next) => {
     try {
       const restaurant = await Restaurant.findByPk(req.params.id, {
-        include: [Category, { model: Comment, include: User }, { model: User, as: 'FavoritedUsers' }],
+        include: [
+          Category,
+          { model: Comment, include: User },
+          { model: User, as: 'FavoritedUsers' },
+          { model: User, as: 'LikedUsers' },
+        ],
       })
       if (!restaurant) throw new Error('This restaurant does not exist!')
 
-      const isFavorited = restaurant.FavoritedUsers.some((favUser) => favUser.id === req.user.id)
+      const isFavorited = await restaurant.FavoritedUsers.some((favUser) => favUser.id === req.user.id)
+      const isLiked = await restaurant.LikedUsers.some((likedUser) => likedUser.id === req.user.id)
       await restaurant.increment('view_counts', { by: 1 })
 
-      return res.render('restaurant', { restaurant: restaurant.toJSON(), isFavorited })
+      return res.render('restaurant', { restaurant: restaurant.toJSON(), isFavorited, isLiked })
     } catch (error) {
       next(error)
     }
