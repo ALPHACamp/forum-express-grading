@@ -9,7 +9,8 @@ module.exports = {
       is_admin: true,
       name: 'admin',
       created_at: new Date(),
-      updated_at: new Date()
+      updated_at: new Date(),
+      avatar: `https://loremflickr.com/320/240/people/?random=${Math.random() * 100}`
     },
     {
       email: 'user1@example.com',
@@ -17,7 +18,8 @@ module.exports = {
       is_admin: false,
       name: 'user1',
       created_at: new Date(),
-      updated_at: new Date()
+      updated_at: new Date(),
+      avatar: `https://loremflickr.com/320/240/people/?random=${Math.random() * 100}`
     },
     {
       email: 'user2@example.com',
@@ -25,7 +27,8 @@ module.exports = {
       is_admin: false,
       name: 'user2',
       created_at: new Date(),
-      updated_at: new Date()
+      updated_at: new Date(),
+      avatar: `https://loremflickr.com/320/240/people/?random=${Math.random() * 100}`
     }
     ], {})
   },

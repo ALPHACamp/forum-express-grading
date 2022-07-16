@@ -156,6 +156,20 @@ const userController = {
       })
       .catch(err => next(err))
   },
+  getTopUsers: async (req, res, next) => {
+    try {
+      let users = await User.findAll({ include: [{ model: User, as: 'Followers' }] })
+      console.log(users)
+      users = users.map(user => ({
+        ...user.toJSON(),
+        followerCount: user.Followers.length,
+        isFollowed: req.user.Followings.some(f => f.id === user.id)
+      }))
+      return res.render('top-users', { users })
+    } catch (error) {
+      next(error)
+    }
+  },
   logout: (req, res) => {
     req.flash('success_messages', '登出成功！')
     req.logout()
