@@ -46,12 +46,13 @@ const userController = {
       Comment.findAndCountAll({
         include: Restaurant,
         where: { userId },
-        group: 'restaurant_id',
+        // group: 'restaurant_id',
         raw: true,
         nest: true
       })
     ])
       .then(([user, comments]) => {
+        if (!user) throw new Error("user didn't exist!")
         if (!user.imagePath) {
           user.imagePath = `http://${req.headers?.host}/images/default.png`
         }

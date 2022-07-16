@@ -7,7 +7,7 @@
       <div class="card-body">
         <h5 class="card-title fw-bold">{{user.name}}</h5>
         <p class="card-text">{{user.email}}</p>
-        <p class="card-text fw-bold">{{comments.count.length}} 已評論餐廳</p>
+        <p class="card-text fw-bold">{{comments.count}} 已評論餐廳</p>
         <a href="/users/{{user.id}}/edit" class="btn btn-primary">Edit</a>
       </div>
     </div>
@@ -15,7 +15,7 @@
 </div>
 
 <div class="card">
-  <h5 class="card-header fw-bold">{{comments.count.length}} 已評論餐廳</h5>
+  <h5 class="card-header fw-bold">{{comments.count}} 已評論餐廳</h5>
   <div class="card-body d-flex flex-row flex-wrap bd-highlight mb-3 p-0">
     {{#if comments.rows}}
     {{#each comments.rows}}
