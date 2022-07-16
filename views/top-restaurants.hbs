@@ -20,15 +20,18 @@
           <h5 class="card-title"><a href="/restaurants/{{this.id}}">{{this.name}}</a></h5>
           <span class="bg-secondary badge">收藏數：{{this.favoritedCount}}</span>
           <p class="card-text text-start">{{this.description}}</p>
-          {{#if this.isFavorited }}
-          <form action="/favorite/{{this.id}}?_method=DELETE" method="POST" style="display: contents;">
-            <button type="submit" class="btn btn-danger">移除最愛</button>
-          </form>
-          {{else}}
-          <form action="/favorite/{{this.id}}" method="POST" style="display: contents;">
-            <button type="submit" class="btn btn-primary">加到最愛</button>
-          </form>
-          {{/if}}
+          <div class="button-container">
+            <a href="/restaurants/{{this.id}}" class="btn btn-primary">Show</a>
+            {{#if this.isFavorited }}
+            <form action="/favorite/{{this.id}}?_method=DELETE" method="POST" style="display: contents;">
+              <button type="submit" class="btn btn-danger">移除最愛</button>
+            </form>
+            {{else}}
+            <form action="/favorite/{{this.id}}" method="POST" style="display: contents;">
+              <button type="submit" class="btn btn-primary">加到最愛</button>
+            </form>
+            {{/if}}
+          </div>
         </div>
       </div>
     </div>
