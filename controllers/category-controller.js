@@ -1,4 +1,4 @@
-const { Category } = require('../models')
+const { Category, Restaurant } = require('../models')
 
 const categoryController = {
   getCategories: (req, res, next) => {
@@ -33,14 +33,25 @@ const categoryController = {
       .catch(err => next(err))
   },
   deleteCategory: (req, res, next) => {
-    Category.findByPk(req.params.id)
-      .then(category => {
-        if (!category) throw new Error("Category didn't exist!")
-        return category.destroy()
+    const categoryId = req.params.id
+    Restaurant.findAll({ where: { categoryId } })
+      .then(restaurants => {
+        return restaurants.map(restaurant => restaurant.update({
+          categoryId: 0
+        })
+        )
       })
       .then(() => {
-        req.flash('success_message', 'Category was successfully to delete')
-        res.redirect('/admin/categories')
+        Category.findByPk(req.params.id)
+          .then(category => {
+            if (!category) throw new Error("Category didn't exist!")
+            return category.destroy()
+          })
+          .then(() => {
+            req.flash('success_message', 'Category was successfully to delete')
+            res.redirect('/admin/categories')
+          })
+          .catch(err => next(err))
       })
       .catch(err => next(err))
   }
