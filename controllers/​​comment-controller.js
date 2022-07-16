@@ -6,7 +6,7 @@ const commentController = {
       const { restaurantId, text } = req.body
       const userId = req.user.id
       // Check user input
-      if (!text) throw new Error('Comment text is required!')
+      if (!text.trim()) throw new Error('Comment text is required!')
       // Check foreign key
       const [user, restaurant] = await Promise.all([
         User.findByPk(userId),
@@ -15,7 +15,7 @@ const commentController = {
       if (!user) throw new Error("User didn't exist!")
       if (!restaurant) throw new Error("Restaurant didn't exist!")
       // Create comment
-      Comment.create({ text, userId, restaurantId })
+      Comment.create({ text: text.trim(), userId, restaurantId })
       res.redirect(`/restaurants/${restaurantId}`)
     } catch (err) { next(err) }
   },

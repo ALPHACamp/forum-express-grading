@@ -11,7 +11,16 @@ const userController = {
   signUpPage: (req, res) => res.render('signup'),
   signUp: async (req, res, next) => {
     try {
-      const { name, email, password, passwordCheck } = req.body
+      let { name, email, password, passwordCheck } = req.body
+
+      // Check form filling
+      name = name.trim()
+      email = email.trim()
+      password = password.trim()
+      passwordCheck = passwordCheck.trim()
+      if (!name || !email || !password || !passwordCheck) {
+        throw new Error('All block are required!')
+      }
 
       // Check if password equals passwordCheck
       if (password !== passwordCheck) throw new Error('Passwords does not match Password Check!')
@@ -79,7 +88,8 @@ const userController = {
   putUser: async (req, res, next) => {
     try {
       // Check if required info got null
-      const { name } = req.body
+      let { name } = req.body
+      name = name.trim()
       if (!name) throw new Error('User name is required!')
 
       // Update user info

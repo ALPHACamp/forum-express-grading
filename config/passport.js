@@ -15,7 +15,7 @@ passport.use(new LocalStrategy(
   // Authenticate user
   async (req, email, password, cb) => {
     // Check if email already exists
-    const user = await User.findOne({ where: { email } })
+    const user = await User.findOne({ where: { email: email.trim() } })
     if (!user) return cb(null, false, req.flash('error_messages', '帳號或密碼輸入錯誤！'))
 
     // Check if password correct

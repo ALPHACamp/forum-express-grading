@@ -47,13 +47,13 @@ const adminController = {
     try {
       // Check if required info got null
       const { name, tel, address, openingHours, description, categoryId } = req.body
-      if (!name) throw new Error('Restaurant name is required!')
+      if (!name.trim()) throw new Error('Restaurant name is required!')
 
       // Create new restaurant
       const { file } = req // Get image file
       const filePath = await fileHandler(file)
       await Restaurant.create({
-        name,
+        name: name.trim(),
         tel,
         address,
         openingHours,
@@ -90,7 +90,7 @@ const adminController = {
     try {
       // Check if required info got null
       const { name, tel, address, openingHours, description, categoryId } = req.body
-      if (!name) throw new Error('Restaurant name is required!')
+      if (!name.trim()) throw new Error('Restaurant name is required!')
 
       // Update restaurant info
       const { file } = req
@@ -99,7 +99,7 @@ const adminController = {
 
       if (!restaurant) throw new Error('Restaurant did not exist!')
       await restaurant.update({
-        name,
+        name: name.trim(),
         tel,
         address,
         openingHours,

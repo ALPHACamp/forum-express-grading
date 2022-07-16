@@ -13,19 +13,19 @@ module.exports = {
   postCategory: async (req, res, next) => {
     try {
       const { name } = req.body
-      if (!name) throw new Error('Category name is required!')
-      await Category.create({ name })
+      if (!name.trim()) throw new Error('Category name is required!')
+      await Category.create({ name: name.trim() })
       res.redirect('/admin/categories')
     } catch (err) { next(err) }
   },
   putCategory: async (req, res, next) => {
     try {
       const { name } = req.body
-      if (!name) throw new Error('Category name is required!')
+      if (!name.trim()) throw new Error('Category name is required!')
 
       const category = await Category.findByPk(req.params.id)
       if (!category) throw new Error("Category doesn't exist!")
-      await category.update({ name })
+      await category.update({ name: name.trim() })
 
       res.redirect('/admin/categories')
     } catch (err) { next(err) }
