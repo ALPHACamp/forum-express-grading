@@ -4,6 +4,7 @@ const { getOffset, getPagination } = require('../helpers/pagination-helper')
 const restaurantController = {
   getRestaurants: async (req, res, next) => {
     try {
+      ////// Pagination
       // 9 data pre page
       const DEFAULT_LIMIT = 9
 
@@ -14,6 +15,7 @@ const restaurantController = {
       const limit = Number(req.query.limit) || DEFAULT_LIMIT
       const offset = getOffset(limit, page)
 
+      /////// Find restaurants & categories data
       /*
       where: { searching condition }
       if categoryId exists >> where: { categoryId: categoryId }
@@ -37,11 +39,21 @@ const restaurantController = {
         }),
         Category.findAll({ raw: true }),
       ])
-      // restaurants { count: 50, row: [{item}, {item}, ...] }
 
+      /////// Operate restaurants data
+      // favoritedRestaurantsId [{}, {}, ...]
+      // req.user might be null
+      const favoritedRestaurantsId =
+        req.user &&
+        (await req.user.FavoritedRestaurants.map((favoriteRestaurant) => {
+          return favoriteRestaurant.id
+        }))
+
+      // restaurants { count: 50, row: [{ item }, { item }, ...] }
       const data = await restaurants.rows.map((item) => ({
         ...item,
         description: item.description.substring(0, 50),
+        isFavorited: favoritedRestaurantsId.includes(item.id), // isFavorited: Boolean
       }))
 
       return res.render('restaurants', {
@@ -57,12 +69,14 @@ const restaurantController = {
   getRestaurant: async (req, res, next) => {
     try {
       const restaurant = await Restaurant.findByPk(req.params.id, {
-        include: [Category, { model: Comment, include: User }],
+        include: [Category, { model: Comment, include: User }, { model: User, as: 'FavoritedUsers' }],
       })
       if (!restaurant) throw new Error('This restaurant does not exist!')
 
+      const isFavorited = restaurant.FavoritedUsers.some((favUser) => favUser.id === req.user.id)
       await restaurant.increment('view_counts', { by: 1 })
-      return res.render('restaurant', { restaurant: restaurant.toJSON() })
+
+      return res.render('restaurant', { restaurant: restaurant.toJSON(), isFavorited })
     } catch (error) {
       next(error)
     }
