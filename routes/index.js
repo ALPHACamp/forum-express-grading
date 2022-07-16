@@ -19,6 +19,7 @@ const { generalErrorHandler } = require('../middleware/error-handler')
 router.use('/admin', authenticatedAdmin, admin)
 
 // users
+router.get('/users/top', authenticated, userController.getTopUsers)
 router.get('/users/:id/edit', authenticated, userController.editUser)
 router.get('/users/:id', authenticated, userController.getUser)
 router.put('/users/:id', authenticated, upload.single('image'), userController.putUser)
