@@ -93,6 +93,25 @@ const restaurantController = {
         res.render('feeds', { restaurants, comments })
       })
       .catch(err => next(err))
+  },
+
+  getTopRestaurants: (req, res, next) => {
+    return Restaurant.findAll({ include: { model: User, as: 'FavoritedUsers' }, nest: true })
+      .then(restaurants => {
+        const result = restaurants
+          .map(restaurant => {
+            return {
+              ...restaurant.toJSON(),
+              description: restaurant.description.substring(0, 150),
+              favoritedCount: restaurant.FavoritedUsers.length,
+              // 從 passport deserializeUser 中拿到 FavoritedRestaurants 與 restaurants 比對
+              isFavorited: req.user && req.user.FavoritedRestaurants.some(f => f.id === restaurant.id)
+            }
+          })
+          .sort((a, b) => b.favoritedCount - a.favoritedCount)
+        res.render('top-restaurants', { restaurants: result.slice(0, 10) })
+      })
+      .catch(err => next(err))
   }
 }
 module.exports = restaurantController

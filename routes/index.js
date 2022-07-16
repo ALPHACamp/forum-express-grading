@@ -24,6 +24,7 @@ router.post(
 )
 
 router.get('/users/top', authenticated, userController.getTopUsers)
+router.get('/restaurants/top', authenticated, restController.getTopRestaurants)
 
 router.get('/users/:id/edit', authenticated, userController.editUser)
 router.get('/users/:id', authenticated, userController.getUser)

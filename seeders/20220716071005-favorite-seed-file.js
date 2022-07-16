@@ -1,5 +1,5 @@
 'use strict'
-const faker = require('faker')
+
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     const users = await queryInterface.sequelize.query('SELECT id FROM Users;', {
@@ -9,9 +9,9 @@ module.exports = {
       type: queryInterface.sequelize.QueryTypes.SELECT
     })
     await queryInterface.bulkInsert(
-      'Comments',
+      'Favorites',
       Array.from({ length: 50 }, () => ({
-        text: faker.lorem.text().substring(0, 10),
+        // TODO Favorites table 會產生重複的 user 及 restaurant 關係，待修改
         user_id: users[Math.floor(Math.random() * users.length)].id,
         restaurant_id: restaurants[Math.floor(Math.random() * restaurants.length)].id,
         created_at: new Date(),
@@ -20,6 +20,6 @@ module.exports = {
     )
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.bulkDelete('Comments', null, {})
+    await queryInterface.bulkDelete('Favorite', null, {})
   }
 }
