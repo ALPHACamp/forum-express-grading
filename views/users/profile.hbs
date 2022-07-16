@@ -1,0 +1,19 @@
+<div class='card mb-5'>
+  <div class='row col-md-12'>
+    <div class='col-md-4 my-3'>
+      <img
+        class='img-responsive m-5'
+        src='{{user.image}}'
+        style='width: 250px; transition: opacity 0.5s; opacity:0;'
+        onload='this.style.opacity=1;'
+      />
+    </div>
+    <div class='col-md-8'>
+      <h5 class='card-title mt-3'>{{user.name}}</h5>
+      <p class='card-text mt-3'>{{user.email}}</p>
+      {{#ifCond user.id userSelf.id}}
+        <a href='/users/{{userSelf.id}}/edit' class='btn btn-primary'>Edit</a>
+      {{/ifCond}}
+    </div>
+  </div>
+</div>

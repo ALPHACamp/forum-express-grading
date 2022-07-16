@@ -16,7 +16,17 @@ const authenticatedAdmin = (req, res, next) => {
     res.redirect('/signin')
   }
 }
+const authenticatedSelf = (req, res, next) => {
+  if (helpers.ensureAuthenticated(req)) {
+    if (helpers.getUser(req).id === Number(req.params.id)) {
+      return next()
+    }
+    throw new Error('Invalidate access')
+  }
+}
+
 module.exports = {
   authenticated,
-  authenticatedAdmin
+  authenticatedAdmin,
+  authenticatedSelf
 }
