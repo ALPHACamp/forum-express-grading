@@ -16,6 +16,11 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'userId',
         as: 'FavoritedRestaurants' // 幫這個關聯取個名稱
       })
+      User.belongsToMany(models.Restaurant, {
+        through: models.Like,
+        foreignKey: 'userId',
+        as: 'LikedRestaurants' // 幫這個關聯取個名稱
+      })
     }
   };
   User.init({

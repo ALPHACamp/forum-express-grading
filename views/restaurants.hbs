@@ -28,6 +28,7 @@
         <span class="badge bg-secondary">{{this.Category.name}}</span>
         <p class="card-text text-truncate">{{this.description}}</p>
         <div class="d-flex">
+          {{!-- 最愛按鈕 --}}
           {{#if isFavorited}}
           <form action="/favorite/{{this.id}}?_method=DELETE" method="POST">
             <button type="submit" class="btn btn-danger m-1" onclick="return confirm(`確定要將 {{ this.name }} 從最愛移除嗎？`)">移除最愛</button>
@@ -35,6 +36,17 @@
           {{else}}
           <form action="/favorite/{{this.id}}" method="POST">
             <button type="submit" class="btn btn-primary m-1">加到最愛</button>
+          </form>
+          {{/if}}
+
+          {{!-- 喜歡按鈕 --}}
+          {{#if isLiked}}
+          <form action="/like/{{this.id}}?_method=DELETE" method="POST">
+            <button type="submit" class="btn btn-danger m-1">Unlike</button>
+          </form>
+          {{else}}
+          <form action="/like/{{this.id}}" method="POST">
+            <button type="submit" class="btn btn-primary m-1">Like</button>
           </form>
           {{/if}}
         </div>

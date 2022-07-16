@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs')
-const { User, Comment, Restaurant, Favorite } = require('../models')
+const { User, Comment, Restaurant, Favorite, Like } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 const { getUser } = require('../helpers/auth-helpers')
 
@@ -131,9 +131,52 @@ const userController = {
       }
     })
       .then(favorite => {
-        if (!favorite) throw new Error('餐廳不在最愛！')
-        req.flash('success_messages', '餐廳移除最愛成功！')
+        if (!favorite) throw new Error('最愛不存在！')
+
+        req.flash('warning_messages', '餐廳移除最愛成功！')
         return favorite.destroy()
+      })
+      .then(() => res.redirect('back'))
+      .catch(err => next(err))
+  },
+  addLike: (req, res, next) => {
+    const { restaurantId } = req.params
+    const userId = req.user.id
+    return Promise.all([
+      Restaurant.findByPk(restaurantId),
+      Like.findOne({
+        where: {
+          userId,
+          restaurantId
+        }
+      })
+    ])
+      .then(([restaurant, like]) => {
+        if (!restaurant) throw new Error('餐廳不存在！')
+        if (like) throw new Error('此餐廳已在喜歡名單！')
+
+        req.flash('success_messages', '已將餐廳加入 Like！')
+        return Like.create({
+          userId,
+          restaurantId
+        })
+      })
+      .then(() => res.redirect('back'))
+      .catch(err => next(err))
+  },
+  removeLike: (req, res, next) => {
+    const { restaurantId } = req.params
+    const userId = req.user.id
+    return Like.findOne({
+      where: {
+        userId,
+        restaurantId
+      }
+    })
+      .then(like => {
+        if (!like) throw new Error('Like 不存在！')
+        req.flash('warning_messages', '已將餐廳取消 Like！')
+        return like.destroy()
       })
       .then(() => res.redirect('back'))
       .catch(err => next(err))
