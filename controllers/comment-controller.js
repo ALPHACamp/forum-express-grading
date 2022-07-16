@@ -24,7 +24,7 @@ const commentController = {
       .catch(next)
   },
   deleteComment: (req, res, next) => {
-    const id = req.params.id
+    const { id } = req.params
     return Comment.findByPk(id)
       .then(comment => {
         if (!comment) throw new Error("Comment didn't exist!'")

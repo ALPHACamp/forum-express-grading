@@ -8,8 +8,8 @@ const restaurantController = {
     const page = Number(req.query.page) || 1
     const limit = Number(req.query.limit) || DEFAULT_LIMIT
     const offset = getOffset(limit, page)
-    const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
-    const likedRestaurantsId = req.user && req.user.LikedRestaurants.map(lr => lr.id)
+    const favoritedRestaurantsIds = (req.user && req.user.FavoritedRestaurants.map(fr => fr.id)) || []
+    const likedRestaurantsIds = (req.user && req.user.LikedRestaurants.map(lr => lr.id)) || []
 
     return Promise.all([
       Restaurant.findAndCountAll({
@@ -29,8 +29,8 @@ const restaurantController = {
           .map(r => ({
             ...r,
             description: r.description.substring(0, 50),
-            isFavorited: favoritedRestaurantsId.includes(r.id),
-            isLiked: likedRestaurantsId.includes(r.id)
+            isFavorited: favoritedRestaurantsIds.includes(r.id),
+            isLiked: likedRestaurantsIds.includes(r.id)
           }))
         return res.render('restaurants', {
           restaurants: data,
@@ -110,6 +110,7 @@ const restaurantController = {
       .catch(next)
   },
   getTopRestaurants: (req, res, next) => {
+    const favoritedRestaurantsIds = (req.user && req.user.FavoritedRestaurants.map(fr => fr.id)) || []
     return Restaurant.findAll({
       include: [{
         model: User, as: 'FavoritedUsers'
@@ -121,7 +122,7 @@ const restaurantController = {
             ...r.toJSON(),
             description: r.description.substring(0, 50),
             favoritedCount: r.FavoritedUsers.length,
-            isFavorited: req.user && req.user.FavoritedRestaurants.some(fr => fr.id === r.id)
+            isFavorited: favoritedRestaurantsIds.some(frid => frid === r.id)
           }))
           .sort((a, b) => b.favoritedCount - a.favoritedCount)
           .slice(0, 10)

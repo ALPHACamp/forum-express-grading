@@ -1,5 +1,5 @@
 const { Restaurant, User, Category } = require('../models')
-const { imgurFileHandler } = require('../helpers/file-helpers')
+const { uploadImage } = require('../helpers/file-helpers')
 const { SetRootRoleError } = require('../helpers/error-helpers')
 const adminController = {
   getRestaurants: (req, res, next) => {
@@ -22,7 +22,7 @@ const adminController = {
     const { name, tel, address, openingHours, description, categoryId } = req.body
     if (!name) throw new Error('Restaurant name is required!')
     const { file } = req
-    imgurFileHandler(file)
+    uploadImage(file)
       .then(filePath => Restaurant.create({
         name,
         tel,
@@ -39,7 +39,7 @@ const adminController = {
       .catch(next)
   },
   getRestaurant: (req, res, next) => {
-    const id = req.params.id
+    const { id } = req.params
     Restaurant.findByPk(id, {
       raw: true,
       nest: true,
@@ -52,7 +52,7 @@ const adminController = {
       .catch(next)
   },
   editRestaurant: (req, res, next) => {
-    const id = req.params.id
+    const { id } = req.params
     return Promise.all([
       Restaurant.findByPk(id, { raw: true }),
       Category.findAll({ raw: true })
@@ -64,13 +64,13 @@ const adminController = {
       .catch(next)
   },
   putRestaurant: (req, res, next) => {
-    const id = req.params.id
+    const { id } = req.params
     const { name, tel, address, openingHours, description, categoryId } = req.body
     if (!name) throw new Error('Restaurant name is required!')
     const { file } = req
     Promise.all([
       Restaurant.findByPk(id),
-      imgurFileHandler(file)
+      uploadImage(file)
     ])
       .then(([restaurant, filePath]) => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
@@ -91,7 +91,7 @@ const adminController = {
       .catch(next)
   },
   deleteRestaurant: (req, res, next) => {
-    const id = req.params.id
+    const { id } = req.params
     return Restaurant.findByPk(id)
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
@@ -108,7 +108,7 @@ const adminController = {
       .catch(next)
   },
   patchUser: (req, res, next) => {
-    const id = req.params.id
+    const { id } = req.params
     const email = 'root@example.com'
     return User.findByPk(id)
       .then(user => {

@@ -14,7 +14,7 @@ const localFileHandler = file => {
   })
 }
 
-const imgurFileHandler = file => {
+const uploadImage = file => {
   return new Promise((resolve, reject) => {
     if (!file) return resolve(null)
     return imgur.uploadFile(file.path)
@@ -27,5 +27,5 @@ const imgurFileHandler = file => {
 
 module.exports = {
   localFileHandler,
-  imgurFileHandler
+  uploadImage
 }

@@ -2,7 +2,7 @@ const { Category } = require('../models')
 
 const categoryController = {
   getCategories: (req, res, next) => {
-    const id = req.params.id
+    const { id } = req.params
     return Promise.all([
       Category.findAll({ raw: true }),
       id ? Category.findByPk(id, { raw: true }) : null
@@ -24,7 +24,7 @@ const categoryController = {
   },
   putCategory: (req, res, next) => {
     const { name } = req.body
-    const id = req.params.id
+    const { id } = req.params
     if (!name) throw new Error('Category name is required!')
     return Category.findByPk(id)
       .then(category => {
@@ -35,7 +35,7 @@ const categoryController = {
       .catch(next)
   },
   deleteCategory: (req, res, next) => {
-    const id = req.params.id
+    const { id } = req.params
     return Category.findByPk(id)
       .then(category => {
         if (!category) throw new Error("Category didn't exist!")
