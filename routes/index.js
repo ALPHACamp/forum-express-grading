@@ -5,6 +5,7 @@ const { authenticated, authenticatedAdmin } = require('../middleware/auth')
 
 const admin = require('./modules/admin')
 const passport = require('../config/passport')
+const upload = require('../middleware/multer')
 
 const restController = require('../controllers/restaurant-controller')
 const userController = require('../controllers/user-controller')
@@ -26,8 +27,11 @@ router.get('/restaurants', authenticated, restController.getRestaurants)
 router.post('/comments', authenticated, commentController.postComment)
 router.delete('/comments/:id', authenticatedAdmin, commentController.deleteComment)
 
-router.get('/', (req, res) => res.redirect('/restaurants'))
+router.get('/users/:id/edit', authenticated, userController.editUser)
+router.put('/users/:id', authenticated, upload.single('image'), userController.putUser)
+router.get('/users/:id', authenticated, userController.getUser)
 
+router.get('/', (req, res) => res.redirect('/restaurants'))
 router.use('/', generalErrorHandler)
 
 module.exports = router
