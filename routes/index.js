@@ -14,6 +14,7 @@ const { authenticated, authenticatedAdmin } = require('../middleware/auth')
 router.use('/admin', authenticatedAdmin, admin)
 router.use('/users', authenticated, users)
 
+router.post('/like/:restaurantId', userController.addLike)
 router.get('/signup', userController.signUpPage)
 router.post('/signup', userController.signUp)
 router.get('/signin', userController.signInPage)

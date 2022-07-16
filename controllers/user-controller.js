@@ -115,6 +115,47 @@ const userController = {
       })
       .catch(err => next(err))
   },
+  addLike: (req, res, next) => {
+    const { restaurantId } = req.params
+    return Promise.all([
+      Restaurant.findByPk(restaurantId),
+      Favorite.findOne({
+        where: {
+          userId: req.user.id,
+          restaurantId
+        }
+      })
+    ])
+      .then(([restaurant, favorite]) => {
+        if (!restaurant) throw new Error("Restaurant did'nt exist!")
+        if (favorite) throw new Error('you hav favorited this restaurant')
+
+        return Favorite.create({
+          userId: req.user.id,
+          restaurantId
+        })
+      })
+      .then(() => {
+        return res.redirect('back')
+      })
+      .catch(err => next(err))
+  },
+  removeLike: (req, res, next) => {
+    return Favorite.findOne({
+      where: {
+        userId: req.user.id,
+        restaurantId: req.params.restaurantId
+      }
+    })
+      .then(favorite => {
+        if (!favorite) throw new Error("You haven't favorited this restaurant")
+        return favorite.destroy()
+      })
+      .then(() => {
+        return res.redirect('back')
+      })
+      .catch(err => next(err))
+  },
   logout: (req, res) => {
     req.flash('success_messages', '登出成功！')
     req.logout()
