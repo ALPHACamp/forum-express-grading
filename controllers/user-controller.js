@@ -1,8 +1,7 @@
 const bcrypt = require('bcryptjs')
 const db = require('../models')
 const { User } = db
-const { localFileHandler } = require('../helpers/file-helpers')
-
+const { imgurFileHandler } = require('../helpers/file-helpers')
 const userController = {
   signUpPage: (req, res) => {
     res.render('signup')
@@ -69,7 +68,7 @@ const userController = {
     }
     return Promise.all([ // 非同步處理
       User.findByPk(req.params.id), // 去資料庫查有沒有這間餐廳
-      localFileHandler(file) // 把檔案傳到 file-helper 處理
+      imgurFileHandler(file) // 把檔案傳到 file-helper 處理
     ])
       .then(([user, filePath]) => { // 以上兩樣事都做完以後
         if (!user) throw new Error("User didn't exist!")
