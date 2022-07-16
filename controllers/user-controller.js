@@ -1,5 +1,7 @@
 const bcrypt = require('bcryptjs')
 const { User } = require('../models')
+const { getUser } = require('../helpers/auth-helpers')
+const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const userController = {
   signUpPage: (req, res) => {
@@ -7,12 +9,9 @@ const userController = {
   },
   signUp: (req, res, next) => {
     if (req.body.password !== req.body.passwordCheck) throw new Error('Passwords do not match!')
-    console.log(('Passwords do not match!'))
     User.findOne({ where: { email: req.body.email } })
       .then(user => {
-        console.log('Email already exists!')
         if (user) throw new Error('Email already exists!')
-
         return bcrypt.hash(req.body.password, 10)
       })
       .then(hash => User.create({
@@ -37,6 +36,49 @@ const userController = {
     req.flash('success_messages', '登出成功！')
     req.logout()
     res.redirect('signin')
+  },
+  getUser: (req, res, next) => {
+    return User.findByPk(req.params.id, { raw: true })
+      .then(user => {
+        if (!user) throw new Error("User doesn't exist!")
+        res.render('users/profile', { user })
+      })
+      .catch(err => next(err))
+  },
+  editUser: (req, res, next) => {
+    const id = req.params.id
+    const userId = getUser(req).id
+
+    if (Number(id) !== Number(userId)) throw new Error('User can only edit their own information!')
+
+    return User.findByPk(id, { raw: true })
+      .then(user => {
+        if (!user) throw new Error("User doesn't exist!")
+        res.render('users/edit', { user })
+      })
+      .catch(err => next(err))
+  },
+  putUser: (req, res, next) => {
+    const { id } = req.params
+    const { name } = req.body
+    const { file } = req
+
+    return Promise.all([
+      User.findByPk(id),
+      imgurFileHandler(file)
+    ])
+      .then(([user, filePath]) => {
+        if (!user) throw new Error("User didn't exist!")
+        return user.update({
+          name,
+          image: filePath || user.image
+        })
+      })
+      .then(() => {
+        req.flash('success_messages', '使用者資料編輯成功')
+        res.redirect(`/users/${id}`)
+      })
+      .catch(err => next(err))
   }
 }
 
