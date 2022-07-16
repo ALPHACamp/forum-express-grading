@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs')
 const db = require('../models')
-const { User, Comment, Restaurant, Favorite } = db
+const { User, Comment, Restaurant, Favorite, Like } = db
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const userController = {
@@ -119,18 +119,18 @@ const userController = {
     const { restaurantId } = req.params
     return Promise.all([
       Restaurant.findByPk(restaurantId),
-      Favorite.findOne({
+      Like.findOne({
         where: {
           userId: req.user.id,
           restaurantId
         }
       })
     ])
-      .then(([restaurant, favorite]) => {
+      .then(([restaurant, like]) => {
         if (!restaurant) throw new Error("Restaurant did'nt exist!")
-        if (favorite) throw new Error('you hav favorited this restaurant')
+        if (like) throw new Error('you hav liked this restaurant')
 
-        return Favorite.create({
+        return Like.create({
           userId: req.user.id,
           restaurantId
         })
@@ -141,15 +141,15 @@ const userController = {
       .catch(err => next(err))
   },
   removeLike: (req, res, next) => {
-    return Favorite.findOne({
+    return Like.findOne({
       where: {
         userId: req.user.id,
         restaurantId: req.params.restaurantId
       }
     })
-      .then(favorite => {
-        if (!favorite) throw new Error("You haven't favorited this restaurant")
-        return favorite.destroy()
+      .then(like => {
+        if (!like) throw new Error("You haven't Liked this restaurant")
+        return like.destroy()
       })
       .then(() => {
         return res.redirect('back')

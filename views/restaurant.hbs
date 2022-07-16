@@ -27,6 +27,15 @@
         <button type="submit" class="btn btn-primary mb-2 ms-2">加到最愛</button>
       </form>
       {{/if}}
+      {{#if isLiked}}
+      <form action="/like/{{restaurant.id}}?_method=DELETE" method="POST">
+        <button type="submit" class="btn btn-danger mb-2 ms-2">Dislike</button>
+      </form>
+      {{else}}
+      <form action="/like/{{restaurant.id}}" method="POST">
+        <button type="submit" class="btn btn-primary mb-2 ms-2">Like</button>
+      </form>
+      {{/if}}
     </div>
   </div>
   <hr>
