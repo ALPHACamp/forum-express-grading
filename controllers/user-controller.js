@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs')
-const { User, Comment, Restaurant, Favorite, Like } = require('../models')
+const { User, Comment, Restaurant, Favorite, Like, Followship } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 const { getUser } = require('../helpers/auth-helpers')
 
@@ -92,7 +92,7 @@ const userController = {
       })
       .then(() => {
         req.flash('success_messages', '使用者資料編輯成功')
-        res.redirect(`/users/${req.params.id}`)
+        return res.redirect(`/users/${req.params.id}`)
       })
       .catch(err => next(err))
   },
@@ -112,13 +112,15 @@ const userController = {
         if (!restaurant) throw new Error('餐廳不存在！')
         if (favorite) throw new Error('餐廳已經在最愛！')
 
-        req.flash('success_messages', '餐廳加到最愛成功！')
         return Favorite.create({
           userId,
           restaurantId
         })
       })
-      .then(() => res.redirect('back'))
+      .then(() => {
+        req.flash('success_messages', '餐廳加到最愛成功！')
+        return res.redirect('back')
+      })
       .catch(err => next(err))
   },
   removeFavorite: (req, res, next) => {
@@ -133,10 +135,12 @@ const userController = {
       .then(favorite => {
         if (!favorite) throw new Error('最愛不存在！')
 
-        req.flash('warning_messages', '餐廳移除最愛成功！')
         return favorite.destroy()
       })
-      .then(() => res.redirect('back'))
+      .then(() => {
+        req.flash('warning_messages', '餐廳移除最愛成功！')
+        return res.redirect('back')
+      })
       .catch(err => next(err))
   },
   addLike: (req, res, next) => {
@@ -155,13 +159,15 @@ const userController = {
         if (!restaurant) throw new Error('餐廳不存在！')
         if (like) throw new Error('此餐廳已在喜歡名單！')
 
-        req.flash('success_messages', '已將餐廳加入 Like！')
         return Like.create({
           userId,
           restaurantId
         })
       })
-      .then(() => res.redirect('back'))
+      .then(() => {
+        req.flash('success_messages', '已將餐廳加入 Like！')
+        return res.redirect('back')
+      })
       .catch(err => next(err))
   },
   removeLike: (req, res, next) => {
@@ -175,10 +181,13 @@ const userController = {
     })
       .then(like => {
         if (!like) throw new Error('Like 不存在！')
-        req.flash('warning_messages', '已將餐廳取消 Like！')
+
         return like.destroy()
       })
-      .then(() => res.redirect('back'))
+      .then(() => {
+        req.flash('warning_messages', '已將餐廳取消 Like！')
+        return res.redirect('back')
+      })
       .catch(err => next(err))
   },
   getTopUsers: (req, res, next) => {
@@ -187,16 +196,57 @@ const userController = {
       include: [{ model: User, as: 'Followers' }]
     })
       .then(users => {
-        // 整理 users 資料，把每個 user 項目都拿出來處理一次，並把新陣列儲存在 users 裡
-        users = users.map(user => ({
-          // 整理格式
-          ...user.toJSON(),
-          // 計算追蹤者人數
-          followerCount: user.Followers.length,
-          // 判斷目前登入使用者是否已追蹤該 user 物件
-          isFollowed: req.user.Followings.some(f => f.id === user.id)
+        // 把 users 裡每個 user 項目都拿出來處理一次，並把新陣列儲存在 result 裡
+        const result = users.map(user => ({
+          ...user.toJSON(), // 整理格式
+          followerCount: user.Followers.length, // 計算追蹤者人數
+          isFollowed: req.user.Followings.some(f => f.id === user.id) // 判斷目前登入使用者是否已追蹤該 user 物件
         }))
-        res.render('top-users', { users: users })
+          .sort((a, b) => b.followerCount - a.followerCount) // 數字由大到小排序
+        return res.render('top-users', { users: result })
+      })
+      .catch(err => next(err))
+  },
+  addFollowing: (req, res, next) => {
+    const { userId } = req.params
+    return Promise.all([
+      User.findByPk(userId),
+      Followship.findOne({
+        where: {
+          followerId: req.user.id,
+          followingId: req.params.userId
+        }
+      })
+    ])
+      .then(([user, followship]) => {
+        if (!user) throw new Error('使用者不存在！')
+        if (followship) throw new Error('您已追蹤此使用者！')
+
+        return Followship.create({
+          followerId: req.user.id,
+          followingId: userId
+        })
+      })
+      .then(() => {
+        req.flash('success_messages', '您正在追蹤此使用者！')
+        return res.redirect('back')
+      })
+      .catch(err => next(err))
+  },
+  removeFollowing: (req, res, next) => {
+    return Followship.findOne({
+      where: {
+        followerId: req.user.id,
+        followingId: req.params.userId
+      }
+    })
+      .then(followship => {
+        if (!followship) throw new Error('使用者不存在！')
+        return followship.destroy()
+      })
+      .then(() => {
+        req.flash('warning_messages', '您已取消追蹤這位使用者！')
+        return res.redirect('back')
       })
       .catch(err => next(err))
   }

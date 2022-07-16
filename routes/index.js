@@ -35,11 +35,13 @@ router.get('/restaurants', authenticated, restController.getRestaurants)
 router.delete('/comments/:id', authenticatedAdmin, commentController.deleteComment)
 router.post('/comments', authenticated, commentController.postComment)
 
-// about favorite/like
+// about favorite/like/follower
 router.post('/favorite/:restaurantId', authenticated, userController.addFavorite)
 router.delete('/favorite/:restaurantId', authenticated, userController.removeFavorite)
 router.post('/like/:restaurantId', authenticated, userController.addLike)
 router.delete('/like/:restaurantId', authenticated, userController.removeLike)
+router.post('/following/:userId', authenticated, userController.addFollowing)
+router.delete('/following/:userId', authenticated, userController.removeFollowing)
 
 // about homepage
 router.get('/', (req, res) => res.redirect('/restaurants'))
