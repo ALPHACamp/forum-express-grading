@@ -29,6 +29,7 @@
 {{#each restaurant.Comments}}
   {{#if ../user.isAdmin}}
     <form action="/comments/{{this.id}}?_method=DELETE" method="POST" class="float-end">
+      <input type="hidden" name="restaurantId" value="{{../restaurant.id}}" />
       <button type="submit" class="btn btn-danger" onclick="return confirm(`確定要刪除 {{this.User.name}} 的評論嗎？`)">Delete</button>
     </form>
   {{/if}}

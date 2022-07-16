@@ -8,6 +8,7 @@ const commentController = {
       .then(([user, restaurant]) => {
         if (!user) throw new Error("User didn't exist!")
         if (!restaurant) throw new Error("Restaurant didn't exist!")
+        restaurant.increment('commentCounts')
         return Comment.create({
           text,
           restaurantId,
@@ -19,14 +20,21 @@ const commentController = {
       })
       .catch(err => next(err))
   },
-  deleteComment: (req, res, next) => {
-    return Comment.findByPk(req.params.id)
-      .then(comment => {
-        if (!comment) throw new Error("Comment didn't exist!'")
-        return comment.destroy()
-      })
-      .then(deletedComment => res.redirect(`/restaurants/${deletedComment.restaurantId}`))
-      .catch(err => next(err))
+  deleteComment: async (req, res, next) => {
+    try {
+      const { restaurantId } = req.body
+      const comment = await Comment.findByPk(req.params.id)
+      const restaurant = await Restaurant.findByPk(restaurantId)
+
+      if (!comment) throw new Error("Comment didn't exist!")
+      if (!restaurant) throw new Error("Restaurant didn't exist!")
+
+      await restaurant.decrement('commentCounts')
+      await comment.destroy()
+      return res.redirect(`/restaurants/${restaurantId}`)
+    } catch (error) {
+      next(error)
+    }
   }
 }
 module.exports = commentController
