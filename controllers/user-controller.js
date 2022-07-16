@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs')
-const { User, Comment, Restaurant, Favorite, Like } = require('../models')
+const { User, Comment, Restaurant, Favorite, Like, Followship } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const userController = {
@@ -154,6 +154,63 @@ const userController = {
       })
       if (!like) throw new Error("You haven't liked this restaurant!")
       await like.destroy()
+      res.redirect('back')
+    } catch (err) {
+      next(err)
+    }
+  },
+  getTopUsers: async (req, res, next) => {
+    try {
+      const users = await User.findAll({
+        include: [
+          { model: User, as: 'Followers' }
+        ]
+      })
+      console.log(users)
+      const datas = users
+        .map(user => ({
+          ...user.toJSON(),
+          followerCount: user.Followers.length,
+          isFollowed: req.user.Followings.some(fing => fing.id === user.id)
+        }))
+        .sort((a, b) => b.followerCount - a.followerCount)
+      res.render('top-users', { users: datas })
+    } catch (err) {
+      next(err)
+    }
+  },
+  addFollowing: async (req, res, next) => {
+    try {
+      const [user, following] = await Promise.all([
+        User.findByPk(req.params.userId),
+        Followship.findOne({
+          where: {
+            followerId: req.user.id,
+            followingId: req.params.userId
+          }
+        })
+      ])
+      if (!user) throw new Error("User didn't exist!")
+      if (following) throw new Error('You have followed this User!')
+      await Followship.create({
+        followerId: req.user.id,
+        followingId: req.params.userId
+      })
+      res.redirect('back')
+    } catch (err) {
+      next(err)
+    }
+  },
+  removeFollowing: async (req, res, next) => {
+    try {
+      const following = await Followship.findOne({
+        where: {
+          followerId: req.user.id,
+          followingId: req.params.userId
+        }
+      })
+      if (!following) throw new Error("You haven't followed this User!")
+      await following.destroy()
       res.redirect('back')
     } catch (err) {
       next(err)
