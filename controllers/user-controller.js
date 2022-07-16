@@ -194,6 +194,23 @@ const userController = {
       next(error)
     }
   },
+  getTopUsers: async (req, res, next) => {
+    try {
+      let users = await User.findAll({
+        include: [{ model: User, as: 'Followers' }],
+      })
+      users = await users.map((user) => ({
+        ...user.toJSON(),
+        followerCount: user.Followers.length,
+        // 判斷目前登入使用者是否已追蹤美食達人 user 物件
+        isFollowed: req.user.Followings.some((f) => f.id === user.id),
+      }))
+
+      return res.render('top-users', { users: users })
+    } catch (error) {
+      next(error)
+    }
+  },
 }
 
 module.exports = userController
