@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs')
-const { User } = require('../models')
+const { User, Comment, Restaurant } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const userController = {
@@ -42,7 +42,14 @@ const userController = {
     try {
       const foundUser = await User.findByPk(req.params.id, { raw: true })
       if (!foundUser) throw new Error('User is not exist')
-      res.render('users/profile', { user: foundUser, currentUser: req.user })
+      const foundComments = await Comment.findAll({
+        include: Restaurant,
+        where: { user_id: req.params.id },
+        nest: true,
+        raw: true
+      })
+      const commentNumber = foundComments.length || 0
+      res.render('users/profile', { user: foundUser, currentUser: req.user, foundComments, commentNumber })
     } catch (error) { next(error) }
   },
   editUser: async (req, res, next) => {

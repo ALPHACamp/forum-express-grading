@@ -1,15 +1,28 @@
 <div class="container">
-  <div class="row">
+  <div class="row mb-4">
     <div class="col-4">
       <img class="img-responsive center-block" src="{{user.image}}" style="width: 250px; margin-bottom: 25px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;" alt="user-image">
     </div>
     <div class="col-8">
       <h3>{{ user.name }}</h3>
       <p>{{ user.email }}</p>
+      <p><b>{{ commentNumber }}</b> 已評論餐廳</p>
       {{#ifCond user.id currentUser.id}} 
         <a href="/users/{{ user.id }}/edit"><button class="btn btn-primary my-sm-0 my-2">Edit</button></a>
       {{/ifCond}}
       <a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
     </div>
   </div>
+    <div class="card">
+      <div class="card-header">
+        <b>{{ commentNumber }}</b> 已評論餐廳
+      </div>
+      <div class="card-body">
+        <div class="d-inline">
+          {{#each foundComments }}
+            <a href="/restaurants/{{ this.Restaurant.id }}"><img class="img-responsive center-block" src="{{ this.Restaurant.image }}" style="width: 100px; margin: 10px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;" alt="restaurant-image"></a>
+          {{/each}}
+        </div>
+      </div>
+    </div>
 </div>
