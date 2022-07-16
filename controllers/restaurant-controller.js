@@ -1,4 +1,4 @@
-const { Restaurant, Category, User, Comment } = require('../models')
+const { Restaurant, Category, User, Comment, Favorite } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
 const restaurantController = {
   getRestaurants: (req, res, next) => {
@@ -21,10 +21,13 @@ const restaurantController = {
       .then(([restaurants, categories]) => {
         const favoritedRestaurantsId =
           req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
+        const LikedRestaurantsId =
+          req.user && req.user.LikedRestaurants.map(i => i.id)
         const data = restaurants.rows.map(r => ({
           ...r,
           description: r.description.substring(0, 50),
-          isFavorited: favoritedRestaurantsId.includes(r.id)
+          isFavorited: favoritedRestaurantsId.includes(r.id),
+          isLiked: LikedRestaurantsId.includes(r.id)
         }))
         return res.render('restaurants', {
           restaurants: data,
@@ -40,7 +43,8 @@ const restaurantController = {
       include: [
         Category,
         { model: Comment, include: User },
-        { model: User, as: 'FavoritedUsers' }
+        { model: User, as: 'FavoritedUsers' },
+        { model: User, as: 'LikedUsers' }
       ]
     })
       .then(restaurant => {
@@ -50,9 +54,11 @@ const restaurantController = {
         const isFavorited = restaurant.FavoritedUsers.some(
           f => f.id === req.user.id
         )
+        const isLiked = restaurant.LikedUsers.some(i => i.id === req.user.id)
         return res.render('restaurant', {
           restaurant: restaurant.toJSON(),
-          isFavorited
+          isFavorited,
+          isLiked
         })
       })
   },
@@ -63,10 +69,11 @@ const restaurantController = {
         raw: true,
         nest: true
       }),
-      Comment.count({ where: { restaurantId: req.params.id } })
+      Comment.count({ where: { restaurantId: req.params.id } }),
+      Favorite.count({ where: { restaurantId: req.params.id } })
     ])
-      .then(([restaurant, comments]) => {
-        res.render('dashboard', { restaurant, comments })
+      .then(([restaurant, comments, favorite]) => {
+        res.render('dashboard', { restaurant, comments, favorite })
       })
       .catch(err => next(err))
   },
