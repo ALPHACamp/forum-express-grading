@@ -1,18 +1,32 @@
 <div class="row" style="background-color: white;">
   <div class="col-md-3">
-    <img class="img-responsive center-block"
-      src="{{user.image}}"
-      style="width: 300px; height:300px; margin-bottom: 25px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
-      <br>
+    <img class="img-responsive center-block" src="{{user.image}}"
+      style="width: 300px; height:300px; margin-bottom: 25px; transition: opacity 0.5s; opacity:0;"
+      onload="this.style.opacity=1;">
+    <br>
   </div>
   <div class="col-md-4 row justify-content-start">
     <ul class="row list-unstyled ">
       <li>
-        <strong>{{user.name}}</strong> 
+        <strong>{{user.name}}</strong>
         <p>{{user.email}}</p>
-        <a type="button" class="btn btn-primary" href="/users/{{user.id}}/edit">Edit</a>
+        <strong>{{commentCount}} 已評論餐廳</strong>
       </li>
-    </ul> 
+      <div>
+      {{#ifCond user.id currentUser.id}}
+      <a type="button" class="btn btn-primary" href="/users/{{user.id}}/edit"> Edit</a>
+      {{/ifCond}}
+      </div>
+    </ul>
   </div>
 </div>
-<a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
+<div class="card m-2">
+  <div class="card-header">
+  <strong>{{commentNumber}} 已評論餐廳</strong>
+  </div>
+  <div class="card-body">
+    {{#each restaurants}}
+    <a href="/restaurants/{{this.id}}"><img src="{{this.image}}" alt="" style="width: 100px; height:100px;"></a>
+    {{/each}}
+  </div>
+</div>
