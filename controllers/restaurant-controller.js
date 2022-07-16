@@ -93,6 +93,7 @@ const restaurantController = {
       const FavoritedRestaurants = req.user ? req.user.FavoritedRestaurants : []
       restaurants = await restaurants.map(restaurant => ({
         ...restaurant.toJSON(),
+        description: restaurant.description.substring(0, 50)
         favoritedCount: restaurant.FavoritedUsers.length,
         isFavorited: FavoritedRestaurants.some(fr => fr.id === restaurant.id)
       }))
