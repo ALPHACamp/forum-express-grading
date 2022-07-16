@@ -1,6 +1,5 @@
 const bcrypt = require('bcryptjs')
-const db = require('../models')
-const { User } = db
+const { Restaurant, Comment, User } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 const userController = {
   signUpPage: (req, res) => {
@@ -37,13 +36,27 @@ const userController = {
     res.redirect('/signin')
   },
   getUser: (req, res, next) => {
-    return User.findByPk(req.params.id, { // 去資料庫用 id 找一筆資料
-      raw: true, // 找到以後整理格式再回傳
-      nest: true
-    })
-      .then(user => {
-        // if (!user) throw new Error("User didn't exist!") //  如果找不到，回傳錯誤訊息，後面不執行
-        res.render('users/profile', { user })
+    return Promise.all([
+      User.findByPk(req.params.id, { raw: true }),
+      User.findAll({ // 去資料庫用 id 找一筆資料
+        raw: true, // 找到以後整理格式再回傳
+        nest: true,
+        include: [
+          {
+            model: Comment,
+            where: { userId: req.params.id },
+            include: Restaurant
+          }
+        ]
+      })
+    ])
+      .then(([user, users]) => {
+        const commentCount = users.length
+        const comment = users.map(data => data.Comments)
+        if (!user) throw new Error("User didn't exist")
+        return res.render('users/profile', {
+          user, commentCount, comment
+        })
       })
       .catch(err => next(err))
   },
