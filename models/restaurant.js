@@ -10,6 +10,11 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       Restaurant.belongsTo(models.Category, { foreignKey: 'categoryId' })
       Restaurant.hasMany(models.Comment, { foreignKey: 'restaurantId' })
+      Restaurant.belongsToMany(models.User, {
+        through: models.Favorite, // build up relationship through Favorite model
+        foreignKey: 'restaurantId', // set restaurantId as foreignKey to Favorite model
+        as: 'FavoritedUsers', // name this relationship as 'FavoritedUsers'
+      })
     }
   }
   Restaurant.init(
