@@ -26,6 +26,7 @@ router.post(
   userController.signIn
 )
 router.get('/logout', userController.logout)
+router.get('/restaurants/feeds', authenticated, restController.getFeeds)
 router.get(
   '/restaurants/:id/dashboard',
   authenticated,
