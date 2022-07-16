@@ -77,6 +77,32 @@ const restaurantController = {
       next(error)
     }
   },
+  getFeeds: async (req, res, next) => {
+    try {
+      // step 1. get data through Restaurant model and Comment model at the same time
+      const [restaurants, comments] = await Promise.all([
+        Restaurant.findAll({
+          limit: 10,
+          order: [['createdAt', 'DESC']],
+          include: [Category],
+          raw: true,
+          nest: true,
+        }),
+        Comment.findAll({
+          limit: 10,
+          order: [['createdAt', 'DESC']],
+          include: [User, Restaurant],
+          raw: true,
+          nest: true,
+        }),
+      ])
+
+      // step 2. pass data to template
+      return res.render('feeds', { restaurants, comments })
+    } catch (error) {
+      next(error)
+    }
+  },
 }
 
 module.exports = restaurantController
