@@ -1,4 +1,4 @@
-const { Restaurant, Category, Comment, User } = require('../models')
+const { Restaurant, Category, Comment, User, Favorite } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
 
 const restaurantController = {
@@ -48,11 +48,9 @@ const restaurantController = {
       ]
     }).then(restaurant => {
       if (!restaurant) throw new Error("Restaurant didn't exist!")
-      console.log(restaurant.toJSON())
       const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id)
       const isLiked = restaurant.LikedUsers.some(l => l.id === req.user.id)
       restaurant.increment('view_counts')
-      console.log(isLiked)
       return res.render('restaurant', { restaurant: restaurant.toJSON(), isFavorited, isLiked })
     }).catch(err => next(err))
   },
@@ -85,6 +83,40 @@ const restaurantController = {
         res.render('feeds', { restaurants, comments })
       })
       .catch(err => next(err))
+  },
+  getTopRestaurants: async (req, res, next) => {
+    try {
+      let restaurants = await Restaurant.findAll({
+        limit: 10,
+        include: [{ model: User, as: 'FavoritedUsers' }]
+      })
+      const FavoritedRestaurants = req.user ? req.user.FavoritedRestaurants : []
+      restaurants = await restaurants.map(restaurant => ({
+        ...restaurant.toJSON(),
+        favoritedCount: restaurant.FavoritedUsers.length,
+        isFavorited: FavoritedRestaurants.some(fr => fr.id === restaurant.id)
+      }))
+      await restaurants.sort((a, b) => b.favoritedCount - a.favoritedCount)
+      return res.render('top-restaurants', { restaurants })
+    } catch (error) {
+      next(error)
+    }
+  },
+  removeFollowing: async (req, res, next) => {
+    try {
+      const { userId } = req.params
+      const followship = await Followship.findOne({
+        where: {
+          followerId: req.user.id,
+          followingId: userId
+        }
+      })
+      if (!followship) throw new Error("You haven't followed this user!")
+      await followship.destroy()
+      return res.redirect('back')
+    } catch (error) {
+      next(error)
+    }
   }
 }
 module.exports = restaurantController
