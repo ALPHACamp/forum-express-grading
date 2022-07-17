@@ -3,6 +3,7 @@ const db = require('../models')
 const { User, Comment, Restaurant } = db
 const { imgurFileHandler } = require('../helpers/file-helper')
 const Sequelize = require('sequelize')
+const { raw } = require('express')
 
 const userController = {
   signUpPage: (req, res) => {
@@ -50,7 +51,8 @@ const userController = {
       .then(user => {
         if (!user) throw new Error('User does not exist!')
         user = user.toJSON()
-        const numberOfComments = user.Comments.length
+        // 針對test所做的調整，測試檔沒有Comments attribute
+        const numberOfComments = user.Comments ? user.Comments.length : 0
         res.render('users/profile', { user: { ...user, numberOfComments } })
       })
       .catch(err => next(err))
