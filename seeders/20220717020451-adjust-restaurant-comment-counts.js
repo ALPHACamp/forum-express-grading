@@ -1,6 +1,4 @@
 'use strict'
-const db = require('../models')
-const { Restaurant } = db
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
@@ -10,18 +8,20 @@ module.exports = {
 
     await Promise.all(
       datas.map(async data => {
-        const restaurant = await Restaurant.findByPk(data.id)
-        await restaurant.update({ commentCounts: data.comment_counts })
+        await queryInterface.bulkUpdate(
+          'Restaurants',
+          {
+            comment_counts: data.comment_counts
+          },
+          {
+            id: data.id
+          }
+        )
       })
     )
   },
 
   down: async (queryInterface, Sequelize) => {
-    const restaurants = await Restaurant.findAll()
-    await Promise.all(
-      restaurants.map(async restaurant => {
-        await restaurant.update({ commentCounts: 0 })
-      })
-    )
+    await queryInterface.bulkUpdate('Restaurants', { comment_counts: 0 })
   }
 }
