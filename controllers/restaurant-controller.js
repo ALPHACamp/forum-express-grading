@@ -42,8 +42,7 @@ const restaurantController = {
         Category, // 拿出關聯的 Category model
         { model: Comment, include: User } // 拿出關聯的 Category model 關聯的 User model
       ],
-      order: [[Comment, 'updatedAt', 'DESC']],
-      nest: true
+      order: [[Comment, 'updatedAt', 'DESC']]
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
@@ -54,13 +53,13 @@ const restaurantController = {
   },
   getDashboard: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
-      include: Category,
-      nest: true,
-      raw: true
+      include: [Category, Comment],
+      nest: true
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
-        return res.render('dashboard', { restaurant })
+        const commentCounts = restaurant.Comments.length
+        return res.render('dashboard', { restaurant: restaurant.toJSON(), commentCounts })
       })
       .catch(err => next(err))
   }
