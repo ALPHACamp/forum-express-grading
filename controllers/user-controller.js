@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs') // 載入 bcrypt
-const { User, Comment, Restaurant, Favorite, Like } = require('../models')
+const { User, Comment, Restaurant, Favorite, Like, Followship } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const userController = {
@@ -178,20 +178,65 @@ const userController = {
       next(error)
     }
   },
+  addFollowing: async (req, res, next) => {
+    try {
+      const { userId } = req.params
+      const [user, followship] = await Promise.all([
+        User.findByPk(userId),
+        Followship.findOne({
+          where: {
+            followerId: req.user.id,
+            followingId: userId
+          }
+        })
+      ])
+
+      if (!user) throw new Error("User didn't exist!")
+      if (followship) throw new Error('You are already following this user!')
+
+      await Followship.create({
+        followerId: req.user.id,
+        followingId: userId
+      })
+      req.flash('success_messages', 'addFollowing successfully')
+      return res.redirect('back')
+    } catch (error) {
+      next(error)
+    }
+  },
+  removeFollowing: async (req, res, next) => {
+    try {
+      const followship = await Followship.findOne({
+        where: {
+          followerId: req.user.id,
+          followingId: req.params.userId
+        }
+      })
+      if (!followship) throw new Error("You haven't followed this user!")
+
+      await followship.destroy()
+      req.flash('error_messages', 'removeFollowing successfully')
+
+      return res.redirect('back')
+    } catch (error) {
+      next(error)
+    }
+  },
   getTopUsers: async (req, res, next) => {
     try {
-      // 撈出所有 User 與 followers 資料
-      const allUsers = await User.findAll({
+      // get every user and her followers
+      const users = await User.findAll({
         include: [{ model: User, as: 'Followers' }]
       })
-      // console.log('allUsers=', allUsers)
-      const users = allUsers.map(user => ({
-        ...user.toJSON(),
-        followerCount: user.Followers.length,
-        isFollowed: req.user.Followings.some(f => f.id === user.id) // if req.user is following user
-      }))
-      // console.log('users=', users)
-      return res.render('top-users', { users })
+      // result is a sorted array include two new properties: followerCount, isFollowed
+      const result = users
+        .map(user => ({
+          ...user.toJSON(),
+          followerCount: user.Followers.length,
+          isFollowed: req.user.Followings.some(f => f.id === user.id) // if this user followed by req.user ?
+        }))
+        .sort((a, b) => b.followerCount - a.followerCount)
+      return res.render('top-users', { users: result })
     } catch (error) {
       next(error)
     }
