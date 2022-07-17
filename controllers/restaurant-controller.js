@@ -10,7 +10,7 @@ const restaurantController = {
     const offset = getOffset(limit, page)
 
     return Promise.all([
-      Restaurant.findAndCountAll({ // 修改這裡
+      Restaurant.findAndCountAll({
         include: Category,
         where: {
           ...categoryId ? { categoryId } : {}
@@ -23,15 +23,17 @@ const restaurantController = {
       Category.findAll({ raw: true })
     ])
       .then(([restaurants, categories]) => {
-        const data = restaurants.rows.map(r => ({ // 修改這裡，加上 .rows
+        const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
+        const data = restaurants.rows.map(r => ({
           ...r,
-          description: r.description.substring(0, 50)
+          description: r.description.substring(0, 50),
+          isFavorited: favoritedRestaurantsId.includes(r.id)
         }))
         return res.render('restaurants', {
           restaurants: data,
           categories,
           categoryId,
-          pagination: getPagination(limit, page, restaurants.count) // 修改這裡，把 pagination 資料傳回樣板
+          pagination: getPagination(limit, page, restaurants.count)
         })
       })
       .catch(err => next(err))
@@ -40,14 +42,18 @@ const restaurantController = {
     return Restaurant.findByPk(req.params.id, {
       include: [
         Category,
-        { model: Comment, include: User }
+        { model: Comment, include: User },
+        { model: User, as: 'FavoritedUsers' }
       ]
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         return restaurant.increment('viewCounts')
       })
-      .then(restaurant => res.render('restaurant', { restaurant: restaurant.toJSON() }))
+      .then(restaurant => {
+        const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id)
+        res.render('restaurant', { restaurant: restaurant.toJSON(), isFavorited })
+      })
       .catch(err => next(err))
   },
   getDashboard: (req, res, next) => {
