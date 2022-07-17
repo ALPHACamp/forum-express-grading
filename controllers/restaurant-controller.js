@@ -24,11 +24,13 @@ const restaurantController = {
     ])
       .then(([restaurants, categories]) => {
         const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
+        const LikedRestaurantsId = req.user && req.user.LikedRestaurants.map(lr => lr.id)
         // 同時檢查 req.user 是否存在
         const data = restaurants.rows.map(r => ({
           ...r,
           description: r.description.substring(0, 50),
-          isFavorited: favoritedRestaurantsId.includes(r.id)
+          isFavorited: favoritedRestaurantsId.includes(r.id),
+          isLiked: LikedRestaurantsId.includes(r.id)
         }))
         return res.render('restaurants', {
           restaurants: data,
@@ -44,15 +46,17 @@ const restaurantController = {
       include: [
         Category, // 拿出關聯的 Category model
         { model: Comment, include: User }, // 拿出關聯的 Category model 關聯的 User model
-        { model: User, as: 'FavoritedUsers' }
+        { model: User, as: 'FavoritedUsers' },
+        { model: User, as: 'LikedUsers' }
       ],
       order: [[Comment, 'updatedAt', 'DESC']]
     })
       .then(restaurant => {
         const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id)
+        const isLiked = restaurant.LikedUsers.some(l => l.id === req.user.id)
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         restaurant.increment('viewCounts')
-        return res.render('restaurant', { restaurant: restaurant.toJSON(), isFavorited })
+        return res.render('restaurant', { restaurant: restaurant.toJSON(), isFavorited, isLiked })
       })
       .catch(err => next(err))
   },
@@ -63,8 +67,8 @@ const restaurantController = {
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
-        const commentCounts = restaurant.Comments.length
-        return res.render('dashboard', { restaurant: restaurant.toJSON(), commentCounts })
+        const comment = restaurant.Comments
+        return res.render('dashboard', { restaurant: restaurant.toJSON(), comment })
       })
       .catch(err => next(err))
   },
