@@ -20,6 +20,7 @@ router.get('/signin', userController.signInPage)
 router.post('/signin', passport.authenticate('local', { failureRedirect: '/signin', failureFlash: true }), userController.signIn) // 注意是 post
 router.get('/logout', userController.logout)
 
+router.get('/users/top', authenticated, userController.getTopUsers) // go to top-users.hbs
 router.get('/users/:user_id/edit', authenticated, userController.editUser) // go to Profile edit page
 router.get('/users/:user_id', authenticated, userController.getUser) // go to Profile page
 router.put('/users/:user_id', authenticated, upload.single('image'), userController.putUser) // update Profile
@@ -31,7 +32,6 @@ router.get('/restaurants', authenticated, restController.getRestaurants) // rend
 
 router.delete('/comments/:comment_id', authenticatedAdmin, commentController.deleteComment) // delete a comment by id
 router.post('/comments', authenticated, commentController.postComment) // create a new comment into database
-router.get('/', (req, res) => res.redirect('/restaurants'))
 
 router.post('/favorite/:restaurantId', authenticated, userController.addFavorite) // add a restaurant into join table
 router.delete('/favorite/:restaurantId', authenticated, userController.removeFavorite) // remove a restaurant from join table
@@ -39,5 +39,6 @@ router.delete('/favorite/:restaurantId', authenticated, userController.removeFav
 router.post('/like/:restaurantId', authenticated, userController.addLike) // add a restaurant into join table
 router.delete('/like/:restaurantId', authenticated, userController.removeLike) // remove a restaurant from join table
 
+router.get('/', (req, res) => res.redirect('/restaurants'))
 router.use('/', generalErrorHandler)
 module.exports = router
