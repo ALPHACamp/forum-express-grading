@@ -2,7 +2,7 @@
 const bcrypt = require('bcryptjs')
 
 // import models
-const { User, Comment, Restaurant, Favorite, Like } = require('../models')
+const { User, Comment, Restaurant, Favorite, Like, Followship } = require('../models')
 
 // import helper
 const { imgurFileHandler } = require('../helpers/file-helpers')
@@ -196,17 +196,66 @@ const userController = {
   },
   getTopUsers: async (req, res, next) => {
     try {
-      let users = await User.findAll({
+      const theSignInUser = req.user
+      const users = await User.findAll({
         include: [{ model: User, as: 'Followers' }],
       })
-      users = await users.map((user) => ({
-        ...user.toJSON(),
-        followerCount: user.Followers.length,
-        // 判斷目前登入使用者是否已追蹤美食達人 user 物件
-        isFollowed: req.user.Followings.some((f) => f.id === user.id),
-      }))
+      const result = users
+        .map((user) => ({
+          ...user.toJSON(),
+          followerCount: user.Followers.length,
+          // 判斷目前登入使用者是否已追蹤美食達人 user 物件
+          isFollowed: theSignInUser.Followings.some((f) => f.id === user.id),
+        }))
+        .sort((a, b) => b.followerCount - a.followerCount)
 
-      return res.render('top-users', { users: users })
+      return res.render('top-users', { users: result })
+    } catch (error) {
+      next(error)
+    }
+  },
+  addFollowing: async (req, res, next) => {
+    try {
+      const theSignInUser = req.user
+      const { userId } = req.params
+      const [user, followship] = await Promise.all([
+        User.findByPk(userId),
+        Followship.findOne({
+          where: {
+            followerId: theSignInUser.id,
+            followingId: userId,
+          },
+        }),
+      ])
+
+      if (!user) throw new Error('This user does not exist!')
+      if (followship) throw new Error('You are following this user!')
+
+      await Followship.create({
+        followerId: theSignInUser.id,
+        followingId: userId,
+      })
+
+      return res.redirect('back')
+    } catch (error) {
+      next(error)
+    }
+  },
+  removeFollowing: async (req, res, next) => {
+    try {
+      const theSignInUser = req.user
+      const followship = await Followship.findOne({
+        where: {
+          followerId: theSignInUser.id,
+          followingId: req.params.userId,
+        },
+      })
+
+      if (!followship) throw new Error(`You haven't followed this user!`)
+
+      await followship.destroy()
+
+      return res.redirect('back')
     } catch (error) {
       next(error)
     }
