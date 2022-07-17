@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs')
 const { imgurFileHandler } = require('../helpers/file-helpers')
-const { Restaurant, Comment, User, Favorite, Like } = require('../models')
+const { Restaurant, Comment, User, Favorite, Like, Followship } = require('../models')
 
 const userController = {
   signUpPage: (req, res) => {
@@ -171,7 +171,7 @@ const userController = {
     })
       .then(users => {
         // 整理 users 資料，把每個 user 項目都拿出來處理一次，並把新陣列儲存在 users 裡
-        users = users.map(user => ({
+        const result = users.map(user => ({
           // 整理格式
           ...user.toJSON(),
           // 計算追蹤者人數
@@ -179,8 +179,46 @@ const userController = {
           // 判斷目前登入使用者是否已追蹤該 user 物件
           isFollowed: req.user.Followings.some(f => f.id === user.id)
         }))
-        res.render('top-users', { users: users })
+          .sort((a, b) => b.followerCount - a.followerCount)
+        res.render('top-users', { users: result })
       })
+      .catch(err => next(err))
+  },
+  addFollowing: (req, res, next) => {
+    const { userId } = req.params
+    Promise.all([
+      User.findByPk(userId),
+      Followship.findOne({
+        where: {
+          followerId: req.user.id,
+          followingId: req.params.userId
+        }
+      })
+    ])
+      .then(([user, followship]) => {
+        if (!user) throw new Error("User didn't exist!")
+        if (followship) throw new Error('You are already following this user!')
+        if (req.user.id === Number(userId)) throw new Error("You can't follow yourself!")
+        return Followship.create({
+          followerId: req.user.id,
+          followingId: userId
+        })
+      })
+      .then(() => res.redirect('back'))
+      .catch(err => next(err))
+  },
+  removeFollowing: (req, res, next) => {
+    Followship.findOne({
+      where: {
+        followerId: req.user.id,
+        followingId: req.params.userId
+      }
+    })
+      .then(followship => {
+        if (!followship) throw new Error("You haven't followed this user!")
+        return followship.destroy()
+      })
+      .then(() => res.redirect('back'))
       .catch(err => next(err))
   }
 }
