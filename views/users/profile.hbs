@@ -19,9 +19,9 @@
 
 <div class='card d-flex w-75 m-auto mt-5' style='width: 18rem;'>
 	<h6 class='card-header'>{{user.numberOfComments}} 已評論餐廳</h6>
-	<div class='d-flex flex-row p-3'>
+	<div class='d-flex flex-row p-3 flex-wrap'>
 		{{#each user.Comments}}
-			<a href='/restaurants/{{this.Restaurant.id}}' class='mx-2'>
+			<a href='/restaurants/{{this.Restaurant.id}}' class='m-2'>
 				<img
 					src='{{this.Restaurant.image}}'
 					alt='Restaurant image'
