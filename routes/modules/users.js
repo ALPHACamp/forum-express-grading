@@ -1,12 +1,13 @@
 const express = require('express')
 const router = express.Router()
 
-const { authenticatedUser } = require('../../middleware/auth')
+const { authenticated, authenticatedUser } = require('../../middleware/auth')
 
 const userController = require('../../controllers/user-controller')
 
 const upload = require('../../middleware/multer')
 
+router.get('/top', authenticated, userController.getTopUsers)
 router.get('/:id/edit', authenticatedUser, userController.editUser)
 router.put(
   '/:id',
