@@ -33,17 +33,29 @@ const userController = {
     res.redirect('/restaurants')
   },
   getUser: (req, res, next) => {
+    const userId = Number(req.params.id)
     return User.findByPk(req.params.id, {
-      include: { model: Comment, include: Restaurant }
+      include: [
+        { model: Comment, include: Restaurant },
+        { model: Restaurant, as: 'FavoritedRestaurants' },
+        { model: User, as: 'Followers' },
+        { model: User, as: 'Followings' }]
     })
       .then(user => {
+        const restaurantArray = user.toJSON().Comments.map(i => i.Restaurant) // 先存進使用者評論過的資料
+        const set = new Set() // 創建一set物件建構子要用來存放餐廳id
+        // 對restaurantArray使用filter迭代陣列中的每個物件
+        // 我們用set物件的has來查看它的id值是否存在set內，如果沒有，我們利用set.add將那個id傳入set中。
+        // (set.has會回傳一個boolean，add則會將argument加入set中。)
+        // filter只會將判斷為true的值丟進result中，所以重複已經在set內的將傳回false，所以最後結果只剩不重複物件。
+        const resultCommentsRest = restaurantArray.filter(r => !set.has(r.id) ? set.add(r.id) : false)
         if (!user) throw new Error("This user did'nt exist!")
-        res.render('users/profile', { user: user.toJSON() })
+        res.render('users/profile', { userProfile: user.toJSON(), userId, resultCommentsRest })
       })
       .catch(err => next(err))
   },
   editUser: (req, res, next) => {
-    // if (req.user.id !== Number(req.params.id)) throw new Error('無權限變更他人帳戶!')
+    if (req.user.id !== Number(req.params.id)) throw new Error('無權限變更他人帳戶!')
     return User.findByPk(req.params.id, {
       raw: true
     })
