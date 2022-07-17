@@ -107,6 +107,42 @@ const restaurantController = {
         res.render('feeds', { restaurants, comments })
       })
       .catch(err => next(err))
+  },
+  getTopRestaurants: (req, res, next) => {
+    // 以下寫法有使用到SQL原生語法，本地端網頁可正常運作，但測試不通過
+    // return Restaurant.findAll({
+    //   attributes: {
+    //     include: [
+    //       [sequelize.literal('(SELECT COUNT(`id`) FROM `Favorites` WHERE `restaurant_id` = `Restaurant`.`id`)'), 'favoritedCount']
+    //     ]
+    //   },
+    //   order: sequelize.literal('`favoritedCount` DESC'),
+    //   limit: 10
+    // })
+    //   .then(restaurants => {
+    //     restaurants = restaurants.map(r => ({
+    //       ...r.toJSON(),
+    //       isFavorited: req.user && req.user.FavoritedRestaurants.some(fr => fr.id === r.id)
+    //     }))
+    //     res.render('top-restaurants', { restaurants })
+    //   })
+
+    return Restaurant.findAll({
+      include: [{
+        model: User, as: 'FavoritedUsers'
+      }]
+    })
+      .then(restaurants => {
+        const data = restaurants.map(r => ({
+          ...r.toJSON(),
+          favoritedCount: r.FavoritedUsers.length,
+          isFavorited: req.user && req.user.FavoritedRestaurants.some(fr => fr.id === r.id)
+        }))
+          .sort((a, b) => b.favoritedCount - a.favoritedCount)
+          .slice(0, 10)
+        return res.render('top-restaurants', { restaurants: data })
+      })
+      .catch(err => next(err))
   }
 }
 
