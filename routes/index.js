@@ -21,6 +21,7 @@ router.post('/signin', passport.authenticate('local',
   { failureRedirect: '/signin', failureFlash: true }), userController.signIn)
 router.get('/logout', userController.logout)
 
+router.get('/restaurants/top', restController.getTopRestaurants)
 router.get('/restaurants/feeds', restController.getFeeds)
 router.get('/restaurants/:id', authenticated, restController.getRestaurant)
 router.get('/restaurants', authenticated, restController.getRestaurants)
