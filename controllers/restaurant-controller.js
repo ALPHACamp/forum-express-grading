@@ -26,9 +26,12 @@ const restaurantController = {
       Category.findAll({ raw: true })
     ])
       .then(([restaurants, categories]) => {
+        const favoritedRestaurants = req.user.FavoritedRestaurants.map(fr => fr.id)
+        console.log(favoritedRestaurants)
         const data = restaurants.rows.map(r => ({
           ...r,
-          description: r.description.substring(0, 50)
+          description: r.description.substring(0, 50),
+          isFavorited: favoritedRestaurants.includes(r.id)
         }))
         return res.render('restaurants', {
           restaurants: data,
