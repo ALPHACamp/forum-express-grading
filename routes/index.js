@@ -10,7 +10,7 @@ const admin = require('./modules/admin')
 const users = require('./modules/user')
 
 router.use('/admin', authenticatedAdmin, admin)
-router.use('/users', authenticatedAdmin, users)
+router.use('/users', authenticated, users)
 
 router.get('/signup', userController.signUpPage)
 router.post('/signup', userController.signUp)
@@ -34,6 +34,9 @@ router.delete('/like/:restaurantId', authenticated, userController.removeLike)
 
 router.post('/favorite/:restaurantId', authenticated, userController.addFavorite)
 router.delete('/favorite/:restaurantId', authenticated, userController.removeFavorite)
+
+router.post('/following/:userId', authenticated, userController.addFollowing)
+router.delete('/following/:userId', authenticated, userController.removeFollowing)
 
 router.get('/', (req, res) => res.redirect('/restaurants'))
 router.use('/', generalErrorHandler)
