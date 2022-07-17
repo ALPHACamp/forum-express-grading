@@ -1,4 +1,4 @@
-const { Restaurant, Category, Comment, User } = require('../models')
+const { Restaurant, Category, Comment, User, Like } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
 const restaurantController = {
   getRestaurants: (req, res, next) => {
@@ -73,11 +73,20 @@ const restaurantController = {
         where: {
           restaurantId: req.params.id
         }
+      }),
+      Like.findAndCountAll({
+        where: {
+          restaurantId: req.params.id
+        }
       })
     ])
-      .then(([restaurant, comments]) => {
+      .then(([restaurant, comments, likes]) => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
-        return res.render('dashboard', { restaurant, commentCounts: comments.count })
+        return res.render('dashboard', {
+          restaurant,
+          commentCount: comments.count,
+          likeCount: likes.count
+        })
       })
       .catch(err => next(err))
   },
@@ -103,6 +112,26 @@ const restaurantController = {
           restaurants,
           comments
         })
+      })
+      .catch(err => next(err))
+  },
+  getTopRestaurants: (req, res, next) => {
+    return Restaurant.findAll({
+      include: [
+        Category,
+        { model: User, as: 'FavoritedUsers' }
+      ]
+    })
+      .then(restaurants => {
+        const showRange = [0, 10]
+        const result = restaurants.map(restaurant => ({
+          ...restaurant.toJSON(),
+          favoritedCount: restaurant.FavoritedUsers.length,
+          isFavorited: req.user && req.user.FavoritedRestaurants.some(fr => fr.id === restaurant.id)
+        }))
+          .sort((a, b) => b.favoritedCount - a.favoritedCount)
+          .slice(...showRange)
+        res.render('top-restaurants', { restaurants: result })
       })
       .catch(err => next(err))
   }

@@ -1,0 +1,69 @@
+{{> restaurant-tabs route='topRestaurants'}}
+<h1>人氣餐廳</h1>
+<hr />
+<div class="d-flex flex-column align-items-center">
+  {{#each restaurants}}
+  <div class="card mb-3" style="max-width: 540px;">
+    <div class="row g-0">
+      <div class="col-md-4">
+        <img src="{{this.image}}" class="img-fluid rounded-start" alt="...">
+      </div>
+      <div class="col-md-8">
+        <div class="card-body">
+          <a href="/restaurants/{{this.id}}">
+            <h5 class="card-title">{{this.name}}</h5>
+          </a>
+          <span class="bg-secondary badge">收藏數：{{this.favoritedCount}}</span>
+          <p class="card-text">{{this.description}}</p>
+        </div>
+        <!-- Button trigger modal -->
+        <div class="d-flex ms-2">
+          <button type="button" class="btn btn-primary m-1" data-bs-toggle="modal"
+            data-bs-target="#showRestaurant-{{this.id}}">Show</button>
+          {{#if isFavorited}}
+          <form action="/favorite/{{this.id}}?_method=DELETE" method="POST">
+            <button type="submit" class="btn btn-danger m-1">移除最愛</button>
+          </form>
+          {{else}}
+          <form action="/favorite/{{this.id}}" method="POST">
+            <button type="submit" class="btn btn-primary m-1">加到最愛</button>
+          </form>
+          {{/if}}
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal fade" id="showRestaurant-{{this.id}}" tabindex="-1" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title me-2" id="exampleModalLabel">
+            {{this.name}}
+          </h5>
+          <small>({{this.Category.name}})</small>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="card-body">
+            <div class="col-md-6">
+              <img class="img-responsive center-block mb-3" src="{{this.image}}"
+                style="width: 250px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+              <ul class="list-unstyled">
+                <li><strong>Opening Hour:</strong> {{this.openingHours}}</li>
+                <li><strong>Tel:</strong> {{this.tel}}</li>
+                <li><strong>Address:</strong> {{this.address}}</li>
+              </ul>
+            </div>
+            <hr>
+            <p class="card-text">{{this.description}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {{/each}}
+</div>
