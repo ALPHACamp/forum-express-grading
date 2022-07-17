@@ -33,6 +33,9 @@ router.put('/users/:id', authenticated, multer.single('image'), userController.p
 router.delete('/comments/:id', commentController.deleteComment)
 router.post('/comments', commentController.postComment)
 
+router.post('/favorite/:restaurantId', authenticated, userController.addFavorite)
+router.delete('/favorite/:restaurantId', authenticated, userController.removeFavorite)
+
 router.get('/', (req, res) => res.redirect('/restaurants'))
 router.use('/', generalErrorHandler)
 
