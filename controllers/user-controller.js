@@ -97,7 +97,7 @@ const userController = {
       .then(([restaurant, favorite]) => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         if (favorite) throw new Error('You have favorited this restaurant!')
-
+        restaurant.increment('favoriteCounts')
         return Favorite.create({
           userId: req.user.id,
           restaurantId
@@ -107,15 +107,18 @@ const userController = {
       .catch(err => next(err))
   },
   removeFavorite: (req, res, next) => {
-    return Favorite.findOne({
-      where: {
-        userId: req.user.id,
-        restaurantId: req.params.restaurantId
-      }
-    })
-      .then(favorite => {
+    return Promise.all([
+      Favorite.findOne({
+        where: {
+          userId: req.user.id,
+          restaurantId: req.params.restaurantId
+        }
+      }),
+      Restaurant.findByPk(req.params.restaurantId)
+    ])
+      .then(([favorite, restaurant]) => {
         if (!favorite) throw new Error("You haven't favorited this restaurant")
-
+        restaurant.decrement('favoriteCounts')
         return favorite.destroy()
       })
       .then(() => res.redirect('back'))
