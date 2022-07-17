@@ -1,7 +1,8 @@
 const bcrypt = require('bcryptjs')
 const db = require('../models')
-const { User } = db
+const { User, Comment, Restaurant } = db
 const { imgurFileHandler } = require('../helpers/file-helper')
+const Sequelize = require('sequelize')
 
 const userController = {
   signUpPage: (req, res) => {
@@ -40,11 +41,17 @@ const userController = {
     res.redirect('/signin')
   },
   getUser: (req, res, next) => {
-    return User.findByPk(req.params.id, { raw: true })
+    return User.findByPk(req.params.id, {
+      nest: true,
+      include: [
+        { model: Comment, include: Restaurant }
+      ]
+    })
       .then(user => {
         if (!user) throw new Error('User does not exist!')
-
-        res.render('users/profile', { user })
+        user = user.toJSON()
+        const numberOfComments = user.Comments.length
+        res.render('users/profile', { user: { ...user, numberOfComments } })
       })
       .catch(err => next(err))
   },
