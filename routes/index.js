@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const passport = require('../config/passport')
+const multer = require('../middleware/multer')
 
 const admin = require('./modules/admin')
 const restController = require('../controllers/restaurant-controller')
@@ -23,6 +24,10 @@ router.get('/logout', userController.logout)
 router.get('/restaurants/:id', authenticated, restController.getRestaurant)
 router.get('/restaurants', authenticated, restController.getRestaurants)
 router.get('/restaurants/:id/dashboard', authenticated, restController.getDashboard)
+
+router.get('/users/:id/edit', authenticated, userController.editUser)
+router.get('/users/:id', authenticated, userController.getUser)
+router.put('/users/:id', authenticated, multer.single('image'), userController.putUser)
 
 router.delete('/comments/:id', commentController.deleteComment)
 router.post('/comments', commentController.postComment)

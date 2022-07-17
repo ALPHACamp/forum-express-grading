@@ -1,0 +1,13 @@
+<div class='card d-flex flex-row w-75 m-auto' style='width: 18rem;'>
+	<img
+		class='card-img-top me-3 rounded-circle'
+		src='{{user.image}}'
+		alt='User avatar'
+		style='width: 300px; height: 300px'
+	/>
+	<div class='card-body'>
+		<h5 class='card-title'>{{user.name}}</h5>
+		<p class='card-text'>{{user.email}}</p>
+		<a href='/users/{{user.id}}/edit' class='btn btn-primary'>Edit</a>
+	</div>
+</div>
