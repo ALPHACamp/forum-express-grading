@@ -45,18 +45,18 @@ const restaurantController = {
       // req.user might be null
       const favoritedRestaurantsId =
         req.user &&
-        (await req.user.FavoritedRestaurants.map((favoritedRestaurant) => {
+        req.user.FavoritedRestaurants.map((favoritedRestaurant) => {
           return favoritedRestaurant.id
-        }))
+        })
 
       const likedRestaurantsId =
         req.user &&
-        (await req.user.LikedRestaurants.map((likedRestaurant) => {
+        req.user.LikedRestaurants.map((likedRestaurant) => {
           return likedRestaurant.id
-        }))
+        })
 
       // restaurants { count: 50, row: [{ item }, { item }, ...] }
-      const data = await restaurants.rows.map((item) => ({
+      const data = restaurants.rows.map((item) => ({
         ...item,
         description: item.description.substring(0, 50),
         isFavorited: favoritedRestaurantsId.includes(item.id), // isFavorited: Boolean
@@ -85,8 +85,8 @@ const restaurantController = {
       })
       if (!restaurant) throw new Error('This restaurant does not exist!')
 
-      const isFavorited = await restaurant.FavoritedUsers.some((favUser) => favUser.id === req.user.id)
-      const isLiked = await restaurant.LikedUsers.some((likedUser) => likedUser.id === req.user.id)
+      const isFavorited = restaurant.FavoritedUsers.some((favUser) => favUser.id === req.user.id)
+      const isLiked = restaurant.LikedUsers.some((likedUser) => likedUser.id === req.user.id)
       await restaurant.increment('view_counts', { by: 1 })
 
       return res.render('restaurant', { restaurant: restaurant.toJSON(), isFavorited, isLiked })
@@ -126,6 +126,33 @@ const restaurantController = {
 
       // step 2. pass data to template
       return res.render('feeds', { restaurants, comments })
+    } catch (error) {
+      next(error)
+    }
+  },
+  getTopRestaurants: async (req, res, next) => {
+    try {
+      const theSignInUser = req.user
+      const favoritedRestaurantsIds =
+        (theSignInUser &&
+          theSignInUser.FavoritedRestaurants.map((favoritedRestaurant) => {
+            return favoritedRestaurant.id
+          })) ||
+        []
+
+      let restaurants = await Restaurant.findAll({
+        include: [{ model: User, as: 'FavoritedUsers' }],
+      })
+      restaurants = restaurants
+        .map((restaurant) => ({
+          ...restaurant.toJSON(),
+          favoritedCount: restaurant.FavoritedUsers.length,
+          isFavorited: favoritedRestaurantsIds.some((frid) => frid === restaurant.id),
+        }))
+        .sort((a, b) => b.favoritedCount - a.favoritedCount)
+        .slice(0, 10)
+
+      return res.render('top-restaurants', { restaurants })
     } catch (error) {
       next(error)
     }
