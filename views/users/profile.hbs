@@ -1,0 +1,33 @@
+<div class='card d-flex flex-row w-75 m-auto' style='width: 18rem;'>
+	<img
+		class='card-img-top me-3 rounded-circle'
+		src='{{user.image}}'
+		alt='User avatar'
+		style='width: 300px; height: 300px'
+	/>
+	<div class='card-body d-flex flex-column justify-content-between'>
+		<div>
+			<h5 class='card-title'>{{user.name}}</h5>
+			<p class='card-text'>{{user.email}}</p>
+			<p>{{user.numberOfComments}} 已評論餐廳</p>
+		</div>
+		<div>
+			<a href='/users/{{user.id}}/edit' class='btn btn-primary'>Edit</a>
+		</div>
+	</div>
+</div>
+
+<div class='card d-flex w-75 m-auto mt-5' style='width: 18rem;'>
+	<h6 class='card-header'>{{user.numberOfComments}} 已評論餐廳</h6>
+	<div class='d-flex flex-row p-3'>
+		{{#each user.Comments}}
+			<a href='/restaurants/{{this.Restaurant.id}}' class='mx-2'>
+				<img
+					src='{{this.Restaurant.image}}'
+					alt='Restaurant image'
+					style='width: 50px; height: 50px'
+				/>
+			</a>
+		{{/each}}
+	</div>
+</div>
