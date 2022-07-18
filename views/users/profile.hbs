@@ -1,0 +1,38 @@
+<div class="card mb-3 align-middle">
+  <div class="row g-0">
+    <div class="col-md-4">
+      <img src="{{user.image}}" alt="Card image cap" width="400px" height="300px"
+        style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+    </div>
+    <div class="col-md-8 mt-3">
+      <div class="card-body">
+        <h5 class="card-title">{{user.name}}</h5>
+        <p class="card-text">{{user.email}}</p>
+        <p class="card-text">{{count}}&nbsp;已評論餐廳</p>
+        <a href='/users/{{user.id}}/edit'>
+          <button type="button" class="btn btn-primary mt-5">Edit</button>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    {{count}}&nbsp;&nbsp;已評論餐廳
+  </div>
+  <div class="card-body">
+    <div class="row">
+      {{#each user.Comments}}
+      <div class="col-md-auto">
+        <div class="card mb-4 shadow-sm">
+          <a href="/restaurants/{{this.Restaurant.id}}">
+            <img src="{{this.Restaurant.image}}" alt="Card image cap" width="70px" height="70px"
+              style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+          </a>
+        </div>
+      </div>
+      {{/each}}
+    </div>
+  </div>
+</div>
