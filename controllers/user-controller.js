@@ -53,7 +53,7 @@ const userController = {
         user = user.toJSON()
         // 針對test所做的調整，測試檔沒有Comments attribute
         const numberOfComments = user.Comments ? user.Comments.length : 0
-        res.render('users/profile', { user: { ...user, numberOfComments } })
+        res.render('users/profile', { User: { ...user, numberOfComments } })
       })
       .catch(err => next(err))
   },
