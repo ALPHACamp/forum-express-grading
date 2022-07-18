@@ -1,8 +1,13 @@
 <div class="card mb-3">
   <div class="row g-0">
     <div class="col-md-4">
-      <img class="img-responsive center-block" src="{{user.image}}"
-        style="width: 350px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+      {{#if user.image}}
+      <img src="{{user.image}}" width="200px" height="200px" style="transition: opacity 0.5s; opacity:0;"
+        onload="this.style.opacity=1;" />
+      {{else}}
+      <img src="https://via.placeholder.com/200" width="200px" height="200px" />
+      {{/if}}
+
     </div>
     <div class="col-md-8">
       <div class="card-body">
