@@ -121,7 +121,7 @@ const restaurantController = {
         }))
           .sort((a, b) => b.favoritedCount - a.favoritedCount)
           .slice(0, numberOfRestaurantsShown)
-        res.render('top-restaurants', { restaurants: result })
+        return res.render('top-restaurants', { restaurants: result })
       })
       .catch(err => next(err))
   }
