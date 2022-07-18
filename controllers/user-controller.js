@@ -55,7 +55,6 @@ const userController = {
   editUser: async (req, res, next) => {
     await User.findByPk(req.params.id, { raw: true })
       .then(user => {
-        if (getUser(req).id !== req.params.id) throw new Error('不是登入使用者無法進行更改!')
         if (!user) throw new Error('使用者不存在!')
         return res.render('users/edit', { user })
       })
