@@ -2,8 +2,7 @@ const bcrypt = require('bcryptjs')
 const db = require('../models')
 const { User, Comment, Restaurant } = db
 const { imgurFileHandler } = require('../helpers/file-helper')
-const Sequelize = require('sequelize')
-const { raw } = require('express')
+const { getUser } = require('../helpers/auth-helpers')
 
 const userController = {
   signUpPage: (req, res) => {
@@ -53,7 +52,7 @@ const userController = {
         user = user.toJSON()
         // 針對test所做的調整，測試檔沒有Comments attribute
         const numberOfComments = user.Comments ? user.Comments.length : 0
-        res.render('users/profile', { User: { ...user, numberOfComments } })
+        res.render('users/profile', { user: { ...user, numberOfComments }, loggedInUser: getUser(req) })
       })
       .catch(err => next(err))
   },
@@ -61,7 +60,7 @@ const userController = {
     return User.findByPk(req.params.id, { raw: true })
       .then(user => {
         if (!user) throw new Error('User does not exist!')
-
+        if (getUser(req).id !== user.id) throw new Error('You can only edit your profile!')
         res.render('users/edit', { user })
       })
       .catch(err => next(err))
@@ -78,6 +77,7 @@ const userController = {
     ])
       .then(([user, filePath]) => {
         if (!user) throw new Error('User does not exist')
+        if (getUser(req).id !== user.id) throw new Error('You can only edit your profile!')
 
         return user.update({
           name,
