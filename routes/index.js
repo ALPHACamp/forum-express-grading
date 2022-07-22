@@ -1,8 +1,7 @@
 const express = require('express')
 const router = express.Router()
-
-router.get('/', (req, res) => {
-  res.send('Hello World!')
-})
+const restaurantController = require('../controllers/restaurant-controller')
+router.get('/restaurants', restaurantController.getRestaurants)
+router.get('/', (req, res) => res.redirect('/restaurants'))
 
 module.exports = router
