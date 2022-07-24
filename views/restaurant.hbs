@@ -13,15 +13,24 @@
         <li><strong>Address:</strong> {{restaurant.address}}</li>
       </ul>
       <a href="/restaurants/{{restaurant.id}}/dashboard" type="button" class="btn btn-primary">Dashboard</a>
-          {{#if isFavorited }}
-          <form action="/favorite/{{restaurant.id}}?_method=DELETE" method="POST" style="display: contents;">
-            <button type="submit" class="btn btn-danger">移除最愛</button>
-          </form>
-          {{else}}
-          <form action="/favorite/{{restaurant.id}}" method="POST" style="display: contents;">
-            <button type="submit" class="btn btn-primary">加到最愛</button>
-          </form>
-          {{/if}}
+      {{#if isFavorited }}
+      <form action="/favorite/{{restaurant.id}}?_method=DELETE" method="POST" style="display: contents;">
+        <button type="submit" class="btn btn-danger">移除最愛</button>
+      </form>
+      {{else}}
+      <form action="/favorite/{{restaurant.id}}" method="POST" style="display: contents;">
+        <button type="submit" class="btn btn-primary">加到最愛</button>
+      </form>
+      {{/if}}
+      {{#if isLike }}
+      <form action="/like/{{restaurant.id}}?_method=DELETE" method="POST" style="display: contents;">
+        <button type="submit" class="btn btn-danger">Unlike</button>
+      </form>
+      {{else}}
+      <form action="/like/{{restaurant.id}}" method="POST" style="display: contents;">
+        <button type="submit" class="btn btn-primary">Like</button>
+      </form>
+      {{/if}}
     </div>
   </div>
   <div class="col-md-8">
