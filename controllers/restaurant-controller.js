@@ -40,16 +40,19 @@ const restaurantController = {
       include: [Category, {
         model: Comment,
         include: User
-      }],
+      },
+      { model: User, as: 'FavoritedUsers' }],
       order: [[{ model: Comment }, 'updatedAt', 'DESC']]
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
+        const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id)
         return restaurant.increment(
           'viewCounts', { by: 1 }
         ).then(restaurant => {
           res.render('restaurant', {
-            restaurant: restaurant.toJSON()
+            restaurant: restaurant.toJSON(),
+            isFavorited
           })
         })
       })
