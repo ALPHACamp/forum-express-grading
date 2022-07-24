@@ -28,10 +28,6 @@ router.get('/restaurants/:id/dashboard', authenticated, restController.getDashbo
 router.get('/restaurants/:id', authenticated, restController.getRestaurant)
 router.get('/restaurants', authenticated, restController.getRestaurants)
 router.use('/', (req, res) => res.redirect('/restaurants'))
-<<<<<<< HEAD
-router.use('', generalErrorHandler)
-=======
 router.get('/logout', userController.logout)
 router.use('/', generalErrorHandler)
->>>>>>> R04
 module.exports = router
