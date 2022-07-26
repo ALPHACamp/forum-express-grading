@@ -56,7 +56,7 @@ const adminController = {
     imgurFileHandler(file)
       .then(filePath => Restaurant.create({ name, tel, address, openingHours, description, image: filePath || null }))
       .then(() => {
-        req.flash('sucess_messages', 'restaurant was successfully created !')
+        req.flash('success_messages', 'restaurant was successfully created !')
         res.redirect('/admin/restaurants')
       })
       .catch(err => next(err))
@@ -79,7 +79,10 @@ const adminController = {
         req.flash('success_messages', '使用者權限變更成功')
         res.redirect('/admin/users')
       })
-      .catch(err => next(err))
+      .catch(err => {
+        req.flash('error_messages', err.message)
+        res.redirect('back')
+      })
   }
 }
 module.exports = adminController

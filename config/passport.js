@@ -11,6 +11,7 @@ passport.use(new LocalStrategy(
     passReqToCallback: true
   },
   (req, email, password, cb) => {
+    console.log(email)
     User.findOne({ where: { email } })
       .then(user => {
         if (!user) return cb(null, false, req.flash('error_messages', '帳號或密碼輸入錯誤!'))

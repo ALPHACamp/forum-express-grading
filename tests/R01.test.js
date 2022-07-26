@@ -108,7 +108,6 @@ describe('# R01', () => {
         // patchUser 正確執行的話，應呼叫 req.flash
         // req.flash 的參數應該要與下列字串一致
         req.flash.calledWith('error_messages','禁止變更 root 權限').should.be.true
-
         // patchUser 執行完畢，應呼叫 res.redirect 並重新導向上一頁 
         res.redirect.calledWith('back').should.be.true
       })
