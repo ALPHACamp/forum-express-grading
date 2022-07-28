@@ -110,12 +110,12 @@ const restaurantController = {
       const data = restaurants.map(r => ({
         ...r.toJSON(),
         isFavorited: req.user && req.user.FavoritedRestaurants.some(fr => fr.id === r.id),
-        favoriteCount: r.FavoritedUsers.length,
+        favoritedCount: r.FavoritedUsers.length,
         description: r.description.substring(0, 50)
       })).sort((a, b) => {
-        return b.favoriteCount - a.favoriteCount
+        return b.favoritedCount - a.favoritedCount
       }).slice(0, 10)
-      res.render('top-restaurants', { restaurants: data })
+      return res.render('top-restaurants', { restaurants: data })
     }).catch(err => next(err))
   }
 }
