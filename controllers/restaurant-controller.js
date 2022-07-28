@@ -100,21 +100,23 @@ const restaurantController = {
       .catch(err => next(err))
   },
   getTopRestaurants: (req, res, next) => {
-    const categoryId = Number(req.query.categoryId) || ''
-    Restaurant.findAndCountAll({
-      include: Category,
-      where: {
-        ...categoryId ? { categoryId } : {}
-      }
+    return Restaurant.findAll({
+      include: [
+        {
+          model: User, as: 'FavoritedUsers'
+        }
+      ]
     }).then(restaurants => {
-      const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
-      const data = restaurants.rows.map(r => ({
-        ...r,
-        description: r.description.substring(0, 50),
-        isFavorited: favoritedRestaurantsId.includes(r.id)
-      })).slice(0, 10)
-      return res.render('top-restaurants', { restaurants: data })
-    })
+      const data = restaurants.map(r => ({
+        ...r.toJSON(),
+        isFavorited: req.user && req.user.FavoritedRestaurants.some(fr => fr.id === r.id),
+        favoriteCount: r.FavoritedUsers.length,
+        description: r.description.substring(0, 50)
+      })).sort((a, b) => {
+        return b.favoriteCount - a.favoriteCount
+      }).slice(0, 10)
+      res.render('top-restaurants', { restaurants: data })
+    }).catch(err => next(err))
   }
 }
 module.exports = restaurantController
