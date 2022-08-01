@@ -18,7 +18,9 @@ module.exports = (sequelize, DataTypes) => {
     tel: DataTypes.STRING,
     adress: DataTypes.STRING,
     openingHours: DataTypes.STRING,
-    description: DataTypes.TEXT
+    description: DataTypes.TEXT,
+    image: DataTypes.STRING // 新增這一行
+
   }, {
     sequelize,
     modelName: 'Restaurant',
