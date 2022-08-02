@@ -14,7 +14,7 @@ module.exports = {
       tel: {
         type: Sequelize.STRING
       },
-      adress: {
+      address: {
         type: Sequelize.STRING
       },
       opening_Hours: {
