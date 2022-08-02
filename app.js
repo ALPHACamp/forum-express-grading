@@ -8,13 +8,15 @@ const exphbs = require('express-handlebars')
 const session = require('express-session')
 const flash = require('connect-flash')
 const passport = require('./config/passport')
+const { getUser } = require('./helpers/auth-helpers')
+const handlebarsHelpers = require('./helpers/handlebars-helpers')
 const routes = require('./routes')
 
 const app = express()
 const port = process.env.PORT || 3000
 
 // template engine: handlebars
-app.engine('hbs', exphbs({ defaultLayout: 'main', extname: '.hbs' }))
+app.engine('hbs', exphbs({ defaultLayout: 'main', extname: '.hbs', helpers: handlebarsHelpers }))
 app.set('view engine', 'hbs')
 
 // middleware: body-parser, method-override
@@ -36,9 +38,9 @@ app.use(passport.session())
 app.use(flash())
 app.use((req, res, next) => {
   // res.locals.isAuthenticated = req.isAuthenticated()
-  // res.locals.user = req.user
   res.locals.success_messages = req.flash('success_messages')
   res.locals.error_messages = req.flash('error_messages')
+  res.locals.user = getUser(req)
   next()
 })
 
