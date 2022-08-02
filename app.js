@@ -1,6 +1,12 @@
+// packages and variables
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
 const express = require('express')
 const methodOverride = require('method-override')
 const exphbs = require('express-handlebars')
+const session = require('express-session')
+const flash = require('connect-flash')
 const routes = require('./routes')
 
 const app = express()
@@ -13,6 +19,23 @@ app.set('view engine', 'hbs')
 // middleware: body-parser, method-override
 app.use(express.urlencoded({ extended: true }))
 app.use(methodOverride('_method'))
+
+// middleware: session
+app.use(session({
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: true
+}))
+
+// middleware: flash and locals
+app.use(flash())
+app.use((req, res, next) => {
+  // res.locals.isAuthenticated = req.isAuthenticated()
+  // res.locals.user = req.user
+  res.locals.success_messages = req.flash('success_messages')  // 設定 success_msg 訊息
+  res.locals.error_messages = req.flash('error_messages')  // 設定 warning_msg 訊息
+  next()
+})
 
 app.use(routes)
 
