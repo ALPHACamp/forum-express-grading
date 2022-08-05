@@ -6,6 +6,11 @@ const session = require('express-session')
 const flash = require('connect-flash')
 const passport = require('./config/passport')
 const { getUser } = require('./helpers/auth-helpers')
+
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
+
 const app = express()
 const port = process.env.PORT || 3000
 const SESSION_SECRET = 'secret'
@@ -30,6 +35,9 @@ app.use(methodOverride('_method'))
 app.use('/upload', express.static(path.join(__dirname, 'upload')))
 
 app.use(routes)
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
 app.engine('hbs', handlebars({ extname: '.hbs', helpers: handlebarsHelpers }))
 app.set('view engine', 'hbs')
 app.listen(port, () => {
