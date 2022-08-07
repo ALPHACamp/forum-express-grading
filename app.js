@@ -2,6 +2,7 @@
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config()
 }
+const path = require('path')
 const express = require('express')
 const methodOverride = require('method-override')
 const exphbs = require('express-handlebars')
@@ -19,9 +20,10 @@ const port = process.env.PORT || 3000
 app.engine('hbs', exphbs({ defaultLayout: 'main', extname: '.hbs', helpers: handlebarsHelpers }))
 app.set('view engine', 'hbs')
 
-// middleware: body-parser, method-override
+// middleware: body-parser, method-override, static file
 app.use(express.urlencoded({ extended: true }))
 app.use(methodOverride('_method'))
+app.use('/upload', express.static(path.join(__dirname, 'upload')))
 
 // middleware: session
 app.use(session({
