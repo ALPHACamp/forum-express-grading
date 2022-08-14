@@ -12,7 +12,6 @@ const commentController = {
       .then(([user, restaurant]) => {
         if (!user) throw new Error("User didn't exist!")
         if (!restaurant) throw new Error("restaurant didn't exist!")
-        restaurant.increment('commentCounts')
         return Comment.create({
           text,
           restaurantId,
@@ -34,7 +33,6 @@ const commentController = {
       .then(([comment, restaurant]) => {
         if (!comment) throw new Error("Comment didn't exist!'")
         if (!restaurant) throw new Error("Restaurant didn't exist")
-        restaurant.decrement('commentCounts')
         return comment.destroy()
       })
       .then(deletedComment => res.redirect(`/restaurants/${deletedComment.restaurantId}`))
