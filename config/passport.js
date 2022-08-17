@@ -21,6 +21,7 @@ passport.use(new LocalStrategy(
           return cb(null, user)
         })
       })
+      .catch(err => console.log(err))
   }
 ))
 
@@ -33,6 +34,5 @@ passport.deserializeUser((id, cb) => {
     console.log(user)
     return cb(null, user)
   })
-    .catch(err => console.log(err))
 })
 module.exports = passport
