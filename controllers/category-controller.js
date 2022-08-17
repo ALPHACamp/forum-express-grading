@@ -1,4 +1,4 @@
-const { Category } = require('../models')
+const { Category, Restaurant } = require('../models')
 
 const categoryController = {
   // show all categories, and create/edit input according to req.params.id
@@ -33,6 +33,22 @@ const categoryController = {
       })
       .then(() => res.redirect('/admin/categories'))
       .catch(err => next(err))
+  },
+
+  deleteCategory: async (req, res, next) => {
+    try {
+      // find the category user wants to delete
+      const category = await Category.findByPk(req.params.id)
+      if (!category) throw new Error("Category doesn't exist!")
+      // delete the restaurants under the category
+      await Restaurant.destroy({ where: { categoryId: category.id } })
+      // delete the category
+      await category.destroy()
+      req.flash('success_messages', 'Category and the related restaurants were successfully deleted.')
+      res.redirect('/admin/categories')
+    } catch (e) {
+      next(e)
+    }
   }
 }
 

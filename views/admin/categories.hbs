@@ -21,7 +21,7 @@
     </form>
   {{/if}}
 </div>
-<table class="table align-middle">
+<table id="category-table" class="table align-middle">
   <thead class="thead-dark">
     <tr>
       <th scope="col">#</th>
@@ -40,8 +40,8 @@
               Edit
             </a>
           </button>
-          <form action="/admin/categories/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
-            <button type="submit" class="btn btn-link link-danger">Delete</button>
+          <form action="/admin/categories/{{this.id}}?_method=DELETE" method="POST" style="display: inline;" class="form-{{ this.id }}">
+            <button type="submit" class="btn btn-link link-danger btn-delete" data-id="{{ this.id }}">Delete</button>
           </form>
         </td>
       </tr>
@@ -50,3 +50,24 @@
 </table>
 <br />
 <br />
+
+<script>
+// alert to confirm the deletion
+const categoryTable = document.querySelector('#category-table')
+categoryTable.addEventListener('click', e => {
+  if (!(e.target.matches('.btn-delete'))) return
+  e.preventDefault()
+  swal({
+    title: "確定刪除類別？",
+    icon: "warning",
+    text: "刪除類別後，該類別底下的餐廳會一併刪除且無法復原。",
+    buttons: true,
+    dangerMode: true
+  }).then(check => {
+    if(check) {
+      const id = e.target.dataset.id
+      document.querySelector(`.form-${id}`).submit()
+    }
+  })
+})
+</script>
