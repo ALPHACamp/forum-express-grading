@@ -1,21 +1,30 @@
 const { Restaurant, Category } = require('../models')
 
 const restaurantController = {
-  // show all restaurants with 'category name'
+  // show restaurants according to the selected category
   getRestaurants: (req, res, next) => {
-    return Restaurant.findAll({
-      include: Category,
-      nest: true,
-      raw: true
-    }).then(restaurants => {
-      restaurants = restaurants.map(restaurant => {
-        if (restaurant.description.length >= 50) {
-          restaurant.description = restaurant.description.substring(0, 47) + '...'
-        }
-        return restaurant
+    // no query (NaN) and All (0): categoryId = ''
+    const categoryId = Number(req.query.categoryId) || ''
+    return Promise
+      .all([
+        Restaurant.findAll({
+          include: Category,
+          where: categoryId ? { categoryId } : {},
+          nest: true,
+          raw: true
+        }),
+        Category.findAll({ raw: true })
+      ])
+      .then(([restaurants, categories]) => {
+        restaurants = restaurants.map(restaurant => {
+          if (restaurant.description.length >= 50) {
+            restaurant.description = restaurant.description.substring(0, 47) + '...'
+          }
+          return restaurant
+        })
+        return res.render('restaurants', { restaurants, categories, categoryId })
       })
-      return res.render('restaurants', { restaurants })
-    }).catch(e => next(e))
+      .catch(e => next(e))
   },
 
   getRestaurant: async (req, res, next) => {
