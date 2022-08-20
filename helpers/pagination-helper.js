@@ -1,6 +1,5 @@
 const getOffset = (limit = 10, page = 1) => (page - 1) * limit
 const getPagination = (limit = 10, page = 1, total = 50) => {
-  console.log(total)
   const totalPage = Math.ceil(total / limit)
   const pages = Array.from({ length: totalPage }, (_, index) => index + 1)
   const currentPage = page < 1 ? 1 : page > totalPage ? totalPage : page
