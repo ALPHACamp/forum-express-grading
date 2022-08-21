@@ -47,7 +47,6 @@ const restaurantController = {
         order: [[Comment, 'createdAt', 'DESC']],
         nest: true
       })
-      console.log(restaurant.toJSON())
       if (!restaurant) throw new Error("Restaurant doesn't exist!")
       await restaurant.increment('viewCounts', { by: 1 })
       res.render('restaurant', { restaurant: restaurant.toJSON() })
@@ -58,12 +57,11 @@ const restaurantController = {
 
   getDashboard: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
-      include: Category,
-      nest: true,
-      raw: true
+      include: [Category, Comment],
+      nest: true
     }).then(restaurant => {
       if (!restaurant) throw new Error("Restaurant doesn't exist!")
-      res.render('dashboard', { restaurant })
+      res.render('dashboard', { restaurant: restaurant.toJSON() })
     }).catch(e => next(e))
   }
 }
