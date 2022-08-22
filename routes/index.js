@@ -1,11 +1,12 @@
 const router = require('express').Router()
 const passport = require('../config/passport')
+const upload = require('../middleware/multer')
 const restController = require('../controllers/restaurant-controller')
 const userController = require('../controllers/user-controller')
 const commentController = require('../controllers/comment-controller')
 const admin = require('./modules/admin')
 const { generalErrorHandler } = require('../middleware/error-handler')
-const { authenticated, authenticatedAdmin } = require('../middleware/auth')
+const { authenticated, authenticatedAdmin, authenticatedUser } = require('../middleware/auth')
 
 router.use('/admin', authenticatedAdmin, admin)
 router.get('/signup', userController.getSignUpPage)
@@ -21,6 +22,9 @@ router.get('/restaurants/:id', authenticated, restController.getRestaurant)
 router.get('/restaurants', authenticated, restController.getRestaurants)
 router.delete('/comments/:id', authenticatedAdmin, commentController.deleteComment)
 router.post('/comments', authenticated, commentController.postComment)
+router.get('/users/:id/edit', authenticatedUser, userController.editUser)
+router.get('/users/:id', authenticated, userController.getUser)
+router.put('/users/:id', authenticatedUser, upload.single('image'), userController.putUser)
 router.use('/', (req, res) => res.redirect('restaurants'))
 
 // error handler
