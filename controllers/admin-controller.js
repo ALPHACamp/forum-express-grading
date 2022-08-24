@@ -1,4 +1,5 @@
 const { Restaurant } = require('../models')
+const { localFileHandler } = require('../helpers/file-helpers')
 
 const adminController = {
   getRestaurants: (req, res, next) => {
@@ -11,16 +12,19 @@ const adminController = {
   },
   postRestaurant: (req, res, next) => {
     const { name, tel, address, openingHours, description } = req.body
-
     if (!name) throw new Error('餐廳名稱為必填')
-
-    Restaurant.create({
-      name,
-      tel,
-      address,
-      openingHours,
-      description
-    })
+    const { file } = req
+    localFileHandler(file)
+      .then((filePath) =>
+        Restaurant.create({
+          name,
+          tel,
+          address,
+          openingHours,
+          description,
+          image: filePath || null
+        })
+      )
       .then(() => {
         req.flash('success_messages', '餐廳建立成功')
         res.redirect('/admin/restaurants')
@@ -49,15 +53,17 @@ const adminController = {
     const { id } = req.params
     const { name, tel, address, openingHours, description } = req.body
     if (!name) throw new Error('餐廳名稱為必填')
-    Restaurant.findByPk(id)
-      .then((restaurant) => {
+    const { file } = req
+    Promise.all([Restaurant.findByPk(id), localFileHandler(file)])
+      .then(([restaurant, filePath]) => {
         if (!restaurant) throw new Error('查無此餐廳')
         return restaurant.update({
           name,
           tel,
           address,
           openingHours,
-          description
+          description,
+          image: filePath || restaurant.image
         })
       })
       .then(() => {
