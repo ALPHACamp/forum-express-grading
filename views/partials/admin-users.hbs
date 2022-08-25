@@ -14,7 +14,7 @@
         <th scope='row'>{{this.id}}</th>
         <td>{{this.name}}</td>
         <td>{{this.email}}</td>
-        <td>{{#if this.isAdmin}}Admin{{else}}user{{/if}}</td>
+        <td>{{#if this.isAdmin}}admin{{else}}user{{/if}}</td>
         <td>
           <form
             action='/admin/users/{{this.id}}?_method=PATCH'
