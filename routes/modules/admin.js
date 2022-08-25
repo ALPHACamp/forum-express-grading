@@ -13,6 +13,11 @@ router.put(
 )
 router.delete('/restaurants/:id', adminController.deleteRestaurant)
 router.get('/restaurants', adminController.getRestaurants)
+<<<<<<< HEAD
+=======
+router.patch('/users/:id', adminController.patchUser)
+router.get('/users', adminController.getUsers)
+>>>>>>> R01
 router.post(
   '/restaurants',
   upload.single('image'),

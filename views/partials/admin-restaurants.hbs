@@ -1,10 +1,3 @@
-<h1>餐廳後台</h1>
-<<<<<<< HEAD
-<a href='/admin/restaurants/create'>
-  <button type='button' class='btn btn-primary'>New Restaurant</button>
-</a>
-<br />
-<br />
 <table class='table align-middle'>
   <thead class='thead-dark'>
     <tr>
@@ -51,30 +44,3 @@
     {{/each}}
   </tbody>
 </table>
-=======
-<ul class='nav justify-content-start align-items-center'>
-  <li class='nav-item'>
-    <a
-      class='nav-link active'
-      aria-current='page'
-      href='/admin/restaurants'
-    >Restaurants</a>
-  </li>
-  |
-  <li class='nav-item'>
-    <a class='nav-link' href='/admin/users'>Users</a>
-  </li>
-</ul>
-{{#if restaurants}}
-  <a href='/admin/restaurants/create'>
-    <button type='button' class='btn btn-primary'>New Restaurant</button>
-  </a>
-{{/if}}
-<br />
-<br />
-{{#if restaurants}}
-  {{> admin-restaurants}}
-{{else}}
-  {{> admin-users}}
-{{/if}}
->>>>>>> R01
