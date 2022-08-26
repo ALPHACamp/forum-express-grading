@@ -7,11 +7,14 @@ const adminController = {
       .then(restaurants => res.render('admin/restaurants', { restaurants }))
       .catch(err => next(err))
   },
-  createRestaurant: (req, res) => {
-    res.render('admin/create-restaurant')
+  createRestaurant: (req, res, next) => {
+    Category.findAll({ raw: true })
+      .then(categories => res.render('admin/create-restaurant', { categories }))
+      .catch(err => next(err))
   },
   postRestaurant: (req, res, next) => {
-    const { name, tel, address, openingHours, description } = req.body
+    const { name, tel, address, openingHours, description, categoryId } =
+      req.body
     if (!name) throw new Error('餐廳名稱為必填')
     const { file } = req
     imgurFileHandler(file)
@@ -22,7 +25,8 @@ const adminController = {
           address,
           openingHours,
           description,
-          image: filePath || null
+          image: filePath || null,
+          categoryId
         })
       )
       .then(() => {
@@ -42,16 +46,18 @@ const adminController = {
   },
   editRestaurant: (req, res, next) => {
     const { id } = req.params
-    Restaurant.findByPk(id, { raw: true })
-      .then(restaurant => {
-        if (!restaurant) throw new Error('查無此餐廳')
-        res.render('admin/edit-restaurant', { restaurant })
-      })
-      .catch(err => next(err))
+    Promise.all([
+      Restaurant.findByPk(id, { raw: true }),
+      Category.findAll({ raw: true })
+    ]).then(([restaurant, categories]) => {
+      if (!restaurant) throw new Error('查無此餐廳')
+      res.render('admin/edit-restaurant', { restaurant, categories })
+    })
   },
   putRestaurant: (req, res, next) => {
     const { id } = req.params
-    const { name, tel, address, openingHours, description } = req.body
+    const { name, tel, address, openingHours, description, categoryId } =
+      req.body
     if (!name) throw new Error('餐廳名稱為必填')
     const { file } = req
     Promise.all([Restaurant.findByPk(id), imgurFileHandler(file)])
@@ -63,7 +69,8 @@ const adminController = {
           address,
           openingHours,
           description,
-          image: filePath || restaurant.image
+          image: filePath || restaurant.image,
+          categoryId
         })
       })
       .then(() => {
