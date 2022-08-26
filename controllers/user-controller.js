@@ -10,11 +10,11 @@ const userController = {
     const { name, email, password, passwordCheck } = req.body
     if (password !== passwordCheck) throw new Error('密碼與驗證密碼不相同')
     User.findOne({ where: { email } })
-      .then((user) => {
+      .then(user => {
         if (user) throw new Error('Email已註冊過')
         return bcrypt.hash(password, 10)
       })
-      .then((hash) =>
+      .then(hash =>
         User.create({
           name,
           email,
@@ -25,7 +25,7 @@ const userController = {
         req.flash('success_messages', '帳號註冊成功')
         res.redirect('/signin')
       })
-      .catch((err) => next(err))
+      .catch(err => next(err))
   },
   signInPage: (req, res) => {
     res.render('signin')

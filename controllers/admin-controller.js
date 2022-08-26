@@ -1,9 +1,9 @@
-const { Restaurant, User } = require('../models')
+const { Restaurant, User, Category } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const adminController = {
   getRestaurants: (req, res, next) => {
-    Restaurant.findAll({ raw: true })
+    Restaurant.findAll({ raw: true, nest: true, include: [Category] })
       .then(restaurants => res.render('admin/restaurants', { restaurants }))
       .catch(err => next(err))
   },
@@ -33,7 +33,7 @@ const adminController = {
   },
   getRestaurant: (req, res, next) => {
     const { id } = req.params
-    Restaurant.findByPk(id, { raw: true })
+    Restaurant.findByPk(id, { raw: true, nest: true, include: [Category] })
       .then(restaurant => {
         if (!restaurant) throw new Error('查無此餐廳')
         res.render('admin/restaurant', { restaurant })
@@ -95,11 +95,10 @@ const adminController = {
           req.flash('error_messages', '禁止變更 root 權限')
           return res.redirect('back')
         }
-        user.update({ isAdmin: !user.isAdmin })
-          .then(() => {
-            req.flash('success_messages', '使用者權限變更成功')
-            res.redirect('/admin/users')
-          })
+        user.update({ isAdmin: !user.isAdmin }).then(() => {
+          req.flash('success_messages', '使用者權限變更成功')
+          res.redirect('/admin/users')
+        })
       })
       .catch(err => next(err))
   }
