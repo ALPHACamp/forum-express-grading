@@ -12,12 +12,19 @@ const restaurantController = {
       })
   },
   getRestaurant: (req, res, next) => {
-    return Restaurant.findByPk(req.params.id, { raw: true, nest: true, include: Category })
+    return Restaurant.findByPk(req.params.id, { include: Category })
       .then(restaurant => {
         if (!restaurant) throw new Error('查無此餐廳')
-        res.render('restaurant', { restaurant })
+        restaurant.increment('viewCounts', { by: 1 })
+        res.render('restaurant', { restaurant: restaurant.toJSON() })
       })
       .catch(err => next(err))
+  },
+  getDashboard: (req, res, next) => {
+    return Restaurant.findByPk(req.params.id, { raw: true, nest: true })
+      .then(restaurant => {
+        res.render('dashboard', { restaurant })
+      })
   }
 }
 
