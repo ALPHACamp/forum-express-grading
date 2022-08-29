@@ -20,6 +20,7 @@ router.post(
   userController.signIn
 )
 router.get('/logout', userController.logout)
+router.get('/restaurants/:id/dashboard', restController.getDashboard)
 router.get('/restaurants/:id', restController.getRestaurant)
 router.get('/restaurants', authenticated, restController.getRestaurants)
 router.use('/', (req, res) => res.redirect('/restaurants'))
