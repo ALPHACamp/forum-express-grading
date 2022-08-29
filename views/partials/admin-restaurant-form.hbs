@@ -1,7 +1,7 @@
 <div class='form-row mb-3'>
   <label class='form-label' for='name'>Name</label>
-  <input
-    class='form-control'
+  <input 
+    class='form-control' 
     type='text'
     name='name'
     id='name'
@@ -14,7 +14,12 @@
   <label class='form-label' for='categoryId'>Category</label>
   <select name='categoryId' id='categoryId' class='form-control'>
     {{#each categories}}
-      <option value='{{this.id}}'>{{this.name}}</option>
+      <option 
+        value='{{this.id}}' 
+        {{#ifCond this.id ../restaurant.categoryId}} selected {{/ifCond}}
+        >
+        {{this.name}}
+      </option>
     {{/each}}
   </select>
 </div>
