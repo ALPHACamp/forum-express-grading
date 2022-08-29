@@ -1,15 +1,25 @@
 
 {{#if restaurants}}
   {{> admin-tabs route='restaurants'}}
-  <div class="mt-4">
+  <div class="pt-3">
     <a href='/admin/restaurants/create'>
-    <button type='button' class='btn btn-primary'>New Restaurant</button>
-  </a>
+      <button type='button' class='btn btn-primary'>New Restaurant</button>
+    </a>
   </div>
 {{else if users}}
   {{> admin-tabs route="users"}}
 {{else if categories}}
   {{> admin-tabs route="categories"}}
+  <div class="d-flex align-items-center pt-3 pb-5 my-3 text-white-50 bg-purple">
+  <form class="row" action="/admin/categories" method="POST">
+    <div class="col-auto">
+      <input class="form-control" type="text" placeholder="Category Name" name="name">
+    </div>
+    <div class="col-auto">
+      <button class="btn btn-success" type="submit">Create</button>
+    </div>
+  </form>
+</div>
 {{/if}}
 <br />
 <br />
