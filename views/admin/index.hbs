@@ -1,0 +1,24 @@
+
+{{#if restaurants}}
+  {{> admin-tabs route='restaurants'}}
+  <div class="mt-4">
+    <a href='/admin/restaurants/create'>
+    <button type='button' class='btn btn-primary'>New Restaurant</button>
+  </a>
+  </div>
+{{else if users}}
+  {{> admin-tabs route="users"}}
+{{else if categories}}
+  {{> admin-tabs route="categories"}}
+{{/if}}
+<br />
+<br />
+{{#if restaurants}}
+  {{> admin-restaurants}}
+{{else if users}}
+  {{> admin-users}}
+{{else if categories}}
+  {{> admin-categories}}
+{{/if}}
+
+

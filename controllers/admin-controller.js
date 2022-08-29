@@ -4,7 +4,7 @@ const { imgurFileHandler } = require('../helpers/file-helpers')
 const adminController = {
   getRestaurants: (req, res, next) => {
     Restaurant.findAll({ raw: true, nest: true, include: [Category] })
-      .then(restaurants => res.render('admin/restaurants', { restaurants }))
+      .then(restaurants => res.render('admin/index', { restaurants }))
       .catch(err => next(err))
   },
   createRestaurant: (req, res, next) => {
@@ -91,7 +91,7 @@ const adminController = {
   },
   getUsers: (req, res, next) => {
     return User.findAll({ raw: true })
-      .then(users => res.render('admin/restaurants', { users }))
+      .then(users => res.render('admin/index', { users }))
       .catch(err => next(err))
   },
   patchUser: (req, res, next) => {
