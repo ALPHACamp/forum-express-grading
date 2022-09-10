@@ -6,6 +6,7 @@ const userController = {
   signUpPage: (req, res) => {
     res.render('signup')
   },
+  //
   signUp: (req, res, next) => {
     // 如果兩次輸入的密碼不同，就建立一個 Error 物件並拋出
     if (req.body.password !== req.body.passwordCheck) throw new Error('Passwords do not match!')
@@ -26,6 +27,22 @@ const userController = {
         res.redirect('/signin')
       })
       .catch(err => next(err))
+  },
+  //
+  signInPage: (req, res) => {
+    res.render('signin')
+  },
+  //
+  signIn: (req, res) => {
+    req.flash('success_messages', '成功登入！')
+    res.redirect('/restaurants')
+  },
+  //
+  logout: (req, res) => {
+    req.flash('success_messages', '登出成功！')
+    req.logout()
+    res.redirect('/signin')
   }
 }
+
 module.exports = userController
