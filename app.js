@@ -1,3 +1,4 @@
+const path = require('path')
 const express = require('express')
 const handlebars = require('express-handlebars')
 
@@ -38,6 +39,8 @@ app.use((req, res, next) => {
   next()
 })
 app.use(methodOverride('_method'))
+app.use('/upload', express.static(path.join(__dirname, 'upload')))
+
 app.use(routes)
 
 app.listen(port, () => {
