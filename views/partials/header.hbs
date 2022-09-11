@@ -9,11 +9,13 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarCollapse">
           <ul class="navbar-nav ms-auto mb-2 mb-md-0">
+            
             {{#if user.isAdmin}}
               <li class="nav-item">
                 <a href="/admin" class="nav-link">Admin 後台</a>
               </li>
             {{/if}}
+            
             <li class="nav-item d-inline-flex align-items-center">
               <span class="text-white nav-link">Hi, {{ user.email }}</span>
             </li>
