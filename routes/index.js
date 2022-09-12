@@ -4,6 +4,7 @@ const passport = require('../config/passport') // 引入Passport,透過他幫忙
 const admin = require('./modules/admin')// 載入 admin.js
 const restController = require('../controllers/restaurant-controller')// 載入 controller
 const userController = require('../controllers/user-controller')
+const { authenticated } = require('../middleware/auth') // 引入 auth.js
 const { generalErrorHandler } = require('../middleware/error-handler')
 
 router.use('/admin', admin)
@@ -16,7 +17,7 @@ router.post('/signin', passport.authenticate('local', { failureRedirect: '/signi
 router.get('/logout', userController.logout)
 
 // 新增前台網址路由//匹配條件多的路由要寫在前面
-router.get('/restaurants', restController.getRestaurants)
+router.get('/restaurants', authenticated, restController.getRestaurants)
 router.use('/', (req, res) => res.redirect('/restaurants'))
 router.use('/', generalErrorHandler)
 
