@@ -1,6 +1,6 @@
 const express = require('express')
 const routes = require('./routes')
-const { engine } = require('express-handlebars')
+const engine = require('express-handlebars')
 const app = express()
 const port = process.env.PORT || 3000
 
