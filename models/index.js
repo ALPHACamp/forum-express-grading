@@ -17,7 +17,7 @@ if (config.use_env_variable) {
 }
 
 // 動態引入其他 models
-fs
+fs// fs是指file system
   .readdirSync(__dirname)
   .filter(file => {
     return (file.indexOf('.') !== 0) && (file !== basename) && (file.slice(-3) === '.js')
@@ -35,7 +35,7 @@ Object.keys(db).forEach(modelName => {
 })
 
 // 匯出需要的物件
-db.sequelize = sequelize
-db.Sequelize = Sequelize
+db.sequelize = sequelize // 指連線資料庫的 instance
+db.Sequelize = Sequelize // 指SQL套件
 
 module.exports = db
