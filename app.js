@@ -27,7 +27,7 @@ app.use('/upload', express.static(path.join(__dirname, 'upload')))
 
 // middleware: session
 app.use(session({
-  secret: process.env.SESSION_SECRET,
+  secret: 'mySecret',
   resave: false,
   saveUninitialized: true
 }))
