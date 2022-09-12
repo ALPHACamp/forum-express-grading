@@ -2,6 +2,7 @@ const express = require('express')
 const handlebars = require('express-handlebars')// 引入 express-handlebars
 const flash = require('connect-flash') // 引入flash套件
 const session = require('express-session')// 引入session套件
+const passport = require('./config/passport')// 引入Passport
 const routes = require('./routes')
 
 const app = express()
@@ -19,6 +20,9 @@ app.use(session({
   resave: false,
   saveUninitialized: false
 }))
+app.use(passport.initialize())// 初始化Passport
+app.use(passport.session()) // 啟動session功能
+
 app.use(flash())// 載入flash套件
 app.use((req, res, next) => {
   res.locals.success_messages = req.flash('success_messages') // 設定success msg訊息
