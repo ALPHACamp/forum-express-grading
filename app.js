@@ -1,9 +1,9 @@
 const express = require('express')
 const session = require('express-session')
-const flash = require('connect-flash')
 const handlebars = require('express-handlebars')
 const routes = require('./routes')
-
+const passport = require('./config/passport')
+const flash = require('connect-flash')
 const app = express()
 const port = process.env.PORT || 3000
 const SESSION_SECRET = 'secret'
@@ -16,6 +16,8 @@ app.use(session({
   resave: true,
   saveUninitialized: false
 }))
+app.use(passport.initialize())
+app.use(passport.session())
 app.use(flash())
 app.use((req, res, next) => {
   res.locals.success_messages = req.flash('success_messages')
