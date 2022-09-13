@@ -2,6 +2,7 @@ const bcrypt = require('bcryptjs')
 const db = require('../models')
 const { User } = db
 const userController = {
+  // sign up
   signUpPage: (req, res) => {
     res.render('signup')
   },
@@ -22,6 +23,22 @@ const userController = {
         res.redirect('/signin')
       })
       .catch(err => next(err))
+  },
+  // sign in
+  signInPage: (req, res) => {
+    res.render('signIn')
+  },
+  signIn: (req, res) => {
+    req.flash('success_msg', 'Sign in successfully!')
+    res.redirect('/restaurants')
+  },
+  // sign out
+  logout: (req, res) => {
+    req.flash('success_msg', 'Log out successfully!')
+    req.logout(err => {
+      if (err) return next(err)
+    })
+    res.redirect('/signin')
   }
 }
 module.exports = userController

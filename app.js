@@ -6,7 +6,6 @@ const routes = require('./routes')
 
 const app = express()
 const port = process.env.PORT || 3000
-const db = require('./models')
 const SESSION_SECRET = 'MySecret'
 app.engine('hbs', engine({ defaultLayout: 'main', extname: '.hbs' }))
 app.set('view engine', 'hbs')
@@ -22,7 +21,7 @@ app.use(flash())
 app.use((req, res, next) => {
   res.locals.user = req.user
   res.locals.success_msg = req.flash('success_msg')
-  res.locals.error_messages = req.flash('error_messages')
+  res.locals.error_msg = req.flash('error_msg')
   next()
 })
 app.use(routes)
