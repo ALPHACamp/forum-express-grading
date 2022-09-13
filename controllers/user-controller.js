@@ -33,7 +33,7 @@ const userController = {
     res.redirect('/restaurants')
   },
   // sign out
-  logout: (req, res) => {
+  logout: (req, res, next) => {
     req.flash('success_msg', 'Log out successfully!')
     req.logout(err => {
       if (err) return next(err)
