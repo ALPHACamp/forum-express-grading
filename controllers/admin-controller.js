@@ -1,6 +1,6 @@
 const { Restaurant } = require('../models')
 const adminController = {
-  getRestaurant: (req, res, next) => {
+  getRestaurants: (req, res, next) => {
     Restaurant.findAll({
       raw: true
     })
@@ -19,6 +19,16 @@ const adminController = {
       .then(() => {
         req.flash('success_messages', 'restaurant was successfully created')
         res.redirect('/admin/restaurants')
+      })
+      .catch(err => next(err))
+  },
+  getRestaurant: (req, res, next) => {
+    Restaurant.findByPk(req.params.id, {
+      raw: true
+    })
+      .then(restaurant => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        res.render('admin/restaurant', { restaurant })
       })
       .catch(err => next(err))
   }
