@@ -5,8 +5,7 @@ const restController = require('../controllers/restaurant-controller')
 const admin = require('./modules/admin')
 const userController = require('../controllers/user-controller')
 const { generalErrorHandler } = require('../middleware/error-handler')
-
-
+const { authenticated } = require('../middleware/auth')
 router.use('/admin', admin)
 
 router.get('/signup', userController.signUpPage)
@@ -21,7 +20,7 @@ router.post('/signin', passport.authenticate('local', {
 router.get('/logout', userController.logout)
 // 若接收到的請求路徑'/restaurants'則交由controller處理
 
-router.get('/restaurants', restController.getRestaurants)
+router.get('/restaurants', authenticated, restController.getRestaurants)
 
 router.use('/', (req, res) => res.redirect('/restaurants'))
 router.use('/', generalErrorHandler)
