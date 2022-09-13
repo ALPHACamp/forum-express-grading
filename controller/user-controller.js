@@ -6,14 +6,22 @@ const uerController = {
   signupUpPage: (req, res) => {
     return res.render('signup')
   },
-  signUp: async (req, res) => {
-    const { name, email, password } = req.body
+  signUp: async (req, res, next) => {
+    const { name, email, password, passwordCheck } = req.body
     try {
+      // password 與 passwordCheck有無一致
+      if (password !== passwordCheck) throw new Error('Passwrod do not match !')
+      // email 有無重複
+      const user = await User.findOne({ where: { email } })
+      if (user) throw new Error('Email already exists!')
+
       const hash = await bcrypt.hash(password, await bcrypt.genSalt(10))
       User.create({ name, email, password: hash })
+      req.flash('success_messages', '成功註冊帳號！')
       return res.redirect('/signin')
     } catch (error) {
       console.log(error)
+      next(error)
     }
   }
 

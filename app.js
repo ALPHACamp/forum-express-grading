@@ -4,7 +4,8 @@ const routes = require('./routes')
 
 const app = express()
 const port = process.env.PORT || 3000
-const db = require('./models/index')
+const session = require('express-session')
+const flash = require('connect-flash')
 
 // 註冊 Handlebars 樣板引擎，並指定副檔名為 .hbs
 app.engine('hbs', handlebars({ extname: '.hbs' }))
@@ -12,6 +13,19 @@ app.engine('hbs', handlebars({ extname: '.hbs' }))
 app.set('view engine', 'hbs')
 
 app.use(express.urlencoded({ extended: true }))
+// 設定session
+app.use(session({
+  secret: 'THISISMYSECRET',
+  resave: false,
+  saveUninitialized: false
+}))
+// 啟用connect-flash
+app.use(flash())
+app.use((req, res, next) => {
+  res.locals.success_messages = req.flash('success_messages')
+  res.locals.error_messages = req.flash('error_messages')
+  next()
+})
 
 app.use(routes)
 
