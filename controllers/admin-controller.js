@@ -35,6 +35,36 @@ const adminController = {
         res.render('admin/restaurant', { restaurant })
       })
       .catch(err => next(err))
+  },
+  editRestaurant: (req, res, next) => {
+    Restaurant.findByPk(req.params.id, {
+      raw: true
+    })
+      .then(restaurant => {
+        if (!restaurant) throw new Error("Restaurant didn't exist.")
+        res.render('admin/edit-restaurant', { restaurant })
+      })
+      .catch(err => next(err))
+  },
+  putRestaurant: (req, res, next) => {
+    const { name, tel, address, openingHours, description } = req.body
+    if (!name) throw new Error('Restaurant name is required.')
+    Restaurant.findByPk(req.params.id)
+      .then(restaurant => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        return Restaurant.update({ // 使用update前不能先用raw: true轉成Json資料
+          name,
+          tel,
+          address,
+          openingHours,
+          description
+        }, { where: { id: req.params.id } })
+      })
+      .then(() => {
+        req.flash('success_msg', 'Updated successfully.')
+        res.redirect('/admin/restaurants')
+      })
+      .catch(err => next(err))
   }
 }
 module.exports = adminController
