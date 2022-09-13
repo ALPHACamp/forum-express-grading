@@ -6,6 +6,7 @@ const app = express()
 const port = process.env.PORT || 3000
 const session = require('express-session')
 const flash = require('connect-flash')
+const passport = require('./config/passpot ')
 
 // 註冊 Handlebars 樣板引擎，並指定副檔名為 .hbs
 app.engine('hbs', handlebars({ extname: '.hbs' }))
@@ -26,6 +27,9 @@ app.use((req, res, next) => {
   res.locals.error_messages = req.flash('error_messages')
   next()
 })
+// 設定 passport
+app.use(passport.initialize())
+app.use(passport.session())
 
 app.use(routes)
 

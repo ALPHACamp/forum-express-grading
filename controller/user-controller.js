@@ -3,7 +3,7 @@ const db = require('../models/index')
 const { User } = db
 const uerController = {
 
-  signupUpPage: (req, res) => {
+  signUpPage: (req, res) => {
     return res.render('signup')
   },
   signUp: async (req, res, next) => {
@@ -23,6 +23,18 @@ const uerController = {
       console.log(error)
       next(error)
     }
+  },
+  signInPage: (req, res) => {
+    res.render('signIn')
+  },
+  signIn: (req, res) => {
+    req.flash('success_messages', '成功登入')
+    res.redirect('/restaurants')
+  },
+  logout: (req, res) => {
+    req.flash('success_messages', '登出成功')
+    req.logout()
+    res.redirect('/signin')
   }
 
 }
