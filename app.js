@@ -4,6 +4,7 @@ const hbs = require('express-handlebars')
 
 const app = express()
 const port = process.env.PORT || 3000
+const db = require('./models') // 這邊會呼叫 models 裡面的檔案
 
 app.engine('hbs', hbs({ defaultLayout: 'main', extname: '.hbs' }))
 app.set('view engine', 'hbs')

@@ -2,7 +2,7 @@
 // 匹配條件較多的路由順序寫在前面，讓程式先判斷。
 const express = require('express')
 const router = express.Router()
-const restaurantController = require('../controller/restaurant-controller')
+const restaurantController = require('../controllers/restaurant-controller')
 const admin = require('./modules/admin')
 
 router.use('/admin', admin)
