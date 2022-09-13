@@ -1,7 +1,14 @@
 
+const { Restaurant } = require('../models')
+
 const adminController = {
-  getRestaurant: (req, res) => {
-    return res.render('admin/restaurants')
+  getRestaurant: async (req, res) => {
+    try {
+      const restaurants = await Restaurant.findAll({ raw: true })
+      return res.render('admin/restaurants', { restaurants })
+    } catch (error) {
+      console.log(error)
+    }
   }
 }
 
