@@ -1,3 +1,4 @@
+const path = require('path')
 const express = require('express')
 const engine = require('express-handlebars')
 const flash = require('connect-flash')
@@ -20,7 +21,7 @@ const SESSION_SECRET = 'MySecret'
 
 app.engine('hbs', engine({ defaultLayout: 'main', extname: '.hbs', helpers: handlebarsHelpers }))
 app.set('view engine', 'hbs')
-
+app.use('/upload', express.static(path.join(__dirname, 'upload')))
 app.use(express.urlencoded({ extended: true }))
 app.use(methodOverride('_method'))
 
