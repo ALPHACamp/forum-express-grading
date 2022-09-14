@@ -1,10 +1,8 @@
-<h1>餐廳後台</h1>
+{{> admin-tabs route='restaurants'}}
 <a href='/admin/restaurants/create'>
   <button type="button" class="btn btn-primary mb-2">New Restaurant</button>
 </a>
 <br>
-<a href="/admin/restaurants">Restaurant</a> |
-<a href="/admin/users">Users</a>
 <table class="table align-middle">
   <thead class="thead-dark">
     <tr>
@@ -40,3 +38,5 @@
     {{/each}}
   </tbody>
 </table>
+<br />
+<br />
