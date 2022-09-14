@@ -3,7 +3,7 @@ const LocalStrategy = require('passport-local')
 const bcrypt = require('bcryptjs')
 const { User } = require('../models')
 
-passport.use(new LocalStrategy({ usernameField: 'email', passwordField: 'password', passReqToCallback: true },
+passport.use(new LocalStrategy({ usernameField: 'email', passwordField: 'password', session: true, passReqToCallback: true },
   (req, email, password, cb) => {
     User.findOne({ where: { email } })
       .then(user => {
@@ -16,7 +16,6 @@ passport.use(new LocalStrategy({ usernameField: 'email', passwordField: 'passwor
   }))
 
 passport.serializeUser((user, cb) => {
-  console.log(user)
   cb(null, user.id)
 })
 
@@ -24,7 +23,6 @@ passport.deserializeUser((id, cb) => {
   User.findByPk(id)
     .then(user => {
       user = user.toJSON()
-      console.log(user)
       return cb(null, user)
     })
 })
