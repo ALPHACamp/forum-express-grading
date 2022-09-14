@@ -1,5 +1,4 @@
 'use strict'
-// 因為是 sequelize cli 指令生成的內容，所以撰寫風格跟專案不同，因此要用 Eslint 協助校正撰寫風格。
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable('Users', {
@@ -12,11 +11,17 @@ module.exports = {
       name: {
         type: Sequelize.STRING
       },
-      created_at: {
+      email: {
+        type: Sequelize.STRING
+      },
+      password: {
+        type: Sequelize.STRING
+      },
+      createdAt: {
         allowNull: false,
         type: Sequelize.DATE
       },
-      updated_at: {
+      updatedAt: {
         allowNull: false,
         type: Sequelize.DATE
       }
