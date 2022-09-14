@@ -4,6 +4,7 @@ const hbs = require('express-handlebars')
 const session = require('express-session')
 const flash = require('connect-flash')
 const app = express()
+const passport = require('./config/passport') // 引入套件設定
 const port = process.env.PORT || 3000
 require('./models') // 這邊會呼叫 models 裡面的檔案，所以一定要寫
 
@@ -21,6 +22,16 @@ app.use(flash()) // req.flash
 app.use((req, res, next) => {
   res.locals.success_messages = req.flash('success_messages')
   res.locals.error_messages = req.flash('error_messages')
+  next()
+})
+app.use((req, res, next) => {
+  console.log('before auth req.user:', req.user)
+  next()
+})
+app.use(passport.initialize()) // 初始化 Passport
+app.use(passport.session())// 啟動 session 功能
+app.use((req, res, next) => {
+  console.log('after auth req.user:', req.user)
   next()
 })
 app.use(routes)

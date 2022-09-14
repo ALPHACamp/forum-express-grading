@@ -6,6 +6,7 @@ const restaurantController = require('../controllers/restaurant-controller')
 const userController = require('../controllers/user-controller')
 const admin = require('./modules/admin')
 const { generalErrorHandler } = require('../middleware/error-handler') // { key:value }
+const passport = require('passport')
 
 // 因為這邊是設立在 routes/modules 路由清單裡面
 router.use('/admin', admin) // global
@@ -15,6 +16,12 @@ router.get('/signup', userController.signUpPage)
 
 // 將 req 交給 userController.signUp
 router.post('/signup', userController.signUp)
+
+// 將 req 交給 userController.signUpPage
+router.get('/signin', userController.signInPage)
+
+// 將 req 交給 passport.authenticate 請 passport 做驗證，並指定用 passport 設定中的 local，最後再看是成功還是失敗，將 req 給對應的內容，驗證成功給 userController.signIn、失敗給 failureRedirect，因此能夠進入到 userController.signIn 就是已經登入的使用者
+router.post('/signin', passport.authenticate('local', { failureRedirect: '/signin', failureFlash: true }), userController.signIn)
 
 // 將 req 交給 restaurantController.getRestaurants
 router.get('/restaurants', restaurantController.getRestaurants)
