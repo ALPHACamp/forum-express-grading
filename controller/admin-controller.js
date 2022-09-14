@@ -2,7 +2,7 @@
 const { Restaurant } = require('../models')
 
 const adminController = {
-  getRestaurant: async (req, res) => {
+  getRestaurants: async (req, res) => {
     try {
       const restaurants = await Restaurant.findAll({ raw: true })
       return res.render('admin/restaurants', { restaurants })
@@ -23,7 +23,20 @@ const adminController = {
       req.flash('success_messages', 'restaurant was successfully created')
       res.redirect('/admin/restaurants')
     } catch (error) {
-      console.log('in admin-controller.js', error)
+      console.log('in admin-controller.js Line:26', error)
+      next(error)
+    }
+  },
+  getRestaurant: async (req, res, next) => {
+    const { id } = req.params
+    try {
+      const restaurant = await Restaurant.findByPk(id, {
+        raw: true
+      })
+      if (!restaurant) throw new Error("Can't find restaurant , please search agian")
+      res.render('admin/restaurant', { restaurant })
+    } catch (error) {
+      console.log('in admin-controller.js Line:40', error)
       next(error)
     }
   }

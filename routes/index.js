@@ -7,6 +7,11 @@ const generalErrorHandler = require('../middleware/error-handler').generalErrorH
 const passport = require('passport')
 const { authenticated, authenticatedAdmin } = require('../middleware/auth')
 
+router.use('/', (req, res, next) => {
+  console.log('here is routes/index.js')
+  next()
+})
+
 router.get('/signup', userController.signUpPage)
 router.post('/signup', userController.signUp)
 router.get('/signin', userController.signInPage)
