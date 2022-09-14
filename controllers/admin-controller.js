@@ -30,6 +30,19 @@ const adminController = {
         res.redirect('/admin/restaurants')
       })
       .catch(err => next(err))
+  },
+  getRestaurant: (req, res, next) => {
+    // 去資料庫用 id 找一筆資料
+    Restaurant.findByPk(req.params.id,
+      //  如果找不到，回傳錯誤訊息，後面不執行
+      { raw: true }
+    )
+      .then(restaurant => {
+        //  如果找不到，回傳錯誤訊息，後面不執行
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        res.render('admin/restaurant', { restaurant })
+      })
+      .catch(err => next(err))
   }
 }
 module.exports = adminController
