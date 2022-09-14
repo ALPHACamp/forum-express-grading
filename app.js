@@ -1,6 +1,7 @@
 const express = require('express')
 const handlebars = require('express-handlebars')// 引入 express-handlebars
 const flash = require('connect-flash') // 引入flash套件
+const methodOverride = require('method-override') // 引入套件 method-override
 const session = require('express-session')// 引入session套件
 const passport = require('./config/passport')// 引入Passport
 const handlebarsHelpers = require('./helpers/handlebars-helpers')// 引入 handlebars-helpers
@@ -26,6 +27,7 @@ app.use(passport.initialize())// 初始化Passport
 app.use(passport.session()) // 啟動session功能
 
 app.use(flash())// 載入flash套件
+app.use(methodOverride('_method'))// 使用method-override
 app.use((req, res, next) => {
   // 透過locals讓所有的view都能存取
   res.locals.success_messages = req.flash('success_messages') // 設定success msg訊息

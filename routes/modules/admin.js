@@ -5,7 +5,9 @@ const adminController = require('../../controllers/admin-controller')
 
 // 新增後台網址路由//匹配條件多的路由要寫在前面
 router.get('/restaurants/create', adminController.createRestaurant)
+router.get('/restaurants/:id/edit', adminController.editRestaurant)
 router.get('/restaurants/:id', adminController.getRestaurant)
+router.put('/restaurants/:id', adminController.putRestaurant)
 router.get('/restaurants', adminController.getRestaurants)
 router.post('/restaurants', adminController.postRestaurant)
 router.use('/', (req, res) => res.redirect('/admin/restaurants'))
