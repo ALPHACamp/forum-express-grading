@@ -8,7 +8,7 @@ const adminController = {
       .catch(err => next(err))
   },
   createRestaurant: (req, res) => {
-    return res.render('admin/create-restaurant')
+    res.render('admin/create-restaurant')
   },
   postRestaurant: (req, res, next) => {
     const { name, tel, address, openingHours, description } = req.body
@@ -24,7 +24,7 @@ const adminController = {
         req.flash('success_msg', 'Restaurant was successfully created.')
         res.redirect('/admin/restaurants')
       })
-      .catch(err => console.log(err))
+      .catch(err => next(err))
   },
   getRestaurant: (req, res, next) => {
     Restaurant.findByPk(req.params.id, {
