@@ -1,3 +1,4 @@
+const path = require('path') // 引入path套件
 const express = require('express')
 const handlebars = require('express-handlebars')// 引入 express-handlebars
 const flash = require('connect-flash') // 引入flash套件
@@ -28,6 +29,7 @@ app.use(passport.session()) // 啟動session功能
 
 app.use(flash())// 載入flash套件
 app.use(methodOverride('_method'))// 使用method-override
+app.use('/upload', express.static(path.join(__dirname, 'upload')))
 app.use((req, res, next) => {
   // 透過locals讓所有的view都能存取
   res.locals.success_messages = req.flash('success_messages') // 設定success msg訊息

@@ -1,4 +1,6 @@
 const { Restaurant } = require('../models')
+const { localFileHandler } = require('../helpers/file-helpers')// 將 file-helper 載進來
+
 const adminController = {
   getRestaurants: (req, res, next) => {
     Restaurant.findAll(
@@ -15,14 +17,16 @@ const adminController = {
     const { name, tel, address, openingHours, description } = req.body
     // name是必填，若發先是空值就會終止程式碼，並在畫面顯示錯誤提示
     if (!name) throw new Error('Restaurant name is required!')
-    /// 產生一個新的Restaurant物件實例，並存入資料庫
-    Restaurant.create({
-      name,
-      tel,
-      address,
-      openingHours,
-      description
-    })
+    const { file } = req // 把檔案取出來
+    localFileHandler(file) // 把取出的檔案傳給 file-helper 處理
+      .then(filePath => Restaurant.create({ // 產生一個新的Restaurant物件實例，並存入資料庫
+        name,
+        tel,
+        address,
+        openingHours,
+        description,
+        image: filePath || null
+      }))
       .then(() => {
         // 在畫面顯示成功提示
         req.flash('success_messages', 'restaurant was successfully created')
@@ -57,15 +61,20 @@ const adminController = {
   putRestaurant: (req, res, next) => {
     const { name, tel, address, openingHours, description } = req.body
     if (!name) throw new Error('Restaurant name is required!')
-    Restaurant.findByPk(req.params.id)
-      .then(restaurant => {
+    const { file } = req // 把檔案取出來
+    Promise.all([ // 非同步處理
+      Restaurant.findByPk(req.params.id), // 去資料庫查有沒有這間餐廳
+      localFileHandler(file) // 把檔案傳到 file-helper 處理
+    ])
+      .then(([restaurant, filePath]) => { // 以上兩樣事都做完以後
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         return restaurant.update({
           name,
           tel,
           address,
           openingHours,
-          description
+          description,
+          image: filePath || restaurant.image // 如果 filePath 是 Truthy (使用者有上傳新照片) 就用 filePath，是 Falsy (使用者沒有上傳新照片) 就沿用原本資料庫內的值
         })
       })
       .then(() => {
