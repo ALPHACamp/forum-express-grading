@@ -63,6 +63,30 @@ const restaurantController = {
       if (!restaurant) throw new Error("Restaurant doesn't exist!")
       res.render('dashboard', { restaurant: restaurant.toJSON() })
     }).catch(e => next(e))
+  },
+
+  getFeeds: (req, res, next) => {
+    return Promise.all([
+      Restaurant.findAll({
+        limit: 10,
+        order: [['createdAt', 'DESC']],
+        include: [Category],
+        raw: true,
+        nest: true
+      }),
+      Comment.findAll({
+        limit: 10,
+        order: [['createdAt', 'DESC']],
+        include: [User, Restaurant],
+        raw: true,
+        nest: true
+      })
+    ])
+      .then(([restaurants, comments]) => {
+        console.log(restaurants, comments)
+        res.render('feeds', { restaurants, comments })
+      })
+      .catch(e => next(e))
   }
 }
 
