@@ -12,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
     // eslint-disable-next-line space-before-function-paren
     static associate(models) {
       Restaurant.belongsTo(models.Category, { foreignKey: 'categoryId' })
+      Restaurant.hasMany(models.Comment, { foreignKey: 'restaurantId' })
       // define association here
     }
   };
