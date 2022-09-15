@@ -4,7 +4,11 @@ const adminController = require('../../controllers/admin-controller')
 
 router.get('/restaurants/create', adminController.createRestaurants)
 
-router.get('/restaurants/:rest_id', adminController.getRestaurant)
+router.get('/restaurants/:restId/edit', adminController.editRestaurants)
+
+router.put('/restaurants/:restId', adminController.putRestaurants)
+
+router.get('/restaurants/:restId', adminController.getRestaurant)
 
 router.get('/restaurants', adminController.getRestaurants)
 

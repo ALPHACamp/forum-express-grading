@@ -1,6 +1,4 @@
 const { Restaurant } = require('../models')
-const restaurant = require('../models/restaurant')
-// const restaurant = require('../models/restaurant')
 
 const adminController = {
   getRestaurants: (req, res, next) => {
@@ -22,10 +20,32 @@ const adminController = {
       .catch(err => next(err))
   },
   getRestaurant: (req, res, next) => {
-    Restaurant.findByPk(req.params.rest_id, { raw: true })
+    Restaurant.findByPk(req.params.restId, { raw: true })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         res.render('admin/restaurant', { restaurant })
+      })
+      .catch(err => next(err))
+  },
+  editRestaurants: (req, res, next) => {
+    Restaurant.findByPk(req.params.restId, { raw: true })
+      .then(restaurant => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        res.render('admin/edit-restaurant', { restaurant })
+      })
+      .catch(err => next(err))
+  },
+  putRestaurants: (req, res, next) => {
+    const restId = req.params.restId
+    console.log(restId)
+    const { name, tel, address, openingHours, description } = req.body
+    if (!name) throw new Error('Restaurant name is required!')
+    Restaurant.update({ name, tel, address, openingHours, description }, { where: { id: restId } })
+      .then(restaurant => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+
+        req.flash('success_msg', 'restaurant was successfully to update')
+        res.redirect(`/admin/restaurants/${restId}`)
       })
       .catch(err => next(err))
   }
