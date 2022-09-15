@@ -29,9 +29,7 @@ passport.serializeUser((user, done) => {
 passport.deserializeUser((id, done) => {
   User.findByPk(id) // sequelize 物件
     .then(user => {
-      console.log('sequelize user: ', user)
       user = user.toJSON()
-      console.log('toJSON user: ', user)
       return done(null, user)
     })
 })
