@@ -4,6 +4,8 @@ const adminController = require('../../controllers/admin-controller')
 
 router.get('/restaurants/create', adminController.createRestaurants)
 
+router.get('/restaurants/:rest_id', adminController.getRestaurant)
+
 router.get('/restaurants', adminController.getRestaurants)
 
 router.post('/restaurants', adminController.postRestaurants)

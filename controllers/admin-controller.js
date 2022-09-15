@@ -1,4 +1,5 @@
 const { Restaurant } = require('../models')
+const restaurant = require('../models/restaurant')
 // const restaurant = require('../models/restaurant')
 
 const adminController = {
@@ -19,7 +20,16 @@ const adminController = {
         res.redirect('/admin/restaurants')
       })
       .catch(err => next(err))
+  },
+  getRestaurant: (req, res, next) => {
+    Restaurant.findByPk(req.params.rest_id, { raw: true })
+      .then(restaurant => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        res.render('admin/restaurant', { restaurant })
+      })
+      .catch(err => next(err))
   }
+
 }
 
 module.exports = adminController
