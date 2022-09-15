@@ -7,11 +7,10 @@ const userController = require('../controllers/user-controller')
 const passport = require('passport')
 const admin = require('./modules/admin') // admin 檔案夾
 const { generalErrorHandler } = require('../middleware/error-handler') // { key:value }
-const { authenticated } = require('../middleware/auth')
-const { authenticatedAdmin } = require('../middleware/auth')
+const { authenticated, authenticatedAdmin } = require('../middleware/auth')
 
 // 因為這邊是設立在 routes/modules 路由清單裡面
-router.use('/admin', authenticatedAdmin, admin) // global
+router.use('/admin', authenticatedAdmin, admin)
 
 // 將 req 交給 userController.signUpPage middleware
 router.get('/signup', userController.signUpPage)
