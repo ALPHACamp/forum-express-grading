@@ -32,7 +32,7 @@ exports.signInPage = (req, res, next) => {
 
 exports.signIn = (req, res, next) => {
   req.flash('success_messages','成功登入')
-  res.redirect('/restaurant')
+  res.redirect('/restaurants')
 }
 
 exports.logout = (req, res, next) => {
