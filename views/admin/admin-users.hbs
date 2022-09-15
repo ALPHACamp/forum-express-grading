@@ -6,6 +6,7 @@
 </div>
 <br />
 <br />
+
 <table class="table">
   <thead>
     <tr>
@@ -23,12 +24,22 @@
       <td class="pt-3">{{this.name}}</td>
       <td class="pt-3">{{this.email}}</td>
       <td class="pt-3">{{#isAdmin this.isAdmin}}admin{{else}}user{{/isAdmin}}</td>
-      <form action="/admin/users/:id?_method=PATCH" method="post">
-        {{#isAdmin this.isAdmin}}<td><button name="is-admin" value="1" type="submit" class="btn btn-link">set as user</button></td>
+      <td>
+        
+        {{#isAdmin this.isAdmin}}
+        <form action="/admin/users/{{this.id}}?_method=PATCH" method="post"></form>
+          <input type="hidden" name="isAdmin" value="true">
+          <button name="is-admin"  type="submit" class="btn btn-link">set as user</button>
+         </form>
         {{else}}
-        <td><button name="is-admin" value="0" type="submit" class="btn btn-link">set as admin</button></td>
+        <form action="/admin/users/{{this.id}}?_method=PATCH" method="post"></form>
+          <input type="hidden" name="isAdmin" value="false">
+          <button name="is-admin" type="submit" class="btn btn-link">set as admin</button>
+        </form>
         {{/isAdmin}}
-      </form>
+      
+      </td>
+      
     </tr>
     {{/each}}
   </tbody>
