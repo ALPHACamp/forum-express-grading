@@ -1,4 +1,5 @@
 const express = require('express')
+const methodOverride = require('method-override')
 const routes = require('./routes')
 const exphbs = require('express-handlebars')
 const flash = require('connect-flash')
@@ -30,7 +31,7 @@ app.use((req, res, next) => {
   res.locals.user = getUser(req)
   next()
 })
-
+app.use(methodOverride('_method'))
 app.use(routes)
 
 app.listen(port, () => {
