@@ -11,7 +11,7 @@ app.set('view engine', 'hbs')
 app.use(routes)
 
 app.listen(port, () => {
-  console.info(`Example app listening on port ${port}!`)
+  console.info(`Example app listening on port ${port}!Let's go to http://localhost:3000`)
 })
 
 module.exports = app
