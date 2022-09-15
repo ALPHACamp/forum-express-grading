@@ -27,8 +27,9 @@ passport.serializeUser((user, cb) => {
 })
 
 passport.deserializeUser(async (id, cb) => {
-  const user = await User.findByPk(id).toJSON()
-  return cb(null, user)
+  const user = await User.findByPk(id)
+  const userJSON = user.toJSON()
+  return cb(null, userJSON)
 })
 
 module.exports = passport
