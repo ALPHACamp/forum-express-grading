@@ -7,8 +7,11 @@ const session = require('express-session')// 引入session套件
 const passport = require('./config/passport')// 引入Passport
 const handlebarsHelpers = require('./helpers/handlebars-helpers')// 引入 handlebars-helpers
 const { getUser } = require('./helpers/auth-helpers') // 引入自定義的auth-helpers
-const routes = require('./routes')
 
+const routes = require('./routes')
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
 const app = express()
 const port = process.env.PORT || 3000
 const SESSION_SECRET = 'secret'
