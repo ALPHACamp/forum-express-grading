@@ -22,15 +22,16 @@ app.use(session({
   saveUninitialized: true
 }))
 app.use(flash()) // req.flash
+
+app.use(passport.initialize()) // 初始化 Passport 檔案??
+app.use(passport.session())// 用檔案啟動 session 功能??
+
 app.use((req, res, next) => {
   res.locals.success_messages = req.flash('success_messages')
   res.locals.error_messages = req.flash('error_messages')
   res.locals.user = getUser(req)
   next()
 })
-
-app.use(passport.initialize()) // 初始化 Passport 檔案??
-app.use(passport.session())// 用檔案啟動 session 功能??
 
 app.use(routes)
 
