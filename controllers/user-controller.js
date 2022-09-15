@@ -26,7 +26,7 @@ const userController = {
   },
   // sign in
   signInPage: (req, res) => {
-    res.render('signIn')
+    res.render('signin')
   },
   signIn: (req, res) => {
     req.flash('success_msg', 'Sign in successfully!')
