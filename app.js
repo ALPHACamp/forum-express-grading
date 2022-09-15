@@ -1,3 +1,4 @@
+const path = require('path')
 const express = require('express')
 const methodOverride = require('method-override')
 const routes = require('./routes')
@@ -32,6 +33,7 @@ app.use((req, res, next) => {
   next()
 })
 app.use(methodOverride('_method'))
+app.use('/upload', express.static(path.join(__dirname, 'upload')))
 app.use(routes)
 
 app.listen(port, () => {
