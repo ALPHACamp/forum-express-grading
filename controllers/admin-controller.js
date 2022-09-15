@@ -20,6 +20,16 @@ const adminController = {
         res.redirect('/admin/restaurants')
       })
       .catch(error => next(error))
+  },
+  getRestaurant: (req, res, next) => {
+    Restaurant.findByPk(req.params.id, {
+      raw: true
+    })
+      .then(restaurant => {
+        if (!restaurant) throw new Error("Restaurant isn't exist!")
+
+        res.render('admin/restaurant', { restaurant })
+      }).catch(error => next(error)) // 不知道會有什麼錯誤會產生，所以只要有錯誤就將錯誤往 middleware/error-handler.js 丟
   }
 }
 
