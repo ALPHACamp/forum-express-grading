@@ -5,6 +5,7 @@ const { getUser } = require('./helpers/auth-helpers')
 const handlebarsHelpers = require('./helpers/handlebars-helpers')
 const methodOverride = require('method-override')
 const passport = require('./config/passport')
+const path = require('path')
 const routes = require('./routes')
 const session = require('express-session')
 
@@ -20,6 +21,7 @@ app.set('view engine', 'hbs')
 
 app.use(express.urlencoded({ extended: true }))
 app.use(methodOverride('_method'))
+app.use('/upload', express.static(path.join(__dirname, 'upload')))
 
 app.use(session({
   secret: process.env.SESSION_SECRET,
