@@ -11,6 +11,7 @@ router.put('/restaurants/:id', upload.single('image'), adminController.putRestau
 router.delete('/restaurants/:id', adminController.deleteRestaurant) // delete
 router.get('/restaurants', adminController.getRestaurants) // home page
 router.post('/restaurants', upload.single('image'), adminController.postRestaurant) // create
+router.get('/users', adminController.getUsers) // browse users page
 router.get('/', (req, res) => {
   return res.redirect('/admin/restaurants')
 })

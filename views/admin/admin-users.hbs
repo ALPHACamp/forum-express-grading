@@ -1,0 +1,35 @@
+<h1>餐廳後台</h1>
+<div class="row col">
+  <div class="d-inline p-2">
+    <a class="col" href='/admin/restaurants'>Restaurants</a><span>  |  </span> <a class="col" href='/admin/users'>Users</a>
+  </div>
+</div>
+<br />
+<br />
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Name</th>
+      <th scope="col">Email</th>
+      <th scope="col">Role</th>
+      <th scope="col">#</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each users}}
+    <tr>
+      <th scope="row" class="pt-3">{{this.id}}</th>
+      <td class="pt-3">{{this.name}}</td>
+      <td class="pt-3">{{this.email}}</td>
+      <td class="pt-3">{{#isAdmin this.isAdmin}}admin{{else}}user{{/isAdmin}}</td>
+      <form action="/admin/users/:id?_method=PATCH" method="post">
+        {{#isAdmin this.isAdmin}}<td><button name="is-admin" value="1" type="submit" class="btn btn-link">set as user</button></td>
+        {{else}}
+        <td><button name="is-admin" value="0" type="submit" class="btn btn-link">set as admin</button></td>
+        {{/isAdmin}}
+      </form>
+    </tr>
+    {{/each}}
+  </tbody>
+</table>
