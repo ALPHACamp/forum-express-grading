@@ -25,7 +25,7 @@ const adminController = {
         image: filePath || null // 若資料夾內有image則回傳，無責回傳null
       }))
       .then(() => {
-        req.flash('success_msg', 'Restaurant was successfully created.')
+        req.flash('success_messages', 'Restaurant was successfully created.')
         res.redirect('/admin/restaurants')
       })
       .catch(err => next(err))
@@ -69,7 +69,7 @@ const adminController = {
         }, { where: { id: req.params.id } })
       })
       .then(() => {
-        req.flash('success_msg', 'Updated successfully.')
+        req.flash('success_messages', 'Updated successfully.')
         res.redirect('/admin/restaurants')
       })
       .catch(err => next(err))
