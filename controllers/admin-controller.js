@@ -44,3 +44,34 @@ exports.getRestaurant = async (req, res, next) =>{
     next(error) 
   }
 }
+
+exports.editRestaurant = async (req, res, next) => {
+  try {
+    const restaurant = await Restaurant.findByPk(req.params.restaurantId, { raw: true })
+    if (!restaurant) throw new Error('No restaurant found')
+    res.render('admin/edit-restaurant', { restaurant })
+  } catch (err) {
+    next(err)
+  }
+}
+
+exports.putRestaurant = async (req, res, next) => {
+  try {
+    const { name, tel, address, openingHours, description} = req.body
+    if (!name) throw new Error('Name is required')
+
+    const restaurant = await Restaurant.findByPk(req.params.restaurantId)
+    if (!restaurant) throw new Error('Restaurant not found')
+    await restaurant.update({
+      name,
+      tel,
+      address,
+      openingHours,
+      description
+    })
+    req.flash('success_messages','Successfully updated')
+    res.redirect('/admin/restaurants')
+  } catch(err) {
+    next(err)
+  }
+}
