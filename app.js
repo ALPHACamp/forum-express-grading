@@ -24,7 +24,7 @@ app.use(methodOverride('_method'))
 app.use('/upload', express.static(path.join(__dirname, 'upload')))
 
 app.use(session({
-  secret: process.env.SESSION_SECRET,
+  secret: process.env.SESSION_SECRET || 'secret',
   resave: false,
   saveUninitialized: false
 }))
@@ -40,6 +40,7 @@ app.use((req, res, next) => {
   next()
 })
 
+app.use(express.static('public'))
 app.use(routes)
 
 app.listen(port, () => {
