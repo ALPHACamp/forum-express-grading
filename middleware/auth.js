@@ -2,7 +2,6 @@ const helpers = require('../helpers/auth-helpers')
 const authenticated = (req, res, next) => {
   // if (req.isAuthenticated)
   if (helpers.ensureAuthenticated(req)) { // 使用者是否有登入
-    console.log(req)
     return next() // 有登入 -> 往下
   }
   res.redirect('/signin') // 沒有 -> 重新倒回 signin
