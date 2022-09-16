@@ -6,6 +6,7 @@ const flash = require('connect-flash')
 const app = express()
 const passport = require('./config/passport') // 引入套件設定
 const methodOverride = require('method-override')
+const path = require('path')
 const port = process.env.PORT || 3000
 require('./models') // 這邊會呼叫 models 裡面的檔案，所以一定要寫
 
@@ -23,10 +24,11 @@ app.use(session({
   resave: false,
   saveUninitialized: true
 }))
-app.use(flash()) // req.flash
 
+app.use(flash()) // req.flash
 app.use(passport.initialize()) // 初始化 Passport 檔案??
 app.use(passport.session())// 用檔案啟動 session 功能??
+app.use('/upload', express.static(path.join(__dirname, 'upload'))) // 讓外部傳入的 request 可以取得 /upload 路徑，由於不是一般路徑，直接用靜態檔案方式指定路徑
 
 app.use((req, res, next) => {
   res.locals.success_messages = req.flash('success_messages')
