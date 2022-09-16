@@ -2,6 +2,8 @@ const express = require('express')
 const router = express.Router()
 const adminController = require('../../controllers/admin-controller')
 
+router.delete('/restaurants/:id', adminController.deleteRestaurant)
+
 router.get('/restaurants/:id/edit', adminController.editRestaurant)
 
 router.patch('/restaurants/:id', adminController.patchRestaurant)
