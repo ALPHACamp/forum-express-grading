@@ -1,4 +1,5 @@
 const express = require('express')
+const path = require('path')
 const routes = require('./routes')
 const handlebars = require('express-handlebars')
 const flash = require('connect-flash')
@@ -14,6 +15,8 @@ const handlebarsHelpers = require('./helpers/handlebars-helpers')
 
 app.engine('hbs', handlebars({ extname: '.hbs', helpers: handlebarsHelpers }))
 app.set('view engine', 'hbs')
+
+app.use('/swal', express.static(path.join(__dirname, 'node_modules/sweetalert2/dist')))
 
 app.use(express.urlencoded({ extended: true }))
 app.use(session({ secret: SESSION_SECRET, resave: false, saveUninitialized: false }))

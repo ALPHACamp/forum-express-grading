@@ -28,7 +28,7 @@
               Edit
             </a>
           </button>
-          <form action="/admin/restaurants/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
+          <form class="deleteBtn" action="/admin/restaurants/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
             <button type="submit" class="btn btn-link link-danger">Delete</button>
           </form>
         </td>
@@ -36,3 +36,27 @@
     {{/each}}
   </tbody>
 </table>
+<link  rel="stylesheet" href="/swal/sweetalert2.min.css">
+<script  src="/swal/sweetalert2.min.js"></script>
+
+<script>
+  const form = document.querySelector('.deleteBtn')
+  form.addEventListener('submit', e => {
+    e.preventDefault()
+    e.stopPropagation()
+    Swal.fire({
+    title: '確定要刪除餐廳嗎？',
+    showCancelButton: true,
+    confirmButtonText: '確定',
+    cancelButtonText: '取消'
+}).then((result) => {
+  /* Read more about isConfirmed, isDenied below */
+  if (result.isConfirmed) {
+    Swal.fire('刪除', '', 'success')
+    e.target.submit()
+  } else if (result.isDenied) {
+    Swal.fire('取消', '', 'info')
+  }
+})
+  })
+</script>

@@ -75,3 +75,15 @@ exports.putRestaurant = async (req, res, next) => {
     next(err)
   }
 }
+
+exports.deleteRestaurant = async (req, res, next) => {
+  try {
+    const restaurant = await Restaurant.findByPk(req.params.restaurantId)
+    if (!restaurant) throw new Error('No restaurant found')
+    await restaurant.destroy()
+    req.flash('success_messages','Successfully deleted')
+    res.redirect('/admin/restaurants')
+  } catch (err) {
+    next(err)
+  }
+}
