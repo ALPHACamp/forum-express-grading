@@ -1,4 +1,5 @@
 const { Restaurant } = require('../models')
+const { localFileHandler } = require('../helpers/file-helpers')
 
 exports.getRestaurants = async (req, res, next) => {
   try {
@@ -15,25 +16,27 @@ exports.createRestaurant = (req, res, next) => {
 
 exports.postRestaurant = async (req, res, next) => {
   try {
-    const {name, tel, address, openingHours, description} = req.body
+    const { name, tel, address, openingHours, description } = req.body
     if (!name) throw new Error('Restaurant name required')
-
-    await Restaurant.create({ 
+    const { file } = req
+    const filePath = await localFileHandler(file)
+    await Restaurant.create({
       name,
       tel,
       address,
       openingHours,
-      description
+      description,
+      image: filePath || null
     })
 
-    req.flash('success_messages','restaurant successfully created')
+    req.flash('success_messages', 'restaurant successfully created')
     res.redirect('/admin/restaurants')
   } catch (err) {
     next(err)
   }
 }
 
-exports.getRestaurant = async (req, res, next) =>{
+exports.getRestaurant = async (req, res, next) => {
   try {
     const restaurant = await Restaurant.findByPk(req.params.restaurantId, { raw: true })
     if (!restaurant) {
@@ -41,7 +44,7 @@ exports.getRestaurant = async (req, res, next) =>{
     }
     return res.render('admin/restaurant', { restaurant })
   } catch (error) {
-    next(error) 
+    next(error)
   }
 }
 
@@ -57,21 +60,25 @@ exports.editRestaurant = async (req, res, next) => {
 
 exports.putRestaurant = async (req, res, next) => {
   try {
-    const { name, tel, address, openingHours, description} = req.body
+    const { name, tel, address, openingHours, description } = req.body
     if (!name) throw new Error('Name is required')
-
-    const restaurant = await Restaurant.findByPk(req.params.restaurantId)
+    const { file } = req
+    const [restaurant, filePath] = await Promise.all(
+      [Restaurant.findByPk(req.params.restaurantId),
+      localFileHandler(file)
+      ])
     if (!restaurant) throw new Error('Restaurant not found')
     await restaurant.update({
       name,
       tel,
       address,
       openingHours,
-      description
+      description,
+      image: filePath || restaurant.image
     })
-    req.flash('success_messages','Successfully updated')
+    req.flash('success_messages', 'Successfully updated')
     res.redirect('/admin/restaurants')
-  } catch(err) {
+  } catch (err) {
     next(err)
   }
 }
@@ -81,7 +88,7 @@ exports.deleteRestaurant = async (req, res, next) => {
     const restaurant = await Restaurant.findByPk(req.params.restaurantId)
     if (!restaurant) throw new Error('No restaurant found')
     await restaurant.destroy()
-    req.flash('success_messages','Successfully deleted')
+    req.flash('success_messages', 'Successfully deleted')
     res.redirect('/admin/restaurants')
   } catch (err) {
     next(err)
