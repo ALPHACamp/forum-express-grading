@@ -1,6 +1,7 @@
 // const db = require('../models')
 // const Restaurant = db.Restaurant
 const { Restaurant } = require('../models') // 跟上面是一樣的概念
+const { localFileHandler } = require('../helpers/file-helpers')
 
 const adminController = {
   getRestaurants: (req, res, next) => {
@@ -16,13 +17,17 @@ const adminController = {
   postRestaurant: (req, res, next) => {
     const { name, tel, address, openingHours, description } = req.body
     if (!name) throw new Error('Restaurant name is required!') // name是空值跳錯誤訊息
-    Restaurant.create({
-      name,
-      tel,
-      address,
-      openingHours,
-      description
-    })
+
+    const { file } = req // 把檔案取出，也可寫成const file = req.file
+    localFileHandler(file) // 把取出的檔案傳給 file-helper 處理後 在創造餐廳
+      .then(filePath => Restaurant.create({
+        name,
+        tel,
+        address,
+        openingHours,
+        description,
+        image: filePath || null
+      }))
       .then(() => {
         req.flash('success_messages', 'restaurant was successfully created')
         res.redirect('/admin/restaurants')
@@ -52,15 +57,21 @@ const adminController = {
   putRestaurant: (req, res, next) => {
     const { name, tel, address, openingHours, description } = req.body
     if (!name) throw new Error('Restaurant name is required!')
-    Restaurant.findByPk(req.params.id)
-      .then(restaurant => {
+
+    const { file } = req // 把檔案取出
+    Promise.all([ // 非同步處理
+      Restaurant.findByPk(req.params.id), // 去資料庫查有沒有這間餐廳
+      localFileHandler(file) // 把檔案傳到 file-helper 處理
+    ])
+      .then(([restaurant, filePath]) => { // 以上兩件事都做完以後
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         return restaurant.update({
           name,
           tel,
           address,
           openingHours,
-          description
+          description,
+          image: filePath || restaurant.image // 如果filePath 是 Truthy(使用者有上傳新照片) 就用filePath，是 Falsy (使用者沒有上傳新照片)就沿用原本的資料
         })
       })
       .then(() => {
