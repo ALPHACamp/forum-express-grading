@@ -1,0 +1,21 @@
+.for-dummies {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background-color: rgb(204, 232, 207);
+  width: 500px;
+  height: 500px;
+  font-size: 32px;
+  text-align: center;
+  /* 移除超連結底線（套用在 a 標籤） */
+  text-decoration: none;
+}
+
+.thead-dark {
+  color: aliceblue;
+  background-color: rgb(57, 55, 55);
+}
+
+.without-underline {
+  text-decoration: none;
+}
