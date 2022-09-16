@@ -1,5 +1,5 @@
 const { imgurFileHandler } = require('../helpers/file-helpers')
-const { Restaurant } = require('../models')
+const { Restaurant, User } = require('../models')
 
 const adminController = {
   getRestaurants: (req, res, next) => {
@@ -76,6 +76,39 @@ const adminController = {
         return restaurant.destroy()
       })
       .then(() => res.redirect('/admin/restaurants'))
+      .catch(err => next(err))
+  },
+  getUsers: (req, res, next) => {
+    User.findAll({ raw: true })
+      .then(users => {
+        /*
+        為使 users.hbs 渲染出正確的 Role，
+        在此給 users 添增兩個鍵：role, patch
+        */
+        users.forEach(e => {
+          if (e.isAdmin === 1) {
+            e.role = 'admin'
+            e.patch = 'set as user'
+          } else if (e.isAdmin === 0) {
+            e.role = 'user'
+            e.patch = 'set as admin'
+          }
+        })
+        res.render('admin/users', { users })
+      })
+      .catch(err => next(err))
+  },
+  patchUser: (req, res, next) => {
+    return User.findByPk(req.params.id)
+      .then(user => {
+        if (user.isAdmin === true) {
+          return User.update({ isAdmin: false }, { where: { id: req.params.id, isAdmin: true } })
+        } else if (user.isAdmin === false) {
+          return User.update({ isAdmin: true }, { where: { id: req.params.id, isAdmin: false } })
+        }
+      })
+      .then(() => res.redirect('/admin/users'))
+      // .then(() => res.redirect('/admin/restaurants'))
       .catch(err => next(err))
   }
 }

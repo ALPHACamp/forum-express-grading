@@ -4,3 +4,6 @@ upload/
 
 .DS_Store
 .env
+
+# 私人檔案
+my_notes/
