@@ -9,11 +9,16 @@ const flash = require('connect-flash')
 const passport = require('./config/passpot ')
 const { getUser } = require('./helpers/auth-helper')
 const { currentYear } = require('./helpers/handlebars-helpers')
+const methodOverride = require('method-override')
+const path = require('path')
 // 註冊 Handlebars 樣板引擎，並指定副檔名為 .hbs
 app.engine('hbs', handlebars({ extname: '.hbs' }))
 // 設定使用 Handlebars 做為樣板引擎
 app.set('view engine', 'hbs')
-
+// 設定靜態檔案位置
+app.use('/upload', express.static(path.join(__dirname, 'upload')))
+// 設定 method_override
+app.use(methodOverride('_method'))
 app.use(express.urlencoded({ extended: true }))
 // 設定session
 app.use(session({

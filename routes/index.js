@@ -11,7 +11,7 @@ router.use('/', (req, res, next) => {
   console.log('here is routes/index.js')
   next()
 })
-
+// user
 router.get('/signup', userController.signUpPage)
 router.post('/signup', userController.signUp)
 router.get('/signin', userController.signInPage)
@@ -19,7 +19,9 @@ router.post('/signin', passport.authenticate('local',
   { failureRedirect: '/signIn', failureFlash: true }),
 userController.signIn)
 router.get('/logout', userController.logout)
+// admin
 router.use('/admin', authenticatedAdmin, adminRoute)
+// restaurnat
 router.get('/restaurants', authenticated, restaurantController.getRestaurants)
 router.get('/', (req, res) => { res.redirect('/restaurants') })
 
