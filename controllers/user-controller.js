@@ -10,7 +10,7 @@ exports.signUp = async (req, res, next) => {
   try {
     if (req.body.password !== req.body.passwordCheck) throw new Error('Passwords not match!')
 
-    const user = await User.findOne({ where: { email: req.body.email }})
+    const user = await User.findOne({ where: { email: req.body.email } })
     if (user) throw new Error('Email exists already')
 
     const hash = await bcrypt.hash(req.body.password, 10)
@@ -31,12 +31,12 @@ exports.signInPage = (req, res, next) => {
 }
 
 exports.signIn = (req, res, next) => {
-  req.flash('success_messages','成功登入')
+  req.flash('success_messages', '成功登入')
   res.redirect('/restaurants')
 }
 
 exports.logout = (req, res, next) => {
-  req.flash('success_messages','成功登出')
+  req.flash('success_messages', '成功登出')
   req.logout()
   res.redirect('/signin')
 }

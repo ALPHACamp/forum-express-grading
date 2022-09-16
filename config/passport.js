@@ -12,7 +12,7 @@ passport.use(new localStrategy(
   },
 
   async (req, email, password, cb) => {
-    const user = await User.findOne({where: { email }})
+    const user = await User.findOne({ where: { email } })
     if (!user) return cb(null, false, req.flash('error_messages', '帳號或密碼輸入錯誤'))
 
     const res = await bcrypt.compare(password, user.password)

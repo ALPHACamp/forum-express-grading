@@ -4,7 +4,7 @@ const restaurantController = require('../controllers/restaurant-controller')
 const userController = require('../controllers/user-controller')
 const adminRouter = require('./modules/admin')
 const { generalErrorHandler } = require('../middleware/error-handler')
-const { authenticated } = require('../middleware/auth') 
+const { authenticated } = require('../middleware/auth')
 const passport = require('../config/passport')
 
 router.get('/signup', userController.signUpPage)
