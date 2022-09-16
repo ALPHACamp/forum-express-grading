@@ -79,7 +79,7 @@ const adminController = {
       .catch(err => next(err))
   },
   getUsers: (req, res, next) => {
-    User.findAll({ raw: true })
+    return User.findAll({ raw: true })
       .then(users => {
         /*
         為使 users.hbs 渲染出正確的 Role，
@@ -94,21 +94,27 @@ const adminController = {
             e.patch = 'set as admin'
           }
         })
-        res.render('admin/users', { users })
+        return res.render('admin/users', { users })
       })
       .catch(err => next(err))
   },
   patchUser: (req, res, next) => {
     return User.findByPk(req.params.id)
       .then(user => {
+        if (user.email === 'root@example.com') {
+          req.flash('error_messages', '禁止變更 root 權限')
+          return res.redirect('back')
+        }
         if (user.isAdmin === true) {
           return User.update({ isAdmin: false }, { where: { id: req.params.id, isAdmin: true } })
         } else if (user.isAdmin === false) {
           return User.update({ isAdmin: true }, { where: { id: req.params.id, isAdmin: false } })
         }
       })
-      .then(() => res.redirect('/admin/users'))
-      // .then(() => res.redirect('/admin/restaurants'))
+      .then(() => {
+        req.flash('success_messages', '使用者權限變更成功')
+        return res.redirect('/admin/users')
+      })
       .catch(err => next(err))
   }
 }
