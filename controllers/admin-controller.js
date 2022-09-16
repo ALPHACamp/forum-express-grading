@@ -32,3 +32,15 @@ exports.postRestaurant = async (req, res, next) => {
     next(err)
   }
 }
+
+exports.getRestaurant = async (req, res, next) =>{
+  try {
+    const restaurant = await Restaurant.findByPk(req.params.restaurantId, { raw: true })
+    if (!restaurant) {
+      throw new Error('Restaurant not found')
+    }
+    return res.render('admin/restaurant', { restaurant })
+  } catch (error) {
+    next(error) 
+  }
+}
