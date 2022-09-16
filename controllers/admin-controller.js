@@ -106,9 +106,9 @@ const adminController = {
           return res.redirect('back')
         }
         if (user.isAdmin === true) {
-          return User.update({ isAdmin: false }, { where: { id: req.params.id, isAdmin: true } })
+          return user.update({ isAdmin: false })
         } else if (user.isAdmin === false) {
-          return User.update({ isAdmin: true }, { where: { id: req.params.id, isAdmin: false } })
+          return user.update({ isAdmin: true })
         }
       })
       .then(() => {
