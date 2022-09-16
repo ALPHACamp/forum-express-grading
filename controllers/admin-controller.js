@@ -30,6 +30,33 @@ const adminController = {
 
         res.render('admin/restaurant', { restaurant })
       }).catch(error => next(error)) // 不知道會有什麼錯誤會產生，所以只要有錯誤就將錯誤往 middleware/error-handler.js 丟
+  },
+  editRestaurant: (req, res, next) => {
+    Restaurant.findByPk(req.params.id, {
+      raw: true,
+      nest: true
+    })
+      .then(restaurant => {
+        if (!restaurant) throw new Error("Restaurant isn't exist!")
+
+        res.render('admin/edit-restaurant', { restaurant })
+      })
+      .catch(error => next(error))
+  },
+  patchRestaurant: (req, res, next) => {
+    if (!req.body.name) throw new Error('Restaurant name is required!')
+
+    Restaurant.findByPk(req.params.id) // 下面還是針對資料表資料做處理，所以不用轉成 JS 物件
+      .then(restaurant => {
+        if (!restaurant) throw new Error("Restaurant isn't exist!")
+
+        return restaurant.update({ ...req.body }) // 注意這邊，是針對該筆資料做 update 不是對資料表
+      })
+      .then(() => {
+        req.flash('success_massage', 'Restaurant was successfully to update!')
+        res.redirect('admin/restaurants')
+      })
+      .catch(error => next(error))
   }
 }
 

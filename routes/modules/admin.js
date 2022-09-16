@@ -2,11 +2,15 @@ const express = require('express')
 const router = express.Router()
 const adminController = require('../../controllers/admin-controller')
 
+router.get('/restaurants/:id/edit', adminController.editRestaurant)
+
+router.patch('/restaurants/:id', adminController.patchRestaurant)
+
+router.get('/restaurants/create', adminController.createRestaurant)
+
 router.get('/restaurants/:id', adminController.getRestaurant)
 
 router.post('/restaurants', adminController.postRestaurant)
-
-router.get('/restaurants/create', adminController.createRestaurant)
 
 router.get('/restaurants', adminController.getRestaurants)
 

@@ -5,6 +5,7 @@ const session = require('express-session')
 const flash = require('connect-flash')
 const app = express()
 const passport = require('./config/passport') // 引入套件設定
+const methodOverride = require('method-override')
 const port = process.env.PORT || 3000
 require('./models') // 這邊會呼叫 models 裡面的檔案，所以一定要寫
 
@@ -16,6 +17,7 @@ const handlebarsHelpers = require('./helpers/handlebars-helpers')// 這邊直接
 app.engine('hbs', hbs({ defaultLayout: 'main', extname: '.hbs', helpers: handlebarsHelpers }))
 app.set('view engine', 'hbs')
 app.use(express.urlencoded({ extended: true })) // 因為太常用到了，所以就被包進 express 裡面
+app.use(methodOverride('_method'))
 app.use(session({
   secret: SESSION_SECRET,
   resave: false,
