@@ -1,5 +1,9 @@
 // 這邊在做從 temp 檔案夾複製到另外一個檔案夾 upload，並沿用同一個檔案名稱，所以檔案名稱也要拉出來丟過去
 const fs = require('fs')
+const imgur = require('imgur')
+const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
+imgur.setClientId(IMGUR_CLIENT_ID)
+
 const localFileHandler = file => {
   return new Promise((resolve, reject) => {
     if (!file) return resolve(null)
@@ -14,4 +18,21 @@ const localFileHandler = file => {
   })
 }
 
-module.exports = { localFileHandler }
+const imgurFileHandler = file => {
+  return new Promise((resolve, reject) => {
+    if (!file) return resolve(null)
+
+    return imgur.uploadFile(file.path) // 這邊是 upload 二進位檔案
+      .then((img) => {
+        resolve(img?.link || null)
+        // 可選串連運算子
+        // -> img ? img.link || null
+      })
+      .catch(error => reject(error))
+  })
+}
+
+module.exports = {
+  localFileHandler,
+  imgurFileHandler
+}

@@ -1,6 +1,7 @@
 const { Restaurant } = require('../models') // === require('../models/index')
 
-const { localFileHandler } = require('../helpers/file-helpers')
+// const { localFileHandler } = require('../helpers/file-helpers')
+const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const adminController = {
   getRestaurants: (req, res, next) => {
@@ -16,7 +17,7 @@ const adminController = {
   postRestaurant: (req, res, next) => {
     const { name } = req.body
     if (!name) throw new Error('Restaurant name is required!')
-    localFileHandler(req.file)
+    imgurFileHandler(req.file)
       .then(filePath => {
         req.body.image = filePath || null // 有要上傳檔案 || 沒有要上傳檔案
         return Restaurant.create({ ...req.body })
@@ -54,12 +55,11 @@ const adminController = {
 
     Promise.all([
       Restaurant.findByPk(req.params.id),
-      localFileHandler(req.file)
+      imgurFileHandler(req.file)
     ])
     // 下面還是針對資料表資料做處理，所以不用轉成 JS 物件
       .then(([restaurant, filePath]) => {
         if (!restaurant) throw new Error("Restaurant isn't exist!")
-
         req.body.image = filePath || restaurant.image // 後來新圖片的檔案位置 || 沒有新圖片所以是資料庫舊圖片路徑
         return restaurant.update({ ...req.body }) // 注意這邊，是針對該筆資料做 update 不是對資料表
       })
