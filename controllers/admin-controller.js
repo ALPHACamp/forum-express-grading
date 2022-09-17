@@ -1,5 +1,5 @@
 const { Restaurant } = require('../models')
-const { localFileHandler } = require('../helpers/file-helpers')
+const { imgurFileHandler } = require('../helpers/file-helpers')
 
 exports.getRestaurants = async (req, res, next) => {
   try {
@@ -19,7 +19,7 @@ exports.postRestaurant = async (req, res, next) => {
     const { name, tel, address, openingHours, description } = req.body
     if (!name) throw new Error('Restaurant name required')
     const { file } = req
-    const filePath = await localFileHandler(file)
+    const filePath = await imgurFileHandler(file)
     await Restaurant.create({
       name,
       tel,
@@ -64,8 +64,9 @@ exports.putRestaurant = async (req, res, next) => {
     if (!name) throw new Error('Name is required')
     const { file } = req
     const [restaurant, filePath] = await Promise.all(
-      [Restaurant.findByPk(req.params.restaurantId),
-      localFileHandler(file)
+      [
+        Restaurant.findByPk(req.params.restaurantId),
+        imgurFileHandler(file)
       ])
     if (!restaurant) throw new Error('Restaurant not found')
     await restaurant.update({
