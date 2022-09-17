@@ -88,10 +88,21 @@ const adminController = {
       .catch(err => next(err))
   },
   getUsers: (req, res, next) => {
-    User.findAll({
+    return User.findAll({
       raw: true
     })
-      .then(users => res.render('admin/users', { users }))
+      .then(user => res.render('admin/users', { user }))
+      .catch(err => next(err))
+  },
+  patchUser: (req, res, next) => {
+    return User.findByPk(req.params.id, {
+      raw: true
+    })
+      .then(user => {
+        user.isAdmin = false
+        return user.save()
+      })
+      .then(() => res.redirect('admin/users'))
       .catch(err => next(err))
   }
 }
