@@ -1,5 +1,6 @@
-const { Restaurant } = require('../models')
+const { Restaurant, User } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
+const { response } = require('express')
 
 exports.getRestaurants = async (req, res, next) => {
   try {
@@ -90,7 +91,31 @@ exports.deleteRestaurant = async (req, res, next) => {
     if (!restaurant) throw new Error('No restaurant found')
     await restaurant.destroy()
     req.flash('success_messages', 'Successfully deleted')
-    res.redirect('/admin/restaurants')
+  } catch (err) {
+    next(err)
+  }
+}
+
+exports.getUsers = async (req, res, next) => {
+  try {
+    const users = await User.findAll({ raw: true })
+    return res.render('admin/users', { users })
+  } catch (err) {
+    next(err)
+  }
+}
+
+exports.patchUser = async (req, res, next) => {
+  try {
+    const userId = req.params.userId
+    const user = await User.findByPk(userId)
+    if (!user) throw new Error('No user found')
+    if (user.name === 'root') throw new Error('禁止變更 root 權限')
+    await user.update({
+      isAdmin: !user.isAdmin
+    })
+    req.flash('success_messages', '使用者權限變更成功')
+    return res.redirect('/admin/users')
   } catch (err) {
     next(err)
   }
