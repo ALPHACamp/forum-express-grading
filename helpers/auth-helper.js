@@ -3,5 +3,5 @@ exports.getUser = req => {
 }
 
 exports.ensureAuthenticated = req => {
-  return req.isAuthenticated
+  return req.isAuthenticated()
 }
