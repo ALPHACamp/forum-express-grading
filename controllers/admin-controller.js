@@ -50,7 +50,7 @@ const adminController = {
       })
       .catch(error => next(error))
   },
-  patchRestaurant: (req, res, next) => {
+  putRestaurant: (req, res, next) => {
     if (!req.body.name) throw new Error('Restaurant name is required!')
 
     Promise.all([

@@ -7,7 +7,7 @@ router.delete('/restaurants/:id', adminController.deleteRestaurant)
 
 router.get('/restaurants/:id/edit', adminController.editRestaurant)
 
-router.patch('/restaurants/:id', upload.single('image'), adminController.patchRestaurant)
+router.put('/restaurants/:id', upload.single('image'), adminController.putRestaurant)
 
 router.get('/restaurants/create', adminController.createRestaurant)
 
