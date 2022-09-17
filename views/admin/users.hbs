@@ -28,7 +28,11 @@
         <td>
           {{#if this.isAdmin}}
             <form action="/admin/users/{{this.id}}?_method=PATCH" method="POST" style="display: inline;">
-              <button type="submit" class="btn btn-link link-info">設置為使用者</button>
+              <button type="submit" class="btn btn-link link-info" 
+              {{#isEq this.name 'root'}}disabled{{/isEq}}
+              >
+              設置為使用者
+              </button>
             </form>
           {{else}}
             <form action="/admin/users/{{this.id}}?_method=PATCH" method="POST" style="display: inline;">
