@@ -1,6 +1,5 @@
 const { Restaurant, User } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
-const { response } = require('express')
 
 exports.getRestaurants = async (req, res, next) => {
   try {
@@ -124,11 +123,7 @@ exports.patchUser = async (req, res, next) => {
     const user = await User.findByPk(userId)
     if (!user) throw new Error('No user found')
     if (user.email === 'root@example.com') {
-<<<<<<< HEAD
-      req.flash('error_messages','禁止變更 root 權限')
-=======
       req.flash('error_messages', '禁止變更 root 權限')
->>>>>>> R01-new
       return res.redirect('back')
     }
     await user.update({
