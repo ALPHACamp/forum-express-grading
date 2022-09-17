@@ -10,6 +10,9 @@ const db = require('./models')
 app.engine('hbs', handlebars({ extname: '.hbs' }))
 app.set('view engine', 'hbs')
 
+// replace body-parse
+app.use(express.urlencoded({ extended: true }))
+
 app.use(routes)
 
 app.listen(port, () => {
