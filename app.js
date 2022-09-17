@@ -10,6 +10,10 @@ const passport = require('./config/passpot ')
 const { getUser } = require('./helpers/auth-helper')
 const { currentYear } = require('./helpers/handlebars-helpers')
 const methodOverride = require('method-override')
+
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
 const path = require('path')
 // 註冊 Handlebars 樣板引擎，並指定副檔名為 .hbs
 app.engine('hbs', handlebars({ extname: '.hbs' }))

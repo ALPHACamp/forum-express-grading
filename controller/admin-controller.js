@@ -1,6 +1,6 @@
 
 const { Restaurant } = require('../models')
-const { localFileHandler } = require('../helpers/file-helpers')
+const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const adminController = {
   getRestaurants: async (req, res) => {
@@ -21,7 +21,7 @@ const adminController = {
       // 檢查必填欄位
       if (!name) throw new Error('Restaurant name is required!')
       // 將multer 處理完的檔案交給file-helper，再回傳檔案所在的字串
-      const filePath = await localFileHandler(req.file)
+      const filePath = await imgurFileHandler(req.file)
       await Restaurant.create({ name, tel, address, openingHours, description, image: filePath | null })
       req.flash('success_messages', 'restaurant was successfully created')
       res.redirect('/admin/restaurants')
@@ -61,7 +61,7 @@ const adminController = {
       if (!name) throw new Error('Restaurant name is required!')
       const restaurant = await Restaurant.findByPk(id)
       if (!restaurant) throw new Error("Can't find restaurant , please search agian")
-      const filePath = await localFileHandler(file)
+      const filePath = await imgurFileHandler(file)
       await restaurant.update({ name, tel, address, openingHours, description, image: filePath || null })
       req.flash('success_messages', 'restaurant was successfully to update')
       res.redirect('/admin/restaurants')
