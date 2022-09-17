@@ -1,8 +1,7 @@
-'use strict';
+'use strict'
 const faker = require('faker')
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-
     await queryInterface.bulkInsert('Restaurants',
       Array.from({ length: 50 }, () => ({
         name: faker.name.findName(),
@@ -20,4 +19,4 @@ module.exports = {
   down: async (queryInterface, Sequelize) => {
     await queryInterface.bulkDelete('Restaurants', {})
   }
-};
+}
