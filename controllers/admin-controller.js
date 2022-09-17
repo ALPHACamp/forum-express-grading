@@ -110,7 +110,10 @@ exports.patchUser = async (req, res, next) => {
     const userId = req.params.userId
     const user = await User.findByPk(userId)
     if (!user) throw new Error('No user found')
-    if (user.name === 'root') throw new Error('禁止變更 root 權限')
+    if (user.email === 'root@example.com') {
+      req.flash('error_messages','禁止變更 root 權限')
+      return res.redirect('back')
+    }
     await user.update({
       isAdmin: !user.isAdmin
     })

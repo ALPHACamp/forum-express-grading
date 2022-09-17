@@ -29,7 +29,7 @@
           {{#if this.isAdmin}}
             <form action="/admin/users/{{this.id}}?_method=PATCH" method="POST" style="display: inline;">
               <button type="submit" class="btn btn-link link-info" 
-              {{#isEq this.name 'root'}}disabled{{/isEq}}
+              {{#isEq this.email 'root@example.com'}}disabled{{/isEq}}
               >
               設置為使用者
               </button>
