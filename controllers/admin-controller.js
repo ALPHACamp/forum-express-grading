@@ -27,7 +27,7 @@ const adminController = {
         image: filePath || null
       }))
       .then(() => {
-        req.flash('success_message', 'restaurant was successfully created')
+        req.flash('success_messages', 'restaurant was successfully created')
         res.redirect('/admin/restaurants')
       })
       .catch(err => next(err))
@@ -72,8 +72,8 @@ const adminController = {
         })
       })
       .then(() => {
-        req.flash('success_message', 'restaurant was successfully to update')
-        res.redirect('admin/restaurants')
+        req.flash('success_messages', 'restaurant was successfully to update')
+        res.redirect('/admin/restaurants')
       })
       .catch(err => next(err))
   },
@@ -95,14 +95,20 @@ const adminController = {
       .catch(err => next(err))
   },
   patchUser: (req, res, next) => {
-    return User.findByPk(req.params.id, {
-      raw: true
-    })
+    return User.findByPk(req.params.id)
       .then(user => {
-        user.isAdmin = false
-        return user.save()
+        if (user.email === 'root@example.com') {
+          req.flash('error_messages', '禁止變更 root 權限')
+          return res.redirect('back')
+        }
+        return user.update({
+          isAdmin: !user.isAdmin
+        })
       })
-      .then(() => res.redirect('admin/users'))
+      .then(() => {
+        req.flash('success_messages', '使用者權限變更成功')
+        res.redirect('/admin/users')
+      })
       .catch(err => next(err))
   }
 }
