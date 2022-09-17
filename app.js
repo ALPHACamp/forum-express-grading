@@ -4,18 +4,27 @@ const handlebars = require('express-handlebars')
 const flash = require('connect-flash')
 const session = require('express-session')
 const passport = require('./config/passport')
+const { getUser } = require('./helpers/auth-helpers')
+const handlebarsHelpers = require('./helpers/handlebars-helpers')
 
 const app = express()
 const port = process.env.PORT || 3000
 const SESSION_SECRET = 'secret'
 
 const db = require('./models')
-app.use(passport.initialize()) // 增加這行，初始化 Passport
-app.use(passport.session()) // 增加這行，啟動 session 功能
+app.use(passport.initialize())
+app.use(passport.session())
 app.use(session({ secret: SESSION_SECRET, resave: false, saveUninitialized: false }))
 app.use(flash())
 
-app.engine('hbs', handlebars({ extname: '.hbs' }))
+app.use((req, res, next) => {
+    res.locals.success_messages = req.flash('success_messages')
+    res.locals.error_messages = req.flash('error_messages')
+    res.locals.user = getUser(req)
+    next()
+})
+
+app.engine('hbs', handlebars({ extname: '.hbs', helpers: handlebarsHelpers }))
 app.set('view engine', 'hbs')
 
 // replace body-parse
@@ -24,7 +33,7 @@ app.use(express.urlencoded({ extended: true }))
 app.use(routes)
 
 app.listen(port, () => {
-  console.info(`Example app listening on port ${port}!Let's go to http://localhost:3000`)
+    console.info(`Example app listening on port ${port}!Let's go to http://localhost:3000`)
 })
 
 module.exports = app
