@@ -9,7 +9,6 @@ exports.authenticated = (req, res, next) => {
 exports.authenticatedAdmin = (req, res, next) => {
   if (helper.ensureAuthenticated(req)) {
     if (helper.getUser(req).isAdmin) return next()
-    else return res.redirect('/signin')
     res.redirect('/')
   } else {
     res.redirect('/signin')

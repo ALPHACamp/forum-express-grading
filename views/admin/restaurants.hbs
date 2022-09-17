@@ -1,4 +1,13 @@
 <h1>餐廳後台</h1>
+<ul class="nav nav-tabs mb-5">
+  <li class="nav-item">
+    <a class="nav-link active" aria-current="page" href="/admin/restaurants">餐廳列表</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="/admin/users">使用者列表</a>
+  </li>
+</ul>
+
 <a href='/admin/restaurants/create'>
   <button type="button" class="btn btn-primary">New Restaurant</button>
 </a>
@@ -36,11 +45,42 @@
     {{/each}}
   </tbody>
 </table>
-<link  rel="stylesheet" href="/swal/sweetalert2.min.css">
-<script  src="/swal/sweetalert2.min.js"></script>
+{{!-- pagination --}}
+<nav aria-label="Page navigation example">
+  <ul class="pagination">
+    <li class="page-item    
+        {{#isEq prevPage 0 }}
+         disabled
+         {{/isEq}}">
+      <a class="page-link" 
+         href="/restaurants?page={{prevPage}}"
+         aria-label="Previous"
+         >
+        <span aria-hidden="true">&laquo;</span>
+      </a>
+    </li>
+    {{#each pages}}
+    <li class="page-item {{#isEq currPage this }}active{{/isEq}}">
+      <a class="page-link" href="/admin/restaurants?page={{this}}">{{this}}</a>
+    </li>
+    {{/each}}
+    <li class="page-item
+              {{#isEq nextPage 0 }}
+              disabled
+              {{/isEq}}
+              ">
+      <a class="page-link"
+         href="/restaurants?page={{nextPage}}"
+         aria-label="Next">
+        <span aria-hidden="true">&raquo;</span>
+      </a>
+    </li>
+  </ul>
+</nav>
 
 <script>
-  const form = document.querySelector('.deleteBtn')
+  const forms = document.querySelectorAll('.deleteBtn')
+  forms.forEach(form => {
   form.addEventListener('submit', e => {
     e.preventDefault()
     e.stopPropagation()
@@ -57,6 +97,7 @@
   } else if (result.isDenied) {
     Swal.fire('取消', '', 'info')
   }
-})
+    })
   })
+})
 </script>

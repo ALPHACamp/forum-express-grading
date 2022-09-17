@@ -1,4 +1,4 @@
-<h1>餐廳後台</h1>
+<h1>餐廳</h1>
 <a href='/admin/restaurants/create'>
   <button type="button" class="btn btn-primary">New Restaurant</button>
 </a>
@@ -19,20 +19,45 @@
         <td>{{this.name}}</td>
         <td>
           <button type="button" class="btn btn-link">
-            <a class="btn btn-link link-primary" href="/admin/restaurants/{{this.id}}">
+            <a class="btn btn-link link-primary" href="/restaurants/{{this.id}}">
               Show
             </a>
           </button>
-          <button type="button" class="btn btn-link">
-            <a class="btn btn-link link-primary" href="/admin/restaurants/{{this.id}}/edit">
-              Edit
-            </a>
-          </button>
-          <form action="/admin/restaurants/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
-            <button type="submit" class="btn btn-link link-danger">Delete</button>
-          </form>
         </td>
       </tr>
     {{/each}}
   </tbody>
 </table>
+
+{{!-- pagination --}}
+<nav aria-label="Page navigation example">
+  <ul class="pagination">
+    <li class="page-item    
+        {{#isEq prevPage 0 }}
+         disabled
+         {{/isEq}}">
+      <a class="page-link" 
+         href="/restaurants?page={{prevPage}}"
+         aria-label="Previous"
+         >
+        <span aria-hidden="true">&laquo;</span>
+      </a>
+    </li>
+    {{#each pages}}
+    <li class="page-item {{#isEq currPage this }}active{{/isEq}}">
+      <a class="page-link" href="/restaurants?page={{this}}">{{this}}</a>
+    </li>
+    {{/each}}
+    <li class="page-item
+              {{#isEq nextPage 0 }}
+              disabled
+              {{/isEq}}
+              ">
+      <a class="page-link"
+         href="/restaurants?page={{nextPage}}"
+         aria-label="Next">
+        <span aria-hidden="true">&raquo;</span>
+      </a>
+    </li>
+  </ul>
+</nav>

@@ -4,8 +4,21 @@ const { response } = require('express')
 
 exports.getRestaurants = async (req, res, next) => {
   try {
-    const restaurants = await Restaurant.findAll({ raw: true })
-    return res.render('admin/restaurants', { restaurants })
+    const pageSize = 15
+    const currPage = +req.query.page || 1
+    const { count, rows } = await Restaurant.findAndCountAll({
+      offset: (currPage - 1) * pageSize,
+      limit: pageSize
+    })
+    if (currPage > Math.ceil(count / pageSize)) {
+      req.flash('error_messages', '頁面不存在')
+      return res.redirect('/admin/restaurants')
+    }
+    const pages = Array.from({ length: Math.ceil(count / pageSize) }, (_, i) => Number(i + 1))
+    const restaurants = rows.map(({ dataValues }) => dataValues)
+    const nextPage = currPage === pages.length ? 0 : currPage + 1
+    const prevPage = currPage - 1
+    return res.render('admin/restaurants', { restaurants, pages, nextPage, prevPage, currPage: String(currPage) })
   } catch (err) {
     next(err)
   }
@@ -111,7 +124,11 @@ exports.patchUser = async (req, res, next) => {
     const user = await User.findByPk(userId)
     if (!user) throw new Error('No user found')
     if (user.email === 'root@example.com') {
+<<<<<<< HEAD
       req.flash('error_messages','禁止變更 root 權限')
+=======
+      req.flash('error_messages', '禁止變更 root 權限')
+>>>>>>> R01-new
       return res.redirect('back')
     }
     await user.update({
