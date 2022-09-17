@@ -18,9 +18,9 @@
       <td>{{this.name}}</td>
       <td>{{this.email}}</td>
       <td>{{#if this.isAdmin}}admin{{else}}user{{/if}}</td>
-      <td>
+      <td>  
         <form action="/admin/users/{{this.id}}?_method=PATCH" method="POST">
-        {{#if this.isAdmin}}<button type="submit" class="btn btn-link">set as user</button>{{else}}<button type="submit" class="btn btn-link">set as admin</button>{{/if}}
+        {{#if this.isAdmin}}<button type="submit" class="btn btn-link" id="{{this.id}}">set as user</button>{{else}}<button type="submit" class="btn btn-link" id="{{this.id}}">set as admin</button>{{/if}}
         </form>
         </td>
     </tr>
