@@ -16,7 +16,7 @@ router.use('/admin', authenticatedAdmin, adminRouter)
 router.get('/restaurants', authenticated, restaurantController.getRestaurants)
 
 router.get('/', (req, res) => {
-  res.send('Hello World!')
+  res.redirect('/restaurants')
 })
 
 router.use('/', generalErrorHandler)
