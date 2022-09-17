@@ -1,9 +1,13 @@
 const { imgurFileHandler } = require('../helpers/file-helpers')
-const { Restaurant, User } = require('../models')
+const { Category, Restaurant, User } = require('../models')
 
 const adminController = {
   getRestaurants: (req, res, next) => {
-    Restaurant.findAll({ raw: true })
+    Restaurant.findAll({
+      raw: true,
+      nest: true,
+      include: [Category]
+    })
       .then(restaurants => res.render('admin/restaurants', { restaurants }))
       .catch(err => next(err))
   },
@@ -29,7 +33,11 @@ const adminController = {
   },
   getRestaurant: (req, res, next) => {
     Restaurant.findByPk(req.params.id,
-      { raw: true })
+      {
+        raw: true,
+        nest: true,
+        include: [Category]
+      })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         return res.render('admin/restaurant', { restaurant })
@@ -85,13 +93,13 @@ const adminController = {
         為使 users.hbs 渲染出正確的 Role，
         在此給 users 添增兩個鍵：role, patch
         */
-        users.forEach(e => {
-          if (e.isAdmin === 1) {
-            e.role = 'admin'
-            e.patch = 'set as user'
-          } else if (e.isAdmin === 0) {
-            e.role = 'user'
-            e.patch = 'set as admin'
+        users.forEach(user => {
+          if (user.isAdmin === true) {
+            user.role = 'admin'
+            user.patch = 'set as user'
+          } else if (user.isAdmin === false) {
+            user.role = 'user'
+            user.patch = 'set as admin'
           }
         })
         return res.render('admin/users', { users })
@@ -105,7 +113,14 @@ const adminController = {
           req.flash('error_messages', '禁止變更 root 權限')
           return res.redirect('back')
         }
-        return user.update({ isAdmin: !user.isAdmin })
+        if (user.isAdmin === false) {
+          console.log('變更已生效變更已生效變更已生效變更已生效變更已生效變更已生效變更已生效變更已生效變更已生效變更已生效變更已生效變更已生效變更已生效變更已生效變更已生效變更已生效變更已生效變更已生效')
+          return user.update({ isAdmin: true })
+        } else if (user.isAdmin === true) {
+          console.log('變更已生效變更已生效變更已生效變更已生效變更已生效變更已生效變更已生效變更已生效變更已生效變更已生效變更已生效變更已生效變更已生效變更已生效變更已生效變更已生效變更已生效變更已生效')
+          return user.update({ isAdmin: false })
+        }
+        // return user.update({ isAdmin: !user.isAdmin })
       })
       .then(() => {
         req.flash('success_messages', '使用者權限變更成功')
