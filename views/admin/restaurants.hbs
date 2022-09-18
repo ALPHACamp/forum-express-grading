@@ -1,7 +1,18 @@
 <h1>餐廳後台</h1>
+
 <a href='/admin/restaurants/create'>
   <button type="button" class="btn btn-primary">New Restaurant</button>
 </a>
+
+<ul class="nav nav-tabs">
+  <li class="nav-item">
+    <a class="nav-link" aria-current="page" href="/admin/restaurants">餐廳列表</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link active" href="/admin/users">使用者列表</a>
+  </li>
+</ul>
+
 <br />
 <br />
 <table class="table align-middle">
@@ -29,7 +40,8 @@
           </a>
         </button>
         <form action="/admin/restaurants/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
-          <button type="submit" class="btn btn-link link-danger" onclick="return confirm(`確定要刪除{{this.name}}嗎?`)" >Delete</button>
+          <button type="submit" class="btn btn-link link-danger"
+            onclick="return confirm(`確定要刪除{{this.name}}嗎?`)">Delete</button>
         </form>
       </td>
     </tr>
