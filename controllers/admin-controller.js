@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-const { Restaurant } = require('../models') // === require('../models/index')
-=======
 const { Restaurant, User } = require('../models') // === require('../models/index')
->>>>>>> R01
 
 // const { localFileHandler } = require('../helpers/file-helpers')
 const { imgurFileHandler } = require('../helpers/file-helpers')
@@ -12,11 +8,7 @@ const adminController = {
     Restaurant.findAll({ // [{}, {}]
       raw: true // 轉成單純 JS 物件，不轉也可以但要在.dataValues 取值
     })
-<<<<<<< HEAD
-      .then(restaurants => res.render('admin/restaurants', { restaurants }))
-=======
       .then(restaurants => res.render('admin/admin-homepage', { restaurants }))
->>>>>>> R01
       .catch(error => next(error))
   },
   createRestaurant: (req, res) => {
@@ -58,11 +50,7 @@ const adminController = {
       })
       .catch(error => next(error))
   },
-<<<<<<< HEAD
-  patchRestaurant: (req, res, next) => {
-=======
   putRestaurant: (req, res, next) => {
->>>>>>> R01
     if (!req.body.name) throw new Error('Restaurant name is required!')
 
     Promise.all([
@@ -89,12 +77,6 @@ const adminController = {
         return restaurant.destroy()
       })
       .then(() => {
-<<<<<<< HEAD
-        req.flash('success_message', 'Delete successfully')
-        res.redirect('/admin/restaurants')
-      })
-      .catch(error => next(error))
-=======
         req.flash('success_messages', 'Delete successfully')
         res.redirect('/admin/restaurants')
       })
@@ -130,7 +112,6 @@ const adminController = {
         res.redirect('/admin/users')
       })
       .catch(error => next(error))
->>>>>>> R01
   }
 }
 
