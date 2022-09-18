@@ -1,5 +1,6 @@
 const path = require('path')
 const express = require('express')
+
 const handlebars = require('express-handlebars')
 const session = require('express-session')
 const flash = require('connect-flash')
@@ -8,6 +9,9 @@ const { getUser } = require('./helpers/auth-helpers')
 const handlebarHelper = require('./helpers/handlebars-helpers')
 const passport = require('./config/passport')
 const routes = require('./routes')
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
 
 const app = express()
 const port = process.env.PORT || 3000
