@@ -11,14 +11,21 @@ const adminController = {
       .then(restaurants => res.render('admin/restaurants', { restaurants }))
       .catch(err => next(err))
   },
-  createRestaurant: (req, res) => { return res.render('admin/create-restaurant') },
+  createRestaurant: (req, res, next) => {
+    return Category.findAll({
+      raw: true
+    })
+      .then(categories => res.render('admin/create-restaurant', { categories }))
+      .catch(err => next(err))
+  },
   postRestaurant: (req, res, next) => {
-    const { name, tel, address, openingHours, description } = req.body
+    const { name, categoryId, tel, address, openingHours, description } = req.body
     if (!name) throw new Error('Restaurant name is required!')
     const { file } = req // 取出檔案
     imgurFileHandler(file) // 把取出的檔案傳給 file-helper 處理後
       .then(filePath => Restaurant.create({ // 再 create 這筆餐廳資料
         name,
+        categoryId,
         tel,
         address,
         openingHours,
@@ -45,15 +52,18 @@ const adminController = {
       .catch(err => next(err))
   },
   editRestaurant: (req, res, next) => {
-    Restaurant.findByPk(req.params.id, { raw: true })
-      .then(restaurant => {
-        if (!restaurant) throw new Error("Restaurant didn't exist!")
-        res.render('admin/edit-restaurant', { restaurant })
+    return Promise.all([
+      Restaurant.findByPk(req.params.id, { raw: true }),
+      Category.findAll({ raw: true })
+    ])
+      .then(([restaurant, categories]) => {
+        if (!restaurant) throw new Error("Restaurant doesn't exist!")
+        res.render('admin/edit-restaurant', { restaurant, categories })
       })
       .catch(err => next(err))
   },
   putRestaurant: (req, res, next) => {
-    const { name, tel, address, openingHours, description } = req.body
+    const { name, categoryId, tel, address, openingHours, description } = req.body
     if (!name) throw new Error('Restaurant name is required!')
     const { file } = req
     Promise.all([
@@ -64,6 +74,7 @@ const adminController = {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         return restaurant.update({ // 修改這筆資料
           name,
+          categoryId,
           tel,
           address,
           openingHours,
@@ -93,13 +104,13 @@ const adminController = {
         為使 users.hbs 渲染出正確的 Role，
         在此給 users 添增兩個鍵：role, patch
         */
-        users.forEach(user => {
-          if (user.isAdmin === true) {
-            user.role = 'admin'
-            user.patch = 'set as user'
-          } else if (user.isAdmin === false) {
-            user.role = 'user'
-            user.patch = 'set as admin'
+        users.forEach(e => {
+          if (e.isAdmin === 1) {
+            e.role = 'admin'
+            e.patch = 'set as user'
+          } else if (e.isAdmin === 0) {
+            e.role = 'user'
+            e.patch = 'set as admin'
           }
         })
         return res.render('admin/users', { users })
@@ -113,14 +124,7 @@ const adminController = {
           req.flash('error_messages', '禁止變更 root 權限')
           return res.redirect('back')
         }
-        if (user.isAdmin === false) {
-          console.log('變更已生效變更已生效變更已生效變更已生效變更已生效變更已生效變更已生效變更已生效變更已生效變更已生效變更已生效變更已生效變更已生效變更已生效變更已生效變更已生效變更已生效變更已生效')
-          return user.update({ isAdmin: true })
-        } else if (user.isAdmin === true) {
-          console.log('變更已生效變更已生效變更已生效變更已生效變更已生效變更已生效變更已生效變更已生效變更已生效變更已生效變更已生效變更已生效變更已生效變更已生效變更已生效變更已生效變更已生效變更已生效')
-          return user.update({ isAdmin: false })
-        }
-        // return user.update({ isAdmin: !user.isAdmin })
+        return user.update({ isAdmin: !user.isAdmin })
       })
       .then(() => {
         req.flash('success_messages', '使用者權限變更成功')
