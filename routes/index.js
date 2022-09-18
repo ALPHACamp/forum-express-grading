@@ -1,22 +1,22 @@
 const express = require('express')
 const router = express.Router()
 const adminRoute = require('./modules/admin')
-const restaurantController = require('../controller/restaurant-controller')
-const userController = require('../controller/user-controller')
+const restaurantController = require('../controllers/restaurant-controller')
+const userController = require('../controllers/user-controller')
 const generalErrorHandler = require('../middleware/error-handler').generalErrorHandler
 const passport = require('passport')
 const { authenticated, authenticatedAdmin } = require('../middleware/auth')
 
-router.use('/', (req, res, next) => {
-  console.log('here is routes/index.js')
-  next()
-})
+// router.use('/', (req, res, next) => {
+//   console.log('here is routes/index.js')
+//   next()
+// })
 // user
 router.get('/signup', userController.signUpPage)
 router.post('/signup', userController.signUp)
 router.get('/signin', userController.signInPage)
 router.post('/signin', passport.authenticate('local',
-  { failureRedirect: '/signIn', failureFlash: true }),
+  { failureRedirect: '/signin', failureFlash: true }),
 userController.signIn)
 router.get('/logout', userController.logout)
 // admin
