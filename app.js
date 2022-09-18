@@ -32,6 +32,10 @@ app.use((req, res, next) => {
 })
 app.use(routes)
 
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
+
 app.listen(port, () => {
   console.info(`Example app listening on port ${port}!`)
 })
