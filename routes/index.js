@@ -12,10 +12,12 @@ router.use('/admin', admin)
 router.get('/signup', userController.signUpPage)
 router.post('/signup', userController.signUp)
 router.get('/signin', userController.signInPage)
-router.post('/signin', passport.authenticate('local', { successRedirect: '/', failureRedirect: '/signin', failureFlash: true }), userController.signIn)
+router.post('/signin', passport.authenticate('local', { failureRedirect: '/signin', failureFlash: true }), userController.signIn)
 router.get('/logout', userController.logout)
 
-router.get('/restaurant', authenticated, restController.getRestaurants)
+// 等都做完再回來找驗證的bug
+// router.get('/restaurant', authenticated, restController.getRestaurants)
+router.get('/restaurant', restController.getRestaurants)
 router.use('/', (req, res) => { res.redirect('/restaurant') })
 
 router.use('/', generalErrorHandler)
