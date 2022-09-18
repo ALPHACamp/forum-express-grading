@@ -28,7 +28,7 @@ const adminController = {
       .catch(err => next(err))
   },
   getRestaurant: (req, res, next) => {
-    Restaurant.findByPk(req.params.id, {
+    return Restaurant.findByPk(req.params.id, {
       raw: true
     })
       .then(restaurant => {
@@ -63,7 +63,18 @@ const adminController = {
       })
       .then(() => {
         req.flash('success_messages', 'restaurant was successfully to update')
-        res.redirect('admin/restaurants')
+        res.redirect('/admin/restaurants')
+      })
+      .catch(err => next(err))
+  },
+  deleteRestaurant: (req, res, next) => {
+    return Restaurant.findByPk(req.params.id)
+      .then(restaurant => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")// 如果找不到，回傳錯誤訊息，後面不執行
+        return restaurant.destroy()
+      })
+      .then(() => {
+        res.redirect('/admin/restaurants')
       })
       .catch(err => next(err))
   }
