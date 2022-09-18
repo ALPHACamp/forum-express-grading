@@ -20,4 +20,10 @@ router.get('/', (req, res) => {
 })
 router.delete('/restaurants/:restId', adminController.deleteRestaurant)
 
+router.patch('/users/:id', adminController.patchUser
+)
+
+router.get('/users', adminController.getUsers
+)
+
 module.exports = router
