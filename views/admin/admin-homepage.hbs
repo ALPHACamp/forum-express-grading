@@ -1,0 +1,7 @@
+<h1>餐廳後台</h1>
+<h5><a href="/admin/restaurants" style="text-decoration:none">Restaurants</a>&nbsp|&nbsp <a href="/admin/users" style="text-decoration:none">Users</a></h5>
+{{#if restaurants}}
+{{> admin-homepage-restaurants}}
+{{else}}
+{{> admin-homepage-users}}
+{{/if}}

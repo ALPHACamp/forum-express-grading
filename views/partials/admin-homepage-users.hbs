@@ -1,0 +1,35 @@
+<table class="table align-middle">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Name</th>
+      <th scope="col">email</th>
+      <th scope="col">role</th>
+      <th scope="col">#</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each users}}
+    <tr>
+      <th scope="row">{{this.id}}</th>
+      <td>{{this.name}}</td>
+      <td>{{this.email}}</td>
+      <td>{{this.role}}</td>
+      {{#is this.role 'admin'}}
+        <td>
+          <form action="/admin/users/{{this.id}}?_method=PATCH" method="POST">
+            <button class="btn btn-success" type="submit">set as user</button>
+          </form> 
+        </td>
+      {{/is}}
+      {{#is this.role 'user'}}
+        <td>
+          <form action="/admin/users/{{this.id}}?_method=PATCH" method="POST">
+            <button class="btn btn-success" type="submit">set as admin</button>
+          </form>
+        </td>
+      {{/is}}
+    </tr>
+    {{/each}}
+  </tbody>
+</table>
