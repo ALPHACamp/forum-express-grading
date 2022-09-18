@@ -95,7 +95,7 @@ const adminController = {
       if (!user) throw new Error("Can't find user , please search agian")
 
       // 確認更改者有管理員資格
-      if (user.email.includes('root')) {
+      if (user.email === 'root@example.com') {
         req.flash('error_messages', '禁止變更 root 權限')
         return res.redirect('back')
       }
