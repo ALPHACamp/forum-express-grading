@@ -7,6 +7,8 @@ const app = express()
 const passport = require('./config/passport') // 引入套件設定
 const methodOverride = require('method-override')
 const path = require('path')
+const hbsHelpers = require('handlebars-helpers') // 外部套件
+const multiHelpers = hbsHelpers()
 const port = process.env.PORT || 3000
 require('./models') // 這邊會呼叫 models 裡面的檔案，所以一定要寫'
 
@@ -19,7 +21,7 @@ const SESSION_SECRET = 'secret'
 const { getUser } = require('./helpers/auth-helper') // { getUser } = { getUser } // { getUser: [Function: getUser] }
 const handlebarsHelpers = require('./helpers/handlebars-helpers')// 這邊直接使用檔案的原因是在 handlebars helper 裡面固定撰寫方式 helper: { key: value }，而檔案 exports 出來的是 { key:value } 所以不用再用解構賦值
 
-app.engine('hbs', hbs({ defaultLayout: 'main', extname: '.hbs', helpers: handlebarsHelpers }))
+app.engine('hbs', hbs({ defaultLayout: 'main', extname: '.hbs', helpers: handlebarsHelpers, multiHelpers }))
 app.set('view engine', 'hbs')
 app.use(express.urlencoded({ extended: true })) // 因為太常用到了，所以就被包進 express 裡面
 app.use(methodOverride('_method'))

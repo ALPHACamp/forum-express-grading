@@ -1,4 +1,4 @@
-const { Restaurant } = require('../models') // === require('../models/index')
+const { Restaurant, User } = require('../models') // === require('../models/index')
 
 // const { localFileHandler } = require('../helpers/file-helpers')
 const { imgurFileHandler } = require('../helpers/file-helpers')
@@ -8,7 +8,7 @@ const adminController = {
     Restaurant.findAll({ // [{}, {}]
       raw: true // 轉成單純 JS 物件，不轉也可以但要在.dataValues 取值
     })
-      .then(restaurants => res.render('admin/restaurants', { restaurants }))
+      .then(restaurants => res.render('admin/admin-homepage', { restaurants }))
       .catch(error => next(error))
   },
   createRestaurant: (req, res) => {
@@ -77,8 +77,39 @@ const adminController = {
         return restaurant.destroy()
       })
       .then(() => {
-        req.flash('success_message', 'Delete successfully')
+        req.flash('success_messages', 'Delete successfully')
         res.redirect('/admin/restaurants')
+      })
+      .catch(error => next(error))
+  },
+  getUsers: (req, res, next) => {
+    return User.findAll({
+      raw: true,
+      nest: true
+    })
+      .then(users => {
+        users.forEach(user => {
+          user.role = user.isAdmin ? 'admin' : 'user'
+        })
+        res.render('admin/admin-homepage', { users })// isAdmin -> number
+      })
+      .catch(error => next(error))
+  },
+  patchUser: (req, res, next) => {
+    const id = req.params.id
+    return User.findByPk(id)
+      .then(user => {
+        if (!user) throw new Error("Users isn't exist!")
+        if (user.email === 'root@example.com') {
+          req.flash('error_messages', '禁止變更 root 權限')
+          return res.redirect('back')
+        }
+
+        return user.update({ isAdmin: !user.dataValues.isAdmin })
+      })
+      .then(() => {
+        req.flash('success_messages', '使用者權限變更成功')
+        res.redirect('/admin/users')
       })
       .catch(error => next(error))
   }

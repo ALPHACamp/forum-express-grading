@@ -3,6 +3,12 @@ const router = express.Router()
 const adminController = require('../../controllers/admin-controller')
 const upload = require('../../middleware/multer')// 將預計檔案存放位置相關設定載進來
 
+// 修改權限
+router.patch('/users/:id', adminController.patchUser)
+
+// 取得所有 Users
+router.get('/users', adminController.getUsers)
+
 router.delete('/restaurants/:id', adminController.deleteRestaurant)
 
 router.get('/restaurants/:id/edit', adminController.editRestaurant)

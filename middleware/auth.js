@@ -18,7 +18,7 @@ const authenticatedAdmin = (req, res, next) => {
   if (helpers.ensureAuthenticated(req)) {
     if (helpers.getUser(req).isAdmin) return next()
 
-    res.redirect('/')
+    res.redirect('/') // 從 admin 改成 user 會轉跳到這邊
   }
   res.redirect('/signin')
 }
