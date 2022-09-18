@@ -18,10 +18,10 @@ app.use(session({ secret: SESSION_SECRET, resave: false, saveUninitialized: fals
 app.use(flash())
 
 app.use((req, res, next) => {
-    res.locals.success_messages = req.flash('success_messages')
-    res.locals.error_messages = req.flash('error_messages')
-    res.locals.user = getUser(req)
-    next()
+  res.locals.success_messages = req.flash('success_messages')
+  res.locals.error_messages = req.flash('error_messages')
+  res.locals.user = getUser(req)
+  next()
 })
 
 app.engine('hbs', handlebars({ extname: '.hbs', helpers: handlebarsHelpers }))
@@ -33,7 +33,7 @@ app.use(express.urlencoded({ extended: true }))
 app.use(routes)
 
 app.listen(port, () => {
-    console.info(`Example app listening on port ${port}!Let's go to http://localhost:3000`)
+  console.info(`Example app listening on port ${port}!Let's go to http://localhost:3000`)
 })
 
 module.exports = app
