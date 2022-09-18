@@ -1,12 +1,14 @@
 // const db = require('../models')
 // const Restaurant = db.Restaurant
-const { Restaurant, User } = require('../models') // 跟上面是一樣的概念
+const { Restaurant, User, Category } = require('../models') // 跟上面是一樣的概念
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const adminController = {
   getRestaurants: (req, res, next) => {
     return Restaurant.findAll({
-      raw: true
+      raw: true,
+      nest: true,
+      include: [Category]
     })
       .then(restaurants => res.render('admin/restaurants', { restaurants }))
       .catch(err => next(err))
@@ -36,11 +38,15 @@ const adminController = {
   },
   getRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
-      raw: true
+      raw: true,
+      nest: true,
+      include: [Category]
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         res.render('admin/restaurant', { restaurant })
+        // 若是不使用raw 與 nest的話可以使用toJSON()
+        // res.render('admin/restaurant', { restaurant: restaurant.toJSON() })
       })
       .catch(err => next(err))
   },
