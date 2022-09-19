@@ -13,7 +13,7 @@ exports.getRestaurants = async (req, res, next) => {
       return res.redirect('/restaurants')
     }
     const pages = Array.from({ length: Math.ceil(count / pageSize) }, (_, i) => Number(i + 1))
-    const restaurants = rows.map(({ dataValues }) => ({...dataValues, description: dataValues.description.substring(0, 50)}))
+    const restaurants = rows.map(({ dataValues }) => ({ ...dataValues, description: dataValues.description.substring(0, 50) }))
     const nextPage = currPage === pages.length ? 0 : currPage + 1
     const prevPage = currPage - 1
     return res.render('restaurants', { restaurants, pages, nextPage, prevPage, currPage })
@@ -24,12 +24,24 @@ exports.getRestaurants = async (req, res, next) => {
 
 exports.getRestaurant = async (req, res, next) => {
   try {
-    const restaurant = await Restaurant.findByPk(req.params.restaurantId, { raw: true, include:[Category], nest: true })
+    const restaurant = await Restaurant.findByPk(req.params.restaurantId, { include: [Category], nest: true })
     if (!restaurant) {
       throw new Error('Restaurant not found')
     }
-    console.log(restaurant)
-    return res.render('restaurant', { restaurant })
+    await restaurant.increment('view_count', { by: 1 })
+    return res.render('restaurant', { restaurant: restaurant.toJSON() })
+  } catch (error) {
+    next(error)
+  }
+}
+
+exports.getDashboard = async (req, res, next) => {
+  try {
+    const restaurant = await Restaurant.findByPk(req.params.restaurantId, { raw: true, include: [Category], nest: true })
+    if (!restaurant) {
+      throw new Error('Restaurant not found')
+    }
+    return res.render('dashboard', { restaurant })
   } catch (error) {
     next(error)
   }
