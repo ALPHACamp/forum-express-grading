@@ -28,7 +28,9 @@ exports.getRestaurant = async (req, res, next) => {
     if (!restaurant) {
       throw new Error('Restaurant not found')
     }
+
     return res.render('restaurant', { restaurant: restaurant.toJSON() })
+
   } catch (error) {
     next(error)
   }
@@ -40,8 +42,8 @@ exports.getDashboard = async (req, res, next) => {
     if (!restaurant) {
       throw new Error('Restaurant not found')
     }
-    await restaurant.increment('view_count', { by: 1 })
-    return res.render('dashboard', { restaurant: restaurant.toJSON() })
+    const result = await restaurant.update({viewCount: restaurant.viewCount + 1})
+    return res.render('dashboard', { restaurant: result.toJSON() })
   } catch (error) {
     next(error)
   }
