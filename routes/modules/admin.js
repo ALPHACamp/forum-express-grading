@@ -17,6 +17,8 @@ router.get('/restaurants', adminController.getRestaurants)
 
 router.get('/categories', categoryController.getCategories)
 router.post('/categories', categoryController.postCategories)
+router.get('/categories/:id', categoryController.getCategories)
+router.put('/categories/:id', categoryController.putCategory)
 
 router.get('', (req, res) => res.redirect('/admin/restaurants'))
 
