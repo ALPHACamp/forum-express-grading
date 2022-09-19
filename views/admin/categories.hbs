@@ -2,6 +2,19 @@
 <br />
 <br />
 <div class="d-flex align-items-center pt-3 pb-5 my-3 text-white-50 bg-purple">
+  {{!-- edit page --}}
+  {{#if category}}  
+  <form class="row" action="/admin/categories/{{category.id}}?_method=PUT" method="POST">
+    <div class="col-auto">
+      <input type="text" class="form-control" name="name" placeholder="Category Name" value="{{category.name}}">
+    </div>
+    <div class="col-auto">
+      <button type="submit" class="btn btn-success" >update</button>
+      <a class="btn btn-link link-secondary" href="/admin/categories">or Create New</a>
+    </div>
+  </form>
+  {{!-- create page --}}
+  {{else}}
   <form class="row" action="/admin/categories" method="POST">
     <div class="col-auto">
       <input type="text" class="form-control" name="name" placeholder="Category Name">
@@ -9,8 +22,8 @@
     <div class="col-auto">
       <button type="submit" class="btn btn-success" >create</button>
     </div>
-  
-</form>
+  </form>
+  {{/if}}
 </div>
 
 <table class="table align-middle">
@@ -29,16 +42,16 @@
         <td>{{this.name}}</td>
         <td>
           <button type="button" class="btn btn-link">
-            <a class="btn btn-link link-primary" href="/admin/restaurants/{{this.id}}">
+            <a class="btn btn-link link-primary" href="/admin/categories/{{this.id}}">
               Show
             </a>
           </button>
           <button type="button" class="btn btn-link">
-            <a class="btn btn-link link-primary" href="/admin/restaurants/{{this.id}}/edit">
+            <a class="btn btn-link link-primary" href="/admin/categories/{{this.id}}">
               Edit
             </a>
           </button>
-          <form action="/admin/restaurants/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
+          <form action="/admin/categories/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
             <button type="submit" class="btn btn-link link-danger" onclick="return confirm(`Are you sure to delete {{this.name}}?`)">Delete</button>
           </form>
         </td>
