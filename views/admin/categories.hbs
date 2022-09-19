@@ -1,0 +1,94 @@
+<h1>餐廳後台</h1>
+{{> admin-tab}}
+
+<form action="/categories" method="post">
+  <div class="form-row">
+    <input class="form-control" type="text" name="name" id="name" placeholder="輸入類別" required>
+    <button class="btn btn-success">新增類別</button>
+  </div>
+</form>
+<br />
+<br />
+<table class="table align-middle">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Name</th>
+      <th scope="col"></th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each categories}}
+      <tr>
+        <th scope="row">{{this.id}}</th>
+        <td>{{this.name}}</td>
+        <td>
+          <button type="button" class="btn btn-link">
+            <a class="btn btn-link link-primary" href="/admin/categories/{{this.id}}/edit">
+              Edit
+            </a>
+          </button>
+          <form class="deleteBtn" action="/admin/categories/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
+            <button type="submit" class="btn btn-link link-danger">Delete</button>
+          </form>
+        </td>
+      </tr>
+    {{/each}}
+  </tbody>
+</table>
+{{!-- pagination --}}
+<nav aria-label="Page navigation example">
+  <ul class="pagination">
+    <li class="page-item    
+        {{#isEq prevPage 0 }}
+         disabled
+         {{/isEq}}">
+      <a class="page-link" 
+         href="/restaurants?page={{prevPage}}"
+         aria-label="Previous"
+         >
+        <span aria-hidden="true">&laquo;</span>
+      </a>
+    </li>
+    {{#each pages}}
+    <li class="page-item {{#isEq ../currPage this }}active{{/isEq}}">
+      <a class="page-link" href="/admin/restaurants?page={{this}}">{{this}}</a>
+    </li>
+    {{/each}}
+    <li class="page-item
+              {{#isEq nextPage 0 }}
+              disabled
+              {{/isEq}}
+              ">
+      <a class="page-link"
+         href="/restaurants?page={{nextPage}}"
+         aria-label="Next">
+        <span aria-hidden="true">&raquo;</span>
+      </a>
+    </li>
+  </ul>
+</nav>
+
+<script>
+  const forms = document.querySelectorAll('.deleteBtn')
+  forms.forEach(form => {
+  form.addEventListener('submit', e => {
+    e.preventDefault()
+    e.stopPropagation()
+    Swal.fire({
+    title: '確定要刪除類別嗎？',
+    showCancelButton: true,
+    confirmButtonText: '確定',
+    cancelButtonText: '取消'
+}).then((result) => {
+  /* Read more about isConfirmed, isDenied below */
+  if (result.isConfirmed) {
+    Swal.fire('刪除', '', 'success')
+    e.target.submit()
+  } else if (result.isDenied) {
+    Swal.fire('取消', '', 'info')
+  }
+    })
+  })
+})
+</script>
