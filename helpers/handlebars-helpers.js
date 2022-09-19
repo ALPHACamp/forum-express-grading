@@ -1,10 +1,11 @@
 const dayjs = require('dayjs')
 
-const currentYear = () => dayjs().year() // 取得當年年分
-const isAdmin = (value, options) => {
-  return value === 1 ? options.fn(this) : options.inverse(this)
-}
 module.exports = {
-  currentYear,
-  isAdmin
+  currentYear: () => dayjs().year(), // 取得當年年分
+  isAdmin: function (value, options) {
+    return value === 1 ? options.fn(this) : options.inverse(this)
+  },
+  ifCond: function (a, b, options) {
+    return a === b ? options.fn(this) : options.inverse(this)
+  }
 }
