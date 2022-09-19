@@ -13,10 +13,10 @@ exports.getRestaurants = async (req, res, next) => {
       return res.redirect('/restaurants')
     }
     const pages = Array.from({ length: Math.ceil(count / pageSize) }, (_, i) => Number(i + 1))
-    const restaurants = rows.map(({ dataValues }) => dataValues)
+    const restaurants = rows.map(({ dataValues }) => ({...dataValues, description: dataValues.description.substring(0, 50)}))
     const nextPage = currPage === pages.length ? 0 : currPage + 1
     const prevPage = currPage - 1
-    return res.render('restaurants', { restaurants, pages, nextPage, prevPage, currPage: String(currPage) })
+    return res.render('restaurants', { restaurants, pages, nextPage, prevPage, currPage })
   } catch (err) {
     next(err)
   }
