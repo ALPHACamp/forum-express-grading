@@ -1,12 +1,4 @@
-<h1>餐廳後台</h1>
-<ul class="nav nav-tabs">
-  <li class="nav-item">
-    <a class="nav-link" aria-current="page" href="/admin/users">Users</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" href="/admin/restaurants">Restaurants</a>
-  </li>
-</ul>
+{{> admin-tabs route="restaurants"}}
 <div class="mt-3 mb-3 d-flex flex-row-reverse">
   <a href='/admin/restaurants/create'>
     <button type="button" class="btn btn-primary">New Restaurant</button>
