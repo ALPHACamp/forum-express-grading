@@ -22,16 +22,18 @@ const restaurantController = {
       }),
       Category.findAll({ raw: true })
     ]).then(([restaurants, categories]) => {
-      // create user's favorite restaurants id set
-      const favoritedRestaurantsId = new Set()
-      req.user.FavoritedRestaurants.map(fr => favoritedRestaurantsId.add(fr.id))
+      // create user's favorite/like restaurants id set
+      const [favoritedRestaurantsId, likedRestaurantsId] = [new Set(), new Set()]
+      req.user.FavoritedRestaurants.forEach(fr => favoritedRestaurantsId.add(fr.id))
+      req.user.LikedRestaurants.forEach(lr => likedRestaurantsId.add(lr.id))
 
       const data = restaurants.rows.map(r => {
         if (r.description.length >= 50) {
           r.description = r.description.substring(0, 47) + '...'
         }
-        // add isFavorite key to show proper favorite button
+        // add isFavorited/isLiked key to show proper button
         r.isFavorited = favoritedRestaurantsId.has(r.id)
+        r.isLiked = likedRestaurantsId.has(r.id)
         return r
       })
 
@@ -50,7 +52,8 @@ const restaurantController = {
         include: [
           Category,
           { model: Comment, include: User },
-          { model: User, as: 'FavoritedUsers' }
+          { model: User, as: 'FavoritedUsers' },
+          { model: User, as: 'LikedUsers' }
         ],
         order: [[Comment, 'createdAt', 'DESC']],
         nest: true
@@ -58,7 +61,8 @@ const restaurantController = {
       if (!restaurant) throw new Error("Restaurant doesn't exist!")
       await restaurant.increment('viewCounts', { by: 1 })
       const isFavorited = restaurant.FavoritedUsers.some(fu => fu.id === req.user.id)
-      res.render('restaurant', { restaurant: restaurant.toJSON(), isFavorited })
+      const isLiked = restaurant.LikedUsers.some(lu => lu.id === req.user.id)
+      res.render('restaurant', { restaurant: restaurant.toJSON(), isFavorited, isLiked })
     } catch (e) {
       next(e)
     }
