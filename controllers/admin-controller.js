@@ -21,7 +21,7 @@ exports.getRestaurants = async (req, res, next) => {
                                                       Category: dataValues.Category.dataValues }))
     const nextPage = currPage === pages.length ? 0 : currPage + 1
     const prevPage = currPage - 1
-    return res.render('admin/restaurants', { restaurants, pages, nextPage, prevPage, currPage: String(currPage) })
+    return res.render('admin/restaurants', { restaurants, pages, nextPage, prevPage, currPage })
   } catch (err) {
     next(err)
   }

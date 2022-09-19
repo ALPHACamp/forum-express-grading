@@ -41,7 +41,7 @@
       </a>
     </li>
     {{#each pages}}
-    <li class="page-item {{#isEq currPage this }}active{{/isEq}}">
+    <li class="page-item {{#isEq ../currPage this }}active{{/isEq}}">
       <a class="page-link" href="/restaurants?page={{this}}">{{this}}</a>
     </li>
     {{/each}}
