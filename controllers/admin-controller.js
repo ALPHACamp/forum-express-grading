@@ -151,25 +151,3 @@ exports.patchUser = async (req, res, next) => {
     next(err)
   }
 }
-
-exports.getCategories = async (req, res, next) => {
- try {
-    const pageSize = 15
-    const currPage = +req.query.page || 1
-    const { count, rows } = await Category.findAndCountAll({
-      offset: (currPage - 1) * pageSize,
-      limit: pageSize
-    })
-    if (currPage > Math.ceil(count / pageSize)) {
-      req.flash('error_messages', '頁面不存在')
-      return res.redirect('/admin/categories')
-    }
-    const pages = Array.from({ length: Math.ceil(count / pageSize) }, (_, i) => Number(i + 1))
-    const categories = rows.map(({ dataValues }) => dataValues)
-    const nextPage = currPage === pages.length ? 0 : currPage + 1
-    const prevPage = currPage - 1
-    return res.render('admin/categories', { categories, pages, nextPage, prevPage, currPage })
-  } catch (err) {
-    next(err)
-  }
-}
