@@ -16,6 +16,7 @@ router.post('/restaurants', upload.single('image'), adminController.postRestaura
 router.get('/restaurants', adminController.getRestaurants)
 
 router.get('/categories', categoryController.getCategories)
+router.post('/categories', categoryController.postCategories)
 
 router.get('', (req, res) => res.redirect('/admin/restaurants'))
 
