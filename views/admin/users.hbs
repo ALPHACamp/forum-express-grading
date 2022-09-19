@@ -34,8 +34,8 @@
       <td>
         {{#if this.isAdmin}}
         <form action="/admin/users/{{this.id}}?_method=PATCH" method="POST" style="display: inline;">
-          <button type="submit" class="btn btn-link link-info" {{#isEqual this.email 'root@example.com'
-            }}disabled{{/isEqual}}>
+          <button type="submit" class="btn btn-link link-info" {{#isSuperuser this.email 
+            }}disabled{{/isSuperuser}}>
             設置為使用者
           </button>
         </form>

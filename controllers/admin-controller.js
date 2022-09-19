@@ -1,5 +1,8 @@
 const { Restaurant, User } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
 
 const adminController = {
   getRestaurants: (req, res, next) => {
@@ -21,7 +24,7 @@ const adminController = {
     return User.findByPk(id)
       .then(user => {
         if (!user) throw new Error("User didn't exist!")
-        if (user.email === 'root@example.com') {
+        if (user.email === process.env.SUPERUSER_EMAIL) {
           req.flash('error_messages', '禁止變更 root 權限')
           return res.redirect('back')
         }

@@ -1,6 +1,5 @@
 const path = require('path')
 const express = require('express')
-
 const handlebars = require('express-handlebars')
 const session = require('express-session')
 const flash = require('connect-flash')
