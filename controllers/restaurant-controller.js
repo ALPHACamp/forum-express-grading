@@ -24,12 +24,12 @@ exports.getRestaurants = async (req, res, next) => {
 
 exports.getRestaurant = async (req, res, next) => {
   try {
-    const restaurant = await Restaurant.findByPk(req.params.restaurantId, { raw: true, include:[Category], nest: true })
+    const restaurant = await Restaurant.findByPk(req.params.restaurantId, { include:[Category], nest: true })
     if (!restaurant) {
       throw new Error('Restaurant not found')
     }
-    console.log(restaurant)
-    return res.render('restaurant', { restaurant })
+    await restaurant.increment( 'view_count', { by: 1 })
+    return res.render('restaurant', { restaurant: restaurant.toJSON() })
   } catch (error) {
     next(error)
   }
@@ -41,7 +41,6 @@ exports.getDashBoard = async (req, res, next) => {
     if (!restaurant) {
       throw new Error('Restaurant not found')
     }
-    console.log(restaurant)
     return res.render('dashboard', { restaurant })
   } catch (error) {
     next(error)
