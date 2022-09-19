@@ -1,4 +1,4 @@
-const { Restaurant, User } = require('../models')
+const { Restaurant, User, Category } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 exports.getRestaurants = async (req, res, next) => {
@@ -6,6 +6,9 @@ exports.getRestaurants = async (req, res, next) => {
     const pageSize = 15
     const currPage = +req.query.page || 1
     const { count, rows } = await Restaurant.findAndCountAll({
+      include: [
+        { model: Category }
+      ],
       offset: (currPage - 1) * pageSize,
       limit: pageSize
     })
@@ -14,7 +17,8 @@ exports.getRestaurants = async (req, res, next) => {
       return res.redirect('/admin/restaurants')
     }
     const pages = Array.from({ length: Math.ceil(count / pageSize) }, (_, i) => Number(i + 1))
-    const restaurants = rows.map(({ dataValues }) => dataValues)
+    const restaurants = rows.map(({ dataValues }) =>({...dataValues,
+                                                      Category: dataValues.Category.dataValues }))
     const nextPage = currPage === pages.length ? 0 : currPage + 1
     const prevPage = currPage - 1
     return res.render('admin/restaurants', { restaurants, pages, nextPage, prevPage, currPage: String(currPage) })
@@ -51,7 +55,8 @@ exports.postRestaurant = async (req, res, next) => {
 
 exports.getRestaurant = async (req, res, next) => {
   try {
-    const restaurant = await Restaurant.findByPk(req.params.restaurantId, { raw: true })
+    const restaurant = await Restaurant.findByPk(req.params.restaurantId, { raw: true, nest: true, 
+      include: [Category]   })
     if (!restaurant) {
       throw new Error('Restaurant not found')
     }
