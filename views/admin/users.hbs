@@ -16,16 +16,20 @@
     <tr>
       <th scope="row">{{this.id}}</th>
       <td>{{this.name}}</td>
-      <td>
-        {{this.email}}
-      </td>
-      <td>
-        {{this.role}}
-      </td>
+      <td>{{this.email}}</td>
+      {{#if isAdmin}}
+      <td>admin</td>
+      {{else}}
+      <td>user</td>
+      {{/if}}
       <td>
         <form action="/admin/users/{{this.id}}?_method=PATCH" method="POST" style="display: inline;">
           <button type="submit" class="btn btn-link without-underline">
-            {{this.patch}}
+            {{#if isAdmin}}
+            set as user
+            {{else}}
+            set as admin
+            {{/if}}
           </button>
         </form>
       </td>

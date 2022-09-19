@@ -98,23 +98,8 @@ const adminController = {
       .catch(err => next(err))
   },
   getUsers: (req, res, next) => {
-    return User.findAll({ raw: true })
-      .then(users => {
-        /*
-        為使 users.hbs 渲染出正確的 Role，
-        在此給 users 添增兩個鍵：role, patch
-        */
-        users.forEach(e => {
-          if (e.isAdmin === 1) {
-            e.role = 'admin'
-            e.patch = 'set as user'
-          } else if (e.isAdmin === 0) {
-            e.role = 'user'
-            e.patch = 'set as admin'
-          }
-        })
-        return res.render('admin/users', { users })
-      })
+    return User.findAll({ raw: true })      
+    .then(users => res.render('admin/users', { users }))
       .catch(err => next(err))
   },
   patchUser: (req, res, next) => {
