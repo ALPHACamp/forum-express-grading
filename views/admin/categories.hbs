@@ -1,0 +1,41 @@
+{{>admin-tabs route='categories'}}
+<form class="row g-3" action="/admin/categories{{#if categories.id}} /{{categories.id}}?_method=PUT {{/if}}" method="POST">
+  <div class="row mt-4">
+    <div class="col-auto">
+      <label for="category" class="visually-hidden">category</label>
+      <input type="text" class="form-control" id="category" name="category" placeholder="category" {{#if categories.id}} /{{categories.id}}value="{{categories.name}}"{{/if}}>
+    </div>
+    <div class="col-auto">
+      <button type="submit" class="btn btn-success mb-3">Submit</button>
+    </div>
+</form>
+<br />
+<br />
+<table class="table align-middle table-dark">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Category</th>
+      <th scope="col">#</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each categories}}
+    <tr class="table-light">
+      <th scope="row">{{this.id}}</th>
+      <td>{{this.name}}</td>
+      <td>
+        <button type="button" class="btn btn-link">
+          <a class="btn btn-link link-primary" href="/admin/categories/{{this.id}}">
+            Edit
+          </a>
+        </button>
+        <form action="/admin/categories/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
+          <button type="submit" class="btn btn-link link-danger"
+            onclick="return confirm(`確定要刪除{{ this.name }}嗎?`)">Delete</button>
+        </form>
+      </td>
+    </tr>
+    {{/each}}
+  </tbody>
+</table>
