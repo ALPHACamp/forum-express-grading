@@ -27,13 +27,19 @@ exports.getRestaurants = async (req, res, next) => {
   }
 }
 
-exports.createRestaurant = (req, res, next) => {
-  return res.render('admin/create-restaurants')
+exports.createRestaurant = async (req, res, next) => {
+  try {
+    const categories = await Category.findAll({ raw: true })
+    return res.render('admin/create-restaurants', { categories })
+  } catch (err) {
+    next(err)
+  }
+  
 }
 
 exports.postRestaurant = async (req, res, next) => {
   try {
-    const { name, tel, address, openingHours, description } = req.body
+    const { name, tel, address, openingHours, description, categoryId } = req.body
     if (!name) throw new Error('Restaurant name required')
     const { file } = req
     const filePath = await imgurFileHandler(file)
@@ -43,7 +49,8 @@ exports.postRestaurant = async (req, res, next) => {
       address,
       openingHours,
       description,
-      image: filePath || null
+      image: filePath || null,
+      categoryId
     })
 
     req.flash('success_messages', 'restaurant successfully created')
@@ -68,9 +75,12 @@ exports.getRestaurant = async (req, res, next) => {
 
 exports.editRestaurant = async (req, res, next) => {
   try {
-    const restaurant = await Restaurant.findByPk(req.params.restaurantId, { raw: true })
+    const [restaurant, categories] = await Promise.all([
+      Restaurant.findByPk(req.params.restaurantId, { raw: true }),
+      Category.findAll({ raw: true })
+    ])
     if (!restaurant) throw new Error('No restaurant found')
-    res.render('admin/edit-restaurant', { restaurant })
+    res.render('admin/edit-restaurant', { restaurant, categories })
   } catch (err) {
     next(err)
   }
@@ -78,7 +88,7 @@ exports.editRestaurant = async (req, res, next) => {
 
 exports.putRestaurant = async (req, res, next) => {
   try {
-    const { name, tel, address, openingHours, description } = req.body
+    const { name, tel, address, openingHours, description, categoryId } = req.body
     if (!name) throw new Error('Name is required')
     const { file } = req
     const [restaurant, filePath] = await Promise.all(
@@ -93,7 +103,8 @@ exports.putRestaurant = async (req, res, next) => {
       address,
       openingHours,
       description,
-      image: filePath || restaurant.image
+      image: filePath || restaurant.image,
+      categoryId
     })
     req.flash('success_messages', 'Successfully updated')
     res.redirect('/admin/restaurants')
