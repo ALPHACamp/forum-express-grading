@@ -9,10 +9,11 @@ const categoryController = {
       })
       .catch(err => next(err))
   },
-  postCategories: (req, res, next) => { // create
+  postCategory: (req, res, next) => { // create
     const { name } = req.body
-    Category.create(name)
-      .then(categories => res.redirect('/admin/categories'))
+    if (!name) throw new Error('Category name is required.')
+    Category.create({ name })
+      .then(() => res.redirect('/admin/categories'))
       .catch(err => next(err))
   },
   getCategory: (req, res, next) => { // browse edit

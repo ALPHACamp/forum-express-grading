@@ -15,8 +15,8 @@ router.get('/users', adminController.getUsers) // browse users page
 router.patch('/users/:id', adminController.patchUser) // patch user
 
 router.get('/categories', categoryController.getCategories) // browse category
-router.post('/categories/:id', categoryController.postCategories) // create category
-router.post('/categories/:id', categoryController.getCategory) // browse edit page
+router.post('/categories', categoryController.postCategory) // create category
+router.get('/categories/:id', categoryController.getCategory) // browse edit page
 router.put('/categories/:id', categoryController.putCategory) // edit
 router.delete('/categories/:id', categoryController.deleteCategory) // delete
 router.get('/', (req, res) => {
