@@ -58,3 +58,17 @@ exports.putCategory = async (req, res, next) => {
     next(err)
   }
 }
+
+exports.deleteCategory = async (req, res, next) => {
+  try {
+    const { id } = req.params
+    if (!id) throw new Error('需要 id')
+    const category = await Category.findByPk(id)
+    if (!category) throw new Error('找不到此類別')
+
+    await category.destroy()
+    return res.redirect('/admin/categories')
+  } catch (err) {
+    next(err)
+  }
+}
