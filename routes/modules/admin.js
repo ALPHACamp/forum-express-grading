@@ -1,8 +1,11 @@
 const express = require('express')
 const router = express.Router()
 const adminController = require('../../controllers/admin-controller')
+const categoryController = require('../../controllers/category-controller')
 const upload = require('../../middleware/multer')
-
+// categories
+router.get('/categories', categoryController.getCategories)
+// restaurants
 router.get('/restaurants/create', adminController.createRestaurants)
 
 router.get('/restaurants/:restId/edit', adminController.editRestaurants)
@@ -20,6 +23,7 @@ router.get('/', (req, res) => {
 })
 router.delete('/restaurants/:restId', adminController.deleteRestaurant)
 
+// users
 router.patch('/users/:id', adminController.patchUser)
 
 router.get('/users', adminController.getUsers)
