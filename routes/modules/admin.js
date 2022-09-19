@@ -13,8 +13,11 @@ router.get('/restaurants', adminController.getRestaurants)
 router.post('/restaurants', upload.single('image'), adminController.postRestaurant)
 router.get('/users', adminController.getUsers)
 router.patch('/users/:userId', adminController.patchUser)
+router.get('/categories/:id', categoryController.getCategories)
+router.put('/categories/:id', categoryController.putCategory)
 router.get('/categories', categoryController.getCategories)
 router.post('/categories', categoryController.postCategory)
+
 router.get('', (req, res) => res.redirect('/admin/restaurants'))
 
 module.exports = router
