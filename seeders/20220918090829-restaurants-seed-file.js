@@ -12,6 +12,7 @@ module.exports = {
         address: faker.address.streetAddress(),
         opening_hours: '08:00',
         image: `https://loremflickr.com/320/240/restaurant,food/?random=${Math.random() * 100}`,
+        view_counts: 0,
         description: faker.lorem.text(),
         created_at: new Date(),
         updated_at: new Date(),
