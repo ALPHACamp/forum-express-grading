@@ -34,3 +34,16 @@ exports.getRestaurant = async (req, res, next) => {
     next(error)
   }
 }
+
+exports.getDashBoard = async (req, res, next) => {
+  try {
+    const restaurant = await Restaurant.findByPk(req.params.restaurantId, { raw: true, include:[Category], nest: true })
+    if (!restaurant) {
+      throw new Error('Restaurant not found')
+    }
+    console.log(restaurant)
+    return res.render('dashboard', { restaurant })
+  } catch (error) {
+    next(error)
+  }
+}
