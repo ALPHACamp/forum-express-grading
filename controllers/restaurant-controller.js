@@ -1,4 +1,4 @@
-const { Restaurant } = require('../models')
+const { Restaurant, Category } = require('../models')
 
 exports.getRestaurants = async (req, res, next) => {
   try {
@@ -24,10 +24,11 @@ exports.getRestaurants = async (req, res, next) => {
 
 exports.getRestaurant = async (req, res, next) => {
   try {
-    const restaurant = await Restaurant.findByPk(req.params.restaurantId, { raw: true })
+    const restaurant = await Restaurant.findByPk(req.params.restaurantId, { raw: true, include:[Category], nest: true })
     if (!restaurant) {
       throw new Error('Restaurant not found')
     }
+    console.log(restaurant)
     return res.render('restaurant', { restaurant })
   } catch (error) {
     next(error)
