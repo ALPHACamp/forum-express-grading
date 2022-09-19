@@ -5,6 +5,9 @@ const categoryController = require('../../controllers/category-controller')
 const upload = require('../../middleware/multer')
 // categories
 router.get('/categories', categoryController.getCategories)
+
+router.post('/categories', categoryController.postCategory)
+
 // restaurants
 router.get('/restaurants/create', adminController.createRestaurants)
 
