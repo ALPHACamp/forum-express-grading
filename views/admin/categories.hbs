@@ -1,5 +1,18 @@
 {{>admin-tabs route='categories'}}
 <div class="d-flex align-items-center pt-3 pb-5 my-3 text-white-50 bg-purple">
+  {{#if category}}
+  <form action="/admin/categories/{{category.id}}?_method=PUT" class="row" method="POST">
+    <div class="col-auto">
+      <input type="text" placeholder="name" name="name" value="{{category.name}}" class="form-control">
+    </div>
+    <div class="col-auto">
+      <button class="btn btn-warning" type="submit">
+        Update
+      </button>
+      <a href="/admin/categories" class="btn btn-link link-secondary">or Create New</a>
+    </div>
+  </form>
+  {{else}}
   <form action="/admin/categories" class="row" method="POST">
     <div class="col-auto">
       <input type="text" class="form-control" placeholder="Category Name" name="name" required>
@@ -8,6 +21,7 @@
       <button class="btn btn-success" type="submit">Create</button>
     </div>
   </form>
+  {{/if}}
 </div>
 <table class="table align-middle">
   <thead class="thead-dark">

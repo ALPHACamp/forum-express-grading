@@ -4,6 +4,8 @@ const adminController = require('../../controllers/admin-controller')
 const categoryController = require('../../controllers/category-controller')
 const upload = require('../../middleware/multer')
 
+router.put('/categories/:id', categoryController.putCategory)
+router.get('/categories/:id', categoryController.getCategories)
 router.post('/categories', categoryController.postCategories)
 router.get('/categories', categoryController.getCategories)
 router.patch('/users/:id', adminController.patchUser)
