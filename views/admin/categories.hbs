@@ -1,14 +1,14 @@
 {{>admin-tabs route='categories'}}
-<form class="row g-3" action="/admin/categories{{#if categories.id}} /{{categories.id}}?_method=PUT {{/if}}" method="POST">
-  <div class="row mt-4">
+<div class="d-flex align-items-center pt-3  my-3 text-white-50 bg-purple">
+  <form class="row" action="/admin/categories" method="POST">
     <div class="col-auto">
-      <label for="category" class="visually-hidden">category</label>
-      <input type="text" class="form-control" id="category" name="category" placeholder="category" {{#if categories.id}} /{{categories.id}}value="{{categories.name}}"{{/if}}>
+      <input class="form-control" type="text" placeholder="Category Name" name="name">
     </div>
     <div class="col-auto">
-      <button type="submit" class="btn btn-success mb-3">Submit</button>
+      <button class="btn btn-success" type="submit">Create</button>
     </div>
-</form>
+  </form>
+</div>
 <br />
 <br />
 <table class="table align-middle table-dark">
