@@ -15,7 +15,7 @@ describe('# R01', () => {
         // 對 POST /signin 發出請求，參數是錯誤的密碼
         .post('/signin')
         .type('urlencoded')
-        .send('email=root@example.com&password=123')
+        .send('email=roo-t@example.com&password=123')
         // 期待登入驗證回應失敗，重新導向 /signin
         .expect('Location', '/signin')
         .expect(302, done)
