@@ -22,12 +22,19 @@ const restaurantController = {
       }),
       Category.findAll({ raw: true })
     ]).then(([restaurants, categories]) => {
-      const data = restaurants.rows.map(restaurant => {
-        if (restaurant.description.length >= 50) {
-          restaurant.description = restaurant.description.substring(0, 47) + '...'
+      // create user's favorite restaurants id set
+      const favoritedRestaurantsId = new Set()
+      req.user.FavoritedRestaurants.map(fr => favoritedRestaurantsId.add(fr.id))
+
+      const data = restaurants.rows.map(r => {
+        if (r.description.length >= 50) {
+          r.description = r.description.substring(0, 47) + '...'
         }
-        return restaurant
+        // add isFavorite key to show proper favorite button
+        r.isFavorited = favoritedRestaurantsId.has(r.id)
+        return r
       })
+
       return res.render('restaurants', {
         restaurants: data, // show restaurants
         categories, // show categories navbar
@@ -42,14 +49,16 @@ const restaurantController = {
       const restaurant = await Restaurant.findByPk(req.params.id, {
         include: [
           Category,
-          { model: Comment, include: User }
+          { model: Comment, include: User },
+          { model: User, as: 'FavoritedUsers' }
         ],
         order: [[Comment, 'createdAt', 'DESC']],
         nest: true
       })
       if (!restaurant) throw new Error("Restaurant doesn't exist!")
       await restaurant.increment('viewCounts', { by: 1 })
-      res.render('restaurant', { restaurant: restaurant.toJSON() })
+      const isFavorited = restaurant.FavoritedUsers.some(fu => fu.id === req.user.id)
+      res.render('restaurant', { restaurant: restaurant.toJSON(), isFavorited })
     } catch (e) {
       next(e)
     }

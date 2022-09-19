@@ -1,7 +1,7 @@
 const passport = require('passport')
 const LocalStrategy = require('passport-local').Strategy
 const bcrypt = require('bcryptjs')
-const { User } = require('../models')
+const { User, Restaurant } = require('../models')
 
 // login with email and password
 passport.use(new LocalStrategy(
@@ -34,9 +34,11 @@ passport.serializeUser((user, done) => {
 
 // deserialize user
 passport.deserializeUser((id, done) => {
-  User.findByPk(id).then(user => {
-    return done(null, user.toJSON())
+  User.findByPk(id, {
+    include: [{ model: Restaurant, as: 'FavoritedRestaurants' }]
   })
+    .then(user => done(null, user.toJSON()))
+    .catch(e => done(e, false))
 })
 
 module.exports = passport
