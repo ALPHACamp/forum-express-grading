@@ -7,6 +7,14 @@ const categoryController = {
     })
       .then(categories => res.render('admin/categories', { categories }))
       .catch(err => next(err))
+  },
+  postCategories: (req, res, next) => {
+    let { name } = req.body
+    name = name.trim()
+    if (!name) throw new Error('Category name is required!')
+    return Category.create({ name })
+      .then(() => res.redirect('/admin/categories'))
+      .catch(err => next(err))
   }
 }
 
