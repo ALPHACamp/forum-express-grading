@@ -1,0 +1,21 @@
+<div class="row mb-5">
+  <div class="col-md-3">
+    <img class="img-responsive center-block mb-5" src="{{viewUser.image}}" style="width: 250px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+  </div>
+  <div class="col-md-8">
+    <h1>{{viewUser.name}}</h1>
+    <p>{{viewUser.email}}</p>
+
+    {{#if viewUser.isAdmin}}
+      <p>權限：管理員</p>
+    {{else}}
+      <p>權限：使用者</p> 
+    {{/if}}
+
+    {{#isEq viewUser.id user.id}}
+      <a class="btn btn-primary" href="/user/{{user.id}}/edit">編輯資料</a>
+    {{/isEq}}
+      <a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
+  </div>
+  <hr>
+</div>

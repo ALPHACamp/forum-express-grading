@@ -40,3 +40,15 @@ exports.logout = (req, res, next) => {
   req.logout()
   res.redirect('/signin')
 }
+
+exports.getUser = async (req, res, next) => {
+  try {
+    const { userId } = req.params
+    const user = await User.findByPk(userId)
+    if (!user) throw new Error('User not found!')
+    console.log(user)
+    return res.render('user', { viewUser: user.toJSON() })
+  } catch (err) {
+    next(err)
+  }
+}
