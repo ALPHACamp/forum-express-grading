@@ -1,18 +1,28 @@
 
-const { Restaurant, User } = require('../models')
+const { Restaurant, User, Category } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const adminController = {
   getRestaurants: async (req, res) => {
     try {
-      const restaurants = await Restaurant.findAll({ raw: true })
+      const restaurants = await Restaurant.findAll({
+        raw: true,
+        nest: true, // 讓關聯進來的資料整齊些
+        include: [Category]
+      })
       return res.render('admin/restaurants', { restaurants })
     } catch (error) {
       console.log(error)
     }
   },
-  createRestaurant: (req, res) => {
-    res.render('admin/create-restaurant')
+  createRestaurant: async (req, res, next) => {
+    try {
+      const category = await Category.findAll({ raw: true })
+      console.log(category)
+      res.render('admin/create-restaurant', { category })
+    } catch (error) {
+      next(error)
+    }
   },
   postRestaurant: async (req, res, next) => {
     // 取出表單中的資料
@@ -34,7 +44,9 @@ const adminController = {
     const { id } = req.params
     try {
       const restaurant = await Restaurant.findByPk(id, {
-        raw: true
+        raw: true,
+        nest: true,
+        include: [Category]
       })
       if (!restaurant) throw new Error("Can't find restaurant , please search agian")
       res.render('admin/restaurant', { restaurant })
@@ -47,7 +59,8 @@ const adminController = {
     const { id } = req.params
     try {
       const restaurant = await Restaurant.findByPk(id)
-      res.render('admin/edit-restaurant', { restaurant: restaurant.toJSON() })
+      const category = await Category.findAll({ raw: true })
+      res.render('admin/edit-restaurant', { restaurant: restaurant.toJSON(), category })
     } catch (error) {
       next(error)
     }
