@@ -26,6 +26,7 @@ router.get('/restaurants/:id', authenticated, restaurantController.getRestaurant
 router.get('/restaurants', authenticated, restaurantController.getRestaurants)
 
 // comment
+router.delete('/comments/:id', authenticatedAdmin, commentController.deleteComment)
 router.post('/comments', authenticated, commentController.postComment)
 
 // fallback 路由
