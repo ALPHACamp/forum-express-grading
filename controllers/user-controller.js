@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs')
 const db = require('../models')
 const { User } = db
+const { imgurFileHandler } = require('../helpers/file-helpers')
 
 exports.signUpPage = (req, res, next) => {
   res.render('signup')
@@ -46,13 +47,33 @@ exports.getUser = async (req, res, next) => {
     const { userId } = req.params
     const user = await User.findByPk(userId)
     if (!user) throw new Error('User not found!')
-    console.log(user)
-    return res.render('user', { viewUser: user.toJSON() })
+    return res.render('/users/profile', { viewUser: user.toJSON() })
   } catch (err) {
     next(err)
   }
 }
 
-exports.editUser = async (req, res, next) => {
+exports.editUser = (req, res, next) => {
   return res.render('edit-user')
+}
+
+exports.putUser = async (req, res, next) => {
+  try {
+    const { userId } = req.params
+    const user = await User.findByPk(userId)
+    if (!user) throw new Error('User not found!')
+
+    const { name } = req.body
+    if (!name) throw new Error('名稱為必填欄位')
+
+    const { file } = req
+    const filePath = await imgurFileHandler(file)
+    await user.update({
+      name: req.body.name,
+      image: filePath || null
+    })
+    return res.redirect('/users/' + userId)
+  } catch (err) {
+    next(err)
+  }
 }
