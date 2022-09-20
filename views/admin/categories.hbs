@@ -43,7 +43,7 @@
             </a>
           </button>
           <form action="/admin/categories/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
-            <button type="submit" class="btn btn-link link-danger">Delete</button>
+            <button type="submit"onclick="return confirm(`同時也會刪除相應的餐廳，確定要刪除 {{this.name}} 嗎？`)"  class="btn btn-link link-danger">Delete</button>
           </form>
         </td>
       </tr>
