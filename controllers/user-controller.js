@@ -52,3 +52,7 @@ exports.getUser = async (req, res, next) => {
     next(err)
   }
 }
+
+exports.editUser = async (req, res, next) => {
+  return res.render('edit-user')
+}
