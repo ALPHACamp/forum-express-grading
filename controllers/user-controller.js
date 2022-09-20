@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs')
-const { User, Comment, Restaurant, Favorite, Like } = require('../models')
+const { User, Comment, Restaurant, Favorite, Like, Followship } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 const { getUser } = require('../helpers/auth-helpers')
 
@@ -168,17 +168,53 @@ const userController = {
 
   getTopUsers: (req, res, next) => {
     return User.findAll({
-      include: [{ model: User, as: 'Followers' }]
+      include: [{ model: User, as: 'Followers', attributes: ['id'] }]
     })
       .then(users => {
-        users = users.map(user => ({
-          ...user.toJSON(),
-          followerCount: user.Followers.length,
-          isFollowed: req.user.Followings.some(f => f.id === user.id)
-        }))
-        res.render('top-users', { users: users })
+        const result = users
+          .map(user => ({
+            ...user.toJSON(),
+            followerCount: user.Followers.length,
+            isFollowed: req.user.Followings.some(f => f.id === user.id)
+          }))
+          .sort((a, b) => b.followerCount - a.followerCount)
+        res.render('top-users', { users: result })
       })
       .catch(err => next(err))
+  },
+
+  addFollowing: (req, res, next) => {
+    // current user is a follower
+    const followerId = req.user.id
+    const followingId = req.params.userId
+    if (followerId === Number(followingId)) throw new Error("User can't follow themself")
+
+    Promise.all([
+      User.findByPk(followingId),
+      Followship.findOne({ where: { followerId, followingId } })
+    ])
+      .then(([followingUser, followship]) => {
+        if (!followingUser) throw new Error("The user you want to follow doesn't exist!")
+        if (followship) throw new Error('You are already following this user!')
+        return Followship.create({ followerId, followingId })
+      })
+      .then(() => res.redirect('back'))
+      .catch(e => next(e))
+  },
+
+  removeFollowing: (req, res, next) => {
+    Followship.findOne({
+      where: {
+        followerId: req.user.id,
+        followingId: req.params.userId
+      }
+    })
+      .then(followship => {
+        if (!followship) throw new Error("You haven't followed this user!")
+        return followship.destroy()
+      })
+      .then(() => res.redirect('back'))
+      .catch(e => next(e))
   }
 }
 
