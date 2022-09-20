@@ -12,6 +12,10 @@
       <p>權限：使用者</p> 
     {{/if}}
 
+    {{#if user.Comments}}
+      <p><strong>{{user.Comments.length}} </strong>已評論餐廳</p>
+    {{/if}}
+
     {{#if user.isUser}}
       <a class="btn btn-primary" href="/users/{{user.id}}/edit">編輯資料</a>
     {{/if}}
@@ -21,3 +25,18 @@
   </div>
   <hr>
 </div>
+{{#if user.Comments}}
+  <p><strong>{{user.Comments.length}} </strong>已評論餐廳</p>
+  <div class="row">
+    {{#each user.Comments}}
+      <div class="col-md-3 mb-4" data-bs-toggle="tooltip" 
+           data-bs-title="{{this.Restaurant.name}}" >
+        <a href="/restaurants/{{this.restaurantId}}" >
+          <img class="img-fluid" src="{{this.Restaurant.image}}" />
+        </a>
+      </div>
+    {{/each}}
+  </div>
+{{else}}
+<p>尚未評論任何餐廳</p>
+{{/if}}

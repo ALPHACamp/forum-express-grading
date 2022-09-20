@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs')
 const db = require('../models')
-const { User } = db
+const { User, Comment, Restaurant } = db
 const { imgurFileHandler } = require('../helpers/file-helpers')
 const { getUser } = require('./../helpers/auth-helpers')
 
@@ -46,10 +46,12 @@ exports.logout = (req, res, next) => {
 exports.getUser = async (req, res, next) => {
   try {
     const { userId } = req.params
-    const user = await User.findByPk(userId)
+    const user = await User.findByPk(userId, {
+      include: [{ model: Comment, include: Restaurant }]
+    })
     if (!user) throw new Error('User not found!')
     const userJSON = user.toJSON()
-    const userData = { ...userJSON, isUser: userId === getUser(req).id }
+    const userData = { ...userJSON, isUser: +userId === getUser(req).id }
     return res.render('users/profile', { user: userData })
   } catch (err) {
     next(err)
