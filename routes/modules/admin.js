@@ -3,7 +3,6 @@ const router = express.Router()
 const adminController = require('../../controllers/admin-controller')
 const upload = require('../../middleware/multer')
 const categoryController = require('../../controllers/category-controller')
-const restController = require('../../controllers/restaurant-controller')
 
 router.get('/restaurants/create', adminController.createRestaurant) // create page
 router.get('/restaurants/:id/edit', adminController.editRestaurant) // edit page
