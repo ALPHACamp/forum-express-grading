@@ -10,6 +10,7 @@ const { generalErrorHandler } = require('../middleware/error-handler')
 
 router.use('/admin', authenticatedAdmin, admin)
 
+router.delete('/comments/:id', authenticatedAdmin, commentController.deleteComment)
 router.post('/comments', authenticated, commentController.postComment)
 router.get('/logout', userController.logout)
 router.get('/signup', userController.signUpPage)
