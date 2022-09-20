@@ -31,7 +31,7 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE
       },
-      view_counts_id: {
+      view_counts: {
         type: Sequelize.INTEGER
       }
     })
