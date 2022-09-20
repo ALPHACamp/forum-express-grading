@@ -1,6 +1,8 @@
 const bcrypt = require('bcryptjs')
 const db = require('../models')
-const { User } = db
+const { User, Comment, Restaurant } = db
+const { imgurFileHandler } = require('../helpers/file-helpers')
+const { getUser } = require('./../helpers/auth-helpers')
 
 exports.signUpPage = (req, res, next) => {
   res.render('signup')
@@ -39,4 +41,53 @@ exports.logout = (req, res, next) => {
   req.flash('success_messages', '成功登出')
   req.logout()
   res.redirect('/signin')
+}
+
+exports.getUser = async (req, res, next) => {
+  try {
+    const { userId } = req.params
+    const user = await User.findByPk(userId, {
+      include: [{ model: Comment, include: Restaurant }]
+    })
+    if (!user) throw new Error('User not found!')
+    const userJSON = user.toJSON()
+    const userData = { ...userJSON, isUser: +userId === getUser(req).id }
+    return res.render('users/profile', { user: userData })
+  } catch (err) {
+    next(err)
+  }
+}
+
+exports.editUser = async (req, res, next) => {
+  try {
+    const { userId } = req.params
+    const user = await User.findByPk(userId)
+    if (!user) throw new Error('User not found!')
+    const userJSON = user.toJSON()
+    return res.render('users/edit', { user: userJSON })
+  } catch (err) {
+    next(err)
+  }
+}
+
+exports.putUser = async (req, res, next) => {
+  try {
+    const { userId } = req.params
+    const user = await User.findByPk(userId)
+    if (!user) throw new Error('User not found!')
+
+    const { name } = req.body
+    if (!name) throw new Error('名稱為必填欄位')
+
+    const { file } = req
+    const filePath = await imgurFileHandler(file)
+    await user.update({
+      name: req.body.name,
+      image: filePath || null
+    })
+    req.flash('success_messages', '使用者資料編輯成功')
+    return res.redirect(`/users/${user.id}`)
+  } catch (err) {
+    next(err)
+  }
 }
