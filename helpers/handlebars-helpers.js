@@ -1,5 +1,8 @@
-const dayjs = require('dayjs') // 載入 dayjs 套件
-exports.currentYear = () => dayjs().year() // 取得當年年份作為 currentYear 的屬性值，並導出
+const dayjs = require('dayjs')
+const relativeTime = require('dayjs/plugin/relativeTime') // 增加這裡
+dayjs.extend(relativeTime)
+
+exports.currentYear = () => dayjs().year()
 
 exports.isEq = function (v1, v2, options) {
   if (v1 === v2) {
@@ -8,3 +11,5 @@ exports.isEq = function (v1, v2, options) {
     return options.inverse(this)
   }
 }
+
+exports.relativeTimeFromNow = a => dayjs(a).fromNow()

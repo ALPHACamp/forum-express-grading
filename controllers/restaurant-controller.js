@@ -1,4 +1,4 @@
-const { Restaurant, Category } = require('../models')
+const { Restaurant, Category, Comment, User } = require('../models')
 
 exports.getRestaurants = async (req, res, next) => {
   try {
@@ -45,7 +45,13 @@ exports.getRestaurants = async (req, res, next) => {
 
 exports.getRestaurant = async (req, res, next) => {
   try {
-    const restaurant = await Restaurant.findByPk(req.params.restaurantId, { include: [Category], nest: true })
+    const restaurant = await Restaurant.findByPk(req.params.restaurantId, {
+      include: [
+        Category,
+        { model: Comment, include: User }
+      ],
+      nest: true
+    })
     if (!restaurant) {
       throw new Error('Restaurant not found')
     }
