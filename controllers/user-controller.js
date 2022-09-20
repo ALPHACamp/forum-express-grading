@@ -136,19 +136,20 @@ exports.removeFavorite = async (req, res, next) => {
 
 exports.addLike = async (req, res, next) => {
   try {
+    console.log('addLike:', req.user)
     const { restaurantId } = req.params
-    const promises = await Promise.all([
+    const promises = Promise.all([
       Restaurant.findByPk(restaurantId),
-      Like.findAll({
+      Like.findOne({
         where: {
           userId: req.user.id,
           restaurantId
         }
       })
     ])
-    const [restaurant, favorite] = await promises
+    const [restaurant, like] = await promises
     if (!restaurant) throw new Error('Restaurant not found')
-    if (favorite) throw new Error('已經加入喜愛')
+    if (like) throw new Error('已經 like 過')
 
     await Like.create({
       userId: req.user.id,

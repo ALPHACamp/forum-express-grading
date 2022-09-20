@@ -22,11 +22,13 @@ exports.getRestaurants = async (req, res, next) => {
       return res.redirect('/restaurants')
     }
     const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
+    const likedRestaurantsId = req.user && req.user.LikedRestaurants.map(({ id }) => id)
     const pages = Array.from({ length: Math.ceil(count / pageSize) }, (_, i) => Number(i + 1))
     const restaurants = rows.map(({ dataValues }) => ({
       ...dataValues,
       description: dataValues.description.substring(0, 50),
       isFavorited: favoritedRestaurantsId.includes(dataValues.id),
+      isLiked: likedRestaurantsId.includes(dataValues.id),
       Category: dataValues.Category.dataValues
     }))
     const nextPage = currPage === pages.length ? 0 : currPage + 1
@@ -51,7 +53,8 @@ exports.getRestaurant = async (req, res, next) => {
       include: [
         Category,
         { model: Comment, include: User },
-        { model: User, as: 'FavoritedUsers' }
+        { model: User, as: 'FavoritedUsers' },
+        { model: User, as: 'LikedUsers' }
       ],
       nest: true
     })
@@ -59,10 +62,12 @@ exports.getRestaurant = async (req, res, next) => {
       throw new Error('Restaurant not found')
     }
     const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id)
+    const isLiked = restaurant.LikedUsers.some(({ id }) => id === req.user.id)
     await restaurant.increment('viewCount')
     return res.render('restaurant', {
       restaurant: restaurant.toJSON(),
-      isFavorited
+      isFavorited,
+      isLiked
     })
   } catch (error) {
     next(error)
