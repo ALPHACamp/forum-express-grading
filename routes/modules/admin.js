@@ -8,6 +8,9 @@ router.get('/categories', categoryController.getCategories)
 
 router.post('/categories', categoryController.postCategory)
 
+router.get('/categories/:id', categoryController.getCategories)
+
+router.put('/admin/categories/:id', categoryController.putCategory)
 // restaurants
 router.get('/restaurants/create', adminController.createRestaurants)
 
