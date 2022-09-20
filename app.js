@@ -11,6 +11,9 @@ const { getUser } = require('./helpers/auth-helpers')
 const handlebarsHelpers = require('./helpers/handlebars-helpers')
 const methodOverride = require('method-override')
 const path = require('path')
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
 
 app.engine('hbs', handlebars({ extname: '.hbs', helpers: handlebarsHelpers }))
 // 設定使用 Handlebars 做為樣板引擎
