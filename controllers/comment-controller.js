@@ -22,3 +22,15 @@ exports.postComment = (req, res, next) => {
     })
     .catch(err => next(err))
 }
+
+exports.deleteComment = async (req, res, next) => {
+  try {
+    const { commentId } = req.params
+    const comment = await Comment.findByPk(commentId)
+    if (!comment) throw new Error('Comment not found!')
+    const deletedComment = await comment.destroy()
+    return res.redirect(`/restaurants/${deletedComment.restaurantId}`)
+  } catch (err) {
+    next(err)
+  }
+}
