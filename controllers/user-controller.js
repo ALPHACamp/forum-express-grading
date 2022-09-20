@@ -3,7 +3,6 @@ const db = require('../models')
 const { User, Comment, Restaurant, Favorite, Like } = db
 const { imgurFileHandler } = require('../helpers/file-helpers')
 const { getUser } = require('./../helpers/auth-helpers')
-const { request } = require('express')
 
 exports.signUpPage = (req, res, next) => {
   res.render('signup')
@@ -155,6 +154,23 @@ exports.addLike = async (req, res, next) => {
       userId: req.user.id,
       restaurantId
     })
+    return res.redirect('back')
+  } catch (err) {
+    next(err)
+  }
+}
+
+exports.removeLike = async (req, res, next) => {
+  try {
+    const like = await Like.findOne({
+      where: {
+        userId: req.user.id,
+        restaurantId: req.params.restaurantId
+      }
+    })
+    if (!like) throw new Error("You havn't favorited this restaurant")
+
+    await like.destroy()
     return res.redirect('back')
   } catch (err) {
     next(err)
