@@ -31,7 +31,7 @@ const categoryController = {
     return Category.findByPk(req.params.id)
       .then(category => {
         if (!category) throw new Error("Category doesn't exist!")
-        category.destroy()
+        return category.destroy()
       })
       .catch(err => next(err))
   }
