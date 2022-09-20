@@ -22,6 +22,7 @@ router.post('/signin', passport.authenticate('local', {
 router.get('/logout', userController.logout)
 // 若接收到的請求路徑'/restaurants'則交由controller處理
 
+router.get('/restaurants/:id', authenticated, restController.getRestaurant)
 router.get('/restaurants', authenticated, restController.getRestaurants)
 
 router.use('/', (req, res) => res.redirect('/restaurants'))

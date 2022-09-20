@@ -3,6 +3,7 @@ const router = express.Router()
 const adminController = require('../../controllers/admin-controller')
 const upload = require('../../middleware/multer')
 const categoryController = require('../../controllers/category-controller')
+const restController = require('../../controllers/restaurant-controller')
 
 router.get('/restaurants/create', adminController.createRestaurant) // create page
 router.get('/restaurants/:id/edit', adminController.editRestaurant) // edit page
@@ -19,6 +20,7 @@ router.post('/categories', categoryController.postCategory) // create category
 router.get('/categories/:id', categoryController.getCategories) // browse edit page
 router.put('/categories/:id', categoryController.putCategory) // edit
 router.delete('/categories/:id', categoryController.deleteCategory) // delete
+
 router.get('/', (req, res) => {
   return res.redirect('/admin/restaurants')
 })
