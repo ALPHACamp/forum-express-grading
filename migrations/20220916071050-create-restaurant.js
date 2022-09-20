@@ -30,6 +30,9 @@ module.exports = {
       updated_at: {
         allowNull: false,
         type: Sequelize.DATE
+      },
+      view_counts_id: {
+        type: Sequelize.INTEGER
       }
     })
   },
