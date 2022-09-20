@@ -5,17 +5,41 @@
   </div>
 
   <div class="col-md-8">
-    <div class="well">
-      <ul class="list-unstyled">
-        <li><strong>{{user.name}}</strong></li>
-        <li><strong>{{user.email}}</strong></li>
-        <li>
-          <a class="btn btn-primary" href="/users/{{user.id}}/edit">edit</a>
-          <a class="btn btn-outline-secondary" href="/">Back</a>
-        </li>
+    <div class="well d-flex flex-column justify-content-between h-100">
 
+      <ul class="list-unstyled">
+        <li class="mb-2"><strong>{{user.name}}</strong></li>
+        <li class="mb-2"><strong>{{user.email}}</strong></li>
+        <li><strong>{{#if user.Comments.length}}{{user.Comments.length}}{{else}}0{{/if}} 已評論餐廳</strong></li>
       </ul>
+
+      <div class="mb-5">
+        <a class="btn btn-primary" href="/users/{{user.id}}/edit">Edit</a>
+        <a class="btn btn-outline-secondary" href="/">Back</a>
+      </div>
+
     </div>
   </div>
 
+</div>
+
+<div class="card">
+  <div class="card-header">
+    {{#if user.Comments.length}}{{user.Comments.length}}{{else}}0{{/if}} 已評論餐廳
+  </div>
+  <div class="card-body p-4">
+    <blockquote class="blockquote mb-0">
+
+      {{#if user.Comments}}
+        {{#each user.Comments}}
+          <a href="/restaurants/{{this.restaurantId}}" style="color:rgba(0, 0, 0, 0); width: 0; height: 0;">
+            <img src="{{this.Restaurant.image}}" style="width: 4rem; height: 4rem; object-fit: cover;" class="flex-shrink-0 me-3" alt="">
+          </a>
+        {{/each}}
+      {{else}}
+        <a style="font-size: 1rem;" href="/restaurants">去評論吧?</a>
+      {{/if}}
+
+    </blockquote>
+  </div>
 </div>

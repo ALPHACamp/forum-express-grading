@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs')
 const db = require('../models')
-const { User } = db
+const { User, Restaurant, Comment } = db
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const userController = {
@@ -46,7 +46,10 @@ const userController = {
   },
   getUser: (req, res, next) => {
     const DEFAULT_IMAGE = 'https://teameowdev.files.wordpress.com/2016/04/avatar24-01.png'
-    return User.findByPk(req.params.id)
+    return User.findByPk(req.params.id, {
+      nest: true,
+      include: { model: Comment, include: Restaurant }
+    })
       .then(user => {
         if (!user) throw new Error("User didn't exist!")
         user.image = user.image || DEFAULT_IMAGE
