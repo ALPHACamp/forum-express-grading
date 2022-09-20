@@ -10,7 +10,6 @@ const methodOverride = require('method-override')
 const app = express()
 const port = process.env.PORT || 3000
 const SESSION_SECRET = 'secret'
-const db = require('./models')
 const session = require('express-session')
 const passport = require('passport')
 const { getUser } = require('./helpers/auth-helpers')

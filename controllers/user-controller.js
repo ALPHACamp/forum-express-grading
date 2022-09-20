@@ -62,7 +62,7 @@ exports.editUser = async (req, res, next) => {
     const user = await User.findByPk(userId)
     if (!user) throw new Error('User not found!')
     const userJSON = user.toJSON()
-    return res.render('users/edit', { user })
+    return res.render('users/edit', { user: userJSON })
   } catch (err) {
     next(err)
   }
