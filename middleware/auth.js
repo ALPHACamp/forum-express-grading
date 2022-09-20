@@ -1,4 +1,4 @@
-const helper = require('../helpers/auth-helper')
+const helper = require('../helpers/auth-helpers')
 
 exports.authenticated = (req, res, next) => {
   if (helper.ensureAuthenticated(req)) return next()

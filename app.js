@@ -13,7 +13,7 @@ const SESSION_SECRET = 'secret'
 const db = require('./models')
 const session = require('express-session')
 const passport = require('passport')
-const { getUser } = require('./helpers/auth-helper')
+const { getUser } = require('./helpers/auth-helpers')
 const handlebarsHelpers = require('./helpers/handlebars-helpers')
 
 app.engine('hbs', handlebars({ extname: '.hbs', helpers: handlebarsHelpers }))
