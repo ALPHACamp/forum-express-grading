@@ -42,21 +42,13 @@
           <button type="button" class="btn btn-link">
             <a
               class="btn btn-link link-primary"
-              href="/admin/restaurants/{{this.id}}"
-            >
-              Show
-            </a>
-          </button>
-          <button type="button" class="btn btn-link">
-            <a
-              class="btn btn-link link-primary"
-              href="/admin/restaurants/{{this.id}}/edit"
+              href="/admin/categories/{{this.id}}"
             >
               Edit
             </a>
           </button>
           <form
-            action="/admin/restaurants/{{this.id}}?_method=DELETE"
+            action="/admin/categories/{{this.id}}?_method=DELETE"
             method="POST"
             style="display: inline;"
           >
