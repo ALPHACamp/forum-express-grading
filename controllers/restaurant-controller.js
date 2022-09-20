@@ -80,3 +80,28 @@ exports.getDashboard = async (req, res, next) => {
     next(error)
   }
 }
+
+exports.getFeeds = async (req, res, next) => {
+  try {
+    const promises = Promise.all([
+      Restaurant.findAll({
+        limit: 10,
+        order: [['createdAt', 'DESC']],
+        include: [Category],
+        raw: true,
+        nest: true
+      }),
+      Comment.findAll({
+        limit: 10,
+        order: [['createdAt', 'DESC']],
+        include: [User, Restaurant],
+        raw: true,
+        nest: true
+      })
+    ])
+    const [restaurants, comments] = await promises
+    return res.render('feeds', { restaurants, comments })
+  } catch (err) {
+    next(err)
+  }
+}
