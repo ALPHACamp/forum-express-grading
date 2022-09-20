@@ -64,11 +64,12 @@ exports.getRestaurant = async (req, res, next) => {
 
 exports.getDashboard = async (req, res, next) => {
   try {
-    const restaurant = await Restaurant.findByPk(req.params.restaurantId, { 
+    const restaurant = await Restaurant.findByPk(req.params.restaurantId, {
       include: [
         Category,
         { model: Comment, include: User }
-      ], nest: true 
+      ],
+      nest: true
     })
     if (!restaurant) {
       throw new Error('Restaurant not found')
