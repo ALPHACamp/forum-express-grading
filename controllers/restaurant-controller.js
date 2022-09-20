@@ -21,10 +21,12 @@ exports.getRestaurants = async (req, res, next) => {
       req.flash('error_messages', '頁面不存在')
       return res.redirect('/restaurants')
     }
+    const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
     const pages = Array.from({ length: Math.ceil(count / pageSize) }, (_, i) => Number(i + 1))
     const restaurants = rows.map(({ dataValues }) => ({
       ...dataValues,
       description: dataValues.description.substring(0, 50),
+      isFavorited: favoritedRestaurantsId.includes(dataValues.id),
       Category: dataValues.Category.dataValues
     }))
     const nextPage = currPage === pages.length ? 0 : currPage + 1
@@ -48,15 +50,20 @@ exports.getRestaurant = async (req, res, next) => {
     const restaurant = await Restaurant.findByPk(req.params.restaurantId, {
       include: [
         Category,
-        { model: Comment, include: User }
+        { model: Comment, include: User },
+        { model: User, as: 'FavoritedUsers' }
       ],
       nest: true
     })
     if (!restaurant) {
       throw new Error('Restaurant not found')
     }
-    await restaurant.update({ viewCount: restaurant.viewCount + 1 })
-    return res.render('restaurant', { restaurant: restaurant.toJSON() })
+    const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id)
+    await restaurant.increment('viewCount')
+    return res.render('restaurant', {
+      restaurant: restaurant.toJSON(),
+      isFavorited
+    })
   } catch (error) {
     next(error)
   }
