@@ -37,7 +37,9 @@ passport.deserializeUser((id, done) => {
   User.findByPk(id, {
     include: [
       { model: Restaurant, as: 'FavoritedRestaurants', attributes: ['id'] },
-      { model: Restaurant, as: 'LikedRestaurants', attributes: ['id'] }
+      { model: Restaurant, as: 'LikedRestaurants', attributes: ['id'] },
+      { model: User, as: 'Followers' },
+      { model: User, as: 'Followings' }
     ]
   })
     .then(user => done(null, user.toJSON()))
