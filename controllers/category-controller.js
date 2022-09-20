@@ -23,6 +23,14 @@ const categoryController = {
     return Category.update({ name: categoryName }, { where: { id: categoryId } })
       .then(() => res.redirect('/admin/categories'))
       .catch(err => next(err))
+  },
+  deleteCategory: (req, res, next) => {
+    const categoryId = req.params.id
+    // return Category.findByPk(categoryId)
+    //   .then(category => category.destroy())
+    return Category.destroy({ where: { id: categoryId } })
+      .then(() => res.redirect('/admin/categories'))
+      .catch(err => next(err))
   }
 }
 
