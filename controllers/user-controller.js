@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs')
 const db = require('../models')
-const { User, Comment, Restaurant, Favorite } = db
+const { User, Comment, Restaurant, Favorite, Like } = db
 const { imgurFileHandler } = require('../helpers/file-helpers')
 const { getUser } = require('./../helpers/auth-helpers')
 
@@ -128,6 +128,50 @@ exports.removeFavorite = async (req, res, next) => {
     if (!favorite) throw new Error("You havn't favorited this restaurant")
 
     await favorite.destroy()
+    return res.redirect('back')
+  } catch (err) {
+    next(err)
+  }
+}
+
+exports.addLike = async (req, res, next) => {
+  try {
+    console.log('addLike:', req.user)
+    const { restaurantId } = req.params
+    const promises = Promise.all([
+      Restaurant.findByPk(restaurantId),
+      Like.findOne({
+        where: {
+          userId: req.user.id,
+          restaurantId
+        }
+      })
+    ])
+    const [restaurant, like] = await promises
+    if (!restaurant) throw new Error('Restaurant not found')
+    if (like) throw new Error('已經 like 過')
+
+    await Like.create({
+      userId: req.user.id,
+      restaurantId
+    })
+    return res.redirect('back')
+  } catch (err) {
+    next(err)
+  }
+}
+
+exports.removeLike = async (req, res, next) => {
+  try {
+    const like = await Like.findOne({
+      where: {
+        userId: req.user.id,
+        restaurantId: req.params.restaurantId
+      }
+    })
+    if (!like) throw new Error("You havn't favorited this restaurant")
+
+    await like.destroy()
     return res.redirect('back')
   } catch (err) {
     next(err)
