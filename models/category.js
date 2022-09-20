@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate (models) {
     // 建立與Retaurants的關聯
-      Category.hasMany(models.Restaurant, { foreignKey: 'category_id' })
+      Category.hasMany(models.Restaurant, { foreignKey: 'categoryId' })
     }
   };
   Category.init({

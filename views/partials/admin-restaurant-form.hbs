@@ -36,7 +36,7 @@
   <label class="form-label" for="category">Category</label>
   <select class="form-control" name="category" id="category" required>
     {{#each category}}
-      <option value="{{this.id}}">{{this.name}}</option>
+      <option value="{{this.id}}" {{#ifCond this.id ../restaurant.categoryId }}selected{{/ifCond}} >{{this.name}}</option>
     {{/each}}
   </select>
 </div>
@@ -48,7 +48,7 @@
     name="openingHours"
     id="openingHours"
     placeholder="Enter opening hours"
-    value="{{restaurant.time}}"
+    value="{{restaurant.openingHours}}"
   />
 </div>
 <div class="form-row mb-3">

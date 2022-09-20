@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate (models) {
       // 建立與Category的關聯
-      Restaurant.belongsTo(models.Category, { foreignKey: 'category_id' })
+      Restaurant.belongsTo(models.Category, { foreignKey: 'categoryId' })
     }
   };
   Restaurant.init({
