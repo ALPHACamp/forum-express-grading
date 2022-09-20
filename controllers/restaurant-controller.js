@@ -1,6 +1,6 @@
 const { Restaurant, Category } = require('../models')
 
-const restaurantController = {
+const restController = {
   getRestaurants: (req, res) => {
     return Restaurant.findAll({
       include: Category,
@@ -14,18 +14,29 @@ const restaurantController = {
       return res.render('restaurants', { restaurants: data })
     })
   },
-  getRestaurant: (req, res, next) => {
-    Restaurant.findByPk(req.params.id, {
-      raw: true,
-      nest: true,
-      include: Category
-    })
-      .then(restaurant => {
-        if (!restaurant) throw new Error('Restaurant does not exist!')
-        return res.render('restaurant', { restaurant })
+  getRestaurant: async (req, res, next) => {
+    try {
+      const restaurant = await Restaurant.findByPk(req.params.id, { include: Category })
+      if (!restaurant) throw new Error('Restaurant does not exist!')
+      await restaurant.increment('view_counts', { by: 1 })
+      return res.render('restaurant', { restaurant: restaurant.toJSON() })
+    } catch (err) {
+      next(err)
+    }
+  },
+  getDashboard: async (req, res, next) => {
+    try {
+      const restaurant = await Restaurant.findByPk(req.params.id, {
+        raw: true,
+        nest: true,
+        include: Category
       })
-      .catch(err => next(err))
+      if (!restaurant) throw new Error('Restaurant does not exist!')
+      return res.render('dashboard', { restaurant })
+    } catch (err) {
+      next(err)
+    }
   }
 }
 
-module.exports = restaurantController
+module.exports = restController
