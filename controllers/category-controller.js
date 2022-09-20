@@ -38,5 +38,17 @@ module.exports = {
     } catch (error) {
       next(error)
     }
+  },
+  deleteCategories: async (req, res, next) => {
+    const { id } = req.params
+    try {
+      const category = await Category.findByPk(id)
+      if (!category) throw new Error('該分類不存在')
+      await category.destroy()
+      req.flash('success_messages', '刪除成功')
+      res.redirect('/admin/categories')
+    } catch (error) {
+      next(error)
+    }
   }
 }
