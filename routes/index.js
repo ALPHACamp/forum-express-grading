@@ -23,6 +23,7 @@ router.get('/logout', userController.logout)
 router.use('/admin', authenticatedAdmin, adminRoute)
 // restaurnat
 router.get('/restaurants', authenticated, restaurantController.getRestaurants)
+router.get('/restaurants/:id', authenticated, restaurantController.getRestaurant)
 router.get('/', (req, res) => { res.redirect('/restaurants') })
 
 router.use('/', generalErrorHandler)
