@@ -20,6 +20,7 @@ router.use('/restaurants', authenticated, restaurantRouter)
 router.use('/comments', authenticated, commentRouter)
 router.post('/favorite/:restaurantId', authenticated, userController.addFavorite)
 router.delete('/favorite/:restaurantId', authenticated, userController.removeFavorite)
+router.post('/like/:restaurantId', authenticated, userController.addLike)
 router.use('/users', authenticated, userRouter)
 
 router.get('/', (req, res) => {

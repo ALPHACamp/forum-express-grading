@@ -1,8 +1,9 @@
 const bcrypt = require('bcryptjs')
 const db = require('../models')
-const { User, Comment, Restaurant, Favorite } = db
+const { User, Comment, Restaurant, Favorite, Like } = db
 const { imgurFileHandler } = require('../helpers/file-helpers')
 const { getUser } = require('./../helpers/auth-helpers')
+const { request } = require('express')
 
 exports.signUpPage = (req, res, next) => {
   res.render('signup')
@@ -128,6 +129,32 @@ exports.removeFavorite = async (req, res, next) => {
     if (!favorite) throw new Error("You havn't favorited this restaurant")
 
     await favorite.destroy()
+    return res.redirect('back')
+  } catch (err) {
+    next(err)
+  }
+}
+
+exports.addLike = async (req, res, next) => {
+  try {
+    const { restaurantId } = req.params
+    const promises = await Promise.all([
+      Restaurant.findByPk(restaurantId),
+      Like.findAll({
+        where: {
+          userId: req.user.id,
+          restaurantId
+        }
+      })
+    ])
+    const [restaurant, favorite] = await promises
+    if (!restaurant) throw new Error('Restaurant not found')
+    if (favorite) throw new Error('已經加入喜愛')
+
+    await Like.create({
+      userId: req.user.id,
+      restaurantId
+    })
     return res.redirect('back')
   } catch (err) {
     next(err)
