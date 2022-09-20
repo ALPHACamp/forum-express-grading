@@ -1,18 +1,30 @@
 const { Restaurant, Category } = require('../models')
 
 const restController = {
-  getRestaurants: (req, res) => {
-    return Restaurant.findAll({
-      include: Category,
-      nest: true,
-      raw: true
-    }).then(restaurant => {
-      const data = restaurant.map(r => ({
-        ...r,
-        description: r.description.substring(0, 50)
-      }))
-      return res.render('restaurants', { restaurants: data })
-    })
+  getRestaurants: (req, res, next) => {
+    const categoryId = Number(req.query.categoryId) || ''
+
+    Promise.all([
+      Restaurant.findAll({
+        include: Category,
+        where: {
+          ...categoryId ? { categoryId } : {}
+          // The sever will process Ternary operator, and then spread operator.
+          // The reason we have to put spread operator ahead is that categoryId and {} are OBJECT, but what we need to put inside "where: { }" is a STRING.
+        },
+        nest: true,
+        raw: true
+      }),
+      Category.findAll({ raw: true })
+    ])
+      .then(([restaurant, categories]) => {
+        const data = restaurant.map(r => ({
+          ...r,
+          description: r.description.substring(0, 50)
+        }))
+        return res.render('restaurants', { restaurants: data, categories, categoryId })
+      })
+      .catch(err => next(err))
   },
   getRestaurant: async (req, res, next) => {
     try {
