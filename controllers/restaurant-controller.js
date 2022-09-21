@@ -1,4 +1,4 @@
-const { Restaurant, Category, Comment, User } = require('../models')
+const { Restaurant, Category, Comment, User, sequelize } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
 
 const restaurantController = {
@@ -98,6 +98,26 @@ const restaurantController = {
       .then(([restaurants, comments]) => {
         console.log(restaurants, comments)
         res.render('feeds', { restaurants, comments })
+      })
+      .catch(e => next(e))
+  },
+
+  getTopRestaurants: (req, res, next) => {
+    return Restaurant
+      .findAll({
+        include: [{ model: User, as: 'FavoritedUsers' }]
+      })
+      .then(topRestaurants => {
+        const restaurants = topRestaurants.map(r => ({
+          ...r.toJSON(),
+          description: r.description.length >= 150 ? r.description.substring(0, 147) + '...' : r.description,
+          favoritedCount: r.FavoritedUsers.length,
+          isFavorited: req.user && req.user.FavoritedRestaurants.some(fr => fr.id === r.id)
+        }))
+          .sort((a, b) => b.favoritedCount - a.favoritedCount)
+          .slice(0, 10)
+
+        res.render('top-restaurants', { restaurants })
       })
       .catch(e => next(e))
   }
