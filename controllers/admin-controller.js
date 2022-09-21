@@ -144,7 +144,15 @@ const adminController = {
       .then(() => res.redirect('/admin/categories'))
       .catch(error => next(error))
   },
-  putCategory: () => {},
+  putCategory: (req, res, next) => {
+    const categoryId = req.params.id
+    const { categoryName } = req.body
+
+    Category.findByPk(categoryId) // 這邊要注意不用轉換
+      .then(category => category.update({ name: categoryName }))
+      .then(() => res.redirect('/admin/categories'))
+      .catch(error => next(error))
+  },
   deleteCategory: () => {}
 }
 
