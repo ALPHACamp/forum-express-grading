@@ -7,9 +7,11 @@
   <label for="categoryId">Category</label>
   <select name="categoryId" id="categoryId" class="form-control">
     {{#each categories}}
-    <option value="{{ this.id }}" {{#ifCond this.id ../restaurant.categoryId}}selected{{/ifCond}}>{{ this.name }}</option>
-    {{/each}} 
-    {{!-- this.id(A) restaurant.categoryId(B)，這邊使用../是因為 context 語境，用 ../ 回到上一層語境才能取得 restaurant.CategoryId，若沒有使用 ../ hbs 會以為在呼叫 this.restaurant，使 B 變成 restaurant --}}
+    <option value="{{ this.id }}" {{#ifCond this.id ../restaurant.categoryId}}selected{{/ifCond}}>{{ this.name }}
+    </option>
+    {{/each}}
+    {{!-- this.id(A) restaurant.categoryId(B)，這邊使用../是因為 context(語境)問題，用 ../ 回到上一層語境才能取得 restaurant.CategoryId，若沒有使用 ../
+    hbs 會以為在呼叫 this.restaurant，使 B 變成 restaurant --}}
   </select>
 </div>
 <div class="form-row mb-3">
@@ -18,11 +20,13 @@
 </div>
 <div class="form-row mb-3">
   <label class="form-label" for="address">Address</label>
-  <input class="form-control" type="text" name="address" id="address" placeholder="Enter address" value="{{ restaurant.address }}">
+  <input class="form-control" type="text" name="address" id="address" placeholder="Enter address"
+    value="{{ restaurant.address }}">
 </div>
 <div class="form-row mb-3">
   <label class="form-label" for="openingHours">Opening Hours</label>
-  <input class="form-control" type="time" name="openingHours" id="openingHours" placeholder="Enter opening hours" value="{{ restaurant.openingHours }}">
+  <input class="form-control" type="time" name="openingHours" id="openingHours" placeholder="Enter opening hours"
+    value="{{ restaurant.openingHours }}">
 </div>
 <div class="form-row mb-3">
   <label class="form-label" for="description">Description</label>

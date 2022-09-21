@@ -1,0 +1,43 @@
+{{!-- 修改送出 --}}
+{{#if category}}
+<form action="/admin/categories/{{category.id}}?_method=PUT" method="POST">
+  <input type="text" value="{{ category.name }}">
+  <button class="btn btn-warning">Submit</button>
+  {{!-- 或回到新增首頁 --}}
+  &nbsp or &nbsp<a href="/admin/categories">Create New Category</a>
+  {{else}}
+</form>
+
+{{!-- 新增送出 --}}
+<form action="/admin/categories" method="POST">
+  <input type="text">
+  <button class="btn btn-primary">Submit</button>
+</form>
+{{/if}}
+
+<table class="table align-middle">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Name</th>
+      <th scope="col">#</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each categories}}
+    <tr>
+      <th scope="row">{{this.id}}</th>
+      <td>{{this.name}}</td>
+      <td>
+        {{!-- 取得修改 --}}
+        <a href="/admin/categories/{{this.id}}" class="btn btn-info">Edit</a>
+        
+        {{!-- 過去刪除 --}}
+        <form action="/admin/categories/{{this.id}}?_method=DELETE" method="POST" style="display: inline">
+          <button class="btn btn-danger">Delete</button>
+        </form>
+      </td>
+    </tr>
+    {{/each}}
+  </tbody>
+</table>

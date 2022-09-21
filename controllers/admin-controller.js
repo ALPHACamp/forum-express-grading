@@ -11,7 +11,6 @@ const adminController = {
       include: [Category] // 這邊指的是在 model 用 include 將關聯資料拉進來 findAll 的準備回傳值
     })
       .then(restaurants => {
-        console.log(restaurants)
         return res.render('admin/admin-homepage', { restaurants })
       })
       .catch(error => next(error))
@@ -124,7 +123,18 @@ const adminController = {
         res.redirect('/admin/users')
       })
       .catch(error => next(error))
-  }
+  },
+  getCategories: (req, res, next) => {
+    const id = req.params.id
+    return Promise.all([
+      Category.findByPk(id, { raw: true }),
+      Category.findAll({ raw: true })
+    ])
+      .then(([category, categories]) => res.render('admin/admin-homepage', { category, categories }))
+  },
+  postCategories: () => {},
+  putCategory: () => {},
+  deleteCategory: () => {}
 }
 
 module.exports = adminController
