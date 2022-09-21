@@ -145,15 +145,33 @@ const adminController = {
       .catch(error => next(error))
   },
   putCategory: (req, res, next) => {
-    const categoryId = req.params.id
+    const id = req.params.id
     const { categoryName } = req.body
 
-    Category.findByPk(categoryId) // 這邊要注意不用轉換
-      .then(category => category.update({ name: categoryName }))
+    Category.findByPk(id) // 這邊要注意不用轉換
+      .then(category => {
+        if (!category) throw new Error("Category isn't exist!")
+
+        category.update({ name: categoryName })
+      })
       .then(() => res.redirect('/admin/categories'))
       .catch(error => next(error))
   },
-  deleteCategory: () => {}
+  deleteCategory: (req, res, next) => {
+    const id = req.params.id
+
+    Category.findByPk(id)
+      .then(category => {
+        if (!category) throw new Error("Category isn't exist!")
+
+        return category.destroy()
+      })
+      .then(() => {
+        req.flash('success_messages', '刪除成功!')
+        res.redirect('/admin/categories')
+      })
+      .catch(error => next(error))
+  }
 }
 
 module.exports = adminController
