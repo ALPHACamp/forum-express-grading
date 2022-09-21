@@ -2,15 +2,21 @@
 const { Restaurant, Category } = require('../models')
 
 const restaurantController = {
+
   getRestaurants: async (req, res, next) => {
+    const categoryId = Number(req.query.categoryId) || ''
+    console.log('categoryId', categoryId)
     try {
-      const restaurants = await Restaurant.findAll({ raw: true, nest: true, include: [Category] })
+      const [restaurants, categories] = await Promise.all([
+        Restaurant.findAll({ raw: true, nest: true, include: [Category], where: { ...categoryId ? { categoryId } : {} } }),
+        Category.findAll({ raw: true })
+      ])
       const data = restaurants.map(r => {
         return {
           ...r, description: r.description.substring(0, 50)
         }
       })
-      return res.render('restaurants', { restaurants: data })
+      return res.render('restaurants', { restaurants: data, categories, categoryId })
     } catch (error) {
       next(error)
     }
