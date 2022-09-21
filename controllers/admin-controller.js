@@ -16,8 +16,10 @@ const adminController = {
       })
       .catch(error => next(error))
   },
-  createRestaurant: (req, res) => {
-    res.render('admin/create-restaurant')
+  createRestaurant: (req, res, next) => {
+    return Category.findAll({ raw: true })
+      .then(categories => res.render('admin/create-restaurant', { categories }))
+      .catch(error => next(error))
   },
   postRestaurant: (req, res, next) => {
     const { name } = req.body
@@ -46,14 +48,17 @@ const adminController = {
       }).catch(error => next(error)) // 不知道會有什麼錯誤會產生，所以只要有錯誤就將錯誤往 middleware/error-handler.js 丟
   },
   editRestaurant: (req, res, next) => {
-    Restaurant.findByPk(req.params.id, {
-      raw: true,
-      nest: true
-    })
-      .then(restaurant => {
+    Promise.all([
+      Restaurant.findByPk(req.params.id, {
+        raw: true,
+        nest: true
+      }),
+      Category.findAll({ raw: true })
+    ])
+      .then(([restaurant, categories]) => {
         if (!restaurant) throw new Error("Restaurant isn't exist!")
 
-        res.render('admin/edit-restaurant', { restaurant })
+        res.render('admin/edit-restaurant', { restaurant, categories })
       })
       .catch(error => next(error))
   },
