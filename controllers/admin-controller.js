@@ -131,8 +131,19 @@ const adminController = {
       Category.findAll({ raw: true })
     ])
       .then(([category, categories]) => res.render('admin/admin-homepage', { category, categories }))
+      .catch(error => next(error))
   },
-  postCategories: () => {},
+  postCategories: (req, res, next) => {
+    const { categoryName } = req.body
+    Category.findOne({ where: { name: categoryName.trim() } })
+      .then(category => {
+        if (category) throw new Error(`${category.name} 已經建立了`)
+
+        return Category.create({ name: categoryName })
+      })
+      .then(() => res.redirect('/admin/categories'))
+      .catch(error => next(error))
+  },
   putCategory: () => {},
   deleteCategory: () => {}
 }

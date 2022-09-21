@@ -1,16 +1,17 @@
 {{!-- 修改送出 --}}
 {{#if category}}
 <form action="/admin/categories/{{category.id}}?_method=PUT" method="POST">
-  <input type="text" value="{{ category.name }}">
+  <input type="text" value="{{ category.name }}"  name="categoryName">
   <button class="btn btn-warning">Submit</button>
+
   {{!-- 或回到新增首頁 --}}
   &nbsp or &nbsp<a href="/admin/categories">Create New Category</a>
-  {{else}}
+{{else}}
 </form>
 
 {{!-- 新增送出 --}}
 <form action="/admin/categories" method="POST">
-  <input type="text">
+  <input type="text" name="categoryName">
   <button class="btn btn-primary">Submit</button>
 </form>
 {{/if}}
