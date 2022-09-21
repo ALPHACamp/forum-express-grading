@@ -11,6 +11,8 @@ const upload = require('../middleware/multer')
 
 router.use('/admin', authenticatedAdmin, admin)
 
+router.post('/following/:userId', authenticated, userController.addFollowing)
+router.delete('/following/:userId', authenticated, userController.removeFollowing)
 router.get('/users/top', authenticated, userController.getTopUsers)
 router.post('/like/:restaurantId', authenticated, userController.addLike)
 router.delete('/like/:restaurantId', authenticated, userController.removeLike)
