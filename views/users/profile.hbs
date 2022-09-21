@@ -1,0 +1,7 @@
+<div class="container">
+  <img src="{{user.image}}" alt="avatar" class="img-responsive center-block" style="width: 250px; margin-bottom: 25px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+  <h2>{{user.name}}</h3>
+  <p>{{user.email}}</p>
+  <a href="/users/{{user.id}}/edit" class="btn btn-primary">edit</a>
+  <a class="btn btn-success ms-2" href="javascript:history.back()">back</a>
+</div>

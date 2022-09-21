@@ -5,7 +5,7 @@ const admin = require('./modules/admin')
 const restController = require('../controllers/restaurant-controller')
 const userController = require('../controllers/user-controller')
 const commentController = require('../controllers/comment-controller')
-
+const upload = require('../middleware/multer')
 const { generalErrorHandler } = require('../middleware/error-handler')
 const { authenticated, authenticatedAdmin } = require('../middleware/auth')
 
@@ -21,6 +21,11 @@ router.post('/signin', passport.authenticate('local', {
   failureFlash: true
 }), userController.signIn)
 router.get('/logout', userController.logout)
+
+// profile
+router.get('/users/:id', authenticated, userController.getUser) // profile page
+router.get('/users/:id/edit', authenticated, userController.editUser) // edit page
+router.put('/users/:id', upload.single('image'), userController.putUser) // edit profile
 
 // 前台
 router.get('/restaurants/:id', authenticated, restController.getRestaurant) // detail

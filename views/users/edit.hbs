@@ -1,0 +1,17 @@
+<div class="container">
+  <form action="/users/{{user.id}}?_method=PUT" method="POST" enctype="multipart/form-data">
+    <div class="form-row mb-3">
+      <lable for="name" class="form-label mb-4">Name:</lable>
+      <input class="form-control" type="text" class="form-control" name="name" id="name" placeholder="Enter Name" value="{{user.name}}">
+    </div>
+    <div class="form-row mb-3">
+      <label class="form-label" for="image">Image:</label>
+      <input class="form-control" type="file" class="form-control-file" id="image" name="image">
+    </div>
+    <div>
+      <button type="submit" class="btn btn-primary">update</button> 
+      <a class="btn btn-success ms-2" href="javascript:history.back()">back</a> 
+    </div>
+  </form>
+  
+</div>
