@@ -1,4 +1,4 @@
-const { Restaurant, User } = require('../models') // === require('../models/index')
+const { Restaurant, User, Category } = require('../models') // === require('../models/index')
 
 // const { localFileHandler } = require('../helpers/file-helpers')
 const { imgurFileHandler } = require('../helpers/file-helpers')
@@ -6,9 +6,14 @@ const { imgurFileHandler } = require('../helpers/file-helpers')
 const adminController = {
   getRestaurants: (req, res, next) => {
     Restaurant.findAll({ // [{}, {}]
-      raw: true // 轉成單純 JS 物件，不轉也可以但要在.dataValues 取值
+      raw: true, // 轉成單純 JS 物件，不轉也可以但要在.dataValues 取值
+      nest: true, // 變成巢狀( key-value )
+      include: [Category] // 這邊指的是在 model 用 include 將關聯資料拉進來 findAll 的準備回傳值
     })
-      .then(restaurants => res.render('admin/admin-homepage', { restaurants }))
+      .then(restaurants => {
+        console.log(restaurants)
+        return res.render('admin/admin-homepage', { restaurants })
+      })
       .catch(error => next(error))
   },
   createRestaurant: (req, res) => {
@@ -30,7 +35,9 @@ const adminController = {
   },
   getRestaurant: (req, res, next) => {
     Restaurant.findByPk(req.params.id, {
-      raw: true
+      raw: true,
+      nest: true,
+      include: [Category]
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant isn't exist!")
