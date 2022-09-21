@@ -1,0 +1,27 @@
+<div class="container d-flex flex-row white-block">
+  <div class="mx-3">
+    {{#if user.image}}
+    <img src="{{user.image}}" alt="" style="width: 250px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+    {{else}}
+    <i class="fa-solid fa-user"></i>
+    {{/if}}
+  </div>
+  <div>
+    <h4>{{user.name}}</h4>
+    <p>{{user.email}}</p>
+    <p>{{comment.count}} 已評論餐廳</p>
+    <form action="/users/{{user.id}}/edit" method="get">
+      <button class="btn btn-primary">edit</button>
+    </form>
+  </div>
+</div>
+<div class="mt-5 gray-block">
+  <h4>{{comment.count}} 已評論餐廳</h4>
+</div>
+<div class="white-block">
+  {{#each comment.rows}}
+  <a href="/restaurants/{{this.Restaurant.id}}">
+    <img class="card-img-top img-fluid mx-2 mt-2" src="{{this.Restaurant.image}}" alt="餐廳縮圖" style="width: 80px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+  </a>
+  {{/each}}
+</div>

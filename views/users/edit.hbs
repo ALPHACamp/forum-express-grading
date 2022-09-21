@@ -1,0 +1,15 @@
+  {{#if warning_msg}}
+  {{warning_msg}}
+  {{/if}}
+<form action="/users/{{user.id}}?_method=PUT" method="POST" class="mt-2" enctype="multipart/form-data">
+  <div class="form-row mb-3">
+  <label class="form-label" for="name">Name</label>
+  <input class="form-control" type="text" id="name" name="name" value="{{user.name}}" placeholder="請輸入名稱">
+  </div>
+  <div class="mb-3">
+    <label class="form-label" for="image">Image</label></br>
+    <input type="file" class="form-control-file" id="image" name="image">
+  </div>
+    <button class="btn btn-primary">Submit</button>
+  </form>
+</div>
