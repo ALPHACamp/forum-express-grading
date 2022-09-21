@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       User.hasMany(models.Comment, { foreignKey: 'userId' })
     }
-  };
+  }
   User.init({
     name: DataTypes.STRING,
     email: DataTypes.STRING,
