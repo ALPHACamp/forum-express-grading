@@ -1,11 +1,22 @@
 <h1>餐廳後台</h1>
 {{> admin-tab route = 'categories'}}
-<form style="display:flex;" class="mt-3" action="/admin/categories" method="POST">
-        <div class="col-md-2 me-4"><input class="form-control" type="text" name="name" id="name" placeholder="Enter name"
-                required value="{{category.name}}"></div>
-        <div class="col-md-6"><button type="submit" class="btn btn-success">
-                create
-            </button></div>
+<form style="display:flex;" class="mt-3" action="{{#if category}}/admin/categories/{{category.id}}?_method=PUT{{else}}/admin/categories{{/if}}" method="POST">
+    <div class="col-md-2 me-4">
+        <input class="form-control" type="text" name="name" id="name" placeholder="Enter name"
+            required value="{{category.name}}">
+    </div>
+    <div class="col-md-6 d-flex align-items-end">
+        {{#if category}}
+        <button type="submit" class="btn btn-warning me-4">
+            update
+        </button>
+        <a href="/admin/categories">or Create new</a>
+        {{else}}
+        <button type="submit" class="btn btn-success">
+            create
+        </button>
+        {{/if}}
+    </div>
 </form>
 <br />
 <table class="table align-middle">
@@ -23,7 +34,7 @@
             <td>{{this.name}}</td>
             <td>
                 <button type="button" class="btn btn-link">
-                    <a class="btn btn-link link-primary" href="/admin/categories/{{this.id}}/edit">
+                    <a class="btn btn-link link-primary" href="/admin/categories/{{this.id}}">
                         Edit
                     </a>
                 </button>
