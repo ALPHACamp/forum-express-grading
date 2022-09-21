@@ -1,7 +1,29 @@
-<div class="container">
-  <img src="{{user.image}}" alt="avatar" class="img-responsive center-block" style="width: 250px; margin-bottom: 25px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
-  <h2>{{user.name}}</h3>
-  <p>{{user.email}}</p>
-  <a href="/users/{{user.id}}/edit" class="btn btn-primary">edit</a>
-  <a class="btn btn-success ms-2" href="javascript:history.back()">back</a>
+
+<div class="card mb-5" >
+  <div class="row no-gutters">
+    <div class="col-md-4">
+      <img src="{{user.image}}" alt="avatar" class="card-img-top img-responsive center-block" style="width: 250px; margin-bottom: 25px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+    </div>
+    <div class="col-md-8">
+      <div class="card-body">
+        <h2>{{user.name}}</h3>
+        <p class="card-text">{{user.email}}</p>
+        <p>已評論過{{user.Comments.length}}間餐廳</p> 
+        <a href="/users/{{user.id}}/edit" class="btn btn-primary">edit</a>
+        <a class="btn btn-success ms-2" href="javascript:history.back()">back</a>
+      </div>
+    </div>
+  </div> 
+</div>
+<div class="card">
+  <div class="card-header">
+    {{user.Comments.length}}間已評論餐廳
+  </div>
+  <div class="card-body">
+    {{#each user.Comments}}
+    <a href="/restaurants/{{this.Restaurant.id}}" title="{{this.Restaurant.name}}">
+    <img src="{{this.Restaurant.image}}" width="60" height="60" class="avatar m-2" style="transition: opacity 0.5s; opacity:0;"
+              onload="this.style.opacity=1;"></a>
+    {{/each}}
+  </div>
 </div>
