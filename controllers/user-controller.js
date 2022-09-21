@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs')
-const { User, Comment, Restaurant, Favorite, Like, Followship } = require('../models')
+const { User, Comment, Restaurant, Favorite, Like, Followship, sequelize } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 const { getUser } = require('../helpers/auth-helpers')
 
@@ -167,20 +167,22 @@ const userController = {
   },
 
   getTopUsers: (req, res, next) => {
-    return User.findAll({
-      include: [{ model: User, as: 'Followers', attributes: ['id'] }]
+    User.findAll({
+      attributes: {
+        include: [[sequelize.literal('(SELECT COUNT(*) FROM Followships WHERE Followships.following_id = User.id)'), 'followerCount']]
+      },
+      order: [[sequelize.literal('followerCount'), 'DESC']]
     })
       .then(users => {
-        const result = users
-          .map(user => ({
-            ...user.toJSON(),
-            followerCount: user.Followers.length,
-            isFollowed: req.user.Followings.some(f => f.id === user.id)
-          }))
-          .sort((a, b) => b.followerCount - a.followerCount)
+        const followingsId = new Set()
+        req.user.Followings.forEach(f => followingsId.add(f.id))
+        const result = users.map(user => ({
+          ...user.toJSON(),
+          isFollowed: followingsId.has(user.id)
+        }))
         res.render('top-users', { users: result })
       })
-      .catch(err => next(err))
+      .catch(e => next(e))
   },
 
   addFollowing: (req, res, next) => {
