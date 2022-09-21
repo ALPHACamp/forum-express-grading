@@ -1,0 +1,12 @@
+<div class="row mt-5">
+  <div class="col-md-3">
+    <img class="img-responsive center-block rounded-circle" src="{{userInfo.image}}" alt="{{userInfo.id}}" style="width:250px;height:250px">
+  </div>
+  <div class="col-md-4">
+    <h3>{{userInfo.name}}</h3>
+    <p>{{userInfo.email}}</p>
+    {{#ifCond userInfo.id user.id}}
+    <a href="/users/{{userInfo.id}}/edit" class="btn btn-primary">edit</a>
+    {{/ifCond}}
+  </div>
+</div>
