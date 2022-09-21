@@ -22,13 +22,14 @@ router.post('/signin', passport.authenticate('local',
 router.get('/logout', userController.logout)
 
 // 餐廳
+router.get('/restaurants/feeds', authenticated, restaurantController.getFeeds)
 router.get('/restaurants/:id/dashboard', authenticated, restaurantController.getDashboard)
 router.get('/restaurants/:id', authenticated, restaurantController.getRestaurant)
 router.get('/restaurants', authenticated, restaurantController.getRestaurants)
 
 // users
 router.get('/users/:id/edit', authenticated, userController.editUser)
-router.put('/users/:id', authenticated, upload.single('image'),userController.putUser)
+router.put('/users/:id', authenticated, upload.single('image'), userController.putUser)
 router.get('/users/:id', authenticated, userController.getUser)
 
 // comment
