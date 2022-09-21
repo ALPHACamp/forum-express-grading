@@ -11,5 +11,8 @@ module.exports = {
     } else {
       return options.inverse(this)
     }
+  },
+  ifCond: function (a, b, options) {
+    return a === b ? options.fn(this) : options.inverse(this)
   }
 }
