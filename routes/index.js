@@ -11,6 +11,7 @@ const upload = require('../middleware/multer')
 
 router.use('/admin', authenticatedAdmin, admin)
 
+router.get('/restaurants/feeds', authenticated, restController.getFeeds)
 router.get('/users/:id/edit', authenticatedUser, userController.editUser)
 router.get('/users/:id', authenticated, userController.getUser)
 router.put('/users/:id', authenticated, upload.single('image'), userController.putUser)
