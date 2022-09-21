@@ -24,7 +24,7 @@ router.use('/admin', authenticatedAdmin, adminRoute)
 // restaurnat
 router.get('/restaurants', authenticated, restaurantController.getRestaurants)
 router.get('/restaurants/:id', authenticated, restaurantController.getRestaurant)
+router.get('/restaurants/:id/dashboard', authenticated, restaurantController.getDashboard)
 router.get('/', (req, res) => { res.redirect('/restaurants') })
-
 router.use('/', generalErrorHandler)
 module.exports = router
