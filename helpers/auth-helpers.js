@@ -3,7 +3,7 @@ const getUser = req => {
 }
 
 const ensureAuthenticated = req => {
-  // console.log('就是進到這了嗎', req.isAuthenticated())
+  console.log('是不是一直進到這？', req.isAuthenticated())
   return req.isAuthenticated()
 }
 

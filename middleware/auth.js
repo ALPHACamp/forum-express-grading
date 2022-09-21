@@ -1,8 +1,8 @@
 const { ensureAuthenticated, getUser } = require('../helpers/auth-helpers')
 const authenticated = (req, res, next) => {
-  console.log(ensureAuthenticated(req))
+  // console.log(req)
   if (ensureAuthenticated(req)) {
-    console.log(ensureAuthenticated(req))
+    // console.log(ensureAuthenticated(req))
     // console.log('沒盡到這邊')
     return next()
   }

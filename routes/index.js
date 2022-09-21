@@ -17,8 +17,8 @@ router.post('/signin', passport.authenticate('local', { failureRedirect: '/signi
 router.get('/logout', userController.logout)
 
 // 等都做完再回來找驗證的bug
-// router.get('/restaurant', authenticated, restController.getRestaurants)
-router.get('/restaurant', restController.getRestaurants)
+router.get('/restaurant', authenticated, restController.getRestaurants)
+// router.get('/restaurant', restController.getRestaurants)
 router.use('/', (req, res) => { res.redirect('/restaurant') })
 
 router.use('/', generalErrorHandler)
