@@ -38,12 +38,14 @@ const userController = {
     res.redirect('/signin')
   },
   getUser: (req, res, next) => {
+    const userId = req.user.id
     return User.findByPk(req.params.id, {
       include: { model: Comment, include: Restaurant }
     })
       .then(user => {
         res.render('users/profile', {
-          user: user.toJSON()
+          user: user.toJSON(),
+          userId
         })
       })
       .catch(err => next(err))
