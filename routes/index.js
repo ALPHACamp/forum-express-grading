@@ -34,6 +34,8 @@ router.get('/restaurants', authenticated, restController.getRestaurants) // brow
 router.get('/restaurants/:id/dashboard', authenticated, restController.getDashboard) // dashboard
 router.post('/comments', authenticated, commentController.postComment) // comment
 router.delete('/comments/:id', authenticatedAdmin, commentController.deleteComment) // delete comment(加入管理者權限驗證)
+router.post('/favorite/:restaurantId', authenticated, userController.addFavorite) // add to Fav list
+router.delete('/favorite/:restaurantId', authenticated, userController.removeFavorite) // remove from Fav list
 router.use('/', (req, res) => res.redirect('/restaurants'))
 router.use('/', generalErrorHandler)
 
