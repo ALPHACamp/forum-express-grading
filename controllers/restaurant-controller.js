@@ -1,5 +1,5 @@
 
-const { Restaurant, Category } = require('../models')
+const { Restaurant, Category, Comment, User } = require('../models')
 const { getOffSet, getOpagination } = require('../helpers/pagination-helper')
 const restaurantController = {
 
@@ -42,7 +42,12 @@ const restaurantController = {
   getRestaurant: async (req, res, next) => {
     try {
       const { id } = req.params
-      const restaurant = await Restaurant.findByPk(id, { nest: true, include: Category })
+      const restaurant = await Restaurant.findByPk(id, {
+        nest: true,
+        include: [Category, { model: Comment, include: User }],
+        order: [[Comment, 'createdAt', 'DESC']]
+
+      })
       await restaurant.increment('viewCounts')// 計算瀏覽次數
       if (!restaurant) throw new Error('找不到指定餐廳')
       res.render('restaurant', { restaurant: restaurant.toJSON() })
