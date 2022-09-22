@@ -21,10 +21,12 @@ const restaurantController = {
     ])
       .then(([restaurants, categories]) => {
         const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id) // 最愛餐廳清單的餐廳id
+        const likedRestaurantsId = req.user && req.user.LikedRestaurants.map(likedRest => likedRest.id)
         const data = restaurants.rows.map(r => ({
           ...r,
           description: r.description.substring(0, 50) + '...',
-          isFavorited: favoritedRestaurantsId.includes(r.id) // 回傳true/false
+          isFavorited: favoritedRestaurantsId.includes(r.id), // 回傳true/false
+          isLiked: likedRestaurantsId.includes(r.id)
         }))
         return res.render('restaurants', { restaurants: data, categories, categoryId, pagination: getPagination(limit, page, restaurants.count) })
       })
@@ -35,14 +37,17 @@ const restaurantController = {
       include: [
         Category,
         { model: Comment, include: User },
-        { model: User, as: 'FavoritedUsers' }] // 增加餐廳的使用者關聯
+        { model: User, as: 'FavoritedUsers' }, // 增加餐廳的使用者關聯
+        { model: User, as: 'LikedUsers' }
+      ]
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id) // 檢查所有喜歡這間餐廳的名單中有沒有包括使用者的id
+        const isLiked = restaurant.LikedUsers.some(i => i.id === req.user.id)
         restaurant.increment('viewCounts', { by: 1 })
 
-        return res.render('restaurant', { restaurant: restaurant.toJSON(), isFavorited })
+        return res.render('restaurant', { restaurant: restaurant.toJSON(), isFavorited, isLiked })
       })
       .catch(err => next(err))
   },

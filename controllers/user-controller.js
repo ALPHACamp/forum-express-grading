@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs')
-const { User, Restaurant, Comment, Favorite } = require('../models')
+const { User, Restaurant, Comment, Favorite, Like } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 const userController = {
   // sign up
@@ -123,6 +123,44 @@ const userController = {
       })
       .then(() => res.redirect('back'))
       .catch(err => next(err))
+  },
+  addLike: (req, res, next) => {
+    const { restaurantId } = req.params
+    return Promise.all([
+      Restaurant.findByPk(restaurantId),
+      Like.findOne({
+        where: {
+          userId: req.user.id,
+          restaurantId
+        }
+      })
+    ])
+      .then(([restaurant, like]) => {
+        if (!restaurant) throw new Error("Restaurant didn't exist.")
+        if (like) throw new Error("You've liked it before!")
+        return Like.create({
+          userId: req.user.id,
+          restaurantId
+        })
+      })
+      .then(() => res.redirect('back'))
+      .catch(err => next(err))
+  },
+  removeLike: (req, res, next) => {
+    const { restaurantId } = req.params
+    return Like.findOne({
+      where: {
+        userId: req.user.id,
+        restaurantId
+      }
+    })
+      .then(like => {
+        if (!like) throw new Error("You didn't like it before.")
+        return like.destroy()
+      })
+      .then(() => res.redirect('back'))
+      .catch(err => next(err))
   }
+
 }
 module.exports = userController
