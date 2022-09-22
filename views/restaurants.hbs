@@ -1,3 +1,17 @@
+<ul class="nav nav-pills">
+  <li class="nav-item">
+    <a class="nav-link {{#ifCond '' categoryId}}active{{/ifCond}}" href="?categoryId=">全部</a>
+  </li>{{!-- 一開始進入網頁因為 categoryId 沒有從下面選取到值，所以是 ''--}}
+
+  {{!-- 這邊是讓 categories 每一項跟 categoryId 比對，如果比對中了要將添加 active，categoryId 不屬於 categories 展開的這一層元素(所以只要在 each loop 裡面就要考量到這一點) --}}
+  {{#each categories}}
+  <li class="nav-item">
+    <a class="nav-link {{#ifCond this.id ../categoryId}}active{{/ifCond}}"
+      href="?categoryId={{this.id}}">{{this.name}}</a>
+  </li>
+  {{/each}}
+</ul>
+
 <div class="row mt-3">
   {{#each restaurants}}
   <div class="col-md-4">

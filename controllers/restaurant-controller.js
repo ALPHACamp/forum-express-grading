@@ -3,20 +3,29 @@
 const { Restaurant, Category, User } = require('../models')
 
 const restaurantController = {
+
   getRestaurants: (req, res, next) => {
-    Restaurant.findAll({ // [{}, {}...]
-      include: 'Category',
-      nest: true,
-      raw: true
-    }).then(restaurants => { // 做縮字整理至 50 字
-      const data = restaurants.map(restaurant => {
-        return {
-          ...restaurant,
-          description: restaurant.description.substring(0, 50) // 沒有寫 rest 會出 description 還沒定義的錯誤
-        }
-      })
-      res.render('restaurants', { restaurants: data })
-    }).catch(error => next(error))
+    const categoryId = Number(req.query.categoryId) || '' // 按其他類別 || 預設沒有按
+    return Promise.all([
+      Restaurant.findAll({ // [{}, {}...]
+        include: 'Category',
+        where: {
+          ...(categoryId ? { categoryId } : {})
+        }, // categoryId 有值 { categoryId } + ... -> categoryId
+        nest: true,
+        raw: true
+      }),
+      Category.findAll({ raw: true }) // 這邊就不用 nest
+    ])
+      .then(([restaurants, categories]) => { // 做縮字整理至 50 字
+        const data = restaurants.map(restaurant => {
+          return {
+            ...restaurant,
+            description: restaurant.description.substring(0, 50) // 沒有寫 rest 會出 description 還沒定義的錯誤
+          }
+        })
+        res.render('restaurants', { restaurants: data, categories, categoryId })
+      }).catch(error => next(error))
   },
   getRestaurant: (req, res, next) => {
     const id = req.params.id
