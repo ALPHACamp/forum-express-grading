@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const userController = require('../controllers/user-controller')
+const restController = require('../controllers/restaurant-controller')
 const adminRouter = require('./modules/admin')
 const restaurantRouter = require('./modules/restaurant')
 const userRouter = require('./modules/user')
@@ -16,6 +17,7 @@ router.post('/signin', passport.authenticate('local',
   { failureRedirect: '/signin', failureFlash: true }), userController.signIn)
 router.get('/logout', userController.logout)
 router.use('/admin', authenticatedAdmin, adminRouter)
+router.get('/restaurants/top', authenticated, restController.getTopRestaurants)
 router.use('/restaurants', authenticated, restaurantRouter)
 router.use('/comments', authenticated, commentRouter)
 router.post('/favorite/:restaurantId', authenticated, userController.addFavorite)
@@ -25,9 +27,8 @@ router.delete('/like/:restaurantId', authenticated, userController.removeLike)
 router.use('/users', authenticated, userRouter)
 router.post('/following/:userId', authenticated, userController.addFollowing)
 router.delete('/following/:userId', authenticated, userController.removeFollowing)
-router.get('/', (req, res) => {
-  res.redirect('/restaurants')
-})
+router.get('/', (req, res) => res.redirect('/restaurants')
+)
 
 router.use('/', generalErrorHandler)
 module.exports = router

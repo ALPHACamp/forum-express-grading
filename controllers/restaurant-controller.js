@@ -136,7 +136,7 @@ exports.getTopRestaurants = async (req, res, next) => {
     restaurants = restaurants.map(restaurant => (
       {
         ...restaurant.toJSON(),
-        isFavorited: getUser(req).FavoritedRestaurants.some(({ id }) => id === restaurant.id),
+        isFavorited: req.user && getUser(req).FavoritedRestaurants.some(({ id }) => id === restaurant.id),
         favoritedCount: restaurant.FavoritedUsers.length
       })).sort((a, b) => b.favoritedCount - a.favoritedCount)
       .slice(0, 10)
