@@ -1,4 +1,3 @@
-const sequelize = require('sequelize')
 const { Restaurant, Category, Comment, User } = require('../models')
 const { getUser } = require('./../helpers/auth-helpers')
 

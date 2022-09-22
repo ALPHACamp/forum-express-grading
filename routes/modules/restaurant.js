@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const restaurantController = require('../../controllers/restaurant-controller')
-const { authenticated } = require('../../middleware/auth')
+
 router.get('/feeds', restaurantController.getFeeds)
 router.get('/top', restaurantController.getTopRestaurants)
 
