@@ -32,9 +32,9 @@ const restaurantController = {
   },
   getDashboard: (req, res, next) => {
     const id = req.params.id
-    Restaurant.findByPk(id, { include: 'Category', raw: true, nest: true, attributes: ['id', 'name', 'view_count'] }) // 為何??
+    return Restaurant.findByPk(id, { include: 'Category', raw: true, nest: true, attributes: ['id', 'name', 'view_count'] }) // 為何??
       .then(restaurant => {
-        res.render('restaurant-dashboard', { restaurant })
+        res.render('dashboard', { restaurant })
       })
       .catch(error => next(error))
   }
