@@ -1,0 +1,37 @@
+<div class='container'>
+  <div class='row mt-5'>
+    <div class='col-md-3'>
+      <img
+        class='img-responsive center-block rounded-circle'
+        src='{{userInfo.image}}'
+        alt='{{userInfo.id}}'
+        style='width:250px;height:250px'
+      />
+    </div>
+    <div class='col-md-4'>
+      <h3>{{userInfo.name}}</h3>
+      <p>{{userInfo.email}}</p>
+      {{#ifCond userInfo.id user.id}}
+        <a href='/users/{{userInfo.id}}/edit' class='btn btn-primary'>edit</a>
+      {{/ifCond}}
+    </div>
+  </div>
+  <div class='row mt-5'>
+    <div class='col-12'>
+      <div class='card'>
+        <div class='card-header'>
+          {{#if userInfo.Comments.length}}{{userInfo.Comments.length}}{{else}}0{{/if}} 則已評論的餐廳。
+        </div>
+        <div class='card-body d-flex flex-wrap'>
+          {{#each userInfo.Comments}}
+          <div class="col-1 m-1" style="width:80px">
+            <a href='/restaurants/{{this.Restaurant.id}}'>
+              <img style="width:80px;height:80px" src="{{this.Restaurant.image}}" alt="{{this.Restaurant.id}}">
+            </a>
+          </div>
+          {{/each}}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
