@@ -28,6 +28,7 @@ router.get('/users/:id/edit', authenticated, userController.editUser) // edit pa
 router.put('/users/:id', upload.single('image'), userController.putUser) // edit profile
 
 // 前台
+router.get('/restaurants/feeds', authenticated, restController.getFeeds) // feeds page
 router.get('/restaurants/:id', authenticated, restController.getRestaurant) // detail
 router.get('/restaurants', authenticated, restController.getRestaurants) // browse all
 router.get('/restaurants/:id/dashboard', authenticated, restController.getDashboard) // dashboard
