@@ -16,7 +16,16 @@ const authenticatedAdmin = (req, res, next) => {
     res.redirect('/signin')
   }
 }
+
+const userAuthenticated = (req, res, next) => {
+  if (!helpers.ensureAuthenticated(req)) return res.redirect('/signin')
+
+  if (Number(req.params.id) === helpers.getUser(req).id) return next()
+  throw new Error('您不是本人，無法操作')
+}
+
 module.exports = {
   authenticated,
-  authenticatedAdmin
+  authenticatedAdmin,
+  userAuthenticated
 }

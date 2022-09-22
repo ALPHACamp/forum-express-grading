@@ -1,0 +1,10 @@
+<div class="row mt-3 p-2 bg-white">
+  {{!-- <div class="col-10"> --}}
+    <div class="col-4"><img src="{{ user.image }}" alt="photo" style="width: 300px; margin-bottom: 25px;"></div>
+    <div class="col-8">
+      <h3>{{ user.name }}</h3>
+      <p> {{ user.email }} </p>
+      <a href="/users/{{ user.id }}/edit" class="btn btn-primary">Edit</a>
+    </div>
+  </div>
+</div>
