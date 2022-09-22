@@ -21,15 +21,22 @@ const restaurantController = {
   getRestaurant: (req, res, next) => {
     const id = req.params.id
     return Restaurant.findByPk(id, {
-      include: 'Category',
-      raw: true,
-      nest: true
+      include: 'Category'
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant isn't exist!")
 
-        res.render('restaurant', { restaurant })
+        restaurant.increment('view_count', { by: 1 }) // 這邊要注意是否需要註記順序??
+        res.render('restaurant', { restaurant: restaurant.toJSON() })
       }).catch(error => next(error))
+  },
+  getDashboard: (req, res, next) => {
+    const id = req.params.id
+    return Restaurant.findByPk(id, { include: 'Category', raw: true, nest: true, attributes: ['id', 'name', 'view_count'] }) // 為何??
+      .then(restaurant => {
+        res.render('dashboard', { restaurant })
+      })
+      .catch(error => next(error))
   }
 }
 
