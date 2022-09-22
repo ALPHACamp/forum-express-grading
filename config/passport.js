@@ -26,7 +26,8 @@ passport.serializeUser((user, cb) => {
 passport.deserializeUser((id, cb) => {
   return User.findByPk(id, {
     include: [
-      { model: Restaurant, as: 'FavoritedRestaurants' } // 取出餐廳關聯資料
+      { model: Restaurant, as: 'FavoritedRestaurants' }, // 取出餐廳關聯資料
+      { model: Restaurant, as: 'LikedRestaurants' }
     ]
   })
     .then(user => cb(null, user.toJSON()))
