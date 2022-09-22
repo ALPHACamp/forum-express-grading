@@ -42,18 +42,20 @@ const userController = {
   },
   getUser: (req, res, next) => {
     const id = Number(req.params.id)
-    return User.findByPk(id, {
-      include: [{ model: Comment, include: Restaurant }],
+    return Promise.all([User.findByPk(id, { raw: true }), Comment.findAll({
+      where: { userId: id },
+      attributes: ['restaurantId'],
+      include: Restaurant,
       nest: true,
       raw: true
-    })
-      .then(user => {
+    })])
+      .then(([user, comments]) => {
         if (!user) throw new Error("User didn't exist!")
         if (getUser(req).id !== id) {
           req.flash('error_messages', '沒有查看權限')
-          res.render('users/profile', { user: getUser(req), userId: id })
+          return res.render('users/profile', { user: getUser(req), userId: id })
         }
-        res.render('users/profile', { user: getUser(req), userId: id })
+        res.render('users/profile', { user: getUser(req), userId: id, comments })
       })
       .catch(err => next(err))
   },

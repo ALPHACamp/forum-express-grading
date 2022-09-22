@@ -1,8 +1,8 @@
-  <div class="row">
-    <div class="col-md-12">
+  <div class="card">
+    <div class="card-header">
       <h1>{{user.name}}</h1>
     </div>
-    <div class="col-md-4">
+    <div class="card-body">
       <div>
         {{#if user}}
         <img class="img-responsive center-block" src="{{user.image}}" style="width: 250px; margin-bottom: 25px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
@@ -10,32 +10,30 @@
       </div>
       <div class="well">
         <ul class="list-unstyled">
-          <li><strong>Name:</strong> {{user.name}}</li>
-          <li><strong>Email:</strong> {{user.email}}</li>
-          <li><strong> {{user.Comments.length}} 已評論餐廳</strong></li>
+          <li class="card-text"><strong>Name:</strong> {{user.name}}</li>
+          <li class="card-text"><strong>Email:</strong> {{user.email}}</li>
+          <li class="card-text"><strong> {{comments.length}} 已評論餐廳</strong></li>
         </ul>
       </div>
       {{#ifCond userId user.id}}
         <a class="btn btn-outline-info mb-3" href="/users/{{user.id}}/edit">Edit</a>
       {{/ifCond}}
     </div>
-  </div>
-  <div class="row">
-    <div class="col-md-12">
-      <p><strong> {{user.Comments.length}} 已評論餐廳</strong></p>
+    <div class="card-header">
+      <p><strong> {{comments.length}} 已評論餐廳</strong></p>
     </div>
-    {{#if user.Comments.length}}
-    <div class="col-md-4">
-      {{#each user.Comments}}
+    {{#if comments.length}}
+    <div class="card-body d-flex flex-wrap">
+      {{#each comments}}
       <div>
-        <a href="/restaurants/{{this.Restaurant.id}}">
+        <a href="/restaurants/{{this.Restaurant.id}}" class="m-3">
           <img class="img-responsive center-block" src="{{this.Restaurant.image}}" style="width: 100px; margin-bottom: 25px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
         </a>
       </div>
       {{/each}}
     </div>
     {{/if}}
-  </div>
+</div>
 
 
 
