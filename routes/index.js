@@ -14,6 +14,8 @@ router.post('/signin', passport.authenticate('local', { failureRedirect: '/signi
 router.get('/logout', userController.logout)
 router.get('/restaurants', authenticated, restaurantController.getRestaurants
 )
+router.get('/restaurants/:id', authenticated, restaurantController.getRestaurant
+)
 router.get('/', (req, res) => res.redirect('/restaurants'))
 router.use('/', generalErrorHandler)
 module.exports = router
