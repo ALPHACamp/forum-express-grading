@@ -24,6 +24,7 @@ router.get('/restaurants/:id', authenticated, restaurantController.getRestaurant
 router.get('/restaurants/:id/dashboard', authenticated, restaurantController.getDashboard)
 // comment
 router.post('/comments', authenticated, CommentController.postComment)
+router.delete('/comments/:id', authenticated, CommentController.deleteComment)
 router.get('/', (req, res) => { res.redirect('/restaurants') })
 router.use('/', generalErrorHandler)
 module.exports = router
