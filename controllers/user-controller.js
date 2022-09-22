@@ -1,7 +1,9 @@
 const bcrypt = require('bcryptjs')
 const db = require('../models')
-const { User } = db
+const { Restaurant, Comment, User } = db
 const { imgurFileHandler } = require('../helpers/file-helpers')
+const sequelize = require('sequelize')
+const { getUser } = require('../helpers/auth-helpers')
 
 const userController = {
   signUpPage: (req, res) => res.render('signUp'),
@@ -38,11 +40,19 @@ const userController = {
     })
   },
   getUser: (req, res, next) => {
-    const { id } = req.params
-    return User.findByPk(id, { raw: true })
-      .then(user => {
-        if (!user) throw new Error('使用者不存在')
-        res.render('users/profile', { user })
+    const { id } = req.params // generate profile
+    const user = getUser(req) // real user
+
+    return Promise.all([Comment.findAll({
+      where: { user_id: id },
+      attributes: [[sequelize.fn('DISTINCT', sequelize.col('restaurant_id')), 'comments']],
+      include: Restaurant,
+      nest: true,
+      raw: true
+    }), User.findByPk(id, { raw: true })])
+      .then(([comments, profile]) => {
+        if (!profile) throw new Error('使用者不存在')
+        res.render('users/profile', { user, profile, comments })
       })
       .catch(err => next(err))
   },
@@ -59,6 +69,7 @@ const userController = {
     const { id } = req.params
     const { name } = req.body
     const { file } = req
+    if (!name) throw new Error('名字為必填')
     return Promise.all([imgurFileHandler(file), User.findByPk(id)])
       .then(([filePath, user]) => {
         if (!user) throw new Error('使用者不存在')

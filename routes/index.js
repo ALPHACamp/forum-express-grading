@@ -10,7 +10,7 @@ const commentController = require('../controllers/​​comment-controller')
 const upload = require('../middleware/multer')
 
 router.use('/admin', authenticatedAdmin, admin)
-router.get('/users/:id', userAuthenticated, userController.getUser)
+router.get('/users/:id', authenticated, userController.getUser)
 router.get('/users/:id/edit', userAuthenticated, userController.editUser)
 router.put('/users/:id', userAuthenticated, upload.single('image'), userController.putUser)
 
