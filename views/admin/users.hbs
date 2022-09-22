@@ -1,3 +1,5 @@
+{{>admin-tabs route='users'}}
+
 <table class="table align-middle">
   <thead class="thead-dark">
     <tr>
@@ -16,18 +18,18 @@
       <td>{{this.email}}</td>
       <td>{{this.role}}</td>
       {{#is this.role 'admin'}}
-        <td>
-          <form action="/admin/users/{{this.id}}?_method=PATCH" method="POST">
-            <button class="btn btn-success" type="submit">set as user</button>
-          </form> 
-        </td>
+      <td>
+        <form action="/admin/users/{{this.id}}?_method=PATCH" method="POST">
+          <button class="btn btn-success" type="submit">set as user</button>
+        </form>
+      </td>
       {{/is}}
       {{#is this.role 'user'}}
-        <td>
-          <form action="/admin/users/{{this.id}}?_method=PATCH" method="POST">
-            <button class="btn btn-success" type="submit">set as admin</button>
-          </form>
-        </td>
+      <td>
+        <form action="/admin/users/{{this.id}}?_method=PATCH" method="POST">
+          <button class="btn btn-success" type="submit">set as admin</button>
+        </form>
+      </td>
       {{/is}}
     </tr>
     {{/each}}

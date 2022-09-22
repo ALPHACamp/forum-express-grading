@@ -11,7 +11,7 @@ const adminController = {
       include: [Category] // 這邊指的是在 model 用 include 將關聯資料拉進來 findAll 的準備回傳值
     })
       .then(restaurants => {
-        return res.render('admin/admin-homepage', { restaurants })
+        return res.render('admin/restaurants', { restaurants })
       })
       .catch(error => next(error))
   },
@@ -102,7 +102,7 @@ const adminController = {
         users.forEach(user => {
           user.role = user.isAdmin ? 'admin' : 'user'
         })
-        res.render('admin/admin-homepage', { users })// isAdmin -> number
+        res.render('admin/users', { users })// isAdmin -> number
       })
       .catch(error => next(error))
   },
@@ -130,7 +130,9 @@ const adminController = {
       Category.findByPk(id, { raw: true }),
       Category.findAll({ raw: true })
     ])
-      .then(([category, categories]) => res.render('admin/admin-homepage', { category, categories }))
+      .then(([category, categories]) => {
+        res.render('admin/categories', { category, categories })
+      })
       .catch(error => next(error))
   },
   postCategories: (req, res, next) => {
