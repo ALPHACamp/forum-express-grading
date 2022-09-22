@@ -136,7 +136,6 @@ exports.removeFavorite = async (req, res, next) => {
 
 exports.addLike = async (req, res, next) => {
   try {
-    console.log('addLike:', req.user)
     const { restaurantId } = req.params
     const promises = Promise.all([
       Restaurant.findByPk(restaurantId),

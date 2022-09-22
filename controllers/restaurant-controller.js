@@ -1,5 +1,6 @@
 const sequelize = require('sequelize')
 const { Restaurant, Category, Comment, User } = require('../models')
+const { getUser } = require('./../helpers/auth-helpers')
 
 exports.getRestaurants = async (req, res, next) => {
   try {
@@ -123,21 +124,24 @@ exports.getTopRestaurants = async (req, res, next) => {
   try {
     let restaurants = await Restaurant.findAll({
 
-      attributes: {
-        include: [
-          [sequelize.literal('(SELECT COUNT(*) FROM Favorites WHERE Favorites.restaurant_id = Restaurant.id)'), 'favoriteCount']
-        ]
-      },
-      order: [[sequelize.literal('favoriteCount'), 'DESC']],
-      limit: 10
+      // attributes: {
+      //   include: [
+      //     [sequelize.literal('(SELECT COUNT(*) FROM Favorites WHERE Favorites.restaurant_id = Restaurant.id)'), 'favoritedCount']
+      //   ]
+      // },
+      // order: [[sequelize.literal('favoritedCount'), 'DESC']],
+      // limit: 10
+      include: { model: User, as: 'FavoritedUsers' }
     })
     restaurants = restaurants.map(restaurant => (
       {
         ...restaurant.toJSON(),
-        isFavorited: req.user.FavoritedRestaurants.some(({ id }) => id === restaurant.id),
-        isLiked: req.user.LikedRestaurants.some(({ id }) => id === restaurant.id)
-      }))
-    res.render('top-restaurants', { restaurants })
+        isFavorited: getUser(req).FavoritedRestaurants.some(({ id }) => id === restaurant.id),
+        favoritedCount: restaurant.FavoritedUsers.length
+      })).sort((a, b) => b.favoritedCount - a.favoritedCount)
+      .slice(0, 10)
+
+    return res.render('top-restaurants', { restaurants })
   } catch (err) {
     next(err)
   }
