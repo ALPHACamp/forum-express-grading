@@ -2,7 +2,7 @@
 // 匹配條件較多的路由順序寫在前面，讓程式先判斷。
 const express = require('express')
 const router = express.Router()
-const restaurantController = require('../controllers/restaurant-controller')
+const restController = require('../controllers/restaurant-controller')
 const userController = require('../controllers/user-controller')
 const passport = require('passport')
 const admin = require('./modules/admin') // admin 檔案夾
@@ -23,9 +23,11 @@ router.get('/logout', userController.logout)
 // 將 req 交給 passport.authenticate 請 passport 做驗證，並指定用 passport 設定中的 local，最後再看是成功還是失敗，將 req 給對應的內容，驗證成功給 userController.signIn、失敗給 failureRedirect，因此能夠進入到 userController.signIn 就是已經登入的使用者
 router.post('/signin', passport.authenticate('local', { failureRedirect: '/signin', failureFlash: true }), userController.signIn)
 
-router.get('/restaurants/:id', authenticated, restaurantController.getRestaurant)
+router.get('/restaurants/:id/dashboard', authenticated, restController.getDashboard)
 
-router.get('/restaurants', authenticated, restaurantController.getRestaurants)
+router.get('/restaurants/:id', authenticated, restController.getRestaurant)
+
+router.get('/restaurants', authenticated, restController.getRestaurants)
 
 // fallback 路由：當所有路由皆不匹配時(奇怪亂拼湊)，不管用什麼 HTTP method 發出，最終皆會通過的路由(e.g. http://localhost:3000/)
 router.get('/', (req, res) => {

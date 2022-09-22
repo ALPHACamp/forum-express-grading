@@ -1,0 +1,23 @@
+<div class="card" style="width: 18rem;">
+  <div class="card-body">
+    <h5 class="card-title">{{ restaurant.name }}</h5>
+    <h6 class="card-subtitle mb-2 text-muted">[ {{ restaurant.Category.name }} ]</h6>
+    <hr>
+    <div class="mb-3">
+      <button type="button" class="btn btn-primary">
+        瀏覽次數 <span class="badge bg-secondary">{{ restaurant.view_count }}</span>
+      </button>
+    </div>
+      <div class="mb-3">
+        <button type="button" class="btn btn-primary">
+          評論數 <span class="badge bg-secondary">4</span>
+      </button>
+    </div>
+    <div class="mb-3">
+      <button type="button" class="btn btn-primary">
+        收藏數 <span class="badge bg-secondary">5</span>
+      </button>
+    </div>
+    <p><a href="javascript:history.back()">回上一頁</a></p>
+  </div>
+</div>
