@@ -1,7 +1,8 @@
-const { ensureAuthenticated, getUser } = require('../helpers/auth-helpers')
+const helpers = require('../helpers/auth-helpers')
+
 const authenticated = (req, res, next) => {
   // console.log(req)
-  if (ensureAuthenticated(req)) {
+  if (helpers.ensureAuthenticated(req)) {
     // console.log(ensureAuthenticated(req))
     // console.log('沒盡到這邊')
     return next()
@@ -11,8 +12,8 @@ const authenticated = (req, res, next) => {
 }
 const authenticatedAdmin = (req, res, next) => {
   // if (req.isAuthenticated)
-  if (ensureAuthenticated(req)) {
-    if (getUser(req).isAdmin) return next()
+  if (helpers.ensureAuthenticated(req)) {
+    if (helpers.getUser(req).isAdmin) return next()
     res.redirect('/')
   } else {
     res.redirect('/signin')
