@@ -185,7 +185,8 @@ exports.getTopUsers = async (req, res, next) => {
       ...user.toJSON(),
       followerCount: user.Followers.length,
       isFollowed: req.user.Followings.some(({ id }) => user.id === id)
-    }))
+    })).sort((a, b) => b.followerCount - a.followerCount)
+
     return res.render('top-users', { users })
   } catch (err) {
     next(err)
