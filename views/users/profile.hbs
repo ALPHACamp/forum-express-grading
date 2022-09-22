@@ -12,6 +12,7 @@
         <div class="col-md-8 mt-3">
           <h4>{{userProfile.name}}</h4>
           <h6 class="mt-3 mb-3">{{userProfile.email}}</h6>
+          <h6 class="mt-3 mb-3">{{#if comments}}{{comments.length}} 個已評論餐廳{{else}}沒有任何評論{{/if}}</h6>
           {{#ifCond userProfile.id user.id }}
           <a href="/users/{{user.id}}/edit" class="btn btn-primary">edit</a>
           {{/ifCond}}
@@ -19,5 +20,26 @@
         </div>
       </div>
     </div>
+
+    <div class="card mt-3">
+      <div class="card-header">
+        <h6>已評論餐廳</h6>
+      </div>
+      <div class="card-body d-flex flex-wrap">
+        {{#if comments}}
+        {{#each comments}}
+        <div class="flex-column">
+        <h6 class="text-center">{{this.Restaurant.name}}</h6>
+        <a href="/restaurants/{{this.Restaurant.id}}">
+          <img src="{{this.Restaurant.image}}" class="p-1" style="width: 200px;">
+        </a>
+        </div>
+        {{/each}}
+        {{else}}
+        <h6>沒有任何評論</h6>
+        {{/if}}
+      </div>
+    </div>
+
   </div>
 </div>
