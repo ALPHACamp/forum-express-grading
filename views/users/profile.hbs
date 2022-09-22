@@ -1,20 +1,22 @@
 <div class="card mb-3">
   <div class="row g-0">
     <div class="col-md-4">
-      <img src="{{user.image}}" class="img-fluid rounded-start" style="width: 400px; height: 400px; object-fit: cover;" alt="...">
+      <img src="{{userProfile.image}}" class="img-fluid rounded-start" style="width: 400px; height: 400px; object-fit: cover;" alt="...">
     </div>
     <div class="col-md-8">
       <div class="card-body">
-        <h5 class="card-title">{{user.name}}</h5>
-        <p class="card-text">{{user.email}}</p>
+        <h5 class="card-title">{{userProfile.name}}</h5>
+        <p class="card-text">{{userProfile.email}}</p>
         <p class="card-text"><span class="mx-2">{{comments.length}}</span>已評論餐廳</p>
       </div>
+      {{#ifCond user.id userProfile.id }}
       <div class="card-body">
         <a href='/users/{{user.id}}/edit' style="text-decoration:none">
           <button type="button" class="btn btn-primary">edit</button>
         </a>
         <a class="btn btn-outline-secondary" href="/">Back</a>
       </div>
+      {{/ifCond}}
     </div>
   </div>
 </div>
