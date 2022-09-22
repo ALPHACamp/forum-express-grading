@@ -1,6 +1,7 @@
-const { User } = require('../models')
+const { User, Restaurant, Comment } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 const bcrypt = require('bcryptjs')
+const { getUser } = require('../helpers/auth-helpers')
 
 const userController = {
   signUpPage: (req, res) => {
@@ -40,17 +41,25 @@ const userController = {
     res.redirect('/signin')
   },
   getUser: (req, res, next) => {
-    return User.findByPk(req.params.id, {
+    const id = Number(req.params.id)
+    return User.findByPk(id, {
+      include: [{ model: Comment, include: Restaurant }],
+      nest: true,
       raw: true
     })
       .then(user => {
         if (!user) throw new Error("User didn't exist!")
-        res.render('users/profile', { user })
+        if (getUser(req).id !== id) {
+          req.flash('error_messages', '沒有查看權限')
+          res.render('users/profile', { user: getUser(req), userId: id })
+        }
+        res.render('users/profile', { user: getUser(req), userId: id })
       })
       .catch(err => next(err))
   },
   editUser: (req, res, next) => {
-    return User.findByPk(req.params.id, { raw: true })
+    const id = Number(req.params.id)
+    return User.findByPk(id, { raw: true })
       .then(user => {
         if (!user) throw new Error("User didn't exist!")
         res.render('users/edit', { user })

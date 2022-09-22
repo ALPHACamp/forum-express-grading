@@ -5,7 +5,7 @@ const upload = require('../middleware/multer')
 
 const restController = require('../controllers/restaurant-controller')
 const userController = require('../controllers/user-controller')
-const { authenticated, authenticatedAdmin } = require('../middleware/auth')
+const { authenticated, authenticatedAdmin, authenticateUser } = require('../middleware/auth')
 const { generalErrorHandler } = require('../middleware/error-handler')
 const commentController = require('../controllers/comment-controller')
 
@@ -20,9 +20,9 @@ router.post('/signup', userController.signUp)
 router.get('/signin', userController.signInPage)
 router.post('/signin', passport.authenticate('local', { failureRedirect: '/signin', failureFlash: true }), userController.signIn)
 
+router.get('/users/:id/edit', authenticateUser, userController.editUser)
+router.put('/users/:id', authenticateUser, upload.single('image'), userController.putUser)
 router.get('/users/:id', authenticated, userController.getUser)
-router.put('/users/:id', authenticated, upload.single('image'), userController.putUser)
-router.get('/users/:id/edit', authenticated, userController.editUser)
 
 router.get('/logout', userController.logout)
 
