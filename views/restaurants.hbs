@@ -1,11 +1,6 @@
-<ul class="nav nav-tabs mb-4">
-  <li class="nav-item">
-    <a class="nav-link {{#isEq route 'index'}}active{{/isEq}}" href="/restaurants">首頁</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link {{#isEq route 'feeds'}}active{{/isEq}}" href="/restaurants/feeds">最新動態</a>
-  </li>
-</ul>
+{{> restaurant-tabs route="index"}}
+
+
 <ul class="nav nav-pills">
   <li class="nav-item">
     <a class="nav-link {{#isEq '' categoryId}}active{{/isEq}}" href="?categoryId=">全部</a>

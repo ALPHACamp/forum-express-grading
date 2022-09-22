@@ -177,3 +177,17 @@ exports.removeLike = async (req, res, next) => {
     next(err)
   }
 }
+
+exports.getTopUsers = async (req, res, next) => {
+  try {
+    let users = await User.findAll({ include: [{ model: User, as: 'Followers' }] })
+    users = users.map(user => ({
+      ...user.toJSON(),
+      followerCount: user.Followers.length,
+      isFollowed: req.user.Followings.some(({ id }) => user.id === id)
+    }))
+    return res.render('top-users', { users })
+  } catch (err) {
+    next(err)
+  }
+}
