@@ -21,7 +21,7 @@ const SESSION_SECRET = 'secret'
 app.engine('hbs', handlebars({ extname: '.hbs', helpers: handlebarsHelpers }))
 app.set('view engine', 'hbs')
 
-app.use(express.urlencoded({ extent: true }))
+app.use(express.urlencoded({ extented: true }))
 
 app.use(session({ secret: SESSION_SECRET, resave: false, saveUninitialized: false }))
 
@@ -34,7 +34,7 @@ app.use('/upload', express.static(path.join(__dirname, 'upload')))
 app.use((req, res, next) => {
   res.locals.success_messages = req.flash('success_messages')
   res.locals.error_messages = req.flash('error_messages')
-  res.locals.user = getUser(req)
+  res.locals.currentUser = getUser(req)
   next()
 })
 
