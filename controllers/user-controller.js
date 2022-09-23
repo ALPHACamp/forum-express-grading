@@ -1,4 +1,4 @@
-const { User, Restaurant, Comment, Favorite } = require('../models')
+const { User, Restaurant, Comment, Favorite, Like } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 const bcrypt = require('bcryptjs')
 const { getUser } = require('../helpers/auth-helpers')
@@ -8,7 +8,9 @@ const userController = {
     res.render('signup')
   },
   signUp: (req, res, next) => {
-    if (req.body.password !== req.body.passwordCheck) { throw new Error('Password 跟 Password Check 不一樣!') }
+    if (req.body.password !== req.body.passwordCheck) {
+      throw new Error('Password 跟 Password Check 不一樣!')
+    }
     User.findOne({ where: { email: req.body.email } })
       .then(user => {
         if (user) throw new Error('Email 已經註冊過了')
@@ -42,20 +44,27 @@ const userController = {
   },
   getUser: (req, res, next) => {
     const id = Number(req.params.id)
-    return Promise.all([User.findByPk(id, { raw: true }), Comment.findAll({
-      where: { userId: id },
-      attributes: ['restaurantId'],
-      include: Restaurant,
-      nest: true,
-      raw: true
-    })])
+    return Promise.all([
+      User.findByPk(id, { raw: true }),
+      Comment.findAll({
+        where: { userId: id },
+        attributes: ['restaurantId'],
+        include: Restaurant,
+        nest: true,
+        raw: true
+      })
+    ])
       .then(([user, comments]) => {
         if (!user) throw new Error("User didn't exist!")
         if (getUser(req).id !== id) {
           req.flash('error_messages', '沒有查看權限')
           return res.render('users/profile', { user: getUser(req), userId: id })
         }
-        res.render('users/profile', { user: getUser(req), userId: id, comments })
+        res.render('users/profile', {
+          user: getUser(req),
+          userId: id,
+          comments
+        })
       })
       .catch(err => next(err))
   },
@@ -101,7 +110,6 @@ const userController = {
       .then(([restaurant, favorite]) => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         if (favorite) throw new Error('You have favorited this restaurant!')
-
         return Favorite.create({
           userId: req.user.id,
           restaurantId
@@ -119,8 +127,34 @@ const userController = {
     })
       .then(favorite => {
         if (!favorite) throw new Error("You haven't favorited this restaurant")
-
         return favorite.destroy()
+      })
+      .then(() => res.redirect('back'))
+      .catch(err => next(err))
+  },
+  addLike: (req, res, next) => {
+    const { restaurantId } = req.params
+    const userId = req.user.id
+    return Promise.all([
+      Restaurant.findByPk(restaurantId),
+      Like.findOne({ where: { userId, restaurantId } })
+    ])
+      .then(([restaurant, like]) => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        if (like) throw new Error('You have liked this restaurant!')
+        return Like.create({ userId, restaurantId })
+      })
+      .then(() => res.redirect('back'))
+      .catch(err => next(err))
+  },
+  removeLike: (req, res, next) => {
+    const userId = req.user.id
+    const restaurantId = req.params.restaurantId
+    return Like.findOne({ where: { userId, restaurantId } })
+      .then(like => {
+        console.log(like)
+        if (!like) throw new Error("You haven't favorited this restaurant")
+        return like.destroy()
       })
       .then(() => res.redirect('back'))
       .catch(err => next(err))
