@@ -46,7 +46,7 @@ const restaurantController = {
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant isn't exist!")
 
-        restaurant.increment('view_count', { by: 1 }) // 這邊要注意是否需要註記順序??
+        restaurant.increment('view_count', { by: 1 }) // 這邊要注意，不需要 nest
         res.render('restaurant', { restaurant: restaurant.toJSON() })
       }).catch(error => next(error))
   },

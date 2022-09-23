@@ -4,6 +4,7 @@ const express = require('express')
 const router = express.Router()
 const restController = require('../controllers/restaurant-controller')
 const userController = require('../controllers/user-controller')
+const commentController = require('../controllers/comment-controller')
 const passport = require('passport')
 const admin = require('./modules/admin') // admin 檔案夾
 const { generalErrorHandler } = require('../middleware/error-handler') // { key:value }
@@ -28,6 +29,8 @@ router.get('/restaurants/:id/dashboard', authenticated, restController.getDashbo
 router.get('/restaurants/:id', authenticated, restController.getRestaurant)
 
 router.get('/restaurants', authenticated, restController.getRestaurants)
+
+router.post('/comments', authenticated, commentController.postComment)
 
 // fallback 路由：當所有路由皆不匹配時(奇怪亂拼湊)，不管用什麼 HTTP method 發出，最終皆會通過的路由(e.g. http://localhost:3000/)
 router.get('/', (req, res) => {
