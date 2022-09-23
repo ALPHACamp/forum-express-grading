@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs')
-const db = require('../models/index')
 const { imgurFileHandler } = require('../helpers/file-helpers')
-const { User, Comment, Restaurant } = db
+const { User, Comment, Restaurant, Favorite } = require('../models')
+const { getUser } = require('../helpers/auth-helpers')
 const assert = require('assert')
 
 const uerController = {
@@ -76,6 +76,39 @@ const uerController = {
       await user.update({ name, image: filePath || null })
       req.flash('success_messages', '使用者資料編輯成功')
       res.redirect(`/users/${id}`)
+    } catch (error) {
+      next(error)
+    }
+  },
+  addFavorite: async (req, res, next) => {
+    const restaurantId = Number(req.params.id)
+    const userId = Number(getUser(req).id)
+    try {
+      const [restaurant, user, favorite] = await Promise.all(
+        [User.findByPk(userId),
+          Restaurant.findByPk(restaurantId),
+          Favorite.findOne({ where: { userId, restaurantId } })
+        ])
+      assert(restaurant, "Restaurant didn't exist!")
+      assert(user, "User didn't exist!")
+      assert(!favorite, '這間餐廳已在清單中')
+      console.log('restaurantId', restaurantId, typeof restaurantId, 'userId', userId, typeof userId)
+      await Favorite.create({ userId, restaurantId })
+      req.flash('success_messages', '成功加入清單')
+      res.redirect('back')
+    } catch (error) {
+      next(error)
+    }
+  },
+  deleteFavorite: async (req, res, next) => {
+    const restaurantId = Number(req.params.id)
+    const userId = Number(getUser(req).id)
+    try {
+      const favorite = await Favorite.findOne({ where: { userId, restaurantId } })
+      assert(favorite, '這間餐廳已不在清單中')
+      favorite.destroy()
+      req.flash('success_messages', '成功移出清單')
+      res.redirect('back')
     } catch (error) {
       next(error)
     }

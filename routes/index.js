@@ -21,6 +21,9 @@ router.get('/logout', authenticated, userController.logout)
 router.get('/users/:id', authenticated, authenticatedUser, userController.getUser)
 router.put('/users/:id', authenticated, authenticatedUser, upload.single('image'), userController.putUser)
 router.get('/users/:id/edit', authenticated, authenticatedUser, uerController.editUser)
+// favorite
+router.post('/favorite/:id', authenticated, userController.addFavorite)
+router.delete('/favorite/:id', authenticated, userController.deleteFavorite)
 // admin
 router.use('/admin', authenticatedAdmin, adminRoute)
 // restaurnat
