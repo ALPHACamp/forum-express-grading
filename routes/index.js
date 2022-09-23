@@ -25,6 +25,7 @@ router.get('/users/:id/edit', authenticated, authenticatedUser, uerController.ed
 router.use('/admin', authenticatedAdmin, adminRoute)
 // restaurnat
 router.get('/restaurants', authenticated, restaurantController.getRestaurants)
+router.get('/restaurants/feeds', authenticated, restaurantController.getFeeds)
 router.get('/restaurants/:id', authenticated, restaurantController.getRestaurant)
 router.get('/restaurants/:id/dashboard', authenticated, restaurantController.getDashboard)
 // comment
