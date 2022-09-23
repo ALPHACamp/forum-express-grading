@@ -19,7 +19,7 @@ const restaurantController = {
       Category.findAll({ raw: true })
     ])
       .then(([restaurants, categories]) => {
-        const data = restaurants.rows.map((r) => ({
+        const data = restaurants.rows.map(r => ({
           ...r,
           description: r.description.substring(0, 50)
         }))
@@ -30,7 +30,7 @@ const restaurantController = {
           pagination: getPagination(limit, page, restaurants.count)
         })
       })
-      .catch((err) => next(err))
+      .catch(err => next(err))
   },
   getRestaurant: (req, res, next) => {
     Restaurant.findByPk(req.params.id, {
@@ -38,23 +38,23 @@ const restaurantController = {
       nest: true,
       include: [Category, { model: Comment, include: User }]
     })
-      .then((restaurant) => {
+      .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!") //  如果找不到，回傳錯誤訊息，後面不執行
         restaurant.increment('viewCounts')
         res.render('restaurant', { restaurant: restaurant.toJSON() })
       })
-      .catch((err) => next(err))
+      .catch(err => next(err))
   },
   getDashboard: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
       nest: true,
       include: [Category, Comment]
     })
-      .then((restaurant) => {
+      .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         res.render('dashboard', { restaurant: restaurant.toJSON() })
       })
-      .catch((err) => next(err))
+      .catch(err => next(err))
   },
   getFeeds: (req, res, next) => {
     return Promise.all([
@@ -79,7 +79,7 @@ const restaurantController = {
           comments
         })
       })
-      .catch((err) => next(err))
+      .catch(err => next(err))
   }
 }
 module.exports = restaurantController
