@@ -14,12 +14,12 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Followship.init({
-    follwer_id: DataTypes.INTEGER,
-    following_id: DataTypes.INTEGER
+    followerId: DataTypes.INTEGER,
+    followingId: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'Followship',
-    tableNmae: 'Followships',
+    tableName: 'Followships',
     underscored: true
   })
   return Followship

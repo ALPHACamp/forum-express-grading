@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs')
-const { User, Restaurant, Comment, Favorite, Like } = require('../models')
+const { User, Restaurant, Comment, Favorite, Like, Followship } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 const userController = {
   // sign up
@@ -159,6 +159,22 @@ const userController = {
         return like.destroy()
       })
       .then(() => res.redirect('back'))
+      .catch(err => next(err))
+  },
+  getTopUsers: (req, res, next) => {
+    return User.findAll({
+      inculde: [{ model: User, as: 'Followers' }]
+    })
+      .then(users => {
+        users = users.map(user => ({
+          ...user.toJSON(),
+          followerCount: user.Followers.length,
+          isFollowed: req.user.Followings.some(f => f.id === user.id)
+
+        }))
+        console.log(users)
+        return res.render('top-users', { users })
+      })
       .catch(err => next(err))
   }
 

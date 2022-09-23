@@ -23,11 +23,13 @@ router.post('/signin', passport.authenticate('local', {
 router.get('/logout', userController.logout)
 
 // profile
+router.get('/users/top', authenticated, userController.getTopUsers)// top user page
 router.get('/users/:id', authenticated, userController.getUser) // profile page
 router.get('/users/:id/edit', authenticated, userController.editUser) // edit page
 router.put('/users/:id', upload.single('image'), userController.putUser) // edit profile
 
 // 前台
+
 router.get('/restaurants/feeds', authenticated, restController.getFeeds) // feeds page
 router.get('/restaurants/:id', authenticated, restController.getRestaurant) // detail
 router.get('/restaurants', authenticated, restController.getRestaurants) // browse all
