@@ -21,23 +21,30 @@
   <hr>
 </div>
 
-{{!-- Comment --}}
+{{!-- Comment 顯示--}}
 {{!-- this.User.id => Comments 的 User.id --}}
 <h3 class="mb-3">所有評論：</h3>
 {{#each restaurant.Comments}}
-<blockquote class="blockquote mb-0">
-  <h4><a href="/users/{{this.User.id}}">{{this.User.name}}</a></h4>
-  <p>{{this.text}}</p>
-  <footer class="blockquote-footer">{{relativeTimeFromNow this.createdAt}}</footer>
-</blockquote>
-<hr />
+  {{#if ../user.isAdmin}}
+    <form action="/comments/{{this.id}}?_method=DELETE" method="POST" class="float-end">
+      <button type="submit" class="btn btn-danger">Delete</button>
+    </form>
+  {{/if}}
+  <blockquote class="blockquote mb-0">
+    <h4><a href="/users/{{this.User.id}}">{{this.User.name}}</a></h4>
+    <p>{{this.text}}</p>
+    <footer class="blockquote-footer">{{relativeTimeFromNow this.createdAt}}</footer>
+  </blockquote>
+  <hr />
 {{/each}}
+
+{{!-- Comment 留言 --}}
 <form action="/comments" method="POST">
   <div class="form-row mb-3">
     <label class="form-label" for="text">留下評論：</label>
     <textarea class="form-control" id="text" name="text" rows="3"></textarea>
   </div>
-  <input type="hidden" name="restaurantId" value="{{restaurant.id}}" />
+  <input type="hidden" name="restaurantId" value="{{restaurant.id}}" /> {{!-- 在某個 rest id 留下評論 --}}
   <button type="submit" class="btn btn-primary">Submit</button>
   <a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
 </form>

@@ -32,6 +32,8 @@ router.get('/restaurants', authenticated, restController.getRestaurants)
 
 router.post('/comments', authenticated, commentController.postComment)
 
+router.delete('/comments/:id', commentController.deleteComment)
+
 // fallback 路由：當所有路由皆不匹配時(奇怪亂拼湊)，不管用什麼 HTTP method 發出，最終皆會通過的路由(e.g. http://localhost:3000/)
 router.get('/', (req, res) => {
   res.redirect('/restaurants')
