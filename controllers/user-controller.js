@@ -167,14 +167,13 @@ const userController = {
         { model: User, as: 'Followers' }]
     })
       .then(users => {
-        const results = users.map(user => ({
+        const result = users.map(user => ({
           ...user.toJSON(),
           followerCount: user.Followers.length,
           isFollowed: req.user.Followings.some(f => f.id === user.id)
 
-        }))
-        console.log(users)
-        return res.render('top-users', { users: results })
+        })).sort((a, b) => b.followerCount - a.followerCount) // 資料排序: 由高至低
+        return res.render('top-users', { users: result })
       })
       .catch(err => next(err))
   },
