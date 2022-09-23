@@ -11,6 +11,11 @@
   text-decoration: none;
 }
 
+html,body{
+  margin: 0;
+  padding: 0;
+}
+
 .thead-dark {
   color: aliceblue;
   background-color: rgb(57, 55, 55);
@@ -18,4 +23,20 @@
 
 .without-underline {
   text-decoration: none;
+}
+
+.white-block{
+  padding:10px;
+  min-width: 80%;
+  background-color: white;
+}
+
+.gray-block {
+  padding: 20px;
+  min-width: 80%;
+  background-color: rgb(233, 232, 232);
+}
+
+.fa-solid {
+  font-size: 128px;
 }
