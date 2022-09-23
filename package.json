@@ -6,7 +6,8 @@
     "start": "node app.js",
     "dev": "nodemon app.js",
     "lint": "eslint \"**/*.js\" --fix",
-    "test": "mocha tests --exit --recursive --timeout 5000"
+    "test": "mocha tests --exit --recursive --timeout 5000",
+    "test2": "mocha tests/R02.test.js --exit"
   },
   "repository": {
     "type": "git",
