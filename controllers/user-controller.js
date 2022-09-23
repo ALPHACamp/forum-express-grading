@@ -163,18 +163,56 @@ const userController = {
   },
   getTopUsers: (req, res, next) => {
     return User.findAll({
-      inculde: [{ model: User, as: 'Followers' }]
+      include: [
+        { model: User, as: 'Followers' }]
     })
       .then(users => {
-        users = users.map(user => ({
+        const results = users.map(user => ({
           ...user.toJSON(),
           followerCount: user.Followers.length,
           isFollowed: req.user.Followings.some(f => f.id === user.id)
 
         }))
         console.log(users)
-        return res.render('top-users', { users })
+        return res.render('top-users', { users: results })
       })
+      .catch(err => next(err))
+  },
+  addFollowing: (req, res, next) => {
+    const { userId } = req.params
+    return Promise.all([
+      User.findByPk(userId),
+      Followship.findOne({
+        where: {
+          followerId: req.user.id,
+          followingId: userId
+        }
+      })
+    ])
+      .then(([user, followship]) => {
+        if (!user) throw new Error("User didn't exist.")
+        if (followship) throw new Error("You've followed.")
+        return Followship.create({
+          followerId: req.user.id, // 此帳號本人
+          followingId: userId // 有沒有追蹤req.params.id這個帳號
+        })
+      })
+      .then(() => res.redirect('back'))
+      .catch(err => next(err))
+  },
+  removeFollowing: (req, res, next) => {
+    const { userId } = req.params
+    return Followship.findOne({
+      where: {
+        followerId: req.user.id,
+        followingId: userId
+      }
+    })
+      .then(followship => {
+        if (!followship) throw new Error("You haven't followed this user.")
+        return followship.destroy()
+      })
+      .then(() => res.redirect('back'))
       .catch(err => next(err))
   }
 
