@@ -1,5 +1,5 @@
 // restaurantController 物件裡面有 getRestaurants 方法
-const { Restaurant, Category, User } = require('../models')
+const { Restaurant, Category, User, Comment } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
 
 const restaurantController = {
@@ -41,7 +41,10 @@ const restaurantController = {
   getRestaurant: (req, res, next) => {
     const id = req.params.id
     return Restaurant.findByPk(id, {
-      include: 'Category'
+      include: [ // Category 併入 Restaurant
+        Category,
+        { model: Comment, include: User } // 取得關聯資料表 Comment 將 User 併入
+      ]
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant isn't exist!")
