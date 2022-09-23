@@ -10,7 +10,7 @@ const restaurantController = {
     return Promise.all([
       Restaurant.findAndCountAll({
         include: Category,
-        where: { ...categoryId ? { categoryId } : {} }, // 檢查 categoryId 是否為空值
+        where: { ...(categoryId ? { categoryId } : {}) }, // 檢查 categoryId 是否為空值
         limit,
         offset,
         nest: true,
@@ -19,7 +19,7 @@ const restaurantController = {
       Category.findAll({ raw: true })
     ])
       .then(([restaurants, categories]) => {
-        const data = restaurants.rows.map(r => ({
+        const data = restaurants.rows.map((r) => ({
           ...r,
           description: r.description.substring(0, 50)
         }))
@@ -30,31 +30,56 @@ const restaurantController = {
           pagination: getPagination(limit, page, restaurants.count)
         })
       })
-      .catch(err => next(err))
+      .catch((err) => next(err))
   },
   getRestaurant: (req, res, next) => {
-    Restaurant.findByPk(req.params.id, { // 去資料庫用 id 找一筆資料
+    Restaurant.findByPk(req.params.id, {
+      // 去資料庫用 id 找一筆資料
       nest: true,
-      include: [Category,
-        { model: Comment, include: User }]
+      include: [Category, { model: Comment, include: User }]
     })
-      .then(restaurant => {
+      .then((restaurant) => {
         if (!restaurant) throw new Error("Restaurant didn't exist!") //  如果找不到，回傳錯誤訊息，後面不執行
         restaurant.increment('viewCounts')
         res.render('restaurant', { restaurant: restaurant.toJSON() })
       })
-      .catch(err => next(err))
+      .catch((err) => next(err))
   },
   getDashboard: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
       nest: true,
       include: [Category, Comment]
     })
-      .then(restaurant => {
+      .then((restaurant) => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         res.render('dashboard', { restaurant: restaurant.toJSON() })
       })
-      .catch(err => next(err))
+      .catch((err) => next(err))
+  },
+  getFeeds: (req, res, next) => {
+    return Promise.all([
+      Restaurant.findAll({
+        limit: 10,
+        order: [['createdAt', 'DESC']],
+        include: [Category],
+        raw: true,
+        nest: true
+      }),
+      Comment.findAll({
+        limit: 10,
+        order: [['createdAt', 'DESC']],
+        include: [User, Restaurant],
+        raw: true,
+        nest: true
+      })
+    ])
+      .then(([restaurants, comments]) => {
+        res.render('feeds', {
+          restaurants,
+          comments
+        })
+      })
+      .catch((err) => next(err))
   }
 }
 module.exports = restaurantController
