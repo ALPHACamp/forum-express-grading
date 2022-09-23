@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs') // 載入 bcrypt
-const { User } = require('../models')
+const { User, Comment, Restaurant } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers') // 將 file-helper 載進來
 const userController = {
   signUpPage: (req, res) => {
@@ -40,10 +40,13 @@ const userController = {
     res.redirect('/signin')
   },
   getUser: (req, res, next) => {
-    return User.findByPk(req.params.id, { raw: true })
+    return User.findByPk(req.params.id, { 
+      include: [{ model: Comment, include: Restaurant }],
+      nest: true
+     })
       .then(user => {
         if (!user) throw new Error("User doesn't exist.")
-        res.render('users/profile', { user })
+        res.render('users/profile', { user: user.toJSON() })
       })
       .catch(err => next(err))
   },
@@ -72,7 +75,7 @@ const userController = {
         })
       })
       .then(() => {
-        req.flash('success_messages', '使用者資料已更新')
+        req.flash('success_messages', '使用者資料編輯成功')
         res.redirect(`/users/${req.params.id}`)
       })
       .catch(err => next(err))
