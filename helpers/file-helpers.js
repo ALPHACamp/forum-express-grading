@@ -22,8 +22,8 @@ const imgurFileHandler = file => {
   return new Promise((resolve, reject) => {
     if (!file) return resolve(null)
 
-    return imgur.uploadFile(file.path) // 這邊是 upload 二進位檔案
-      .then((img) => {
+    return imgur.uploadFile(file.path) // 這邊是 upload 二進位檔案 e.g.temp\\ec4b82ef774cdadb9ec697936efb0c52(經過 app.js static 設定)
+      .then(img => {
         resolve(img?.link || null)
         // 可選串連運算子
         // -> img ? img.link || null

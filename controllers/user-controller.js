@@ -1,5 +1,8 @@
 const { User } = require('../models') // function named User
 const bcrypt = require('bcryptjs')
+const { imgurFileHandler } = require('../helpers/file-helpers')
+// const { Sequelize, QueryTypes } = require('sequelize')
+// const sequelize = new Sequelize('mysql://localhost:3306/?user=root&password=password&database=forum')
 
 const userController = {
   signUpPage: (req, res) => {
@@ -36,7 +39,51 @@ const userController = {
     req.flash('success_messages', '登出成功!')
     req.logout()
     res.redirect('/signin')
+  },
+  getUser: (req, res, next) => {
+    User.findByPk(req.params.id, { raw: true, include: 'Comment' })
+      .then(user => {
+        if (!user) throw new Error("User didn't exist!")
+
+        res.render('users/profile', { user })
+      })
+  },
+  editUser: (req, res, next) => {
+    User.findByPk(req.params.id, { raw: true })
+      .then(user => {
+        if (!user) throw new Error("User didn't exist!")
+
+        res.render('users/edit')
+      })
+      .catch(error => next(error))
+  },
+  putUser: (req, res, next) => {
+    const id = Number(req.params.id)
+    if (id !== req.user.id) throw new Error('No permission to edit')
+    console.log('\nreq.file\n', req.file)
+    return Promise.all([
+      User.findByPk(req.params.id),
+      imgurFileHandler(req.file)
+    ])
+      .then(([user, filePath]) => {
+        if (!user) throw new Error("User didn't exist!")
+        console.log(filePath)
+        req.body.image = filePath || user.image
+        return user.update({ ...req.body })
+      })
+      .then(() => {
+        req.flash('success_messages', '使用者資料編輯成功')
+        res.redirect(`/users/${id}`)
+      })
+      .catch(error => next(error))
   }
+  // getUser: async (req, res, next) => {
+  //   const [result] = await sequelize.query('SELECT * FROM users WHERE id = ?', {
+  //     replacements: [req.params.id],
+  //     type: QueryTypes.SELECT
+  //   })
+  //   console.log(result)
+  // }
 }
 
 module.exports = userController

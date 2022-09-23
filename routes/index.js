@@ -9,6 +9,7 @@ const passport = require('passport')
 const admin = require('./modules/admin') // admin 檔案夾
 const { generalErrorHandler } = require('../middleware/error-handler') // { key:value }
 const { authenticated, authenticatedAdmin } = require('../middleware/auth')
+const upload = require('../middleware/multer')
 
 // 因為這邊是設立在 routes/modules 路由清單裡面
 router.use('/admin', authenticatedAdmin, admin)
@@ -38,6 +39,12 @@ router.delete('/comments/:id', commentController.deleteComment)
 router.get('/', (req, res) => {
   res.redirect('/restaurants')
 })
+
+router.get('/users/:id/edit', authenticated, userController.editUser)
+
+router.get('/users/:id', authenticated, userController.getUser)
+
+router.put('/users/:id', authenticated, upload.single('image'), userController.putUser)
 
 router.use('/', generalErrorHandler) // global //因為寫了 / 所以只要匹配(其實就是所有路徑就會走這邊，但是是最後再走這邊嗎?????因為要先有執行路徑內的 logic 才有 error 機會產生????)
 module.exports = router

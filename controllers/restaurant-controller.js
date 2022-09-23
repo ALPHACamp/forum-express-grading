@@ -27,7 +27,7 @@ const restaurantController = {
         const data = restaurants.rows.map(restaurant => {
           return {
             ...restaurant,
-            description: restaurant.description.substring(0, 50) // 沒有寫 rest 會出 description 還沒定義的錯誤
+            description: restaurant.description.substring(0, 50) // 沒有寫 restaurant 會出 description 還沒定義的錯誤
           }
         })
         res.render('restaurants', {
