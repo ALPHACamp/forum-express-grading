@@ -7,7 +7,7 @@ const port = process.env.PORT || 3000
 const session = require('express-session')
 const flash = require('connect-flash')
 const passport = require('./config/passpot ')
-const { getUser } = require('./helpers/auth-helper')
+const { getUser } = require('./helpers/auth-helpers')
 const { currentYear } = require('./helpers/handlebars-helpers')
 const methodOverride = require('method-override')
 const handlebarsHelpers = require('./helpers/handlebars-helpers')
@@ -41,7 +41,7 @@ app.use(passport.session())
 app.use((req, res, next) => {
   res.locals.success_messages = req.flash('success_messages')
   res.locals.error_messages = req.flash('error_messages')
-  res.locals.user = getUser(req)
+  res.locals.currentUser = getUser(req)
   res.locals.currentYear = currentYear
   next()
 })

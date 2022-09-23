@@ -1,10 +1,11 @@
 
 const { Restaurant, Category, Comment, User } = require('../models')
 const { getOffSet, getOpagination } = require('../helpers/pagination-helper')
+const assert = require('assert')
 const restaurantController = {
 
   getRestaurants: async (req, res, next) => {
-    const DEFAULT_LIMIT = 10
+    const DEFAULT_LIMIT = 9
     const categoryId = Number(req.query.categoryId) || ''
     const page = Number(req.query.page) || 1
     const limit = Number(req.query.limit) || DEFAULT_LIMIT
@@ -48,8 +49,8 @@ const restaurantController = {
         order: [[Comment, 'createdAt', 'DESC']]
 
       })
+      assert(restaurant, '找不到指定餐廳')
       await restaurant.increment('viewCounts')// 計算瀏覽次數
-      if (!restaurant) throw new Error('找不到指定餐廳')
       res.render('restaurant', { restaurant: restaurant.toJSON() })
     } catch (error) {
       next(error)
@@ -58,8 +59,9 @@ const restaurantController = {
   getDashboard: async (req, res, next) => {
     const { id } = req.params
     try {
-      const restaurant = await Restaurant.findByPk(id, { nest: true, include: Category })
-      res.render('dashboard', { restaurant: restaurant.toJSON() })
+      const restaurant = await Restaurant.findByPk(id, { nest: true, raw: true, include: Category })
+      const comment = await Comment.findAndCountAll({ where: { restaurantId: id } })
+      res.render('dashboard', { restaurant, commentAmount: comment.count })
     } catch (error) {
 
     }

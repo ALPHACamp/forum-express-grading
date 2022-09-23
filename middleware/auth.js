@@ -1,5 +1,5 @@
 
-const helpers = require('../helpers/auth-helper')
+const helpers = require('../helpers/auth-helpers')
 
 const authenticated = (req, res, next) => {
   if (helpers.ensureAuthenticated(req)) {
@@ -7,6 +7,13 @@ const authenticated = (req, res, next) => {
   }
   req.flash('error_messages', '請先進行登入')
   res.redirect('/signin')
+}
+
+const authenticatedUser = (req, res, next) => {
+  const id = Number(req.params.id)
+  const currentUser = helpers.getUser(req)
+  if (id !== currentUser.id) throw new Error('You can\'t look other user profile')
+  next()
 }
 
 const authenticatedAdmin = (req, res, next) => {
@@ -20,7 +27,9 @@ const authenticatedAdmin = (req, res, next) => {
   req.flash('error_messages', '請先進行登入')
   res.redirect('/signin')
 }
+
 module.exports = {
   authenticated,
-  authenticatedAdmin
+  authenticatedAdmin,
+  authenticatedUser
 }
