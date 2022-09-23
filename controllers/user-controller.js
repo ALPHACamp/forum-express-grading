@@ -1,6 +1,8 @@
 const bcrypt = require('bcryptjs')
 const db = require('../models/index')
+const { imgurFileHandler } = require('../helpers/file-helpers')
 const { User } = db
+const assert = require('assert')
 const uerController = {
 
   signUpPage: (req, res) => {
@@ -38,12 +40,34 @@ const uerController = {
   },
   getUser: async (req, res, next) => {
     try {
-      const id = Number(req.params.id)
-      const currentUserId = req.user.id
-      if (!id === currentUserId) throw new Error('You can\'t look other user profile')
+      const { id } = req.params
       const user = await User.findByPk(id, { raw: true })
-      if (!user) throw new Error("User didn't exist!")
+      assert(user, "User didn't exist!")
       res.render('users/profile', { user })
+    } catch (error) {
+      next(error)
+    }
+  },
+  editUser: async (req, res, next) => {
+    try {
+      const { id } = req.params
+      const user = await User.findByPk(id, { raw: true })
+      assert(user, "User didn't exist!")
+      res.render('users/edit', { user })
+    } catch (error) {
+      next(error)
+    }
+  },
+  putUser: async (req, res, next) => {
+    try {
+      const { name } = req.body
+      const { id } = req.params
+      const filePath = await imgurFileHandler(req.file)
+      const user = await User.findByPk(id)
+      assert(user, "User didn't exist!")
+      await user.update({ name, image: filePath || null })
+      req.flash('success_messages', '使用者資料編輯成功')
+      res.redirect(`/users/${id}`)
     } catch (error) {
       next(error)
     }

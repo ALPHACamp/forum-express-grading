@@ -1,6 +1,7 @@
 
 const { Restaurant, Category, Comment, User } = require('../models')
 const { getOffSet, getOpagination } = require('../helpers/pagination-helper')
+const assert = require('assert')
 const restaurantController = {
 
   getRestaurants: async (req, res, next) => {
@@ -48,8 +49,8 @@ const restaurantController = {
         order: [[Comment, 'createdAt', 'DESC']]
 
       })
+      assert(restaurant, '找不到指定餐廳')
       await restaurant.increment('viewCounts')// 計算瀏覽次數
-      if (!restaurant) throw new Error('找不到指定餐廳')
       res.render('restaurant', { restaurant: restaurant.toJSON() })
     } catch (error) {
       next(error)

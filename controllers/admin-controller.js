@@ -69,6 +69,7 @@ const adminController = {
     const { name, tel, address, openingHours, description } = req.body
     const { id } = req.params
     const { file } = req
+    console.log(req.body)
     try {
       if (!name) throw new Error('Restaurant name is required!')
       const restaurant = await Restaurant.findByPk(id)
