@@ -5,7 +5,7 @@ const assert = require('assert')
 const restaurantController = {
 
   getRestaurants: async (req, res, next) => {
-    const DEFAULT_LIMIT = 10
+    const DEFAULT_LIMIT = 9
     const categoryId = Number(req.query.categoryId) || ''
     const page = Number(req.query.page) || 1
     const limit = Number(req.query.limit) || DEFAULT_LIMIT
@@ -59,8 +59,9 @@ const restaurantController = {
   getDashboard: async (req, res, next) => {
     const { id } = req.params
     try {
-      const restaurant = await Restaurant.findByPk(id, { nest: true, include: Category })
-      res.render('dashboard', { restaurant: restaurant.toJSON() })
+      const restaurant = await Restaurant.findByPk(id, { nest: true, raw: true, include: Category })
+      const comment = await Comment.findAndCountAll({ where: { restaurantId: id } })
+      res.render('dashboard', { restaurant, commentAmount: comment.count })
     } catch (error) {
 
     }
