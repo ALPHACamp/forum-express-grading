@@ -1,30 +1,41 @@
 // restaurantController 物件裡面有 getRestaurants 方法
-// getRestaurants 裡面存放一個中介軟體，這個中介軟體專門處理接收到的 req
 const { Restaurant, Category, User } = require('../models')
+const { getOffset, getPagination } = require('../helpers/pagination-helper')
 
 const restaurantController = {
-
   getRestaurants: (req, res, next) => {
-    const categoryId = Number(req.query.categoryId) || '' // 按其他類別 || 預設沒有按
+    const categoryId = Number(req.query.categoryId) || '' // 按其他類別 || 沒有按給預設（全部）
+    const DEFAULT_LIMIT = 9
+    const page = Number(req.query.page) || 1
+    const limit = Number(req.query.limit) || DEFAULT_LIMIT // 這邊預留未來可能讓使用者決定要顯示的筆數
+    const offset = getOffset(limit, page)
+
     return Promise.all([
-      Restaurant.findAll({ // [{}, {}...]
+      Restaurant.findAndCountAll({ // [{}, {}...]
         include: 'Category',
         where: {
           ...(categoryId ? { categoryId } : {})
-        }, // categoryId 有值 { categoryId } + ... -> categoryId
+        }, // categoryId 有值 { categoryId } + ... -> categoryId，沒有值就忽略不查詢
+        limit,
+        offset,
         nest: true,
         raw: true
       }),
       Category.findAll({ raw: true }) // 這邊就不用 nest
     ])
       .then(([restaurants, categories]) => { // 做縮字整理至 50 字
-        const data = restaurants.map(restaurant => {
+        const data = restaurants.rows.map(restaurant => {
           return {
             ...restaurant,
             description: restaurant.description.substring(0, 50) // 沒有寫 rest 會出 description 還沒定義的錯誤
           }
         })
-        res.render('restaurants', { restaurants: data, categories, categoryId })
+        res.render('restaurants', {
+          restaurants: data,
+          categories,
+          categoryId,
+          pagination: getPagination(limit, page, restaurants.count) // restaurants.count === 資料總筆數
+        })
       }).catch(error => next(error))
   },
   getRestaurant: (req, res, next) => {

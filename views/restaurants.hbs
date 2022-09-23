@@ -3,7 +3,9 @@
     <a class="nav-link {{#ifCond '' categoryId}}active{{/ifCond}}" href="?categoryId=">全部</a>
   </li>{{!-- 一開始進入網頁因為 categoryId 沒有從下面選取到值，所以是 ''--}}
 
-  {{!-- 這邊是讓 categories 每一項跟 categoryId 比對，如果比對中了要將添加 active，categoryId 不屬於 categories 展開的這一層元素(所以只要在 each loop 裡面就要考量到這一點) --}}
+  {{!-- 這邊是讓 categories 每一項跟 categoryId 比對，如果比對中了要將添加 active，categoryId 不屬於 categories 展開的這一層元素(所以只要在 each loop
+  裡面就要考量到這一點) --}}
+  {{!-- 有兩個地方可以觸發 categoryId 1.category bar 2.分頁--}}
   {{#each categories}}
   <li class="nav-item">
     <a class="nav-link {{#ifCond this.id ../categoryId}}active{{/ifCond}}"
@@ -33,3 +35,79 @@
   </div>
   {{/each}}
 </div>
+<nav class="mt-3" aria-label="page navigation">
+  <ul class="pagination">
+    {{!-- 這邊要想所有分頁元件都是獨立不相干，所以要各自給與定義資料 --}}
+    {{!-- prev 按鍵 --}}
+    {{!-- 傳過來的頁數是 1 的話就 disable prev 按鍵，不是就給 prev 代表的頁碼 --}}
+    <li class="page-item {{#ifCond pagination.currentPage 1}}disabled{{/ifCond}}">
+      <a class="page-link" href="/restaurants?page={{pagination.prev}}&categoryId={{categoryId}}" aria-label="Previous">
+        <span aria-hidden="true">&laquo;</span>
+      </a>
+    </li>
+
+    {{!-- 數字頁數按鍵 --}}
+    {{#each pagination.pages}}
+    {{!-- 將傳過來的頁碼 href 變成 #，表示重新整理 ( 待在現在這個連結 ) --}}
+    {{#ifCond this ../pagination.currentPage}}
+    <li class="page-item active"><a class="page-link" href="#">{{this}}</a></li>
+    {{!-- 不是傳過來的頁面數字就正常顯示 href (頁數數字 + 類別) --}}
+    {{!-- 因為所有內容都在同一頁發生，所以要提供多個條件前往後端就可以一次做很多事情 --}}
+    {{else}}
+    <li class="page-item">
+      <a class="page-link" href="/restaurants?page={{this}}&categoryId={{../categoryId}}">{{this}}</a>
+    </li>
+
+    {{/ifCond}}
+    {{/each}}
+
+    {{!-- next 按鍵 --}}
+    {{!-- 送過來的頁數跟最後一頁的數字相同，就 disable next 按鍵，不是就給 next 代表的頁碼--}}
+    <li class="page-item {{#ifCond pagination.currentPage pagination.totalPage}}disabled{{/ifCond}}">
+      <a class="page-link" href="/restaurants?page={{pagination.next}}&categoryId={{categoryId}}" aria-label="Next">
+        <span aria-hidden="true">&raquo;</span>
+      </a>
+    </li>
+  </ul>
+</nav>
+
+{{!--
+三種在 restaurants page 狀態：一開始、有點選類別、沒點選類別
+A.
+一開始進入 restaurants page，給後端：
+1.categoryId=''
+2. 頁碼
+後端回傳：
+1. 總頁數
+2. categories
+3. categoryId
+4. 想要頁數的結果
+前端顯示：
+1. 全部(categoryId='') active
+2. 渲染總頁數
+3. 顯示點選頁數的頁碼(第 1 頁 href=#、prev disable) active
+4. 顯示點選頁數頁碼的結果
+
+B.
+後續進入 restaurants page 給後端：
+1. 頁碼
+2. categoryId(有點選類別、沒點選類別)
+後端傳給前端：
+1. 總頁數
+2. categoryId
+3. categories
+4. 點選頁數的頁碼
+5. 點選頁數撈到的結果(第 1 頁 -> prev x、最後一頁 -> next x)
+前端顯示：
+1. 渲染總頁數
+2. 中式、西式...(categoryId=1、2...) in categories active
+3. 顯示點選頁數的頁碼(href=#、第 1 頁或最後一頁 prev、next disabled) active
+4. 顯示點選頁數頁碼的結果
+
+分頁撈取資料的邏輯：
+依照給予的數字決定要往前掠過多少資料、往後撈取多少資料
+1. 給予的數字：傳過來的頁碼
+2. 多少資料：limit
+3. 往前掠過起始點：offset
+4. 往後撈取起始點：offset + 1
+--}}
