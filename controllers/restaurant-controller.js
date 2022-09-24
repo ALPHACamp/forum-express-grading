@@ -21,9 +21,11 @@ const restaurantController = {
       Category.findAll({ raw: true })
     ])
       .then(([restaurants, categories]) => {
-        const data = restaurants.rows.map(restaurant => ({
-          ...restaurant,
-          description: restaurant.description.substring(0, 50)
+        const favoriteRestaurantsId = req.user && req.user.FavoriteRestaurants.map(fr => fr.id)
+        const data = restaurants.rows.map(r => ({
+          ...r,
+          description: r.description.substring(0, 50),
+          isFavorite: favoriteRestaurantsId.includes(r.id)
         }))
         return res.render('restaurants', {
           restaurants: data,
@@ -37,12 +39,17 @@ const restaurantController = {
   getRestaurant: async (req, res, next) => {
     const restaurant = await Restaurant.findByPk(req.params.id, {
       include: [Category,
-        { model: Comment, include: User }],
+        { model: Comment, include: User },
+        { model: User, as: 'FavoriteUsers' }],
       nest: true
     })
     if (!restaurant) throw new Error("Restaurant didn't exist!")
+    const isFavorite = restaurant.FavoriteUsers.some(f => f.id === req.user.id)
     await restaurant.increment('viewCounts', { by: 1 })
-    res.render('restaurant', { restaurant: restaurant.toJSON() })
+    res.render('restaurant', {
+      restaurant: restaurant.toJSON(),
+      isFavorite
+    })
   },
   getDashboard: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
@@ -56,7 +63,7 @@ const restaurantController = {
       })
       .catch(err => next(err))
   },
-   getFeeds: (req, res, next) => {
+  getFeeds: (req, res, next) => {
     return Promise.all([
       Restaurant.findAll({
         limit: 10,
