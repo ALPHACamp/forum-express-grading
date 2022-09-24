@@ -29,7 +29,9 @@ passport.serializeUser((user, done) => {
 passport.deserializeUser((id, done) => {
   return User.findByPk(id, {
     include: [
-      { model: Restaurant, as: 'FavoritedRestaurants' } // 引入 FavoriteRestaurants 關係的 Restaurant model 得到 user 收藏列表(登入時 req.user 就會自帶有關收藏的相關資料)
+      { model: Restaurant, as: 'FavoritedRestaurants' }, // 引入 FavoriteRestaurants 關係的 Restaurant model 得到 user 收藏列表(登入時 req.user 就會自帶有關收藏的相關資料)
+      { model: User, as: 'Followers' }, // 得到這個關係 & 它的名稱
+      { model: User, as: 'Followings' }
     ]
   }) // sequelize 物件
     .then(user => {
