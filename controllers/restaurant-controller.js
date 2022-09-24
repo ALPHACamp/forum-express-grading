@@ -4,6 +4,7 @@ const { getOffset, getPagination } = require('../helpers/pagination-helper')
 
 const restaurantController = {
   getRestaurants: (req, res, next) => {
+    const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
     const DEFAULT_LIMIT = 9
     const page = Number(req.query.page) || 1
     const limit = Number(req.query.limit) || DEFAULT_LIMIT
@@ -20,7 +21,8 @@ const restaurantController = {
       .then(([restaurants, categories]) => {
         const data = restaurants.rows.map(restaurant => ({
           ...restaurant,
-          description: restaurant.description.substring(0, 50)
+          description: restaurant.description.substring(0, 50),
+          isFavorited: favoritedRestaurantsId.includes(restaurant.id)
         }))
         return res.render('restaurants', {
           restaurants: data,
@@ -33,16 +35,22 @@ const restaurantController = {
   },
   getRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
-      include: [Category, { model: Comment, include: User }],
+      include: [Category,
+        { model: Comment, include: User },
+        { model: User, as: 'FavoritedUsers' }
+      ],
       nest: true
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         return restaurant.increment('view_counts')
       })
-      .then(restaurant => res.render('restaurant', {
-        restaurant: restaurant.toJSON()
-      }))
+      .then(restaurant => {
+        const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id)
+        res.render('restaurant', {
+          restaurant: restaurant.toJSON(), isFavorited
+        })
+      })
       .catch(err => next(err))
   },
   getDashboard: (req, res, next) => {
@@ -61,7 +69,7 @@ const restaurantController = {
     return Promise.all([
       Restaurant.findAll({
         limit: 10,
-        order: [['createdAt', 'DESC']],
+        order: [['created At', 'DESC']],
         include: [Category],
         nest: true,
         raw: true
