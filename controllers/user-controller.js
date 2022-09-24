@@ -198,8 +198,7 @@ const userController = {
       include: [{ model: User, as: 'Followers' }]
     })
       .then(users => {
-        // 整理 users 資料，把每個 user 項目都拿出來處理一次，並把新陣列儲存在 users 裡
-        users = users.map(user => ({
+        const result = users.map(user => ({ // 整理 users 資料，把每個 user 項目都拿出來處理一次，並把新陣列儲存在 users 裡
           // 整理格式
           ...user.toJSON(),
           // 計算追蹤者人數
@@ -208,9 +207,8 @@ const userController = {
           // 找到followings的id 是否有等於現在處理中的user的id
           // 去檢查現在登入的人的所有追蹤者中有沒有任何一個人
           isFollowed: req.user.Followings.some(f => f.id === user.id)
-        }))
-          .sort((a, b) => b.followerCount - a.followerCount)
-        res.render('top-users', { users: users })
+        })).sort((a, b) => b.followerCount - a.followerCount)
+        res.render('top-users', { users: result })
       })
       .catch(err => next(err))
   },
