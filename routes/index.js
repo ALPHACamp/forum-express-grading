@@ -13,23 +13,25 @@ router.use('/admin', authenticatedAdmin, admin)
 router.get('/users/:id', authenticated, userController.getUser)
 router.get('/users/:id/edit', userAuthenticated, userController.editUser)
 router.put('/users/:id', userAuthenticated, upload.single('image'), userController.putUser)
-
+// user login
 router.get('/signup', userController.signUpPage)
 router.post('/signup', userController.signUp)
-
 router.get('/signin', userController.signInPage)
 router.post('/signin', passport.authenticate('local', {
   failureRedirect: '/signin', failureFlash: true
 }), userController.signIn)
 router.get('/logout', userController.logout)
-
+// restaurants
 router.get('/restaurants/feeds', authenticated, resController.getFeeds)
 router.get('/restaurants/:id/dashboard', authenticated, resController.getDashboard)
 router.get('/restaurants/:id', authenticated, resController.getRestaurant)
 router.get('/restaurants', authenticated, resController.getRestaurants)
-
+// comments
 router.delete('/comments/:id', authenticatedAdmin, commentController.deleteComment)
 router.post('/comments', authenticated, commentController.postComment)
+// favorite
+router.post('/favorite/:restaurantId', authenticated, userController.addFavorite)
+router.delete('/favorite/:restaurantId', authenticated, userController.removeFavorite)
 
 router.get('/', (req, res) => res.redirect('/restaurants'))
 router.use('/', generalErrorHandler)
