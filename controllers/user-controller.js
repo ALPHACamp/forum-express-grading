@@ -1,6 +1,8 @@
-const { User } = require('../models') // function named User
+const { User, Comment, Restaurant } = require('../models') // function named User
 const bcrypt = require('bcryptjs')
 const { imgurFileHandler } = require('../helpers/file-helpers')
+const id = require('faker/lib/locales/id_ID')
+const { Op } = require('sequelize')
 // const { Sequelize, QueryTypes } = require('sequelize')
 // const sequelize = new Sequelize('mysql://localhost:3306/?user=root&password=password&database=forum')
 
@@ -41,26 +43,38 @@ const userController = {
     res.redirect('/signin')
   },
   getUser: (req, res, next) => {
-    User.findByPk(req.params.id, { raw: true, include: 'Comment' })
+    return User.findByPk(req.params.id, { raw: true })
       .then(user => {
         if (!user) throw new Error("User didn't exist!")
 
-        res.render('users/profile', { user })
+        return Comment.findAll({
+          include: [
+            { model: Restaurant, attributes: ['name', 'image'] }
+          ],
+          where: { userId: user.id, text: { [Op.not]: null } },
+          group: [['restaurantId']],
+          order: [['createdAt', 'DESC']],
+          raw: true,
+          nest: true,
+          attributes: ['text', 'restaurantId']
+        })
+          .then(comment => {
+            res.render('users/profile', { comment, commentLen: comment.length, user })
+          })
       })
   },
   editUser: (req, res, next) => {
-    User.findByPk(req.params.id, { raw: true })
+    return User.findByPk(req.params.id, { raw: true })
       .then(user => {
         if (!user) throw new Error("User didn't exist!")
 
-        res.render('users/edit')
+        res.render('users/edit', { user })
       })
       .catch(error => next(error))
   },
   putUser: (req, res, next) => {
     const id = Number(req.params.id)
     if (id !== req.user.id) throw new Error('No permission to edit')
-    console.log('\nreq.file\n', req.file)
     return Promise.all([
       User.findByPk(req.params.id),
       imgurFileHandler(req.file)

@@ -11,10 +11,22 @@
       <div class="card-body">
         <h5 class="card-title">{{user.name}}</h5>
         <p class="card-text">{{user.email}}</p>
-        <p>已評論餐廳</p>
+        <p>已評論餐廳：{{ commentLen }} 筆
+        </p>
         <a href="/users/{{user.id}}/edit" class="btn btn-primary">edit</a>
       </div>
     </div>
+  </div>
+</div>
+<div class="card text-dark bg-light mb-3" style="max-width: 37rem;">
+  <div class="card-header">已評論餐廳：{{ commentLen }} 筆</div>
+  <div class="card-body">
+    {{#each comment}}
+    <div style="max-width: 100px; margin: 5px; display: inline-block">
+      <a href="/restaurants/{{ this.Restaurant.id }}"><img src="{{ this.Restaurant.image }}" alt="restaurant-img" title="{{ this.Restaurant.name }}" style="width: 100%"></a>
+    </div>
+    {{/each}}
+    </p>
   </div>
 </div>
 

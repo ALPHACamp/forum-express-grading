@@ -7,7 +7,7 @@
 // T -> 成功登入 && req.user.isAdmin 是 T 表示登入狀態且是管理者身分，因此可以前往 admin
 // F -> 沒有登入導到登入頁面
 
-const helpers = require('../helpers/auth-helper') // req.isAuthenticated(T or F)、req.user
+const helpers = require('../helpers/auth-helpers') // req.isAuthenticated(T or F)、req.user
 const authenticated = (req, res, next) => {
   // 假設 req.isAuthenticated 是 T，就可以前往下一個路由
   if (helpers.ensureAuthenticated(req)) return next() // 停止往下走

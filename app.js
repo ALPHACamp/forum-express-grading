@@ -18,7 +18,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 const SESSION_SECRET = 'secret'
 
-const { getUser } = require('./helpers/auth-helper') // { getUser } = { getUser } // { getUser: [Function: getUser] }
+const { getUser } = require('./helpers/auth-helpers') // { getUser } = { getUser } // { getUser: [Function: getUser] }
 const handlebarsHelpers = require('./helpers/handlebars-helpers')// 這邊直接使用檔案的原因是在 handlebars helper 文件固定撰寫方式 helper: { key: value }，而檔案 exports 出來的是 { key:value } 所以不用再用解構賦值(一個檔案多個 function 也不用再展開)
 
 app.engine('hbs', hbs({ defaultLayout: 'main', extname: '.hbs', helpers: handlebarsHelpers, multiHelpers }))
