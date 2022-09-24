@@ -52,11 +52,11 @@ const userController = {
             { model: Restaurant, attributes: ['name', 'image'] }
           ],
           where: { userId: user.id, text: { [Op.not]: null } },
-          group: [['restaurantId', 'text']],
+          group: [['restaurantId']],
           order: [['createdAt', 'DESC']],
           raw: true,
-          nest: true,
-          attributes: ['text', 'restaurantId']
+          nest: true
+          // attributes: ['text', 'restaurantId']
         })
           .then(comment => {
             res.render('users/profile', { comment, commentLen: comment.length, user })
