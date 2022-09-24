@@ -4,7 +4,8 @@ const { getOffset, getPagination } = require('../helpers/pagination-helper')
 
 const restaurantController = {
   getRestaurants: (req, res, next) => {
-    const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
+    const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(restaurant => restaurant.id)
+    const likedRestaurantsId = req.user && req.user.LikedRestaurants.map(restaurant => restaurant.id)
     const DEFAULT_LIMIT = 9
     const page = Number(req.query.page) || 1
     const limit = Number(req.query.limit) || DEFAULT_LIMIT
@@ -22,7 +23,8 @@ const restaurantController = {
         const data = restaurants.rows.map(restaurant => ({
           ...restaurant,
           description: restaurant.description.substring(0, 50),
-          isFavorited: favoritedRestaurantsId.includes(restaurant.id)
+          isFavorited: favoritedRestaurantsId.includes(restaurant.id),
+          isLiked: likedRestaurantsId.includes(restaurant.id)
         }))
         return res.render('restaurants', {
           restaurants: data,
@@ -37,7 +39,8 @@ const restaurantController = {
     return Restaurant.findByPk(req.params.id, {
       include: [Category,
         { model: Comment, include: User },
-        { model: User, as: 'FavoritedUsers' }
+        { model: User, as: 'FavoritedUsers' },
+        { model: User, as: 'LikedUsers' }
       ],
       nest: true
     })
@@ -46,9 +49,10 @@ const restaurantController = {
         return restaurant.increment('view_counts')
       })
       .then(restaurant => {
-        const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id)
+        const isFavorited = restaurant.FavoritedUsers.some(favorite => favorite.id === req.user.id)
+        const isLiked = restaurant.LikedUsers.some(like => like.id === req.user.id)
         res.render('restaurant', {
-          restaurant: restaurant.toJSON(), isFavorited
+          restaurant: restaurant.toJSON(), isFavorited, isLiked
         })
       })
       .catch(err => next(err))
