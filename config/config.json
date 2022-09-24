@@ -2,7 +2,7 @@
   "development": {
     "username": "dba",
     "password": "957050",
-    "database": "myforum",
+    "database": "forum",
     "host": "127.0.0.1",
     "dialect": "mysql"
   },
