@@ -8,6 +8,8 @@ const upload = require('../../middleware/multer') // 載入 multer
 // 新增後台網址路由//匹配條件多的路由要寫在前面
 router.patch('/users/:id', adminController.patchUser)
 router.get('/users', adminController.getUsers)
+router.get('/categories/:id', categoryController.getCategories)
+router.put('/categories/:id', categoryController.putCategory)
 router.get('/categories', categoryController.getCategories)
 router.post('/categories', categoryController.postCategory)
 router.get('/restaurants/create', adminController.createRestaurant)
