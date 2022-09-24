@@ -7,6 +7,8 @@ const { generalErrorHandler } = require('../middleware/error-handler')
 const passport = require('../config/passport')
 const { authenticated, authenticatedAdmin } = require('../middleware/auth')
 
+router.get('/restaurants/:id/dashboard', authenticated, restController.getDashboard)
+router.get('/restaurants/:id', authenticated, restController.getRestaurant)
 router.get('/signup', userController.signUpPage)
 router.post('/signup', userController.signUp)
 router.use('/admin', authenticatedAdmin, admin)
