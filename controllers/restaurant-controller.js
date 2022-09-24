@@ -24,10 +24,15 @@ const restaurantController = {
       Category.findAll({ raw: true }) // 這邊就不用 nest
     ])
       .then(([restaurants, categories]) => { // 做縮字整理至 50 字
+        const favoriteRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id) // map 問題
         const data = restaurants.rows.map(restaurant => {
           return {
             ...restaurant,
-            description: restaurant.description.substring(0, 50) // 沒有寫 restaurant 會出 description 還沒定義的錯誤
+            description: restaurant.description.substring(0, 50), // 沒有寫 restaurant 會出 description 還沒定義的錯誤
+            isFavorited: favoriteRestaurantsId.includes(restaurant.id)
+            // {} 裡新增 isFavorited key
+            // === map( => ({...回傳到陣列的值}))
+            // [].includes(...) 振列裡面包含撈出來的餐廳 id 就給 T 否則 F 到 restaurants.hbs
           }
         })
         res.render('restaurants', {

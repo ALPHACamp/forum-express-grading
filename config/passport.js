@@ -1,7 +1,7 @@
 const passport = require('passport')
 const LocalStrategy = require('passport-local').Strategy
 const bcrypt = require('bcryptjs')
-const { User } = require('../models')
+const { User, Restaurant } = require('../models')
 
 passport.use(new LocalStrategy(
   {
@@ -27,10 +27,14 @@ passport.serializeUser((user, done) => {
 
 // 反序列化 使用者 必要
 passport.deserializeUser((id, done) => {
-  User.findByPk(id) // sequelize 物件
+  return User.findByPk(id, {
+    include: [
+      { model: Restaurant, as: 'FavoritedRestaurants' } // 引入 FavoriteRestaurants 關係的 Restaurant model 得到 user 收藏列表(登入時 req.user 就會自帶有關收藏的相關資料)
+    ]
+  }) // sequelize 物件
     .then(user => {
-      user = user.toJSON()
-      return done(null, user)
+      console.log('\n===== user =====\n', user)
+      return done(null, user.toJSON())
     })
 })
 
