@@ -42,6 +42,8 @@ router.put(
 )
 router.get('/users/:id', authenticated, userController.getUser)
 
+router.get('/restaurants/top', authenticated, restController.getTopRestaurants)
+
 router.get('/restaurants/feeds', authenticated, restController.getFeeds)
 router.get(
   '/restaurants/:id/dashboard',

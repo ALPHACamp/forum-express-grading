@@ -93,6 +93,27 @@ const restaurantController = {
         })
       })
       .catch(err => next(err))
+  },
+  getTopRestaurants: (req, res, next) => {
+    // 被喜歡的數量
+    // 撈出所有餐廳
+    return Restaurant.findAll({
+      // 餐廳：被很多使用者喜歡
+      include: [{ model: User, as: 'FavoritedUsers' }],
+      // 找出前十名的餐廳
+      limit: 10
+    })
+      .then(restaurant => {
+        const result = restaurant
+          .map(restaurant => ({
+            ...restaurant.toJSON(),
+            favoritedCount: restaurant.FavoritedUsers.length,
+            isFavorited: req.user && req.user.FavoritedRestaurants.some(r => r.id === restaurant.id)
+          }))
+          .sort((a, b) => b.favoritedCount - a.favoritedCount)
+        return res.render('top-restaurants', { restaurants: result })
+      })
+      .catch(err => next(err))
   }
 }
 module.exports = restaurantController

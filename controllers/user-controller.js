@@ -152,7 +152,6 @@ const userController = {
     const restaurantId = req.params.restaurantId
     return Like.findOne({ where: { userId, restaurantId } })
       .then(like => {
-        console.log(like)
         if (!like) throw new Error("You haven't favorited this restaurant")
         return like.destroy()
       })
