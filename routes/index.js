@@ -23,6 +23,7 @@ router.post('/signin', passport.authenticate('local', {
 }), userController.signIn)
 router.get('/logout', userController.logout)
 
+router.get('/restaurants/feeds', authenticated, resController.getFeeds)
 router.get('/restaurants/:id/dashboard', authenticated, resController.getDashboard)
 router.get('/restaurants/:id', authenticated, resController.getRestaurant)
 router.get('/restaurants', authenticated, resController.getRestaurants)
