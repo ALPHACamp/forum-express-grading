@@ -1,10 +1,14 @@
-const { Restaurant, User } = require('../models')
+const { Restaurant, User, Category } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')// 將 file-helper 載進來
 
 const adminController = {
   getRestaurants: (req, res, next) => {
     Restaurant.findAll(
-      { raw: true }
+      {
+        raw: true,
+        nest: true,
+        include: [Category]
+      }
     )
       .then(restaurants => res.render('admin/restaurants', { restaurants }))
       .catch(err => next(err))
@@ -39,7 +43,11 @@ const adminController = {
     // 去資料庫用 id 找一筆資料
     Restaurant.findByPk(req.params.id,
       //  如果找不到，回傳錯誤訊息，後面不執行
-      { raw: true }
+      {
+        raw: true,
+        nest: true,
+        include: [Category]
+      }
     )
       .then(restaurant => {
         //  如果找不到，回傳錯誤訊息，後面不執行
