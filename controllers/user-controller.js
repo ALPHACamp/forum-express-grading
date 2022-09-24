@@ -1,7 +1,7 @@
 const { User, Comment, Restaurant } = require('../models') // function named User
 const bcrypt = require('bcryptjs')
 const { imgurFileHandler } = require('../helpers/file-helpers')
-const id = require('faker/lib/locales/id_ID')
+// const id = require('faker/lib/locales/id_ID')
 const { Op } = require('sequelize')
 // const { Sequelize, QueryTypes } = require('sequelize')
 // const sequelize = new Sequelize('mysql://localhost:3306/?user=root&password=password&database=forum')
@@ -52,7 +52,7 @@ const userController = {
             { model: Restaurant, attributes: ['name', 'image'] }
           ],
           where: { userId: user.id, text: { [Op.not]: null } },
-          group: [['restaurantId']],
+          group: [['restaurantId', 'text']],
           order: [['createdAt', 'DESC']],
           raw: true,
           nest: true,
