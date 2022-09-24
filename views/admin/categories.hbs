@@ -1,0 +1,111 @@
+<h1>餐廳後台</h1>
+{{> admin-tab}}
+
+<div class="d-flex align-items-center pt-3 pb-5 my-3 text-white-50 bg-purple">
+{{#if category}}
+    <form class="row" action="/admin/categories/{{category.id}}?_method=PUT" method="POST">
+      <div class="col-auto">
+        <input class="form-control" type="text" placeholder="name" name="name" value="{{category.name}}">
+      </div>
+      <div class="col-auto">
+        <button class="btn btn-warning" type="submit">Update</button>
+        <a class="btn btn-link link-secondary" href="/admin/categories">or Create New</a>
+      </div>
+    </form>
+  {{else}}
+    <form class="row" action="/admin/categories" method="POST">
+      <div class="col-auto">
+        <input class="form-control" type="text" placeholder="Category Name" name="name">
+      </div>
+      <div class="col-auto">
+        <button class="btn btn-success" type="submit">Create</button>
+      </div>
+    </form>
+  {{/if}}
+</div>
+
+<br />
+<br />
+<table class="table align-middle">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Name</th>
+      <th scope="col"></th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each categories}}
+      <tr>
+        <th scope="row">{{this.id}}</th>
+        <td>{{this.name}}</td>
+        <td>
+          <button type="button" class="btn btn-link">
+            <a class="btn btn-link link-primary" href="/admin/categories/{{this.id}}">
+              Edit
+            </a>
+          </button>
+          <form class="deleteBtn" action="/admin/categories/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
+            <button type="submit" class="btn btn-link link-danger">Delete</button>
+          </form>
+        </td>
+      </tr>
+    {{/each}}
+  </tbody>
+</table>
+{{!-- pagination --}}
+<nav aria-label="Page navigation example">
+  <ul class="pagination">
+    <li class="page-item    
+        {{#isEq prevPage 0 }}
+         disabled
+         {{/isEq}}">
+      <a class="page-link" 
+         href="/restaurants?page={{prevPage}}"
+         aria-label="Previous"
+         >
+        <span aria-hidden="true">&laquo;</span>
+      </a>
+    </li>
+    {{#each pages}}
+    <li class="page-item {{#isEq ../currPage this }}active{{/isEq}}">
+      <a class="page-link" href="/admin/restaurants?page={{this}}">{{this}}</a>
+    </li>
+    {{/each}}
+    <li class="page-item
+              {{#isEq nextPage 0 }}
+              disabled
+              {{/isEq}}
+              ">
+      <a class="page-link"
+         href="/restaurants?page={{nextPage}}"
+         aria-label="Next">
+        <span aria-hidden="true">&raquo;</span>
+      </a>
+    </li>
+  </ul>
+</nav>
+
+<script>
+  const forms = document.querySelectorAll('.deleteBtn')
+  forms.forEach(form => {
+  form.addEventListener('submit', e => {
+    e.preventDefault()
+    e.stopPropagation()
+    Swal.fire({
+    title: '確定要刪除類別嗎？',
+    showCancelButton: true,
+    confirmButtonText: '確定',
+    cancelButtonText: '取消'
+}).then((result) => {
+  /* Read more about isConfirmed, isDenied below */
+  if (result.isConfirmed) {
+    Swal.fire('刪除', '', 'success')
+    e.target.submit()
+  } else if (result.isDenied) {
+    Swal.fire('取消', '', 'info')
+  }
+    })
+  })
+})
+</script>

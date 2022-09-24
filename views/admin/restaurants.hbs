@@ -1,0 +1,98 @@
+<h1>餐廳後台</h1>
+{{> admin-tab}}
+
+<a href='/admin/restaurants/create'>
+  <button type="button" class="btn btn-primary">New Restaurant</button>
+</a>
+<br />
+<br />
+<table class="table align-middle">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Name</th>
+      <th scope="col">Category</th>
+      <th scope="col"></th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each restaurants}}
+      <tr>
+        <th scope="row">{{this.id}}</th>
+        <td>{{this.name}}</td>
+        <td>{{this.Category.name}}</td>
+        <td>
+          <button type="button" class="btn btn-link">
+            <a class="btn btn-link link-primary" href="/admin/restaurants/{{this.id}}">
+              Show
+            </a>
+          </button>
+          <button type="button" class="btn btn-link">
+            <a class="btn btn-link link-primary" href="/admin/restaurants/{{this.id}}/edit">
+              Edit
+            </a>
+          </button>
+          <form class="deleteBtn" action="/admin/restaurants/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
+            <button type="submit" class="btn btn-link link-danger">Delete</button>
+          </form>
+        </td>
+      </tr>
+    {{/each}}
+  </tbody>
+</table>
+{{!-- pagination --}}
+<nav aria-label="Page navigation example">
+  <ul class="pagination">
+    <li class="page-item    
+        {{#isEq prevPage 0 }}
+         disabled
+         {{/isEq}}">
+      <a class="page-link" 
+         href="/restaurants?page={{prevPage}}"
+         aria-label="Previous"
+         >
+        <span aria-hidden="true">&laquo;</span>
+      </a>
+    </li>
+    {{#each pages}}
+    <li class="page-item {{#isEq ../currPage this }}active{{/isEq}}">
+      <a class="page-link" href="/admin/restaurants?page={{this}}">{{this}}</a>
+    </li>
+    {{/each}}
+    <li class="page-item
+              {{#isEq nextPage 0 }}
+              disabled
+              {{/isEq}}
+              ">
+      <a class="page-link"
+         href="/restaurants?page={{nextPage}}"
+         aria-label="Next">
+        <span aria-hidden="true">&raquo;</span>
+      </a>
+    </li>
+  </ul>
+</nav>
+
+<script>
+  const forms = document.querySelectorAll('.deleteBtn')
+  forms.forEach(form => {
+  form.addEventListener('submit', e => {
+    e.preventDefault()
+    e.stopPropagation()
+    Swal.fire({
+    title: '確定要刪除餐廳嗎？',
+    showCancelButton: true,
+    confirmButtonText: '確定',
+    cancelButtonText: '取消'
+}).then((result) => {
+  /* Read more about isConfirmed, isDenied below */
+  if (result.isConfirmed) {
+    Swal.fire('刪除', '', 'success')
+    e.target.submit()
+  } else if (result.isDenied) {
+    Swal.fire('取消', '', 'info')
+  }
+    })
+  })
+})
+</script>

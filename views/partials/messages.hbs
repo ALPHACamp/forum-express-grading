@@ -1,0 +1,37 @@
+{{#if error_messages}}
+  <div class="alert alert-danger alert-dismissible fade show" role="alert">
+    {{ error_messages }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+{{/if}}
+{{#if success_messages}}
+  <template id="my-template">
+    <swal-title>
+      {{ success_messages }}
+    </swal-title>
+    <swal-icon type="success" color="green"></swal-icon>
+    <swal-param
+      name="customClass"
+      value='{ "popup": "my-popup" }' />
+  </template>
+  <script>
+  Swal.fire({
+    template: '#my-template',
+    toast: true,
+    position: 'top',
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+      toast.addEventListener('mouseenter', Swal.stopTimer)
+      toast.addEventListener('mouseleave', Swal.resumeTimer)
+    }
+})
+  </script>
+{{/if}}
+{{#if warning_msg}}
+  <div class="alert alert-warning alert-dismissible fade show" role="alert">
+    {{ warning_msg }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+{{/if}}

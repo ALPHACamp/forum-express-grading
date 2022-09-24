@@ -1,17 +1,20 @@
 {
   "development": {
-    "username": "root",
-    "password": "password",
+    "username": "dba",
+    "password": "957050",
     "database": "forum",
     "host": "127.0.0.1",
     "dialect": "mysql"
   },
-  "production": {
-    "username": "root",
-    "password": null,
-    "database": "database_production",
+  "test": {
+    "username": "dba",
+    "password": "957050",
+    "database": "myforum",
     "host": "127.0.0.1",
-    "dialect": "mysql"
+    "dialect": "mysql" 
+  },
+  "production": {
+    "use_env_variable": "CLEARDB_DATABASE_URL"
   },
   "travis": {
     "username": "travis",
