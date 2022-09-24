@@ -28,6 +28,7 @@ router.get('/restaurants/:id', authenticated, restaurantController.getRestaurant
 router.get('/restaurants', authenticated, restaurantController.getRestaurants)
 
 // users
+router.get('/users/top', authenticated, userController.getTopUsers)
 router.get('/users/:id/edit', authenticated, userController.editUser)
 router.put('/users/:id', authenticated, upload.single('image'), userController.putUser)
 router.get('/users/:id', authenticated, userController.getUser)
@@ -44,7 +45,7 @@ router.delete('/like/:restaurantId', authenticated, userController.removeLike)
 router.delete('/comments/:id', authenticatedAdmin, commentController.deleteComment)
 router.post('/comments', authenticated, commentController.postComment)
 
-// fallback 路由
+// fallback 路由，其他條件都不符合時，最終會通過的路由，他的條件是所有路由最寬鬆的、排序應在其他條件路由的下方
 router.get('/', (req, res) => res.redirect('/restaurants'))
 router.use('/', generalErrorHandler)
 
