@@ -22,10 +22,12 @@ const restaurantController = {
     ])
       .then(([restaurants, categories]) => {
         const favoriteRestaurantsId = req.user && req.user.FavoriteRestaurants.map(fr => fr.id)
+        const likedRestaurantsId = req.user && req.user.LikedRestaurants.map(lr => lr.id)
         const data = restaurants.rows.map(r => ({
           ...r,
           description: r.description.substring(0, 50),
-          isFavorite: favoriteRestaurantsId.includes(r.id)
+          isFavorite: favoriteRestaurantsId.includes(r.id),
+          isLiked: likedRestaurantsId.includes(r.id)
         }))
         return res.render('restaurants', {
           restaurants: data,
@@ -40,15 +42,18 @@ const restaurantController = {
     const restaurant = await Restaurant.findByPk(req.params.id, {
       include: [Category,
         { model: Comment, include: User },
-        { model: User, as: 'FavoriteUsers' }],
+        { model: User, as: 'FavoriteUsers' },
+        { model: User, as: 'LikedUsers' }],
       nest: true
     })
     if (!restaurant) throw new Error("Restaurant didn't exist!")
     const isFavorite = restaurant.FavoriteUsers.some(f => f.id === req.user.id)
+    const isLiked = restaurant.LikedUsers.some(liked => liked.id === req.user.id)
     await restaurant.increment('viewCounts', { by: 1 })
     res.render('restaurant', {
       restaurant: restaurant.toJSON(),
-      isFavorite
+      isFavorite,
+      isLiked
     })
   },
   getDashboard: (req, res, next) => {
