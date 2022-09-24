@@ -45,6 +45,10 @@ router.delete('/like/:restaurantId', authenticated, userController.removeLike)
 router.delete('/comments/:id', authenticatedAdmin, commentController.deleteComment)
 router.post('/comments', authenticated, commentController.postComment)
 
+// follow
+router.post('/following/:userId', authenticated, userController.addFollowing)
+router.delete('/following/:userId', authenticated, userController.removeFollowing)
+
 // fallback 路由，其他條件都不符合時，最終會通過的路由，他的條件是所有路由最寬鬆的、排序應在其他條件路由的下方
 router.get('/', (req, res) => res.redirect('/restaurants'))
 router.use('/', generalErrorHandler)
