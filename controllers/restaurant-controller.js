@@ -1,6 +1,7 @@
 
 const { Restaurant, Category, Comment, User } = require('../models')
 const { getOffSet, getOpagination } = require('../helpers/pagination-helper')
+const { getUser } = require('../helpers/auth-helpers')
 const assert = require('assert')
 const restaurantController = {
 
@@ -22,9 +23,13 @@ const restaurantController = {
         }),
         Category.findAll({ raw: true })
       ])
+      const favoritedRestaurantsId = req.user.FavoriteRestaurants.map(rest => rest.id)
+      console.log('favoritedRestaurantsId', favoritedRestaurantsId)
       const data = restaurants.rows.map(r => {
         return {
-          ...r, description: r.description.substring(0, 50)
+          ...r,
+          description: r.description.substring(0, 50),
+          isFavorited: favoritedRestaurantsId.includes(r.id)
         }
       })
 
@@ -45,13 +50,18 @@ const restaurantController = {
       const { id } = req.params
       const restaurant = await Restaurant.findByPk(id, {
         nest: true,
-        include: [Category, { model: Comment, include: User }],
+        include: [Category,
+          { model: Comment, include: User },
+          { model: User, as: 'FavoriteUsers' }],
         order: [[Comment, 'createdAt', 'DESC']]
 
       })
       assert(restaurant, '找不到指定餐廳')
       await restaurant.increment('viewCounts')// 計算瀏覽次數
-      res.render('restaurant', { restaurant: restaurant.toJSON() })
+      const favoritedUserId = restaurant.FavoriteUsers.map(user => user.id)
+
+      const isFavorited = favoritedUserId.includes(getUser(req).id)
+      res.render('restaurant', { restaurant: restaurant.toJSON(), isFavorited })
     } catch (error) {
       next(error)
     }
