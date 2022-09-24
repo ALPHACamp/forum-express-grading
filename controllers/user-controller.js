@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs')
 
 const db = require('../models')
-const { User, Comment, Restaurant, Favorite } = db
+const { User, Comment, Restaurant, Favorite, Like } = db
 const { localFileHelper } = require('../helpers/file-helpers')
 
 const userController = {
@@ -122,6 +122,43 @@ const userController = {
       .then(favorite => {
         if (!favorite) throw new Error('The restaurant had not been added to your favorite before!')
         return favorite.destroy()
+      })
+      .then(() => res.redirect('back'))
+      .catch(err => next(err))
+  },
+  addLike: (req, res, next) => {
+    const { restaurantId } = req.params
+    return Promise.all([
+      Restaurant.findByPk(restaurantId),
+      Like.findOne({
+        where: {
+          restaurantId,
+          userId: req.user.id
+        }
+      })
+    ])
+      .then(([restaurant, like]) => {
+        if (!restaurant) throw new Error('Restaurant does not exist!')
+        if (like) throw new Error('Youv\'e already liked this restaurant before.')
+        return Like.create({
+          restaurantId,
+          userId: req.user.id
+        })
+      })
+      .then(() => res.redirect('back'))
+      .catch(err => next(err))
+  },
+  removeLike: (req, res, next) => {
+    const { restaurantId } = req.params
+    return Like.findOne({
+      where: {
+        restaurantId,
+        userId: req.user.id
+      }
+    })
+      .then(like => {
+        if (!like) throw new Error('You had not liked this restaurant before.')
+        return like.destroy()
       })
       .then(() => res.redirect('back'))
       .catch(err => next(err))
