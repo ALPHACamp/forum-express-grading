@@ -25,6 +25,8 @@ router.get('/logout', userController.logout)
 // 將 req 交給 passport.authenticate 請 passport 做驗證，並指定用 passport 設定中的 local，最後再看是成功還是失敗，將 req 給對應的內容，驗證成功給 userController.signIn、失敗給 failureRedirect，因此能夠進入到 userController.signIn 就是已經登入的使用者
 router.post('/signin', passport.authenticate('local', { failureRedirect: '/signin', failureFlash: true }), userController.signIn)
 
+router.get('/users/top', authenticated, userController.getTopUsers)
+
 router.get('/users/:id/edit', authenticated, userController.editUser)
 
 router.get('/users/:id', authenticated, userController.getUser)

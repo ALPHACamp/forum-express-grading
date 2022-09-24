@@ -126,6 +126,20 @@ const userController = {
       return favorite.destroy()
     }).then(() => res.redirect('back'))
       .catch(error => next(error))
+  },
+  getTopUsers: (req, res, next) => {
+    return User.findAll({ include: [{ model: User, as: 'Followers' }] }) // 所有 user 的偶像
+      .then(users => {
+        users = users.map(user => { // 整理好的 users
+          return {
+            ...user.toJSON(),
+            followerCount: user.Followers.length,
+            isFollowed: req.user.Followers.some(f => f.id === user.id)
+          } // 是否在我的偶像清單中
+        })
+        res.render('top-users', { users })
+      })
+      .catch(error => next(error))
   }
   // getUser: async (req, res, next) => {
   //   const [result] = await sequelize.query('SELECT * FROM users WHERE id = ?', {
