@@ -55,14 +55,26 @@ const restaurantController = {
       .catch(err => next(err))
   },
   getDashboard: (req, res, next) => {
-    return Restaurant.findByPk(req.params.id, {
-      include: Category,
-      nest: true,
-      raw: true
-    })
-      .then(restaurant => {
+    return Promise.all([
+      Restaurant.findByPk(req.params.id, {
+        include: Category,
+        nest: true,
+        raw: true
+      }),
+      // 用於查詢該餐廳的所有評論
+      Comment.findAll({
+        where: {
+          restaurantId: req.params.id
+        }
+      })
+    ])
+      .then(([restaurant, comments]) => {
         if (!restaurant) throw new Error("The restaurant doesn't exist!")
-        res.render('dashboard', { restaurant })
+        const commentCounts = comments.length
+        res.render('dashboard', {
+          restaurant,
+          commentCounts
+        })
       })
       .catch(err => next(err))
   }
