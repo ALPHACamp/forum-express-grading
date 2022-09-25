@@ -1,4 +1,5 @@
 const bcrypt = require('bcryptjs') // 載入 bcrypt
+const { imgurFileHandler } = require('../helpers/file-helpers')
 const db = require('../models')
 const { User } = db
 const userController = {
@@ -34,6 +35,43 @@ const userController = {
     req.flash('success_messages', '登出成功！')
     req.logout()
     res.redirect('/signin')
+  },
+  getUser: (req, res, next) => {
+    return User.findByPk(req.params.id, {
+      raw: true
+    })
+      .then(user => {
+        res.render('users/profile', { user })
+      })
+      .catch(err => next(err))
+  },
+  editUser: (req, res, next) => {
+    return User.findByPk(req.params.id, {
+      raw: true
+    })
+      .then(user => res.render('users/edit', { user }))
+      .catch(err => next(err))
+  },
+  putUser: (req, res, next) => {
+    const { name } = req.body
+    const { file } = req // 把檔案取出來
+    if (!name.trim()) throw new Error('User name is required!')
+    return Promise.all([ // 非同步處理
+      User.findByPk(req.params.id), // 去資料庫查有沒有這間餐廳
+      imgurFileHandler(file) // 把檔案傳到 file-helper 處理
+    ])
+      .then(([user, filePath]) => { // 以上兩樣事都做完以後
+        if (!user) throw new Error("User doesn't exist.")
+        return user.update({ // 修改這筆資料
+          name,
+          image: filePath || user.image
+        })
+      })
+      .then(() => {
+        req.flash('success_messages', '使用者資料編輯成功')
+        res.redirect(`/users/${req.params.id}`)
+      })
+      .catch(err => next(err))
   }
 }
 module.exports = userController
