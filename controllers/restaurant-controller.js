@@ -1,4 +1,4 @@
-const { Category, Comment, Restaurant, User } = require('../models')
+const { Category, Comment, Favorite, Restaurant, User } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
 const restaurantController = {
   getRestaurants: (req, res, next) => {
@@ -93,37 +93,22 @@ const restaurantController = {
       })
       .catch(err => next(err))
   },
-  getTopRestaurantsPrototype: (req, res, next) => {
-    // return User.findAll({
-    //   include: [{ model: User, as: 'Followers' }]
-    // })
-    return Restaurant.findAll({ raw: true })
-      .then(restaurants => {
-        console.log(restaurants)
-        return res.render('top-restaurants', { restaurants })
-      }
-      )
-  },
   getTopRestaurants: (req, res, next) => {
-    return Promise.all([
-      Restaurant.findAll({
-        raw: true
-      }),
-      User.findAll({ raw: true })
-    ])
-      .then(([restaurants, users]) => {
-        const favoriteRestaurantsId = req.user && req.user.FavoriteRestaurants.map(element => element.id)
-        const data = restaurants.map(r => ({
-          ...r,
-          description: r.description.substring(0, 50),
-          isFavorite: favoriteRestaurantsId.includes(r.id)
-        }))
-        return res.render('top-restaurants', {
-          restaurants: data,
-          users
-        })
+    return Restaurant
+      .findAll({
+        include: [{ model: User, as: 'FavoriteUsers' }]
       })
-      .catch(err => next(err))
+      .then(topRestaurants => {
+        const restaurants = topRestaurants.map(r => ({
+          ...r.toJSON(),
+          favoriteCount: r.FavoriteUsers.length,
+          isFavorite: req.user && req.user.FavoriteRestaurants.some(fr => fr.id === r.id)
+        }))
+          .sort((a, b) => b.favoriteCount - a.favoriteCount)
+          .slice(0, 10)
+        res.render('top-restaurants', { restaurants })
+      })
+      .catch(e => next(e))
   }
 }
 module.exports = restaurantController
