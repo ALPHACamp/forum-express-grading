@@ -16,7 +16,18 @@ const authenticatedAdmin = (req, res, next) => {
     res.redirect('/signin')
   }
 }
+
+const authenticatedUser = (req, res, next) => {
+  if (helpers.ensureAuthenticated(req)) {
+    if (helpers.getUser(req).id === Number(req.params.id)) return next()
+    throw new Error('不可更改其他人的個人資料')
+  } else {
+    res.redirect('/signin')
+  }
+}
+
 module.exports = {
   authenticated,
-  authenticatedAdmin
+  authenticatedAdmin,
+  authenticatedUser
 }
