@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs')
 const { imgurFileHandler } = require('../helpers/file-helpers')
-const { User, Comment, Restaurant, Favorite } = require('../models')
+const { User, Comment, Restaurant, Favorite, Like } = require('../models')
 const { getUser } = require('../helpers/auth-helpers')
 const assert = require('assert')
 
@@ -46,12 +46,13 @@ const uerController = {
       const comments = await Comment.findAndCountAll({
         where: { userId: id },
         include: Restaurant,
-        group: 'Restaurant.id',
+        // group: 'Restaurant.id', // 線上測試環境不支援，改用JavaSript在本地處理
         nest: true,
         raw: true
       })
       assert(user, "User didn't exist!")
-      res.render('users/profile', { user, comments: comments.rows, commentAmount: comments.count.length })
+      const commentedRestaurants = [...new Set(comments.rows.map(item => JSON.stringify(item.Restaurant)))].map(item => JSON.parse(item))
+      res.render('users/profile', { user, commentedRestaurants, commentedRestaurantsAmount: commentedRestaurants.length })
     } catch (error) {
       next(error)
     }
@@ -92,7 +93,6 @@ const uerController = {
       assert(restaurant, "Restaurant didn't exist!")
       assert(user, "User didn't exist!")
       assert(!favorite, '這間餐廳已在清單中')
-      console.log('restaurantId', restaurantId, typeof restaurantId, 'userId', userId, typeof userId)
       await Favorite.create({ userId, restaurantId })
       req.flash('success_messages', '成功加入清單')
       res.redirect('back')
@@ -108,6 +108,35 @@ const uerController = {
       assert(favorite, '這間餐廳已不在清單中')
       favorite.destroy()
       req.flash('success_messages', '成功移出清單')
+      res.redirect('back')
+    } catch (error) {
+      next(error)
+    }
+  },
+  addLike: async (req, res, next) => {
+    const restaurantId = req.params.restaurantId
+    const userId = req.user.id
+    try {
+      const [restaurant, like] = await Promise.all([
+        Restaurant.findByPk(restaurantId),
+        Like.findOne({ where: { userId, restaurantId } })
+      ])
+      assert(restaurant, "Restaurant didn't exist")
+      assert(!like, '已被評論')
+
+      await Like.create({ userId, restaurantId })
+      res.redirect('back')
+    } catch (error) {
+      next(error)
+    }
+  },
+  removeLike: async (req, res, next) => {
+    try {
+      const restaurantId = req.params.restaurantId
+      const userId = getUser(req).id
+      const like = await Like.findOne({ where: { userId, restaurantId } })
+      assert(like, '你不能點兩次UnLike')
+      await like.destroy()
       res.redirect('back')
     } catch (error) {
       next(error)

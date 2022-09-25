@@ -24,6 +24,9 @@ router.get('/users/:id/edit', authenticated, authenticatedUser, uerController.ed
 // favorite
 router.post('/favorite/:id', authenticated, userController.addFavorite)
 router.delete('/favorite/:id', authenticated, userController.deleteFavorite)
+// Like
+router.post('/like/:restaurantId', authenticated, userController.addLike)
+router.delete('/like/:restaurantId', authenticated, userController.removeLike)
 // admin
 router.use('/admin', authenticatedAdmin, adminRoute)
 // restaurnat
