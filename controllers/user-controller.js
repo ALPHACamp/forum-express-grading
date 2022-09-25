@@ -52,7 +52,7 @@ const userController = {
             { model: Restaurant, attributes: ['name', 'image'] }
           ],
           where: { userId: user.id, text: { [Op.not]: null } },
-          group: [['restaurant_id']],
+          // group: [['restaurant_id']],
           order: [['created_at', 'DESC']],
           raw: true,
           nest: true,
