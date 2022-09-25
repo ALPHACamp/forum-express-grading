@@ -1,14 +1,31 @@
 const { Restaurant, User, Category } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
+const { getOffset, getPagination } = require('../helpers/pagination-helper')
 
 const adminController = {
   getRestaurants: (req, res, next) => {
-    Restaurant.findAll({ raw: true, nest: true, include: [Category] })
-      .then(restaurants => res.render('admin/restaurants', { restaurants }))
+    const DEFAULT_LIMIT = 5
+    const page = Number(req.query.page) || 1
+    const limit = Number(req.query.limit) || DEFAULT_LIMIT
+    const offset = getOffset(limit, page)
+
+    return Restaurant.findAndCountAll({
+      include: [Category],
+      limit,
+      offset,
+      raw: true,
+      nest: true
+    })
+      .then(restaurants => {
+        return res.render('admin/restaurants', {
+          restaurants: restaurants.rows,
+          pagination: getPagination(limit, page, restaurants.count)
+        })
+      })
       .catch(err => next(err))
   },
   createRestaurant: (req, res, next) => {
-    Category.findAll({ raw: true })
+    return Category.findAll({ raw: true })
       .then(categories => res.render('admin/create-restaurant', { categories }))
       .catch(err => next(err))
   },
