@@ -55,11 +55,9 @@ const userController = {
     const { name } = req.body
     if (!name) throw new Error('User name is required!')
     const { file } = req
-    console.log(file)
     return Promise.all([User.findByPk(req.params.id), imgurFileHandler(file)])
       .then(([user, filePath]) => {
         if (!user) throw new Error("User didn't exist!")
-        console.log(filePath)
         return user.update({ name, image: filePath || user.image })
       })
       .then(() => {
