@@ -10,6 +10,7 @@ const admin = require('./modules/admin') // admin 檔案夾
 const { generalErrorHandler } = require('../middleware/error-handler') // { key:value }
 const { authenticated, authenticatedAdmin } = require('../middleware/auth')
 const upload = require('../middleware/multer')
+const { route } = require('./modules/admin')
 
 // 因為這邊是設立在 routes/modules 路由清單裡面
 router.use('/admin', authenticatedAdmin, admin)
@@ -52,6 +53,10 @@ router.delete('/comments/:id', commentController.deleteComment)
 router.post('/favorite/:restaurantId', authenticated, userController.addFavorite)
 
 router.delete('/favorite/:restaurantId', authenticated, userController.removeFavorite)
+
+router.post('/like/:restaurantId', userController.addLike)
+
+router.delete('/like/:restaurantId', userController.removeLike)
 
 // fallback 路由：當所有路由皆不匹配時(奇怪亂拼湊)，不管用什麼 HTTP method 發出，最終皆會通過的路由(e.g. http://localhost:3000/)
 router.get('/', (req, res) => {
