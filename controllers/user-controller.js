@@ -52,11 +52,11 @@ const userController = {
             { model: Restaurant, attributes: ['name', 'image'] }
           ],
           where: { userId: user.id, text: { [Op.not]: null } },
-          // group: [['restaurantId']],
-          // order: [['createdAt', 'DESC']],
+          group: [['restaurantId']],
+          order: [['createdAt', 'DESC']],
           raw: true,
           nest: true,
-          attributes: [[Sequelize.fn('DISTINCT', Sequelize.col('restaurantId')), 'restaurantId']
+          attributes: [[Sequelize.fn('DISTINCT', Sequelize.col('restaurant_id')), 'restaurantId']
           ]
         })
           .then(comment => {
