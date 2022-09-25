@@ -7,20 +7,76 @@
       <div class="card-body">
         <h5 class="card-title">{{user.name}}</h5>
         <p class="card-text">{{user.email}}</p>
-        <p><b>{{user.Comments.length}}已評論餐廳</b></p>
+        <p><b>{{user.Comments.length}} 已評論餐廳</b></p>
+        <p><b>{{user.FavoritedRestaurants.length}} 收藏的餐廳</b></p>
+        <p><b>{{user.Followings.length}} followings(追蹤者)</b></p>
+        <p><b>{{user.Followers.length}} followers(追隨者)</b></p>
         <a href="/users/{{user.id}}/edit"><button type="button" class="btn btn-primary">edit</button></a>
       </div>
     </div>
   </div>
 </div>
-<div class="card">
-  <div class="card-header">
-    <b>{{user.Comments.length}}已評論餐廳</b>
+<div class="row">
+  <div class="col-4">
+    <div class="card mb-4">
+      <div class="card-header">
+        <b>{{user.Followings.length}} followings (追蹤者)</b>
+      </div>
+      <div class="card-body">
+        {{#each user.Followings}}
+          <a href="/users/{{this.id}}" class="text-decoration-none">
+            {{#if this.image}}
+              <img src="{{this.image}}" width="60" height="60" class="avatar"
+                style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;" />
+            {{else}}
+              <img src="https://via.placeholder.com/60" width="60" height="60" class="avatar"
+                style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;" />
+            {{/if}}
+          </a>
+        {{/each}}
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <b>{{user.Followers.length}} followers (追隨者)</b>
+      </div>
+      <div class="card-body">
+        {{#each user.Followers}}
+          <a href="/users/{{this.id}}" class="text-decoration-none">
+            {{#if this.image}}
+              <img src="{{this.image}}" width="60" height="60" class="avatar"
+                style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;" />
+            {{else}}
+              <img src="https://via.placeholder.com/60" width="60" height="60" class="avatar"
+                style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;" />
+            {{/if}}
+          </a>
+        {{/each}}
+      </div>
+    </div>
   </div>
-  <div class="card-body">
-    {{#each user.Comments}}
-    <a href="/restaurants/{{this.Restaurant.id}}"><img src="{{this.Restaurant.image}}" alt="" width="10%"
-        height="10%"></a>
-    {{/each}}
+  <div class="col-8">
+    <div class="card mb-4">
+      <div class="card-header">
+        <b>{{user.Comments.length}} 已評論餐廳</b>
+      </div>
+      <div class="card-body">
+        {{#each user.Comments}}
+        <a href="/restaurants/{{this.Restaurant.id}}"><img src="{{this.Restaurant.image}}" alt="" width="10%"
+            height="10%"></a>
+        {{/each}}
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <b>{{user.FavoritedRestaurants.length}} 收藏的餐廳</b>
+      </div>
+      <div class="card-body">
+        {{#each user.FavoritedRestaurants}}
+        <a href="/restaurants/{{this.id}}"><img src="{{this.image}}" alt="" width="10%"
+            height="10%"></a>
+        {{/each}}
+      </div>
+    </div>
   </div>
 </div>
