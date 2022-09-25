@@ -67,6 +67,7 @@ describe('# R01', () => {
         const req = mockRequest() // 對 GET /admin/users 發出請求
         const res = mockResponse()
         const next = mockNext
+
         // 測試作業指定的 adminController.getUsers 函式
         await this.adminController.getUsers(req, res, next)
 
