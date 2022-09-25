@@ -7,6 +7,7 @@ const admin = require('./modules/admin')
 const { generalErrorHandler } = require('../middleware/error-handeler')
 const { authenticated, authenticatedAdmin } = require('../middleware/auth')
 const passport = require('../config/passport')
+const upload = require('../middleware/muter')
 
 router.use('/admin', authenticatedAdmin, admin)
 router.get('/signup', userController.signUpPage)
@@ -21,6 +22,10 @@ router.get('/logout', userController.logout)
 
 router.delete('/comments/:id', authenticated, commentController.deleteComment)
 router.post('/comments', authenticated, commentController.postComment)
+
+router.get('/users/:id/edit', authenticated, userController.editUser)// 瀏覽編輯 Profile 頁面
+router.get('/users/:id', authenticated, userController.getUser)// 瀏覽 Profile
+router.put('/users/:id', authenticated, upload.single('image'), userController.putUser) // 編輯Profile
 
 router.use('/', (req, res) => res.redirect('/restaurants')) // fallback route
 router.use('/', generalErrorHandler)
