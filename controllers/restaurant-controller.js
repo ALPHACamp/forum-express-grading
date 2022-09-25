@@ -3,15 +3,11 @@ const { getOffset, getPagination } = require('../helpers/pagination-helper')
 const restaurantController = {
   getRestaurants: (req, res, next) => {
     const categoryId = Number(req.query.categoryId) || ''
-    console.log(req.query)
-    console.log(categoryId)
-    // console.log('用這個試試吧',req)
     const DEFAULT_LIMIT = 9
     const page = Number(req.query.page) || 1
     const limit = Number(req.query.limit) || DEFAULT_LIMIT
     const offset = getOffset(limit, page)
     const where = {}
-    
     if (categoryId) where.categoryId = categoryId
     return Promise.all([
       Restaurant.findAndCountAll({
