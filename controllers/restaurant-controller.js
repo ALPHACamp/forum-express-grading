@@ -1,5 +1,5 @@
 // restaurantController 物件裡面有 getRestaurants 方法
-const { Restaurant, Category, User, Comment } = require('../models')
+const { Restaurant, Category, User, Comment, Favorite } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
 
 const restaurantController = {
@@ -90,6 +90,23 @@ const restaurantController = {
         comments
       })
     }).catch(error => next(error))
+  },
+  getTopRestaurants: (req, res, next) => {
+    return Restaurant.findAll({
+      include: [{
+        model: User, as: 'FavoritedUsers'
+      }]
+    })
+      .then(restaurants => {
+        const result = restaurants.map(rest => ({
+          ...rest.toJSON(),
+          description: rest.dataValues.description.substring(0, 50),
+          favoritedCount: rest.FavoritedUsers.length,
+          isFavorited: req.user && req.user.FavoritedRestaurants.some(r => r.id === rest.id) // some 有一個符合就是 true
+        })).sort((a, b) => b.favoritedCount - a.favoritedCount)
+        res.render('top-restaurants', { restaurants: result.slice(0, 10) })
+      })
+      .catch(err => next(err))
   }
 }
 

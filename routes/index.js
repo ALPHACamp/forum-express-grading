@@ -37,6 +37,8 @@ router.get('/users/:id', authenticated, userController.getUser)
 
 router.put('/users/:id', authenticated, upload.single('image'), userController.putUser)
 
+router.get('/restaurants/top', authenticated, restController.getTopRestaurants)
+
 router.get('/restaurants/feeds', authenticated, restController.getFeeds)
 
 router.get('/restaurants/:id/dashboard', authenticated, restController.getDashboard)
@@ -47,15 +49,15 @@ router.get('/restaurants', authenticated, restController.getRestaurants)
 
 router.post('/comments', authenticated, commentController.postComment)
 
-router.delete('/comments/:id', commentController.deleteComment)
+router.delete('/comments/:id', authenticated, commentController.deleteComment)
 
 router.post('/favorite/:restaurantId', authenticated, userController.addFavorite)
 
 router.delete('/favorite/:restaurantId', authenticated, userController.removeFavorite)
 
-router.post('/like/:restaurantId', userController.addLike)
+router.post('/like/:restaurantId', authenticated, userController.addLike)
 
-router.delete('/like/:restaurantId', userController.removeLike)
+router.delete('/like/:restaurantId', authenticated, userController.removeLike)
 
 // fallback 路由：當所有路由皆不匹配時(奇怪亂拼湊)，不管用什麼 HTTP method 發出，最終皆會通過的路由(e.g. http://localhost:3000/)
 router.get('/', (req, res) => {

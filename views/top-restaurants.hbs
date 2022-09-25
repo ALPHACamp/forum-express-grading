@@ -1,0 +1,48 @@
+{{> restaurant-tabs route="top-restaurants"}}
+<h1>Top 10 人氣餐廳</h1>
+<hr>
+<div class="row mt-3">
+  {{#each restaurants}}
+  <div class="card mb-3 " style="max-width: 540px;">
+    <div class="row g-0">
+      <div class="col-md-4">
+        <img src="{{this.image}}" class="img-fluid rounded-start" alt="...">
+      </div>
+      <div class="col-md-8">
+        <div class="card-body">
+          <h5 class="card-title">
+            <a href="/restaurants/{{this.id}}">
+              {{this.name}}
+            </a>
+          </h5>
+          <span class="bg-secondary badge mb-5 mt-2">收藏數：{{this.favoritedCount}}</span>
+          <p class="card-text mb-5">
+            {{this.description}}
+          </p>
+          {{!-- Favorite --}}
+          <div class="d-inline-flex">
+            <div class="d-flex">
+              <a href="/restaurants/{{this.id}}" class="btn btn-primary m-1">
+                Show
+              </a>
+            </div>
+            <div class="d-flex">
+              {{#if isFavorited}}
+              <form action="/favorite/{{this.id}}?_method=DELETE" method="POST"> {{!-- 這邊是 restaurant id 因為已經有
+                req.user.id，兩者備齊就可以針對
+                favorite 表單查詢 --}}
+                <button type="submit" class="btn btn-danger m-1">移除最愛</button>
+              </form>
+              {{else}}
+              <form action="/favorite/{{this.id}}" method="POST">
+                <button type="submit" class="btn btn-primary m-1">加到最愛</button>
+              </form>
+              {{/if}}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {{/each}}
+</div>
