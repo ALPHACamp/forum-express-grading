@@ -53,7 +53,7 @@ const userController = {
           ],
           where: { userId: user.id, text: { [Op.not]: null } },
           // group: [['restaurant_id']],
-          order: [['created_at', 'DESC']],
+          // order: [['createdAt', 'DESC']],
           raw: true,
           nest: true,
           attributes: [[Sequelize.fn('DISTINCT', Sequelize.col('restaurant_id')), 'restaurantId']
