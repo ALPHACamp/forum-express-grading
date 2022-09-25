@@ -34,10 +34,16 @@ const userController = {
     req.flash('success_messages', '登入成功')
     res.redirect('/restaurants')
   },
-  logout: (req, res) => {
-    req.flash('success_messages', '登出成功')
-    req.logout()
-    res.redirect('/signin')
+  logout: (req, res, next) => {
+    /*
+      logout現在是非同步，需要有一個callback func才能正確執行
+      所以在這加入err來處理錯誤
+    */
+    req.logout(err => {
+      if (err) return next(err)
+      req.flash('success_messages', '登出成功')
+      res.redirect('/signin')
+    })
   }
 }
 

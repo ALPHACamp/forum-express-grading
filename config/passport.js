@@ -22,7 +22,7 @@ passport.use(
     // callback function 驗證使用者
     (req, email, password, cb) => {
       // 查詢User資料庫帳號是否存在
-      User.findOne({ where: { email } }).then((user) => {
+      User.findOne({ where: { email } }).then(user => {
         // 帳號不存在處理
         if (!user) {
           return cb(
@@ -32,7 +32,7 @@ passport.use(
           )
         }
 
-        bcrypt.compare(password, user.password).then((res) => {
+        bcrypt.compare(password, user.password).then(res => {
           // 密碼錯誤處理
           if (!res) {
             return cb(
@@ -56,12 +56,9 @@ passport.serializeUser((user, cb) => {
 
 // 反序列化 - 在需要的時候，可以將資料恢復原先狀態
 passport.deserializeUser((id, cb) => {
-  User.findByPk(id).then((user) => {
-    // FIXME: 暫時添加console
-    user = user.toJSON()
-    console.log(user)
-    return cb(null, user)
-  })
+  User.findByPk(id)
+    .then(user => cb(null, user.toJSON()))
+    .catch(err => cb(err))
 })
 
 module.exports = passport

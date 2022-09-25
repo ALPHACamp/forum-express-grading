@@ -1,4 +1,5 @@
 const { Category } = require('../models')
+
 const categoryController = {
   getCategories: (req, res, next) => {
     return Promise.all([
@@ -6,7 +7,7 @@ const categoryController = {
       req.params.id ? Category.findByPk(req.params.id, { raw: true }) : null
     ])
       .then(([categories, category]) => {
-        res.render('admin/index', { categories, category })
+        res.render('admin/categories', { categories, category })
       })
       .catch(err => next(err))
   },
