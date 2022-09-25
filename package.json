@@ -7,7 +7,7 @@
     "dev": "nodemon app.js",
     "lint": "eslint \"**/*.js\" --fix",
     "test": "mocha tests --exit --recursive --timeout 5000",
-    "test3": "mocha tests/R03.test.js --exit"
+    "test4": "mocha tests/R04.test.js --exit"
   },
   "repository": {
     "type": "git",
