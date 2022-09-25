@@ -15,19 +15,30 @@ const restaurantController = {
       })
     })
   },
-  getRestaurant: (req, res, next) => {
-    return Restaurant.findByPk(req.params.id, {
-      include: Category, // 拿出關聯的 Category model
-      nest: true,
-      raw: true
-    })
-      .then(restaurant => {
-        if (!restaurant) throw new Error("Restaurant didn't exist!")
-        res.render('restaurant', {
-          restaurant
-        })
+  getRestaurant: async (req, res, next) => {
+    try {
+      const restaurant = await Restaurant.findByPk(req.params.id, {
+        include: Category,
+        nest: true
       })
-      .catch(err => next(err))
+      if (!restaurant) throw new Error("Restaurant doesn't exist!")
+      await restaurant.increment('viewCounts', { by: 1 })
+      res.render('restaurant', {
+        restaurant: restaurant.toJSON()
+      })
+    } catch (err) {
+      next(err)
+    }
+  },
+
+  getDashboard: (req, res, next) => {
+    return Restaurant.findByPk(req.params.id, {
+      include: [Category],
+      nest: true
+    }).then(restaurant => {
+      if (!restaurant) throw new Error("Restaurant doesn't exist!")
+      res.render('dashboard', { restaurant: restaurant.toJSON() })
+    }).catch(err => next(err))
   }
 }
 module.exports = restaurantController
