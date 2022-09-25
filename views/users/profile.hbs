@@ -1,0 +1,13 @@
+<div class="row mt-3 mb-5">
+  <div class="col-md-4">
+    <img class="img-thumbnail  mb-5" src="{{user.image}}"
+      style="height: 250px; width: 250px; transition: opacity 0.5s; opacity:0; border-radius:50%" onload="this.style.opacity=1;">
+  </div>
+  <div class="col-md-8">
+    <strong>{{user.name}}</strong>
+    <p>{{user.email}}</p>
+    <a href='/users/{{user.id}}/edit'>
+      <button type="button" class="btn btn-primary">Edit</button>
+    </a>
+  </div>
+</div>
