@@ -7,7 +7,6 @@ const { generalErrorHandler } = require('../middleware/error-handler')
 const passport = require('../config/passport')
 const { authenticated, authenticatedAdmin } = require('../middleware/auth')
 
-// router.use('/admin', admin)
 router.use('/admin', authenticatedAdmin, admin)
 
 router.get('/signup', userController.signUpPage)
@@ -16,9 +15,9 @@ router.get('/signin', userController.signInPage)
 router.post('/signin', passport.authenticate('local', { failureRedirect: '/signin', failureFlash: true }), userController.signIn)
 router.get('/logout', userController.logout)
 
-// 等都做完再回來找驗證的bug
+router.get('/restaurants/:id', authenticated, restController.getRestaurant)
 router.get('/restaurant', authenticated, restController.getRestaurants)
-// router.get('/restaurant', restController.getRestaurants)
+
 router.use('/', (req, res) => { res.redirect('/restaurant') })
 
 router.use('/', generalErrorHandler)
