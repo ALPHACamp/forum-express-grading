@@ -1,4 +1,4 @@
-const { Restaurant, Category } = require('../models')
+const { Restaurant, Category, Comment, User } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
 const restaurantController = {
   getRestaurants: (req, res, next) => {
@@ -36,14 +36,18 @@ const restaurantController = {
   },
   getRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
-      include: Category,
-      nest: true,
-      raw: true
+      include: [
+        Category,
+        { model: Comment, include: User }
+      ]
+      // nest: true,
+      // raw: true
     })
-      .then(restaurant => {
-        if (!restaurant) throw new Error("Restaurant didn't exist!")
+      .then(restaurants => {
+        console.log('要渲染的', restaurants)
+        if (!restaurants) throw new Error("Restaurant didn't exist!")
         Restaurant.increment('viewCounts', { where: { id: req.params.id } })
-        return restaurant
+        return restaurants
       })
       .then(restaurant => {
         return res.render('restaurant', {
