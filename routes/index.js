@@ -24,10 +24,12 @@ router.post('/signin', passport.authenticate('local', {
 router.get('/logout', userController.logout)
 
 // restaurants
+router.get('/restaurants/top', authenticated, resController.getTopRestaurants)
 router.get('/restaurants/feeds', authenticated, resController.getFeeds)
 router.get('/restaurants/:id/dashboard', authenticated, resController.getDashboard)
 router.get('/restaurants/:id', authenticated, resController.getRestaurant)
 router.get('/restaurants', authenticated, resController.getRestaurants)
+
 // comments
 router.delete('/comments/:id', authenticatedAdmin, commentController.deleteComment)
 router.post('/comments', authenticated, commentController.postComment)
@@ -37,7 +39,7 @@ router.delete('/favorite/:restaurantId', authenticated, userController.removeFav
 // like
 router.post('/like/:restaurantId', authenticated, userController.addLike)
 router.delete('/like/:restaurantId', authenticated, userController.removeLike)
-// folloes
+// follows
 router.post('/following/:userId', authenticated, userController.addFollowing)
 router.delete('/following/:userId', authenticated, userController.removeFollowing)
 
