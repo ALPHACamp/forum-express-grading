@@ -92,6 +92,17 @@ const restaurantController = {
         })
       })
       .catch(err => next(err))
+  },
+  getTopRestaurants: (req, res, next) => {
+    // return User.findAll({
+    //   include: [{ model: User, as: 'Followers' }]
+    // })
+    return Restaurant.findAll({ raw: true })
+      .then(restaurants => {
+        console.log(restaurants)
+        return res.render('top-restaurants', { restaurants })
+      }
+      )
   }
 }
 module.exports = restaurantController
