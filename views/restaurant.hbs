@@ -19,20 +19,20 @@
     <a class="btn btn-warning" href="/restaurants/{{restaurant.id}}/dashboard">Dashboard</a>  
     {{#if isFavorited}}
     <form action="/favorite/{{restaurant.id}}?_method=DELETE" method="POST" style="display: contents;" >
-      <button type="submit" class="btn btn-danger m-1">remove</button>
+      <button type="submit" class="btn btn-danger m-1 fa-solid fa-heart-circle-check btn-lg"></button>
     </form>
     {{else}}
     <form action="/favorite/{{restaurant.id}}" method="POST" style="display: contents;">
-      <button type="submit" class="btn btn-primary m-1">add</button>
+      <button type="submit" class="btn btn-outline-danger m-1 fa-solid fa-heart-circle-plus btn-lg"></button>
     </form>
     {{/if}} 
     {{#if isLiked}}
     <form action="/like/{{restaurant.id}}?_method=DELETE" method="POST" style="display: contents;">
-      <button type="submit" class="btn btn-primary fa-regular fa-thumbs-up m-1" title="remove from fav"></button>
+      <button type="submit" class="btn btn-primary fa-regular fa-thumbs-up m-1 btn-lg" title="remove from fav"></button>
     </form>
     {{else}}
     <form action="/like/{{restaurant.id}}" method="POST" style="display: contents;">
-      <button type="submit" class="btn btn-outline-primary m-1 fa-regular fa-thumbs-up" title="add to fav"></button>
+      <button type="submit" class="btn btn-outline-primary m-1 fa-regular fa-thumbs-up btn-lg" title="add to fav"></button>
     </form>
     {{/if}}
   </div>
