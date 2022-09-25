@@ -24,6 +24,9 @@ router.get('/logout', userController.logout)
 router.delete('/comments/:id', authenticated, commentController.deleteComment)
 router.post('/comments', authenticated, commentController.postComment)
 
+router.post('/favorite/:restaurantId', authenticated, userController.addFavorite)
+router.delete('/favorite/:restaurantId', authenticated, userController.removeFavorite)
+
 router.get('/users/:id/edit', authenticated, userController.editUser)// 瀏覽編輯 Profile 頁面
 router.get('/users/:id', authenticated, userController.getUser)// 瀏覽 Profile
 router.put('/users/:id', authenticated, upload.single('image'), userController.putUser) // 編輯Profile
