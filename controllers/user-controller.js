@@ -60,7 +60,7 @@ const userController = {
           }
         }, [])
         const isFollowed = req.user.Followings.includes(f => f.id === user.id)
-        return res.render('users/profile', { user, isFollowed })
+        res.render('users/profile', { user, isFollowed })
       })
       .catch(err => next(err))
   },
