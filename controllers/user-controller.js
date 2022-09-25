@@ -141,6 +141,23 @@ const uerController = {
     } catch (error) {
       next(error)
     }
+  },
+  getTopUsers: async (req, res, next) => {
+    try {
+      let users = await User.findAll({
+        raw: true,
+        nest: true,
+        include: [{ model: User, as: 'Followers' }]
+      })
+      users = users.map(user => ({
+        ...user,
+        followerCount: user.Followers.length,
+        isFollowed: req.user.Followings.some(f => f.id === user.id)
+      }))
+      res.render('user-top', { users })
+    } catch (error) {
+      next(error)
+    }
   }
 
 }

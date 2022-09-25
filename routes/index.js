@@ -18,6 +18,7 @@ router.post('/signin', passport.authenticate('local',
   { failureRedirect: '/signin', failureFlash: true }),
 userController.signIn)
 router.get('/logout', authenticated, userController.logout)
+router.get('/users/top', authenticated, userController.getTopUsers)
 router.get('/users/:id', authenticated, authenticatedUser, userController.getUser)
 router.put('/users/:id', authenticated, authenticatedUser, upload.single('image'), userController.putUser)
 router.get('/users/:id/edit', authenticated, authenticatedUser, uerController.editUser)
