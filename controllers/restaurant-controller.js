@@ -23,13 +23,14 @@ const restaurantController = {
         }),
         Category.findAll({ raw: true })
       ])
-      const favoritedRestaurantsId = req.user.FavoriteRestaurants.map(rest => rest.id)
-      console.log('favoritedRestaurantsId', favoritedRestaurantsId)
+      const favoritedRestaurantsId = req.user && req.user.FavoriteRestaurants.map(rest => rest.id)
+      const LikeRestaurantsId = req.user && req.user.LikeRestaurants.map(rest => rest.id)
       const data = restaurants.rows.map(r => {
         return {
           ...r,
           description: r.description.substring(0, 50),
-          isFavorited: favoritedRestaurantsId.includes(r.id)
+          isFavorited: favoritedRestaurantsId.includes(r.id),
+          isLike: LikeRestaurantsId.includes(r.id)
         }
       })
 
@@ -52,16 +53,18 @@ const restaurantController = {
         nest: true,
         include: [Category,
           { model: Comment, include: User },
-          { model: User, as: 'FavoriteUsers' }],
+          { model: User, as: 'FavoriteUsers' },
+          { model: User, as: 'LikeUsers' }],
         order: [[Comment, 'createdAt', 'DESC']]
 
       })
       assert(restaurant, '找不到指定餐廳')
       await restaurant.increment('viewCounts')// 計算瀏覽次數
       const favoritedUserId = restaurant.FavoriteUsers.map(user => user.id)
-
+      const LikeUserId = restaurant.LikeUsers.map(user => user.id)
+      const isLike = LikeUserId.includes(getUser(req).id)
       const isFavorited = favoritedUserId.includes(getUser(req).id)
-      res.render('restaurant', { restaurant: restaurant.toJSON(), isFavorited })
+      res.render('restaurant', { restaurant: restaurant.toJSON(), isFavorited, isLike })
     } catch (error) {
       next(error)
     }

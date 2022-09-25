@@ -32,6 +32,16 @@
       </form>
     {{/if}}
 
+     {{#if this.isLike}}
+          <form action="/like/{{restaurant.id}}?_method=DELETE" method="POST" style="display: contents;">
+             <button type="submit" class="btn btn-danger m-1">UnLike</button>
+         </form>
+         {{else}}
+         <form action="/like/{{restaurant.id}}" method="POST" style="display: contents;">
+             <button type="submit" class="btn btn-primary m-1">Like</button>
+         </form>
+         {{/if}}
+
     
   </div>
 

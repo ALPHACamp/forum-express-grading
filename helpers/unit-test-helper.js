@@ -87,6 +87,7 @@ const createModelMock = (name, data, joinedTableName, sourceData) => {
         }
         return Promise.resolve(data ? data.map(d => mockModel.build(d)) : [])
       } else if (query === 'findOne') {
+        console.log('queryOptions[0]', queryOptions[0])
         let item
         if (queryOptions[0].id) {
           item = data.find(d => d.id === queryOptions[0].id)
