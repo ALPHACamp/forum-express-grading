@@ -6,8 +6,11 @@ const admin = require('./modules/admin')
 const { generalErrorHandler } = require('../middleware/error-handler')
 const passport = require('../config/passport')
 const { authenticated, authenticatedAdmin } = require('../middleware/auth')
+const commentController = require('../controllers/​​comment-controller')
 
 router.use('/admin', authenticatedAdmin, admin)
+
+router.post('/comments', authenticated, commentController.postComment)
 
 router.get('/signup', userController.signUpPage)
 router.post('/signup', userController.signUp)
