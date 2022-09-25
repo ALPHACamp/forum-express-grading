@@ -202,6 +202,7 @@ const userController = {
       .catch(error => next(error))
   },
   removeLike: (req, res, next) => {
+    console.log('\nreq.user:\n', req.user)
     const { restaurantId } = req.params
     return Like.findOne({
       where: {

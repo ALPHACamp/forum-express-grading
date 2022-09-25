@@ -10,7 +10,6 @@ const admin = require('./modules/admin') // admin 檔案夾
 const { generalErrorHandler } = require('../middleware/error-handler') // { key:value }
 const { authenticated, authenticatedAdmin } = require('../middleware/auth')
 const upload = require('../middleware/multer')
-const { route } = require('./modules/admin')
 
 // 因為這邊是設立在 routes/modules 路由清單裡面
 router.use('/admin', authenticatedAdmin, admin)

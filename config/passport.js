@@ -25,13 +25,14 @@ passport.serializeUser((user, done) => {
   return done(null, user.id)
 })
 
-// 反序列化 使用者 必要
+// 反序列化 使用者 必要 (得 req.user)
 passport.deserializeUser((id, done) => {
   return User.findByPk(id, {
     include: [
       { model: Restaurant, as: 'FavoritedRestaurants' }, // 根據 FavoriteRestaurants 關係到 Restaurant model 得到 user 收藏列表(登入時 req.user 就會自帶有關收藏的相關資料)
-      { model: User, as: 'Followers' }, // 新增這行
-      { model: User, as: 'Followings' } // 新增這行
+      { model: Restaurant, as: 'LikedRestaurants' }, // 跟 Restaurant 有一個關聯叫做 LikedRestaurants，將其引入
+      { model: User, as: 'Followers' },
+      { model: User, as: 'Followings' }
     ]
   }) // sequelize 物件
     .then(user => done(null, user.toJSON())
