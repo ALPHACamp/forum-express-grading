@@ -17,6 +17,12 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'restaurantId', // 對 Favorite 表做餐廳的 FK 設定
         as: 'FavoritedUsers' // 餐廳多對多使用者這個關聯取一個名字 //表示 restaurant 跟 user 有一個多對多關係稱為 favoriteUser
       })
+      Restaurant.belongsToMany(models.User,
+        {
+          through: models.Like,
+          foreignKey: 'restaurantId',
+          as: 'LikedUsers'
+        })
     }
   };
   Restaurant.init({
