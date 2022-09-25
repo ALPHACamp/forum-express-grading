@@ -10,6 +10,7 @@ const commentController = require('../controllers/​​comment-controller')
 
 router.use('/admin', authenticatedAdmin, admin)
 
+router.delete('/comments/:id', authenticatedAdmin, commentController.deleteComment)
 router.post('/comments', authenticated, commentController.postComment)
 
 router.get('/signup', userController.signUpPage)

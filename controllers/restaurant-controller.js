@@ -40,11 +40,8 @@ const restaurantController = {
         Category,
         { model: Comment, include: User }
       ]
-      // nest: true,
-      // raw: true
     })
       .then(restaurants => {
-        console.log('要渲染的', restaurants)
         if (!restaurants) throw new Error("Restaurant didn't exist!")
         Restaurant.increment('viewCounts', { where: { id: req.params.id } })
         return restaurants
