@@ -19,11 +19,20 @@
     <a class="btn btn-outline-primary mt-3 me-2" href="/restaurants/{{restaurant.id}}/dashboard">Dashboard</a>
     {{#if isFavorited }}
     <form action="/favorite/{{restaurant.id}}?_method=DELETE" method="POST" style="display: contents;">
-      <button type="submit" class="btn btn-danger mt-3">移除最愛</button>
+      <button type="submit" class="btn btn-danger mt-3 me-2">移除最愛</button>
     </form>
     {{else}}
     <form action="/favorite/{{restaurant.id}}" method="POST" style="display: contents;">
-      <button type="submit" class="btn btn-primary mt-3">加到最愛</button>
+      <button type="submit" class="btn btn-primary mt-3 me-2">加到最愛</button>
+    </form>
+    {{/if}}
+    {{#if isLiked }}
+    <form action="/like/{{restaurant.id}}?_method=DELETE" method="POST" style="display: contents;">
+      <button type="submit" class="btn btn-danger mt-3 me-2">Unlike</button>
+    </form>
+    {{else}}
+    <form action="/like/{{restaurant.id}}" method="POST" style="display: contents;">
+      <button type="submit" class="btn btn-primary mt-3 me-2">Like</button>
     </form>
     {{/if}}
   </div>
