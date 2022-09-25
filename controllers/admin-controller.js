@@ -65,7 +65,7 @@ const adminController = {
       .catch(err => next(err))
   },
   putRestaurant: (req, res, next) => {
-    const { name, tel, address, openingHours, description,categoryId } = req.body
+    const { name, tel, address, openingHours, description, categoryId } = req.body
     if (!name) throw new Error('Restaurant name is required!')
     const { file } = req
     Promise.all([Restaurant.findByPk(req.params.id), imgurFileHandler(file)])
