@@ -55,7 +55,7 @@ const userController = {
           // order: [['createdAt', 'DESC']],
           raw: true,
           nest: true,
-          attributes: [[Sequelize.fn('DISTINCT', Sequelize.col('restaurantId')), 'restaurantId']
+          attributes: [[Sequelize.fn('DISTINCT', Sequelize.col('restaurant_id')), 'restaurantId']
           ]
         })
           .then(comment => {
