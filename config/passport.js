@@ -30,13 +30,12 @@ passport.deserializeUser((id, done) => {
   return User.findByPk(id, {
     include: [
       { model: Restaurant, as: 'FavoritedRestaurants' }, // 根據 FavoriteRestaurants 關係到 Restaurant model 得到 user 收藏列表(登入時 req.user 就會自帶有關收藏的相關資料)
-      { model: User, as: 'Followers' }, // 得到這個關係 & 它的名稱 // 粉絲
-      { model: User, as: 'Followings' } // 偶像
+      { model: User, as: 'Followers' }, // 新增這行
+      { model: User, as: 'Followings' } // 新增這行
     ]
   }) // sequelize 物件
-    .then(user => {
-      return done(null, user.toJSON())
-    })
+    .then(user => done(null, user.toJSON())
+    )
 })
 
 module.exports = passport
