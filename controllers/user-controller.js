@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs')
 const { imgurFileHandler } = require('../helpers/file-helpers')
-const { User, Comment, Restaurant, Favorite, Like } = require('../models')
+const { User, Comment, Restaurant, Favorite, Like, FollowShip } = require('../models')
 const { getUser } = require('../helpers/auth-helpers')
 const assert = require('assert')
 
@@ -145,16 +145,45 @@ const uerController = {
   getTopUsers: async (req, res, next) => {
     try {
       let users = await User.findAll({
-        raw: true,
-        nest: true,
         include: [{ model: User, as: 'Followers' }]
       })
+      console.log(users)
       users = users.map(user => ({
-        ...user,
+        ...user.toJSON(),
         followerCount: user.Followers.length,
         isFollowed: req.user.Followings.some(f => f.id === user.id)
-      }))
+      })).sort((a, b) => b.followerCount - a.followerCount)
+
       res.render('user-top', { users })
+    } catch (error) {
+      next(error)
+    }
+  },
+  addFollowing: async (req, res, next) => {
+    try {
+      const currentUserId = getUser(req).id
+      const userId = req.params.userId
+      const [user, follow] = await Promise.all([
+        User.findByPk(userId),
+        FollowShip.findOne({ where: { followerId: currentUserId, followingId: userId } })
+      ])
+      assert(user, "User didn't exist!")
+      assert(!follow, "Follow didn't exist!")
+      FollowShip.create({ followerId: currentUserId, followingId: userId })
+      res.redirect('back')
+    } catch (error) {
+      next(error)
+    }
+  },
+  removeFollowing: async (req, res, next) => {
+    try {
+      const currentUserId = getUser(req).id
+      const userId = req.params.userId
+
+      const follow = await FollowShip.findOne({ where: { followerId: currentUserId, followingId: userId } })
+      assert(follow, "You haven't followed this user!")
+      follow.destroy()
+      res.redirect('back')
     } catch (error) {
       next(error)
     }
