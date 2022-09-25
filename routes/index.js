@@ -10,10 +10,11 @@ const commentController = require('../controllers/​​comment-controller')
 const upload = require('../middleware/multer')
 
 router.use('/admin', authenticatedAdmin, admin)
+router.get('/users/top', authenticated, userController.getTopUsers)
 router.get('/users/:id', authenticated, userController.getUser)
 router.get('/users/:id/edit', userAuthenticated, userController.editUser)
 router.put('/users/:id', userAuthenticated, upload.single('image'), userController.putUser)
-// user login
+// login
 router.get('/signup', userController.signUpPage)
 router.post('/signup', userController.signUp)
 router.get('/signin', userController.signInPage)
@@ -21,6 +22,7 @@ router.post('/signin', passport.authenticate('local', {
   failureRedirect: '/signin', failureFlash: true
 }), userController.signIn)
 router.get('/logout', userController.logout)
+
 // restaurants
 router.get('/restaurants/feeds', authenticated, resController.getFeeds)
 router.get('/restaurants/:id/dashboard', authenticated, resController.getDashboard)
