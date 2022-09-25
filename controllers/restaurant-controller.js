@@ -93,7 +93,7 @@ const restaurantController = {
       })
       .catch(err => next(err))
   },
-  getTopRestaurants: (req, res, next) => {
+  getTopRestaurantsPrototype: (req, res, next) => {
     // return User.findAll({
     //   include: [{ model: User, as: 'Followers' }]
     // })
@@ -103,6 +103,27 @@ const restaurantController = {
         return res.render('top-restaurants', { restaurants })
       }
       )
+  },
+  getTopRestaurants: (req, res, next) => {
+    return Promise.all([
+      Restaurant.findAll({
+        raw: true
+      }),
+      User.findAll({ raw: true })
+    ])
+      .then(([restaurants, users]) => {
+        const favoriteRestaurantsId = req.user && req.user.FavoriteRestaurants.map(element => element.id)
+        const data = restaurants.map(r => ({
+          ...r,
+          description: r.description.substring(0, 50),
+          isFavorite: favoriteRestaurantsId.includes(r.id)
+        }))
+        return res.render('top-restaurants', {
+          restaurants: data,
+          users
+        })
+      })
+      .catch(err => next(err))
   }
 }
 module.exports = restaurantController
