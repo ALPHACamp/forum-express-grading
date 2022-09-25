@@ -24,6 +24,7 @@ router.get('/restaurants/:id/dashboard', authenticated, restController.getDashbo
 router.get('/restaurants/:id', authenticated, restController.getRestaurant)
 // 新增前台網址路由//匹配條件多的路由要寫在前面
 router.get('/restaurants', authenticated, restController.getRestaurants)
+router.delete('/comments/:id', authenticatedAdmin, commentController.deleteComment)
 router.post('/comments', authenticated, commentController.postComment)
 
 router.use('/', (req, res) => res.redirect('/restaurants'))
