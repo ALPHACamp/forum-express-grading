@@ -32,16 +32,18 @@ const restController = {
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
-        restaurant.increment('viewCounts', { by: 1 })
+        return restaurant.increment('viewCounts', { by: 1 })
+      })
+      .then(restaurant => {
         res.render('restaurant', { restaurant: restaurant.toJSON() })
       })
       .catch(err => next(err))
   },
   getDashboard: (req, res, next) => {
-    return Restaurant.findByPk(req.params.id, { include: Category, raw: true, nest: true })
+    return Restaurant.findByPk(req.params.id, { include: [Category, { model: Comment, include: User }], nest: true })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
-        res.render('dashboard', { restaurant })
+        res.render('dashboard', { restaurant: restaurant.toJSON() })
       })
       .catch(err => next(err))
   }
