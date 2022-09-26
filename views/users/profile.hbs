@@ -1,0 +1,14 @@
+<div class="card mb-3 m-auto w-100" style="height: 20rem;">
+  <div class="row g-0">
+    <div class="col-md-4 d-flex justify-content-center">
+      <img src="{{user.image}}" alt="..." style="height: 20rem">
+    </div>
+    <div class="col-md-8">
+      <div class="card-body">
+        <h5 class="card-title">{{user.name}}</h5>
+        <p class="card-text">{{user.email}}</p>
+        <a href="/users/{{user.id}}/edit" class="btn btn-primary">edit</a>
+      </div>
+    </div>
+  </div>
+</div>
