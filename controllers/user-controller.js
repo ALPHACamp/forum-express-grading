@@ -58,11 +58,7 @@ const userController = {
     ])
       .then(([comments, userInfo]) => {
         if (!userInfo) throw new Error("User didn't exist!")
-<<<<<<< HEAD
-        return res.render('users/profile', { user: getUser(req), userInfo, comments })
-=======
         res.render('users/profile', { user: getUser(req), userInfo, comments })
->>>>>>> R03
       })
       .catch(err => next(err))
   },
