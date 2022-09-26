@@ -51,15 +51,15 @@ const userController = {
     })
       .then(user => {
         if (!user) throw new Error("User didn't exist.")
+        const isFollowed = req.user?.Followings.includes(f => f.id === user.id)
         user = user.toJSON()
-        user.commentedRestaurants = user.Comments.reduce((prev, cur) => {
+        user.commentedRestaurants = user.Comments && user.Comments.reduce((prev, cur) => {
           if (!prev.some(r => r.restaurantId === cur.restaurantId)) {
             return prev.concat(cur)
           } else {
             return prev
           }
         }, [])
-        const isFollowed = req.user.Followings.includes(f => f.id === user.id)
         res.render('users/profile', { user, isFollowed })
       })
       .catch(err => next(err))

@@ -13,8 +13,8 @@
         <h2>{{user.name}}</h3>
         <p class="card-text">{{user.email}}</p>
         <p>已評論過{{user.commentedRestaurants.length}}間餐廳</p> 
-        {{#ifCond user.id originalUser.id}}
-        <a href="/users/{{user.id}}/edit" class="btn btn-primary">edit</a>
+        {{#ifCond user.id currentUser.id}}
+        <a href="/users/{{currentUser.id}}/edit" class="btn btn-primary">edit</a>
         {{/ifCond}}
         <a class="btn btn-success ms-2" href="javascript:history.back()">back</a>
       </div>
