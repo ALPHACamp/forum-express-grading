@@ -16,7 +16,17 @@ const authenticatedAdmin = (req, res, next) => {
     res.redirect('/signin')
   }
 }
+const authenticateUser = (req, res, next) => {
+  const id = Number(req.params.id)
+  if (helpers.ensureAuthenticated(req)) {
+    if (helpers.getUser(req).id === id) return next()
+    res.redirect('back')
+  } else {
+    res.redirect('/signin')
+  }
+}
 module.exports = {
   authenticated,
-  authenticatedAdmin
+  authenticatedAdmin,
+  authenticateUser
 }

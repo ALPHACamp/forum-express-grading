@@ -37,12 +37,10 @@ const userController = {
     res.redirect('/signin')
   },
   getUser: (req, res, next) => {
-    return User.findByPk(req.params.id, {
-      include: [{
-        model: Comment,
-        include: Restaurant
-      }],
-      next: true
+    const id = Number(req.params.id)
+    return User.findByPk(id, {
+      include: [{ model: Comment, include: Restaurant }],
+      nest: true
     })
       .then(user => {
         if (!user) throw new Error("User didn't exist!")
