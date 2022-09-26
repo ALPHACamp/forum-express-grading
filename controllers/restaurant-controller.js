@@ -46,9 +46,9 @@ const restaurantController = {
     })
       .then(restaurant => {
         if (!restaurant) throw new Error('查無此餐廳')
-        restaurant.increment('viewCounts', { by: 1 })
-        res.render('restaurant', { restaurant: restaurant.toJSON() })
+        return restaurant.increment('viewCounts')
       })
+      .then(restaurant => res.render('restaurant', { restaurant: restaurant.toJSON() }))
       .catch(err => next(err))
   },
   getDashboard: (req, res, next) => {
