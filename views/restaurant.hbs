@@ -45,5 +45,16 @@
 </form>
 
 <a href="/restaurants/{{restaurant.id}}/dashboard" class="btn btn-primary" >Dashboard</a>
+{{#if isFavorited }}
+  <form action="/favorite/{{restaurant.id}}?_method=DELETE" method="POST" style="display: contents;">
+    <button type="submit" class="btn btn-danger">移除最愛</button>
+  </form>
+{{else}}
+  <form action="/favorite/{{restaurant.id}}" method="POST" style="display: contents;">
+    <button type="submit" class="btn btn-primary">加到最愛</button>
+  </form>
+{{/if}}
 <a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
+
+
 
