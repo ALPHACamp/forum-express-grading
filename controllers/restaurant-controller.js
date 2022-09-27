@@ -53,14 +53,14 @@ const restaurantController = {
         nest: true,
         include: [Category,
           { model: Comment, include: User },
-          { model: User, as: 'FavoriteUsers' },
+          { model: User, as: 'FavoritedUsers' },
           { model: User, as: 'LikeUsers' }],
         order: [[Comment, 'createdAt', 'DESC']]
 
       })
       assert(restaurant, '找不到指定餐廳')
       await restaurant.increment('viewCounts')// 計算瀏覽次數
-      const favoritedUserId = restaurant.FavoriteUsers.map(user => user.id)
+      const favoritedUserId = restaurant.FavoritedUsers.map(user => user.id)
       const LikeUserId = restaurant.LikeUsers.map(user => user.id)
       const isLike = LikeUserId.includes(getUser(req).id)
       const isFavorited = favoritedUserId.includes(getUser(req).id)
@@ -98,6 +98,22 @@ const restaurantController = {
         })
       ])
       res.render('feeds', { restaurants, comments })
+    } catch (error) {
+      next(error)
+    }
+  },
+  getTopRestaurants: async (req, res, next) => {
+    const DEFAULT_LIMIT = 10
+    try {
+      let restaurants = await Restaurant.findAll({
+        include: { model: User, as: 'FavoritedUsers' }
+      })
+      restaurants = restaurants.map(restaurant => ({
+        ...restaurant.toJSON(),
+        favoritedCount: restaurant.FavoritedUsers.length,
+        isFavorited: req.user && req.user.FavoritedRestaurants.some(f => f.id === restaurant.id)
+      })).sort((a, b) => b.favoritedCount - a.favoritedCount).slice(0, DEFAULT_LIMIT)
+      res.render('top-restaurant', { restaurants })
     } catch (error) {
       next(error)
     }

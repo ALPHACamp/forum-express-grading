@@ -23,8 +23,8 @@ router.get('/users/:id', authenticated, authenticatedUser, userController.getUse
 router.put('/users/:id', authenticated, authenticatedUser, upload.single('image'), userController.putUser)
 router.get('/users/:id/edit', authenticated, authenticatedUser, uerController.editUser)
 // favorite
-router.post('/favorite/:id', authenticated, userController.addFavorite)
-router.delete('/favorite/:id', authenticated, userController.deleteFavorite)
+router.post('/favorite/:restaurantId', authenticated, userController.addFavorite)
+router.delete('/favorite/:restaurantId', authenticated, userController.removeFavorite)
 // Like
 router.post('/like/:restaurantId', authenticated, userController.addLike)
 router.delete('/like/:restaurantId', authenticated, userController.removeLike)
@@ -36,6 +36,7 @@ router.use('/admin', authenticatedAdmin, adminRoute)
 // restaurnat
 router.get('/restaurants', authenticated, restaurantController.getRestaurants)
 router.get('/restaurants/feeds', authenticated, restaurantController.getFeeds)
+router.get('/restaurants/top', restaurantController.getTopRestaurants)
 router.get('/restaurants/:id', authenticated, restaurantController.getRestaurant)
 router.get('/restaurants/:id/dashboard', authenticated, restaurantController.getDashboard)
 // comment

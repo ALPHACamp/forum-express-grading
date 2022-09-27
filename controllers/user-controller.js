@@ -82,16 +82,14 @@ const uerController = {
     }
   },
   addFavorite: async (req, res, next) => {
-    const restaurantId = Number(req.params.id)
+    const restaurantId = Number(req.params.restaurantId)
     const userId = Number(getUser(req).id)
     try {
-      const [restaurant, user, favorite] = await Promise.all(
-        [User.findByPk(userId),
-          Restaurant.findByPk(restaurantId),
+      const [restaurant, favorite] = await Promise.all(
+        [Restaurant.findByPk(restaurantId),
           Favorite.findOne({ where: { userId, restaurantId } })
         ])
       assert(restaurant, "Restaurant didn't exist!")
-      assert(user, "User didn't exist!")
       assert(!favorite, '這間餐廳已在清單中')
       await Favorite.create({ userId, restaurantId })
       req.flash('success_messages', '成功加入清單')
@@ -100,8 +98,8 @@ const uerController = {
       next(error)
     }
   },
-  deleteFavorite: async (req, res, next) => {
-    const restaurantId = Number(req.params.id)
+  removeFavorite: async (req, res, next) => {
+    const restaurantId = Number(req.params.restaurantId)
     const userId = Number(getUser(req).id)
     try {
       const favorite = await Favorite.findOne({ where: { userId, restaurantId } })
