@@ -1,0 +1,12 @@
+<form name="edit-user" action="/users/{{this.id}}?_method=PUT" method="POST" enctype="multipart/form-data">
+  <div class="mb-3">
+    <h4 class="card-title">{{this.name}}</h4>
+    <input type="text" value="{{this.name}}" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" name="name">
+  </div>
+<div class="form-row mb-3">
+  <label class="form-label" for="image">Image</label>
+  <input class="form-control" type="file" class="form-control-file" id="image" name="image">
+  <input type="hidden" name="{{this.id}}">
+</div>
+  <button type="submit" class="btn btn-primary">Submit</button>
+</form>

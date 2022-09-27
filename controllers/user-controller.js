@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs')
 const db = require('../models')
+const { imgurFileHandler } = require('../helpers/file-helpers')
 const { User } = db
 const userController = {
   signUpPage: (req, res) => {
@@ -35,6 +36,47 @@ const userController = {
     req.flash('success_messages', '登出成功！')
     req.logout()
     res.redirect('/signin')
+  },
+  getUser: (req, res, next) => {
+    // console.log(req.params.id)
+    User.findByPk(req.params.id)
+      .then(user => {
+        if (!user) throw new Error("User didn't exist!'")
+        user = user.dataValues
+        // console.log(user)
+        return res.render('users/profile', user)
+      })
+      .catch(err => next(err))
+  },
+  editUser: (req, res, next) => {
+    // console.log(req.params.id)
+    User.findByPk(req.params.id)
+      .then(user => {
+        if (!user) throw new Error("User didn't exist!'")
+        user = user.dataValues
+        // console.log(user)
+        return res.render('users/edit-user', user)
+      })
+      .catch(err => next(err))
+  },
+  putUser: (req, res, next) => {
+    const { name, id } = req.body
+    if (!name) throw new Error('Restaurant name is required!')
+    const { file } = req
+    Promise.all([User.findByPk(req.params.id), imgurFileHandler(file)])
+      .then(([user, filePath]) => {
+        if (!user) throw new Error("Restaurant didn't exist!")
+        return user.update({
+          name,
+          image: filePath || user.image
+        }, { where: { id: id } })
+      })
+      .then(user => {
+        console.log(user)
+        req.flash('success_messages', 'your information was successfully to update')
+        res.redirect(`/users/${user.dataValues.id}`)
+      })
+      .catch(err => next(err))
   }
 }
 module.exports = userController
