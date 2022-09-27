@@ -37,7 +37,7 @@ const userController = {
     req.logout()
     res.redirect('/signin')
   },
-  getUser: (req, res) => {
+  getUser: (req, res, next) => {
     // console.log(req.params.id)
     User.findByPk(req.params.id)
       .then(user => {
@@ -48,7 +48,7 @@ const userController = {
       })
       .catch(err => next(err))
   },
-  editUser: (req, res) => {
+  editUser: (req, res, next) => {
     // console.log(req.params.id)
     User.findByPk(req.params.id)
       .then(user => {
@@ -59,24 +59,7 @@ const userController = {
       })
       .catch(err => next(err))
   },
-  putUser: (req, res) => {
-  //   const { name, id } = req.body
-  //   if (!name) throw new Error('Restaurant name is required!')
-  //   const { file } = req
-  //   Promise.all([User.findByPk(req.params.id), imgurFileHandler(file)])
-  //     .then((user) => {
-  //       if (!user) throw new Error("Restaurant didn't exist!")
-  //       return user.update({
-  //         id,
-  //       name})
-  //     })
-  //     .then(() => {
-  //       req.flash('success_messages', 'your information was successfully to update')
-  //       res.redirect('/')
-  //       res.redirect(`users/${id}`)
-  //     })
-  //     .catch(err => console.log(err))
-  // }
+  putUser: (req, res, next) => {
     const { name, id } = req.body
     if (!name) throw new Error('Restaurant name is required!')
     const { file } = req
@@ -93,7 +76,7 @@ const userController = {
         req.flash('success_messages', 'your information was successfully to update')
         res.redirect(`/users/${user.dataValues.id}`)
       })
-      .catch(err => console.log(err))
+      .catch(err => next(err))
   }
 }
 module.exports = userController

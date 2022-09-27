@@ -34,7 +34,6 @@ describe('# R03', () => {
         const req = mockRequest({ params: { id: 1 } }) // 帶入 params.id = 1，對 GET /users/1 發出請求
         const res = mockResponse()
         const next = mockNext
-
         // 測試作業指定的 userController.getUser 函式
         await this.userController.getUser(req, res, next);
 
