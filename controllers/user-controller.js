@@ -36,6 +36,8 @@ const userController = {
     res.redirect('/signin')
   },
   getUser: (req, res, next) => {
+    console.log(req.user.id)
+    if (req.user.id !== Number(req.params.id)) throw new Error('User can only browse by himself !')
     return User.findByPk(req.params.id, { include: { model: Comment, include: Restaurant }, nest: true })
       .then(user => {
         if (!user) throw new Error("User didn't exist!")
@@ -44,6 +46,7 @@ const userController = {
       .catch(err => next(err))
   },
   editUser: (req, res, next) => {
+    if (req.user.id !== Number(req.params.id)) throw new Error('User can only edit by himself !')
     return User.findByPk(req.params.id, { raw: true })
       .then(user => {
         if (!user) throw new Error("User didn't exist!")
@@ -53,6 +56,7 @@ const userController = {
   },
   putUser: (req, res, next) => {
     const { name } = req.body
+    if (req.user.id !== Number(req.params.id)) throw new Error('User can only edit by himself !')
     if (!name) throw new Error('User name is required!')
     const { file } = req
     return Promise.all([User.findByPk(req.params.id), imgurFileHandler(file)])
