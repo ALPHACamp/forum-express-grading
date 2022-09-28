@@ -8,7 +8,14 @@
         <h5 class="card-title"><strong>Name:</strong>{{user.name}}</h5>
         <p class="card-text"><strong>Email:</strong>{{user.email}}</p>
         <p><strong>{{user.Comments.length}}已評論餐廳</strong></p>
-        <a href="/users/{{user.id}}/edit"><button type="button" class="btn btn-primary">edit</button></a>
+        {{#ifCond user.id userProfile.id }}
+        <div class="card-body">
+          <a href="/users/{{user.id}}/edit" style="text-decoration:none">
+            <button type="button" class="btn btn-primary">edit</button>
+          </a>
+          <a class="btn btn-outline-secondary" href="/">Back</a>
+        </div>
+        {{/ifCond}}
       </div>
     </div>
   </div>
