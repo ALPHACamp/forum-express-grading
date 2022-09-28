@@ -1,0 +1,31 @@
+<div class="card mb-3" style="max-width: 800;">
+  <div class="row g-0">
+    <div class="col-md-4">
+      <img class="img-responsive center-block" src="{{user.image}}" style="width: 250px; margin-bottom: 25px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+    </div>
+    <div class="col-md-8">
+      <div class="card-body">
+        <h5 class="card-title">{{user.name}}</h5>
+        <p class="card-text">{{user.email}}</p>
+        <p>已評論餐廳</p>
+        <a href="/users/{{user.id}}/edit" type="button" class="btn btn-primary">Edit</a>
+      </div>
+    </div>
+  </div>
+</div>
+<div>
+    <div class="card-header">
+    已評論餐廳
+  </div>
+  {{!-- {{#if restaurant}}
+    {{#each ../restaurant}}
+  <ul class="list-group list-group-flush">
+    <a href="{{user.}}" class="list-group-item">An item</a>
+  </ul>
+    {{/each}}
+  {{else}}
+    <ul class="list-group list-group-flush">
+    <a href="{{user.}}" class="list-group-item">您尚未評論餐廳。</a>
+  </ul>
+  {{/if}} --}}
+</div>
