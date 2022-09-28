@@ -1,0 +1,11 @@
+<ul class="nav nav-tabs my-3">
+  <li class="nav-item">
+    <a class="nav-link {{#ifCond route "restaurant"}} active {{/ifCond}}" href="/admin/restaurants">Restaurant</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link {{#ifCond route "user"}} active {{/ifCond}}" href="/admin/users">User</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link {{#ifCond route "category"}} active {{/ifCond}}" href="/admin/categories">Category</a>
+  </li>
+</ul>

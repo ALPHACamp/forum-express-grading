@@ -1,0 +1,49 @@
+<div class="container rounded bg-white mt-5 mb-5">
+    <div class="row">
+        <div class="col-md-3 border-right">
+            <div class="d-flex flex-column align-items-center text-center p-3 py-5">
+                <img class="rounded-circle mt-5" width="150px" 
+                src={{#if user.image}}{{user.image}}
+                {{else}}"https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"{{/if}}>
+                <span class="font-weight-bold">{{user.name}}</span>
+                <span class="text-black-50">{{user.email}}</span>
+                <span></span>
+                     </div>
+        </div>
+        <div class="col-md-5 border-right">
+            <div class="p-3 py-5">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4 class="text-right">Profile </h4>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-md-12"><label class="labels">Name:{{user.name}}</label></div>
+                    <div class="col-md-12"><label class="labels">Email:{{user.email}}</label></div>
+                    <div class="col-md-12"><label class="labels">已評論餐廳數:{{commentedRestaurantsAmount}}</label></div>
+                </div>
+                </div>
+                <div class="mt-5 text-center"><a class="btn btn-primary " href="/users/{{user.id}}/edit">Edit Profile</a></div>
+            </div>
+        </div>
+        
+    </div>
+</div>
+
+<div class="container rounded bg-white mt-5 mb-5">
+ {{#if commentedRestaurants}}
+ <div class=" rounded bg-secondary">
+    <h4>已評論餐廳</h4>
+</div>
+{{#each commentedRestaurants}}
+<a href="/restaurants/{{this.id}}">
+<img src={{#if this.image}}{{this.image}}
+{{else}}"https://upload.wikimedia.org/wikipedia/commons/0/05/Wikivoyage-icon-restaurant.svg"
+{{/if}}  class="img-thumbnail " style="height:100px; weight: 100px;" alt="...">
+</a>
+{{/each}}
+ {{else}}
+<a href="/restaurants"><h4>你還沒有任何評論，快來看看有哪些餐廳</h4></a>
+ {{/if}}
+
+</div>
+</div>
+</div>
