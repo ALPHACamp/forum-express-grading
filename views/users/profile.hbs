@@ -1,19 +1,19 @@
 <div class="card">
   <div class="row g-0 text-center d-flex align-items-center">
     <div class="col-md-4">
-      <img class="card-img-top" src="{{user.image}}" alt="user image">
+      <img class="card-img-top" src="{{userProfile.image}}" alt="user image">
     </div>
     <div class="col-md-8">
       <div class="card-body">
-        <h5 class="card-title"><strong>Name:</strong>{{user.name}}</h5>
-        <p class="card-text"><strong>Email:</strong>{{user.email}}</p>
+        <h5 class="card-title"><strong>Name:</strong>{{userProfile.name}}</h5>
+        <p class="card-text"><strong>Email:</strong>{{userProfile.email}}</p>
         <p><strong>{{user.Comments.length}}已評論餐廳</strong></p>
         {{#ifCond user.id userProfile.id }}
         <div class="card-body">
           <a href="/users/{{user.id}}/edit" style="text-decoration:none">
             <button type="button" class="btn btn-primary">edit</button>
           </a>
-          <a class="btn btn-outline-secondary" href="/">Back</a>
+          <a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
         </div>
         {{/ifCond}}
       </div>
