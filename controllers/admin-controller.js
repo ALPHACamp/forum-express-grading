@@ -2,7 +2,7 @@ const { Restaurant, User, Category } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const adminController = {
-  getRestaurants: (req, res) => {
+  getRestaurants: (req, res, next) => {
     Restaurant.findAll({
       raw: true,
       nest: true,
@@ -12,7 +12,7 @@ const adminController = {
 
       .catch(err => next(err))
   },
-  createRestaurant: (req, res) => {
+  createRestaurant: (req, res, next) => {
     return Category.findAll({
       raw: true
     })
@@ -109,7 +109,6 @@ const adminController = {
     return User.findByPk(req.params.id)
       .then(user => {
         if (!user) throw new Error("user didn't exist!")
-        console.log(user.email === 'root@example.com')
         if (user.email === 'root@example.com') {
           req.flash('error_messages', '禁止變更 root 權限')
           return res.redirect('back')
