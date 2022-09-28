@@ -1,12 +1,11 @@
 const express = require('express')
-const upload = require('../../middleware/multer')
+const upload = require('../../../middleware/multer')
 const router = express.Router()
 
-const adminController = require('../../controllers/admin-controller')
-const categoryController = require('../../controllers/category-controller')
+const adminController = require('../../../controllers/pages/admin-controller')
+const categoryController = require('../../../controllers/pages/category-controller')
 
-router.get('/restaurants/create', adminController
-  .createRestaurants)
+router.get('/restaurants/create', adminController.createRestaurants)
 router.get('/restaurants/:id/edit', adminController.editRestaurant)
 router.get('/restaurants/:id', adminController.getRestaurant)
 router.put('/restaurants/:id', upload.single('image'), adminController.putRestaurant)
