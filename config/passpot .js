@@ -32,7 +32,7 @@ passport.deserializeUser(async (id, done) => {
   try {
     const user = await User.findByPk(id, {
       nest: true,
-      include: [{ model: Restaurant, as: 'FavoriteRestaurants' },
+      include: [{ model: Restaurant, as: 'FavoritedRestaurants' },
         { model: Restaurant, as: 'LikeRestaurants' },
         { model: User, as: 'Followers' },
         { model: User, as: 'Followings' }

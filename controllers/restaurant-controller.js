@@ -23,7 +23,7 @@ const restaurantController = {
         }),
         Category.findAll({ raw: true })
       ])
-      const favoritedRestaurantsId = req.user && req.user.FavoriteRestaurants.map(rest => rest.id)
+      const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(rest => rest.id)
       const LikeRestaurantsId = req.user && req.user.LikeRestaurants.map(rest => rest.id)
       const data = restaurants.rows.map(r => {
         return {
