@@ -34,16 +34,14 @@ describe('# R03', () => {
         const req = mockRequest({ params: { id: 1 } }) // 帶入 params.id = 1，對 GET /users/1 發出請求
         const res = mockResponse()
         const next = mockNext
-<<<<<<< HEAD
-=======
 
->>>>>>> upstream/R04-test
         // 測試作業指定的 userController.getUser 函式
         await this.userController.getUser(req, res, next);
 
         // getUser 正確執行的話，應呼叫 res.render
         // res.render 的第 1 個參數要是 'users/profile' 
         // res.render 的第 2 個參數要是 user，其 id 屬性的值應是 1
+        console.log(res.render.getCall(0))
         res.render.getCall(0).args[0].should.equal('users/profile')
         res.render.getCall(0).args[1].user.id.should.equal(1)
       })
