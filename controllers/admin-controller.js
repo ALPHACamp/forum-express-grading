@@ -2,7 +2,7 @@ const { Restaurant, User, Category } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const adminController = {
-  getRestaurants: (req, res) => {
+  getRestaurants: (req, res, next) => {
     Restaurant.findAll({
       raw: true,
       nest: true,
@@ -12,7 +12,7 @@ const adminController = {
 
       .catch(err => next(err))
   },
-  createRestaurant: (req, res) => {
+  createRestaurant: (req, res, next) => {
     return Category.findAll({
       raw: true
     })
