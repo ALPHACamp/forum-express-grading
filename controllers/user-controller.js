@@ -36,12 +36,10 @@ const userController = {
     res.redirect('/signin')
   },
   getUser: (req, res, next) => {
-    console.log(req.user.id)
-    if (req.user.id !== Number(req.params.id)) throw new Error('User can only browse by himself !')
     return User.findByPk(req.params.id, { include: { model: Comment, include: Restaurant }, nest: true })
       .then(user => {
         if (!user) throw new Error("User didn't exist!")
-        res.render('users/profile', { user: user.toJSON() })
+        res.render('users/profile', { other_user: user.toJSON() })
       })
       .catch(err => next(err))
   },

@@ -2,12 +2,14 @@
   <div class="card-body">
     <div class="row">
         <div class="col-md-4">
-            <img class="img-responsive center-block" src="{{user.image}}" style="width: 250px; margin-bottom: 25px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+            <img class="img-responsive center-block" src="{{other_user.image}}" style="width: 250px; margin-bottom: 25px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
         </div>
         <div class="col-md-8">
-            <h4>{{user.name}}</h4>
-            <p>{{user.email}}</p>
+            <h4>{{other_user.name}}</h4>
+            <p>{{other_user.email}}</p>
+            {{#ifCond other_user.id user.id}}
             <a class="btn btn-primary" href="/users/{{user.id}}/edit">edit</a>
+            {{/ifCond}}
         </div>
     </div>
   </div>
