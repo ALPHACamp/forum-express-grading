@@ -3,7 +3,6 @@
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.addColumn('Restaurants', 'view_counts', {
-      allowNull: false,
       type: Sequelize.INTEGER
     })
   },
