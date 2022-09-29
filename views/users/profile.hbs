@@ -15,9 +15,9 @@
   </div>
 </div>
 <div class="card mt-4">
-  <div class="card-header">{{#if user.Comments.length}}{{user.Comments.length}}以評論餐廳{{else}}目前無任何評論過的餐廳{{/if}}</div>
+  <div class="card-header">{{#if other_user.Comments.length}}{{other_user.Comments.length}}以評論餐廳{{else}}目前無任何評論過的餐廳{{/if}}</div>
   <div class="card-body">
-            {{#each user.Comments}}
+            {{#each other_user.Comments}}
             <a href="/restaurants/{{this.restaurantId}}">
             <img class="img-responsive center-block me-3" src="{{this.Restaurant.image}}" style="width: 150px; margin-bottom: 25px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
             </a>
