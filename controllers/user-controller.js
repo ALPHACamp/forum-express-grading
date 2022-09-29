@@ -38,27 +38,26 @@ const userController = {
   },
   getUser: (req, res) => {
     return Promise.all([
-      User.findByPk(req.params.id),
-      Restaurant.findAll({
-        attributes: [
-          'id',
-          'image'
-        ],
-        include: [
-          {
-            model: Comment,
-            where: { userId: req.params.id }
-          }],
-        raw: true
+      User.findByPk(req.params.id, { raw: true }),
+      Comment.findAll({
+        where: { userId: req.params.id },
+        attributes: ['restaurantId'],
+        group: 'restaurantId',
+        include: [{
+          model: Restaurant,
+          attributes: ['image']
+        }],
+        raw: true,
+        nest: true
       })
     ])
-      .then(([user, restaurants]) => {
+      .then(([user, comments]) => {
         if (!user) throw new Error("User doesn't exist!")
-        console.log('bigOne', restaurants)
         return res.render('users/profile', {
-          user: user.toJSON(),
-          commentCount: restaurants.length,
-          restaurants
+          user: user.id,
+          userData: user,
+          commentCount: comments.length,
+          restaurants: comments
         })
       })
       .catch(err => console.log(err))
