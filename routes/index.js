@@ -25,8 +25,8 @@ router.delete('/comments/:id', authenticatedAdmin, commentController.deleteComme
 router.get('/users/:id/edit', authenticated, userController.editUser)
 router.get('/users/:id', authenticated, userController.getUser)
 router.put('/users/:id', upload.single('image'), authenticated, userController.putUser)
-router.get('/', (req, res) => {
-  console.log('err')
+router.get('/', (req, res, next) => {
+  next(res.locals.error_messages)
   res.redirect('/restaurants')
 })
 router.use('/', generalErrorHandler)
