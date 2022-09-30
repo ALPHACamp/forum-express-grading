@@ -26,6 +26,8 @@ router.delete('/comments/:id', authenticatedAdmin, commentController.deleteComme
 router.get('/users/:id/edit', authenticated, userController.editUser)
 router.get('/users/:id', authenticated, userController.getUser)
 router.put('/users/:id', upload.single('image'), authenticated, userController.putUser)
+router.post('/favorite/:restaurantId', authenticated, userController.addFavorite)
+router.delete('/favorite/:restaurantId', authenticated, userController.removeFavorite)
 router.get('/', (req, res) => {
   res.redirect('/restaurants')
 })
