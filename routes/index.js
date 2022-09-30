@@ -16,6 +16,7 @@ router.post('/signin', passport.authenticate('local', { failureRedirect: '/signi
 router.get('/logout', userController.logout)
 router.get('/restaurants', authenticated, restController.getRestaurants
 )
+router.get('/restaurants/feeds', authenticated, restController.getFeeds)
 router.get('/restaurants/:id/dashboard', authenticated, restController.getDashboard
 )
 router.get('/restaurants/:id', authenticated, restController.getRestaurant
@@ -25,8 +26,7 @@ router.delete('/comments/:id', authenticatedAdmin, commentController.deleteComme
 router.get('/users/:id/edit', authenticated, userController.editUser)
 router.get('/users/:id', authenticated, userController.getUser)
 router.put('/users/:id', upload.single('image'), authenticated, userController.putUser)
-router.get('/', (req, res, next) => {
-  next(res.locals.error_messages)
+router.get('/', (req, res) => {
   res.redirect('/restaurants')
 })
 router.use('/', generalErrorHandler)

@@ -46,6 +46,13 @@ const restController = {
         res.render('dashboard', { restaurant: restaurant.toJSON() })
       })
       .catch(err => next(err))
+  },
+  getFeeds: (req, res, next) => {
+    return Promise.all([Restaurant.findAll({ include: Category, limit: 5, order: [['createdAt', 'DESC']], raw: true, nest: true }), Comment.findAll({ include: [Restaurant, User], limit: 5, order: [['createdAt', 'DESC']], raw: true, nest: true })])
+      .then(([restaurants, comments]) => {
+        res.render('feeds', { restaurants, comments })
+      })
+      .catch(err => next(err))
   }
 }
 module.exports = restController
