@@ -2,22 +2,22 @@
   <div class="card-body">
     <div class="row">
         <div class="col-md-4">
-            <img class="img-responsive center-block" src="{{other_user.image}}" style="width: 250px; margin-bottom: 25px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+            <img class="img-responsive center-block" src="{{user.image}}" style="width: 250px; margin-bottom: 25px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
         </div>
         <div class="col-md-8">
-            <h4>{{other_user.name}}</h4>
-            <p>{{other_user.email}}</p>
-            {{#ifCond other_user.id user.id}}
-            <a class="btn btn-primary" href="/users/{{../user.id}}/edit">edit</a>
+            <h4>{{user.name}}</h4>
+            <p>{{user.email}}</p>
+            {{#ifCond User.id user.id}}
+            <a class="btn btn-primary" href="/users/{{../User.id}}/edit">edit</a>
             {{/ifCond}}
         </div>
     </div>
   </div>
 </div>
 <div class="card mt-4">
-  <div class="card-header">{{#if other_user.Comments.length}}{{other_user.Comments.length}}以評論餐廳{{else}}目前無任何評論過的餐廳{{/if}}</div>
+  <div class="card-header">{{#if user.Comments.length}}{{user.Comments.length}}以評論餐廳{{else}}目前無任何評論過的餐廳{{/if}}</div>
   <div class="card-body">
-            {{#each other_user.Comments}}
+            {{#each user.Comments}}
             <a href="/restaurants/{{this.restaurantId}}">
             <img class="img-responsive center-block me-3" src="{{this.Restaurant.image}}" style="width: 150px; margin-bottom: 25px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
             </a>
