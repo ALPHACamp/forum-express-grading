@@ -1,16 +1,16 @@
 <div class="container d-flex flex-row white-block">
   <div class="mx-3">
-    {{#if userData.image}}
-    <img src="{{userData.image}}" alt="" style="width: 250px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+    {{#if user.image}}
+    <img src="{{user.image}}" alt="" style="width: 250px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
     {{else}}
     <i class="fa-solid fa-user"></i>
     {{/if}}
   </div>
   <div>
-    <h4>{{userData.name}}</h4>
-    <p>{{userData.email}}</p>
+    <h4>{{user.name}}</h4>
+    <p>{{user.email}}</p>
     <p>{{commentCount}} 已評論餐廳</p>
-    <form action="/users/{{user}}/edit" method="get">
+    <form action="/users/{{user.id}}/edit" method="get">
       <button class="btn btn-primary">edit</button>
     </form>
   </div>
