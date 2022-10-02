@@ -184,6 +184,7 @@ describe('# R01', () => {
         req.flash.calledWith('success_messages','使用者權限變更成功').should.be.true
         // patchUser 執行完畢，應呼叫 res.redirect 並重新導向 /admin/users
         res.redirect.calledWith('/admin/users').should.be.true
+
         // patchUser 執行完畢後，假資料中 id:2 使用者的應該要是 isAdmin：false
         // 將假資料撈出，比對確認有成功修改到
         const user = await this.UserMock.findOne({ where: { id: 2 } })
@@ -192,4 +193,5 @@ describe('# R01', () => {
     })
   })
 })
+
 
