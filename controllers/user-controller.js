@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs')
 const db = require('../models')
-const { User } = db
+const { User, Comment, Restaurant } = db
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const userController = {
@@ -17,15 +17,14 @@ const userController = {
         return bcrypt.hash(password, 10)
       })
       .then(hash => {
-        return imgurFileHandler(file)
-          .then(filePath => {
-            User.create({
-              name,
-              email,
-              password: hash,
-              image: filePath || null
-            })
+        return imgurFileHandler(file).then(filePath => {
+          User.create({
+            name,
+            email,
+            password: hash,
+            image: filePath || null
           })
+        })
       })
       .then(() => {
         req.flash('success_messages', '帳號註冊成功')
@@ -52,13 +51,37 @@ const userController = {
     })
   },
   getUser: (req, res, next) => {
-    return User.findByPk(req.params.id, { raw: true })
-      .then(user => {
-        if (!user) throw new Error('查無該使用者')
-        // user = user.toJSON()
-        // delete user.password
+    return Promise.all([
+      User.findByPk(req.params.id),
+      Comment.findAndCountAll({
+        raw: true,
+        nest: true,
+        where: { userId: req.params.id },
+        include: Restaurant
+      })
+    ])
+      .then(([user, comments]) => {
+        if (!user) throw new Error('查無使用者資料')
 
-        res.render('users/profile', { user })
+        const count = comments.count
+        const set = new Set()
+        const filterComments = comments.rows.filter(comment =>
+          !set.has(comment.Restaurant.id)
+            ? set.add(comment.Restaurant.id)
+            : false
+        )
+        const restCount = filterComments.length
+        const currentComments = filterComments.map(comment => ({
+          ...Comment,
+          restaurantId: comment.Restaurant.id,
+          restaurantImage: comment.Restaurant.image
+        }))
+        res.render('users/profile', {
+          user: user.toJSON(),
+          restCount,
+          count,
+          comments: currentComments
+        })
       })
       .catch(err => next(err))
   },
@@ -66,9 +89,6 @@ const userController = {
     return User.findByPk(req.params.id, { raw: true })
       .then(user => {
         if (!user) throw new Error('查無該使用者')
-        // user = user.toJSON()
-        // delete user.password
-
         res.render('users/edit', { user })
       })
       .catch(err => next(err))
@@ -77,10 +97,7 @@ const userController = {
     const { name } = req.body
     if (!name) throw new Error('名稱為必填欄位')
     const { file } = req
-    return Promise.all([
-      User.findByPk(req.params.id),
-      imgurFileHandler(file)
-    ])
+    return Promise.all([User.findByPk(req.params.id), imgurFileHandler(file)])
       .then(([user, filePath]) => {
         if (!user) throw new Error('查無該使用者資料')
         return user.update({
