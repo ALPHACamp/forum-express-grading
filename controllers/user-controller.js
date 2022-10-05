@@ -57,7 +57,7 @@ const userController = {
         raw: true,
         nest: true,
         where: { userId: req.params.id },
-        include: Restaurant
+        include: [Restaurant]
       })
     ])
       .then(([user, comments]) => {
