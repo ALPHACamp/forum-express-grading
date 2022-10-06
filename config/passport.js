@@ -1,8 +1,7 @@
 const passport = require('passport')
 const LocalStrategy = require('passport-local')
 const bcrypt = require('bcryptjs')
-const db = require('../models')
-const User = db.User
+const { User, Restaurant } = require('../models')
 
 passport.use(
   // 選用本地端認證策略
@@ -56,7 +55,9 @@ passport.serializeUser((user, cb) => {
 
 // 反序列化 - 在需要的時候，可以將資料恢復原先狀態
 passport.deserializeUser((id, cb) => {
-  User.findByPk(id)
+  User.findByPk(id, {
+    include: [{ model: Restaurant, as: 'FavoritedRestaurants' }]
+  })
     .then(user => cb(null, user.toJSON()))
     .catch(err => cb(err))
 })
