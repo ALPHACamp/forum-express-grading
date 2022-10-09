@@ -56,7 +56,10 @@ passport.serializeUser((user, cb) => {
 // 反序列化 - 在需要的時候，可以將資料恢復原先狀態
 passport.deserializeUser((id, cb) => {
   User.findByPk(id, {
-    include: [{ model: Restaurant, as: 'FavoritedRestaurants' }]
+    include: [
+      { model: Restaurant, as: 'FavoritedRestaurants' },
+      { model: Restaurant, as: 'LikedRestaurants' }
+    ]
   })
     .then(user => cb(null, user.toJSON()))
     .catch(err => cb(err))

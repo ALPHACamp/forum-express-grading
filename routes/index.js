@@ -46,6 +46,8 @@ router.delete(
   commentController.deleteComment
 )
 router.post('/comments', authenticated, commentController.postComment)
+router.post('/like/:restaurantId', authenticated, userController.addLike)
+router.delete('/like/:restaurantId', authenticated, userController.removeLike)
 router.post(
   '/favorite/:restaurantId',
   authenticated,
