@@ -59,6 +59,12 @@ router.delete(
   authenticated,
   userController.removeFavorite
 )
+router.post('/following/:userId', authenticated, userController.addFollowing)
+router.delete(
+  '/following/:userId',
+  authenticated,
+  userController.removeFollowing
+)
 router.get('/', (req, res) => res.redirect('/restaurants'))
 router.use('/', generalErrorHandle)
 
