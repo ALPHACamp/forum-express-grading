@@ -1,5 +1,6 @@
 const { Restaurant, Category, Comment, User } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
+const helpers = require('../helpers/auth-helpers')
 const restaurantController = {
   getRestaurants: (req, res, next) => {
     const DEFAULT_LIMIT = 9
@@ -100,6 +101,56 @@ const restaurantController = {
           restaurants,
           comments
         })
+      })
+      .catch(err => next(err))
+  },
+  // getTopRestaurants: (req, res, next) => {
+  //   const userId = helpers.getUser(req).id
+  //   return Restaurant.findAll({
+  //     attributes: [
+  //       'id',
+  //       'name',
+  //       'description',
+  //       'image',
+  //       [
+  //         Sequelize.literal(
+  //           '(select count(*) from Favorites where restaurant_id = Restaurant.id)'
+  //         ),
+  //         'favoritedCount'
+  //       ],
+  //       [
+  //         Sequelize.literal(
+  //           `exists(select 1 from Favorites where user_id = ${userId} and restaurant_id = Restaurant.id)`
+  //         ),
+  //         'isFavorited'
+  //       ]
+  //     ],
+  //     order: [[Sequelize.col('favoritedCount'), 'DESC']],
+  //     limit: 10,
+  //     raw: true,
+  //     nest: true
+  //   })
+  //     .then(restaurants => {
+  //       console.log('top10資料 ======>', restaurants)
+  //       res.render('top-restaurants', { restaurants })
+  //     })
+  //     .catch(err => next(err))
+  // }
+  getTopRestaurants: (req, res, next) => {
+    const userId = helpers.getUser(req).id
+    return Restaurant.findAll({
+      include: [{ model: User, as: 'FavoritedUsers' }]
+    })
+      .then(restaurants => {
+        restaurants = restaurants
+          .map(r => ({
+            ...r.toJSON(),
+            favoritedCount: r.FavoritedUsers.length,
+            isFavorited: r.FavoritedUsers.some(f => f.id === userId)
+          }))
+          .sort((a, b) => b.favoritedCount - a.favoritedCount)
+          .slice(0, 10)
+        res.render('top-restaurants', { restaurants })
       })
       .catch(err => next(err))
   }

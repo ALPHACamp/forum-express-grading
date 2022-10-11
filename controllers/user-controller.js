@@ -2,6 +2,7 @@ const bcrypt = require('bcryptjs')
 const db = require('../models')
 const { User, Comment, Restaurant, Favorite, Like, Followship } = db
 const { imgurFileHandler } = require('../helpers/file-helpers')
+const helpers = require('../helpers/auth-helpers')
 
 const userController = {
   signUpPage: (req, res) => {
@@ -116,7 +117,7 @@ const userController = {
       Restaurant.findByPk(restaurantId),
       Favorite.findOne({
         where: {
-          userId: req.user.id,
+          userId: helpers.getUser(req).id,
           restaurantId
         }
       })
@@ -126,18 +127,18 @@ const userController = {
         if (favorite) throw new Error('此餐廳已在最愛清單')
 
         return Favorite.create({
-          userId: req.user.id,
+          userId: helpers.getUser(req).id,
           restaurantId
         })
       })
-      .then(() => res.redirect('back'))
+      .then(restaurants => res.redirect('back'))
       .catch(err => next(err))
   },
   removeFavorite: (req, res, next) => {
     const { restaurantId } = req.params
     return Favorite.findOne({
       where: {
-        userId: req.user.id,
+        userId: helpers.getUser(req).id,
         restaurantId
       }
     })
@@ -146,7 +147,7 @@ const userController = {
 
         return favorite.destroy()
       })
-      .then(() => res.redirect('back'))
+      .then(restaurants => res.redirect('back'))
       .catch(err => next(err))
   },
   addLike: (req, res, next) => {
