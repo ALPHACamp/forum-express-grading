@@ -1,6 +1,7 @@
 const express = require('express')
 const handlebars = require('express-handlebars')
 const flash = require('connect-flash')
+const methodOverride = require('method-override')
 const session = require('express-session')
 const passport = require('./config/passport')
 
@@ -22,6 +23,9 @@ app.set('view engine', 'hbs')
 
 //  middleware: body-parser
 app.use(express.urlencoded({ extended: true }))
+
+//  middleware: method override
+app.use(methodOverride('_method'))
 
 //  middleware: session
 app.use(session({ secret: SESSION_SECRET, resave: false, saveUninitialized: false }))
