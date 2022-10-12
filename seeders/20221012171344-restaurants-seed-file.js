@@ -1,5 +1,5 @@
 'use strict'
-const faker = require('Faker')
+const faker = require('faker')
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.bulkInsert('Restaurants',
