@@ -1,3 +1,4 @@
+const path = require('path')
 const express = require('express')
 const handlebars = require('express-handlebars')
 const flash = require('connect-flash')
@@ -26,6 +27,9 @@ app.use(express.urlencoded({ extended: true }))
 
 //  middleware: method override
 app.use(methodOverride('_method'))
+
+//  middleware: use upload dir
+app.use('/upload', express.static(path.join(__dirname, 'upload')))
 
 //  middleware: session
 app.use(session({ secret: SESSION_SECRET, resave: false, saveUninitialized: false }))
