@@ -8,10 +8,13 @@ const passport = require('./config/passport')
 const { getUser } = require('./helpers/auth-helpers')
 const handlebarHelpers = require('./helpers/handlebars-helpers')
 const routes = require('./routes')
-// const db = require('./models')
 const app = express()
 const port = process.env.PORT || 3000
 const SESSION_SECRET = 'secret'
+
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
 
 app.engine('hbs', handlebars({ extname: '.hbs', helpers: handlebarHelpers }))
 app.set('view engine', 'hbs')
