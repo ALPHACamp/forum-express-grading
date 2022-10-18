@@ -54,9 +54,9 @@ const userController = {
         if (!userProfile) throw new Error("User doesn't exist.")
 
         res.render('users/profile', {
-          user: getUser(req),
-          userProfile,
-          comments
+          user: getUser(req)
+          //userProfile
+          //comments
         })
       })
       .catch(err => next(err))
