@@ -43,11 +43,12 @@ const userController = {
     return Promise.all([
       User.findByPk(req.params.id, { raw: true }),
       Comment.findAll({
-        raw: true,
-        nest: true,
         where: { userId: req.params.id },
+        attributes: ['restaurantId'],
         include: Restaurant,
-        group: 'restaurantId'
+        group: 'restaurantId',
+        raw: true,
+        nest: true
       })
     ])
       .then(([userProfile, comments]) => {
