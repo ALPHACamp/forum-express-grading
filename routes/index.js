@@ -27,8 +27,12 @@ router.post('/comments', authenticated, commentController.postComment)
 
 router.post('/like/:restaurantId', authenticated, userController.addLike)
 router.delete('/like/:restaurantId', authenticated, userController.removeLike)
+
 router.post('/favorite/:restaurantId', authenticated, userController.addFavorite)
 router.delete('/favorite/:restaurantId', authenticated, userController.removeFavorite)
+
+router.post('/following/:userId', authenticated, userController.addFollowing)
+router.delete('/following/:userId', authenticated, userController.removeFollowing)
 
 router.get('/users/top', authenticated, userController.getTopUsers)
 router.get('/users/:id/edit', authenticatedUser, userController.editUser)
