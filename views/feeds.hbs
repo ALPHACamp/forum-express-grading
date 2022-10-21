@@ -14,7 +14,7 @@
               <a class="link-primary" href="/restaurants/{{this.id}}">{{this.name}}</a>
               <a href="/restaurants?categoryId={{this.Category.id}}" alt="{{this.Category.name}}"><small class="fs-6">[{{this.Category.name}}]</small></a>
             </h4>
-            <img class="rounded m-2" src="{{this.image}}" width="120px" height="120px" title="{{this.name}}">
+            <img class="rounded img-fluid" src="{{this.image}}" max-width="120px" title="{{this.name}}">
             <p class="my-4" style="white-space: break-spaces;">{{this.description}}</p>
             {{relativeTimeFromNow this.createdAt}}
             <hr>
@@ -33,8 +33,9 @@
           <div>
             <h4>
               <a class="link-primary" href="/restaurants/{{this.Restaurant.id}}">{{this.Restaurant.name}}</a>
+              <a href="/restaurants?categoryId={{this.Restaurant.Category.id}}" alt="{{this.Restaurant.Category.name}}"><small class="fs-6">[{{this.Restaurant.Category.name}}]</small></a>
             </h4>
-            <img class="rounded m-2" src="{{this.Restaurant.image}}" width="120px" height="120px" title="{{this.Restaurant.name}}">
+            <img class="rounded img-fluid" src="{{this.Restaurant.image}}" max-width="120px" title="{{this.Restaurant.name}}">
             <p class="my-4" style="white-space: break-spaces;">{{this.text}}</p>
             - <a class="link-secondary" href="/users/{{this.User.id}}">{{this.User.name}}</a>
             <small>at {{relativeTimeFromNow this.createdAt}}</small>
