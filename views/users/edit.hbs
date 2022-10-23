@@ -1,0 +1,14 @@
+<form action="/users/{{user.id}}?_method=PUT" method="POST" enctype="multipart/form-data">
+  <label for="basic-url" class="form-label">Name</label>
+  <div class="input-group mb-3">
+    <input type="text" class="form-control" id="basic-url" name="name" value="{{user.name}}"
+      aria-describedby="basic-addon3">
+  </div>
+
+  <label for="image" class="form-label">Image</label>
+  <div class="input-group mb-3">
+    <input type="file" class="form-control" id="image" name="image">
+  </div>
+
+  <button type="submit" class="btn btn-primary">Submit</button>
+</form>
