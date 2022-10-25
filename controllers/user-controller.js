@@ -1,7 +1,8 @@
 const bcrypt = require('bcryptjs')
 const db = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
-const { User } = db
+const { User, Comment, Restaurant } = db
+const { getUser } = require('../helpers/auth-helpers')
 const userController = {
   signUpPage: (req, res) => {
     res.render('signup')
@@ -36,20 +37,32 @@ const userController = {
     req.logout()
     res.redirect('/signin')
   },
-  getUser: (req, res) => {
-    return User.findByPk(req.params.id, { raw: true })
-      .then(user => {
-        if (!user) throw new Error("User didn't exist!")
-        res.render('users/profile', { user })
+  getUser: (req, res, next) => {
+    return Promise.all([
+      User.findByPk(req.params.id, { raw: true }),
+      Comment.findAll({
+        raw: true,
+        nest: true,
+        where: { userId: req.params.id },
+        include: Restaurant,
+        group: 'restaurantId'
       })
+    ])
+      .then(([userProfile, comments]) => {
+        if (!userProfile) throw new Error("User didn't exist!")
+        res.render('users/profile', { userProfile, user: getUser(req), comments })
+      })
+      .catch(err => next(err))
   },
-  editUser: (req, res) => {
+  editUser: (req, res, next) => {
     const { id } = req.params
     return User.findByPk(id, { raw: true })
       .then(user => {
         if (!user) throw new Error("User didn't exist!")
+        if (user.id !== getUser(req).id) throw new Error('Not authorized to access this page')
         res.render('users/edit', { user })
       })
+      .catch(err => next(err))
   },
   putUser: (req, res, next) => {
     const { id } = req.params

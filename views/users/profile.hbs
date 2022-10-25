@@ -6,10 +6,24 @@
         style="border-radius:50%; width:300px; height:300px" alt="image">
     </div>
     <div class="col-md-8">
-      <h3 class="pt-3">{{ user.name }}</h3>
-      <p>{{ user.email }}</p>
-      {{#ifCond user.id accountId}}<a href="/users/{{user.id}}/edit" type="button"
+      <h3 class="pt-3">{{ userProfile.name }}</h3>
+      <p>{{ userProfile.email }}</p>
+      {{#ifCond user.id userProfile.id}}<a href="/users/{{user.id}}/edit" type="button"
         class="btn btn-primary">edit</a>{{/ifCond}}
     </div>
+  </div>
+</div>
+
+<div class="card mb-3">
+  <div class="card-header">
+    {{comments.length}} 已評論餐廳
+  </div>
+  <div class="card-body">
+    {{#each comments}}
+    <a href="/restaurants/{{this.restaurantId}}" style="text-decoration:none">
+      <img src="{{this.Restaurant.image}}" class="rounded m-2" title="{{this.Restaurant.name}}" width="50" height="50">
+    </a>
+
+    {{/each}}
   </div>
 </div>
