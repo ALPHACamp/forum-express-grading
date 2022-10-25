@@ -50,10 +50,34 @@ const userController = {
     ])
       .then(([userProfile, comments]) => {
         if (!userProfile) throw new Error("User didn't exist!")
-        return res.render('users/profile', { userProfile, user: getUser(req), comments })
+        res.render('users/profile', { user: getUser(req), userProfile, comments })
       })
       .catch(err => next(err))
   },
+  //
+  // getUser: (req, res, next) => {
+  //   return Promise.all([
+  //     User.findByPk(req.params.id, { raw: true }),
+  //     Comment.findAll({
+  //       raw: true,
+  //       nest: true,
+  //       where: { userId: req.params.id },
+  //       include: Restaurant,
+  //       group: 'restaurantId'
+  //     })
+  //   ])
+  //     .then(([userProfile, comments]) => {
+  //       if (!userProfile) throw new Error("User doesn't exist.")
+
+  //       res.render('users/profile', {
+  //         user: getUser(req),
+  //         userProfile,
+  //         comments
+  //       })
+  //     })
+  //     .catch(err => next(err))
+  // },
+  //
   editUser: (req, res, next) => {
     const { id } = req.params
     return User.findByPk(id, { raw: true })
