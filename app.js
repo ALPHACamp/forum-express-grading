@@ -19,7 +19,25 @@ const app = express()
 const port = process.env.PORT || 3000
 const SESSION_SECRET = 'secret'
 
-app.engine('hbs', handlebars({ extname: '.hbs', helpers: handlebarsHelpers }))
+app.engine('hbs', handlebars({
+  extname: '.hbs',
+  helpers: {
+    handlebarsHelpers,
+    userRole (roleId) {
+      switch (roleId) {
+        case 1: return 'admin'
+        case 0: return 'user'
+      }
+    },
+    adminUserToggle (role) {
+      switch (role) {
+        case 1: return 'set as user'
+        case 0: return 'set as admin'
+      }
+    }
+  }
+}))
+
 app.set('view engine', 'hbs')
 
 app.use(express.urlencoded({ extended: true }))

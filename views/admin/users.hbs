@@ -20,27 +20,18 @@
       <th scope="col">#</th>
     </tr>
   </thead>
+
   <tbody>
+    {{#each users}}
     <tr class="table-light">
-      <th scope="row">1</th>
-      <td>root</td>
-      <td>root@example.com</td>
-      <td>admin</td>
-      <td><button type="button" class="btn btn-link">set as user</button></td>
+      <th scope="row">{{this.id}}</th>
+      <td>{{this.name}}</td>
+      <td>{{this.email}}</td>
+      <td>{{userRole this.isAdmin}}</td>
+      <form action="" method="POST">
+        <td><button type="button" class="btn btn-link" onclick="">{{adminUserToggle this.isAdmin}}這邊還要改</button></td>
+      </form>
     </tr>
-    <tr class="table-light">
-      <th scope="row">2</th>
-      <td>user1</td>
-      <td>user1@example.com</td>
-      <td>user</td>
-      <td><button type="button" class="btn btn-link">set as admin</button></td>
-    </tr>
-    <tr class="table-light">
-      <th scope="row">3</th>
-      <td>user2</td>
-      <td>user2@example.com</td>
-      <td>user</td>
-      <td><button type="button" class="btn btn-link">set as admin</button></td>
-    </tr>
+    {{/each}}
   </tbody>
 </table>
