@@ -27,9 +27,9 @@
       <th scope="row">{{this.id}}</th>
       <td>{{this.name}}</td>
       <td>{{this.email}}</td>
-      <td>{{userRole this.isAdmin}}</td>
+      <td>{{#if this.isAdmin}}admin{{else}}user{{/if}}</td>
       <form action="" method="POST">
-        <td><button type="button" class="btn btn-link" onclick="">{{adminUserToggle this.isAdmin}}這邊還要改</button></td>
+        <td><button type="button" class="btn btn-link" onclick="">{{ this.isAdmin}}這邊還要改</button></td>
       </form>
     </tr>
     {{/each}}
