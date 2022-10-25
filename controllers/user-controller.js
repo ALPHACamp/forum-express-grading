@@ -38,7 +38,7 @@ const userController = {
     res.redirect('/signin')
   },
   getUser: (req, res, next) => {
-    Promise.all([
+    return Promise.all([
       User.findByPk(req.params.id, { raw: true }),
       Comment.findAll({
         raw: true,
