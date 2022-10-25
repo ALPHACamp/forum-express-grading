@@ -38,7 +38,7 @@ const userController = {
     res.redirect('/signin')
   },
   getUser: (req, res, next) => {
-    return Promise.all([
+    Promise.all([
       User.findByPk(req.params.id, { raw: true }),
       Comment.findAll({
         raw: true,
@@ -50,15 +50,11 @@ const userController = {
     ])
       .then(([userProfile, comments]) => {
         if (!userProfile) throw new Error("User didn't exist!")
-        res.render('users/profile', {
-          user: getUser(req),
-          userProfile,
-          comments
-        })
+        res.render('users/profile', { user: getUser(req), userProfile, comments })
       })
       .catch(err => next(err))
   },
-
+  //
   // getUser: (req, res, next) => {
   //   return Promise.all([
   //     User.findByPk(req.params.id, { raw: true }),
