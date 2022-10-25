@@ -28,9 +28,13 @@
       <td>{{this.name}}</td>
       <td>{{this.email}}</td>
       <td>{{#if this.isAdmin}}admin{{else}}user{{/if}}</td>
-      <form action="" method="POST">
-        <td><button type="button" class="btn btn-link" onclick="">{{ this.isAdmin}}這邊還要改</button></td>
-      </form>
+      <td>
+        <form action="/admin/users/{{ this.id }}?_method=PATCH" method="POST">
+          <button type="submit" class="btn btn-link">
+            {{#if this.isAdmin}}set as user{{else}}set as admin{{/if}}
+          </button>
+        </form>
+      </td>
     </tr>
     {{/each}}
   </tbody>
