@@ -1,6 +1,6 @@
-const { User, Restaurant, Comment, Favorite, Like, Followship } = require('../../models')
-const { imgurFileHandler } = require('../../helpers/file-helpers')
-const userService = require('../../services/user-services')
+const { User, Restaurant, Comment, Favorite, Like, Followship } = require('../models')
+const { imgurFileHandler } = require('../helpers/file-helpers')
+const userService = require('../services/user-services')
 
 const userController = {
   signUpPage: (req, res) => {
