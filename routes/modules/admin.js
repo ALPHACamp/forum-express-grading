@@ -3,7 +3,9 @@ const router = express.Router()
 const adminController = require('../../controllers/admin-controller')
 const { authenticatedAdmin } = require('../../middleware/auth')
 
+router.get('/restaurants/create', authenticatedAdmin, adminController.createRestaurant)
 router.get('/restaurants', authenticatedAdmin, adminController.getRestaurants)
-router.get('/', (req, res) => res.redirect('/admin/restaurants'))
+router.post('/restaurants', authenticatedAdmin, adminController.postRestaurant)
+router.get('', (req, res) => res.redirect('/admin/restaurants'))
 
 module.exports = router
