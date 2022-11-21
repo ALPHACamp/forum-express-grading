@@ -2,8 +2,10 @@ const express = require('express')
 const handlebars = require('express-handlebars')
 const flash = require('connect-flash')
 const session = require('express-session')
+const usePassport = require('./config/passport') // 引入 passport
+const { getUser } = require('./helpers/auth-helpers')
+const handlebarsHelpers = require('./helpers/handlebars-helpers')
 
-const passport = require('./config/passport') // 引入 passport
 const routes = require('./routes')
 
 const app = express()
@@ -12,8 +14,8 @@ const SESSION_SECRET = 'secret'
 
 // const db = require('./models') //測試db是否可以連線正常
 
-// setting view engine
-app.engine('hbs', handlebars({ extname: '.hbs' }))
+// setting view engine 使用handlebars-helpers需在引入後，在這裡加入helpers: handlebarsHelpers
+app.engine('hbs', handlebars({ extname: '.hbs', helpers: handlebarsHelpers }))
 app.set('view engine', 'hbs')
 // setting body-parser
 app.use(express.urlencoded({ extended: true }))
@@ -24,14 +26,17 @@ app.use(session({
   saveUninitialized: false
 }))
 // setting passport，put it before setting routes
-app.use(passport.initialize())
-app.use(passport.session())
+usePassport(app)
+// app.use(passport.initialize())
+// app.use(passport.session())
 
 // setting flash
 app.use(flash())
+// setting locals data for view
 app.use((req, res, next) => {
   res.locals.success_messages = req.flash('success_messages')
   res.locals.error_messages = req.flash('error_messages')
+  res.locals.user = getUser(req)
   next()
 })
 

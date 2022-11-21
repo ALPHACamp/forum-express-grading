@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const passport = require('../config/passport')
+const passport = require('passport')
 const admin = require('./modules/admin')
 // 載入 controller
 const restController = require('../controllers/restaurant-controller')

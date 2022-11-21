@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs') // 載入 bcrypt
 const db = require('../models')
 const { User } = db
+
 const userController = {
   signUpPage: (req, res) => {
     res.render('signup')
