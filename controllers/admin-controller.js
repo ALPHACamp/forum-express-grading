@@ -16,7 +16,7 @@ const adminController = {
   },
   // 新增餐廳表單頁面
   createRestaurant: (req, res) => {
-    return res.render('admin/create-restaurant')
+    return res.render('admin/create-restaurant') // *******為甚麼這裡要return？
   },
   // 新增餐廳資料給db
   postRestaurant: (req, res, next) => {
@@ -90,6 +90,15 @@ const adminController = {
         req.flash('success_messages', 'restaurant was successfully to update')
         res.redirect('/admin/restaurants')
       })
+      .catch(err => next(err))
+  },
+  deleteRestaurant: (req, res, next) => {
+    return Restaurant.findByPk(req.params.id) // *******為甚麼這裡要return？
+      .then(restaurant => {
+        if (!restaurant) throw new Error('這間餐廳不存在!') // *******為甚麼要加這行判斷?
+        return restaurant.destroy()
+      })
+      .then(() => res.redirect('/admin/restaurants'))
       .catch(err => next(err))
   }
 }

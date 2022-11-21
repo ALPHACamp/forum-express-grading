@@ -7,6 +7,7 @@ router.get('/restaurants/create', adminController.createRestaurant) // 新增餐
 router.get('/restaurants/:id/edit', adminController.editRestaurant) // 編輯1間餐廳的資訊
 router.get('/restaurants/:id', adminController.getRestaurant) // 瀏覽1間餐廳的資訊
 router.put('/restaurants/:id', adminController.putRestaurant) // 編輯1間餐廳的資訊
+router.delete('/restaurants/:id', adminController.deleteRestaurant) // 刪除1間餐廳
 router.get('/restaurants', adminController.getRestaurants) // 瀏覽全部餐廳的資訊
 router.post('/restaurants', adminController.postRestaurant) // post新增餐廳表單
 
