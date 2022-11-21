@@ -5,6 +5,7 @@ const admin = require('./modules/admin')
 // 載入 controller
 const restController = require('../controllers/restaurant-controller')
 const userController = require('../controllers/user-controller')
+const { authenticated } = require('../middleware/auth')
 // 載入 error handler
 const { generalErrorHandler } = require('../middleware/error-handler')
 
@@ -19,9 +20,9 @@ router.post('/signin', passport.authenticate('local', {
   failureFlash: true
 }), userController.signIn)
 
-router.get('/restaurants', restController.getRestaurants)
+router.get('/restaurants', authenticated, restController.getRestaurants)
 // 設定 fallback 路由(其他路由條件都不符合時，最終會通過的路由)
-router.use('/', (req, res) => res.redirect('/restaurants'))
+router.get('/', (req, res) => res.redirect('/restaurants'))
 
 router.use('/', generalErrorHandler)
 

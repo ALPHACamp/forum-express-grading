@@ -16,7 +16,8 @@ module.exports = (sequelize, DataTypes) => {
   User.init({
     name: DataTypes.STRING,
     email: DataTypes.STRING,
-    password: DataTypes.STRING
+    password: DataTypes.STRING,
+    isAdmin: DataTypes.BOOLEAN
   }, {
     sequelize,
     modelName: 'User',
@@ -25,3 +26,6 @@ module.exports = (sequelize, DataTypes) => {
   })
   return User
 }
+
+// model資料是純 JavaScript 實作，以js小駝峰式寫法命名就可以
+// underscored 副指令會在操作資料庫的時候，幫我們把 JavaScript 這邊的命名自動轉成 snake case 的欄位名稱 is_admin
