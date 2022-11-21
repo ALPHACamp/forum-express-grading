@@ -3,6 +3,7 @@ const db = require('../models')
 const { User } = db
 
 const userController = {
+  // sign up
   signUpPage: (req, res) => {
     res.render('signup')
   },
@@ -31,6 +32,8 @@ const userController = {
       })
       .catch(err => next(err)) // 接住前面拋出的錯誤，呼叫專門做錯誤處理的 middleware
   },
+
+  // sign in
   signInPage: (req, res) => {
     res.render('signin')
   },
@@ -38,8 +41,11 @@ const userController = {
     req.flash('success_messages', '你已成功登入!')
     res.redirect('/restaurants')
   },
+
+  // logout
   logout: (req, res) => {
     req.flash('success_messages', '你已成功登出!')
+    req.logout()
     res.redirect('/signin')
   }
 }

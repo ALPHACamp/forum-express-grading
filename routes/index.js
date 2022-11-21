@@ -20,6 +20,8 @@ router.post('/signin', passport.authenticate('local', {
   failureFlash: true
 }), userController.signIn)
 
+router.get('/logout', userController.logout)
+
 router.get('/restaurants', authenticated, restController.getRestaurants)
 // 設定 fallback 路由(其他路由條件都不符合時，最終會通過的路由)
 router.get('/', (req, res) => res.redirect('/restaurants'))
