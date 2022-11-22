@@ -1,3 +1,4 @@
+const path = require('path')
 const express = require('express')
 const handlebars = require('express-handlebars')
 const flash = require('connect-flash')
@@ -22,6 +23,8 @@ app.set('view engine', 'hbs')
 app.use(express.urlencoded({ extended: true }))
 // setting method-Override
 app.use(methodOverride('_method'))
+// setting static file
+app.use('/upload', express.static(path.join(__dirname, 'upload')))
 // setting session
 app.use(session({
   secret: SESSION_SECRET,

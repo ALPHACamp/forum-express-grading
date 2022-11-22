@@ -2,6 +2,7 @@ const { Restaurant } = require('../models')
 // 上面是解構賦值的寫法，等於下面這種寫法的簡寫
 // const db = require('../models')
 // const Restaurant = db.Restaurant
+const { localFileHandler } = require('../helpers/file-helpers') // // 將 file-helper 載進來
 
 const adminController = {
   // 瀏覽全部餐廳頁面
@@ -21,17 +22,21 @@ const adminController = {
   // 新增餐廳資料給db
   postRestaurant: (req, res, next) => {
     const { name, tel, address, openingHours, description } = req.body
-
     // 後端驗證，確保必有input name="name"這個資料
     if (!name) throw new Error('Restaurant name is required!')
 
-    Restaurant.create({
-      name,
-      tel,
-      address,
-      openingHours,
-      description
-    })
+    const file = req.file // 把檔案取出來，也可以寫成 const { file } = req
+    localFileHandler(file) // 把取出的檔案傳給 file-helper 處理後
+      .then(filePath => // 再 create 這筆餐廳資料
+        Restaurant.create({
+          name,
+          tel,
+          address,
+          openingHours,
+          description,
+          image: filePath || null
+          // 如果 filePath 的值為檔案路徑字串 (使用者有上傳檔案，就會被判斷為 Truthy)，就將 image 的值設為檔案路徑；如果 filePath 的值是空的 (也就是沒有上傳檔案，因此沒有檔案路徑，會被判斷為 Falsy)，那麼就將 image 的值設為 null
+        }))
       .then(() => {
         req.flash('success_messages', 'restaurant was successfully created')
         res.redirect('/admin/restaurants')
@@ -66,10 +71,13 @@ const adminController = {
     const { name, tel, address, openingHours, description } = req.body
     if (!name) throw new Error('Restaurant name is required!')
     // 因為這邊會需要用到 restaurant.update 這個方法，如果加上參數就會把 sequelize 提供的這個方法過濾掉，會無法使用。因此在編輯情境裡我們是不會加 { raw: true } 的。
-    Restaurant.findByPk(req.params.id)
-      .then(restaurant => {
+    const file = req.file
+    Promise.all([ // 用promise.all 處理非同步事件
+      Restaurant.findByPk(req.params.id), // 去資料庫查有沒有這間餐廳
+      localFileHandler(file) // 把檔案傳到 file-helper 處理
+    ])
+      .then(([restaurant, filePath]) => { // 以上兩樣事都做完以後
         if (!restaurant) throw new Error('這間餐廳不存在!')
-
         // 注意!!這邊加 return 可以把這段return裡的程式碼執行結果直接帶到下個then前面，這樣是為了避免太多巢狀程式碼，使的不好閱讀跟維護，但因為是剛好下個then不會需要用到return內的值才可以這樣寫，如果要的話，還是必須寫成下面的方式，把then接在後面
         // restaurant.update({
         //   name,
@@ -83,7 +91,8 @@ const adminController = {
           tel,
           address,
           openingHours,
-          description
+          description,
+          image: filePath || restaurant.image // 如果 filePath 是 Truthy (使用者有上傳新照片) 就用 filePath，是 Falsy (使用者沒有上傳新照片) 就沿用原本資料庫內的值
         })
       })
       .then(() => {
@@ -95,7 +104,7 @@ const adminController = {
   deleteRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id) // *******為甚麼這裡要return？
       .then(restaurant => {
-        if (!restaurant) throw new Error('這間餐廳不存在!') // *******為甚麼要加這行判斷?
+        if (!restaurant) throw new Error('這間餐廳不存在!') // *******避免找不到餐廳而導致程式出錯，還是需要加一個判斷排除錯誤
         return restaurant.destroy()
       })
       .then(() => res.redirect('/admin/restaurants'))
