@@ -9,7 +9,9 @@ const port = process.env.PORT || 3000
 app.engine('hbs', handlebars({ extname: '.hbs' }))
 // 設定使用 Handlebars 做為樣板引擎
 app.set('view engine', 'hbs')
-
+// 使用body-parser
+app.use(express.urlencoded({ extended: true }))
+// 每個路由發送進來的請求，都會先經過 app.use() 的處理，表示所有的請求都會先被 body-parser 進行處理。
 app.use(routes)
 
 app.listen(port, () => {
