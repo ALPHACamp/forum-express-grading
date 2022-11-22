@@ -8,11 +8,15 @@ const { generalErrorHandler } = require('../middleware/error-handler')
 
 router.use('/admin', admin)
 
+// 註冊
 router.get('/signup', userController.signUpPage)
 router.post('/signup', userController.signUp)
+// 登入
 router.get('/signin', userController.signInPage)
 router.post('/signin', passport.authenticate('local', { failureRedirect: '/signin', failureFlash: true }), userController.signIn)
+// 登出
 router.get('/logout', userController.logout)
+// 首頁
 router.get('/restaurants', restController.getRestaurants)
 router.get('/', (req, res) => res.redirect('/restaurants'))
 
