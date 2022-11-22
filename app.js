@@ -1,6 +1,7 @@
 const express = require("express");
 const handlebars = require("express-handlebars");
 const flash = require("connect-flash");
+const methodOverride = require("method-override");
 const session = require("express-session");
 const passport = require("./config/passport");
 const handlebarsHelpers = require("./helpers/handlebars-helpers"); // 引入自定義的 handlebars-helpers
@@ -17,6 +18,8 @@ app.engine("hbs", handlebars({ extname: ".hbs", helpers: handlebarsHelpers }));
 app.set("view engine", "hbs");
 // 使用body-parser，表示所有的請求都會先被 body-parser進行處理
 app.use(express.urlencoded({ extended: true }));
+//設定寫法為_method，form那邊根據這的寫法
+app.use(methodOverride("_method"));
 
 // session後接passport & flash
 app.use(
