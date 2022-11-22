@@ -3,13 +3,12 @@ const router = express.Router()
 const restController = require('../controllers/restaurant-controller')
 const admin = require('./modules/admin')
 const passport = require('../config/passport')
-
 const userController = require('../controllers/user-controller')
 const { generalErrorHandler } = require('../middleware/error-handler') // 須將middleware加入
 
 // 現在收到的請求如果帶有 /admin 的路徑，就一律丟給後台專用的 admin 這個 module 去處理，若是其他情況再依序往下判斷。(使用router.use )
 router.use('/admin', admin)
-//註冊
+// 註冊
 router.get('/signup', userController.signUpPage)
 router.post('/signup', userController.signUp)// 使用post處理signup的動作
 // 登入
