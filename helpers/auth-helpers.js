@@ -5,6 +5,12 @@ const getUser = req => {
   return req.user || null
   // 注意到 return 這邊最後面多了一個 || null，這個寫法和 req.user ? req.user : null 是等價的，意思是若 req.user 存在就回傳 req.user，不存在的話函式就會回傳空值。
 }
+
+// 需要驗證是否為admin，isAuthenticated()是passport提供的。把isAuthenticated()包裝到 ensureAuthenticated 後導出
+const ensureAuthenticated = req => {
+  return req.isAuthenticated()
+}
+
 module.exports = {
-  getUser
+  getUser, ensureAuthenticated
 }
