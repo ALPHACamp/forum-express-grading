@@ -5,13 +5,9 @@ const adminController = { // 修改這裡
 
   getRestaurants: (req, res, next) => {
     Restaurant.findAll({
-
       raw: true
-
     })
-
       .then(restaurants => res.render('admin/restaurants', { restaurants }))
-
       .catch(err => next(err))
   },
   createRestaurant: (req, res) => { return res.render('admin/create-restaurant') },
