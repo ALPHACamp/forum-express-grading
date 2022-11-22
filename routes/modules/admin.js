@@ -4,6 +4,7 @@ const adminController = require("../../controllers/admin-controller");
 
 //在總路index由加入authenticatedAdmin，這邊就不用重複寫
 router.get("/restaurants/create", adminController.createRestaurant);
+router.get("/restaurants/:rest_id", adminController.getRestaurant);
 router.get("/restaurants", adminController.getRestaurants);
 router.post("/restaurants", adminController.postRestaurant);
 router.get("", (req, res) => res.redirect("/admin/restaurants"));
