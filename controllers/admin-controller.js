@@ -2,7 +2,7 @@ const { Restaurant } = require('../models')
 // 上面是解構賦值的寫法，等於下面這種寫法的簡寫
 // const db = require('../models')
 // const Restaurant = db.Restaurant
-const { localFileHandler } = require('../helpers/file-helpers') // // 將 file-helper 載進來
+const { imgurFileHandler } = require('../helpers/file-helpers') // // 將 file-helper 載進來
 
 const adminController = {
   // 瀏覽全部餐廳頁面
@@ -26,7 +26,7 @@ const adminController = {
     if (!name) throw new Error('Restaurant name is required!')
 
     const file = req.file // 把檔案取出來，也可以寫成 const { file } = req
-    localFileHandler(file) // 把取出的檔案傳給 file-helper 處理後
+    return imgurFileHandler(file) // 把取出的檔案傳給 file-helper 處理後
       .then(filePath => // 再 create 這筆餐廳資料
         Restaurant.create({
           name,
@@ -74,7 +74,7 @@ const adminController = {
     const file = req.file
     Promise.all([ // 用promise.all 處理非同步事件
       Restaurant.findByPk(req.params.id), // 去資料庫查有沒有這間餐廳
-      localFileHandler(file) // 把檔案傳到 file-helper 處理
+      imgurFileHandler(file) // 把檔案傳到 file-helper 處理
     ])
       .then(([restaurant, filePath]) => { // 以上兩樣事都做完以後
         if (!restaurant) throw new Error('這間餐廳不存在!')
