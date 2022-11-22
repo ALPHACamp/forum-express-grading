@@ -7,10 +7,10 @@ const admin = require("./modules/admin");
 const restController = require("../controllers/restaurant-controller");
 const userController = require("../controllers/user-controller");
 
-const { authenticated } = require("../middleware/auth");
+const { authenticated, authenticatedAdmin } = require("../middleware/auth");
 const { generalErrorHandler } = require("../middleware/error-handler");
 
-router.use("/admin", admin);
+router.use("/admin", authenticatedAdmin, admin); //加入authenticatedAdmin
 
 router.get("/signup", userController.signUpPage);
 router.post("/signup", userController.signUp); // 注意用 post
