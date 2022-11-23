@@ -3,7 +3,7 @@ const LocalStrategy = require('passport-local')
 const bcrypt = require('bcryptjs')
 const db = require('../models')
 const User = db.User
-
+// set up Passport strategy
 passport.use(new LocalStrategy(
   // customize user field
   {
@@ -29,10 +29,8 @@ passport.serializeUser((user, cb) => {
 })
 passport.deserializeUser((id, cb) => {
   User.findByPk(id).then(user => {
-    // user = user.toJSON()
-    // console.log(user)
+    user = user.toJSON()
     return cb(null, user)
   })
 })
-
 module.exports = passport

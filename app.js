@@ -4,6 +4,7 @@ const flash = require('connect-flash')
 const session = require('express-session')
 const passport = require('./config/passport')
 const handlebarsHelpers = require('./helpers/handlebars-helpers')
+
 const { getUser } = require('./helpers/auth-helpers')
 
 const routes = require('./routes')
