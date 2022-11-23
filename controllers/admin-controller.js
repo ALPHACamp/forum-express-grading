@@ -12,10 +12,20 @@ const adminController = { // 修改這裡
   },
 
   patchUser: (req, res, next) => {
-    User.findAll({
-      raw: true
-    })
-      .then(users => res.render('admin/users', { users }))
+    User.findByPk(req.params.id)
+      .then(user => {
+        if (!user) throw new Error('The user does not exist!')
+        if (user.name === 'root') {
+          req.flash('error_messages', '禁止變更 root 權限')
+          return res.redirect('back')
+        }
+
+        return user.update({ isAdmin: !user.isAdmin })
+          .then(() => {
+            req.flash('success_messages', '使用者權限變更成功')
+            res.redirect('/admin/users')
+          })
+      })
       .catch(err => next(err))
   },
 
