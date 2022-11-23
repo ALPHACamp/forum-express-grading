@@ -1,0 +1,12 @@
+<div class="row bg-white py-3">
+  <div class="col-4">
+    <img
+      src="{{#if user.image}}{{user.image}}{{else}}https://i.pinimg.com/originals/f1/0f/f7/f10ff70a7155e5ab666bcdd1b45b726d.jpg{{/if}}"
+      alt="user avatar" style="height:250px; width:250px; object-fit:cover;border-radius:50%">
+  </div>
+  <div class="col-8">
+    <h5>{{user.name}}</h5>
+    <p>{{user.email}}</p>
+    <a href="/users/{{user.id}}/edit" class="btn btn-primary">Edit</a>
+  </div>
+</div>
