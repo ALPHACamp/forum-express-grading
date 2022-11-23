@@ -94,6 +94,23 @@ const adminController = {
     return User.findAll({ raw: true })
       .then((users) => res.render('admin/users', { users }))
       .catch((err) => next(err))
+  },
+  patchUser: (req, res, next) => {
+    return User.findByPk(req.params.id)
+      .then((user) => {
+        if (!user) throw new Error("User doesn't exist !")
+
+        if (user.email === 'root@example.com') {
+          req.flash('error_messages', "User permission can't be changed !")
+          return res.redirect('/admin/users')
+        }
+        user.update({ isAdmin: !user.isAdmin })
+      })
+      .then(() => {
+        req.flash('success_messages', 'User role was successfully updated !')
+        return res.redirect('/admin/users')
+      })
+      .catch((err) => next(err))
   }
 }
 module.exports = adminController
