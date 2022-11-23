@@ -38,6 +38,34 @@ const adminController = {
         res.render('admin/restaurant', { restaurant })
       })
       .catch(err => next(err))
+  },
+  // edit
+  editRestaurant: (req, res, next) => {
+    Restaurant.findByPk(req.params.rest_id, { raw: true })
+      .then(restaurant => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        res.render('admin/edit-restaurant', { restaurant })
+      })
+      .catch(err => next(err))
+  },
+  // 編輯餐廳
+  putRestaurant: (req, res, next) => {
+    const { name, tel, address, openingHours, description } = req.body
+    if (!name) throw new Error('Restaurant name is required!')
+    // 這裡不用raw是因為，待會更新會需要資料庫操作。
+    Restaurant.findByPk(req.params.rest_id)
+      .then(restaurant => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        // 使用return避免蜂巢
+        return restaurant.update({
+          name, tel, address, openingHours, description
+        })
+      })
+      .then(() => {
+        req.flash('success_messages', 'restaurant was successfully to update')
+        res.redirect('/admin/restaurants')
+      })
+      .catch(err => next(err))
   }
 }
 

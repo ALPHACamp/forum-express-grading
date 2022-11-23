@@ -4,8 +4,12 @@ const adminController = require('../../controllers/admin-controller')
 
 // 新建admin餐廳頁面，注意順序
 router.get('/restaurants/create', adminController.createRestaurant)
+// 編輯檢視，位置要比較前面
+router.get('/restaurants/:rest_id/edit', adminController.editRestaurant)
 // 瀏覽餐廳詳細資料。路由字串裡的 :id 是在跟 Express 説這是一個會變動的欄位，請幫我匹配到這個網址，並且把 req.params.id 設成同樣的值，傳給 controller 用。
 router.get('/restaurants/:rest_id', adminController.getRestaurant)
+// 編輯餐廳送出
+router.put('/restaurants/:rest_id', adminController.putRestaurant)
 // 全部餐廳
 router.get('/restaurants', adminController.getRestaurants)
 // create 送出
