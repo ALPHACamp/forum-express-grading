@@ -1,4 +1,5 @@
 const { Restaurant } = require('../models')
+const { User } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const adminController = {
@@ -81,13 +82,17 @@ const adminController = {
       .catch((err) => next(err))
   },
   deleteRestaurant: (req, res, next) => {
-    // 新增以下
     return Restaurant.findByPk(req.params.id)
       .then((restaurant) => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         return restaurant.destroy()
       })
       .then(() => res.redirect('/admin/restaurants'))
+      .catch((err) => next(err))
+  },
+  getUsers: (req, res, next) => {
+    return User.findAll({ raw: true })
+      .then((users) => res.render('/admin/users', { users }))
       .catch((err) => next(err))
   }
 }
