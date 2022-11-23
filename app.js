@@ -3,8 +3,9 @@ const handlebars = require('express-handlebars')
 const flash = require('connect-flash')
 const session = require('express-session')
 const passport = require('./config/passport')
-const { getUser } = require('./helpers/auth-helpers')
 const handlebarsHelpers = require('./helpers/handlebars-helpers')
+const { getUser } = require('./helpers/auth-helpers')
+
 const routes = require('./routes')
 
 const app = express()
@@ -20,9 +21,9 @@ app.use(passport.initialize())
 app.use(passport.session())
 app.use(flash())
 app.use((req, res, next) => {
-  res.locals.user = getUser(req)
   res.locals.success_messages = req.flash('success_messages')
   res.locals.error_messages = req.flash('error_messages')
+  res.locals.user = getUser(req)
   next()
 })
 
