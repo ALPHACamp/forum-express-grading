@@ -9,6 +9,11 @@ const handlebarsHelpers = require('./helpers/handlebars-helpers') // 引入自�
 const { getUser } = require('./helpers/auth-helpers') // 引入自定義的 auth-helpers
 const routes = require('./routes')
 
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
+// console.log(process.env.IMGUR_CLIENT_ID); 檢查是否有讀到
+
 const app = express()
 const port = process.env.PORT || 3000
 const SESSION_SECRET = 'secret'
