@@ -5,10 +5,10 @@ const admin = require('./modules/admin')
 const passport = require('../config/passport')
 const userController = require('../controllers/user-controller')
 const { generalErrorHandler } = require('../middleware/error-handler') // 須將middleware加入
-const { authenticated } = require('../middleware/auth')
+const { authenticated, authenticatedAdmin } = require('../middleware/auth')
 
-// 現在收到的請求如果帶有 /admin 的路徑，就一律丟給後台專用的 admin 這個 module 去處理，若是其他情況再依序往下判斷。(使用router.use )
-router.use('/admin', admin)
+// 現在收到的請求如果帶有 /admin 的路徑，就一律丟給後台專用的 admin 這個 module 去處理，若是其他情況再依序往下判斷。(使用router.use )。使用authenticatedAdmin驗證是否為admin。
+router.use('/admin', authenticatedAdmin, admin)
 // 註冊
 router.get('/signup', userController.signUpPage)
 router.post('/signup', userController.signUp)// 使用post處理signup的動作
