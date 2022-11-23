@@ -1,3 +1,4 @@
+const path = require("path"); //node.js 的原生模組，不用特別去install
 const express = require("express");
 const handlebars = require("express-handlebars");
 const flash = require("connect-flash");
@@ -20,6 +21,8 @@ app.set("view engine", "hbs");
 app.use(express.urlencoded({ extended: true }));
 //設定寫法為_method，form那邊根據這的寫法
 app.use(methodOverride("_method"));
+///upload這路徑下，當前這檔案(app.js)的資料夾的絕對路徑 C:\Users\Wa\ACe\forum-express-grading，join upload
+app.use("/upload", express.static(path.join(__dirname, "upload")));
 
 // session後接passport & flash
 app.use(

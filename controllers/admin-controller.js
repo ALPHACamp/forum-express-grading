@@ -1,6 +1,7 @@
 // const db=require('../models')
 // const Restaurant=db.Restaurant
 const { Restaurant } = require("../models");
+const { localFileHandler } = require("../helpers/file-helpers");
 
 const adminController = {
   getRestaurants: (req, res, next) => {
@@ -16,14 +17,20 @@ const adminController = {
   postRestaurant: (req, res, next) => {
     const { name, tel, address, openingHours, description } = req.body; // 從 req.body 拿出表單裡的資料
     if (!name) throw new Error("Restaurant name is required!"); // name 是必填，若發先是空值就會終止程式碼，並在畫面顯示錯誤提示。即使前端有required，但前後端分離，後端必須自己也要控管。throw 讓我們可以在程式出錯時，終止執行此區塊的程式碼，並拋出客製化的錯誤訊息。
-    Restaurant.create({
-      //產生一個新的 Restaurant 物件實例，並存入資料庫
-      name,
-      tel,
-      address,
-      openingHours,
-      description,
-    })
+
+    const file = req.file; // 把檔案取出來
+    localFileHandler(file) // 把取出的檔案傳給 file-helper 處理後
+      .then((filePath) =>
+        Restaurant.create({
+          //產生一個新的 Restaurant 物件實例，並存入資料庫
+          name,
+          tel,
+          address,
+          openingHours,
+          description,
+          image: filePath || null,
+        })
+      )
       .then(() => {
         req.flash("success_messages", "restaurant was successfully created!"); // 在畫面顯示成功提示
         res.redirect("/admin/restaurants"); //新增完成後導回後台首頁
@@ -55,8 +62,11 @@ const adminController = {
     //用Sequelize的物件才有update語法，raw則沒
     const { name, tel, address, openingHours, description } = req.body;
     if (!name) throw new Error("Restaurant name is required!");
-    Restaurant.findByPk(req.params.id)
-      .then((restaurant) => {
+    const file = req.file;
+    //Promise.all裝滿著promise物件的陣列，所以加個中括號吧 //雖然沒中括號好像也行(?)
+    Promise.all([Restaurant.findByPk(req.params.id), localFileHandler(file)]) //確認做完這兩件事後才then
+      //有沒這間餐廳、把檔案傳到 file-helper 處理完
+      .then(([restaurant, filePath]) => {
         if (!restaurant) throw new Error("Restaurant didn't exist!");
         return restaurant.update({
           name,
@@ -64,6 +74,7 @@ const adminController = {
           address,
           openingHours, //根據models所寫的，而不是sql資料庫的
           description,
+          image: filePath || restaurant.image,
         });
       })
       .then(() => {
