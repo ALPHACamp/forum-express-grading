@@ -33,7 +33,7 @@ const adminController = {
   },
   putRestaurant: (req, res, next) => {
     const { name, tel, address, openingHours, description } = req.body
-    if (!name) throw new Error("Restaurant name is a must!")
+    if (!name) throw new Error('Restaurant name is a must!')
     Restaurant.findByPk(req.params.id)
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
