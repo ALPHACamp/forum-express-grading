@@ -6,7 +6,7 @@ const restController = require('../controllers/restaurant-controller')
 //新增
 const admin = require('./modules/admin') //新增這行，載入 admin.js
 const userController = require('../controllers/user-controller') //新增這行
-
+const { authenticated } = require('../middleware/auth')  //引入 auth.js
 const { generalErrorHandler } = require('../middleware/error-handler') // 加入這行
 router.use('/admin', admin) //新增這行
 
@@ -20,7 +20,7 @@ router.post('/signin', passport.authenticate('local', { failureRedirect: '/signi
 
 router.get('/logout', userController.logout)
 
-router.get('/restaurants', restController.getRestaurants)
+router.get('/restaurants', authenticated, restController.getRestaurants)
 
 router.use('/', (req, res) => res.redirect('/restaurants'))
 router.use('/', generalErrorHandler)  // 加入這行
