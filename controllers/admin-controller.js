@@ -4,7 +4,7 @@ const { imgurFileHandler } = require('../helpers/file-helpers')
 const adminController = { // 修改這裡
 
   getUsers: (req, res, next) => {
-    User.findAll({ raw: true })
+    return User.findAll({ raw: true })
       .then(users => {
         res.render('admin/users', { users })
       })
