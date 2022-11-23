@@ -19,7 +19,6 @@ const adminController = {
     imgurFileHandler(file)
       .then(filePath =>
         Restaurant.create({
-          // 再 create 這筆餐廳資料
           name,
           tel,
           address,
@@ -54,16 +53,12 @@ const adminController = {
       })
       .catch(err => next(err))
   },
-  // 修改以下
+
   putRestaurant: (req, res, next) => {
     const { name, tel, address, openingHours, description } = req.body
     if (!name) throw new Error('Restaurant name is required!')
     const { file } = req
-    Promise.all([
-      // 非同步處理
-      Restaurant.findByPk(req.params.id),
-      imgurFileHandler(file)
-    ])
+    Promise.all([Restaurant.findByPk(req.params.id), imgurFileHandler(file)])
       .then(([restaurant, filePath]) => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         return restaurant.update({
