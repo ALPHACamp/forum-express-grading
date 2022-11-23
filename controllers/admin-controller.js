@@ -12,7 +12,7 @@ const adminController = { // 修改這裡
   },
 
   patchUser: (req, res, next) => {
-    User.findByPk(req.params.id)
+    return User.findByPk(req.params.id)
       .then(user => {
         if (!user) throw new Error('The user does not exist!')
         if (user.email === 'root@example.com') {
