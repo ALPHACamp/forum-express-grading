@@ -10,4 +10,3 @@ rules:
   arrow-parens:
     - warn
     - as-needed
-    - 'space-before-function-paren':0
