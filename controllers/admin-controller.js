@@ -1,7 +1,7 @@
-const { Restaurant } = require('../models')
+const { Restaurant, User } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
-const adminController = { // 修改這裡
+const adminController = {
 
   getRestaurants: (req, res, next) => {
     Restaurant.findAll({
@@ -83,8 +83,24 @@ const adminController = { // 修改這裡
       })
       .then(() => res.redirect('/admin/restaurants'))
       .catch(err => next(err))
+  },
+  getUsers: (req, res, next) => {
+    User.findAll({
+      raw: true
+    })
+      .then(users => res.render('admin/users', { users }))
+      .catch(err => next(err))
+  },
+  patchUser: (req, res, next) => {
+    User.findByPk(req.params.id, {
+      raw: true
+    })
+      .then(user => {
+        if (!user) throw new Error("User didn't exist!")
+        res.render('admin/edit-user', { user })
+      })
+      .catch(err => next(err))
   }
-
 }
 
 module.exports = adminController

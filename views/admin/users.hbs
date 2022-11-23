@@ -1,0 +1,23 @@
+{{> admin-table-switch}}
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Name</th>
+      <th scope="col">Email</th>
+      <th scope="col">Role</th>
+      <th scope="col">#</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each users}}
+    <tr>
+      <th scope="row">{{this.id}}</th>
+      <td>{{this.name}}</td>
+      <td>{{this.email}}</td>
+      <td>admin/user</td>
+      <td>Set as Admin/Set as User</td>
+    </tr>
+    {{/each}}
+  </tbody>
+</table>
