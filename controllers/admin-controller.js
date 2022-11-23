@@ -1,14 +1,30 @@
-const { Restaurant } = require('../models')
+const { Restaurant, User } = require('../models')
+
 const { imgurFileHandler } = require('../helpers/file-helpers')
 const adminController = { // 修改這裡
+
+  getUsers: (req, res, next) => {
+    return User.findAll({ raw: true })
+      .then(users => {
+        // console.log(users)
+        res.render('admin/users', { users })
+      })
+      .catch(err => next(err))
+  },
+
+  patchUser: (req, res, next) => {
+    User.findAll({
+      raw: true
+    })
+      .then(users => res.render('admin/users', { users }))
+      .catch(err => next(err))
+  },
 
   getRestaurants: (req, res, next) => {
     Restaurant.findAll({
       raw: true
     })
-
       .then(restaurants => res.render('admin/restaurants', { restaurants }))
-
       .catch(err => next(err))
   },
 
