@@ -1,3 +1,4 @@
+const path = require('path')
 const express = require('express')
 const passport = require('./config/passport')
 const routes = require('./routes')
@@ -20,6 +21,8 @@ app.use(passport.initialize())
 app.use(passport.session())
 app.use(flash())
 app.use(methodOverride('_method'))
+// upload是靜態檔案，使用static去尋找
+app.use('/upload', express.static(path.join(__dirname, 'upload')))
 
 app.use((req, res, next) => {
   res.locals.success_messages = req.flash('success_messages')

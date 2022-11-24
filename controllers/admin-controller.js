@@ -2,6 +2,7 @@
 
 // 導入model
 const { Restaurant } = require('../models')
+const { localFileHandler } = require('../helpers/file-helpers')
 
 const adminController = {
   getRestaurants: (req, res, next) => {
@@ -20,9 +21,13 @@ const adminController = {
     const { name, tel, address, openingHours, description } = req.body
     // 檢測是否有輸入餐廳名稱
     if (!name) throw new Error('Restaurant name is required!')
-    Restaurant.create({
-      name, tel, address, openingHours, description
-    })
+    // 取出圖片
+    const { file } = req
+    localFileHandler(file)
+      .then(filePath => Restaurant.create({
+        name, tel, address, openingHours, description, image: filePath || null
+        // 圖片路徑載入，有或者沒有檔案。image: filePath || null 的意思是：如果 filePath 的值為檔案路徑字串 (使用者有上傳檔案，就會被判斷為 Truthy)，就將 image 的值設為檔案路徑；如果 filePath 的值是空的 (也就是沒有上傳檔案，因此沒有檔案路徑，會被判斷為 Falsy)，那麼就將 image 的值設為 null。
+      }))
       .then(() => {
         req.flash('success_messages', 'restaurant was successfully created')
         res.redirect('/admin/restaurants')
@@ -53,12 +58,15 @@ const adminController = {
     const { name, tel, address, openingHours, description } = req.body
     if (!name) throw new Error('Restaurant name is required!')
     // 這裡不用raw是因為，待會更新會需要資料庫操作。
-    Restaurant.findByPk(req.params.rest_id)
-      .then(restaurant => {
+    const { file } = req
+    // 使用promise.all確保兩者皆執行完
+    Promise.all([Restaurant.findByPk(req.params.rest_id), localFileHandler(file)])
+      .then(([restaurant, filePath]) => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         // 使用return避免蜂巢
         return restaurant.update({
-          name, tel, address, openingHours, description
+          name, tel, address, openingHours, description, image: filePath || restaurant.image
+          // 如果 filePath 是 Truthy (使用者有上傳新照片) 就用 filePath，是 Falsy (使用者沒有上傳新照片) 就沿用原本資料庫內的值
         })
       })
       .then(() => {
