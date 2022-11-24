@@ -1,13 +1,17 @@
 const assert = require('assert')
-const { Restaurant, User } = require('../models')
+const { Restaurant, User, Category } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 const { isSuperUser } = require('../helpers/users-helper')
 const adminController = {
   getRestaurants: (req, res, next) => {
     return Restaurant.findAll({
-      raw: true
+      raw: true,
+      nest: true,
+      include: [Category]
     })
-      .then(restaurants => res.render('admin/restaurants', { restaurants }))
+      .then(restaurants => {
+        res.render('admin/restaurants', { restaurants })
+      })
       .catch(err => next(err))
   },
   createRestaurant: (req, res) => {
@@ -36,7 +40,9 @@ const adminController = {
   },
   getRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
-      raw: true
+      raw: true,
+      nest: true,
+      include: [Category]
     })
       .then(restaurant => {
         assert(restaurant, new Error("Restaurant didn't exist!"))
