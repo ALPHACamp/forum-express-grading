@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs')
 const db = require('../models')
-const { User } = db
+const { User, Comment, Restaurant } = db
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const userController = {
@@ -36,10 +36,20 @@ const userController = {
     res.redirect('/signin')
   },
   getUser: (req, res, next) => {
-    return User.findByPk(req.params.id)
+    return User.findByPk(req.params.id, {
+      include: [{
+        model: Comment, include: Restaurant
+      }]
+    })
       .then(user => {
+        user = user.toJSON()
+        // 找出評論過的不重複餐廳
+        user.commentedRestaurants = user.Comments && user.Comments.reduce((acc, comment) => {
+          if (!acc.some(restaurant => restaurant.id === comment.restaurantId)) acc.push(comment.Restaurant)
+          return acc
+        }, [])
         if (!user) throw new Error("User didn't exist!")
-        return res.render('users/profile', { user: user.toJSON() })
+        return res.render('users/profile', { user })
       })
       .catch(next)
   },
