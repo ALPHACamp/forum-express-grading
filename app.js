@@ -10,7 +10,9 @@ const passport = require('./config/passport') // 增加這行，引入 Passport
 const handlebarsHelpers = require('./helpers/handlebars-helpers') // 引入 handlebars-helpers
 const { getUser } = require('./helpers/auth-helpers') // 增加這行，引入自定義的 auth-helpers
 const routes = require('./routes')
-
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
 const app = express()
 const port = process.env.PORT || 3000
 
