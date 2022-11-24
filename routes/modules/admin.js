@@ -6,6 +6,7 @@ router.get('/restaurants/create', adminController.createRestaurant) // 把 authe
 router.get('/restaurants/:id/edit', adminController.editRestaurant)
 router.get('/restaurants/:id', adminController.getRestaurant)
 router.put('/restaurants/:id', adminController.putRestaurant) // 因為_method=PUT，所以用put
+router.delete('/restaurants/:id', adminController.deleteRestaurant)
 router.get('/restaurants', adminController.getRestaurants)
 router.post('/restaurants', adminController.postRestaurant)
 
