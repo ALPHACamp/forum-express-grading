@@ -1,0 +1,39 @@
+<h1>餐廳後台</h1>
+<br />
+<ul class="nav nav-tabs">
+  <li class="nav-item">
+    <a class="nav-link" href="/admin/restaurants">Restaurants</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="/admin/users">Users</a>
+  </li>
+</ul>
+<br />
+
+<table class="table table-striped align-middle">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col" class="text-center">#</th>
+      <th scope="col" class="text-center">Name</th>
+      <th scope="col">Email</th>
+      <th scope="col">Role</th>
+      <th scope="col">#</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each users}}
+    <tr>
+      <th scope="row" class="text-center">{{this.id}}</th>
+      <td class="text-center">{{this.name}}</td>
+      <td>{{this.email}}</td>
+      <td>{{#if this.isAdmin }} admin {{else}} user {{/if}}</td>
+      <td>
+        <form action="/admin/users/{{this.id}}?_method=PATCH" method="POST" style="display: inline;">
+          <button type="submit" class="btn btn-link link-danger"
+            onclick="return confirm(`確定要變更 {{this.name}} 的權限嗎？`)">換身份！</button>
+        </form>
+      </td>
+    </tr>
+    {{/each}}
+  </tbody>
+</table>
