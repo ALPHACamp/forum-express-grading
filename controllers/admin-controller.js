@@ -1,5 +1,7 @@
+const assert = require('assert')
 const { Restaurant, User } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
+const { isSuperUser } = require('../helpers/users-helper')
 const adminController = {
   getRestaurants: (req, res, next) => {
     return Restaurant.findAll({
@@ -13,7 +15,7 @@ const adminController = {
   },
   postRestaurant: (req, res, next) => {
     const { name, tel, address, openingHours, description } = req.body
-    if (!name) throw new Error('Restaurant name is required!')
+    assert(name, new Error('Restaurant name is required!'))
     const { file } = req
     return imgurFileHandler(file)
       .then(filePath =>
@@ -28,7 +30,7 @@ const adminController = {
       )
       .then(() => {
         req.flash('success_messages', 'restaurant was successfully created')
-        res.redirect('/admin/restaurants')
+        return res.redirect('/admin/restaurants')
       })
       .catch(err => next(err))
   },
@@ -37,8 +39,8 @@ const adminController = {
       raw: true
     })
       .then(restaurant => {
-        if (!restaurant) throw new Error("Restaurant didn't exist!")
-        res.render('admin/restaurant', { restaurant })
+        assert(restaurant, new Error("Restaurant didn't exist!"))
+        return res.render('admin/restaurant', { restaurant })
       })
       .catch(err => next(err))
   },
@@ -47,7 +49,7 @@ const adminController = {
       raw: true
     })
       .then(restaurant => {
-        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        assert(restaurant, new Error("Restaurant didn't exist!"))
         res.render('admin/edit-restaurant', { restaurant })
       })
       .catch(err => next(err))
@@ -55,14 +57,14 @@ const adminController = {
 
   putRestaurant: (req, res, next) => {
     const { name, tel, address, openingHours, description } = req.body
-    if (!name) throw new Error('Restaurant name is required!')
+    assert(name, new Error('Restaurant name is required!'))
     const { file } = req
     return Promise.all([
       Restaurant.findByPk(req.params.id),
       imgurFileHandler(file)
     ])
       .then(([restaurant, filePath]) => {
-        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        assert(restaurant, new Error("Restaurant didn't exist!"))
         return restaurant.update({
           name,
           tel,
@@ -74,14 +76,14 @@ const adminController = {
       })
       .then(() => {
         req.flash('success_messages', 'restaurant was successfully to update')
-        res.redirect('/admin/restaurants')
+        return res.redirect('/admin/restaurants')
       })
       .catch(err => next(err))
   },
   deleteRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id)
       .then(restaurant => {
-        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        assert(restaurant, new Error("Restaurant didn't exist!"))
         return restaurant.destroy()
       })
       .then(() => res.redirect('/admin/restaurants'))
@@ -90,7 +92,7 @@ const adminController = {
   getUsers: (req, res, next) => {
     return User.findAll({ raw: true })
       .then(users => {
-        if (!users.length) return
+        assert(users.length, new Error('No user is found!'))
         return res.render('admin/users', { users })
       })
       .catch(err => next(err))
@@ -98,9 +100,9 @@ const adminController = {
   patchUser: (req, res, next) => {
     return User.findByPk(req.params.id)
       .then(user => {
-        if (!user) throw new Error('User does not exist!')
+        assert(user, new Error('User does not exist!'))
         // root
-        if (user.name === 'admin' && user.email === 'root@example.com') {
+        if (isSuperUser(user)) {
           req.flash('error_messages', '禁止變更 root 權限')
           return res.redirect('back')
         }
