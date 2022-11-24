@@ -1,5 +1,5 @@
 const { Restaurant } = require('../models')
-const { localFileHandler } = require('../helpers/file-helpers')
+const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const adminController = {
   createRestaurant: (req, res) => {
@@ -29,19 +29,19 @@ const adminController = {
     const { name, tel, address, openingHours, description } = req.body
     if (!name) throw new Error('Restaurant name is a must!')
     const { file } = req
-    Promise.all([ // 非同步處理
-      Restaurant.findByPk(req.params.id), // 去資料庫查有沒有這間餐廳
-      localFileHandler(file) // 把檔案傳到 file-helper 處理
+    return Promise.all([
+      Restaurant.findByPk(req.params.id),
+      imgurFileHandler(file)
     ])
-      .then(([restaurant, filePath]) => { // 以上兩樣事都做完以後
+      .then(([restaurant, filePath]) => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
-        return restaurant.update({ // 修改這筆資料
+        return restaurant.update({
           name,
           tel,
           address,
           openingHours,
           description,
-          image: filePath || restaurant.image // 如果 filePath 是 Truthy (使用者有上傳新照片) 就用 filePath，是 Falsy (使用者沒有上傳新照片) 就沿用原本資料庫內的值
+          image: filePath || restaurant.image
         })
       })
       .then(() => {
@@ -70,7 +70,7 @@ const adminController = {
     const { name, tel, address, openingHours, description } = req.body
     if (!name) throw new Error('Restaurant name is required!')
     const { file } = req
-    localFileHandler(file)
+    return imgurFileHandler(file)
       .then(filePath => Restaurant.create({
         name,
         tel,
