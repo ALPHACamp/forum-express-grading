@@ -10,6 +10,8 @@ router.get('/restaurants/:rest_id/edit', adminController.editRestaurant)
 router.get('/restaurants/:rest_id', adminController.getRestaurant)
 // 編輯餐廳送出
 router.put('/restaurants/:rest_id', adminController.putRestaurant)
+// delete
+router.delete('/restaurants/:id', adminController.deleteRestaurant)
 // 全部餐廳
 router.get('/restaurants', adminController.getRestaurants)
 // create 送出
