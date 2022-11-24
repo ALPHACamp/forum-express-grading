@@ -1,5 +1,4 @@
-const { Restaurant } = require('../models')
-const { User } = require('../models')
+const { Restaurant, User } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const adminController = {
@@ -102,9 +101,9 @@ const adminController = {
 
         if (user.email === 'root@example.com') {
           req.flash('error_messages', "User permission can't be changed !")
-          return res.redirect('/admin/users')
+          return res.redirect('back')
         }
-        user.update({ isAdmin: !user.isAdmin })
+        return user.update({ isAdmin: !user.isAdmin })
       })
       .then(() => {
         req.flash('success_messages', 'User role was successfully updated !')
