@@ -1,8 +1,10 @@
 'use strict'
 const faker = require('faker')
+
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.bulkInsert('Restaurants',
+      // 50筆餐廳資料
       Array.from({ length: 50 }, () => ({
         name: faker.name.findName(),
         tel: faker.phone.phoneNumber(),

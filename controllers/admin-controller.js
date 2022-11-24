@@ -1,11 +1,12 @@
+// const db = require('../models')
+// const Restaurant = db.Restaurant
 const { Restaurant } = require('../models')
-const { localFileHandler } = require('../helpers/file-helpers')
+const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const adminController = {
-
   getRestaurants: (req, res, next) => {
     Restaurant.findAll({
-      raw: true
+      raw: true // 轉成JS
     })
       .then(restaurants => res.render('admin/restaurants', { restaurants }))
       .catch(err => next(err))
@@ -15,9 +16,11 @@ const adminController = {
   },
   postRestaurant: (req, res, next) => {
     const { name, tel, address, openingHours, description } = req.body
-    if (!name) throw new Error('Restaurant name is required!')
+    if (!name) throw new Error('Restaurant name is required！')
+
+    // 將檔案取出後交給file-helpers處理完再create
     const { file } = req
-    localFileHandler(file)
+    imgurFileHandler(file)
       .then(filePath => Restaurant.create({
         name,
         tel,
@@ -37,7 +40,7 @@ const adminController = {
       raw: true
     })
       .then(restaurant => {
-        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        if (!restaurant) throw new Error("Restaurant didn't exist！")
         res.render('admin/restaurant', { restaurant })
       })
       .catch(err => next(err))
@@ -47,7 +50,7 @@ const adminController = {
       raw: true
     })
       .then(restaurant => {
-        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        if (!restaurant) throw new Error("Restaurant didn't exist！")
         res.render('admin/edit-restaurant', { restaurant })
       })
       .catch(err => next(err))
@@ -55,12 +58,14 @@ const adminController = {
   putRestaurant: (req, res, next) => {
     const { name, tel, address, openingHours, description } = req.body
     if (!name) throw new Error('Restaurant name is required!')
+
+    // 找到餐廳和處理圖片完再繼續動作
     const { file } = req
     Promise.all([
       Restaurant.findByPk(req.params.id),
-      localFileHandler(file)
+      imgurFileHandler(file)
     ])
-      .then(([restaurant, filePath]) => {
+      .then(([restaurant, filePath]) => { // 以上兩樣事都做完以後
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         return restaurant.update({
           name,
@@ -80,7 +85,7 @@ const adminController = {
   deleteRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id)
       .then(restaurant => {
-        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        if (!restaurant) throw new Error("Restaurant didn't exist！")
         return restaurant.destroy()
       })
       .then(() => res.redirect('/admin/restaurants'))

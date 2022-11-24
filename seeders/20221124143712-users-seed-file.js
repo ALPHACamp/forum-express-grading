@@ -3,7 +3,7 @@ const bcrypt = require('bcryptjs')
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.bulkInsert('Users', [{
+    await queryInterface.bulkInsert('Users', [{ // 大量新增
       email: 'root@example.com',
       password: await bcrypt.hash('12345678', 10),
       is_admin: true,
@@ -26,7 +26,7 @@ module.exports = {
       updated_at: new Date()
     }], {})
   },
-  down: async (queryInterface, Sequelize) => {
+  down: async (queryInterface, Sequelize) => { // 大量刪除
     await queryInterface.bulkDelete('Users', {})
   }
 }
