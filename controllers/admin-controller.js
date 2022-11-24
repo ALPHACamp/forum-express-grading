@@ -10,7 +10,8 @@ const adminController = {
       include: [Category]
     })
       .then(restaurants => {
-        res.render('admin/restaurants', { restaurants })
+        if (!restaurants.length) return req.flash('error_messages', 'No restaurant is found.')
+        return res.render('admin/restaurants', { restaurants })
       })
       .catch(err => next(err))
   },
@@ -22,7 +23,7 @@ const adminController = {
   postRestaurant: (req, res, next) => {
     const { name, tel, address, openingHours, description, categoryId } =
       req.body
-    assert(name, new Error('Restaurant name is required!'))
+    assert(name, 'Restaurant name is required!')
     const { file } = req
     return imgurFileHandler(file)
       .then(filePath =>
@@ -49,7 +50,7 @@ const adminController = {
       include: [Category]
     })
       .then(restaurant => {
-        assert(restaurant, new Error("Restaurant didn't exist!"))
+        assert(restaurant, "Restaurant didn't exist!")
         return res.render('admin/restaurant', { restaurant })
       })
       .catch(err => next(err))
@@ -62,7 +63,7 @@ const adminController = {
       Category.findAll({ raw: true })
     ])
       .then(([restaurant, categories]) => {
-        assert(restaurant, new Error("Restaurant didn't exist!"))
+        assert(restaurant, "Restaurant didn't exist!")
         return res.render('admin/edit-restaurant', { restaurant, categories })
       })
       .catch(err => next(err))
@@ -71,14 +72,14 @@ const adminController = {
   putRestaurant: (req, res, next) => {
     const { name, tel, address, openingHours, description, categoryId } =
       req.body
-    assert(name, new Error('Restaurant name is required!'))
+    assert(name, 'Restaurant name is required!')
     const { file } = req
     return Promise.all([
       Restaurant.findByPk(req.params.id),
       imgurFileHandler(file)
     ])
       .then(([restaurant, filePath]) => {
-        assert(restaurant, new Error("Restaurant didn't exist!"))
+        assert(restaurant, "Restaurant didn't exist!")
         return restaurant.update({
           name,
           tel,
@@ -98,7 +99,7 @@ const adminController = {
   deleteRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id)
       .then(restaurant => {
-        assert(restaurant, new Error("Restaurant didn't exist!"))
+        assert(restaurant, "Restaurant didn't exist!")
         return restaurant.destroy()
       })
       .then(() => res.redirect('/admin/restaurants'))
@@ -107,7 +108,7 @@ const adminController = {
   getUsers: (req, res, next) => {
     return User.findAll({ raw: true })
       .then(users => {
-        assert(users.length, new Error('No user is found!'))
+        if (!users.length) return req.flash('error_messages', 'No user is found!')
         return res.render('admin/users', { users })
       })
       .catch(err => next(err))
@@ -115,7 +116,7 @@ const adminController = {
   patchUser: (req, res, next) => {
     return User.findByPk(req.params.id)
       .then(user => {
-        assert(user, new Error('User does not exist!'))
+        assert(user, 'User does not exist!')
         // root
         if (isSuperUser(user)) {
           req.flash('error_messages', '禁止變更 root 權限')
@@ -130,5 +131,6 @@ const adminController = {
       })
       .catch(err => next(err))
   }
+
 }
 module.exports = adminController
