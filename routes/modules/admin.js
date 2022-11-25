@@ -19,6 +19,8 @@ router.post(
   upload.single('image'),
   adminController.postRestaurant
 )
+router.get('/users/', adminController.getUsers)
+router.patch('/users/:id', adminController.patchUser)
 router.get('', (req, res) => res.redirect('/admin/restaurants'))
 // 或寫成 router.use("/", (req, res) => res.redirect("/admin/restaurants"))
 
