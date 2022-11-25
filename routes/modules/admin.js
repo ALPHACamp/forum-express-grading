@@ -4,5 +4,6 @@ const { authenticatedAdmin } = require('../../middleware/auth')
 const adminController = require('../../controllers/admin-controller')
 
 router.get('/restaurants', authenticatedAdmin, adminController.getRestaurants)
+router.post('/restaurants', adminController.getRestaurants)
 router.use('/', (req, res) => res.redirect('/admin/restaurants'))
 module.exports = router
