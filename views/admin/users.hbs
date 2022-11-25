@@ -15,10 +15,10 @@
       <th scope="row">{{this.id}}</th>
       <td>{{this.name}}</td>
       <td>{{this.email}}</td>
-      <td>{{#if user.isAdmin}}admin{{else}}user{{/if}}</td>
+      <td>{{#if this.isAdmin}}admin{{else}}user{{/if}}</td>
       <td>
         <form action="/admin/users/{{this.id}}?_method=PATCH" method="post">
-          <button type="submit" class="btn link-info">set as {{#if user.isAdmin}}user{{else}}admin{{/if}}</button>
+          <button type="submit" class="btn link-info">set as {{#if this.isAdmin}}user{{else}}admin{{/if}}</button>
         </form>
       </td>
     </tr>
