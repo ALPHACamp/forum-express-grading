@@ -9,6 +9,9 @@ const port = process.env.PORT || 3000
 app.engine('hbs', handlebars({ extname: '.hbs' }))
 app.set('view engine', 'hbs')
 
+// use body parser to handle all the request
+app.use(express.urlencoded({ extended: true }))
+
 app.use(routes)
 
 app.listen(port, () => {
