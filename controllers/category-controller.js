@@ -4,35 +4,21 @@ const categoryController = {
 
   getCategories: (req, res, next) => {
     Category.findAll({
-      raw: true,
+      raw: true
     })
       .then(categories => res.render('admin/categories', { categories }))
       .catch(err => next(err))
   },
   postCategory: (req, res, next) => {
     const { name } = req.body
-    if (!name) throw new Error('Restaurant name is required!')
-    imgurFileHandler(file) // 把取出的檔案傳給 file-helper 處理後
-      .then(filePath => Restaurant.create({ // 再 create 這筆餐廳資料
-        name,
-        tel,
-        address,
-        openingHours,
-        description,
-        image: filePath || null,
-        categoryId
-      }))
-      .then(() => {
-        req.flash('success_messages', 'restaurant was successfully created')
-        res.redirect('/admin/categories')
-      })
+    if (!name) throw new Error('Category name is required!')
+    return Category.create({ name })
+      .then(() => res.redirect('/admin/categories'))
       .catch(err => next(err))
   },
   getCategory: (req, res, next) => {
-    Category.findByPk(req.params.id, { // 去資料庫用 id 找一筆資料
+    Category.findByPk(req.params.id, {
       raw: true,
-      nest: true,
-      include: [Category]
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!") //  如果找不到，回傳錯誤訊息，後面不執行

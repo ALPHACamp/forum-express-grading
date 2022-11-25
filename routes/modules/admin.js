@@ -17,6 +17,9 @@ router.get('/users', adminController.getUsers)
 router.patch('/users/:id', adminController.patchUser)
 // categories
 router.get('/categories', categoryController.getCategories)
+router.post('/categories', categoryController.postCategory)
+router.put('/categories/:id', categoryController.putCategory)
+router.delete('/categories/:id', categoryController.deleteCategory)
 
 router.use('/', (req, res) => res.redirect('/admin/restaurants'))
 
