@@ -5,7 +5,7 @@ module.exports = {
     } else {
       req.flash('error_msg', `${err}`)
     }
-    res.redirect('back')
+    res.redirect('back') // 回到前一頁
     next(err)
   }
 }
