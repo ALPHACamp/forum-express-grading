@@ -6,7 +6,7 @@ const adminController = {
     return res.render('admin/create-restaurant')
   },
   editRestaurant: (req, res, next) => {
-    Restaurant.findByPk(req.params.id, {
+    return Restaurant.findByPk(req.params.id, {
       raw: true
     })
       .then(restaurant => {
@@ -16,7 +16,7 @@ const adminController = {
       .catch(err => next(err))
   },
   getRestaurant: (req, res, next) => {
-    Restaurant.findByPk(req.params.id, {
+    return Restaurant.findByPk(req.params.id, {
       raw: true
     })
       .then(restaurant => {
@@ -60,7 +60,7 @@ const adminController = {
       .catch(err => next(err))
   },
   getRestaurants: (req, res, next) => {
-    Restaurant.findAll({
+    return Restaurant.findAll({
       raw: true
     })
       .then(restaurants => res.render('admin/restaurants', { restaurants }))
@@ -86,7 +86,7 @@ const adminController = {
       .catch(err => next(err))
   },
   getUsers: (req, res, next) => {
-    User.findAll({
+    return User.findAll({
       raw: true
     })
       .then(users => res.render('admin/users', { users }))
@@ -98,13 +98,13 @@ const adminController = {
         if (!user) throw new Error("User didn't exist!")
         if (user.email === 'root@example.com') {
           req.flash('error_messages', '禁止變更 root 權限')
-          res.redirect('back')
+          return res.redirect('back')
         }
         return user.update({ isAdmin: !user.isAdmin })
       })
       .then(() => {
         req.flash('success_messages', '使用者權限變更成功')
-        res.redirect('/admin/users')
+        return res.redirect('/admin/users')
       })
       .catch(err => next(err))
   }
