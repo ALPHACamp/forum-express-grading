@@ -1,13 +1,23 @@
 <h1>餐廳後台</h1>
+<ul class="nav nav-tabs">
+  <li class="nav-item">
+    <a class="nav-link" href="/admin/restaurants">Restaurants</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="/admin/users">Users</a>
+  </li>
+</ul>
+<br />
 <a href='/admin/restaurants/create'>
   <button type="button" class="btn btn-primary">New Restaurant</button>
 </a>
 <br />
 <br />
-<table class="table align-middle">
+<table class="table table-striped align-middle">
   <thead class="thead-dark">
     <tr>
-      <th scope="col">#</th>
+      <th scope="col" class="text-center">#</th>
+      <th scope="col"></th>
       <th scope="col">Name</th>
       <th scope="col"></th>
     </tr>
@@ -15,7 +25,8 @@
   <tbody>
     {{#each restaurants}}
     <tr>
-      <th scope="row">{{this.id}}</th>
+      <th scope="row" class="text-center">{{this.id}}</th>
+      <td></td>
       <td>{{this.name}}</td>
       <td>
         <button type="button" class="btn btn-link">
