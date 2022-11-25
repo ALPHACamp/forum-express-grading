@@ -1,20 +1,21 @@
 <div class="row bg-white py-3">
   <div class="col-4">
     <img
-      src="{{#if user.image}}{{user.image}}{{else}}https://i.pinimg.com/originals/f1/0f/f7/f10ff70a7155e5ab666bcdd1b45b726d.jpg{{/if}}"
+      src="{{#if userData.image}}{{userData.image}}{{else}}https://i.pinimg.com/originals/f1/0f/f7/f10ff70a7155e5ab666bcdd1b45b726d.jpg{{/if}}"
       alt="user avatar" style="height:250px; width:250px; object-fit:cover;border-radius:50%">
   </div>
   <div class="col-8">
-    <h5>{{user.name}}</h5>
-    <p>{{user.email}}</p>
+    <h5>{{userData.name}}</h5>
+    <p>{{userData.email}}</p>
+    {{#ifCond user.id userData.id}}
     <a href="/users/{{user.id}}/edit" class="btn btn-primary">Edit</a>
+    {{/ifCond}}
   </div>
 </div>
-
 <div class="card mt-3">
-  <h5 class="card-header">{{user.commentedRestaurants.length}}已評論餐廳</h5>
+  <h5 class="card-header">{{userData.commentedRestaurants.length}}已評論餐廳</h5>
   <div class="card-body">
-    {{#each user.commentedRestaurants}}
+    {{#each userData.commentedRestaurants}}
     <a href="/restaurants/{{this.id}}" style="text-decoration:none;">
       <img src="{{this.image}}" title="{{this.name}}" class="m-3" style="height:100px; width:100px; object-fit:cover">
     </a>
