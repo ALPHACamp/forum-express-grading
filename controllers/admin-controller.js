@@ -46,7 +46,7 @@ const adminController = {
       include: [Category]
     })
       .then(restaurant => {
-        if (!restaurant) throw new Error("Restaurant didn't exist!") //  如果找不到，回傳錯誤訊息，後面不執行
+        if (!restaurant) throw new Error("Restaurant does't exist!") //  如果找不到，回傳錯誤訊息，後面不執行
         res.render('admin/restaurant', { restaurant })
       })
       .catch(err => next(err))
@@ -71,7 +71,7 @@ const adminController = {
       imgurFileHandler(file) // 把檔案傳到 file-helper 處理
     ])
       .then(([restaurant, filePath]) => { // 以上兩樣事都做完以後
-        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        if (!restaurant) throw new Error("Restaurant does't exist!")
         return restaurant.update({ // 修改這筆資料
           name,
           tel,
@@ -91,7 +91,7 @@ const adminController = {
   deleteRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id)
       .then(restaurant => {
-        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        if (!restaurant) throw new Error("Restaurant does't exist!")
         return restaurant.destroy()
       })
       .then(() => res.redirect('/admin/restaurants'))
@@ -110,7 +110,7 @@ const adminController = {
     const id = req.params.id
     return User.findByPk(id)
       .then(user => {
-        if (!user) throw new Error("User didn't exist!")
+        if (!user) throw new Error("User does't exist!")
         if (user.email === 'root@example.com') {
           req.flash('error_messages', '禁止變更 root 權限')
           return res.redirect('back')
