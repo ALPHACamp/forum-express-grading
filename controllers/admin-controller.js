@@ -39,17 +39,22 @@ const adminController = { // 修改這裡
       .catch(err => next(err))
   },
 
-  createRestaurant: (req, res) => {
-    return res.render('admin/create-restaurant')
+  createRestaurant: (req, res, next) => {
+    return Category.findAll({
+      raw: true
+    })
+      .then(categories => res.render('admin/create-restaurant', { categories }))
+      .catch(err => next(err))
   },
 
   postRestaurant: (req, res, next) => {
-    const { name, tel, address, openingHours, description } = req.body
+    const { name, tel, address, openingHours, description, categoryId } = req.body
     if (!name) throw new Error('Restaurant name is required!')
     const { file } = req // 把檔案取出來，也可以寫成 const file = req.file
     imgurFileHandler(file) // 把取出的檔案傳給 file-helper 處理後
       .then(filePath => Restaurant.create({ // 再 create 這筆餐廳資料
         name,
+        categoryId,
         tel,
         address,
         openingHours,
@@ -77,18 +82,19 @@ const adminController = { // 修改這裡
   },
 
   editRestaurant: (req, res, next) => {
-    Restaurant.findByPk(req.params.id, {
-      raw: true
-    })
-      .then(restaurant => {
-        if (!restaurant) throw new Error("Restaurant didn't exist!")
-        res.render('admin/edit-restaurant', { restaurant })
+    return Promise.all([
+      Restaurant.findByPk(req.params.id, { raw: true }),
+      Category.findAll({ raw: true })
+    ])
+      .then(([restaurant, categories]) => {
+        if (!restaurant) throw new Error("Restaurant doesn't exist!")
+        res.render('admin/edit-restaurant', { restaurant, categories })
       })
       .catch(err => next(err))
   },
 
   putRestaurant: (req, res, next) => {
-    const { name, tel, address, openingHours, description } = req.body
+    const { name, tel, address, openingHours, description, categoryId } = req.body
     const { file } = req // 把檔案取出來
     Promise.all([ // 非同步處理
       Restaurant.findByPk(req.params.id), // 去資料庫查有沒有這間餐廳
@@ -98,6 +104,7 @@ const adminController = { // 修改這裡
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         return restaurant.update({ // 修改這筆資料
           name,
+          categoryId,
           tel,
           address,
           openingHours,
