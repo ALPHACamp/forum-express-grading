@@ -11,6 +11,8 @@ router.get('/restaurants/:id/edit', adminController.editRestaurant)
 router.get('/restaurants/:id', adminController.getRestaurant)
 // edit restaurant (put)
 router.put('/restaurants/:id', adminController.putRestaurant)
+// delete restaurant
+router.delete('/restaurants/:id', adminController.deleteRestaurant)
 // get all restaurants
 router.get('/restaurants', adminController.getRestaurants)
 // create restaurant (post)

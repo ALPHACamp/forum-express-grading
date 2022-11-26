@@ -28,7 +28,7 @@
             Edit
           </a>
         </button>
-        <form action="/admin/restaurants/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
+        <form action="/admin/restaurants/{{this.id}}?_method=DELETE" method="POST" onclick="return confirm(`確定要刪除{{ this.name }}嗎？`)" style="display: inline;">
           <button type="submit" class="btn btn-link link-danger">Delete</button>
         </form>
       </td>
