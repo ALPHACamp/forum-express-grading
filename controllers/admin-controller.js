@@ -1,4 +1,5 @@
 const { Restaurant } = require('../models')
+const { localFileHandler } = require('../helpers/file-helpers')
 
 const adminController = {
   getRestaurants: (req, res, next) => {
@@ -12,13 +13,20 @@ const adminController = {
   postRestaurant: (req, res, next) => {
     const { name, tel, address, openingHours, description } = req.body
     if (!name) { throw new Error('Restaurant name is required!') } // 前後端不同步所以都要設定
-    Restaurant.create({ name, tel, address, openingHours, description })
-      .then(() => res.redirect('/admin/restaurants'))
+    const { file } = req
+    localFileHandler(file)
+      .then(filePath => Restaurant.create({
+        name, tel, address, openingHours, description, image: filePath || null
+      }))
+      .then(() => {
+        req.flash('success_messages', 'restaurant was successfully created')
+        res.redirect('/admin/restaurants')
+      })
       .catch(err => next(err))
   },
   getRestaurant: (req, res, next) => {
     Restaurant.findByPk(req.params.id, { raw: true })
-      .then((restaurant) => {
+      .then(restaurant => {
         if (!restaurant) { throw new Error("Restaurant didn't exist!") }
         res.render('admin/restaurant', { restaurant })
       })
@@ -35,12 +43,16 @@ const adminController = {
   putRestaurant: (req, res, next) => {
     const { name, tel, address, openingHours, description } = req.body
     if (!name) { throw new Error('Restaurant name is required!') }
-    Restaurant.findByPk(req.params.id) // 為了使用update所以不可以使用{raw:true}
-      .then(restaurant => {
+    const { file } = req
+    Promise.all([
+      Restaurant.findByPk(req.params.id),
+      localFileHandler(file)])
+      .then(([restaurant, filePath]) => {
         if (!restaurant) { throw new Error("Restaurant didn't exist!") }
-        return restaurant.update({ name, tel, address, openingHours, description })
-      })
-      .then(() => {
+        restaurant.update({
+          name, tel, address, openingHours, description, image: filePath || restaurant.image
+        })
+      }).then(() => {
         req.flash('success_messages', 'restaurant was successfully to update')
         res.redirect('/admin/restaurants')
       })
