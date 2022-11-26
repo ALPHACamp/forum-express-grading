@@ -11,5 +11,8 @@ router.delete('/restaurants/:id', adminController.deleteRestaurant)
 router.get('/restaurants', adminController.getRestaurants)
 router.post('/restaurants', upload.single('image'), adminController.postRestaurant) // 加上上傳單張圖片(修改後台新增餐廳的路由)
 
+router.patch('/users/:id', adminController.patchUser)
+router.get('/users', adminController.getUsers)
+
 router.use('/', (req, res) => res.redirect('/admin/restaurants'))
 module.exports = router
