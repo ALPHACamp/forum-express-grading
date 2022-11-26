@@ -5,11 +5,15 @@ const adminController = require('../../controllers/admin-controller')
 
 // create restaurant
 router.get('/restaurants/create', adminController.createRestaurant)
+// edit restaurant
+router.get('/restaurants/:id/edit', adminController.editRestaurant)
 // view restaurant
 router.get('/restaurants/:id', adminController.getRestaurant)
+// edit restaurant (put)
+router.put('/restaurants/:id', adminController.putRestaurant)
 // get all restaurants
 router.get('/restaurants', adminController.getRestaurants)
-// post restaurant
+// create restaurant (post)
 router.post('/restaurants', adminController.postRestaurant)
 
 router.get('', (req, res) => res.redirect('/admin/restaurants'))
