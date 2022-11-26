@@ -18,6 +18,11 @@ router.get('/restaurants', adminController.getRestaurants)
 // create 送出
 router.post('/restaurants', upload.single('image'), adminController.postRestaurant)
 
+// get users
+router.get('/users', adminController.getUsers)
+// patch users
+// router.patch('/users/:id', adminController.patchUser)
+
 // 這行是做甚麼的，我忘了
 router.use('/', (req, res) => res.redirect('/admin/restaurants'))
 

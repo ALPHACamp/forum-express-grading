@@ -1,8 +1,9 @@
 // 後台
 
 // 導入model
-const { Restaurant } = require('../models')
+const { Restaurant, User } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
+const user = require('../models/user')
 
 const adminController = {
   getRestaurants: (req, res, next) => {
@@ -83,6 +84,12 @@ const adminController = {
         return restaurant.destroy()
       })
       .then(() => res.redirect('/admin/restaurants'))
+      .catch(err => next(err))
+  },
+  // get users
+  getUsers: (req, res, next) => {
+    User.findAll({ raw: true })
+      .then(users => res.render('admin/users', { users }))
       .catch(err => next(err))
   }
 }

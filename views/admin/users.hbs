@@ -1,0 +1,57 @@
+<h1>餐廳後台</h1>
+{{!-- 之後加入功能 --}}
+<a href="/admin/user/create">
+  <button type="button" class="btn btn-primary">New User</button>
+</a>
+
+<div>
+  <ul class="nav d-flex">
+    <li class="nav-item">
+      <a class="nav-link active" aria-current="page" href="/admin/restaurants">Restaurants</a>
+    </li>
+    <p class="mt-2">|</p>
+    <li class="nav-item">
+      <a class="nav-link" href="/admin/users">Users</a>
+    </li>
+  </ul>
+</div>
+
+
+<br />
+<br />
+<table class="table align-middle">
+  <thead class="thead-dark">
+    <tr class="table-dark">
+      <th scope="col">#</th>
+      <th scope="col">Name</th>
+      <th scope="col">Email</th>
+      <th scope="col">Role</th>
+      <th scope="col">#</th>
+      <th scope="col"></th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each users}}
+    <tr>
+      <th scope="row">{{this.id}}</th>
+      <td>{{this.name}}</td>
+      <td>{{this.email}}</td>
+      <td>{{#if this.isAdmin includeZero=false}}admin{{else}}users{{/if}}</td>
+      <td>
+        <form action="/admin/users/{{this.id}}?_method=PATCH" method="POST" class="text-primary">
+          <button type="submit" class="btn btn-link link-primary">
+            set as {{#if this.isAdmin includeZero=false}}users{{else}}admin{{/if}}
+          </button>
+        </form>
+      </td>
+      {{!-- 刪除功能等待加入 --}}
+      <td>
+        <form action="/admin/restaurants/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
+          <button type="submit" class="btn btn-link link-danger" onclick="return confirm(`確定要刪除 {{ this.name }} 嗎？`)"><i
+              class="fa-solid fa-user-minus"></i></button>
+        </form>
+      </td>
+    </tr>
+    {{/each}}
+  </tbody>
+</table>
