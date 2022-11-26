@@ -4,6 +4,7 @@ const flash = require('connect-flash')
 const session = require('express-session')
 const passport = require('passport')
 const methodOverride = require('method-override')
+const path = require('path')
 
 const routes = require('./routes')
 const { getUser } = require('./helpers/auth-helpers')
@@ -28,6 +29,8 @@ app.use((req, res, next) => {
   res.locals.user = getUser(req)
   next()
 })
+app.use('/upload', express.static(path.join(__dirname, 'upload')))
+
 app.use(routes)
 
 app.listen(port, () => {
