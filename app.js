@@ -2,6 +2,9 @@ const path = require('path')
 const express = require('express')
 const passport = require('./config/passport')
 const routes = require('./routes')
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
 const handlebars = require('express-handlebars')
 const methodOverride = require('method-override')
 const handlebarsHelpers = require('./helpers/handlebars-helpers')
