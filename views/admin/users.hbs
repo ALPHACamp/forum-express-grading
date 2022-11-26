@@ -1,4 +1,4 @@
-<h1>餐廳後台</h1>
+<h1>使用者後台</h1>
 {{!-- 之後加入功能 --}}
 <a href="/admin/user/create">
   <button type="button" class="btn btn-primary">New User</button>
@@ -36,11 +36,11 @@
       <th scope="row">{{this.id}}</th>
       <td>{{this.name}}</td>
       <td>{{this.email}}</td>
-      <td>{{#if this.isAdmin includeZero=false}}admin{{else}}users{{/if}}</td>
+      <td>{{#if this.isAdmin}}admin{{else}}users{{/if}}</td>
       <td>
         <form action="/admin/users/{{this.id}}?_method=PATCH" method="POST" class="text-primary">
           <button type="submit" class="btn btn-link link-primary">
-            set as {{#if this.isAdmin includeZero=false}}users{{else}}admin{{/if}}
+            set as {{#if this.isAdmin}}users{{else}}admin{{/if}}
           </button>
         </form>
       </td>
