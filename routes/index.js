@@ -7,8 +7,6 @@ const userController = require('../controllers/user-controller')
 const { authenticated, authenticatedAdmin } = require('../middleware/auth')
 const { generalErrorHandler } = require('../middleware/error-handler')
 
-router.use('/admin', authenticatedAdmin, admin)
-
 // 註冊
 router.get('/signup', userController.signUpPage)
 router.post('/signup', userController.signUp)
@@ -17,7 +15,12 @@ router.get('/signin', userController.signInPage)
 router.post('/signin', passport.authenticate('local', { failureRedirect: '/signin', failureFlash: true }), userController.signIn)
 // 登出
 router.get('/logout', userController.logout)
-// 首頁
+
+// =====【 後台 】 =====
+router.use('/admin', authenticatedAdmin, admin)
+
+// =====【 前台 】 =====
+router.get('/restaurant/:id', authenticated, restController.getRestaurant)
 router.get('/restaurants', authenticated, restController.getRestaurants)
 router.get('/', (req, res) => res.redirect('/restaurants'))
 
