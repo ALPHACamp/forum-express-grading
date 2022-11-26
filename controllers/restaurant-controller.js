@@ -1,5 +1,7 @@
 const { Restaurant, Category } = require('../models')
 const restaurantController = {
+
+  // 顯示首頁index page
   getRestaurants: (req, res) => {
     return Restaurant.findAll({
       include: Category,
@@ -14,6 +16,23 @@ const restaurantController = {
         restaurants: data
       })
     })
+  },
+
+  // 顯示每間餐廳的細節頁面
+  getRestaurant: (req, res, next) => {
+    return Restaurant.findByPk(req.params.id, {
+      include: Category, // 拿出關聯的 Category model
+      nest: true,
+      raw: true
+    })
+      .then(restaurant => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        res.render('restaurant', {
+          restaurant
+        })
+      })
+      .catch(err => next(err))
   }
+
 }
 module.exports = restaurantController
