@@ -18,6 +18,10 @@ router.delete('/restaurants/:id', adminController.deleteRestaurant)
 router.get('/restaurants', adminController.getRestaurants)
 // create restaurant (post)
 router.post('/restaurants', upload.single('image'), adminController.postRestaurant)
+// patch user
+router.patch('/users/:id', adminController.patchUser)
+// get all users
+router.get('/users', adminController.getUsers)
 
 router.get('', (req, res) => res.redirect('/admin/restaurants'))
 
