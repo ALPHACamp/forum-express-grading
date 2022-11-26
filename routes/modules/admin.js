@@ -6,6 +6,7 @@ const upload = require('../../middleware/multer')
 
 // Categories：
 router.get('/categories', categoryController.getCategories)
+router.post('/categories', categoryController.postCategory)
 
 // Users：
 router.get('/users', adminController.getUsers)
