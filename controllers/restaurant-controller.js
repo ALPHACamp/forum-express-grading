@@ -20,7 +20,16 @@ const restaurantController = {
   },
   // 瀏覽：個別餐廳
   getRestaurant: (req, res, next) => {
-    return Restaurant.findByPk(req.params.id)
+    return Restaurant.findByPk(req.params.id, {
+      raw: true,
+      nest: true,
+      include: Category
+    })
+      .then(restaurant => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        res.render('restaurant', { restaurant })
+      })
+      .catch(err => next(err))
   }
 }
 
