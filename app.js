@@ -1,3 +1,4 @@
+const path = require('path')
 const express = require('express')
 const handlebars = require('express-handlebars')
 const session = require('express-session')
@@ -29,6 +30,9 @@ app.use(flash())
 
 // use method-override
 app.use(methodOverride('_method'))
+
+// allow dirctly get info from upload folder
+app.use('/upload', express.static(path.join(__dirname, 'upload')))
 
 // add a middleware to add variables
 app.use((req, res, next) => {
