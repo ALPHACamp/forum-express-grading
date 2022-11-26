@@ -41,6 +41,17 @@ const categoryController = {
         res.redirect('/admin/categories')
       })
       .catch(err => next(err))
+  },
+  // 刪：
+  deleteCategory: (req, res, next) => {
+    const id = req.params.id
+    return Category.findByPk(id)
+      .then(category => {
+        if (!id) throw new Error("Category didn't exist!")
+        return category.destroy()
+      })
+      .then(() => res.redirect('/admin/categories'))
+      .catch(err => next(err))
   }
 }
 
