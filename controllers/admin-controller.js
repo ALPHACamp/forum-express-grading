@@ -1,5 +1,6 @@
-const { Restaurant } = require('../models')
+const { Restaurant, User } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
+const superUser = { name: 'root', email: 'root@example.com' }
 
 const adminController = {
   getRestaurants: (req, res, next) => {
@@ -36,7 +37,7 @@ const adminController = {
       raw: true
     })
       .then(restaurant => {
-        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        if (!restaurant) throw new Error("Restaurant doesn't exists!")
         res.render('admin/restaurant', { restaurant })
       })
       .catch(err => next(err))
@@ -46,7 +47,7 @@ const adminController = {
       raw: true
     })
       .then(restaurant => {
-        if (!restaurant) throw new Error("Restaurant didn't exists!")
+        if (!restaurant) throw new Error("Restaurant doesn't exists!")
         res.render('admin/edit-restaurant', { restaurant })
       })
       .catch(err => next(err))
@@ -61,7 +62,7 @@ const adminController = {
       imgurFileHandler(file)
     ])
       .then(([restaurant, filePath]) => {
-        if (!restaurant) throw new Error("Restaurant didn't exists!")
+        if (!restaurant) throw new Error("Restaurant doesn't exists!")
         return restaurant.update({
           name,
           tel,
@@ -81,12 +82,36 @@ const adminController = {
     const id = req.params.id
     return Restaurant.findByPk(id)
       .then(restaurant => {
-        if (!restaurant) throw new Error("Restaurant didn't exists!")
+        if (!restaurant) throw new Error("Restaurant doesn't exists!")
         return restaurant.destroy()
       })
       .then(restaurant => {
         req.flash('warning_messages', `${restaurant.name} was successfully deleted!`)
         res.redirect('/admin/restaurants')
+      })
+      .catch(err => next(err))
+  },
+  getUsers: (req, res, next) => {
+    return User.findAll({
+      raw: true
+    })
+      .then(users => res.render('admin/users', { users }))
+      .catch(err => next(err))
+  },
+  patchUser: (req, res, next) => {
+    const id = req.params.id
+    return User.findByPk(id)
+      .then(user => {
+        if (!user) throw new Error("User doesn't exists!")
+        if (user.email === superUser.email) {
+          req.flash('error_messages', `禁止變更 ${superUser.name} 權限`)
+          return res.redirect('back')
+        }
+        return user.update({ isAdmin: !user.isAdmin })
+      })
+      .then(user => {
+        req.flash('success_messages', '使用者權限變更成功')
+        res.redirect('/admin/users')
       })
       .catch(err => next(err))
   }
