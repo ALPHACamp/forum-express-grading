@@ -1,5 +1,5 @@
 const { Restaurant } = require('../models')
-const { localFileHandler } = require('../helpers/file-helpers')
+const { imgurFileHandler } = require('../helpers/file-helpers')
 module.exports = {
   getRestaurants: (req, res, next) => {
     Restaurant.findAll({raw: true})
@@ -13,7 +13,7 @@ module.exports = {
 
     const { name, tel, address, openingHours, description } = req.body  // 從 req.body 拿出表單裡的資料
     if (!name) throw new Error('Restaurant name is required!') // name 是必填，若發先是空值就會終止程式碼，並在畫面顯示錯誤提示
-    localFileHandler(req.file) 
+    imgurFileHandler(req.file) 
       .then(filePath => Restaurant.create({ 
         name,
         tel,
@@ -53,7 +53,7 @@ module.exports = {
     if (!name) throw new Error('Restaurant name is required!')
     Promise.all([ // 非同步處理
       Restaurant.findByPk(req.params.id), // 去資料庫查有沒有這間餐廳
-      localFileHandler(req.file) // 把檔案傳到 file-helper 處理 
+      imgurFileHandler(req.file) // 把檔案傳到 file-helper 處理 
     ])
       .then(([restaurant, filePath]) => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
