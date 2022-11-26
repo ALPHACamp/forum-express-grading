@@ -22,4 +22,4 @@ const authenticatedAdmin = (req, res, next) => {
 module.exports = {
   authenticated,
   authenticatedAdmin
-} 
+}
