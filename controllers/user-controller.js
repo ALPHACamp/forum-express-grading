@@ -19,11 +19,11 @@ const userController = {
   },
 
   editUser: (req, res, next) => {
-    User.findByPk(req.params.id, { raw: true })
+    return User.findByPk(req.params.id)
       .then(user => {
         if (!user) throw new Error("User doesn't exist!")
-        console.log(user.name)
-        res.render('users/edit', { user })
+
+        res.render('users/edit', { user: user.toJSON() })
       })
       .catch(err => next(err))
   },
@@ -34,7 +34,7 @@ const userController = {
 
     const id = req.params.id
 
-    Promise.all([ // 非同步處理
+    return Promise.all([ // 非同步處理
       User.findByPk(req.params.id), // 去資料庫查
       imgurFileHandler(file) // 把檔案傳到 file-helper 處理
     ])
