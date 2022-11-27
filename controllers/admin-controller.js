@@ -18,12 +18,18 @@ const adminController = {
       .catch(err => next(err))
   },
   // 新增餐廳表單頁面
-  createRestaurant: (req, res) => {
-    res.render('admin/create-restaurant')
+  createRestaurant: (req, res, next) => {
+    // 先去撈 Category table 裡面的所有資料
+    return Category.findAll({
+      raw: true
+    })
+    // 把撈到的categories資料傳到 create-restaurant.hbs
+      .then(categories => res.render('admin/create-restaurant', { categories }))
+      .catch(err => next(err))
   },
   // 新增餐廳資料給db
   postRestaurant: (req, res, next) => {
-    const { name, tel, address, openingHours, description } = req.body
+    const { name, tel, address, openingHours, description, categoryId } = req.body
     // 後端驗證，確保必有input name="name"這個資料
     if (!name) throw new Error('Restaurant name is required!')
 
@@ -36,8 +42,9 @@ const adminController = {
           address,
           openingHours,
           description,
-          image: filePath || null
+          image: filePath || null,
           // 如果 filePath 的值為檔案路徑字串 (使用者有上傳檔案，就會被判斷為 Truthy)，就將 image 的值設為檔案路徑；如果 filePath 的值是空的 (也就是沒有上傳檔案，因此沒有檔案路徑，會被判斷為 Falsy)，那麼就將 image 的值設為 null
+          categoryId
         }))
       .then(() => {
         req.flash('success_messages', 'restaurant was successfully created')
@@ -61,18 +68,19 @@ const adminController = {
   },
   // 編輯1間餐廳表單頁面
   editRestaurant: (req, res, next) => {
-    Restaurant.findByPk(req.params.id,
-      {
-        raw: true
-      })
-      .then(restaurant => {
+    // 用 Promise.all() 裡面的陣列，把這兩個非同步事件的程序都裝進去。查詢都回來以後，才會進入後面的 .then 把資料傳給樣板
+    return Promise.all([
+      Restaurant.findByPk(req.params.id, { raw: true }),
+      Category.findAll({ raw: true })
+    ])
+      .then(([restaurant, categories]) => {
         if (!restaurant) throw new Error('這間餐廳不存在!')
-        res.render('admin/edit-restaurant', { restaurant })
+        res.render('admin/edit-restaurant', { restaurant, categories })
       })
       .catch(err => next(err))
   },
   putRestaurant: (req, res, next) => {
-    const { name, tel, address, openingHours, description } = req.body
+    const { name, tel, address, openingHours, description, categoryId } = req.body
     if (!name) throw new Error('Restaurant name is required!')
     // 因為這邊會需要用到 restaurant.update 這個方法，如果加上參數就會把 sequelize 提供的這個方法過濾掉，會無法使用。因此在編輯情境裡我們是不會加 { raw: true } 的。
     const file = req.file
@@ -96,7 +104,8 @@ const adminController = {
           address,
           openingHours,
           description,
-          image: filePath || restaurant.image // 如果 filePath 是 Truthy (使用者有上傳新照片) 就用 filePath，是 Falsy (使用者沒有上傳新照片) 就沿用原本資料庫內的值
+          image: filePath || restaurant.image,
+          categoryId
         })
       })
       .then(() => {
