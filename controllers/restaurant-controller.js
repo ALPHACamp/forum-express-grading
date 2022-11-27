@@ -2,8 +2,17 @@ const assert = require('assert')
 const { Restaurant, Category } = require('../models')
 const restaurantController = {
   getRestaurants: (req, res, next) => {
-    return Restaurant.findAll({ include: Category, nest: true, raw: true })
-      .then(restaurants => {
+    const categoryId = Number(req.query.categoryId) || ''
+    return Promise.all([
+      Category.findAll({ raw: true }),
+      Restaurant.findAll({
+        include: Category,
+        where: { ...(categoryId ? { categoryId } : {}) },
+        nest: true,
+        raw: true
+      })
+    ])
+      .then(([categories, restaurants]) => {
         if (!restaurants.length) {
           return req.flash('error_messages', 'No restaurant is found!')
         }
@@ -11,7 +20,11 @@ const restaurantController = {
           ...r,
           description: r.description.substring(0, 50)
         }))
-        res.render('restaurants', { restaurants: datas })
+        res.render('restaurants', {
+          restaurants: datas,
+          categories,
+          categoryId
+        })
       })
       .catch(err => next(err))
   },
