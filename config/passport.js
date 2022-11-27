@@ -1,8 +1,7 @@
 const passport = require('passport')
 const LocalStrategy = require('passport-local')
 const bcrypt = require('bcryptjs')
-const db = require('../models')
-const User = db.User
+const { User, Restaurant } = require('../models')
 
 // setup passport strategy
 passport.use(new LocalStrategy(
@@ -18,8 +17,8 @@ passport.use(new LocalStrategy(
         if (!user) { return cb(null, false, req.flash('error_messages', '帳號或密碼錯誤!')) }
         bcrypt.compare(password, user.password).then(res => {
           if (!res) { return cb(null, false, req.flash('error_messages', '帳號或密碼錯誤!')) }
+          return cb(null, user)
         })
-        return cb(null, user)
       })
   }
 ))
