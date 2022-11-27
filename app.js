@@ -17,7 +17,7 @@ const app = express()
 const port = process.env.PORT || 3000
 const SESSION_SECRET = 'secret'
 
-const db = require('./models')
+// const db = require('./models')
 app.use(express.urlencoded({ extended: true }))
 // app.use(bodyParser.urlencoded({ extended: true }))
 app.use(session({ secret: SESSION_SECRET, resave: false, saveUninitialized: false }))
