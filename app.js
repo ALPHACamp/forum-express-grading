@@ -4,6 +4,7 @@ const routes = require('./routes')
 const flash = require('connect-flash')
 const session = require('express-session')
 const passport = require('./config/passport')
+const methodOverride = require('method-override')
 const handlebarsHelpers = require('./helpers/handlebars-helpers')
 const { getUser } = require('./helpers/auth-helpers')
 
@@ -25,6 +26,7 @@ app.use((req, res, next) => {
   next()
 })
 app.use(routes)
+app.use(methodOverride('_method'))
 app.listen(port, () => {
   console.info(`Example app listening on port ${port}!`)
 })
