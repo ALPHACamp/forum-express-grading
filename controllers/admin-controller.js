@@ -98,7 +98,7 @@ const adminController = {
         if (!user) throw new Error('User does not exist!')
         if (user.name === 'admin') {
           req.flash('error_messages', '禁止變更 root 權限')
-          res.redirect('back')// request headers referer，不使用使用者權限將被更改
+          return res.redirect('back')// request headers referer，不使用使用者權限將被更改
         }
         return user.update({ isAdmin: !user.isAdmin })
       })
