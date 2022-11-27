@@ -1,4 +1,4 @@
-const { Restaurant, Category } = require('../models')
+const { Restaurant, Category, Comment, User } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
 
 const restaurantController = {
@@ -58,11 +58,14 @@ const restaurantController = {
   // 顯示每間餐廳的細節頁面
   getRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
-      include: Category, // 拿出關聯的 Category model
-      nest: true
-      // raw: true
+      nest: true,
+      include: [
+        Category, // 拿出關聯的 Category model
+        { model: Comment, include: User }
+      ]
     })
       .then(restaurant => {
+        console.log(restaurant.Comments[0])
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         restaurant.increment('viewCounts')
         res.render('restaurant', {
