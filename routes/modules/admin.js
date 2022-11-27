@@ -5,7 +5,8 @@ const adminController = require('../../controllers/admin-controller')
 router.get('/restaurants/create', adminController.createRestaurant)
 router.get('/restaurants/:id/edit', adminController.editRestaurant)
 router.get('/restaurants/:id', adminController.getRestaurant)
-router.post('/restaurants/:id', adminController.putRestaurant) // *post
+router.put('/restaurants/:id', adminController.putRestaurant) // *post
+router.delete('/restaurants/:id', adminController.deleteRestaurant)
 router.get('/restaurants', adminController.getRestaurants)
 router.post('/restaurants', adminController.postRestaurant)
 router.get('', (req, res) => res.redirect('admin/restaurants')) // *

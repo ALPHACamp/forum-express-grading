@@ -25,8 +25,8 @@ app.use((req, res, next) => {
   res.locals.user = getUser(req)
   next()
 })
+app.use(methodOverride('_method')) //* before routes
 app.use(routes)
-app.use(methodOverride('_method'))
 app.listen(port, () => {
   console.info(`Example app listening on port ${port}!`)
 })
