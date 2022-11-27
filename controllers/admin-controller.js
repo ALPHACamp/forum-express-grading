@@ -1,4 +1,4 @@
-const { Restaurant, User } = require('../models')
+const { Restaurant, User, Category } = require('../models')
 // 上面是解構賦值的寫法，等於下面這種寫法的簡寫
 // const db = require('../models')
 // const Restaurant = db.Restaurant
@@ -9,7 +9,9 @@ const adminController = {
   getRestaurants: (req, res, next) => {
     // 先去資料庫撈全部的餐廳資料
     Restaurant.findAll({
-      raw: true // 使用raw: true整理資料，把資料變成單純js的JSON格式物件，如此收到回傳的資料以後，就可以直接把資料放到樣板裡面了
+      raw: true, // 使用raw: true整理資料，把資料變成單純js的JSON格式物件，如此收到回傳的資料以後，就可以直接把資料放到樣板裡面了
+      nest: true, // 把資料整理成比較容易取用的結構
+      include: [Category] // 使用 Category model 的關聯資料
     })
     // 撈完資料，再渲染畫面
       .then(restaurants => res.render('admin/restaurants', { restaurants }))
@@ -47,7 +49,9 @@ const adminController = {
   getRestaurant: (req, res, next) => {
     Restaurant.findByPk(req.params.id, // 對應到路由傳過來的參數，用此參數去資料庫用 id 找一筆資料
       {
-        raw: true // 找到以後整理格式成單純的js物件再回傳
+        raw: true, // 找到以後整理格式成單純的js物件再回傳
+        nest: true,
+        include: [Category]
       })
       .then(restaurant => {
         if (!restaurant) throw new Error('這間餐廳不存在!') //  如果找不到，回傳錯誤訊息，後面不執行

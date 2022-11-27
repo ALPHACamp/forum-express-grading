@@ -1,9 +1,12 @@
 <h1>餐廳後台</h1>
-<div>
-<a href="/admin/restaurants" style="text-decoration: none; font-size: 25px; color: #4B8CA6;">Restaurants</a>
-<span style="font-size: 25px;">|</span>
-<a href="/admin/users" style="text-decoration: none; font-size: 25px; color: #4B8CA6;">Users</a>
-</div>
+<ul class="nav nav-tabs my-4">
+  <li class="nav-item">
+    <a class="nav-link active" href="/admin/restaurants">Restaurants</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="/admin/users">Users</a>
+  </li>
+</ul>
 <a href='/admin/restaurants/create'>
   <button type="button" class="btn btn-primary mt-4">New Restaurant</button>
 </a>
@@ -14,6 +17,7 @@
     <tr>
       <th scope="col">#</th>
       <th scope="col">Name</th>
+      <th scope="col">Category</th>
       <th scope="col"></th>
     </tr>
   </thead>
@@ -22,6 +26,7 @@
       <tr>
         <th scope="row">{{this.id}}</th>
         <td>{{this.name}}</td>
+        <td>{{this.Category.name}}</td>
         <td>
           <button type="button" class="btn btn-link">
             <a class="btn btn-link link-primary" href="/admin/restaurants/{{this.id}}">
