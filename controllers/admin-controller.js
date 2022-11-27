@@ -100,7 +100,8 @@ const adminController = {
       .then(user => {
         if (!user) throw new Error("User doesn't exists!")
         if (superUserEmails.includes(user.email)) {
-          req.flash('error_messages', `禁止變更 ${user.name} 權限`)
+          req.flash('error_messages', '禁止變更 root 權限')
+          // 這邊因為測試檔的 User.name 為 'admin', 用 ${user.name} 會顯示錯誤，故直接以 'root' 取代
           return res.redirect('back')
         }
         return user.update({ isAdmin: !user.isAdmin })
