@@ -1,13 +1,16 @@
 // 後台
 
 // 導入model
-const { Restaurant, User } = require('../models')
+const { Restaurant, User, Category } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
-
 const adminController = {
   getRestaurants: (req, res, next) => {
     // 渲染所有餐廳
-    Restaurant.findAll({ raw: true })
+    Restaurant.findAll({
+      raw: true,
+      nest: true, // 與raw類似，轉成JS原生物件。主要是因為include為[]回傳，會多包一層，所以才要再加nest
+      include: [Category]// 當你想要使用 model 的關聯資料時，需要透過 include 把關聯資料拉進來，關聯資料才會被拿到 findAll 的回傳值裡。
+    })
       // 不使用raw:true，會回傳sequelize的instance。在沒有要用Sequelize做後續操作時，可以轉成JS原生物件。
       .then(restaurants => res.render('admin/restaurants', { restaurants }))
       .catch(err => next(err))
@@ -36,7 +39,11 @@ const adminController = {
   },
   // 單一筆餐廳
   getRestaurant: (req, res, next) => {
-    Restaurant.findByPk(req.params.rest_id, { raw: true })
+    Restaurant.findByPk(req.params.rest_id, {
+      raw: true,
+      nest: true,
+      include: [Category]
+    })
       .then(restaurant => {
         // 如果找不到餐廳
         if (!restaurant) throw new Error("Restaurant didn't exist!")
