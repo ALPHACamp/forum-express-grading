@@ -18,20 +18,31 @@ const restaurantController = {
   },
 
   // 顯示首頁index page
-  getRestaurants: (req, res) => {
-    return Restaurant.findAll({
-      include: Category,
-      nest: true,
-      raw: true
-    }).then(restaurants => {
-      const data = restaurants.map(r => ({
-        ...r,
-        description: r.description.substring(0, 50)
-      }))
-      return res.render('restaurants', {
-        restaurants: data
+  getRestaurants: (req, res, next) => {
+    const categoryId = Number(req.query.categoryId) || '' // 從網址上拿下來的參數
+    return Promise.all([
+      Restaurant.findAll({
+        include: Category,
+        where: { // 新增查詢條件
+          ...categoryId ? { categoryId } : {} // 檢查 categoryId 是否為空值
+        },
+        nest: true,
+        raw: true
+      }),
+      Category.findAll({ raw: true })
+    ])
+      .then(([restaurants, categories]) => {
+        const data = restaurants.map(r => ({
+          ...r,
+          description: r.description.substring(0, 50)
+        }))
+        return res.render('restaurants', {
+          restaurants: data,
+          categories,
+          categoryId
+        })
       })
-    })
+      .catch(err => next(err))
   },
 
   // 顯示每間餐廳的細節頁面
