@@ -10,7 +10,7 @@ describe('# R01', () => {
   describe('登入測試: POST /signin', function(){
     // 以下測試會發出請求，測試資料庫內是否有作業指定的使用者資料
     // 測試資料的來源是真實的資料庫
-    it('#1 密碼錯誤', function(done){
+    it('#1 密碼錯誤', async function(){
       request(app)
         // 對 POST /signin 發出請求，參數是錯誤的密碼
         .post('/signin')
@@ -18,10 +18,10 @@ describe('# R01', () => {
         .send('email=root@example.com&password=123')
         // 期待登入驗證回應失敗，重新導向 /signin
         .expect('Location', '/signin')
-        .expect(302, done)
+        .expect(302)
     })
 
-    it('#2 帳號錯誤', function(done){
+    it('#2 帳號錯誤', async function(){
       request(app)
         // 對 POST /signin 發出請求，參數是錯誤的帳號
         .post('/signin')
@@ -29,10 +29,10 @@ describe('# R01', () => {
         .send('email=tu&password=12345678')
         // 期待登入驗證回應失敗，重新導向 /signin
         .expect('Location', '/signin')
-        .expect(302, done)
+        .expect(302)
     })
 
-    it('#3 成功登入', function(done){
+    it('#3 成功登入', async function(){
       request(app)
         // 對 POST /signin 發出請求，參數是作業指定的使用者帳號密碼
         .post('/signin')
@@ -40,7 +40,7 @@ describe('# R01', () => {
         .send('email=root@example.com&password=12345678')
         // 期待登入驗證成功，重新導向 /restaurants 
         .expect('Location', '/restaurants')
-        .expect(302, done)
+        .expect(302)
     })
   });
 
