@@ -93,7 +93,7 @@ const adminController = {
   },
   patchUser: (req, res, next) => {
     return User.findByPk(req.params.id)
-      .then((user) => {
+      .then(user => {
         if (!user) throw new Error("User doesn't exist !")
 
         if (user.email === 'root@example.com') {
@@ -106,7 +106,7 @@ const adminController = {
         req.flash('success_messages', '使用者權限變更成功')
         return res.redirect('/admin/users')
       })
-      .catch((err) => next(err))
+      .catch(err => next(err))
   }
 }
 
