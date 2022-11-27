@@ -22,7 +22,7 @@ const userController = {
     User.findByPk(req.params.id, { raw: true })
       .then(user => {
         if (!user) throw new Error("User doesn't exist!")
-        console.log(user)
+        console.log(user.name)
         res.render('users/edit', { user })
       })
       .catch(err => next(err))
@@ -47,7 +47,7 @@ const userController = {
         })
       })
       .then(() => {
-        req.flash('success_messages', 'user was successfully to update')
+        req.flash('success_messages', '使用者資料編輯成功')
         res.redirect(`/users/${id}`)
       })
       .catch(err => next(err))
