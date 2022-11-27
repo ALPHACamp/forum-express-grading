@@ -3,7 +3,7 @@ const chai = require('chai')
 const sinon = require('sinon')
 const should = chai.should()
 
-const app = require('../R01-test/app')
+const app = require('../app')
 const { createModelMock, createControllerProxy, mockRequest, mockResponse, mockNext } = require('../helpers/unit-test-helper');
 
 describe('# R01', () => {

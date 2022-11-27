@@ -12,24 +12,24 @@ passport.use(new LocalStrategy(
     passReqToCallback: true
   },
   // authenticate user
-  (req, email, password, cb) => {
+  (req, email, password, done) => {
     User.findOne({ where: { email } })
       .then(user => {
-        if (!user) return cb(null, false, req.flash('error_messages', '帳號或密碼輸入錯誤！'))
+        if (!user) return done(null, false, req.flash('error_messages', '帳號或密碼輸入錯誤！'))
         bcrypt.compare(password, user.password).then(res => {
-          if (!res) return cb(null, false, req.flash('error_messages', '帳號或密碼輸入錯誤！'))
-          return cb(null, user)
+          if (!res) return done(null, false, req.flash('error_messages', '帳號或密碼輸入錯誤！'))
+          return done(null, user)
         })
       })
   }
 ))
 // serialize and deserialize user
-passport.serializeUser((user, cb) => {
-  cb(null, user.id)
+passport.serializeUser((user, done) => {
+  done(null, user.id)
 })
-passport.deserializeUser((id, cb) => {
+passport.deserializeUser((id, done) => {
   User.findByPk(id).then(user => {
-    return cb(null, user.toJSON())
+    return done(null, user.toJSON())
   })
 })
 module.exports = passport
