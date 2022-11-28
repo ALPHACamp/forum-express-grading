@@ -3,20 +3,30 @@ const { Restaurant, Category } = require('../models')
 const restaurantController = {
   // 瀏覽：全部餐廳
   getRestaurants: (req, res, next) => {
-    return Restaurant.findAll({
-      raw: true,
-      nest: true,
-      include: [Category]
-    })
-      .then(restaurants => {
+    const categoryId = Number(req.query.categoryId) || ''
+    return Promise.all([
+      Restaurant.findAll({
+        include: [Category],
+        where: { // 新增查詢條件
+          ...categoryId ? { categoryId } : {} // 檢查 categoryId 是否為空值
+        },
+        nest: true,
+        raw: true
+      }),
+      Category.findAll({ raw: true })
+    ])
+      .then(([restaurants, categories]) => {
         const data = restaurants.map(r => ({
           ...r,
           description: r.description.substring(0, 50)
         }))
         return res.render('restaurants', {
-          restaurants: data
+          restaurants: data,
+          categories,
+          categoryId
         })
       })
+      .catch(err => next(err))
   },
   // 瀏覽：個別餐廳
   getRestaurant: (req, res, next) => {
