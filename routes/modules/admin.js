@@ -22,7 +22,12 @@ router.post(
 )
 router.get('/users/', adminController.getUsers)
 router.patch('/users/:id', adminController.patchUser)
+router.get('/categories/:id', categoryController.getCategories)
+router.put('/categories/:id', categoryController.putCategory)
+router.delete('/categories/:id', categoryController.deleteCategory)
 router.get('/categories', categoryController.getCategories)
+router.post('/categories', categoryController.postCategory)
+
 router.get('', (req, res) => res.redirect('/admin/restaurants'))
 // 或寫成 router.use("/", (req, res) => res.redirect("/admin/restaurants"))
 
