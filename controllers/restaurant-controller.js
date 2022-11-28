@@ -46,9 +46,7 @@ const restaurantController = {
           include: User
         }
       ],
-      order: [
-        [Comment, 'updatedAt', 'DESC']
-      ]
+      order: [[Comment, 'updatedAt', 'DESC']]
     })
       .then(restaurant => {
         assert(restaurant, "Restaurant did't exist!")
@@ -61,14 +59,12 @@ const restaurantController = {
   },
   getDashboard: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
-      include: Category,
-      nest: true,
-      raw: true
+      include: Category
     })
       .then(restaurant => {
         assert(restaurant, "Restaurant did't exist!")
         res.render('dashboard', {
-          restaurant
+          restaurant: restaurant.toJSON()
         })
       })
       .catch(err => next(err))
