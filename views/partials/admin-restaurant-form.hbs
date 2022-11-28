@@ -2,14 +2,18 @@
   <label class="form-label" for="name">Name</label>
   <input class="form-control" type="text" name="name" id="name" placeholder="Enter name" value="{{restaurant.name}}"
     required>
+  {{!-- value來自editRestaurant，至於create的時候不會有預設值所以等同沒value要顯示 --}}
 </div>
 <div class="form-row mb-3">
   <label class="form-label" for="categoryId">Category</label>
   <select class="form-control" id="categoryId" name="categoryId" required>
     {{#each categories}}
-    <option value="{{this.id}}">{{this.name}}</option>
+    <option value="{{this.id}}" {{#ifCond this.id ../restaurant.categoryId}} selected {{/ifCond}}>
+      {{this.name}}
+    </option>
     {{/each}}
   </select>
+  {{!-- ../代表到外層，因為本層this是each categories(Category.findAll)，所以要到外層去restaurant資料表拿 --}}
 </div>
 <div class="form-row mb-3">
   <label class="form-label" for="tel">Tel</label>

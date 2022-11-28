@@ -75,7 +75,8 @@ const adminController = {
   },
   putRestaurant: (req, res, next) => {
     // 用Sequelize的物件才有update語法，raw則沒
-    const { name, tel, address, openingHours, description } = req.body
+    const { name, tel, address, openingHours, description, categoryId } =
+      req.body
     if (!name) throw new Error('Restaurant name is required!')
     const file = req.file
     // Promise.all裝滿著promise物件的陣列，所以加個中括號吧 //雖然沒中括號好像也行(?)
@@ -89,7 +90,8 @@ const adminController = {
           address,
           openingHours, // 根據models所寫的，而不是sql資料庫的
           description,
-          image: filePath || restaurant.image
+          image: filePath || restaurant.image,
+          categoryId
         })
       })
       .then(() => {
