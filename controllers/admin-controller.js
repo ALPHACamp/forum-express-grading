@@ -18,10 +18,15 @@ const adminController = {
       .catch(err => next(err))
   },
   createRestaurant: (req, res) => {
-    return res.render('admin/create-restaurant')
+    return Category.findAll({ raw: true })
+      .then(categories =>
+        res.render('admin/create-restaurant', { categories })
+      )
+      .catch(err => next(err))
   },
   postRestaurant: (req, res, next) => {
-    const { name, tel, address, openingHours, description } = req.body // 從 req.body 拿出表單裡的資料
+    const { name, tel, address, openingHours, description, categoryId } =
+      req.body // 從 req.body 拿出表單裡的資料
     if (!name) throw new Error('Restaurant name is required!') // name 是必填，若發先是空值就會終止程式碼，並在畫面顯示錯誤提示。即使前端有required，但前後端分離，後端必須自己也要控管。throw 讓我們可以在程式出錯時，終止執行此區塊的程式碼，並拋出客製化的錯誤訊息。
 
     const file = req.file // 把檔案取出來
@@ -34,7 +39,8 @@ const adminController = {
           address,
           openingHours,
           description,
-          image: filePath || null
+          image: filePath || null,
+          categoryId
         })
       )
       .then(() => {
@@ -57,12 +63,13 @@ const adminController = {
       .catch(err => next(err))
   },
   editRestaurant: (req, res, next) => {
-    return Restaurant.findByPk(req.params.id, {
-      raw: true
-    })
-      .then(restaurant => {
+    return Promise.all([
+      Restaurant.findByPk(req.params.id, { raw: true }),
+      Category.findAll({ raw: true })
+    ]) // 裝著非同步事件的陣列，產出依序對應的結果於then使用
+      .then(([restaurant, categories]) => {
         if (!restaurant) throw new Error("Restaurant doesn't exist!")
-        res.render('admin/edit-restaurant', { restaurant })
+        res.render('admin/edit-restaurant', { restaurant, categories })
       })
       .catch(err => next(err))
   },
