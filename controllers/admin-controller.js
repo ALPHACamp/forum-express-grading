@@ -1,6 +1,6 @@
 // const db=require('../models')
 // const Restaurant=db.Restaurant
-const { Restaurant, User } = require('../models')
+const { Restaurant, User, Category } = require('../models')
 const {
   localFileHandler,
   imgurFileHandler
@@ -10,7 +10,9 @@ const superUser = { name: 'root', email: 'root@example.com' } // 建議獨立出
 const adminController = {
   getRestaurants: (req, res, next) => {
     return Restaurant.findAll({
-      raw: true // 把 Sequelize 包裝過的一大包物件轉換成格式比較單純的 JS 原生物件
+      raw: true, // 把 Sequelize 包裝過的一大包物件轉換成格式比較單純的 JS 原生物件
+      nest: true, // 預設下，Sequelize只返回本身資料，不包含關聯資料，所以用nest整理關聯資料
+      include: [Category] // 透過 include 把關聯資料拉進來
     })
       .then(restaurants => res.render('admin/restaurants', { restaurants }))
       .catch(err => next(err))
@@ -44,11 +46,13 @@ const adminController = {
   getRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.rest_id, {
       // 去資料庫用 id(PK) 找一筆資料
-      raw: true // 換成格式比較單純的 JS 原生物件
+      raw: true, // 換成格式比較單純的 JS 原生物件
+      nest: true,
+      include: [Category]
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant doesn't exist!") //  如果找不到，回傳錯誤訊息，後面不執行
-        res.render('admin/restaurant', { restaurant })
+        res.render('admin/restaurant', { restaurant }) // 只抓單筆時，可不用raw,nest，改用restaurant:restaurant.toJSON()
       })
       .catch(err => next(err))
   },
