@@ -26,7 +26,7 @@
 			<td>{{#if this.isAdmin}}admin{{else}}user{{/if}}</td>
 			<td>
 				<form action="/admin/users/{{this.id}}?_method=PATCH" method="POST">
-					<button type="submit" class="btn btn-link">set as {{#if this.isAdmin}}user{{else}}admin{{/if}}</button>
+					<button type="submit" class="btn btn-link" onclick="return confirm(`確定要使用切換嗎？`)">set as {{#if this.isAdmin}}user{{else}}admin{{/if}}</button>
 				</form>
 			</td>
 		</tr>
