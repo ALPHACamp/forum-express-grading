@@ -16,6 +16,19 @@ const restaurantController = {
         restaurants: data // 要使用的資料會放在 data
       })
     })
+  },
+  getRestaurant: (req, res, next) => {
+    return Restaurant.findByPk(req.params.id,
+      {
+        raw: true,
+        nest: true,
+        include: Category
+      })
+      .then(restaurant => {
+        if (!restaurant) throw new Error('這間餐廳不存在!')
+        res.render('restaurant', { restaurant })
+      })
+      .catch(err => next(err))
   }
 }
 module.exports = restaurantController

@@ -8,7 +8,7 @@ const adminController = {
   // 瀏覽全部餐廳頁面
   getRestaurants: (req, res, next) => {
     // 先去資料庫撈全部的餐廳資料
-    Restaurant.findAll({
+    return Restaurant.findAll({
       raw: true, // 使用raw: true整理資料，把資料變成單純js的JSON格式物件，如此收到回傳的資料以後，就可以直接把資料放到樣板裡面了
       nest: true, // 把資料整理成比較容易取用的結構
       include: [Category] // 使用 Category model 的關聯資料
@@ -54,7 +54,7 @@ const adminController = {
   },
   // 瀏覽1間餐廳頁面
   getRestaurant: (req, res, next) => {
-    Restaurant.findByPk(req.params.id, // 對應到路由傳過來的參數，用此參數去資料庫用 id 找一筆資料
+    return Restaurant.findByPk(req.params.id, // 對應到路由傳過來的參數，用此參數去資料庫用 id 找一筆資料
       {
         raw: true, // 找到以後整理格式成單純的js物件再回傳
         nest: true,
@@ -84,7 +84,7 @@ const adminController = {
     if (!name) throw new Error('Restaurant name is required!')
     // 因為這邊會需要用到 restaurant.update 這個方法，如果加上參數就會把 sequelize 提供的這個方法過濾掉，會無法使用。因此在編輯情境裡我們是不會加 { raw: true } 的。
     const file = req.file
-    Promise.all([ // 用promise.all 處理非同步事件
+    return Promise.all([ // 用promise.all 處理非同步事件
       Restaurant.findByPk(req.params.id), // 去資料庫查有沒有這間餐廳
       imgurFileHandler(file) // 把檔案傳到 file-helper 處理
     ])

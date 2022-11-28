@@ -5,6 +5,7 @@ const authenticated = (req, res, next) => {
   if (helpers.ensureAuthenticated(req)) {
     return next()
   }
+  req.flash('error_messages', 'Please sign in!')
   res.redirect('/signin')
 }
 
