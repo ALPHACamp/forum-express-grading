@@ -1,9 +1,20 @@
-{{>admin-navbar}}
+<h1>餐廳後台</h1>
+
+<ul class="nav nav-tabs mt-3">
+  <li class="nav-item">
+    <a class="nav-link active" href="/admin/restaurants">restaurants</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="/admin/users">users</a>
+  </li>
+</ul>
+
 <table class="table align-middle table-striped">
   <thead class="table-dark">
     <tr>
       <th scope="col">#</th>
       <th scope="col">Name</th>
+      <th scope="col">Category</th>
       <th scope="col"></th>
     </tr>
   </thead>
@@ -12,6 +23,7 @@
       <tr>
         <th scope="row">{{this.id}}</th>
         <td>{{this.name}}</td>
+        <td>{{this.Category.name}}</td>
         <td>
           <button type="button" class="btn btn-link">
             <a
