@@ -1,11 +1,13 @@
-const { Restaurant, User } = require('../models') // 新增這裡
+const { Restaurant, User, Category } = require('../models')
 // const { localFileHandler } = require('../helpers/file-helpers')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const adminController = { // 修改這裡
   getRestaurants: (req, res, next) => {
     Restaurant.findAll({
-      raw: true // 把原本sequelize做出來的一包instance轉換成一包簡單的javascript物件
+      raw: true, // 把原本sequelize做出來的一包instance轉換成一包簡單的javascript物件
+      nest: true, // 如果不加nest: true，和類別相關的資料會長得像這樣: restaurants['Category.id']
+      include: [Category]
     })
       .then(restaurants => res.render('admin/restaurants', { restaurants }))
       .catch(err => next(err))
@@ -35,11 +37,13 @@ const adminController = { // 修改這裡
   },
   getRestaurant: (req, res, next) => {
     Restaurant.findByPk(req.params.id, {
-      raw: true
+      raw: true,
+      nest: true,
+      include: [Category]
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
-        res.render('admin/restaurant', { restaurant })
+        res.render('admin/restaurant', { restaurant }) // 處理資料也可以直接在這邊加上restaurant: restaurant.toJSON (單筆資料才可以這麼做，前面findAll是多筆資料，不能夠這樣處理)
       })
       .catch(err => next(err))
   },
