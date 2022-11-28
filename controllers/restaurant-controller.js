@@ -3,6 +3,32 @@ const { getOffset, getPagination } = require('../helpers/pagination-helper')
 
 const restaurantController = {
 
+  getFeeds: (req, res, next) => {
+    return Promise.all([
+      Restaurant.findAll({
+        limit: 10,
+        order: [['createdAt', 'DESC']],
+        include: [Category],
+        raw: true,
+        nest: true
+      }),
+      Comment.findAll({
+        limit: 10,
+        order: [['createdAt', 'DESC']],
+        include: [User, Restaurant],
+        raw: true,
+        nest: true
+      })
+    ])
+      .then(([restaurants, comments]) => {
+        res.render('feeds', {
+          restaurants,
+          comments
+        })
+      })
+      .catch(err => next(err))
+  },
+
   // 顯示每間餐廳的統計數據
   getDashboard: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
