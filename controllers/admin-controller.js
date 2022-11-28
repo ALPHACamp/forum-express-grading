@@ -79,7 +79,7 @@ const adminController = {
       req.body
     if (!name) throw new Error('Restaurant name is required!')
     const file = req.file
-    // Promise.all裝滿著promise物件的陣列，所以加個中括號吧 //雖然沒中括號好像也行(?)
+    // Promise.all裝滿著promise物件的陣列，所以加個中括號吧
     Promise.all([Restaurant.findByPk(req.params.id), imgurFileHandler(file)]) // 確認做完這兩件事後才then
       // 有沒這間餐廳、把檔案傳到 file-helper 處理完
       .then(([restaurant, filePath]) => {
