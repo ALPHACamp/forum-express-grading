@@ -38,8 +38,8 @@
       <td>{{ this.name }}</td>
       <td>
         <a class="btn btn-link link-primary" href="/admin/categories/{{this.id}}">Edit</a>
-        <form action="/admin/users/{{ this.id }}?_method=DELETE" method="POST" style="display: inline;">
-          <button type="submit" class="btn btn-link link-danger">Delete</button>
+        <form action="/admin/categories/{{ this.id }}?_method=DELETE" method="POST" style="display: inline;">
+          <button type="submit" class="btn btn-link link-danger" onclick="return confirm(`確定要刪除{{ this.name }}嗎？`)">Delete</button>
         </form>
       </td>
     </tr>

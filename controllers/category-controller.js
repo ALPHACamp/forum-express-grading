@@ -25,7 +25,23 @@ const categoryController = {
         if (!category) throw new Error("Category doesn't exist!")
         return category.update({ name })
       })
-      .then(() => res.redirect('/admin/categories'))
+      .then(() => {
+        req.flash('success_messages', 'Category was successfully updated!')
+        res.redirect('/admin/categories')
+      })
+      .catch(err => next(err))
+  },
+  deleteCategory: (req, res, next) => {
+    const { id } = req.params
+    return Category.findByPk(id)
+      .then(category => {
+        if (!category) throw new Error("Category doesn't exist!")
+        return category.destroy()
+      })
+      .then(category => {
+        req.flash('warning_messages', `${category.name} was successfully deleted!`)
+        res.redirect('/admin/categories')
+      })
       .catch(err => next(err))
   }
 }
