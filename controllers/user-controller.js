@@ -1,6 +1,10 @@
+const assert = require('assert')
 const bcrypt = require('bcryptjs')
 const db = require('../models')
+const { imgurFileHandler } = require('../helpers/file-helpers')
+const { getUser } = require('../helpers/auth-helpers')
 const { User } = db
+
 const userController = {
   signUpPage: (req, res) => {
     res.render('signup')
@@ -38,6 +42,44 @@ const userController = {
     req.flash('success_messages', '登出成功！')
     req.logout()
     res.redirect('/signin')
+  },
+  getUser: (req, res, next) => {
+    return User.findByPk(req.params.id, { raw: true })
+      .then(userProfile => {
+        assert(userProfile, "User didn't exist!")
+        res.render('users/profile', { user: getUser(req), userProfile })
+      })
+      .catch(err => next(err))
+  },
+  editUser: (req, res, next) => {
+    const user = getUser(req) // 取得passport驗證user
+    const { id } = req.params // 使用者請求put的userId
+    assert(user.id === Number(id), 'You can only edit your own profile.') // 使用者看不到其他user的edit頁面
+    return User.findByPk(id, { raw: true })
+      .then(user => {
+        assert(user, "User didn't exist!")
+        res.render('users/edit', { user })
+      })
+      .catch(err => next(err))
+  },
+  putUser: (req, res, next) => {
+    const { name } = req.body
+    assert(name, 'User name is required!')
+    const { file } = req
+
+    const user = getUser(req) // 取得passport驗證user
+    const { id } = req.params // 使用者請求put的userId
+    assert(user.id === Number(id), 'You can only edit your own profile')
+    return Promise.all([User.findByPk(id), imgurFileHandler(file)])
+      .then(([user, filePath]) => {
+        assert(user, "User didn't exist!")
+        return user.update({ name, image: filePath || user.image })
+      })
+      .then(user => {
+        req.flash('success_messages', '使用者資料編輯成功')
+        res.redirect(`/users/${id}`)
+      })
+      .catch(err => next(err))
   }
 }
 
