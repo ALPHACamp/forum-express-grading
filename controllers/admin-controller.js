@@ -1,4 +1,4 @@
-const { Restaurant } = require('../models')
+const { Restaurant, User } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const adminController = {
@@ -84,6 +84,33 @@ const adminController = {
       .then(() => {
         req.flash('success_msg', 'restaurant was successfully destroyed')
         res.redirect('/admin/restaurants')
+      })
+      .catch(err => next(err))
+  },
+  getUsers: (req, res, next) => {
+    User.findAll({
+      raw: true
+    })
+      .then(users => {
+        return res.render('admin/users', { users })
+      })
+      .catch(err => next(err))
+  },
+  patchUser: (req, res, next) => {
+    User.findByPk(req.params.id)
+      .then(user => {
+        if (!user) throw new Error("user didn't exist!")
+        if (user.name === 'root') {
+          req.flash('warning_msg', "Admin 'root' is restricted.")
+          return res.redirect('/admin/users')
+        }
+        return user.update({
+          isAdmin: !(user.isAdmin)
+        })
+      })
+      .then(() => {
+        req.flash('success_msg', 'user admin was successfully updated')
+        res.redirect('/admin/users')
       })
       .catch(err => next(err))
   }

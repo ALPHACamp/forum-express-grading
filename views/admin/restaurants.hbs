@@ -1,38 +1,50 @@
 <h1>餐廳後台</h1>
-<a href='/admin/restaurants/create'>
-  <button type="button" class="btn btn-primary">New Restaurant</button>
-</a>
-<br />
-<br />
-<table class="table align-middle">
-  <thead class="thead-dark">
-    <tr>
-      <th scope="col">#</th>
-      <th scope="col">Name</th>
-      <th scope="col"></th>
-    </tr>
-  </thead>
-  <tbody>
-    {{#each restaurants}}
-    <tr>
-      <th scope="row">{{this.id}}</th>
-      <td>{{this.name}}</td>
-      <td>
-        <button type="button" class="btn btn-link">
-          <a class="btn btn-link link-primary" href="/admin/restaurants/{{this.id}}">
-            Show
-          </a>
-        </button>
-        <button type="button" class="btn btn-link">
-          <a class="btn btn-link link-primary" href="/admin/restaurants/{{this.id}}/edit">
-            Edit
-          </a>
-        </button>
-        <form action="/admin/restaurants/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
-          <button type="submit" class="btn btn-link link-danger" onclick="return confirm(`確定要刪除{{this.name}}嗎?`)">Delete</button>
-        </form>
-      </td>
-    </tr>
-    {{/each}}
-  </tbody>
-</table>
+<ul class="nav nav-tabs">
+  <li class="nav-item">
+    <a class="nav-link active" href="#">Restaurants</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="/admin/users">Users</a>
+  </li>
+</ul>
+
+<div class="row mt-3">
+  <a href='/admin/restaurants/create'>
+    <button type="button" class="btn btn-primary">New Restaurant</button>
+  </a>
+  <br />
+  <br />
+  <table class="table align-middle">
+    <thead class="table-dark">
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each restaurants}}
+      <tr>
+        <th scope="row">{{this.id}}</th>
+        <td>{{this.name}}</td>
+        <td>
+          <button type="button" class="btn btn-link">
+            <a class="btn btn-link link-primary" href="/admin/restaurants/{{this.id}}">
+              Show
+            </a>
+          </button>
+          <button type="button" class="btn btn-link">
+            <a class="btn btn-link link-primary" href="/admin/restaurants/{{this.id}}/edit">
+              Edit
+            </a>
+          </button>
+          <form action="/admin/restaurants/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
+            <button type="submit" class="btn btn-link link-danger"
+              onclick="return confirm(`確定要刪除{{this.name}}嗎?`)">Delete</button>
+          </form>
+        </td>
+      </tr>
+      {{/each}}
+    </tbody>
+  </table>
+</div>
