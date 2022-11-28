@@ -12,8 +12,12 @@ router.put('/restaurants/:id', upload.single('image'), adminController.putRestau
 router.delete('/restaurants/:id', adminController.deleteRestaurant) // 刪除餐廳
 router.get('/restaurants', adminController.getRestaurants) // 瀏覽全部餐廳
 router.post('/restaurants', upload.single('image'), adminController.postRestaurant) // 新增餐廳
+
 router.patch('/users/:id', adminController.patchUser) // 修改User的權限
 router.get('/users', adminController.getUsers) // 瀏覽全部User
+
+router.get('/categories/:id', categoryController.getCategories) // 編輯category頁面
+router.put('/categories/:id', categoryController.putCategory) // 編輯category
 router.get('/categories', categoryController.getCategories) // 瀏覽categories頁面
 router.post('/categories', categoryController.postCategory) // 新增category
 
