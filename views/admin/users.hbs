@@ -1,4 +1,4 @@
-{{>admin-menu }}
+{{>admin-menu route='users'}}
 <table class="table align-middle">
   <thead>
     <tr>
@@ -19,14 +19,14 @@
       <td>admin</td>
       <td>
         <form action="/admin/users/{{ this.id }}?_method=PATCH" method="POST" style="display: inline;">
-          <button type="submit" class="btn btn-link link-primary">set as user</button>
+          <button type="submit" class="btn btn-link link-primary">Set as user</button>
         </form>
       </td>
       {{else}}
       <td>user</td>
       <td>
         <form action="/admin/users/{{ this.id }}?_method=PATCH" method="POST" style="display: inline;">
-          <button type="submit" class="btn btn-link link-primary">set as admin</button>
+          <button type="submit" class="btn btn-link link-primary">Set as admin</button>
         </form>
       </td>
       {{/if}}
