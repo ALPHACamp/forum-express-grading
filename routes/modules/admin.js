@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const adminController = require('../../controllers/admin-controller')
+const categoryController = require('../../controllers/category-controller')
 const upload = require('../../middleware/multer')
 
 // 在總路index由加入authenticatedAdmin，這邊就不用重複寫
@@ -21,6 +22,7 @@ router.post(
 )
 router.get('/users/', adminController.getUsers)
 router.patch('/users/:id', adminController.patchUser)
+router.get('/categories', categoryController.getCategories)
 router.get('', (req, res) => res.redirect('/admin/restaurants'))
 // 或寫成 router.use("/", (req, res) => res.redirect("/admin/restaurants"))
 
