@@ -18,6 +18,7 @@ router.get('/users', adminController.getUsers) // 瀏覽全部User
 
 router.get('/categories/:id', categoryController.getCategories) // 編輯category頁面
 router.put('/categories/:id', categoryController.putCategory) // 編輯category
+router.delete('/categories/:id', categoryController.deleteCategory) // 刪除category
 router.get('/categories', categoryController.getCategories) // 瀏覽categories頁面
 router.post('/categories', categoryController.postCategory) // 新增category
 
