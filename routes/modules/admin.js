@@ -18,6 +18,9 @@ router.get('/restaurants', adminController.getRestaurants)
 // create 送出
 router.post('/restaurants', upload.single('image'), adminController.postRestaurant)
 
+// 全部category
+router.get('/categories', adminController.getCategories)
+
 // patch users
 router.patch('/users/:id', adminController.patchUser)
 // get users

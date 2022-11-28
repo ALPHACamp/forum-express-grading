@@ -117,11 +117,17 @@ const adminController = {
         res.redirect('/admin/users')
       })
       .catch(err => next(err))
-  }
+  },
   // delete user
   // !user
   // user!==root
   // user !==admin
+  // 全部類別
+  getCategories: (req, res, next) => {
+    Category.findAll({ raw: true })
+      .then(categories => res.render('admin/categories', { categories }))
+      .catch(err => next(err))
+  }
 }
 
 module.exports = adminController
