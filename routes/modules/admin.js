@@ -34,7 +34,7 @@ router.post('/categories', categoryController.postCategory)
 // 全部category
 router.get('/categories', categoryController.getCategories)
 
-// 這行是做甚麼的，我忘了
+// fallback路由
 router.use('/', (req, res) => res.redirect('/admin/restaurants'))
 
 module.exports = router

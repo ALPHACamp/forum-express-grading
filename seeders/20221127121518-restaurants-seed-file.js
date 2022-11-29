@@ -15,8 +15,9 @@ module.exports = {
         description: faker.lorem.text(),
         created_at: new Date(),
         updated_at: new Date(),
-        category_id: categories[Math.floor(Math.random() * categories.length)].id
+        category_id: categories[Math.floor(Math.random() * categories.length)].id,
         // 根據categories長度決定取出的亂數號碼=categories元素位置
+        view_counts: 0
       }))
       , {})
   },
