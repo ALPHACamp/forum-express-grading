@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router()
 const adminController = require('../../controllers/admin-controller')
 const upload = require('../../middleware/multer')
+const categoryController = require('../../controllers/category-controller')
 
 // 新建admin餐廳頁面，注意順序
 router.get('/restaurants/create', adminController.createRestaurant)
@@ -18,13 +19,20 @@ router.get('/restaurants', adminController.getRestaurants)
 // create 送出
 router.post('/restaurants', upload.single('image'), adminController.postRestaurant)
 
-// 全部category
-router.get('/categories', adminController.getCategories)
-
 // patch users
 router.patch('/users/:id', adminController.patchUser)
 // get users
 router.get('/users', adminController.getUsers)
+
+// 修改category
+router.get('/categories/:id', categoryController.getCategories)// 與瀏覽全部使用同一個controller
+router.put('/categories/:id', categoryController.putCategory)
+// 刪除category
+router.delete('/categories/:id', categoryController.deleteCategory)
+// 創建category
+router.post('/categories', categoryController.postCategory)
+// 全部category
+router.get('/categories', categoryController.getCategories)
 
 // 這行是做甚麼的，我忘了
 router.use('/', (req, res) => res.redirect('/admin/restaurants'))
