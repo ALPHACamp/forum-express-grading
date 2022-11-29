@@ -1,4 +1,4 @@
-const { Restaurant, User, Category } = require('../models')
+const { User, Restaurant } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 const superuser = require('../superuser.json')
 
@@ -6,14 +6,13 @@ const adminController = {
   getRestaurants: (req, res, next) => {
     Restaurant.findAll({
       raw: true,
-      nest: true,
-      include: [Category] // 取得關聯資料表的資料
+      nest: true
     })
       .then(restaurants => res.render('admin/restaurants', { restaurants }))
       .catch(err => next(err))
   },
   createRestaurant: (req, res, next) => {
-    return Category.findAll({
+    return Restaurant.findAll({
       raw: true
     })
       .then(categories => res.render('admin/create-restaurant', { categories }))
@@ -43,8 +42,7 @@ const adminController = {
   getRestaurant: (req, res, next) => {
     Restaurant.findByPk(req.params.id, { // 去資料庫用 id 找一筆資料
       raw: true, // 找到以後整理格式再回傳
-      nest: true,
-      include: [Category]
+      nest: true
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!") //  如果找不到，回傳錯誤訊息，後面不執行
@@ -54,12 +52,11 @@ const adminController = {
   },
   editRestaurant: (req, res, next) => {
     return Promise.all([
-      Restaurant.findByPk(req.params.id, { raw: true }),
-      Category.findAll({ raw: true })
+      Restaurant.findByPk(req.params.id, { raw: true })
     ])
-      .then(([restaurant, categories]) => {
+      .then(([restaurant]) => {
         if (!restaurant) throw new Error("Restaurant doesn't exist!")
-        res.render('admin/edit-restaurant', { restaurant, categories })
+        res.render('admin/edit-restaurant', { restaurant })
       })
       .catch(err => next(err))
   },
