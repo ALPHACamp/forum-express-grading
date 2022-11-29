@@ -4,7 +4,7 @@ const superuser = require('../superuser.json')
 
 const adminController = {
   getRestaurants: (req, res, next) => {
-    Restaurant.findAll({
+    return Restaurant.findAll({
       raw: true,
       nest: true
     })
@@ -40,7 +40,7 @@ const adminController = {
   },
 
   getRestaurant: (req, res, next) => {
-    Restaurant.findByPk(req.params.id, { // 去資料庫用 id 找一筆資料
+    return Restaurant.findByPk(req.params.id, { // 去資料庫用 id 找一筆資料
       raw: true, // 找到以後整理格式再回傳
       nest: true
     })
