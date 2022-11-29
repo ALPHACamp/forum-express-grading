@@ -1,16 +1,20 @@
 const bcrypt = require('bcryptjs') // 載入 bcrypt
 const db = require('../models')
-const { User } = db
+const { User, Restaurant, Comment } = db
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const userController = {
 
   getUser: (req, res, next) => {
     return User.findByPk(req.params.id, {
-      nest: true
+      nest: true,
+      include: [
+        { model: Comment, include: Restaurant }
+      ]
     })
       .then(user => {
         if (!user) throw new Error("User didn't exist!")
+
         res.render('users/profile', {
           user: user.toJSON()
         })
@@ -59,7 +63,7 @@ const userController = {
   signUp: (req, res, next) => {
     if (req.body.password !== req.body.passwordCheck) throw new Error('Passwords do not match!')
 
-    User.findOne({ where: { email: req.body.email } })
+    return User.findOne({ where: { email: req.body.email } })
       .then(user => {
         if (user) throw new Error('Email already exists!')
         return bcrypt.hash(req.body.password, 10)
