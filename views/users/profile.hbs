@@ -1,0 +1,29 @@
+<div class="row py-3 bg-white">
+  <div class="col-md-4">
+    <img class="img-responsive center-block" src="{{#if userProfile.image}}{{userProfile.image}}{{else}}https://png.pngtree.com/png-clipart/20210310/original/pngtree-black-default-avatar-png-image_5944719.jpg{{/if}}"
+      style="width: 250px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+  </div>
+  <div class="col-md-8">
+      <h3>{{userProfile.name}}</h3>
+      <p>{{userProfile.email}}</p>
+      <br>
+      {{#ifCond userProfile.id user.id}}
+      <a href="/users/{{user.id}}/edit" class="btn btn-primary">edit</a>
+      {{/ifCond}}
+  </div>
+</div>
+<div class="card mt-3">
+  <h5 class="card-header">{{comments.length}}已評論餐廳</h5>
+  <div class="card-body">
+    {{#if comments}}
+    {{#each comments}}
+    <a href="/restaurants/{{this.restaurantId}}" style="text-decoration:none;">
+      <img src="{{this.Restaurant.image}}" title="{{this.Restaurant.name}}" class="m-3"
+        style="height:100px; width:100px; object-fit:cover">
+    </a>
+    {{/each}}
+    {{else}}
+    尚未有任何評論
+    {{/if}}
+  </div>
+</div>
