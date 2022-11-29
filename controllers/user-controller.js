@@ -50,9 +50,7 @@ const userController = {
           raw: true,
           nest: true,
           where: { userId: req.params.id },
-          include: Restaurant,
-          group: 'restaurantId',
-          attribute: ['restaurantId']
+          include: Restaurant
         })
       ])
       if (!userProfile) throw new Error("User does't exist!")
