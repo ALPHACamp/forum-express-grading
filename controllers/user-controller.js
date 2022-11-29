@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs') // 載入 bcrypt
 const db = require('../models')
-const { User } = db
+const { User, Comment, Restaurant } = db
+const { getUser } = require('../helpers/auth-helpers')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const userController = {
@@ -43,9 +44,19 @@ const userController = {
   // User Profile
   getUser: async (req, res, next) => {
     try {
-      const user = await User.findByPk(req.params.id, { raw: true })
-      if (!user) throw new Error("User does't exist!")
-      res.render('users/profile', { user })
+      const [userProfile, comments] = await Promise.all([
+        User.findByPk(req.params.id, { raw: true }),
+        Comment.findAll({
+          raw: true,
+          nest: true,
+          where: { userId: req.params.id },
+          include: Restaurant,
+          group: 'restaurantId',
+          attribute: ['restaurantId']
+        })
+      ])
+      if (!userProfile) throw new Error("User does't exist!")
+      res.render('users/profile', { user: getUser(req), userProfile, comments })
     } catch (error) {
       next(error)
     }
@@ -54,6 +65,7 @@ const userController = {
     try {
       const user = await User.findByPk(req.params.id, { raw: true })
       if (!user) throw new Error("User does't exist!")
+      if (user.id !== getUser(req).id) throw new Error('You are not allowed to use!')// 這邊的user指的是從資料庫撈的userProfile，而getUser(req)是通過passport登入驗證的，如果沒有比對，成功登入的人就可以直接在網址列上亂打其他userProfile的id來做壞事
       res.render('users/edit', { user })
     } catch (error) {
       next(error)
@@ -63,6 +75,7 @@ const userController = {
     const { name } = req.body
     const id = req.params.id
     if (!name) throw new Error('User name is required!')
+    if (Number(id) !== getUser(req).id) throw new Error('You are not allowed to use!')
     const { file } = req // 把檔案取出來
     return Promise.all([ // 非同步處理
       User.findByPk(id),

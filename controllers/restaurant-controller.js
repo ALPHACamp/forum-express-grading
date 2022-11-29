@@ -3,6 +3,8 @@ const { getOffset, getPagination } = require('../helpers/pagination-helper')
 const restaurantController = {
   getRestaurants: (req, res, next) => {
     const DEFAULT_LIMIT = 9
+    const DEFAULT_SUBSTRING_MIN_NUM = 0
+    const DEFAULT_SUBSTRING_MAX_NUM = 50
     const categoryId = Number(req.query.categoryId) || '' // 從網址上拿下來的參數是字串，先轉成 Number 再操作
     const page = Number(req.query.page) || 1
     const limit = Number(req.query.limit) || DEFAULT_LIMIT
@@ -24,7 +26,7 @@ const restaurantController = {
       .then(([restaurants, categories]) => {
         const data = restaurants.rows.map(r => ({
           ...r,
-          description: r.description.substring(0, 50)
+          description: r.description.substring(DEFAULT_SUBSTRING_MIN_NUM, DEFAULT_SUBSTRING_MAX_NUM)
         }))
         return res.render('restaurants', {
           restaurants: data,
