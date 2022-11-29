@@ -117,7 +117,7 @@ const adminController = {
         res.redirect('/admin/users')
       })
       .catch(err => next(err))
-  },
+  }
   // delete user
   // !user
   // user!==root
