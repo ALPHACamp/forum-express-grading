@@ -18,6 +18,8 @@ router.post('/signin', passport.authenticate('local', { failureRedirect: '/signi
 // 登出
 router.get('/logout', userController.logout)
 
+// 前端畫面
+router.get('/restaurants/:id', authenticated, restController.getRestaurant)
 router.get('/restaurants', authenticated, restController.getRestaurants)
 // 如果接收到的請求路徑是 / restaurants，那就交給 controller 的 getRestaurants 函式來處理。如果這行路由和請求匹配成功，以下的 router.get 就不會執行。
 
