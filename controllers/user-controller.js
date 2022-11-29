@@ -49,16 +49,14 @@ const userController = {
       .then(user => {
         return res.render('users/profile', { user: user })
       })
-
       .catch(err => next(err))
-    console.log('$$$', req.params.id)
     // Promise.all([
-    User.findByPk(req.params.id, {
-      include: [
-        { model: Comment, include: User }
-        // { model: Restaurant }
-      ]
-    })
+    // User.findByPk(req.params.id, {
+    //   include: [
+    //     { model: Comment, include: User }
+      // { model: Restaurant }
+    //   ]
+    // })
       // Restaurant.findAll()
     // ])
       // .then(([user, restaurant]) => {
@@ -74,11 +72,11 @@ const userController = {
     // })
     // console.log('評論', comments)我要知道我評論過哪幾間餐廳
       // })
-      .then(user => {
-        console.log('users/profile')
-        return res.render('users/profile', { user })
-      })
-      .catch(err => next(err))
+      // .then(user => {
+      //   console.log('users/profile')
+      //   return res.render('users/profile', { user })
+      // })
+      // .catch(err => next(err))
   },
   editUser: (req, res, next) => {
     // console.log(req.params.id)
