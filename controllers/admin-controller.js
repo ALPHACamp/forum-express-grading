@@ -7,7 +7,7 @@ const adminController = {
     Restaurant.findAll({
       raw: true,
       nest: true,
-      include: [Category]
+      include: Category
     })
       .then(restaurants => res.render('admin/restaurants', { restaurants }))
       .catch(err => next(err))
@@ -43,7 +43,7 @@ const adminController = {
     Restaurant.findByPk(req.params.id, {
       raw: true,
       nest: true,
-      include: [Category]
+      include: Category
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant doesn't exists!")

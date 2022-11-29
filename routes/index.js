@@ -11,18 +11,15 @@ const passport = require('../config/passport')
 // admin
 router.use('/admin', authenticatedAdmin, admin)
 
-// sign up
+// user management
 router.get('/signup', userController.signUpPage)
 router.post('/signup', userController.signUp)
-
-// sign in
 router.get('/signin', userController.signInPage)
 router.post('/signin', passport.authenticate('local', { failureRedirect: '/signin', failureFlash: true }), userController.signIn)
-
-// logout
 router.get('/logout', userController.logout)
 
-// main page
+// user
+router.get('/restaurants/:id', authenticated, restController.getRestaurant)
 router.get('/restaurants', authenticated, restController.getRestaurants)
 
 router.use('/', (req, res) => res.redirect('/restaurants'))
