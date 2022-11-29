@@ -1,5 +1,5 @@
 {{!-- user-profile --}}
-{{!-- {{#ifCond user.id userProfile.id}} --}}
+{{#ifCond user.id userProfile.id}}
 <div class="user-profile bg-white d-flex">
   <img class="img-responsive center-block" src="{{userProfile.image}}" style="width: 300px; height:300px">
   <div class="ms-5">
@@ -19,4 +19,4 @@
     {{/each}}
   </div>
 </div>
-{{!-- {{/ifCond}} --}}
+{{/ifCond}}
