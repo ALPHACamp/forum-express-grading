@@ -68,6 +68,41 @@ const restaurantController = {
         })
       })
       .catch(err => next(err))
+  },
+  getFeeds: (req, res, next) => {
+    return Promise.all([
+      Restaurant.findAll({
+        limit: 10,
+        order: [['createdAt', 'DESC']],
+        include: Category,
+        nest: true,
+        raw: true
+      }),
+      Comment.findAll({
+        limit: 10,
+        order: [['createdAt', 'DESC']],
+        include: [Restaurant, User],
+        nest: true,
+        raw: true
+      })
+    ])
+      .then(([restaurants, comments]) => {
+        const descriptionLength = 200
+        if (!restaurants.length) {
+          req.flash('error_messages', '還沒有餐廳資料')
+        }
+        if (!comments.length) {
+          req.flash('error_messages', '還沒有評論，快來新增第一筆吧')
+        }
+        restaurants = restaurants.map(r => ({
+          ...r,
+          description: r.description
+            .substring(0, descriptionLength)
+            .concat(' ', '...')
+        }))
+        res.render('feeds', { restaurants, comments })
+      })
+      .catch(err => next(err))
   }
 }
 module.exports = restaurantController
