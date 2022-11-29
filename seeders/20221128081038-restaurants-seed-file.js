@@ -18,7 +18,8 @@ module.exports = {
         created_at: new Date(),
         updated_at: new Date(),
         // 用Math.random生成對應categories物件長度的隨機數=>放入對應的id（因應不同SQL生成id可能是跳號）
-        category_id: categories[Math.floor(Math.random() * categories.length)].id
+        category_id: categories[Math.floor(Math.random() * categories.length)].id,
+        viewCounts: 0
       }))
     )
   },
