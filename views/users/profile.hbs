@@ -1,0 +1,20 @@
+<div class="row mb-5">
+  {{!-- 個人頭像 --}}
+  <div class="col-md-4">
+    <img class="img-responsive center-block mb-5" src="{{user.image}}"
+      style="width: 250px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+  </div>
+
+  {{!-- 基本資料 --}}
+  <div class="col-md-8">
+    <h1 style="white-space: break-spaces;">{{user.name}}</h1>
+    <p style="white-space: break-spaces;">{{user.email}}</p>
+    <a href='/users/{{user.id}}/edit'>
+      <button type="button" class="btn btn-primary mb-3">編輯</button>
+    </a>
+  </div>
+
+  {{!-- 已評論的餐廳列表 --}}
+  
+  <hr>
+</div>
