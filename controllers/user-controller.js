@@ -49,7 +49,6 @@ const userController = {
     ])
       .then(([userProfile, comments]) => {
         if (!userProfile) throw new Error("User doesn't exist.")
-
         res.render('users/profile', {
           user: getUser(req),
           userProfile,
@@ -71,7 +70,6 @@ const userController = {
     const { file } = req
     const { id } = req.params
     if (!name) throw new Error('User name is required!')
-
     return Promise.all([
       User.findByPk(id),
       imgurFileHandler(file)
