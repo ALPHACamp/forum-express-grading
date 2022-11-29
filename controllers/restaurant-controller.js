@@ -1,4 +1,4 @@
-const { Restaurant, Category } = require('../models')
+const { Restaurant, Category, Comment, User } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
 
 const restaurantController = {
@@ -39,9 +39,14 @@ const restaurantController = {
   // 瀏覽：個別餐廳
   getRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
-      include: Category
+      include: [
+        Category,
+        { model: Comment, include: User }
+      ]
     })
       .then(restaurant => {
+        // console.log(restaurant.Comments[0].dataValues)
+        // 在抓取 Restaurant 資料時引入 Comment，在抓取 Comment 資料時引入 User，最後就能拿到 Comment 跟作者名稱
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         return restaurant.increment('viewCount')
       })
