@@ -1,6 +1,6 @@
 // restaurantController 是一個物件 (object)。
 // restaurantController 有不同的方法，例如 getRestaurants
-const { Restaurant, Category } = require("../models");
+const { Restaurant, Category, User, Comment } = require("../models");
 const { getOffset, getPagination } = require("../helpers/pagination-helper");
 const restaurantController = {
   getRestaurants: (req, res) => {
@@ -37,7 +37,7 @@ const restaurantController = {
   },
   getRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
-      include: Category, // 拿出關聯的 Category model
+      include: [Category, { model: Comment, include: User }], // 拿出關聯的 Category model及 預先加載
     })
       .then((restaurant) => {
         if (!restaurant) throw new Error("Restaurant doesn't exist!");
