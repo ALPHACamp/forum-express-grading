@@ -3,7 +3,7 @@ const bcrypt = require('bcryptjs')
 const db = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 const { getUser } = require('../helpers/auth-helpers')
-const { User, Comment, Restaurant, Favorite } = db
+const { User, Comment, Restaurant, Favorite, Like } = db
 
 const userController = {
   signUpPage: (req, res) => {
@@ -113,10 +113,37 @@ const userController = {
   },
   removeFavorite: (req, res, next) => {
     const { restaurantId } = req.params
-    return Favorite.findOne({ where: { userId: getUser(req).id, restaurantId } })
+    return Favorite.findOne({
+      where: { userId: getUser(req).id, restaurantId }
+    })
       .then(favorite => {
         assert(favorite, "You haven't favorited this restaurant")
         return favorite.destroy()
+      })
+      .then(() => res.redirect('back'))
+      .catch(err => next(err))
+  },
+  addLike: (req, res, next) => {
+    const { restaurantId } = req.params
+    return Promise.all([
+      Restaurant.findByPk(restaurantId),
+      Like.findOne({ where: { userId: getUser(req).id, restaurantId } })
+    ])
+      .then(([restaurant, like]) => {
+        assert(restaurant, "Restaurant didn't exist!")
+        if (like) throw new Error('You have liked this restaurant!')
+        return Like.create({ userId: getUser(req).id, restaurantId })
+      })
+      .then(() => res.redirect('back'))
+      .catch(err => next(err))
+  },
+  removeLike: (req, res, next) => {
+    return Like.findOne({
+      where: { userId: getUser(req).id, restaurantId: req.params.restaurantId }
+    })
+      .then(like => {
+        assert(like, "You haven't liked this restaurant")
+        return like.destroy()
       })
       .then(() => res.redirect('back'))
       .catch(err => next(err))

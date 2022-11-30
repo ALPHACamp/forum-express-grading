@@ -24,18 +24,28 @@
     <div class='mt-3 d-flex align-items-baseline'>
       <div class="me-3">
         <a
-          class='btn btn-primary btn-lg'
+          class='btn btn-primary'
           href='/restaurants/{{restaurant.id}}/dashboard'
         >Dashboard</a>
       </div>
       
       {{#if isFavorited}}  
         <form action="/favorite/{{restaurant.id}}?_method=DELETE" method="POST">
-          <button class="btn btn-danger btn-lg m-1" type="submit">移除最愛</button>
+          <button class="btn btn-danger m-1" type="submit">移除最愛</button>
         </form>
       {{else}}
         <form action="/favorite/{{restaurant.id}}" method="POST">
-          <button class="btn btn-primary btn-lg m-1" type="submit">加到最愛</button>
+          <button class="btn btn-primary m-1" type="submit">加到最愛</button>
+        </form>
+      {{/if}}
+
+      {{#if isLiked}}  
+        <form action="/like/{{restaurant.id}}?_method=DELETE" method="POST">
+          <button class="btn btn-danger m-1" type="submit">Unlike</button>
+        </form>
+      {{else}}
+        <form action="/like/{{restaurant.id}}" method="POST">
+          <button class="btn btn-primary m-1" type="submit">Like</button>
         </form>
       {{/if}}
     </div>

@@ -27,10 +27,13 @@ const restaurantController = {
         }
         const favoritedRestaurantsId =
           getUser(req) && getUser(req).FavoritedRestaurants.map(fr => fr.id)
+        const likedRestaurantsId =
+          getUser(req) && getUser(req).LikedRestaurants.map(lr => lr.id) // 取liked id
         const datas = restaurants.rows.map(r => ({
           ...r,
           description: r.description.substring(0, 50),
-          isFavorited: favoritedRestaurantsId.includes(r.id)
+          isFavorited: favoritedRestaurantsId.includes(r.id),
+          isLiked: likedRestaurantsId.includes(r.id)
         }))
         res.render('restaurants', {
           restaurants: datas,
@@ -49,7 +52,8 @@ const restaurantController = {
           model: Comment,
           include: User
         },
-        { model: User, as: 'FavoritedUsers' }
+        { model: User, as: 'FavoritedUsers' },
+        { model: User, as: 'LikedUsers' }
       ],
       order: [[Comment, 'updatedAt', 'DESC']]
     })
@@ -58,10 +62,16 @@ const restaurantController = {
         return restaurant.increment('viewCounts')
       })
       .then(restaurant => {
-        const isFavorited = restaurant.FavoritedUsers.some(fu => fu.id === getUser(req).id)
+        const isFavorited = restaurant.FavoritedUsers.some(
+          fu => fu.id === getUser(req).id
+        )
+        const isLiked = restaurant.LikedUsers.some(
+          likeduser => likeduser.id === getUser(req).id
+        )
         res.render('restaurant', {
           restaurant: restaurant.toJSON(),
-          isFavorited
+          isFavorited,
+          isLiked
         })
       })
       .catch(err => next(err))
