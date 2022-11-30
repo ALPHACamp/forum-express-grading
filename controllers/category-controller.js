@@ -9,7 +9,11 @@ const categoryController = {
       .catch(err => next(err))
   },
   postCategories: (req, res, next) => {
-
+    const { name } = req.body
+    if (!name) throw new Error('Category name is required!')
+    return Category.create({ name })
+      .then(() => res.redirect('/admin/categories'))
+      .catch(err => next(err))
   }
 }
 
