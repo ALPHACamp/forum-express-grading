@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs')
 const db = require('../models')
-const { User } = db
+const { User, Comment, Restaurant } = db
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const userController = {
@@ -45,8 +45,14 @@ const userController = {
   },
   // 瀏覽 Profile：
   getUser: (req, res, next) => {
-    return User.findByPk(req.params.id)
+    return User.findByPk(req.params.id, {
+      include: [
+        { model: Comment, include: Restaurant }
+      ]
+    })
       .then(user => {
+        // console.log(user.Comments[0].dataValues)
+        // 在抓取 User 資料時引入 Comment，在抓取 Comment 資料時引入 Restaurant，最後就能拿到 Comment 跟餐廳名稱
         if (!user) throw new Error("User didn't exist!")
         return res.render('users/profile', { user: user.toJSON() })
       })
