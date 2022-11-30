@@ -1,6 +1,7 @@
 const assert = require('assert')
 const { Restaurant, Category, Comment, User } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
+const { getUser } = require('../helpers/auth-helpers')
 const restaurantController = {
   getRestaurants: (req, res, next) => {
     const DEFAULT_LIMIT = 9
@@ -24,9 +25,12 @@ const restaurantController = {
         if (!restaurants.rows.length) {
           return req.flash('error_messages', 'No restaurant is found!')
         }
+        const favoritedRestaurantsId =
+          getUser(req) && getUser(req).FavoritedRestaurants.map(fr => fr.id)
         const datas = restaurants.rows.map(r => ({
           ...r,
-          description: r.description.substring(0, 50)
+          description: r.description.substring(0, 50),
+          isFavorited: favoritedRestaurantsId.includes(r.id)
         }))
         res.render('restaurants', {
           restaurants: datas,
@@ -44,7 +48,8 @@ const restaurantController = {
         {
           model: Comment,
           include: User
-        }
+        },
+        { model: User, as: 'FavoritedUsers' }
       ],
       order: [[Comment, 'updatedAt', 'DESC']]
     })
@@ -52,9 +57,13 @@ const restaurantController = {
         assert(restaurant, "Restaurant did't exist!")
         return restaurant.increment('viewCounts')
       })
-      .then(restaurant =>
-        res.render('restaurant', { restaurant: restaurant.toJSON() })
-      )
+      .then(restaurant => {
+        const isFavorited = restaurant.FavoritedUsers.some(fu => fu.id === getUser(req).id)
+        res.render('restaurant', {
+          restaurant: restaurant.toJSON(),
+          isFavorited
+        })
+      })
       .catch(err => next(err))
   },
   getDashboard: (req, res, next) => {
