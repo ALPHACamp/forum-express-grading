@@ -20,12 +20,29 @@ const restaurantController = {
   getRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
       include: Category, // 拿出關聯的 Category model
+    })
+      .then((restaurant) => {
+        if (!restaurant) throw new Error("Restaurant doesn't exist!");
+        return restaurant.increment("viewCounts", { by: 1 }); //小寫restaurant
+      })
+      .then((restaurant) => {
+        // console.log(restaurant,restaurant.toJSON());
+        res.render("restaurant", {
+          restaurant: restaurant.toJSON(), //toJSON大小寫要全對
+        });
+      })
+      .catch((err) => next(err));
+  },
+  getDashboard: (req, res, next) => {
+    return Restaurant.findByPk(req.params.id, {
+      include: Category, // 拿出關聯的 Category model
       nest: true,
       raw: true,
     })
       .then((restaurant) => {
+        // console.log(restaurant);
         if (!restaurant) throw new Error("Restaurant doesn't exist!");
-        res.render("restaurant", {
+        res.render("dashboard", {
           restaurant,
         });
       })

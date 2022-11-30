@@ -27,6 +27,11 @@ router.post(
 ); // 注意是 post
 
 router.get("/logout", userController.logout);
+router.get(
+  "/restaurants/:id/dashboard",
+  authenticated,
+  restController.getDashboard
+);
 router.get("/restaurants/:id", authenticated, restController.getRestaurant);
 router.get("/restaurants", authenticated, restController.getRestaurants); // 加入authenticated
 router.get("/", (req, res) => res.redirect("/restaurants"));
