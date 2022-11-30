@@ -1,5 +1,32 @@
+const { Restaurant, User, Category } = require('../models')
 module.exports = {
   getRestaurants: (req, res) => {
-    return res.render('restaurants')
+    return Restaurant.findAll({
+      include: Category,
+      nest: true,
+      raw: true
+    }).then(restaurants => {
+      const data = restaurants.map(r => ({
+        ...r,
+        description: r.description.substring(0, 50)
+      }))
+      return res.render('restaurants', {
+        restaurants: data
+      })
+    })
+  },
+  getRestaurant: (req, res, next) => {
+    return Restaurant.findByPk(req.params.id, {
+      include: Category, // 拿出關聯的 Category model
+      nest: true,
+      raw: true
+    })
+      .then(restaurant => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        res.render('restaurant', {
+          restaurant
+        })
+      })
+      .catch(err => next(err))
   }
 }
