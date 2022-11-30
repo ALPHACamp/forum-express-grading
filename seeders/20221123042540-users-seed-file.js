@@ -6,44 +6,44 @@ heroku run npx sequelize db:migrate:undo:all
 heroku run npx sequelize db:migrate
 heroku run npx sequelize db:seed:all
  */
-"use strict";
-const bcrypt = require("bcryptjs");
+'use strict'
+const bcrypt = require('bcryptjs')
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.bulkInsert(
-      "Users",
+      'Users',
       [
         {
           // 一次新增三筆資料
-          email: "root@example.com",
-          password: await bcrypt.hash("12345678", 10),
+          email: 'root@example.com',
+          password: await bcrypt.hash('12345678', 10),
           is_admin: true,
-          name: "root",
+          name: 'root',
           created_at: new Date(), // js內建語法
-          updated_at: new Date(),
+          updated_at: new Date()
         },
         {
-          email: "user1@example.com",
-          password: await bcrypt.hash("12345678", 10),
+          email: 'user1@example.com',
+          password: await bcrypt.hash('12345678', 10),
           is_admin: false,
-          name: "user1",
+          name: 'user1',
           created_at: new Date(),
-          updated_at: new Date(),
+          updated_at: new Date()
         },
         {
-          email: "user2@example.com",
-          password: await bcrypt.hash("12345678", 10),
+          email: 'user2@example.com',
+          password: await bcrypt.hash('12345678', 10),
           is_admin: false,
-          name: "user2",
+          name: 'user2',
           created_at: new Date(),
-          updated_at: new Date(),
-        },
+          updated_at: new Date()
+        }
       ],
       {} // 第二個參數可以指定 where 條件，全部刪除則設定為空物件
-    );
+    )
   },
   down: async (queryInterface, Sequelize) => {
     // 清空資料表中所有資料
-    await queryInterface.bulkDelete("Users", {});
-  },
-};
+    await queryInterface.bulkDelete('Users', {})
+  }
+}
