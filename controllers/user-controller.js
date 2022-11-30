@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs') // 載入 bcrypt
 const { imgurFileHandler } = require('../helpers/file-helpers')
 const db = require('../models')
-const { User } = db
+const { User, Restaurant, Comment } = db
 
 const userController = {
   // sign up
@@ -52,12 +52,15 @@ const userController = {
   getUser: (req, res, next) => {
     return User.findByPk(req.params.id,
       {
-        raw: true,
-        nest: true
+        nest: true,
+        // 拿到關聯的comment，再拿到comment關聯的Rest
+        include: [
+          { model: Comment, include: Restaurant }
+        ]
       })
       .then(user => {
         if (!user) throw new Error('這位使用者不存在!')
-        res.render('users/profile', { user })
+        res.render('users/profile', { user: user.toJSON() })
       })
       .catch(err => next(err))
   },
