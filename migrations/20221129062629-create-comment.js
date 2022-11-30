@@ -12,18 +12,10 @@ module.exports = {
         type: Sequelize.STRING
       },
       user_id: {
-        type: Sequelize.INTEGER,
-        reference: {
-          model: 'Users',
-          key: 'id'
-        }
+        type: Sequelize.INTEGER
       },
       restaurant_id: {
-        type: Sequelize.INTEGER,
-        reference: {
-          model: 'Restaurants',
-          key: 'id'
-        }
+        type: Sequelize.INTEGER
       },
       created_at: {
         allowNull: false,
