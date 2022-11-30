@@ -3,6 +3,7 @@
     <h1>{{restaurant.name}}</h1>
     <p>[{{restaurant.Category.name}}]</p>
   </div>
+  <hr>
   <div class="col-md-4">
     <img class="img-responsive center-block mb-5" src="{{restaurant.image}}"
       style="width: 250px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
@@ -19,4 +20,5 @@
   </div>
   <hr>
 </div>
+<a class="btn btn-primary" href="/restaurants/dashboard/{{restaurant.id}}">Dashboard</a>
 <a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
