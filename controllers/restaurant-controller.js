@@ -51,9 +51,9 @@ const restaurantController = {
       .then(restaurant => {
         // console.log(restaurant.Comments[0].dataValues)
         if (!restaurant) throw new Error('這間餐廳不存在!')
-        restaurant.increment('viewCounts')
-        res.render('restaurant', { restaurant: restaurant.toJSON() })
+        return restaurant.increment('viewCounts')
       })
+      .then(restaurant => res.render('restaurant', { restaurant: restaurant.toJSON() }))
       .catch(err => next(err))
   },
   getDashboard: (req, res, next) => {
