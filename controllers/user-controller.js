@@ -46,18 +46,22 @@ const userController = {
   getUser: (req, res, next) => {
     return Promise.all([
       User.findByPk(req.params.id, { raw: true }),
-      Comment.findAndCountAll({
+      Comment.findAll({
         where: { userId: req.params.id },
-        include: Restaurant,
+        include: { model: Restaurant, attributes: ['id', 'image'] },
+        group: 'restaurantId',
         nest: true,
         raw: true
       })
     ])
       .then(([userProfile, comments]) => {
         assert(userProfile, "User didn't exist!")
-        if (!comments.rows.length) {
-          comments = { ...comments, count: 0 }
-        }
+        userProfile = {
+          ...userProfile,
+          image: userProfile.image
+            ? userProfile.image
+            : 'https://i.imgur.com/vCsJPm8.png'
+        } // 如果userProfile沒有圖片，顯示一個預設值
         res.render('users/profile', {
           user: getUser(req),
           userProfile,
@@ -67,9 +71,7 @@ const userController = {
       .catch(err => next(err))
   },
   editUser: (req, res, next) => {
-    const user = getUser(req) // 取得passport驗證user
-    const { id } = req.params // 使用者請求put的userId
-    assert(user.id === Number(id), 'You can only edit your own profile.') // 使用者看不到其他user的edit頁面
+    const { id } = req.params // 使用者請求edit的userId
     return User.findByPk(id, { raw: true })
       .then(user => {
         assert(user, "User didn't exist!")
@@ -81,10 +83,8 @@ const userController = {
     const { name } = req.body
     assert(name, 'User name is required!')
     const { file } = req
-
-    const user = getUser(req) // 取得passport驗證user
     const { id } = req.params // 使用者請求put的userId
-    assert(user.id === Number(id), 'You can only edit your own profile')
+
     return Promise.all([User.findByPk(id), imgurFileHandler(file)])
       .then(([user, filePath]) => {
         assert(user, "User didn't exist!")
