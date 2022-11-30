@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs')
 const db = require('../models')
-const { User } = db
+const { User, Comment, Restaurant } = db
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const userController = {
@@ -43,14 +43,24 @@ const userController = {
     req.logout()
     res.redirect('/signin')
   },
+  // 瀏覽 Profile：
   getUser: (req, res, next) => {
-    return User.findByPk(req.params.id)
+    return User.findByPk(req.params.id, {
+      include: [
+        { model: Comment, include: Restaurant }
+      ]
+    })
       .then(user => {
+        // console.log('!!!!!!!!=====', user.Comments.length)
+        // 在抓取 User 資料時引入 Comment，在抓取 Comment 資料時引入 Restaurant，最後就能拿到 Comment 跟餐廳名稱
         if (!user) throw new Error("User didn't exist!")
-        return res.render('users/profile', { user: user.toJSON() })
+        return res.render('users/profile', {
+          user: user.toJSON()
+        })
       })
       .catch(err => next(err))
   },
+  // 編輯 Profile：
   editUser: (req, res, next) => {
     return User.findByPk(req.params.id)
       .then(user => {
@@ -59,17 +69,18 @@ const userController = {
       })
       .catch(err => next(err))
   },
+  // 編輯送出 Profile：
   putUser: (req, res, next) => {
     const { name } = req.body
     if (!name) throw new Error('User name is required!')
     const { file } = req // 把檔案取出來
-    return Promise.all([ // 非同步處理
-      User.findByPk(req.params.id), // 去資料庫查有沒有這間餐廳
+    return Promise.all([
+      User.findByPk(req.params.id),
       imgurFileHandler(file) // 把檔案傳到 file-helper 處理
     ])
       .then(([user, filePath]) => { // 以上兩樣事都做完以後
         if (!user) throw new Error("User didn't exist!")
-        return user.update({ // 修改這筆資料
+        return user.update({
           name,
           image: filePath || user.image // 如果 filePath 是 Truthy (使用者有上傳新照片) 就用 filePath，是 Falsy (使用者沒有上傳新照片) 就沿用原本資料庫內的值
         })

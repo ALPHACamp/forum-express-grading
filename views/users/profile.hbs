@@ -1,20 +1,49 @@
-<div class="row mb-5">
-  {{!-- 個人頭像 --}}
-  <div class="col-md-4">
-    <img class="img-responsive center-block mb-5" src="{{user.image}}"
-      style="width: 250px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
-  </div>
+<div class="card mb-3">
+  <div class="row no-gutters">
 
-  {{!-- 基本資料 --}}
-  <div class="col-md-8">
-    <h1 style="white-space: break-spaces;">{{user.name}}</h1>
-    <p style="white-space: break-spaces;">{{user.email}}</p>
-    <a href='/users/{{user.id}}/edit'>
-      <button type="button" class="btn btn-primary mb-3">編輯</button>
-    </a>
-  </div>
+    {{!-- 個人頭像 --}}
+    <div class="col-md-4">
+      {{#if user.image}}
+      <img src="{{user.image}}" width="300px" height="300px" style="transition: opacity 0.5s; opacity:0;"
+        onload="this.style.opacity=1;" />
+      {{else}}
+      <img src="https://teameowdev.files.wordpress.com/2015/06/main.png?w=240" width="300px" height="300px"
+        style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;" />
+      {{/if}}
+    </div>
 
-  {{!-- 已評論的餐廳列表 --}}
-  
-  <hr>
+    {{!-- 基本資料 --}}
+    <div class="col-md-8">
+      <div class="card-body">
+        <h5 class="card-title">{{user.name}}</h5>
+        <p class="card-text">{{user.email}}</p>
+        <ul class="list-unstyled list-inline">
+          <li>已評論的餐廳：<strong>{{user.Comments.length}}</strong></li>
+        </ul>
+
+        <p>
+          <a href="/users/{{user.id}}/edit"><button type="submit" class="btn btn-primary mt-5">編輯</button></a>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-12">
+    <br />
+    <div class="card">
+      <div class="card-header">
+        已評論的餐廳：<strong>{{user.Comments.length}}</strong>
+      </div>
+      <div class="card-body">
+        {{#each user.Comments}}
+        <a href="/restaurants/{{this.Restaurant.id}}" class="text-decoration-none">
+          <img src={{this.Restaurant.image}} width="60" height="60" class="avatar" style="transition: opacity 0.5s; opacity:0;"
+            onload="this.style.opacity=1;" />
+        </a>
+        {{/each}}
+      </div>
+    </div>
+  </div>
 </div>
