@@ -1,0 +1,22 @@
+{{!-- user-profile --}}
+{{#ifCond user.id userProfile.id}}
+<div class="user-profile bg-white d-flex">
+  <img class="img-responsive center-block" src="{{userProfile.image}}" style="width: 300px; height:300px">
+  <div class="ms-5">
+    <h4 class="user-name mt-2"> {{userProfile.name}}</h4>
+    <p class="user-email">{{userProfile.email}}</p>
+    <p class="user-comments-restaurant">{{comments.length}}已評論餐廳</p> 
+    <a class="btn btn-primary mt-5" href="/users/{{userProfile.id}}/edit" role="button">Edit</a>  
+  </div>
+</div>
+<div class="mt-3" style="border:1px solid #dee2e6 ;">
+  <div class="m-3 -d-flex align-items-center">{{comments.length}}已評論餐廳</div>
+  <div class="commented-restaurants bg-white d-flex flex-wrap">
+    {{#each comments}}
+    <a href="/restaurants/{{this.restaurantId}}">
+      <img class="m-3" src="{{this.Restaurant.image}}" style="width: 70px; height:70px">
+    </a>
+    {{/each}}
+  </div>
+</div>
+{{/ifCond}}
