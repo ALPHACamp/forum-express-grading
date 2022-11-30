@@ -1,6 +1,12 @@
 <h1>餐廳後台</h1>
-<nav class="nav mb-5">
-  <a class="nav-link active" aria-current="page" href="/admin/restaurants">Restaurants</a>
-  <span class="mt-2">|</span>
-  <a class="nav-link" href="/admin/users">Users</a>
-</nav>
+<ul class="nav nav-tabs my-4">
+  <li class="nav-item">
+    <a class="nav-link {{#ifCond route 'restaurants'}}active{{/ifCond}}" href="/admin/restaurants">Restaurants</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link {{#ifCond route 'users'}}active{{/ifCond}}" href="/admin/users">Users</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link {{#ifCond route 'categories'}}active{{/ifCond}}" href="/admin/categories">Categories</a>
+  </li>
+</ul>
