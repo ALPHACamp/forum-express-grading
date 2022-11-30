@@ -24,7 +24,7 @@ const restaurantController = {
         const result = restaurant.increment('viewCounts')
         return result
       })
-      .then((restaurant) => {
+      .then(restaurant => {
         return res.render('restaurant', {
           restaurant: restaurant.toJSON()
         })
@@ -36,7 +36,7 @@ const restaurantController = {
       include: Category,
       nest: true,
       raw: true
-    }).then((restaurant) => {
+    }).then(restaurant => {
       if (!restaurant) throw new Error("Restaurant didn't exist!")
       return res.render('dashboard', { restaurant })
     })
