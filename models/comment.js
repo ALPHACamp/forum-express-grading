@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate (models) {
       // define association here
-      // belongsTo() 是多對1關係
+      // belongsTo() 是M:1關係
       Comment.belongsTo(models.Restaurant, { foreignKey: 'restaurantId' })
       Comment.belongsTo(models.User, { foreignKey: 'userId' })
     }

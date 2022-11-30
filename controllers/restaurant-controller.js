@@ -1,4 +1,4 @@
-const { Restaurant, Category } = require('../models')
+const { Restaurant, Category, User, Comment } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
 
 const restaurantController = {
@@ -43,9 +43,13 @@ const restaurantController = {
       {
         // raw: true,
         nest: true,
-        include: Category
+        include: [ // 當項目變多時，需要改成用陣列
+          Category,
+          { model: Comment, include: User } // 要拿到關聯的 Comment，再拿到 Comment 關聯的 User，要做兩次的查詢
+        ]
       })
       .then(restaurant => {
+        // console.log(restaurant.Comments[0].dataValues)
         if (!restaurant) throw new Error('這間餐廳不存在!')
         restaurant.increment('viewCounts')
         res.render('restaurant', { restaurant: restaurant.toJSON() })
