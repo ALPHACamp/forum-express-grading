@@ -1,5 +1,5 @@
-'use strict'
-const { Model } = require('sequelize')
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class Restaurant extends Model {
     /**
@@ -7,9 +7,10 @@ module.exports = (sequelize, DataTypes) => {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static associate (models) {
+    static associate(models) {
       // define association here
-      Restaurant.belongsTo(models.Category, { foreignKey: 'categoryId' })
+      Restaurant.belongsTo(models.Category, { foreignKey: "categoryId" });
+      Restaurant.hasMany(models.Comment, { foreignKey: "restaurantId" });
     }
   }
   Restaurant.init(
@@ -20,14 +21,14 @@ module.exports = (sequelize, DataTypes) => {
       openingHours: DataTypes.STRING,
       description: DataTypes.TEXT,
       image: DataTypes.STRING, // 新增這一行
-      viewCounts: DataTypes.INTEGER // 新增這一行
+      viewCounts: DataTypes.INTEGER, // 新增這一行
     },
     {
       sequelize,
-      modelName: 'Restaurant',
-      tableName: 'Restaurants', // 新增這裡
-      underscored: true
+      modelName: "Restaurant",
+      tableName: "Restaurants", // 新增這裡
+      underscored: true,
     }
-  )
-  return Restaurant
-}
+  );
+  return Restaurant;
+};
