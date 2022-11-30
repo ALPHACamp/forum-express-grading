@@ -1,5 +1,6 @@
 'use strict'
 const { Model } = require('sequelize')
+
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     /**
@@ -18,6 +19,16 @@ module.exports = (sequelize, DataTypes) => {
         through: models.Like,
         foreignKey: 'userId',
         as: 'LikedRestaurants'
+      })
+      User.belongsToMany(User, {
+        through: models.Followship,
+        foreignKey: 'followerId',
+        as: 'Followings'
+      })
+      User.belongsToMany(User, {
+        through: models.Followship,
+        foreignKey: 'followingId',
+        as: 'Followers'
       })
     }
   }
