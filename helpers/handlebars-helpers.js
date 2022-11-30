@@ -2,6 +2,7 @@
 
 const dayjs = require('dayjs')
 const { isSuperuser } = require('./superuser-helper')
+
 const relativeTime = require('dayjs/plugin/relativeTime')
 
 dayjs.extend(relativeTime)
