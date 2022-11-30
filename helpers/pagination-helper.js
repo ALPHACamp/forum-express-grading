@@ -1,5 +1,4 @@
 
-
 const getOffset = (limit = 10, page = 1) => (page - 1) * limit
 const getPagination = (limit = 10, page = 1, total = 50) => {
   const totalPage = Math.ceil(total / limit)
