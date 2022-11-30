@@ -32,6 +32,9 @@ router.delete(
   authenticated,
   userController.removeFavorite
 )
+router.post('/like/:restaurantId', authenticated, userController.addLike)
+router.delete('/like/:restaurantId', authenticated, userController.removeLike)
+
 router.get('/restaurants/feeds', authenticated, restController.getFeeds)
 router.get(
   '/restaurants/:id/dashboard',
