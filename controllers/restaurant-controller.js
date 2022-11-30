@@ -1,6 +1,22 @@
+const { Restaurant, Category } = require('../models')
+
 const restaurantController = {
   getRestaurants: (req, res) => {
-    return res.render('restaurants')
+    return Restaurant.findAll({
+      include: Category,
+      nest: true,
+      raw: true
+    })
+      .then(restaurants => {
+        const data = restaurants.map(r => ({
+          ...r, // 展開運算子將每一筆restaurant的資料展開後用data接住，展開後的description會被下方新的description賦值
+          description: r.description.substring(0, 50) // 將餐廳文字描述截斷為50字元的長度
+        }))
+        return res.render('restaurants', {
+          restaurants: data
+        })
+      })
   }
 }
+
 module.exports = restaurantController
