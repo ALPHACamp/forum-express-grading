@@ -94,7 +94,9 @@ const adminController = {
         return res.redirect('/admin/users')
       })
       .catch(err => next(err))
-  }
+  },
+
+ 
 }
 
 module.exports = adminController
