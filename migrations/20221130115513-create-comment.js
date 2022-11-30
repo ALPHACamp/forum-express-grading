@@ -1,34 +1,34 @@
-//npx sequelize model:generate --name Comment --attributes text:string,user_id:integer,restaurant_id:integer --underscored
-"use strict";
+// npx sequelize model:generate --name Comment --attributes text:string,user_id:integer,restaurant_id:integer --underscored
+'use strict'
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable("Comments", {
+    await queryInterface.createTable('Comments', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER,
+        type: Sequelize.INTEGER
       },
       text: {
-        type: Sequelize.STRING,
+        type: Sequelize.STRING
       },
       user_id: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.INTEGER
       },
       restaurant_id: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.INTEGER
       },
       created_at: {
         allowNull: false,
-        type: Sequelize.DATE,
+        type: Sequelize.DATE
       },
       updated_at: {
         allowNull: false,
-        type: Sequelize.DATE,
-      },
-    });
+        type: Sequelize.DATE
+      }
+    })
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable("Comments");
-  },
-};
+    await queryInterface.dropTable('Comments')
+  }
+}
