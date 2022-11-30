@@ -1,0 +1,15 @@
+<div class="row mb-1">
+  <div class="col-md-12">
+    <h1>{{restaurant.name}}</h1>
+    <p>[{{restaurant.Category.name}}]</p>
+  </div>
+  <hr>
+  <div class="col-md-8">
+    <ul>
+      <li>瀏覽次數：{{#if restaurant.viewCounts}}{{restaurant.viewCounts}}{{else}}-{{/if}}</li>
+      <li>評論次數：{{#if restaurant.commentCounts}}{{restaurant.commentCounts}}{{else}}-{{/if}}</li>
+      <li>收藏數：{{#if restaurant.favCounts}}{{restaurant.favCounts}}{{else}}-{{/if}}</li>
+    </ul>
+  </div>
+</div>
+<a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
