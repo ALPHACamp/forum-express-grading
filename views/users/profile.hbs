@@ -1,0 +1,26 @@
+<div class="card mb-3">
+  <div class="row no-gutters">
+
+    {{!-- 個人頭像 --}}
+    <div class="col-md-4">
+      {{#if user.image}}
+      <img src="{{user.image}}" width="300px" height="300px" style="transition: opacity 0.5s; opacity:0;"
+        onload="this.style.opacity=1;" />
+      {{else}}
+      <img src="https://teameowdev.files.wordpress.com/2015/06/main.png?w=240" width="300px" height="300px"
+        style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;" />
+      {{/if}}
+    </div>
+
+    {{!-- 基本資料 --}}
+    <div class="col-md-8">
+      <div class="card-body">
+        <h5 class="card-title">{{user.name}}</h5>
+        <p class="card-text">{{user.email}}</p>
+        <p>
+          <a href="/users/{{user.id}}/edit"><button type="submit" class="btn btn-primary mt-5">編輯</button></a>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
