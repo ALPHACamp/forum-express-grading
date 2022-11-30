@@ -8,7 +8,9 @@ const categoryController = {
       })
       .catch(err => next(err))
   },
-  
+  postCategories: (req, res, next) => {
+
+  }
 }
 
 module.exports = categoryController

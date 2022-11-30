@@ -1,12 +1,12 @@
 <h1>餐廳後台</h1>
 <ul class="nav nav-tabs">
   <li class="nav-item">
-    <a class="nav-link" href="/admin/restaurants">Restaurant</a>
+    <a class="nav-link {{#ifCond route 'restaurants' }}active{{/ifCond}}" href="/admin/restaurants">Restaurant</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" href="/admin/users">User</a>
+    <a class="nav-link {{#ifCond route 'users' }}active{{/ifCond}}" href="/admin/users">User</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" href="/admin/categories">Category</a>
+    <a class="nav-link {{#ifCond route 'categories' }}active{{/ifCond}}" href="/admin/categories">Category</a>
   </li>
 </ul>
