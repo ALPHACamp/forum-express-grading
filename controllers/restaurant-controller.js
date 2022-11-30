@@ -44,7 +44,12 @@ const restaurantController = {
         return restaurant.increment("viewCounts", { by: 1 }); // 小寫restaurant
       })
       .then((restaurant) => {
-        // console.log(restaurant,restaurant.toJSON());
+        // console.log("A-", restaurant, "B-", restaurant.toJSON());
+        // const allComments = restaurant.toJSON().Comments;
+        // const sortedDescComments = [...allComments].sort(
+        //   (objA, objB) => Number(objB.updatedAt) - Number(objA.updatedAt)
+        // );
+        // console.log(sortedDesc);
         res.render("restaurant", {
           restaurant: restaurant.toJSON(), // toJSON大小寫要全對
         });
