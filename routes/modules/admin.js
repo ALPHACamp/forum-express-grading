@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const adminController = require('../../controllers/admin-controller')
+const categoryController = require('../../controllers/category-controller')
 const upload = require('../../middleware/multer')
 // const { authenticatedAdmin } = require('../../middleware/auth') // 引入 auth.js
 router.get('/restaurants/create', adminController.createRestaurant) // 把 authenticatedAdmin 參數拿出去到index內，由index頁傳入
@@ -13,6 +14,7 @@ router.post('/restaurants', upload.single('image'), adminController.postRestaura
 
 router.patch('/users/:id', adminController.patchUser)
 router.get('/users', adminController.getUsers)
+router.get('/categories', categoryController.getCategories)
 
 router.use('/', (req, res) => res.redirect('/admin/restaurants'))
 module.exports = router
