@@ -37,7 +37,9 @@ const restaurantController = {
   },
   getRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
-      include: [Category, { model: Comment, include: User }] // 拿出關聯的 Category model及 預先加載
+      include: [Category, { model: Comment, include: User }], // 拿出關聯的 Category model及 預先加載
+      // 找Restaurant的Category、找Restaurant的Comment、找Restaurant的Comment的User
+      order: [[Comment, 'createdAt', 'desc']]
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant doesn't exist!")
