@@ -49,6 +49,17 @@ const userController = {
         })
       })
       .catch(err => next(err))
+  },
+  editUser: (req, res, next) => {
+    User.findByPk(req.params.id, {
+      raw: true
+    })
+      .then(user => {
+        if (!user) throw new Error("User doesn't exist!")
+        console.log(user)
+        res.render('users/edit', { user })
+      })
+      .catch(err => next(err))
   }
 }
 module.exports = userController
