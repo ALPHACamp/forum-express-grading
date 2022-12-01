@@ -21,8 +21,8 @@ module.exports = (sequelize, DataTypes) => {
     restaurantId: DataTypes.INTEGER
   }, {
     sequelize,
-    tablename: 'Comments',
     modelName: 'Comment',
+    tableName: 'Comments',
     underscored: true
   })
   return Comment
