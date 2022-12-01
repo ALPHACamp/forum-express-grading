@@ -1,6 +1,10 @@
 const bcrypt = require('bcryptjs') // 載入 bcrypt
-const db = require('../models')
-const { User } = db
+const {
+  localFileHandler,
+  imgurFileHandler
+} = require('../helpers/file-helpers')
+const { Restaurant, User, Category, Comment } = require('../models')
+const { getUser } = require('../helpers/auth-helpers')
 const userController = {
   signUpPage: (req, res) => {
     res.render('signup')
@@ -13,7 +17,7 @@ const userController = {
     }
 
     // 確認資料裡面沒有一樣的 email，若有，就建立一個 Error 物件並拋出
-    User.findOne({ where: { email: req.body.email } })
+    User.findOne({ where: { email: req.body.email.trim() } })
       .then(user => {
         if (user) throw new Error('Email already exists!') // 不是箭頭式，所以常規上變數user要加上括號
         return bcrypt.hash(req.body.password, 10) // 加return給下一個then，即 hash =bcrypt.hash(req.body.password, 10)
@@ -44,6 +48,78 @@ const userController = {
     req.flash('success_messages', '登出成功！')
     req.logout() // Passport 提供的語法，會把 user id 對應的 session 清除掉
     res.redirect('/signin')
+  },
+  getUser: (req, res, next) => {
+    return User.findByPk(req.params.id, {
+      include: [{ model: Comment, include: Restaurant }],
+      order: [[Comment, 'createdAt', 'desc']] // desc大小寫都可
+    })
+      .then(user => {
+        if (!user) throw new Error("User doesn't exist!")
+        // console.log("user toJSON", user.toJSON());
+        // user toJSON {
+        //   id: 1,
+        //   name: 'root',
+        //   email: 'root@example.com',
+        //   password: '$2a$1****',
+        //   isAdmin: true,
+        //   image: 'https://i.imgur.com/d07pwY9.jpeg',
+        //   createdAt: 2022-12-01T08:22:54.000Z,
+        //   updatedAt: 2022-12-01T12:09:59.000Z,
+        //   Comments: [
+        //     {
+        //       id: 2,
+        //       text: '55688\r\n',
+        //       userId: 1,
+        //       restaurantId: 1,
+        //       createdAt: 2022-12-01T08:25:48.000Z,
+        //       updatedAt: 2022-12-01T08:25:48.000Z,
+        //       Restaurant: [Object]
+        //     },
+        //     {
+        //       id: 1,
+        //       text: '測試1',
+        //       userId: 1,
+        //       restaurantId: 1,
+        //       createdAt: 2022-12-01T08:25:37.000Z,
+        //       updatedAt: 2022-12-01T08:25:37.000Z,
+        //       Restaurant: [Object]
+        //     }
+        //   ]
+        // }
+        res.render('users/profile', {
+          user: user.toJSON(),
+          nowUser: getUser(req)
+        })
+      })
+      .catch(err => next(err))
+  },
+  editUser: (req, res, next) => {
+    return User.findByPk(req.params.id, { raw: true })
+      .then(user => {
+        if (!user) throw new Error("User doesn't exist!")
+        res.render('users/edit', { user })
+      })
+      .catch(err => next(err))
+  },
+  putUser: (req, res, next) => {
+    const { name } = req.body
+    const file = req.file
+    // console.log(req.body); [Object: null prototype] { name: 'root1' } (前者為檔案，後者為name)
+    if (!name) throw new Error('User name is required!')
+    return Promise.all([User.findByPk(req.params.id), imgurFileHandler(file)])
+      .then(([user, filePath]) => {
+        if (!user) throw new Error("User doesn't exist!")
+        return user.update({
+          name,
+          image: filePath || user.image
+        })
+      })
+      .then(() => {
+        req.flash('success_messages', '使用者資料編輯成功')
+        res.redirect(`/users/${req.params.id}`)
+      })
+      .catch(err => next(err))
   }
 }
 module.exports = userController
