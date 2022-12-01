@@ -1,8 +1,9 @@
 const bcrypt = require('bcryptjs')
 const db = require('../models')
+const assert = require('assert')
 const { User, Comment, Restaurant } = db
 const { getUser } = require('../helpers/auth-helpers')
-const { imgurFileHandler } = require('../helpers/file-helpers')
+const { uploadFile } = require('../helpers/file-helpers')
 const user = require('../models/user')
 
 const userController = {
@@ -16,7 +17,7 @@ const userController = {
 
     User.findOne({ where: { email: req.body.email } })
       .then((user) => {
-        if (user) throw new Error('Email already exists!')
+        assert(user, "User doesn't exist.")
 
         return bcrypt.hash(req.body.password, 10)
       })
@@ -71,8 +72,7 @@ const userController = {
   editUser: (req, res, next) => {
     return User.findByPk(req.params.id, { raw: true })
       .then((user) => {
-        if (!user) throw new Error("User doesn't exist.")
-
+        assert(user, "User doesn't exist.")
         res.render('users/edit', { user })
       })
       .catch((err) => next(err))
@@ -83,9 +83,9 @@ const userController = {
     const { id } = req.params
     if (!name.trim()) throw new Error('Name must be filled in.')
 
-    return Promise.all([User.findByPk(id), imgurFileHandler(file)])
+    return Promise.all([User.findByPk(id), uploadFile(file)])
       .then(([user, filePath]) => {
-        if (!user) throw new Error("User doesn't exist.")
+        assert(user, "User doesn't exist.")
 
         return user.update({
           name,
