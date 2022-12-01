@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs') // 載入 bcrypt
 const { imgurFileHandler } = require('../helpers/file-helpers')
 const db = require('../models')
-const { User, Restaurant } = db
+const { User, Restaurant, Comment } = db
 
 const userController = {
   // sign up
