@@ -27,6 +27,7 @@ router.post(
 )
 router.get('/logout', userController.logout)
 
+router.get('/users/top', authenticated, userController.getTopUsers)
 router.get('/users/:id/edit', authenticatedUser, userController.editUser)
 router.put(
   '/users/:id',

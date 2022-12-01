@@ -56,12 +56,6 @@ const userController = {
     ])
       .then(([userProfile, comments]) => {
         assert(userProfile, "User didn't exist!")
-        userProfile = {
-          ...userProfile,
-          image: userProfile.image
-            ? userProfile.image
-            : 'https://i.imgur.com/vCsJPm8.png'
-        } // 如果userProfile沒有圖片，顯示一個預設值
         res.render('users/profile', {
           user: getUser(req),
           userProfile,
@@ -146,6 +140,18 @@ const userController = {
         return like.destroy()
       })
       .then(() => res.redirect('back'))
+      .catch(err => next(err))
+  },
+  getTopUsers: (req, res, next) => {
+    return User.findAll({ include: [{ model: User, as: 'Followers' }] })
+      .then(users => {
+        users = users.map(user => ({
+          ...user.toJSON(),
+          followerCount: user.Followers.length,
+          isFollowed: getUser(req).Followings.some(followingUser => followingUser.id === user.id)
+        }))
+        res.render('top-users', { users })
+      })
       .catch(err => next(err))
   }
 }

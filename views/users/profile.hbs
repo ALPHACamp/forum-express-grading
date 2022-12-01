@@ -3,12 +3,21 @@
     <div class='card'>
       <div class='card-body d-flex'>
         <div class='col-md-4'>
+          {{#if userProfile.image}}
           <img
             class='img-responsive card-image-left'
             src='{{userProfile.image}}'
             style='width: 300px; height:300px margin-bottom: 25px; transition: opacity 0.5s; opacity:0; display:inline'
             onload='this.style.opacity=1;'
           />
+          {{else}}
+          <img
+            class='img-responsive card-image-left'
+            src='https://i.imgur.com/vCsJPm8.png'
+            style='width: 300px; height:300px margin-bottom: 25px; transition: opacity 0.5s; opacity:0; display:inline'
+            onload='this.style.opacity=1;'
+          />
+          {{/if}}
         </div>
         <div class='col-md-8'>
           <h4>{{userProfile.name}}</h4>
