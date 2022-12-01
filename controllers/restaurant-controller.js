@@ -19,8 +19,8 @@ const restaurantController = {
         offset,
         limit,
         nest: true,
-        raw: true,
-      }),
+        raw: true
+      })
     ])
       .then(([categories, restaurants]) => {
         if (!restaurants.rows.length) {
@@ -34,13 +34,13 @@ const restaurantController = {
           ...r,
           description: r.description.substring(0, 50),
           isFavorited: favoritedRestaurantsId.includes(r.id),
-          isLiked: likedRestaurantsId.includes(r.id),
+          isLiked: likedRestaurantsId.includes(r.id)
         }))
         res.render('restaurants', {
           restaurants: datas,
           categories,
           categoryId,
-          pagination: getPagination(limit, page, restaurants.count),
+          pagination: getPagination(limit, page, restaurants.count)
         })
       })
       .catch(err => next(err))
@@ -51,12 +51,12 @@ const restaurantController = {
         Category,
         {
           model: Comment,
-          include: User,
+          include: User
         },
         { model: User, as: 'FavoritedUsers' },
-        { model: User, as: 'LikedUsers' },
+        { model: User, as: 'LikedUsers' }
       ],
-      order: [[Comment, 'updatedAt', 'DESC']],
+      order: [[Comment, 'updatedAt', 'DESC']]
     })
       .then(restaurant => {
         assert(restaurant, "Restaurant did't exist!")
@@ -72,19 +72,19 @@ const restaurantController = {
         res.render('restaurant', {
           restaurant: restaurant.toJSON(),
           isFavorited,
-          isLiked,
+          isLiked
         })
       })
       .catch(err => next(err))
   },
   getDashboard: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
-      include: Category,
+      include: Category
     })
       .then(restaurant => {
         assert(restaurant, "Restaurant did't exist!")
         res.render('dashboard', {
-          restaurant: restaurant.toJSON(),
+          restaurant: restaurant.toJSON()
         })
       })
       .catch(err => next(err))
@@ -96,15 +96,15 @@ const restaurantController = {
         order: [['createdAt', 'DESC']],
         include: Category,
         nest: true,
-        raw: true,
+        raw: true
       }),
       Comment.findAll({
         limit: 10,
         order: [['createdAt', 'DESC']],
         include: [Restaurant, User],
         nest: true,
-        raw: true,
-      }),
+        raw: true
+      })
     ])
       .then(([restaurants, comments]) => {
         const descriptionLength = 200
@@ -118,7 +118,7 @@ const restaurantController = {
           ...r,
           description: r.description
             .substring(0, descriptionLength)
-            .concat(' ', '...'),
+            .concat(' ', '...')
         }))
         res.render('feeds', { restaurants, comments })
       })
@@ -126,7 +126,7 @@ const restaurantController = {
   },
   getTopRestaurants: (req, res, next) => {
     return Restaurant.findAll({
-      include: [{ model: User, as: 'FavoritedUsers' }],
+      include: [{ model: User, as: 'FavoritedUsers' }]
     })
       .then(restaurants => {
         const result = restaurants
@@ -137,13 +137,13 @@ const restaurantController = {
               getUser(req) &&
               getUser(req).FavoritedRestaurants.some(
                 favoritedRestaurant => favoritedRestaurant.id === restaurant.id
-              ),
+              )
           }))
           .sort((a, b) => b.favoritedCount - a.favoritedCount)
           .slice(0, 10)
         res.render('top-restaurants', { restaurants: result })
       })
       .catch(err => next(err))
-  },
+  }
 }
 module.exports = restaurantController
