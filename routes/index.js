@@ -34,8 +34,11 @@ router.get('/restaurants/:id/dashboard', authenticated, restController.getDashbo
 router.get('/restaurants/:id', authenticated, restController.getRestaurant)
 router.get('/restaurants', authenticated, restController.getRestaurants)
 
-router.delete('/comments/:id', authenticatedAdmin, commentController.deleteComment) // 刪除評論，只有Admin才能夠刪除
+router.delete('/comments/:id', authenticatedAdmin, commentController.deleteComment) // 刪除評論，Admin才能刪
 router.post('/comments', authenticated, commentController.postComment) // 新增餐廳評論
+
+router.post('/favorite/:restaurantId', authenticated, userController.addFavorite)
+router.delete('/favorite/:restaurantId', authenticated, userController.removeFavorite)
 
 // 設定 fallback 路由(其他路由條件都不符合時，最終會通過的路由)
 router.get('/', (req, res) => res.redirect('/restaurants'))
