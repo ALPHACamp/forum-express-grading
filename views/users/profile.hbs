@@ -1,0 +1,15 @@
+<div class="card">
+  <div class="card-body">
+    <div class="d-flex">
+      <div class="flex-shrink-0">
+        <img src="{{#if user.image}}{{ user.image }}{{else}}https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-profiles/avatar-1.webp
+          {{/if}}" alt="placeholder image" class="img-fluid" style="height: 300px; border-radius: 50%;">
+      </div>
+      <div class="flex-grow-1 ms-3">
+        <h5>{{ user.name }}</h5>
+        <p>{{ user.email }}</p>
+        <a href="/users/{{ user.id }}/edit" class="btn btn-primary">Edit</a>
+      </div>
+    </div>
+  </div>
+</div>
