@@ -14,12 +14,12 @@ const userController = {
     }
 
     User.findOne({ where: { email: req.body.email } })
-      .then(user => {
+      .then((user) => {
         assert(user, "User doesn't exist.")
 
         return bcrypt.hash(req.body.password, 10)
       })
-      .then(hash =>
+      .then((hash) =>
         User.create({
           name: req.body.name,
           email: req.body.email,
@@ -30,7 +30,7 @@ const userController = {
         req.flash('success_messages', '成功註冊帳號 !')
         res.redirect('/signin')
       })
-      .catch(err => next(err))
+      .catch((err) => next(err))
   },
   signInPage: (req, res) => {
     res.render('signin')
@@ -65,15 +65,15 @@ const userController = {
           comments
         })
       })
-      .catch(err => next(err))
+      .catch((err) => next(err))
   },
   editUser: (req, res, next) => {
     return User.findByPk(req.params.id, { raw: true })
-      .then(user => {
+      .then((user) => {
         assert(user, "User doesn't exist.")
         res.render('users/edit', { user })
       })
-      .catch(err => next(err))
+      .catch((err) => next(err))
   },
   putUser: (req, res, next) => {
     const { name } = req.body
@@ -94,7 +94,7 @@ const userController = {
         req.flash('success_messages', '使用者資料編輯成功')
         res.redirect(`/users/${id}`)
       })
-      .catch(err => next(err))
+      .catch((err) => next(err))
   },
   addFavorite: (req, res, next) => {
     const { restaurantId } = req.params
@@ -117,7 +117,7 @@ const userController = {
         })
       })
       .then(() => res.redirect('back'))
-      .catch(err => next(err))
+      .catch((err) => next(err))
   },
   removeFavorite: (req, res, next) => {
     return Favorite.findOne({
@@ -126,13 +126,13 @@ const userController = {
         restaurantId: req.params.restaurantId
       }
     })
-      .then(favorite => {
+      .then((favorite) => {
         if (!favorite) throw new Error("You haven't favorited this restaurant")
 
         return favorite.destroy()
       })
       .then(() => res.redirect('back'))
-      .catch(err => next(err))
+      .catch((err) => next(err))
   },
   addLike: (req, res, next) => {
     const { restaurantId } = req.params
@@ -147,19 +147,33 @@ const userController = {
         return Like.create({ userId: req.user.id, restaurantId })
       })
       .then(() => res.redirect('back'))
-      .catch(err => next(err))
+      .catch((err) => next(err))
   },
   removeLike: (req, res, next) => {
     return Like.findOne({
       where: { userId: req.user.id, restaurantId: req.params.restaurantId }
     })
-      .then(like => {
+      .then((like) => {
         assert(like, "You haven't like this restaurant")
 
         return like.destroy()
       })
       .then(() => res.redirect('back'))
-      .catch(err => next(err))
+      .catch((err) => next(err))
+  },
+  getTopUsers: (req, res, next) => {
+    return User.findAll({
+      include: [{ model: User, as: 'Followers' }]
+    })
+      .then((users) => {
+        users = users.map((user) => ({
+          ...user.toJSON(),
+          followerCount: user.Followers.length,
+          isFollowed: req.user.Followings.some((f) => f.id === user.id)
+        }))
+        res.render('top-users', { users: users })
+      })
+      .catch((err) => next(err))
   }
 }
 module.exports = userController
