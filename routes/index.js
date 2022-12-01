@@ -4,6 +4,7 @@ const restController = require('../controllers/restaurant-controller')
 const admin = require('./modules/admin')
 const passport = require('../config/passport')
 const userController = require('../controllers/user-controller')
+const commentController = require('../controllers/​​comment-controller')
 const { generalErrorHandler } = require('../middleware/error-handler') // 須將middleware加入
 const { authenticated, authenticatedAdmin } = require('../middleware/auth')
 
@@ -19,12 +20,17 @@ router.post('/signin', passport.authenticate('local', { failureRedirect: '/signi
 router.get('/logout', userController.logout)
 
 // 前端畫面
+// dashboard
+router.get('/restaurants/:id/dashboard', authenticated, restController.getDashboard)
 router.get('/restaurants/:id', authenticated, restController.getRestaurant)
 router.get('/restaurants', authenticated, restController.getRestaurants)
 // 如果接收到的請求路徑是 / restaurants，那就交給 controller 的 getRestaurants 函式來處理。如果這行路由和請求匹配成功，以下的 router.get 就不會執行。
 
+// comment路由
+router.post('/comments', authenticated, commentController.postComment)
+
 // fallback路由。當其他路由條件都不符合時，最終會通過的路由。論此 request 是用哪個 HTTP method 發出的，都會匹配到這一行，將使用者重新導回 / restaurants。所以要注意順序。所以就是不論你網址亂打甚麼，他都會跳去/restaurants。
-router.use('/', (req, res) => { res.redirect('/restaurants') })
+router.get('/', (req, res) => { res.redirect('/restaurants') })
 
 router.use('/', generalErrorHandler) // 須將middleware加入，不然無法顯示
 
