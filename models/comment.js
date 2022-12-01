@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static associate(models) {
+    static associate (models) {
       Comment.belongsTo(models.Restaurant, { foreignKey: 'restaurantId' })
       Comment.belongsTo(models.User, { foreignKey: 'userId' })
       // 這裡的userId會對應到下面comment.init的userId。所以下面的user_id要改成JS的慣用寫法userId。
