@@ -40,6 +40,9 @@ router.post('/comments', authenticated, commentController.postComment) // 新增
 router.post('/favorite/:restaurantId', authenticated, userController.addFavorite)
 router.delete('/favorite/:restaurantId', authenticated, userController.removeFavorite)
 
+router.post('/like/:restaurantId', authenticated, userController.addLike) // 新增按Like功能
+router.delete('/like/:restaurantId', authenticated, userController.removeLike) // 新增移除Like功能
+
 // 設定 fallback 路由(其他路由條件都不符合時，最終會通過的路由)
 router.get('/', (req, res) => res.redirect('/restaurants'))
 

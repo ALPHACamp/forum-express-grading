@@ -34,7 +34,8 @@ module.exports = app => {
   passport.deserializeUser((id, cb) => {
     return User.findByPk(id, {
       include: [
-        { model: Restaurant, as: 'FavoritedRestaurants' } // as 會對應到 User model 裡設定的別名
+        { model: Restaurant, as: 'FavoritedRestaurants' }, // as 會對應到 User model 裡設定的別名
+        { model: Restaurant, as: 'LikedRestaurants' }
       ]
     })
       .then(user => {
