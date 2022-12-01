@@ -28,6 +28,7 @@ router.post(
 )
 router.get('/logout', userController.logout)
 
+router.get('/restaurants/top', authenticated, restController.getTopRestaurants)
 router.get('/users/top', authenticated, userController.getTopUsers)
 router.get('/restaurants/feeds', authenticated, restController.getFeeds)
 router.get(
