@@ -3,7 +3,7 @@ const { imgurFileHandler } = require('../helpers/file-helpers')
 const { getUser } = require('../helpers/auth-helpers')
 
 const db = require('../models')
-const { User } = db
+const { User, Restaurant, Comment } = db
 
 const userController = {
   signUpPage: (req, res) => {
@@ -44,17 +44,22 @@ const userController = {
     res.redirect('/signin')
   },
   getUser: (req, res, next) => {
-    return User.findByPk(req.params.id,
-      {
+    return Promise.all([
+      User.findByPk(req.params.id, { raw: true }),
+      Comment.findAll({
+        where: { userId: req.params.id },
+        include: Restaurant,
         raw: true,
         nest: true
       })
-      .then(userProfile => {
+    ])
+      .then(([userProfile, comments]) => {
         if (!userProfile) throw new Error("User didn't exist!")
 
         return res.render('users/profile', {
           user: getUser(req),
-          userProfile
+          userProfile,
+          comments
         })
       })
       .catch(err => next(err))
@@ -87,7 +92,7 @@ const userController = {
         })
       })
       .then(() => {
-        req.flash('success_messages', 'User name was successfully to update')
+        req.flash('success_messages', '使用者資料編輯成功')
         res.redirect(`/users/${userId}`)
       })
       .catch(err => next(err))
