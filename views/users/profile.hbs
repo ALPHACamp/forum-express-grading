@@ -1,0 +1,28 @@
+<div class="row bg-white py-3 mt-5">
+  <div class="card col-4" style="border: 0;">
+    <img
+      src="{{#if userData.image}}{{ userData.image }}{{else}}https://cdn-icons-png.flaticon.com/512/3177/3177440.png{{/if}}"
+      alt="avatar" style="height:300px; width:270px; border-radius:50%" class="mx-auto" onload="this.style.opacity=1;">
+  </div>
+  <div class="col-8">
+    <h3>{{ userData.name }}</h3>
+    <h5>{{ userData.email }}</h5>
+    <p>已評論餐廳數：{{userData.Comments.length}}</p>
+    {{#ifCond userData.id user.id}}
+    <a href="/users/{{ user.id }}/edit" class="btn btn-primary mt-2">Edit</a>
+    {{/ifCond}}  
+  </div>
+  </div>
+
+  <div class="row card mb-3 mt-3">
+    <h5 class="card-header">已評論餐廳數：{{userData.Comments.length}}</h5>
+    <div class="card-body">
+      {{#each userData.Comments}}
+        <a href="/restaurants/{{this.Restaurant.id}}" title="{{this.Restaurant.name}}" style="text-decoration: none;">
+          <img src="{{this.Restaurant.image}}" class="m-3" style="height:100px; width:100px;">
+        </a>
+      {{/each}}
+    </div>
+  </div>
+
+
