@@ -19,6 +19,8 @@ router.delete('/comments/:id', authenticatedAdmin, commentController.deleteComme
 router.post('/comments', authenticated, commentController.postComment)
 router.post('/favorite/:restaurantId', authenticated, userController.addFavorite)
 router.delete('/favorite/:restaurantId', authenticated, userController.removeFavorite)
+router.post('/like/:restaurantId', authenticated, userController.addLike)
+router.delete('/like/:restaurantId', authenticated, userController.removeLike)
 router.get('/users/:id/edit', authenticatedUser, userController.editUser)
 router.get('/users/:id', authenticated, userController.getUser)
 router.put('/users/:id', authenticatedUser, upload.single('image'), userController.putUser)
