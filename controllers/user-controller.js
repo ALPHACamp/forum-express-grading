@@ -62,7 +62,7 @@ const userController = {
         if (!user) throw new Error('這位使用者不存在!')
         // console.log(user)
         const userData = user.toJSON()
-        console.log(userData)
+        // console.log(userData)
         res.render('users/profile', {
           user: getUser(req),
           userData
