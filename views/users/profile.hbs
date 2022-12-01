@@ -1,0 +1,17 @@
+<div class="row bg-white py-3 mt-5">
+  <div class="card col-4" style="border: 0;">
+    <img src="{{#if userProfile.image}}{{ userProfile.image }}{{else}}https://avatars.githubusercontent.com/u/8667311?s=200&v=4{{/if}}" alt="avatar"
+      class="mx-auto"style="height: 300px; width: 300px; border-radius: 50%;">
+  </div>
+  <div class="col-8">
+    <p class="text-secondary mb-1">
+      <h3>{{ user.name }}</h3>
+      <h6>{{ user.email }}</h6>
+    </p>
+    {{#ifCond user.id userProfile.id}}
+    <a href='/users/{{user.id}}/edit'>
+      <button type="button" class="btn btn-primary">edit</button>
+    </a>
+    {{/ifCond}}
+  </div>
+</div>
