@@ -5,6 +5,8 @@ const admin = require('./modules/admin')
 // 載入 controller
 const restController = require('../controllers/restaurant-controller')
 const userController = require('../controllers/user-controller')
+const commentController = require('../controllers/comment-controller')
+// 載入 middleware
 const { authenticatedAdmin, authenticated } = require('../middleware/auth')
 const { generalErrorHandler } = require('../middleware/error-handler')
 const upload = require('../middleware/multer')
@@ -31,6 +33,10 @@ router.get('/restaurants/feeds', authenticated, restController.getFeeds)
 router.get('/restaurants/:id/dashboard', authenticated, restController.getDashboard)
 router.get('/restaurants/:id', authenticated, restController.getRestaurant)
 router.get('/restaurants', authenticated, restController.getRestaurants)
+
+router.delete('/comments/:id', authenticatedAdmin, commentController.deleteComment) // 刪除評論，只有Admin才能夠刪除
+router.post('/comments', authenticated, commentController.postComment) // 新增餐廳評論
+
 // 設定 fallback 路由(其他路由條件都不符合時，最終會通過的路由)
 router.get('/', (req, res) => res.redirect('/restaurants'))
 
