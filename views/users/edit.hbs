@@ -1,0 +1,13 @@
+<form action="/users/{{user.id}}?_method=put" method="post" enctype="multipart/form-data">
+  <div class="mb-3">
+    <label for="name" class="form-label fw-bold">Name</label>
+    <input type="text" class="form-control" id="name" name="name" placeholder="Name" value="{{user.name}}">
+  </div>
+  <div class="mb-3">
+    <label for="formFile" class="form-label fw-bold">Image</label>
+    <p class="ps-5" style="display: inline;">current：<a href="{{user.image}}" target="_blank">{{user.image}}</a></p>
+    <input class="form-control form-control-file" type="file" id="formFile" name="image">
+  </div>
+  <button type="submit" class="btn btn-primary">Submit</button>
+  <a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
+</form>
