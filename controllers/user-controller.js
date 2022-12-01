@@ -1,10 +1,8 @@
 const bcrypt = require('bcryptjs')
-const db = require('../models')
 const assert = require('assert')
-const { User, Comment, Restaurant } = db
+const { User, Restaurant, Comment, Favorite } = require('../models')
 const { getUser } = require('../helpers/auth-helpers')
 const { uploadFile } = require('../helpers/file-helpers')
-const user = require('../models/user')
 
 const userController = {
   signUpPage: (req, res) => {
@@ -16,12 +14,12 @@ const userController = {
     }
 
     User.findOne({ where: { email: req.body.email } })
-      .then((user) => {
+      .then(user => {
         assert(user, "User doesn't exist.")
 
         return bcrypt.hash(req.body.password, 10)
       })
-      .then((hash) =>
+      .then(hash =>
         User.create({
           name: req.body.name,
           email: req.body.email,
@@ -32,7 +30,7 @@ const userController = {
         req.flash('success_messages', '成功註冊帳號 !')
         res.redirect('/signin')
       })
-      .catch((err) => next(err))
+      .catch(err => next(err))
   },
   signInPage: (req, res) => {
     res.render('signin')
@@ -67,15 +65,15 @@ const userController = {
           comments
         })
       })
-      .catch((err) => next(err))
+      .catch(err => next(err))
   },
   editUser: (req, res, next) => {
     return User.findByPk(req.params.id, { raw: true })
-      .then((user) => {
+      .then(user => {
         assert(user, "User doesn't exist.")
         res.render('users/edit', { user })
       })
-      .catch((err) => next(err))
+      .catch(err => next(err))
   },
   putUser: (req, res, next) => {
     const { name } = req.body
@@ -96,7 +94,45 @@ const userController = {
         req.flash('success_messages', '使用者資料編輯成功')
         res.redirect(`/users/${id}`)
       })
-      .catch((err) => next(err))
+      .catch(err => next(err))
+  },
+  addFavorite: (req, res, next) => {
+    const { restaurantId } = req.params
+    return Promise.all([
+      Restaurant.findByPk(restaurantId),
+      Favorite.findOne({
+        where: {
+          userId: req.user.id,
+          restaurantId
+        }
+      })
+    ])
+      .then(([restaurant, favorite]) => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        if (favorite) throw new Error('You have favorited this restaurant!')
+
+        return Favorite.create({
+          userId: req.user.id,
+          restaurantId
+        })
+      })
+      .then(() => res.redirect('back'))
+      .catch(err => next(err))
+  },
+  removeFavorite: (req, res, next) => {
+    return Favorite.findOne({
+      where: {
+        userId: req.user.id,
+        restaurantId: req.params.restaurantId
+      }
+    })
+      .then(favorite => {
+        if (!favorite) throw new Error("You haven't favorited this restaurant")
+
+        return favorite.destroy()
+      })
+      .then(() => res.redirect('back'))
+      .catch(err => next(err))
   }
 }
 module.exports = userController
