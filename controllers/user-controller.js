@@ -49,6 +49,7 @@ const userController = {
         nest: true,
         where: { userId: req.params.id },
         include: Restaurant,
+        attributes: ['restaurant_id'],
         group: 'restaurant_id'
       })
     ])
