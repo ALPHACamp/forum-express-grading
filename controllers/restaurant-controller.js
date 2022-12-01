@@ -19,10 +19,14 @@ const restaurantController = {
       Category.findAll({ raw: true })
     ])
       .then(([restaurants, categories]) => {
-        const data = restaurants.rows.map((r) => ({
+        const favoritedRestaurantsId =
+          req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
+        const data = restaurants.rows.map(r => ({
           ...r,
-          description: r.description.substring(0, 50)
+          description: r.description.substring(0, 50),
+          isFavorited: favoritedRestaurantsId.includes(r.id)
         }))
+
         return res.render('restaurants', {
           restaurants: data,
           categories,
@@ -30,29 +34,38 @@ const restaurantController = {
           pagination: getPagination(limit, page, restaurants.count)
         })
       })
-      .catch((err) => next(err))
+      .catch(err => next(err))
   },
   getRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
-      include: [Category, { model: Comment, include: User }]
+      include: [
+        Category,
+        { model: Comment, include: User },
+        { model: User, as: 'FavoritedUsers' }
+      ]
     })
-      .then((restaurant) => {
+      .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
+
         return restaurant.increment('viewCounts')
       })
-      .then((restaurant) => {
+      .then(restaurant => {
+        const isFavorited = restaurant.FavoritedUsers.some(
+          f => f.id === req.user.id
+        )
         return res.render('restaurant', {
-          restaurant: restaurant.toJSON()
+          restaurant: restaurant.toJSON(),
+          isFavorited
         })
       })
-      .catch((err) => next(err))
+      .catch(err => next(err))
   },
   getDashboard: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
       include: Category,
       nest: true,
       raw: true
-    }).then((restaurant) => {
+    }).then(restaurant => {
       if (!restaurant) throw new Error("Restaurant didn't exist!")
       return res.render('dashboard', { restaurant })
     })
@@ -80,7 +93,7 @@ const restaurantController = {
           comments
         })
       })
-      .catch((err) => next(err))
+      .catch(err => next(err))
   }
 }
 module.exports = restaurantController
