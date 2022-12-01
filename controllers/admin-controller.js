@@ -13,7 +13,7 @@ const adminController = {
       .then(restaurants => res.render('admin/restaurants', { restaurants }))
       .catch(err => next(err))
   },
-  createRestaurant: (req, res) => {
+  createRestaurant: (req, res, next) => {
     return Category.findAll({
       raw: true
     })
@@ -121,6 +121,13 @@ const adminController = {
         req.flash('success_messages', '使用者權限變更成功')
         res.redirect('/admin/users')
       })
+      .catch(err => next(err))
+  },
+  postCategory: (req, res, next) => {
+    const { name } = req.body
+    if (!name) throw new Error('Category name is required!')
+    return Category.create({ name })
+      .then(() => res.redirect('/admin/categories'))
       .catch(err => next(err))
   }
 }
