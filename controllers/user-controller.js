@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs') // 載入 bcrypt
 const { imgurFileHandler } = require('../helpers/file-helpers')
 const db = require('../models')
-const { User, Restaurant, Comment } = db
+const { User, Restaurant } = db
 
 const userController = {
   // sign up
@@ -77,6 +77,7 @@ const userController = {
     const userId = req.params.id
     const file = req.file
     if (!name) throw new Error('User name is required!')
+    if (req.user.id !== Number(userId)) throw new Error('不能更改其他使用者的資料!')
     return Promise.all([
       User.findByPk(userId),
       imgurFileHandler(file)
