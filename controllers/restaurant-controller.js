@@ -26,11 +26,13 @@ const restaurantController = {
       .then(([restaurants, categories]) => {
         // 透過 passport 裡的 user 資料，取出被使用者收藏過的餐廳 id，並用 map 產生新的陣列
         const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
+        const likedRestaurantsId = req.user && req.user.LikedRestaurants.map(lr => lr.id)
         // map 整理出來的新陣列，需要多設一個變數 data 來接住回傳值的資料
         const data = restaurants.rows.map(r => ({
           ...r,
           description: r.description.substring(0, 50), // 把敘述截斷為50個字，截取字串可用 substring()
-          isFavorited: favoritedRestaurantsId.includes(r.id)
+          isFavorited: favoritedRestaurantsId.includes(r.id),
+          isLiked: likedRestaurantsId.includes(r.id) // 加入一個 isLiked 屬性，讓前端可以去做判斷切換Like or Unlike
         }))
         return res.render('restaurants', {
           restaurants: data, // 要使用的資料會放在 data
@@ -49,7 +51,8 @@ const restaurantController = {
         include: [ // 當項目變多時，需要改成用陣列
           Category,
           { model: Comment, include: User }, // 要拿到關聯的 Comment，再拿到 Comment 關聯的 User，要做兩次的查詢
-          { model: User, as: 'FavoritedUsers' } // 透過 Restaurant model 取得 與 User model 的關係為"已收藏這間餐廳的使用者"
+          { model: User, as: 'FavoritedUsers' }, // 透過 Restaurant model 取得 與 User model 的關係為"已收藏這間餐廳的使用者"
+          { model: User, as: 'LikedUsers' }
         ]
       })
       .then(restaurant => {
@@ -59,9 +62,11 @@ const restaurantController = {
       })
       .then(restaurant => {
         const isFavorited = restaurant.FavoritedUsers.some(fu => fu.id === req.user.id) // some為執行到true就結束
+        const isLiked = restaurant.LikedUsers.some(lu => lu.id === req.user.id)
         res.render('restaurant', {
           restaurant: restaurant.toJSON(),
-          isFavorited
+          isFavorited,
+          isLiked
         })
       })
       .catch(err => next(err))
