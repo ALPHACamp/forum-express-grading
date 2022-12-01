@@ -37,6 +37,9 @@ router.put(
 )
 router.get('/users/:id', authenticated, userController.getUser)
 
+router.post('/following/:userId', authenticated, userController.addFollowing)
+router.delete('/following/:userId', authenticated, userController.removeFollowing)
+
 router.post('/favorite/:restaurantId', authenticated, userController.addFavorite)
 router.delete(
   '/favorite/:restaurantId',
