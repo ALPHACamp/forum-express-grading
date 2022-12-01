@@ -16,7 +16,7 @@
   {{#each restaurants}}
     <div class="col-md-4">
       <div class="card mb-4 shadow-sm">
-        <a href="/restaurants/{{this.id}}">
+        <a href="/restaurants/{{this.id}}" title="{{this.name}}">
           <img class="card-img-top img-fluid" src="{{this.image}}" alt="Card image cap" width="286px" height="180px"
             style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
         </a>
@@ -29,12 +29,15 @@
           <span class="badge bg-secondary">{{this.Category.name}}</span>
           <p class="card-text text-truncate">{{this.description}}</p>
           <div class="d-flex">
-            <form action="/favorite/{{this.id}}?_method=DELETE" method="POST">
-              <button type="submit" class="btn btn-danger m-1">移除最愛</button>
-            </form>
-            <form action="/favorite/{{this.id}}" method="POST">
-              <button type="submit" class="btn btn-primary m-1">加到最愛</button>
-            </form>
+            {{#if isFavorited}}
+              <form action="/favorite/{{this.id}}?_method=DELETE" method="POST">
+                <button type="submit" class="btn btn-danger m-1">移除最愛</button>
+              </form>
+            {{else}}
+              <form action="/favorite/{{this.id}}" method="POST">
+                <button type="submit" class="btn btn-primary m-1">加到最愛</button>
+              </form>
+            {{/if}}
           </div>
         </div>
       </div>

@@ -1,8 +1,7 @@
 const passport = require('passport')
 const LocalStrategy = require('passport-local').Strategy
 const bcrypt = require('bcryptjs')
-const db = require('../models')
-const User = db.User
+const { User, Restaurant } = require('../models')
 
 module.exports = app => {
   app.use(passport.initialize())
@@ -33,11 +32,18 @@ module.exports = app => {
     cb(null, user.id)
   })
   passport.deserializeUser((id, cb) => {
-    User.findByPk(id)
+    return User.findByPk(id, {
+      include: [
+        { model: Restaurant, as: 'FavoritedRestaurants' } // as 會對應到 User model 裡設定的別名
+      ]
+    })
       .then(user => {
-        user = user.toJSON() // 整理資料
-        return cb(null, user)
+        // console.log(user)
+        cb(null, user.toJSON())
+        // console.log(user.toJSON())
       })
+      .catch(err => cb(err))
   })
 }
+
 // module.exports = passport
