@@ -42,7 +42,8 @@ router.get('/', (req, res) => res.redirect('/restaurants'))
 
 router.delete('/comments/:id', authenticatedAdmin, commentController.deleteComment) // 加入這行
 router.post('/comments', authenticated, commentController.postComment) // 加入路由設定
-
+router.post('/favorite/:restaurantId', authenticated, userController.addFavorite)
+router.delete('/favorite/:restaurantId', authenticated, userController.removeFavorite)
 router.use('/', generalErrorHandler) // 加入這行
 module.exports = router
 
