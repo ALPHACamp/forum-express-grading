@@ -1,4 +1,4 @@
-const { Restaurant, Category, User, Comment } = require('../models')
+const { Restaurant, Category, User, Comment, Sequelize } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
 
 const restaurantController = {
@@ -53,13 +53,15 @@ const restaurantController = {
   getDashboard: (req, res, next) => {
     const { id } = req.params
     return Restaurant.findByPk(id, {
-      raw: true,
-      include: Category,
+      include: [Category, { model: Comment, attributes: [] }],
+      attributes: { include: [[Sequelize.fn('COUNT', Sequelize.col('comments.id')), 'commentCounts']] },
+      // raw: true,
       nest: true
     })
       .then(restaurant => {
+        console.log(restaurant)
         if (!restaurant) throw new Error("Restaurant doesn't exist!")
-        return res.render('dashboard', { restaurant: restaurant })
+        return res.render('dashboard', { restaurant: restaurant.toJSON() })
       })
       .catch(err => next(err))
   }
