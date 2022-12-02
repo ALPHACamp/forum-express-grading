@@ -1,4 +1,6 @@
 const bcrypt = require('bcryptjs')
+const { imgurFileHandler } = require('../helpers/file-helpers')
+const { getUser } = require('../helpers/auth-helpers')
 const db = require('../models')
 
 const { User } = db
@@ -36,7 +38,50 @@ const userController = {
     req.flash('success_messages', '登出成功！')
     req.logout()
     res.redirect('/signin')
+  },
+  getUser: (req, res, next) => {
+    const viewer = getUser(req)
+    return User.findByPk(req.params.id, {
+      raw: true
+    })
+      .then(user => {
+        if (!user) throw new Error("User doesn't exist!'")
+        res.render('users/profile', { user, viewer })
+      })
+      .catch(err => next(err))
+  },
+  editUser: (req, res, next) => {
+    return User.findByPk(req.params.id, {
+      raw: true
+    })
+      .then(user => {
+        if (!user) throw new Error("User doesn't exist!'")
+        res.render('users/edit', { user })
+      })
+      .catch(err => next(err))
+  },
+  putUser: (req, res, next) => {
+    const { name } = req.body
+    const { file } = req
+    const { id } = req.params
+    return Promise.all([ // 非同步處理
+      User.findByPk(id),
+      imgurFileHandler(file) // 把檔案傳到 file-helper 處理
+    ])
+      .then(([user, filePath]) => {
+        if (!user) throw new Error("User doesn't exist!'")
+        if (user.id !== req.user.id) throw new Error("You can't change other's profile.")
+        return user.update({
+          name,
+          image: filePath || user.image
+        })
+      })
+      .then(user => {
+        req.flash('success_messages', '使用者資料編輯成功')
+        res.redirect(`/users/${id}`)
+      })
+      .catch(err => next(err))
   }
-
 }
+
 module.exports = userController

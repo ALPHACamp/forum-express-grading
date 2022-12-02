@@ -1,0 +1,17 @@
+<div class="row bg-white py-5">
+  <div class="col-4 text-center">
+    <img
+      src="{{#if user.image}} {{user.image}} {{else}} https://cdn-icons-png.flaticon.com/512/149/149071.png {{/if}}"
+      alt="user_image"
+      style="height:250px; width:250px; object-fit:cover;"
+    />
+  </div>
+  <div class="col-md-8">
+    <h3>{{user.name}}</h3>
+    <h4>{{user.email}}</h4>
+    {{#ifCond user.id viewer.id}}
+      <a class="btn btn-primary" href="/users/{{user.id}}/edit">edit</a>
+    {{/ifCond}}
+  </div>
+
+</div>
