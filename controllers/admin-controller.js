@@ -105,7 +105,7 @@ const adminController = {
   patchUser: (req, res, next) => {
     return User.findByPk(req.params.id)
       .then(user => {
-        if (!user) throw new Error('User is not exist.')
+        if (!user) throw new Error('User does not exist.')
         if (user.email.toString() === superuser.email.toString()) {
           req.flash('error_messages', '禁止變更 root 權限')
           return res.redirect('back')
