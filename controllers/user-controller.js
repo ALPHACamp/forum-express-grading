@@ -39,26 +39,29 @@ const userController = {
     res.redirect('/signin')
   },
   getUser: (req, res, next) => {
-    User.findByPk(req.params.id, { raw: true })
+    return User.findByPk(req.params.id, { raw: true })
       .then(user => {
+        // console.log(req.params.id)
+        // console.log(req.user.id)
         if (!user) throw new Error("User didn't exist!")
-        res.render('user', { user })
+        res.render('users/profile', { user })
       })
       .catch(err => next(err))
   },
   editUser: (req, res, next) => {
-    User.findByPk(req.params.id, { raw: true })
+    return User.findByPk(req.params.id, { raw: true })
       .then(user => {
         if (!user) throw new Error("User didn't exist!")
-        res.render('edit-user', { user })
+        res.render('users/edit', { user })
       })
       .catch(err => next(err))
   },
   putUser: (req, res, next) => {
     const { name } = req.body
-    if (!name) throw new Error('User name is required!')
     const { file } = req
-    Promise.all([
+    if (req.user.id !== Number(req.params.id)) throw new Error('You have no permission!')
+    if (!name.trim()) throw new Error('User name is required!')
+    return Promise.all([
       User.findByPk(req.params.id),
       imgurFileHandler(file)
     ])
@@ -69,9 +72,9 @@ const userController = {
           image: filePath || user.image
         })
       })
-      .then(user => {
-        req.flash('success_messages', 'user was successfully to update')
-        res.redirect(`/users/${user.id}`)
+      .then(() => {
+        req.flash('success_messages', '使用者資料編輯成功')
+        res.redirect(`/users/${req.params.id}`)
       })
       .catch(err => next(err))
   }
