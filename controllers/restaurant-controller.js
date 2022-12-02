@@ -27,7 +27,8 @@ const restaurantController = {
         // console.log(req.query) => 從?page=2&categoryId=2獲得{page:2, categoryId:2}
         const data = restaurants.rows.map(r => ({
           ...r, // 展開運算子將每一筆restaurant的資料展開後用data接住，展開後的description會被下方新的description賦值
-          description: r.description.substring(0, 50) // 將餐廳文字描述截斷為50字元的長度
+          description: r.description.substring(0, 50), // 將餐廳文字描述截斷為50字元的長度
+          isFavorited: req.user && req.user.FavoritedRestaurants.map(fr => fr.id).includes(r.id) // 新增一個屬性，會是不林值，在後面計算過後
         }))
         return res.render('restaurants', {
           restaurants: data,
