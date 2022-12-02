@@ -29,6 +29,7 @@ router.post(
 ) // 注意是 post
 
 router.get('/logout', userController.logout)
+router.get('/restaurants/feeds', authenticated, restController.getFeeds) // feeds可能會被認為是:id，所以feeds要先放
 router.get(
   '/restaurants/:id/dashboard',
   authenticated,
