@@ -55,6 +55,7 @@ const userController = {
     ])
       .then(([comments, user]) => {
         assert(user, "User didn't exist!")
+        if (!comments) res.render('users/profile', { user })
         res.render('users/profile', { user, comments })
       })
       .catch(err => next(err))
