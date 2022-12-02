@@ -11,6 +11,7 @@ const passport = require('./config/passport')
 const handlebarsHelpers = require('./helpers/handlebars-helpers')
 const { getUser } = require('./helpers/auth-helpers')
 const routes = require('./routes')
+const paginationHelper = require('./helpers/pagination-helper')
 const SESSION_SECRET = 'secret'
 const app = express()
 const port = process.env.PORT || 3000
