@@ -1,0 +1,22 @@
+<div>
+  <div class="container d-flex  justify-content-start" style="background-color: white;">
+    <div class="container-item m-3">
+      {{#if userProfile.image}}
+      <img src="{{userProfile.image}}" style="object-fit:cover;height:200px; width:200px"
+        alt=" please uploads your avatar">
+      {{else}}
+      <img src="https://avatars.githubusercontent.com/u/8667311?s=200&v=4"
+        style="object-fit:cover;height:200px; width:200px">
+      {{/if}}
+    </div>
+    <div class=" container-item " style=" margin:20px 0 0 100px;">
+      <p class="fw-bold">{{userProfile.name}}</p>
+      <p>{{userProfile.email}}</p>
+      {{#ifCond userProfile.id user.id}}
+      <a href="/users/{{user.id}}/edit" class="btn btn-primary">
+        edit
+      </a>
+      {{/ifCond}}
+    </div>
+  </div>
+</div>
