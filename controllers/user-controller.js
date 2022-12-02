@@ -2,6 +2,7 @@ const bcrypt = require('bcryptjs')
 const db = require('../models')
 const { User, Comment, Restaurant, Favorite } = db
 const { imgurFileHandler } = require('../helpers/file-helpers')
+const { getUser } = require('../helpers/auth-helpers')
 
 const userController = {
   // 負責 render 註冊的頁面
@@ -54,7 +55,7 @@ const userController = {
         // console.log(user.Comments[0].dataValues)
         // 在抓取 User 資料時引入 Comment，在抓取 Comment 資料時引入 Restaurant，最後就能拿到 Comment 跟餐廳名稱
         if (!user) throw new Error("User didn't exist!")
-        return res.render('users/profile', { user: user.toJSON() })
+        return res.render('users/profile', { user: getUser(req), userProfile: user.toJSON() })
       })
       .catch(err => next(err))
   },
