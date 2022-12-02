@@ -1,0 +1,20 @@
+<div class="col-md-12">
+<div class="card mb-3">
+  <div class="row g-0">
+    <div class="col-md-4">
+      {{#if user.image}}
+        <img src="{{ user.image }}" class="img-fluid rounded-start" alt="user image">
+      {{else}}
+        <img src="https://cdn-icons-png.flaticon.com/512/3177/3177440.png" class="img-fluid rounded-start" alt="user image">
+      {{/if}}
+    </div>
+    <div class="col-md-8">
+      <div class="card-body">
+        <h5 class="card-title">{{user.name}}</h5>
+        <p class="card-text">{{ user.email }}</p>
+        <a href="/users/{{ user.id }}/edit"><button class="btn btn-primary">Edit</button></a>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
