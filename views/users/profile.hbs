@@ -17,4 +17,19 @@
 			{{/ifCond}}
 		</div>
 	</div>
+	<div class="card mt-3">
+		<h5 class="card-header">{{comments.length}}已評論餐廳</h5>
+		<div class="card-body">
+			{{#if comments}}
+			{{#each comments}}
+			<a href="/restaurants/{{this.restaurantId}}" style="text-decoration:none;">
+				<img src="{{this.Restaurant.image}}" title="{{this.Restaurant.name}}" class="m-3"
+					style="height:100px; width:100px; object-fit:cover">
+			</a>
+			{{/each}}
+			{{else}}
+			<p>尚未有任何評論</p>
+			{{/if}}
+		</div>
+	</div>
 </div>
