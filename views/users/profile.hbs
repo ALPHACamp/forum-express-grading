@@ -7,8 +7,8 @@
   <div class="col-8">
     <h5>{{user.name}}</h5>
     <p>{{user.email}}</p>
-    {{#ifCond req.user.id user.id}}
+    {{!-- {{#ifCond req.user.id user.id}} --}}
     <a href="/users/{{user.id}}/edit" class="btn btn-primary">Edit</a>
-    {{/ifCond}}
+    {{!-- {{/ifCond}} --}}
   </div>
 </div>
