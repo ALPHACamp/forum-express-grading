@@ -37,6 +37,10 @@ router.post('/comments', authenticated, commentController.addComment)
 router.post('/favorite/:restaurantId', authenticated, userController.addFavorite)
 router.delete('/favorite/:restaurantId', authenticated, userController.removeFavorite)
 
+// like
+router.post('/like/:restaurantId', authenticated, userController.addLike)
+router.delete('/like/:restaurantId', authenticated, userController.removeLike)
+
 router.use('/', (req, res) => res.redirect('/restaurants'))
 
 // handle error
