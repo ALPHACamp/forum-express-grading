@@ -12,9 +12,37 @@
       <div class="card-body">
         <h5 class="card-title">{{user.name}}</h5>
         <p class="card-text">{{ user.email }}</p>
+        <p class="card-text">{{ comments.count }} 已評論餐廳</p>
         <a href="/users/{{ user.id }}/edit"><button class="btn btn-primary">Edit</button></a>
       </div>
     </div>
   </div>
 </div>
+</div>
+<div class="col-md-12">
+  <div class="card">
+    <div class="card-header">
+      <p class="card-text">{{ comments.count }} 已評論餐廳</p>
+    </div>
+    <div class="card-body">
+      <div class="row row-cols-1 row-cols-md-6 g-3">
+        {{#each comments.rows}}
+        <a class="text-decoration-none" href="/restaurants/{{ this.Restaurant.id }}">
+          <div class="col">
+            <div class="card h-100">
+              <img src="{{this.Restaurant.image}}" alt="restaurant-image">
+              <div class="card-body">
+                <h5 class="card-title">評論</h5>
+                <p class="card-text">{{this.text}}</p>
+              </div>
+              <div class="card-footer">
+                <small class="text-muted">{{relativeTimeFromNow this.createdAt}}</small>
+              </div>
+            </div>
+          </div>
+        </a>
+        {{/each}}
+      </div>
+    </div>
+  </div>
 </div>

@@ -1,7 +1,6 @@
 const bcrypt = require('bcryptjs')
 const { assert } = require('chai')
-const db = require('../models')
-const { User } = db
+const { User, Comment, Restaurant } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const userController = {
@@ -41,12 +40,22 @@ const userController = {
     res.redirect('/signin')
   },
   getUser: (req, res, next) => {
-    return User.findByPk(req.params.id, {
-      raw: true
-    })
-      .then(user => {
+    return Promise.all([
+      Comment.findAndCountAll({
+        where: { userId: req.params.id },
+        include: Restaurant,
+        order: [['created_at', 'DESC']],
+        raw: true,
+        nest: true
+      }),
+      User.findByPk(req.params.id, {
+        raw: true,
+        nest: true
+      })
+    ])
+      .then(([comments, user]) => {
         assert(user, "User didn't exist!")
-        res.render('users/profile', { user })
+        res.render('users/profile', { comments, user })
       })
       .catch(err => next(err))
   },
@@ -64,7 +73,7 @@ const userController = {
     const { name } = req.body
     assert(name, 'User name is required!')
     const { file } = req
-    Promise.all([
+    return Promise.all([
       imgurFileHandler(file),
       User.findByPk(req.params.id)
     ])
@@ -75,8 +84,8 @@ const userController = {
           image: filePath || user.image
         })
       })
-      .then(user => {
-        req.flash('success_msg', '使用者資料編輯成功')
+      .then(() => {
+        req.flash('success_messages', '使用者資料編輯成功')
         res.redirect(`/users/${req.params.id}`)
       })
       .catch(err => next(err))
