@@ -11,8 +11,13 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate (models) {
       // define association here
-      Restaurant.belongsTo(models.Category, { foreignKey: 'categoryId' })
-      Restaurant.hasMany(models.Comment, { foreignKey: 'restaurantId' })
+      Restaurant.belongsTo(models.Category, { foreignKey: 'categoryId' }) // 1對1
+      Restaurant.hasMany(models.Comment, { foreignKey: 'restaurantId' }) // 1對多
+      Restaurant.belongsToMany(models.User, { // 多對多
+        through: models.Favorite,
+        foreignKey: 'restaurantId',
+        as: 'FavoritedUsers'
+      })
     }
   };
   Restaurant.init({
