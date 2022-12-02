@@ -1,0 +1,36 @@
+<div class="row my-1 mx-5 bg-white">
+  <div class="col-md-4 px-0">
+    <img class="img-responsive center-block"
+      src="{{#if userProfile.image}}{{userProfile.image}}{{else}}https://publicdomainvectors.org/tn_img/abstract-user-flat-3.webp{{/if}}"
+      style="width: 250px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+  </div>
+  <div class="col-md-7 px-1">
+    <h3 class="my-3">{{userProfile.name}}</h3>
+    <p class="my-2">{{userProfile.email}}</p>
+    <p class="my-2">{{filteredComments.length}}已評論餐廳</p>
+    {{#ifCond userProfile.id user.id}}
+    <a href="/users/{{user.id}}/edit" class="btn btn-primary">edit</a>
+    {{/ifCond}}
+  </div>
+</div>
+
+
+<div class="row my-3 mx-5">
+  <div class="col-md-12 px-0">
+    <div class="card">
+      <p class="card-header">{{filteredComments.length}}已評論餐廳</p>
+      <div class="card-body">
+        {{#if filteredComments}}
+        {{#each filteredComments}}
+        <a href="/restaurants/{{this.restaurantId}}" style="text-decoration:none;">
+          <img src="{{this.Restaurant.image}}" title="{{this.Restaurant.name}}" class="m-3"
+            style="height:100px; width:100px; object-fit:cover">
+        </a>
+        {{/each}}
+        {{else}}
+        <p>尚無任何評論</p>
+        {{/if}}
+      </div>
+  </div>
+</div>
+
