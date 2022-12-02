@@ -49,7 +49,8 @@ const userController = {
       Comment.findAll({
         where: { userId: req.params.id },
         include: { model: Restaurant, attributes: ['id', 'image'] },
-        group: ['restaurantId'],
+        group: 'restaurantId',
+        attributes: ['restaurantId'],
         nest: true,
         raw: true
       })
