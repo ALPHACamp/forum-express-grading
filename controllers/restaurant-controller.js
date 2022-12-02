@@ -1,14 +1,13 @@
-const { Restaurant, Category, Comment, User } = require('../models') // 修改這裡
-const { getOffset, getPagination } = require('../helpers/pagination-helper') // 加入這行
+const { Restaurant, Category, Comment, User } = require('../models') 
+const { getOffset, getPagination } = require('../helpers/pagination-helper') 
 
 const restaurantController = {
   getRestaurants: (req, res,next) => {
-    const DEFAULT_LIMIT = 9 // 加入這行
-    const categoryId = parseInt(req.query.categoryId) || '' // 新增這裡，從網址上拿下來的參數是字串，先轉成 Number 再操作
-    // 新增以下
+    const DEFAULT_LIMIT = 9 
+    const categoryId = parseInt(req.query.categoryId) || '' 
     const page = Number(req.query.page) || 1
     const limit = Number(req.query.limit) || DEFAULT_LIMIT
-    const offset = getOffset(limit, page) // 增加這裡
+    const offset = getOffset(limit, page)
 
     return Promise.all([
       Restaurant.findAndCountAll({
@@ -98,6 +97,24 @@ const restaurantController = {
         })
       })
       .catch(err => next(err))
+  },
+  getTopRestaurants: (req, res, next) => {
+    return Restaurant.findAll({
+      include: [{
+        model: User, as: 'FavoritedUsers'
+      }]
+    })
+      .then(restaurants => {
+        const result = restaurants.map(r => ({
+          ...r.dataValues,
+          description: r.dataValues.description.substring(0, 50),
+          favoritedCount: r.FavoritedUsers.length,
+          isFavorited: req.user && req.user.FavoritedRestaurants.some(f => f.id === r.id)
+        }))
+          .sort((a, b) => b.favoritedCount - a.favoritedCount).slice(0, 10)
+        res.render('top-restaurants', { restaurants: result })
+      })
+      .catch(next)
   }
 }
 
