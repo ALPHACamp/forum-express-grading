@@ -3,8 +3,8 @@
 
     {{!-- 個人頭像 --}}
     <div class="col-md-4">
-      {{#if user.image}}
-      <img src="{{user.image}}" width="300px" height="300px" style="transition: opacity 0.5s; opacity:0;"
+      {{#if userProfile.image}}
+      <img src="{{userProfile.image}}" width="300px" height="300px" style="transition: opacity 0.5s; opacity:0;"
         onload="this.style.opacity=1;" />
       {{else}}
       <img src="https://teameowdev.files.wordpress.com/2015/06/main.png?w=240" width="300px" height="300px"
@@ -15,15 +15,16 @@
     {{!-- 基本資料 --}}
     <div class="col-md-8">
       <div class="card-body">
-        <h5 class="card-title">{{user.name}}</h5>
-        <p class="card-text">{{user.email}}</p>
+        <h5 class="card-title">{{userProfile.name}}</h5>
+        <p class="card-text">{{userProfile.email}}</p>
         <ul class="list-unstyled list-inline">
-          <li>已評論的餐廳：<strong>{{user.Comments.length}}</strong></li>
+          <li>已評論的餐廳：<strong>{{userProfile.Comments.length}}</strong></li>
         </ul>
-
+        {{#ifCond user.id userProfile.id}}
         <p>
-          <a href="/users/{{user.id}}/edit"><button type="submit" class="btn btn-primary mt-5">編輯</button></a>
+          <a href="/users/{{userProfile.id}}/edit"><button type="submit" class="btn btn-primary mt-5">編輯</button></a>
         </p>
+        {{/ifCond}}
       </div>
     </div>
   </div>
@@ -34,10 +35,10 @@
     <br />
     <div class="card">
       <div class="card-header">
-        已評論的餐廳：<strong>{{user.Comments.length}}</strong>
+        已評論的餐廳：<strong>{{userProfile.Comments.length}}</strong>
       </div>
       <div class="card-body">
-        {{#each user.Comments}}
+        {{#each userProfile.Comments}}
         <a href="/restaurants/{{this.Restaurant.id}}" class="text-decoration-none">
           <img src={{this.Restaurant.image}} width="60" height="60" class="avatar" style="transition: opacity 0.5s; opacity:0;"
             onload="this.style.opacity=1;" />
