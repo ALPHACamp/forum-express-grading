@@ -88,8 +88,8 @@ const userController = {
         //   ]
         // }
         res.render('users/profile', {
-          user: user.toJSON(),
-          nowUser: getUser(req)
+          userProfile: user.toJSON(), // header.hbs有用到user，所以要另外取名
+          user: getUser(req)
         })
       })
       .catch(err => next(err))
