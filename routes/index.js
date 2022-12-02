@@ -66,6 +66,9 @@ router.delete(
   userController.removeFavorite
 )
 
+router.post('/like/:restaurantId', authenticated, userController.addLike)
+router.delete('/like/:restaurantId', authenticated, userController.removeLike)
+
 router.get('/', (req, res) => res.redirect('/restaurants'))
 router.use('/', generalErrorHandler) // middleware另外處理，不影響路由，所以這句放哪都行
 

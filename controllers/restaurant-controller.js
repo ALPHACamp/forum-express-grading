@@ -24,10 +24,13 @@ const restaurantController = {
       .then(([restaurants, categories]) => {
         const favoritedRestaurantsId =
           req.user && req.user.FavoritedRestaurants.map(fr => fr.id) // 防req.user是空的。map會產生一個陣列。若放在data裡面，一頁有9家，這動作就要跑9次，但結果都相同，會沒效率，所以獨立出來。
+        const likedRestaurantsId =
+          req.user && req.user.LikedRestaurants.map(lr => lr.id)
         const data = restaurants.rows.map(r => ({
           ...r,
           description: r.description.substring(0, shortDescriptionLength),
-          isFavorited: favoritedRestaurantsId.includes(r.id)
+          isFavorited: favoritedRestaurantsId.includes(r.id),
+          isLiked: likedRestaurantsId.includes(r.id)
         }))
         // console.log("favoritedRestaurantsId", favoritedRestaurantsId); // favoritedRestaurantsId [ 2, 3 ]
         // console.log("data", data);
@@ -67,7 +70,8 @@ const restaurantController = {
       include: [
         Category,
         { model: Comment, include: User },
-        { model: User, as: 'FavoritedUsers' }
+        { model: User, as: 'FavoritedUsers' },
+        { model: User, as: 'LikedUsers' }
       ], // 拿出關聯的 Category model及 預先加載
       // 找Restaurant的Category、找Restaurant的Comment、找Restaurant的Comment的User。以此類推
       order: [[Comment, 'createdAt', 'desc']]
@@ -83,9 +87,11 @@ const restaurantController = {
         const isFavorited = restaurant.FavoritedUsers.some(
           f => f.id === req.user.id
         )
+        const isLiked = restaurant.LikedUsers.some(l => l.id === req.user.id)
         res.render('restaurant', {
           restaurant: restaurant.toJSON(), // toJSON大小寫要全對
-          isFavorited
+          isFavorited,
+          isLiked
         })
       })
       .catch(err => next(err))
