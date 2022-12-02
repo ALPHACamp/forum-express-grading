@@ -1,0 +1,16 @@
+<div class="row">
+  <div class="col-md-4">
+    <img class="img-responsive center-block"
+      src="{{#if userProfile.image}}{{userProfile.image}}{{else}}{{defaultImage}}{{/if}}"
+      style=" width: 350px; margin-bottom: 25px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;"
+      alt="avatar">
+  </div>
+  <div class="col-md-8">
+    <h1>{{userProfile.name}}</h1>
+    <p>{{userProfile.email}}</p>
+    {{#if currentUser}}
+    <a href="/users/{{user.id}}/edit" class="btn btn-primary">Edit</a>
+    {{/if}}
+    <a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
+  </div>
+</div>
