@@ -29,20 +29,7 @@ router.post(
 ) // 注意是 post
 
 router.get('/logout', userController.logout)
-router.get('/restaurants/feeds', authenticated, restController.getFeeds) // feeds可能會被認為是:id，所以feeds要先放
-router.get(
-  '/restaurants/:id/dashboard',
-  authenticated,
-  restController.getDashboard
-)
-router.get('/restaurants/:id', authenticated, restController.getRestaurant)
-router.get('/restaurants', authenticated, restController.getRestaurants) // 加入authenticated
-router.delete(
-  '/comments/:id',
-  authenticatedAdmin,
-  commentController.deleteComment
-)
-router.post('/comments', authenticated, commentController.postComment)
+
 router.get('/users/:id/edit', authenticated, userController.editUser)
 router.get('/users/:id', authenticated, userController.getUser)
 router.put(
@@ -51,8 +38,35 @@ router.put(
   upload.single('image'), // authenticate後
   userController.putUser
 )
-router.get('/', (req, res) => res.redirect('/restaurants'))
 
+router.get('/restaurants/feeds', authenticated, restController.getFeeds) // feeds可能會被認為是:id，所以feeds要先放
+router.get(
+  '/restaurants/:id/dashboard',
+  authenticated,
+  restController.getDashboard
+)
+router.get('/restaurants/:id', authenticated, restController.getRestaurant)
+router.get('/restaurants', authenticated, restController.getRestaurants) // 加入authenticated
+
+router.delete(
+  '/comments/:id',
+  authenticatedAdmin,
+  commentController.deleteComment
+)
+router.post('/comments', authenticated, commentController.postComment)
+
+router.post(
+  '/favorite/:restaurantId',
+  authenticated,
+  userController.addFavorite
+)
+router.delete(
+  '/favorite/:restaurantId',
+  authenticated,
+  userController.removeFavorite
+)
+
+router.get('/', (req, res) => res.redirect('/restaurants'))
 router.use('/', generalErrorHandler) // middleware另外處理，不影響路由，所以這句放哪都行
 
 module.exports = router
