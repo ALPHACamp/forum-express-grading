@@ -1,4 +1,4 @@
-const { Restaurant, User, Category } = require('../models')
+const { Restaurant, User, Category, Comment } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
 module.exports = {
   getRestaurants: (req, res, next) => {
@@ -35,7 +35,8 @@ module.exports = {
   },
   getRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
-      include: Category // 拿出關聯的 Category model
+      include: [Category, { model: Comment, include: User }
+      ] // 拿出關聯的 Category model
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
