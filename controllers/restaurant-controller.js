@@ -26,12 +26,14 @@ const restaurantController = {
       .then(([restaurants, categories]) => {
         // 取出使用者的收藏清單， map 成 id 清單
         const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
+        const likedRestaurantsId = req.user && req.user.LikedRestaurants.map(fr => fr.id)
         const data = restaurants.rows.map(r => ({
           ...r,
           // 修改 map 拿到的 description，切成50字
           description: r.description.substring(0, 50),
           // 比對是否已收藏
-          isFavorited: favoritedRestaurantsId.includes(r.id)
+          isFavorited: favoritedRestaurantsId.includes(r.id),
+          isLiked: likedRestaurantsId.includes(r.id)
         }))
         return res.render('restaurants', {
           restaurants: data,
@@ -47,7 +49,8 @@ const restaurantController = {
       include: [
         Category,
         { model: Comment, include: User },
-        { model: User, as: 'FavoritedUsers' }
+        { model: User, as: 'FavoritedUsers' },
+        { model: User, as: 'LikedUsers' }
       ]
     })
       .then(restaurant => {
@@ -58,9 +61,11 @@ const restaurantController = {
       .then(restaurant => {
         // 找到一個符合條件的id後，會立刻回傳。
         const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id)
+        const isLiked = restaurant.LikedUsers.some(f => f.id === req.user.id)
         return res.render('restaurant', {
           restaurant: restaurant.toJSON(),
-          isFavorited
+          isFavorited,
+          isLiked
         })
       })
       .catch(err => next(err))
