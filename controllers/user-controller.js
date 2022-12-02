@@ -64,6 +64,7 @@ const userController = {
     return User.findByPk(req.params.id)
       .then(user => {
         if (!user) throw new Error("User didn't exist!")
+        if (user.id !== getUser(req).id) throw new Error('Not authorized to access this page')
         return res.render('users/edit', { user: getUser(req), userProfile: user.toJSON() })
       })
       .catch(err => next(err))
