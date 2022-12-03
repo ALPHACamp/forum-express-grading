@@ -15,7 +15,7 @@ const restaurantController = {
     return Promise.all([Restaurant.findAndCountAll({
       include: Category,
       // 當使用者點選的是「全部」這個頁籤時，categoryId 會是空值。設定 where 查詢條件時，撈出全部where: {}
-      // categoryId=true=...{categoryId}
+      // categoryId=true=...{categoryId}(展開categoryId)
       where: { ...categoryId ? { categoryId } : {} },
       limit,
       offset,
@@ -23,21 +23,34 @@ const restaurantController = {
       raw: true
     }), Category.findAll({ raw: true })])
       .then(([restaurants, categories]) => {
-        const data = restaurants.rows.map(r => ({ ...r, description: r.description.substring(0, 50) }))
+        // 將不需重複的動作取出。req.user是有可能為空，所以要先檢查。取出的fr轉成fr.id再存入。這裡存入的資料為passport從資料庫取出的資料(即登入者關聯的餐廳)
+        const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
+        const data = restaurants.rows.map(r =>
+        ({
+          ...r,
+          description: r.description.substring(0, 50),
+          // 新增isFavorite屬性。在這裡比較每間餐廳是否為favorite。
+          isFavorited: favoritedRestaurantsId.includes(r.id)
+        }))
         return res.render('restaurants', { restaurants: data, categories, categoryId, pagination: getPagination(limit, page, restaurants.count) })// 回傳給hbs是否需要active
       })
       .catch(err => next(err))
   },
   getRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
-      include: [Category, { model: Comment, include: User }],
+      // 關聯user model，並叫出關聯關係(AS)
+      include: [Category, { model: Comment, include: User }, { model: User, as: 'FavoritedUsers' }],
       order: [[Comment, 'createdAt', 'DESC']]
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         return restaurant.increment('view_counts')
       })
-      .then(restaurant => res.render('restaurant', { restaurant: restaurant.toJSON() }))
+      .then(restaurant => {
+        // some:只要帶迭代過程中找到一個符合條件的項目後，就會立刻回傳 true，後面的項目不會繼續執行。
+        const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id)
+        res.render('restaurant', { restaurant: restaurant.toJSON(), isFavorited })
+      })
       .catch(err => next(err))
   },
   getDashboard: (req, res, next) => {
@@ -49,8 +62,9 @@ const restaurantController = {
       .catch(err => next(err))
   },
   getFeeds: (req, res, next) => {
-    return Promise.all([Restaurant.findAll({ limit: 10, order: [['createdAt', 'DESC']], nest: true, raw: true })], Comment.findAll({ limit: 10, order: ['createdAt', 'DESC'], include: [Restaurant, User], nest: true, raw: true }))
-      .then(([comments, restaurants]) => {
+    return Promise.all([Restaurant.findAll({ limit: 10, order: [['createdAt', 'DESC']], include: [Category], nest: true, raw: true }),
+    Comment.findAll({ limit: 10, order: [['createdAt', 'DESC']], include: [Restaurant, User], nest: true, raw: true })])
+      .then(([restaurants, comments]) => {
         res.render('feeds', { comments, restaurants })
       })
       .catch(err => next(err))
