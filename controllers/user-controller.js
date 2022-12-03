@@ -176,18 +176,19 @@ const userController = {
     })
       .then(users => {
         // 整理 users 資料，把每個 user 項目都拿出來處理一次，並把新陣列儲存在 users 裡
-        users = users.map(user => ({
+        const result = users
           // 整理格式
-          ...user.toJSON(),
-          // 計算追蹤者人數
-          followerCount: user.Followers.length,
-          // 判斷目前登入使用者是否已追蹤該 user 物件
-          isFollowed: req.user.Followings.some(f => f.id === user.id)
-        }))
+          .map(user => ({
+            ...user.toJSON(),
+            // 計算追蹤者人數
+            followerCount: user.Followers.length,
+            // 判斷目前登入使用者是否已追蹤該 user 物件
+            isFollowed: req.user.Followings.some(f => f.id === user.id)
+          }))
         // 排序 由大排到小
-        users = users.sort((a, b) => b.followerCount - a.followerCount)
+          .sort((a, b) => b.followerCount - a.followerCount)
 
-        res.render('top-users', { users: users })
+        res.render('top-users', { users: result })
       })
       .catch(err => next(err))
   },
