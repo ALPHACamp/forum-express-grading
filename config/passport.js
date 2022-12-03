@@ -35,7 +35,9 @@ module.exports = app => {
     return User.findByPk(id, {
       include: [
         { model: Restaurant, as: 'FavoritedRestaurants' }, // as 會對應到 User model 裡設定的別名
-        { model: Restaurant, as: 'LikedRestaurants' }
+        { model: Restaurant, as: 'LikedRestaurants' },
+        { model: User, as: 'Followers' },
+        { model: User, as: 'Followings' }
       ]
     })
       .then(user => {

@@ -24,6 +24,21 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'userId',
         as: 'LikedRestaurants' // 定義關係叫做被按Like的餐廳
       })
+      // 同一個資料表自己和自己有關係，稱為自關聯 (Self-referential Relationships) 或自連接 (Self Joins)
+      // 找出所有 followingId 是 5 的人，就是我的 follower
+      // 找出所有 followerId 是 5 的人，就是我在 following 的人
+      // User 的追蹤者
+      User.belongsToMany(User, {
+        through: models.Followship,
+        foreignKey: 'followingId',
+        as: 'Followers'
+      })
+      // User 追蹤中的 User
+      User.belongsToMany(User, {
+        through: models.Followship,
+        foreignKey: 'followerId',
+        as: 'Followings'
+      })
     }
   }
   User.init({
