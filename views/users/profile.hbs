@@ -1,0 +1,33 @@
+<div class="row bg-white py-5">
+  <div class="col-4 text-center">
+    <img
+      src="{{#if user.image}}{{user.image}}{{else}}https://cdn-icons-png.flaticon.com/512/149/149071.png{{/if}}"
+      alt="user_image"
+      style="height:250px; width:250px; object-fit:cover;"
+    />
+  </div>
+  <div class="col-md-8">
+    <h3>{{user.name}}</h3>
+    <h4 class="mb-3">{{user.email}}</h4>
+    <h5 class="mb-5">{{comments.count}} 已評論餐廳</h5>
+    {{#ifCond user.id viewer.id}}
+      <a class="btn btn-primary" href="/users/{{user.id}}/edit">edit</a>
+    {{/ifCond}}
+  </div>
+</div>
+
+<div class="row p-3 mt-3" style="background-color: rgb(224, 224, 224); border-radius: 8px 8px 0 0">
+  <h5 class="m-0">{{comments.count}} 已評論餐廳</h5>
+</div>
+<div class="row bg-white p-3">
+  <div class="card-body">
+    {{#each comments.rows}}
+      <a href="/restaurants/{{this.Restaurant.id}}" style="text-decoration:none;" class="mt-3">
+        <img
+          src="{{this.Restaurant.image}}"
+          style="height:100px; width:100px; object-fit:cover"
+        />
+      </a>
+    {{/each}}
+  </div>
+</div>
