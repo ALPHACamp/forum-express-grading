@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs')
-const { User } = require('../models')
+const { User, Restaurant, Comment } = require('../models')
 const { getUser } = require('../helpers/auth-helpers')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
@@ -42,14 +42,24 @@ const userController = {
   getUser: (req, res, next) => {
     const defaultImage = 'https://img.88icon.com/download/jpg/20200819/6f5dba4c45fd07c0fef7068d777d006b_512_512.jpg!88con'
 
-    return User.findByPk(req.params.id, { raw: true })
-      .then(userProfile => {
+    return Promise.all([
+      User.findByPk(req.params.id, { raw: true }),
+      Comment.findAll({
+        where: { userId: req.params.id },
+        include: Restaurant,
+        group: 'restaurantId',
+        raw: true,
+        nest: true
+      })
+    ])
+      .then(([userProfile, comments]) => {
         if (!userProfile) throw new Error("User didn't exist!")
         const currentUser = getUser(req).id === userProfile.id || false
         res.render('users/profile', {
           user: getUser(req), // 透過登入的使用者
           userProfile, // 用req.params.id找出來的使用者
           currentUser,
+          comments,
           defaultImage
         })
       })
