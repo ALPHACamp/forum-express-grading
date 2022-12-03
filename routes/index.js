@@ -29,6 +29,7 @@ router.get('/restaurants/:id/dashboard', authenticated, restController.getDashbo
 router.get('/restaurants/:id', authenticated, restController.getRestaurant)
 router.get('/restaurants', authenticated, restController.getRestaurants) // 修改這行，新增 authenticated 參數
 
+router.delete('/comments/:id', authenticatedAdmin, commentController.deleteComment) // 加入刪除的路由
 router.post('/comments', authenticated, commentController.postComment) // 加入路由設定
 
 router.use('/', (req, res) => res.redirect('/restaurants'))
