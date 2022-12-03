@@ -107,13 +107,17 @@ const userController = {
       .catch(err => next(err))
   },
   removeFavorite: (req, res, next) => {
-    return Favorite.findOne({
-      where: {
-        userId: req.user.id,
-        restaurantId: req.params.restaurantId
-      }
-    })
-      .then(favorite => {
+    return Promise.all([
+      Restaurant.findByPk(req.params.restaurantId),
+      Favorite.findOne({
+        where: {
+          userId: req.user.id,
+          restaurantId: req.params.restaurantId
+        }
+      })
+    ])
+      .then(([restaurant, favorite]) => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
         if (!favorite) throw new Error("You haven't favorited this restaurant.")
         return favorite.destroy()
       })
@@ -143,13 +147,17 @@ const userController = {
       .catch(err => next(err))
   },
   removeLike: (req, res, next) => {
-    return Like.findOne({
-      where: {
-        userId: req.user.id,
-        restaurantId: req.params.restaurantId
-      }
-    })
-      .then(like => {
+    return Promise.all([
+      Restaurant.findByPk(req.params.restaurantId),
+      Like.findOne({
+        where: {
+          userId: req.user.id,
+          restaurantId: req.params.restaurantId
+        }
+      })
+    ])
+      .then(([restaurant, like]) => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
         if (!like) throw new Error("You haven't liked this restaurant.")
         return like.destroy()
       })
