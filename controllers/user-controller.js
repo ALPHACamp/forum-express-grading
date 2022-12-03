@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs')
-const { User, Restaurant, Comment, Favorite } = require('../models')
+const { User, Restaurant, Comment, Favorite, Like } = require('../models')
 
 const { getUser } = require('../helpers/auth-helpers')
 const { imgurFileHandler } = require('../helpers/file-helpers')
@@ -75,7 +75,9 @@ const userController = {
     const { name } = req.body
     const { file } = req
     const { id } = req.params
+    const currentId = req.user.id
     if (!name.trim()) throw new Error('Name must be filled in.')
+    if (currentId !== Number(id)) throw new Error("You can't edit other's profile!")
 
     return Promise.all([User.findByPk(id), imgurFileHandler(file)])
       .then(([user, filePath]) => {
@@ -126,6 +128,32 @@ const userController = {
         if (!favorite) throw new Error("You haven't favorited this restaurant")
 
         return favorite.destroy()
+      })
+      .then(() => res.redirect('back'))
+      .catch(err => next(err))
+  },
+  addLike: (req, res, next) => {
+    const { restaurantId } = req.params
+    return Promise.all([
+      Restaurant.findByPk(restaurantId),
+      Like.findOne({ where: { userId: req.user.id, restaurantId } })
+    ])
+      .then(([restaurant, like]) => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        if (like) throw new Error('You have Liked this restaurant!')
+
+        return Like.create({ userId: req.user.id, restaurantId })
+      })
+      .then(() => res.redirect('back'))
+      .catch(err => next(err))
+  },
+  removeLike: (req, res, next) => {
+    return Like.findOne({
+      where: { userId: req.user.id, restaurantId: req.params.restaurantId }
+    })
+      .then(like => {
+        if (!like) throw new Error("You haven't like this restaurant")
+        return like.destroy()
       })
       .then(() => res.redirect('back'))
       .catch(err => next(err))
