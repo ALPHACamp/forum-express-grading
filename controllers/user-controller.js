@@ -41,11 +41,11 @@ const userController = {
   },
   getUser: (req, res, next) => {
     const defaultImage = 'https://img.88icon.com/download/jpg/20200819/6f5dba4c45fd07c0fef7068d777d006b_512_512.jpg!88con'
-
+    const id = req.params.id
     return Promise.all([
-      User.findByPk(req.params.id, { raw: true }),
+      User.findByPk(id, { raw: true }),
       Comment.findAll({
-        where: { userId: req.params.id },
+        where: { userId: id },
         include: Restaurant,
         group: 'restaurantId',
         raw: true,
@@ -66,7 +66,8 @@ const userController = {
       .catch(err => next(err))
   },
   editUser: (req, res, next) => {
-    return User.findByPk(req.params.id, { raw: true })
+    const id = req.params.id
+    return User.findByPk(id, { raw: true })
       .then(user => {
         if (!user) throw new Error("User didn't exist!")
         if (getUser(req).id !== user.id) throw new Error('Users can only edit their own profile!')
