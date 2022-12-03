@@ -51,7 +51,7 @@ const userController = {
       .then(([user, comments]) => {
         if (!user) throw new Error("User didn't exist!")
         // console.log(req.params.id, req.user.id)
-        user.isSelf = Number(req.params.id) === Number(req.user.id)
+        // user.isSelf = Number(req.params.id) === Number(req.user.id)
         // console.log(user.isSelf)
         res.render('users/profile', {
           user,
