@@ -25,12 +25,14 @@ const restaurantController = {
       .then(([restaurants, categories]) => {
         // 將不需重複的動作取出。req.user是有可能為空，所以要先檢查。取出的fr轉成fr.id再存入。這裡存入的資料為passport從資料庫取出的資料(即登入者關聯的餐廳)
         const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
+        const likedRestaurantsId = req.user && req.user.likedRestaurants.map(fr => fr.id)
         const data = restaurants.rows.map(r =>
         ({
           ...r,
           description: r.description.substring(0, 50),
           // 新增isFavorite屬性。在這裡比較每間餐廳是否為favorite。
-          isFavorited: favoritedRestaurantsId.includes(r.id)
+          isFavorited: favoritedRestaurantsId.includes(r.id),
+          isLike: likedRestaurantsId.includes(r.id)
         }))
         return res.render('restaurants', { restaurants: data, categories, categoryId, pagination: getPagination(limit, page, restaurants.count) })// 回傳給hbs是否需要active
       })
