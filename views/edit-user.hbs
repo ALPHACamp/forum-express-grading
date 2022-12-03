@@ -1,0 +1,8 @@
+<form class="form-signin" action="/users/{{user.id}}?_method=PUT" method="POST">
+  <div class="form-row mb-3">
+    <label class="form-label" for="name">Name</label>
+    <input class="form-control" id="name" type="text" name="name" class="form-control" placeholder="{{user.name}}"
+      required autofocus>
+  </div>
+  <button class="btn btn-primary btn-block" type="submit">Submit</button>
+</form>

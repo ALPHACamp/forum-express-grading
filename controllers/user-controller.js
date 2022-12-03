@@ -110,6 +110,35 @@ const userController = {
       return like.destroy()
     }).then(() => res.redirect('back'))
       .catch(err => next(err))
+  },
+  getUser: (req, res, next) => {
+    const reqUserId = req.params.id
+    const userId = req.user.id
+    User.findByPk(reqUserId)
+      .then(user => {
+        if (!user) throw new Error("User didn't exist!")
+        return res.render('users', { user: user.toJSON(), userId })
+      }).catch(err => next(err))
+  },
+  editUser: (req, res, next) => {
+    const userId = req.user.id
+    User.findByPk(userId, { raw: true })
+      .then(user => {
+        if (!user) throw new Error("User didn't exist!")
+        return res.render('edit-user', { user })
+      }).catch(err => next(err))
+  },
+  putUser: (req, res, next) => {
+    const userId = req.user.id
+    const { name } = req.body
+    User.findByPk(userId)
+      .then(user => {
+        if (!user) throw new Error("User didn't exist!")
+        if (!name) throw new Error('Name is required!')
+        return user.update({ name })
+      })
+      .then(() => res.redirect(`/users/${userId}`))
+      .catch(err => next(err))
   }
 }
 module.exports = userController
