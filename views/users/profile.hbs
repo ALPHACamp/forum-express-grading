@@ -8,11 +8,26 @@
         <div class="card-body">
           <h3 class="card-title">{{ theUser.name }}</h3>
           <p class="card-text">{{ theUser.email }}</p>
+          <p class="card-text"><b>{{ comments.count }}</b>已評論過的餐廳</p>
           {{#ifCond user.id theUser.id}}
           <a href="/users/{{ theUser.id }}/edit" class="btn btn-primary">Edit</a>
           {{/ifCond}}
         </div>
       </div>
     </div>
+  </div>
+</div>
+</div>
+<div class="card">
+  <div class="card-header">
+    <b>{{ comments.count }}</b>已評論過的餐廳
+  </div>
+  <div class="row card-body">
+    {{#each comments.rows}}
+    <div class="col-2 p-0 m-2" style="width: 80px; height: 80px;">
+      <a href="/restaurants/{{this.Restaurant.id}}"><img src="{{this.Restaurant.image}}"
+          style="height: 100%; width: 100%; object-fit:cover;" alt="restaurant-image"></a>
+    </div>
+    {{/each}}
   </div>
 </div>
