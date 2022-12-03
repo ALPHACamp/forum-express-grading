@@ -9,9 +9,8 @@ module.exports = (sequelize, DataTypes) => {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static associate(models) {
+    static associate (models) {
       // define association here
-      Restaurant.belongsTo(models.Category, { foreignKey: 'categoryId' }) //* foreignkey
     }
   };
   Restaurant.init({
@@ -19,8 +18,7 @@ module.exports = (sequelize, DataTypes) => {
     tel: DataTypes.STRING,
     address: DataTypes.STRING,
     openingHours: DataTypes.STRING,
-    description: DataTypes.TEXT,
-    image: DataTypes.STRING
+    description: DataTypes.TEXT
   }, {
     sequelize,
     modelName: 'Restaurant',
