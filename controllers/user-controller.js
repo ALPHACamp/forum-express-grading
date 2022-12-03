@@ -75,7 +75,9 @@ const userController = {
     const { name } = req.body
     const { file } = req
     const { id } = req.params
+    const currentId = req.user.id
     if (!name.trim()) throw new Error('Name must be filled in.')
+    if (currentId !== Number(id)) throw new Error("You can't edit other's profile!")
 
     return Promise.all([User.findByPk(id), imgurFileHandler(file)])
       .then(([user, filePath]) => {
