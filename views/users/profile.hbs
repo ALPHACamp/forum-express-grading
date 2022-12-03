@@ -7,7 +7,9 @@
   <div class="col-8">
     <h5>{{user.name}}</h5>
     <p>{{user.email}}</p>
+    {{#if user.isSelf}}
     <a href="/users/{{user.id}}/edit" class="btn btn-primary">Edit</a>
+    {{/if}}
   </div>
   <div class="mt-4">
     <div class="card-header">
