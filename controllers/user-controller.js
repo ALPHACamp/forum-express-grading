@@ -55,7 +55,7 @@ const userController = {
       .then(([userProfile, comments]) => {
         if (!userProfile) throw new Error("User didn't exist!")
         const currentUser = getUser(req).id === userProfile.id || false
-        res.render('users/profile', {
+        return res.render('users/profile', {
           user: getUser(req), // 透過登入的使用者
           userProfile, // 用req.params.id找出來的使用者
           currentUser,
