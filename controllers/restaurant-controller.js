@@ -27,13 +27,13 @@ const restaurantController = {
         const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
         const likedRestaurantsId = req.user && req.user.likedRestaurants.map(fr => fr.id)
         const data = restaurants.rows.map(r =>
-        ({
-          ...r,
-          description: r.description.substring(0, 50),
-          // 新增isFavorite屬性。在這裡比較每間餐廳是否為favorite。
-          isFavorited: favoritedRestaurantsId.includes(r.id),
-          isLike: likedRestaurantsId.includes(r.id)
-        }))
+          ({
+            ...r,
+            description: r.description.substring(0, 50),
+            // 新增isFavorite屬性。在這裡比較每間餐廳是否為favorite。
+            isFavorited: favoritedRestaurantsId.includes(r.id),
+            isLike: likedRestaurantsId.includes(r.id)
+          }))
         return res.render('restaurants', { restaurants: data, categories, categoryId, pagination: getPagination(limit, page, restaurants.count) })// 回傳給hbs是否需要active
       })
       .catch(err => next(err))
@@ -65,7 +65,7 @@ const restaurantController = {
   },
   getFeeds: (req, res, next) => {
     return Promise.all([Restaurant.findAll({ limit: 10, order: [['createdAt', 'DESC']], include: [Category], nest: true, raw: true }),
-    Comment.findAll({ limit: 10, order: [['createdAt', 'DESC']], include: [Restaurant, User], nest: true, raw: true })])
+      Comment.findAll({ limit: 10, order: [['createdAt', 'DESC']], include: [Restaurant, User], nest: true, raw: true })])
       .then(([restaurants, comments]) => {
         res.render('feeds', { comments, restaurants })
       })
