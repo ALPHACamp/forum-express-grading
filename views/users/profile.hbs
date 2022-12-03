@@ -16,3 +16,17 @@
     </div>
   </div>
 </div>
+</div>
+<div class="card">
+  <div class="card-header">
+    <b>{{ comments.count }}</b> 已評論過的餐廳
+  </div>
+  <div class="row card-body">
+    {{#each comments.rows}}
+    <div class="col-2 p-0 m-2" style="width: 80px; height: 80px;">
+      <a href="/restaurants/{{this.Restaurant.id}}"><img src="{{this.Restaurant.image}}"
+          style="height: 100%; width: 100%; object-fit:cover;" alt="restaurant-image"></a>
+    </div>
+    {{/each}}
+  </div>
+</div>
