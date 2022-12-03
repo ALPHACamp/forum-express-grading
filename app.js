@@ -24,7 +24,6 @@ app.use(passport.initialize())
 app.use(passport.session())
 app.use(flash())
 app.use(methodOverride('_method'))
-app.use(express.static('public'))
 // upload是靜態檔案，使用static去尋找
 app.use('/upload', express.static(path.join(__dirname, 'upload')))
 
