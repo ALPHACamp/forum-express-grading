@@ -1,12 +1,13 @@
 <div class="row mb-5">
   <div class="col-md-4">
-    <img class="img-responsive center-block mb-5" src="{{user.image}}"
-      style="width: 250px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+    <img class="img-responsive center-block mb-5" style="width: 250px; transition: opacity 0.5s; opacity:0;"
+      onload="this.style.opacity=1;"
+      src="{{#if user.image}}{{user.image}}{{else}}https://i.pinimg.com/736x/f1/0f/f7/f10ff70a7155e5ab666bcdd1b45b726d.jpg{{/if}}">
   </div>
   <div class="col-md-8">
     <h2>{{user.name}}</h2>
     <p style="white-space: break-spaces">{{user.email}}</p>
-    <a class="btn btn btn-primary" href="/users/:{{user.id}}/edit">Edit</a>
+    <a class="btn btn btn-primary" href="/users/{{user.id}}/edit">Edit</a>
     <a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
   </div>
 </div>
