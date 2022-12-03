@@ -41,6 +41,7 @@ router.put(
 )
 
 router.get('/restaurants/feeds', authenticated, restController.getFeeds) // feeds可能會被認為是:id，所以feeds要先放
+router.get('/restaurants/top', authenticated, restController.getTopRestaurants)
 router.get(
   '/restaurants/:id/dashboard',
   authenticated,
