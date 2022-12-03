@@ -31,6 +31,10 @@ router.get('/restaurants', authenticated, restController.getRestaurants)
 router.post('/comments', authenticated, commentController.postComment)
 router.delete('/comments/:id', authenticatedAdmin, commentController.deleteComment)
 
+router.get('/users/:userId/edit', authenticated, userController.editUser)
+router.get('/users/:userId', authenticated, userController.getUser)
+router.put('/users/:userId', authenticated, userController.putUser)
+
 router.post('/favorite/:restaurantId', authenticated, userController.addFavorite)
 router.delete('/favorite/:restaurantId', authenticated, userController.removeFavorite)
 
