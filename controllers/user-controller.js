@@ -4,8 +4,6 @@ const db = require('../models')
 const { User, Comment, Restaurant, Favorite, Like } = db
 const { imgurFileHandler } = require('../helpers/file-helpers')
 const { getUser } = require('../helpers/auth-helpers')
-const user = require('../models/user')
-
 const userController = {
   // render 註冊的頁面
   signUpPage: (req, res) => {
@@ -64,7 +62,7 @@ const userController = {
   getUser: (req, res, next) => {
     const userId = req.params.id
     return Promise.all([User.findByPk(userId, { raw: true }),
-    Comment.findAll({ where: { userId }, include: Restaurant, nest: true, raw: true })])
+      Comment.findAll({ where: { userId }, include: Restaurant, nest: true, raw: true })])
       .then(([userProfile, comments]) => {
         if (!userProfile) throw new Error("User didn't exist!")
         res.render('users/profile', { user: getUser(req), userProfile, comments })
@@ -102,7 +100,7 @@ const userController = {
   addFavorite: (req, res, next) => {
     const { restaurantId } = req.params
     return Promise.all([Restaurant.findByPk(restaurantId),
-    Favorite.findOne({ where: { userId: req.user.id, restaurantId } })])// 確認這個收藏的關聯是否存在？
+      Favorite.findOne({ where: { userId: req.user.id, restaurantId } })])// 確認這個收藏的關聯是否存在？
       .then(([restaurant, favorite]) => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         if (favorite) throw new Error('You have favorited this restaurant!')
