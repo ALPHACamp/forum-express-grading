@@ -27,13 +27,13 @@ const restaurantController = {
         const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
         const likedRestaurantsId = req.user && req.user.likedRestaurants.map(fr => fr.id)
         const data = restaurants.rows.map(r =>
-          ({
-            ...r,
-            description: r.description.substring(0, 50),
-            // 新增isFavorite屬性。在這裡比較每間餐廳是否為favorite。
-            isFavorited: favoritedRestaurantsId.includes(r.id),
-            isLike: likedRestaurantsId.includes(r.id)
-          }))
+        ({
+          ...r,
+          description: r.description.substring(0, 50),
+          // 新增isFavorite屬性。在這裡比較每間餐廳是否為favorite。
+          isFavorited: favoritedRestaurantsId.includes(r.id),
+          isLiked: likedRestaurantsId.includes(r.id)
+        }))
         return res.render('restaurants', { restaurants: data, categories, categoryId, pagination: getPagination(limit, page, restaurants.count) })// 回傳給hbs是否需要active
       })
       .catch(err => next(err))
@@ -41,7 +41,7 @@ const restaurantController = {
   getRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
       // 關聯user model，並叫出關聯關係(AS)
-      include: [Category, { model: Comment, include: User }, { model: User, as: 'FavoritedUsers' }],
+      include: [Category, { model: Comment, include: User }, { model: User, as: 'FavoritedUsers' },{ model: User, as: 'likedUsers' }],
       order: [[Comment, 'createdAt', 'DESC']]
     })
       .then(restaurant => {
@@ -51,7 +51,8 @@ const restaurantController = {
       .then(restaurant => {
         // some:只要帶迭代過程中找到一個符合條件的項目後，就會立刻回傳 true，後面的項目不會繼續執行。
         const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id)
-        res.render('restaurant', { restaurant: restaurant.toJSON(), isFavorited })
+        const isLiked=restaurant.likedUsers.some(f=>f.id===req.user.id)
+        res.render('restaurant', { restaurant: restaurant.toJSON(), isFavorited,isLiked })
       })
       .catch(err => next(err))
   },
