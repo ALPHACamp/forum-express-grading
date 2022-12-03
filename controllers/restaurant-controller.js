@@ -1,4 +1,4 @@
-const { Restaurant, Category } = require('../models')
+const { Restaurant, Category, Comment, User } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
 
 const restaurantController = {
@@ -38,7 +38,11 @@ const restaurantController = {
   },
   getRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
-      include: Category // 關聯資料
+      include: [
+        Category,
+        { model: Comment, include: User }], // 預先加載關聯User的Comment
+      order: [[{ model: Comment }, 'created_at', 'DESC']]
+
     }).then(restaurant => {
       if (!restaurant) throw new Error("Restaurant didn't exist!")
       return restaurant.increment('viewCounts', { by: 1 })
@@ -54,6 +58,32 @@ const restaurantController = {
     })
       .then(restaurant => {
         return res.render('dashboard', { restaurant })
+      })
+      .catch(err => next(err))
+  },
+
+  getFeeds: (req, res, next) => {
+    return Promise.all([
+      Restaurant.findAll({
+        limit: 10,
+        order: [['createdAt', 'DESC']],
+        include: [Category],
+        raw: true,
+        nest: true
+      }),
+      Comment.findAll({
+        limit: 10,
+        order: [['createdAt', 'DESC']],
+        include: [User, Restaurant],
+        raw: true,
+        nest: true
+      })
+    ])
+      .then(([restaurants, comments]) => {
+        res.render('feeds', {
+          restaurants,
+          comments
+        })
       })
       .catch(err => next(err))
   }
