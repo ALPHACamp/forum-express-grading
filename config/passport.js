@@ -1,57 +1,57 @@
-const passport = require("passport");
-const LocalStrategy = require("passport-local");
-const bcrypt = require("bcryptjs");
-const { User, Restaurant } = require("../models");
+const passport = require('passport')
+const LocalStrategy = require('passport-local')
+const bcrypt = require('bcryptjs')
+const { User, Restaurant } = require('../models')
 
 // set up Passport strategy
 passport.use(
   new LocalStrategy(
     // 第一個參數傳入客製化的選項: customize user field
     {
-      usernameField: "email",
-      passwordField: "password",
-      passReqToCallback: true, // 因為flash需要req，true後才可以給下面用req
+      usernameField: 'email',
+      passwordField: 'password',
+      passReqToCallback: true // 因為flash需要req，true後才可以給下面用req
     },
     // 第二個參數是一個 callback function: authenticate user
     // email也可以自取，例如改成username，where {email:username}。官方文件用done，教案TA習慣用cb。
     (req, email, password, cb) => {
-      User.findOne({ where: { email } }).then((user) => {
+      User.findOne({ where: { email } }).then(user => {
         if (!user) {
           return cb(
             null,
             false,
-            req.flash("error_messages", "帳號或密碼輸入錯誤！")
-          );
+            req.flash('error_messages', '帳號或密碼輸入錯誤！')
+          )
         }
-        bcrypt.compare(password, user.password).then((res) => {
+        bcrypt.compare(password, user.password).then(res => {
           if (!res) {
             return cb(
               null,
               false,
-              req.flash("error_messages", "帳號或密碼輸入錯誤！")
-            );
+              req.flash('error_messages', '帳號或密碼輸入錯誤！')
+            )
           }
-          return cb(null, user);
-        });
-      });
+          return cb(null, user)
+        })
+      })
     }
   )
-);
+)
 // serialize and deserialize user
 passport.serializeUser((user, cb) => {
-  cb(null, user.id);
-});
+  cb(null, user.id)
+})
 passport.deserializeUser((id, cb) => {
   return User.findByPk(id, {
     include: [
-      { model: Restaurant, as: "FavoritedRestaurants" },
-      { model: Restaurant, as: "LikedRestaurants" },
-      { model: User, as: "Followers" },
-      { model: User, as: "Followings" },
-    ], // as名來源自User model中的設定
+      { model: Restaurant, as: 'FavoritedRestaurants' },
+      { model: Restaurant, as: 'LikedRestaurants' },
+      { model: User, as: 'Followers' },
+      { model: User, as: 'Followings' }
+    ] // as名來源自User model中的設定
   })
-    .then((user) => {
-      cb(null, user.toJSON());
+    .then(user => {
+      cb(null, user.toJSON())
       // 登入後產生console.log(user.toJSON());
       // {
       //   id: 1,
@@ -94,8 +94,8 @@ passport.deserializeUser((id, cb) => {
       //   ]
       // }
     })
-    .catch((err) => cb(err));
-});
+    .catch(err => cb(err))
+})
 
 // 以下console範例
 // passport.deserializeUser((id, cb) => {
@@ -142,6 +142,6 @@ passport.deserializeUser((id, cb) => {
 //     return cb(null, user)
 //   })
 // })
-module.exports = passport;
+module.exports = passport
 
 // Sequalize 打包後的物件，多包裝了幾層，並且裡面加上一些 Sequalize 內建的參數與方法，讓我們可以直接透過 Sequalize 操作這筆資料，例如刪除user.delete()或 更新user.date(...) 或簡化user.toJSON()
