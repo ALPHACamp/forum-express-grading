@@ -25,11 +25,13 @@ const restaurantController = {
     ])
       .then(([restaurants, categories]) => {
         const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
+        const likedRestaurantsId = req.user && req.user.LikedRestaurants.map(lr => lr.id)
         // console.log(req.query) => 從?page=2&categoryId=2獲得{page:2, categoryId:2}
         const data = restaurants.rows.map(r => ({
           ...r, // 展開運算子將每一筆restaurant的資料展開後用data接住，展開後的description會被下方新的description賦值
           description: r.description.substring(0, 50), // 將餐廳文字描述截斷為50字元的長度
-          isFavorited: favoritedRestaurantsId.includes(r.id) // 新增一個屬性，在陣列比對過後最後回傳一個布林值，代表是是不是有被收藏
+          isFavorited: favoritedRestaurantsId.includes(r.id), // 新增一個屬性，在陣列比對過後最後回傳一個布林值，代表是是不是有被收藏
+          isLiked: likedRestaurantsId.includes(r.id)
         }))
         return res.render('restaurants', {
           restaurants: data,
@@ -45,7 +47,8 @@ const restaurantController = {
       include: [
         Category,
         { model: Comment, include: User },
-        { model: User, as: 'FavoritedUsers' }
+        { model: User, as: 'FavoritedUsers' },
+        { model: User, as: 'LikedUsers' }
       ]
       // nest: true
     })
@@ -56,9 +59,11 @@ const restaurantController = {
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id)
+        const isLiked = restaurant.LikedUsers.some(l => l.id === req.user.id)
         res.render('restaurant', {
           restaurant: restaurant.toJSON(),
-          isFavorited
+          isFavorited,
+          isLiked
         })
       })
       .catch(err => next(err))
