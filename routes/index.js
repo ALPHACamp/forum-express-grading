@@ -7,7 +7,10 @@ const admin = require('./modules/admin')
 const { generalErrorHandler } = require('../middleware/error-handler')
 const { authenticated, authenticatedAdmin } = require('../middleware/auth')
 
+// routes for administrator
 router.use('/admin', authenticatedAdmin, admin)
+
+// routes for normal users
 router.get('/signup', userController.signUpPage)
 router.post('/signup', userController.signUp)
 router.get('/signin', userController.signInPage)
