@@ -1,0 +1,12 @@
+<form action="/users/{{user.id}}?_method=PUT" method="POST" enctype="multipart/form-data">
+  <div class="input-group mb-3 d-flex flex-column">
+    <label for="name">Name</label>
+    <input type="text" id="name" name="name" placeholder="name" value="{{user.name}}" required>
+  </div>
+  <div class="input-group mb-3 d-flex flex-column">
+    <label for="image">Image</label>
+    <input type="file" name="image" id="image">
+  </div>
+  <button type="submit" class="btn btn-primary">Submit</button>
+  <a class="btn btn-outline-secondary" href="/users/{{user.id}}">Back</a>
+</form>

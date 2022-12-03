@@ -1,6 +1,8 @@
 node_modules/ 
 temp/
 upload/
+public/
 
 .DS_Store
 .env
+.vscode
