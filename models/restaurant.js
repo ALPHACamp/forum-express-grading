@@ -4,7 +4,7 @@ const {
 } = require('sequelize')
 module.exports = (sequelize, DataTypes) => {
   class Restaurant extends Model {
-    static associate(models) {
+    static associate (models) {
       Restaurant.belongsTo(models.Category, { foreignKey: 'categoryId' })
       Restaurant.hasMany(models.Comment, { foreignKey: 'restaurantId' })
       Restaurant.belongsToMany(models.User, {
