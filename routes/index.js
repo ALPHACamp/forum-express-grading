@@ -1,75 +1,76 @@
-const express = require('express')
-const router = express.Router()
-const passport = require('../config/passport') // 引入 Passport，需要他幫忙做驗證
+const express = require("express");
+const router = express.Router();
+const passport = require("../config/passport"); // 引入 Passport，需要他幫忙做驗證
 
-const admin = require('./modules/admin')
+const admin = require("./modules/admin");
 
-const restController = require('../controllers/restaurant-controller')
-const userController = require('../controllers/user-controller')
-const commentController = require('../controllers/comment-controller')
+const restController = require("../controllers/restaurant-controller");
+const userController = require("../controllers/user-controller");
+const commentController = require("../controllers/comment-controller");
 
-const { authenticated, authenticatedAdmin } = require('../middleware/auth')
-const { generalErrorHandler } = require('../middleware/error-handler')
-const upload = require('../middleware/multer')
+const { authenticated, authenticatedAdmin } = require("../middleware/auth");
+const { generalErrorHandler } = require("../middleware/error-handler");
+const upload = require("../middleware/multer");
 
-router.use('/admin', authenticatedAdmin, admin) // 加入authenticatedAdmin
+router.use("/admin", authenticatedAdmin, admin); // 加入authenticatedAdmin
 
-router.get('/signup', userController.signUpPage)
-router.post('/signup', userController.signUp) // 注意用 post
+router.get("/signup", userController.signUpPage);
+router.post("/signup", userController.signUp); // 注意用 post
 
-router.get('/signin', userController.signInPage)
+router.get("/signin", userController.signInPage);
 router.post(
-  '/signin',
+  "/signin",
   // 請 Passport 直接做身分驗證
-  passport.authenticate('local', {
-    failureRedirect: '/signin',
-    failureFlash: true
+  passport.authenticate("local", {
+    failureRedirect: "/signin",
+    failureFlash: true,
   }),
   userController.signIn
-) // 注意是 post
+); // 注意是 post
 
-router.get('/logout', userController.logout)
+router.get("/logout", userController.logout);
 
-router.get('/users/:id/edit', authenticated, userController.editUser)
-router.get('/users/:id', authenticated, userController.getUser)
+router.get("/users/top", authenticated, userController.getTopUsers);
+router.get("/users/:id/edit", authenticated, userController.editUser);
+router.get("/users/:id", authenticated, userController.getUser);
 router.put(
-  '/users/:id',
+  "/users/:id",
   authenticated,
-  upload.single('image'), // authenticate後
+  upload.single("image"), // authenticate後
   userController.putUser
-)
+);
 
-router.get('/restaurants/feeds', authenticated, restController.getFeeds) // feeds可能會被認為是:id，所以feeds要先放
+router.get("/restaurants/feeds", authenticated, restController.getFeeds); // feeds可能會被認為是:id，所以feeds要先放
 router.get(
-  '/restaurants/:id/dashboard',
+  "/restaurants/:id/dashboard",
   authenticated,
   restController.getDashboard
-)
-router.get('/restaurants/:id', authenticated, restController.getRestaurant)
-router.get('/restaurants', authenticated, restController.getRestaurants) // 加入authenticated
+);
+router.get("/restaurants/:id", authenticated, restController.getRestaurant);
+router.get("/restaurants", authenticated, restController.getRestaurants); // 加入authenticated
 
 router.delete(
-  '/comments/:id',
+  "/comments/:id",
   authenticatedAdmin,
   commentController.deleteComment
-)
-router.post('/comments', authenticated, commentController.postComment)
+);
+router.post("/comments", authenticated, commentController.postComment);
 
 router.post(
-  '/favorite/:restaurantId',
+  "/favorite/:restaurantId",
   authenticated,
   userController.addFavorite
-)
+);
 router.delete(
-  '/favorite/:restaurantId',
+  "/favorite/:restaurantId",
   authenticated,
   userController.removeFavorite
-)
+);
 
-router.post('/like/:restaurantId', authenticated, userController.addLike)
-router.delete('/like/:restaurantId', authenticated, userController.removeLike)
+router.post("/like/:restaurantId", authenticated, userController.addLike);
+router.delete("/like/:restaurantId", authenticated, userController.removeLike);
 
-router.get('/', (req, res) => res.redirect('/restaurants'))
-router.use('/', generalErrorHandler) // middleware另外處理，不影響路由，所以這句放哪都行
+router.get("/", (req, res) => res.redirect("/restaurants"));
+router.use("/", generalErrorHandler); // middleware另外處理，不影響路由，建議放最後
 
-module.exports = router
+module.exports = router;
