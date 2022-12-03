@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs')
-const { assert } = require('chai')
+const assert = require('assert')
 const { User, Comment, Restaurant } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
