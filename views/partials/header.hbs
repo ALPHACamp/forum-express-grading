@@ -15,7 +15,11 @@
           </li>
           {{/if}}
           <li class="nav-item d-inline-flex align-items-center">
+            <img src="{{user.image}}" height="20px" alt="">
             <span class="text-white nav-link">Hi, {{ user.email }}</span>
+          </li>
+          <li class="nav-item">
+            <a href="/users/{{user.id}}" class="nav-link">Profile</a>
           </li>
           <li class="nav-item">
             <a href="/logout"><button class="btn btn-outline-success my-sm-0 my-2">Logout</button></a>

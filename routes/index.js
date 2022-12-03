@@ -5,8 +5,9 @@ const admin = require('./modules/admin')
 const passport = require('../config/passport')
 const userController = require('../controllers/user-controller')
 const commentController = require('../controllers/​​comment-controller')
+const upload = require('../middleware/multer')
 const { generalErrorHandler } = require('../middleware/error-handler') // 須將middleware加入
-const { authenticated, authenticatedAdmin } = require('../middleware/auth')
+const { authenticated, authenticatedAdmin, authenticatedUser } = require('../middleware/auth')
 
 // 現在收到的請求如果帶有 /admin 的路徑，就一律丟給後台專用的 admin 這個 module 去處理，若是其他情況再依序往下判斷。(使用router.use )。使用authenticatedAdmin驗證是否為admin。
 router.use('/admin', authenticatedAdmin, admin)
@@ -25,6 +26,11 @@ router.get('/restaurants/:id/dashboard', authenticated, restController.getDashbo
 router.get('/restaurants/:id', authenticated, restController.getRestaurant)
 router.get('/restaurants', authenticated, restController.getRestaurants)
 // 如果接收到的請求路徑是 / restaurants，那就交給 controller 的 getRestaurants 函式來處理。如果這行路由和請求匹配成功，以下的 router.get 就不會執行。
+
+// user profile
+router.get('/users/:id/edit', authenticatedUser, userController.editUser)
+router.get('/users/:id', authenticated, userController.getUser)
+router.put('/users/:id', authenticatedUser, upload.single('image'), userController.putUser)
 
 // comment路由
 router.delete('/comments/:id', authenticated, commentController.deleteComment)
