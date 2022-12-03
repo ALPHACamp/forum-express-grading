@@ -1,6 +1,8 @@
 const bcrypt = require('bcryptjs')
-const db = require('../models')
-const { User } = db
+const { User, Restaurant, Comment } = require('../models')
+const { getUser } = require('../helpers/auth-helpers')
+const { imgurFileHandler } = require('../helpers/file-helpers')
+
 const userController = {
   signUpPage: (req, res) => {
     res.render('signup')
@@ -36,6 +38,64 @@ const userController = {
     req.flash('success_messages', '登出成功！')
     req.logout()
     res.redirect('/signin')
+  },
+  getUser: (req, res, next) => {
+    const defaultImage = 'https://img.88icon.com/download/jpg/20200819/6f5dba4c45fd07c0fef7068d777d006b_512_512.jpg!88con'
+    const id = req.params.id
+    return Promise.all([
+      User.findByPk(id, { raw: true }),
+      Comment.findAll({
+        where: { userId: id },
+        include: Restaurant,
+        group: 'restaurantId',
+        raw: true,
+        nest: true
+      })
+    ])
+      .then(([userProfile, comments]) => {
+        if (!userProfile) throw new Error("User didn't exist!")
+        const currentUser = getUser(req).id === userProfile.id || false
+        return res.render('users/profile', {
+          user: getUser(req), // 透過登入的使用者
+          userProfile, // 用req.params.id找出來的使用者
+          currentUser,
+          comments,
+          defaultImage
+        })
+      })
+      .catch(err => next(err))
+  },
+  editUser: (req, res, next) => {
+    const id = req.params.id
+    return User.findByPk(id, { raw: true })
+      .then(user => {
+        if (!user) throw new Error("User didn't exist!")
+        if (getUser(req).id !== user.id) throw new Error('Users can only edit their own profile!')
+        res.render('users/edit', { user })
+      })
+      .catch(err => next(err))
+  },
+  putUser: (req, res, next) => {
+    const name = req.body.name
+    if (!name) throw new Error('User name is required!')
+    const { file } = req
+    const id = req.params.id
+    return Promise.all([
+      User.findByPk(id),
+      imgurFileHandler(file)
+    ])
+      .then(([user, filePath]) => {
+        if (!user) throw new Error("User didn't exist!")
+        return user.update({
+          name,
+          image: filePath || user.image
+        })
+      })
+      .then(() => {
+        req.flash('success_messages', '使用者資料編輯成功')
+        res.redirect(`/users/${id}`)
+      })
+      .catch(err => next(err))
   }
 }
 module.exports = userController
