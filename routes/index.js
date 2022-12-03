@@ -38,11 +38,14 @@ router.get('/restaurants', authenticated, restController.getRestaurants)
 router.delete('/comments/:id', authenticatedAdmin, commentController.deleteComment) // 刪除評論，Admin才能刪
 router.post('/comments', authenticated, commentController.postComment) // 新增餐廳評論
 
-router.post('/favorite/:restaurantId', authenticated, userController.addFavorite)
-router.delete('/favorite/:restaurantId', authenticated, userController.removeFavorite)
+router.post('/favorite/:restaurantId', authenticated, userController.addFavorite) // 新增收藏餐廳功能，動態路由取為:restaurantId
+router.delete('/favorite/:restaurantId', authenticated, userController.removeFavorite) // 移除收藏的餐廳
 
-router.post('/like/:restaurantId', authenticated, userController.addLike) // 新增按Like功能
-router.delete('/like/:restaurantId', authenticated, userController.removeLike) // 新增移除Like功能
+router.post('/like/:restaurantId', authenticated, userController.addLike) // 新增按Like功能，動態路由取為:restaurantId
+router.delete('/like/:restaurantId', authenticated, userController.removeLike) // 移除Like
+
+router.post('/following/:userId', authenticated, userController.addFollowing) // 新增追蹤User功能，動態路由取為:userId
+router.delete('/following/:userId', authenticated, userController.removeFollowing) // 移除追蹤中的User
 
 // 設定 fallback 路由(其他路由條件都不符合時，最終會通過的路由)
 router.get('/', (req, res) => res.redirect('/restaurants'))
