@@ -158,7 +158,7 @@ const userController = {
   removeLike: (req, res, next) => {
     const { restaurantId } = req.params
     const userId = req.user.id
-    Like.findOne({
+    return Like.findOne({
       where: {
         userId,
         restaurantId
