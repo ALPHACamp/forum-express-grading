@@ -24,10 +24,12 @@ passport.serializeUser((user, done) => {
 passport.deserializeUser((id, done) => {
   // 使req.user一併引入與餐廳的關係(as:'FavoritedRestaurants')
   return User.findByPk(id, {
-    include: [{ model: Restaurant, as: 'FavoritedRestaurants' },
-    { model: Restaurant, as: 'likedRestaurants' },
-    { model: User, as: 'Followers' },
-    { model: User, as: 'Followings' }]
+    include: [
+      { model: Restaurant, as: 'FavoritedRestaurants' },
+      { model: Restaurant, as: 'likedRestaurants' },
+      { model: User, as: 'Followers' },
+      { model: User, as: 'Followings' },
+    ]
   })
     .then(user => {
       done(null, user.toJSON())

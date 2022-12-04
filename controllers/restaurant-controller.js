@@ -1,6 +1,6 @@
 // mvc分流裡的controller
 
-const { Restaurant, Category, Comment, User } = require('../models')
+const { Restaurant, Category, Comment, User, Favorite } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
 
 const restaurantController = {
@@ -27,13 +27,13 @@ const restaurantController = {
         const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
         const likedRestaurantsId = req.user && req.user.likedRestaurants.map(fr => fr.id)
         const data = restaurants.rows.map(r =>
-          ({
-            ...r,
-            description: r.description.substring(0, 50),
-            // 新增isFavorite屬性。在這裡比較每間餐廳是否為favorite。
-            isFavorited: favoritedRestaurantsId.includes(r.id),
-            isLiked: likedRestaurantsId.includes(r.id)
-          }))
+        ({
+          ...r,
+          description: r.description.substring(0, 50),
+          // 新增isFavorite屬性。在這裡比較每間餐廳是否為favorite。
+          isFavorited: favoritedRestaurantsId.includes(r.id),
+          isLiked: likedRestaurantsId.includes(r.id)
+        }))
         return res.render('restaurants', { restaurants: data, categories, categoryId, pagination: getPagination(limit, page, restaurants.count) })// 回傳給hbs是否需要active
       })
       .catch(err => next(err))
@@ -57,8 +57,9 @@ const restaurantController = {
       .catch(err => next(err))
   },
   getDashboard: (req, res, next) => {
-    return Restaurant.findByPk(req.params.id, { include: Category, nest: true, raw: true })
+    return Restaurant.findByPk(req.params.id, { include: [Category, { model: Comment, include: 'User' }, { model: User, as: 'FavoritedUsers' }] })
       .then(restaurant => {
+        restaurant = restaurant.toJSON()
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         res.render('dashboard', { restaurant })
       })
@@ -66,9 +67,22 @@ const restaurantController = {
   },
   getFeeds: (req, res, next) => {
     return Promise.all([Restaurant.findAll({ limit: 10, order: [['createdAt', 'DESC']], include: [Category], nest: true, raw: true }),
-      Comment.findAll({ limit: 10, order: [['createdAt', 'DESC']], include: [Restaurant, User], nest: true, raw: true })])
+    Comment.findAll({ limit: 10, order: [['createdAt', 'DESC']], include: [Restaurant, User], nest: true, raw: true })])
       .then(([restaurants, comments]) => {
         res.render('feeds', { comments, restaurants })
+      })
+      .catch(err => next(err))
+  },
+  getTopRestaurants: (req, res, next) => {
+    return Restaurant.findAll({ include: [{ model: User, as: 'FavoritedUsers' }] })
+      .then(restaurants => {
+        const result = restaurants.map(rest => ({
+          ...rest.toJSON(),// 一定要在這裡toJSON，不能先 nest & row, WHY?
+          favoritedCount: rest.FavoritedUsers.length,
+          isFavorited: rest.FavoritedUsers.some(f => f.id === req.user.id)
+        }))
+          .sort((a, b) => b.favoritedCount - a.favoritedCount).slice(0, 10)
+        res.render('top-rests', { restaurants: result })
       })
       .catch(err => next(err))
   }
