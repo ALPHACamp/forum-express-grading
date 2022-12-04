@@ -4,7 +4,7 @@ dayjs.extend(relativeTime)
 
 module.exports = {
   currentYear: () => dayjs().year(),
-  relativeTimeFromNow: (time) => dayjs(time).fromNow(),
+  relativeTimeFromNow: time => dayjs(time).fromNow(),
   ifCond: function (a, b, options) {
     return a === b ? options.fn(this) : options.inverse(this)
   }

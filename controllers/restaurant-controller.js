@@ -38,7 +38,7 @@ const restaurantController = {
           pagination: getPagination(limit, page, restaurants.count)
         })
       })
-      .catch(err => next(err)) // 補上
+      .catch(err => next(err))
   },
   getRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
@@ -91,6 +91,23 @@ const restaurantController = {
     ])
       .then(([restaurants, comments]) => {
         res.render('feeds', { restaurants, comments })
+      })
+      .catch(err => next(err))
+  },
+  getTopRestaurants: (req, res, next) => {
+    return Restaurant.findAll({
+      include: [{ model: User, as: 'FavoritedUsers' }],
+      limit: 10
+    })
+      .then(restaurants => {
+        const FavoritedRestaurantsId = (req.user && req.user.FavoritedRestaurants.map(fr => fr.id)) || []
+        const result = restaurants.map(r => ({
+          ...r.toJSON(),
+          isFavorite: FavoritedRestaurantsId.includes(r.id),
+          favoritedCount: r.FavoritedUsers.length
+        }))
+          .sort((a, b) => b.favoritedCount - a.favoritedCount)
+        res.render('top-restaurants', { restaurants: result })
       })
       .catch(err => next(err))
   }
