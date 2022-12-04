@@ -24,12 +24,12 @@ const restaurantController = {
     ])
       .then(([restaurants, categories]) => {
         const indexDescriptionLength = 50
-        const favoriteRestaurantsId = req.user && req.user.FavoriteRestaurants.map(fr => fr.id)
+        const FavoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
         const LikeRestaurantsId = req.user && req.user.LikeRestaurants.map(lr => lr.id)
         const data = restaurants.rows.map(r => ({
           ...r,
           description: r.description.substring(0, indexDescriptionLength),
-          isFavorite: favoriteRestaurantsId.includes(r.id),
+          isFavorite: FavoritedRestaurantsId.includes(r.id),
           isLike: LikeRestaurantsId.includes(r.id)
         }))
         return res.render('restaurants', {
@@ -45,14 +45,14 @@ const restaurantController = {
       include: [
         Category,
         { model: Comment, include: User },
-        { model: User, as: 'FavoriteUsers' },
+        { model: User, as: 'FavoritedUsers' },
         { model: User, as: 'LikeUsers' }
       ],
       order: [[{ model: Comment }, 'created_at', 'DESC']]
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
-        const isFavorite = restaurant.FavoriteUsers.some(f => f.id === req.user.id)
+        const isFavorite = restaurant.FavoritedUsers.some(f => f.id === req.user.id)
         const isLike = restaurant.LikeUsers.some(l => l.id === req.user.id)
 
         restaurant.increment('viewCounts', { by: 1 })
