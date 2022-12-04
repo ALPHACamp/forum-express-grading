@@ -45,15 +45,18 @@ const restaurantController = {
       include: [
         Category,
         { model: Comment, include: User },
-        { model: User, as: 'FavoriteUsers' }
+        { model: User, as: 'FavoriteUsers' },
+        { model: User, as: 'LikeUsers' }
       ],
       order: [[{ model: Comment }, 'created_at', 'DESC']]
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         const isFavorite = restaurant.FavoriteUsers.some(f => f.id === req.user.id)
+        const isLike = restaurant.LikeUsers.some(l => l.id === req.user.id)
+
         restaurant.increment('viewCounts', { by: 1 })
-        res.render('admin/restaurant', { restaurant: restaurant.toJSON(), isFavorite })
+        res.render('admin/restaurant', { restaurant: restaurant.toJSON(), isFavorite, isLike })
       })
       .catch(err => next(err))
   },
