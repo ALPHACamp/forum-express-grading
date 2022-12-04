@@ -20,8 +20,8 @@ module.exports = (sequelize, DataTypes) => {
     restaurantId: DataTypes.INTEGER
   }, {
     sequelize,
-    modelName: 'Comment',
+    modelName: 'Comments',
     underscored: true
   })
   return Comment
-};
+}
