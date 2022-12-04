@@ -1,25 +1,33 @@
-<div class="col-md-4">
-  <img class="img-responsive center-block mb-5" src="{{user.image}}"
-    style="width: 250px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
-</div>
-<div class="col-md-8">
-  <div class="row mb-2">
-    <div class="col-md-12">
-      <h1>{{user.name}}</h1>
-      <p>{{user.email}}</p>
-    </div>
+<div class="d-flex justify-content-between" f>
+  <div class="col-md-5">
+    <img class="img-responsive center-block mb-5" src="{{user.image}}"
+      style="width: 300px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
   </div>
-  {{#ifCond user.id userId}}
-  <a class="btn btn-outline-secondary" href="/users/{{user.id}}/edit">Edit</a>
-  {{/ifCond}}
-  <a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
+  <div class="col-md-8">
+    <div class="row mb-2">
+      <div class="col-md-12">
+        <h1>{{userProfile.name}}</h1>
+        <p>{{userProfile.email}}</p>
+        <h5>{{userComments.length}}已評論餐廳</h5>
+      </div>
+    </div>
+    {{#ifCond user.id userProfile.id}}
+    <a class="btn btn-outline-secondary" href="/users/{{user.id}}/edit">Edit</a>
+    {{/ifCond}}
+    <a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
+  </div>
 </div>
 
-<!-->{{#each restaurant.Comments}}<-->
-<blockquote class="blockquote mb-0">
-  <h4><a href="/users/{{this.User.id}}">{{this.User.name}}</a></h4>
-  <p>{{this.text}}</p>
-  <footer class="blockquote-footer">{{this.createdAt}}</footer>
-</blockquote>
-<hr />
-<!-->{{/each}}<-->
+<div class="card">
+  <div class="card-header">
+    {{userComments.length}}已評論餐廳
+  </div>
+  <div class="d-flex justify-content-around mt-5" style="overflow:auto;">
+    {{#each userComments}}
+    <a href="/restaurants/{{this.Restaurant.id}}">
+      <img class=" img-responsive center-block mb-5 mx-2" src="{{this.Restaurant.image}}"
+        style="width:100px; opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+    </a>
+    {{/each}}
+  </div>
+</div>

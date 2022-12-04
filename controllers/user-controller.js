@@ -1,8 +1,7 @@
 const bcrypt = require('bcryptjs')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 const { getUser } = require('../helpers/auth-helpers')
-const { Restaurant, User, Favorite, Like } = require('../models')
-
+const { Restaurant, User, Favorite, Like, Comment } = require('../models')
 const userController = {
   signUpPage: (req, res) => {
     res.render('signup')
@@ -117,20 +116,27 @@ const userController = {
       .catch(err => next(err))
   },
   getUser: (req, res, next) => {
-    const userId = req.params.id
-    // const userId = req.user.id
-    return User.findByPk(userId, { raw: true })
-      .then(userProfile => {
+    return Promise.all([
+      User.findByPk(req.params.id, { raw: true }),
+      Comment.findAll({
+        where: { userId: req.params.id },
+        include: Restaurant,
+        raw: true,
+        nest: true
+      })
+    ])
+      .then(([userProfile, userComments]) => {
         if (!userProfile) throw new Error("User didn't exist!")
-        return res.render('users/profile', { user: getUser, userProfile })
-      }).catch(err => next(err))
+        if (!userComments) throw new Error("User didn't make any comment!")
+        return res.render('users/profile', { user: getUser(req), userProfile, userComments })
+      })
+      .catch(err => next(err))
   },
   editUser: (req, res, next) => {
     const userId = req.params.id
     return User.findByPk(userId, { raw: true })
       .then(user => {
         if (!user) throw new Error("User didn't exist!")
-
         return res.render('users/edit', { user })
       }).catch(err => next(err))
   },
