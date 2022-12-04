@@ -1,14 +1,10 @@
-<h1>餐廳後台</h1>
-<div class="my-3">
-  <a href='/admin/restaurants/create'>New Restaurant</a>
-  <span> |</span>
-  <a href='/admin/users'>User list</a>
-</div>
+{{>admin-tabs route='restaurants'}}
 <table class="table align-middle">
   <thead class="thead-dark">
     <tr>
       <th scope="col">#</th>
       <th scope="col">Name</th>
+      <th scope="col">Category</th>
       <th scope="col"></th>
     </tr>
   </thead>
@@ -17,6 +13,7 @@
       <tr>
         <th scope="row">{{this.id}}</th>
         <td>{{this.name}}</td>
+        <td>{{this.Category.name}}</td>
         <td>
           <button type="button" class="btn btn-link">
             <a class="btn btn-link link-primary" href="/admin/restaurants/{{this.id}}">
