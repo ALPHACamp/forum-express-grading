@@ -54,6 +54,7 @@ const userController = {
         if (!comments.rows.length === 0) {
           comments = { ...comments, count: 0 }
         }
+
         res.render('users/profile', {
           user: getUser(req),
           users,
