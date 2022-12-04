@@ -54,6 +54,7 @@ const restaurantController = {
       .then(restaurant => {
         const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id)
         const isLiked = restaurant.LikedUsers.some(l => l.id === req.user.id)
+        console.log(isLiked)
         res.render('restaurant', {
           restaurant: restaurant.toJSON(),
           isFavorited,
