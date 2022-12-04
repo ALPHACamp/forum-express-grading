@@ -17,6 +17,8 @@
   <div class="col-md-8">
     <p style="white-space: break-spaces;">{{restaurant.description}}</p>
   </div>
+  {{!-- Dashboard --}}
+  <a href="/restaurants/{{restaurant.id}}/dashboard" class="btn btn-primary">Dashboard</a>
   {{!-- Comment --}}
   <h3 class="mb-3">所有評論：</h3>
   {{#each restaurant.Comments}}
@@ -32,7 +34,7 @@
   </blockquote>
   <hr />
   {{/each}}
-  <a href="/restaurants/{{restaurant.id}}/dashboard" class="btn btn-primary">Dashboard</a>
+
   <form action="/comments" method="POST">
     <div class="form-row mb-3">
       <label class="form-label" for="text">留下評論：</label>
