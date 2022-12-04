@@ -1,4 +1,5 @@
 const express = require('express')
+const upload = require('../middleware/multer')
 const router = express.Router()
 const passport = require('../config/passport')
 const restController = require('../controllers/restaurant-controller')
@@ -12,7 +13,7 @@ router.use('/admin', authenticatedAdmin, admin)
 
 // 註冊登入page
 router.get('/signup', userController.signUpPage)
-router.post('/signup', userController.signUp)
+router.post('/signup', upload.single('image'), userController.signUp)
 router.get('/signin', userController.signInPage)
 
 // passport驗證成功才會userController.signIn
@@ -40,7 +41,7 @@ router.delete('/like/:restaurantId', authenticated, userController.removeLike)
 // 個人頁面
 router.get('/users/:id', authenticated, userController.getUser)
 router.get('/users/:id/edit', authenticated, userController.editUser)
-router.put('/users/:id', authenticated, userController.putUser)
+router.put('/users/:id', upload.single('image'), userController.putUser)
 
 router.get('/', (req, res) => res.redirect('/restaurants'))
 router.use('/', generalErrorHandler)
