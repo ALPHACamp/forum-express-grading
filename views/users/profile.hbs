@@ -1,0 +1,20 @@
+<div class="row mb-5">
+  <div class="col-md-4">
+    {{#if users.image}}
+    <img class="img-responsive center-block mb-5" src="{{users.image}}"
+      style="width: 250px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+    {{else}}
+    <img class="img-responsive center-block mb-5" src="https://imgur.com/89ZYpP3"
+      style="width: 250px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+    {{/if}}
+  </div>
+  <div class="col-md-4">
+    <div class="well">
+      <ul class="list-unstyled">
+        <li><strong>{{users.name}}</strong></li>
+        <li><strong>{{users.email}}</strong></li>
+      </ul>
+    </div>
+  </div>
+  <a href="/users/{{users.id}}/edit" class="btn btn-primary">edit</a>
+</div>
