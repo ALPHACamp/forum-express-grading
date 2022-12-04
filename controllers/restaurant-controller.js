@@ -1,10 +1,12 @@
-const { Restaurant, Category, Comment, User, Favorite } = require('../models')
+const { Restaurant, Category, Comment, User } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
+
+const DEFAULT_LIMIT = 9
+const DEFAULT_SUBSTRING_MIN_NUM = 0
+const DEFAULT_SUBSTRING_MAX_NUM = 50
+
 const restaurantController = {
   getRestaurants: (req, res, next) => {
-    const DEFAULT_LIMIT = 9
-    const DEFAULT_SUBSTRING_MIN_NUM = 0
-    const DEFAULT_SUBSTRING_MAX_NUM = 50
     const categoryId = Number(req.query.categoryId) || '' // 從網址上拿下來的參數是字串，先轉成 Number 再操作
     const page = Number(req.query.page) || 1
     const limit = Number(req.query.limit) || DEFAULT_LIMIT
@@ -105,10 +107,19 @@ const restaurantController = {
   getTopRestaurants: (req, res, next) => {
     // 撈出所有 User 與 followers 資料
     return Restaurant.findAll({
-      include: Favorite
+      include: [{ model: User, as: 'FavoritedUsers' }]
     })
       .then(restaurants => {
-
+        // const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
+        // 上面宣告favoritedRestaurantsId變數的寫法過不了測試檔，不知為何?
+        const result = restaurants
+          .map(restaurant => ({
+            ...restaurant.toJSON(),
+            isFavorited: req.user && req.user.FavoritedRestaurants.map(fr => fr.id).includes(restaurant.id),
+            favoritedCount: restaurant.FavoritedUsers.length
+          }))
+          .sort((a, b) => b.favoritedCount - a.favoritedCount).slice(0, 10)
+        res.render('top-restaurants', { restaurants: result })
       })
       .catch(err => next(err))
   }
