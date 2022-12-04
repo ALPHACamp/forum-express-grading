@@ -20,6 +20,7 @@ router.post('/signin', passport.authenticate('local', { failureRedirect: '/signi
 // 登出
 router.get('/logout', userController.logout)
 
+router.get('/users/top', authenticated, userController.getTopUsers)
 // user profile
 router.get('/users/:id/edit', authenticatedUser, userController.editUser)
 router.get('/users/:id', authenticated, userController.getUser)
@@ -46,6 +47,9 @@ router.delete('/favorite/:restaurantId', authenticated, userController.removeFav
 router.post('/like/:restaurantId', authenticated, userController.addLike)
 router.delete('/like/:restaurantId', authenticated, userController.removeLike)
 
+// followship
+router.post('/following/:userId', authenticated, userController.addFollowing)
+router.delete('/following/:userId', authenticated, userController.removeFollowing)
 // fallback路由。當其他路由條件都不符合時，最終會通過的路由。論此 request 是用哪個 HTTP method 發出的，都會匹配到這一行，將使用者重新導回 / restaurants。所以要注意順序。所以就是不論你網址亂打甚麼，他都會跳去/restaurants。
 router.get('/', (req, res) => { res.redirect('/restaurants') })
 

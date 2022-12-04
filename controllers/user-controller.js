@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs')
 // 先取出model中的User(資料表格式?)
 const db = require('../models')
-const { User, Comment, Restaurant, Favorite, Like } = db
+const { User, Comment, Restaurant, Favorite, Like, Followship } = db
 const { imgurFileHandler } = require('../helpers/file-helpers')
 const { getUser } = require('../helpers/auth-helpers')
 const userController = {
@@ -62,7 +62,7 @@ const userController = {
   getUser: (req, res, next) => {
     const userId = req.params.id
     return Promise.all([User.findByPk(userId, { raw: true }),
-      Comment.findAll({ where: { userId }, include: Restaurant, nest: true, raw: true })])
+    Comment.findAll({ where: { userId }, include: Restaurant, nest: true, raw: true })])
       .then(([userProfile, comments]) => {
         if (!userProfile) throw new Error("User didn't exist!")
         res.render('users/profile', { user: getUser(req), userProfile, comments })
@@ -100,7 +100,7 @@ const userController = {
   addFavorite: (req, res, next) => {
     const { restaurantId } = req.params
     return Promise.all([Restaurant.findByPk(restaurantId),
-      Favorite.findOne({ where: { userId: req.user.id, restaurantId } })])// 確認這個收藏的關聯是否存在？
+    Favorite.findOne({ where: { userId: req.user.id, restaurantId } })])// 確認這個收藏的關聯是否存在？
       .then(([restaurant, favorite]) => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         if (favorite) throw new Error('You have favorited this restaurant!')
@@ -139,6 +139,69 @@ const userController = {
       .then(like => {
         if (!like) throw new Error("You haven't liked this restaurant!")
         return like.destroy()
+      })
+      .then(() => res.redirect('back'))
+      .catch(err => next(err))
+  },
+  getTopUsers: (req, res, next) => {
+    // 撈出所有 User 與 followers 資料
+    return User.findAll({
+      include: [{ model: User, as: 'Followers' }]
+    })
+      .then(users => { // 這裡的users是有"users的追蹤者"資料的陣列
+        // 整理 users 資料，把每個 user 項目都拿出來處理一次，並把新陣列儲存在 users 裡
+        users = users.map(user => ({
+          ...user.toJSON(),
+          // 計算追蹤者人數
+          followerCount: user.Followers.length,
+          // 判斷目前登入使用者的"追蹤名單"內是否已追蹤該 user 物件(user.id)
+          isFollowed: req.user.Followings.some(f => f.id === user.id)
+        }))
+        res.render('top-users', { users: users })
+      })
+      .catch(err => next(err))
+  },
+  // addFollowing: (req, res, next) => {
+  //   const { userId } = req.params
+  //   Promise.all([
+  //     User.findByPk(userId),
+  //     Followship.findOne({
+  //       where: {
+  //         followerId: req.user.id,
+  //         followingId: req.params.userId
+  //       }
+  //     })
+  //   ])
+  //     .then(([user, followship]) => {
+  //       if (!user) throw new Error("User didn't exist!")
+  //       if (followship) throw new Error('You are already following this user!')
+  //       return Followship.create({
+  //         followerId: req.user.id,
+  //         followingId: userId
+  //       })
+  //     })
+  //     .then(() => res.redirect('back'))
+  //     .catch(err => next(err))
+  // },
+  // 追蹤別人
+  addFollowing: (req, res, next) => {
+    const { userId } = req.params // 路由抓取的userId
+    Promise.all([User.findByPk(userId), Followship.findOne({ where: { followerId: req.user.id, followingId: userId } })])// 抓資料 followship裡的followerId為登入者，以及followingId(追蹤的對象)為資料傳入的id
+      .then(([user, followship]) => {
+        if (!user) throw new Error("User didn't exist!")// 要追蹤的使用者是否存在
+        if (followship) throw new Error('You are already following this user!')// 是否已追蹤過
+        return Followship.create({
+          followerId: req.user.id, followingId: userId
+        })
+      })
+      .then(() => res.redirect('back'))
+      .catch(err => next(err))
+  },
+  removeFollowing: (req, res, next) => {
+    return Followship.findOne({ where: { followerId: req.user.id, followingId: req.params.userId } })
+      .then(followship => {
+        if (!followship) throw new Error("You haven't followed this user!")
+        followship.destroy()
       })
       .then(() => res.redirect('back'))
       .catch(err => next(err))
