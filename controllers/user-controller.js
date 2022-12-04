@@ -48,6 +48,7 @@ const userController = {
         where: { userId: id },
         include: Restaurant,
         group: 'restaurantId',
+        attributes: ['restaurantId'],
         raw: true,
         nest: true
       })
