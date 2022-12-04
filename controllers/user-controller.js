@@ -1,4 +1,5 @@
 const bcrypt = require('bcryptjs')
+const { imgurFileHandler } = require('../helpers/file-helpers')
 const { Restaurant, User, Favorite, Like } = require('../models')
 
 const userController = {
@@ -8,17 +9,20 @@ const userController = {
   signUp: (req, res, next) => {
     const { name, email, password, passwordCheck } = req.body
     if (password !== passwordCheck) throw new Error('Password do not match!')
+    const { file } = req
 
-    User.findOne({ where: { email } })
-      .then(user => {
+    return Promise.all([
+      imgurFileHandler(file),
+      User.findOne({ where: { email } })])
+      .then(([filePath, user]) => {
         if (user) throw new Error('Email already exists!')
-        return bcrypt.hash(password, 10) // 可以少一層巢狀結構
+        return User.create({
+          name,
+          email,
+          password: bcrypt.hashSync(password, bcrypt.genSaltSync(10), null),
+          image: filePath || null
+        })
       })
-      .then(hash => User.create({
-        name,
-        email,
-        password: hash
-      }))
       .then(() => {
         req.flash('success_messages', '成功註冊帳號!')
         res.redirect('/signin')
@@ -39,7 +43,7 @@ const userController = {
   },
   addFavorite: (req, res, next) => {
     const { restaurantId } = req.params
-    Promise.all([
+    return Promise.all([
       Restaurant.findByPk(restaurantId),
       Favorite.findOne({
         where: {
@@ -62,7 +66,7 @@ const userController = {
   },
   removeFavorite: (req, res, next) => {
     const { restaurantId } = req.params
-    Favorite.findOne({
+    return Favorite.findOne({
       where: {
         userId: req.user.id,
         restaurantId
@@ -109,6 +113,40 @@ const userController = {
 
       return like.destroy()
     }).then(() => res.redirect('back'))
+      .catch(err => next(err))
+  },
+  getUser: (req, res, next) => {
+    const userId = req.params.id
+    // const userId = req.user.id
+    return User.findByPk(userId, { raw: true })
+      .then(user => {
+        if (!user) throw new Error("User didn't exist!")
+        return res.render('users/profile', { user })
+      }).catch(err => next(err))
+  },
+  editUser: (req, res, next) => {
+    const userId = req.params.id
+    return User.findByPk(userId, { raw: true })
+      .then(user => {
+        if (!user) throw new Error("User didn't exist!")
+        console.log(`!!!!!!!!${user.name}!!!!!!!!`)
+        return res.render('users/edit', { user })
+      }).catch(err => next(err))
+  },
+  putUser: (req, res, next) => {
+    const userId = req.params.id
+    const { name } = req.body
+    const { file } = req
+    return Promise.all([User.findByPk(userId), imgurFileHandler(file)])
+      .then(([user, filePath]) => {
+        if (!user) throw new Error("User didn't exist!")
+        if (!name) throw new Error('Name is required!')
+        return user.update({ name: name || user.name, image: filePath || user.image })
+      })
+      .then(() => {
+        req.flash('success_messages', '使用者資料編輯成功')
+        res.redirect(`/users/${userId}`)
+      })
       .catch(err => next(err))
   }
 }
