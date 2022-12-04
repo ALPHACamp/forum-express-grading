@@ -1,0 +1,38 @@
+<h1>餐廳後台</h1>
+{{>admin-tabs route='users'}}
+<table class="table align-middle">
+  <thead class="table-dark">
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Name</th>
+      <th scope="col">Email</th>
+      <th scope="col">Role</th>
+      <th scope="col">#</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each users}}
+    <tr>
+      <th scope="col">{{this.id}}</th>
+      <th scope="col">{{this.name}}</th>
+      <th scope="col">{{this.email}}</th>
+      <th scope="col">
+        {{#if this.isAdmin}} admin {{else}} user {{/if}}
+      </th>
+      <th scope="col">
+        {{#if this.isAdmin}}
+        <form action="/admin/users/{{this.id}}?_method=PATCH" method="POST">
+          <input type="hidden" name="isAdmin" value="false" />
+          <button type="submit" class="btn btn-link link-dark">Set as User</button>
+        </form>
+        {{else}}
+        <form action="/admin/users/{{this.id}}?_method=PATCH" method="POST">
+          <input type="hidden" name="isAdmin" value="true" />
+          <button type="submit" class="btn btn-link link-dark">Set as Admin</button>
+        </form>
+        {{/if}}
+      </th>
+    </tr>
+    {{/each}}
+  </tbody>
+</table>
