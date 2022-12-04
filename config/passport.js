@@ -1,8 +1,7 @@
 const passport = require('passport')
 const LocalStrategy = require('passport-local')
 const bcrypt = require('bcryptjs')
-const db = require('../models')
-const { User } = db
+const { User, Restaurant } = require('../models')
 
 passport.use(new LocalStrategy(
   // customize user field
@@ -30,9 +29,11 @@ passport.serializeUser((user, cb) => {
 })
 // 利用user.id反序列化來取得user資訊
 passport.deserializeUser((id, cb) => {
-  User.findByPk(id).then(user => {
-    return cb(null, user.toJSON())
+  User.findByPk(id, {
+    include: { model: Restaurant, as: 'FavoriteRestaurants' }
   })
+    .then(user => cb(null, user.toJSON()))
+    .catch(err => cb(err))
 })
 
 module.exports = passport
