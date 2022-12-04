@@ -30,7 +30,10 @@ passport.serializeUser((user, cb) => {
 // 利用user.id反序列化來取得user資訊
 passport.deserializeUser((id, cb) => {
   User.findByPk(id, {
-    include: { model: Restaurant, as: 'FavoriteRestaurants' }
+    include: [
+      { model: Restaurant, as: 'FavoriteRestaurants' },
+      { model: Restaurant, as: 'LikeRestaurants' }
+    ]
   })
     .then(user => cb(null, user.toJSON()))
     .catch(err => cb(err))

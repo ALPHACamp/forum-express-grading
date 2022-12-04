@@ -25,10 +25,12 @@ const restaurantController = {
       .then(([restaurants, categories]) => {
         const indexDescriptionLength = 50
         const favoriteRestaurantsId = req.user && req.user.FavoriteRestaurants.map(fr => fr.id)
+        const LikeRestaurantsId = req.user && req.user.LikeRestaurants.map(lr => lr.id)
         const data = restaurants.rows.map(r => ({
           ...r,
           description: r.description.substring(0, indexDescriptionLength),
-          isFavorite: favoriteRestaurantsId.includes(r.id)
+          isFavorite: favoriteRestaurantsId.includes(r.id),
+          isLike: LikeRestaurantsId.includes(r.id)
         }))
         return res.render('restaurants', {
           restaurants: data,
