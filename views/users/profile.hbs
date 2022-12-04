@@ -11,3 +11,16 @@
     {{/ifCond}}
   </div>
 </div>
+{{!-- restaurants commented --}}
+<div class="card mt-3" style="width: 960px; margin: auto; background:white">
+  <div class="card-body">
+  <h5 class="card-title">{{comments.count}}已評論餐廳</h5>
+  <div class="d-flex" style="flex-wrap: wrap;">
+  {{#each comments.rows}}
+  <div style="width: 125px; height: 125px">
+    <img src="{{this.Restaurant.image}}" class="img-thumbnail" style="object-fit:cover;height: 100%; width: 100%;" alt="restaurant-image">
+  </div>
+  {{/each}}
+  </div>
+  </div>
+</div>
