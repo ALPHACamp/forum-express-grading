@@ -4,6 +4,7 @@ const db = require('../models')
 const { User, Comment, Restaurant, Favorite, Like, Followship } = db
 const { imgurFileHandler } = require('../helpers/file-helpers')
 const { getUser } = require('../helpers/auth-helpers')
+
 const userController = {
   // render 註冊的頁面
   signUpPage: (req, res) => {
@@ -148,41 +149,33 @@ const userController = {
     return User.findAll({
       include: [{ model: User, as: 'Followers' }]
     })
-      .then(users => { // 這裡的users是有"users的追蹤者"資料的陣列
-        // 整理 users 資料，把每個 user 項目都拿出來處理一次，並把新陣列儲存在 users 裡
-        users = users.map(user => ({
-          ...user.toJSON(),
-          // 計算追蹤者人數
-          followerCount: user.Followers.length,
-          // 判斷目前登入使用者的"追蹤名單"內是否已追蹤該 user 物件(user.id)
-          isFollowed: req.user.Followings.some(f => f.id === user.id)
-        }))
-        res.render('top-users', { users: users })
+      // .then(users => { // 這裡的users是有"users的追蹤者"資料的陣列
+      //   // 整理 users 資料，把每個 user 項目都拿出來處理一次，並把新陣列儲存在 users 裡
+      //   users = users.map(user => ({
+      //     // 這裡users變數有重複使用，可以優化，但使用者這個版本的好處是節省資源空間。
+      //     ...user.toJSON(),
+      //     // 計算追蹤者人數
+      //     followerCount: user.Followers.length,
+      //     // 判斷目前登入使用者的"追蹤名單"內是否已追蹤該 user 物件(user.id)
+      //     isFollowed: req.user.Followings.some(f => f.id === user.id)
+      //   }))
+      //   users = users.sort((a, b) => b.followerCount - a.followerCount)
+      //   res.render('top-users', { users: users })
+      // })
+
+      // 這個寫法可以保有users原始資料
+      .then(users => {
+        const result = users
+          .map(user => ({// 這行有延遲現象????
+            ...user.toJSON(),
+            followerCount: user.Followers.length,
+            isFollowed: req.user.Followings.some(f => f.id === user.id)
+          }))
+          .sort((a, b) => b.followerCount - a.followerCount)
+        res.render('top-users', { users: result })
       })
       .catch(err => next(err))
   },
-  // addFollowing: (req, res, next) => {
-  //   const { userId } = req.params
-  //   Promise.all([
-  //     User.findByPk(userId),
-  //     Followship.findOne({
-  //       where: {
-  //         followerId: req.user.id,
-  //         followingId: req.params.userId
-  //       }
-  //     })
-  //   ])
-  //     .then(([user, followship]) => {
-  //       if (!user) throw new Error("User didn't exist!")
-  //       if (followship) throw new Error('You are already following this user!')
-  //       return Followship.create({
-  //         followerId: req.user.id,
-  //         followingId: userId
-  //       })
-  //     })
-  //     .then(() => res.redirect('back'))
-  //     .catch(err => next(err))
-  // },
   // 追蹤別人
   addFollowing: (req, res, next) => {
     const { userId } = req.params // 路由抓取的userId
