@@ -2,7 +2,7 @@ const bcrypt = require('bcryptjs')
 const db = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 const { getUser } = require('../helpers/auth-helpers')
-const { User, Restaurant, Comment, Favorite, Like } = db
+const { User, Restaurant, Comment, Favorite, Like, Followship } = db
 const userController = {
   signUpPage: (req, res) => {
     res.render('signup')
@@ -175,14 +175,54 @@ const userController = {
       include: [{ model: User, as: 'Followers' }]
     })
       .then(users => {
-        console.log(users)
-        users = users.map(user => ({
-          ...user.toJSON(),
-          followerCount: user.Followers.length,
-          isFollowed: req.user.Followings.some(f => f.id === user.id)
-        }))
-        res.render('top-users', { users })
+        const result = users
+          .map(user => ({
+            ...user.toJSON(),
+            followerCount: user.Followers.length,
+            isFollowed: req.user.Followings.some(f => f.id === user.id)
+          }))
+          .sort((a, b) => b.followerCount - a.followerCount)
+        res.render('top-users', { users: result })
       })
+      .catch(err => next(err))
+  },
+  addFollowing: (req, res, next) => {
+    const followingId = req.params.userId
+    const followerId = req.user.id
+    return Promise.all([
+      User.findByPk(followingId),
+      Followship.findOne({
+        where: {
+          followerId,
+          followingId
+        }
+      })
+    ])
+      .then(([user, followship]) => {
+        if (!user) return new Error("User doesn't exist!")
+        if (followship) return new Error('You have already followed the user!')
+        return Followship.create({
+          followerId,
+          followingId
+        })
+      })
+      .then(() => res.redirect('back'))
+      .catch(err => next(err))
+  },
+  removeFollowing: (req, res, next) => {
+    const followingId = req.params.userId
+    const followerId = req.user.id
+    return Followship.findOne({
+      where: {
+        followerId,
+        followingId
+      }
+    })
+      .then(followship => {
+        if (!followship) return new Error("You haven't follow the user")
+        return followship.destroy()
+      })
+      .then(() => res.redirect('back'))
       .catch(err => next(err))
   }
 }
