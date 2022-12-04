@@ -7,7 +7,7 @@ module.exports = {
     const page = Number(req.query.page) || 1
     const limit = Number(req.query.limit) || DEFAULT_LIMIT
     const offset = getOffset(limit, page)
-   
+    const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
     return Promise.all([
       Restaurant.findAndCountAll({
         include: Category,
@@ -22,7 +22,8 @@ module.exports = {
       .then(([restaurants, categories]) => {
         const data = restaurants.rows.map(r => ({
           ...r,
-          description: r.description.substring(0, 50)
+          description: r.description.substring(0, 50),
+          isFavorited: favoritedRestaurantsId.includes(r.id)
         }))
         return res.render('restaurants', {
           restaurants: data,
@@ -35,7 +36,7 @@ module.exports = {
   },
   getRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
-      include: [Category, { model: Comment, include: User }
+      include: [Category, { model: Comment, include: User }, { model: User, as: 'FavoritedUsers' }
       ] // 拿出關聯的 Category model
     })
       .then(restaurant => {
@@ -43,8 +44,10 @@ module.exports = {
         return restaurant.increment('viewCounts')
       })
       .then(restaurant => {
+        const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id)
         return res.render('restaurant', {
-          restaurant: restaurant.toJSON()
+          restaurant: restaurant.toJSON(),
+          isFavorited
         })
       })
       .catch(err => next(err))
