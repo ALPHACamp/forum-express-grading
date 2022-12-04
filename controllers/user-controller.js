@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs')
 const db = require('../models')
 const { getUser } = require('../helpers/auth-helpers')
-const { User, Comment, Restaurant, Favorite } = db
+const { User, Comment, Restaurant, Favorite, Like } = db
 const { imgurFileHandler } = require('../helpers/file-helpers')
 module.exports = {
   signUpPage: (req, res) => res.render('signup'),
@@ -46,7 +46,7 @@ module.exports = {
     )
       .then(([viewUser, comments]) => {
         if (!viewUser) throw new Error('User is not exist!')
-        res.render('users/profile', { user, viewUser: viewUser.toJSON(), comments})
+        res.render('users/profile', { user, viewUser: viewUser.toJSON(), comments })
       })
       .catch(err => next(err))
   },
@@ -115,9 +115,37 @@ module.exports = {
       }
     })
       .then(favorite => {
-        if (!favorite) throw new Error("You haven't favorited this restaurant")
+        if (!favorite) throw new Error("You haven't favorite this restaurant")
 
         return favorite.destroy()
+      })
+      .then(() => res.redirect('back'))
+      .catch(err => next(err))
+  },
+  addLike: (req, res, next) => {
+    const restaurantId = req.params.restaurantId
+    return Promise.all([
+      Restaurant.findByPk(restaurantId),
+      Like.findOne({ where: { restaurantId, userId: req.user.id } })
+    ])
+      .then(([restaurant, like]) => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        if (like) throw new Error('You have liked this restaurant!')
+        return Like.create({ restaurantId, userId: req.user.id })
+      })
+      .then(() => res.redirect('back'))
+      .catch(err => next(err))
+  },
+  removeLike: (req, res, next) => {
+    const restaurantId = req.params.restaurantId
+    return Promise.all([
+      Restaurant.findByPk(restaurantId),
+      Like.findOne({ where: { restaurantId, userId: req.user.id } })
+    ])
+      .then(([restaurant, like]) => {
+        if (!like) throw new Error("You haven't like this restaurant")
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        return like.destroy()
       })
       .then(() => res.redirect('back'))
       .catch(err => next(err))
