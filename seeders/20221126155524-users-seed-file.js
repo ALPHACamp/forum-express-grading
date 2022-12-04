@@ -1,6 +1,5 @@
 'use strict'
 const bcrypt = require('bcryptjs')
-/** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.bulkInsert('Users', [{ // 一次新增三筆資料
