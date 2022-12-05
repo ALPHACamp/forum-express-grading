@@ -1,0 +1,58 @@
+<div class="card mb-3">
+  <div class="row no-gutters">
+    <div class="col-md-4">
+      {{#if user.image}}
+        <img src="{{user.image}}" width="300px" height="300px" style="transition: opacity 0.5s; opacity:0;"
+          onload="this.style.opacity=1;" />
+      {{else}}
+        <img src="https://via.placeholder.com/300" width="300px" height="300px"
+          style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;" />
+      {{/if}}
+    </div>
+    <div class="col-md-8">
+      <div class="card-body">
+        <h5 class="card-title">{{user.name}}</h5>
+        <p class="card-text">
+          {{user.email}}
+        </p>
+        <ul class="list-unstyled list-inline">
+          <li><strong>{{user.commentedRestaurants.length}}</strong> 已評論餐廳</li>
+        </ul>
+        <p>
+          {{#ifCond user.id user.id }}
+            <a href="/users/{{user.id}}/edit"><button type="submit" class="btn btn-primary">edit</button></a>
+            {{else}}
+              {{#if this.isFollowed }}
+                <form action="/following/{{user.id}}?_method=DELETE" method="POST" style="display: contents;">
+                  <button type="submit" class="btn btn-danger">取消追蹤</button>
+                </form>
+              {{else}}
+                <form action="/following/{{user.id}}" method="POST" style="display: contents;">
+                  <button type="submit" class="btn btn-primary">追蹤</button>
+                </form>
+              {{/if}}
+          {{/ifCond}}
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-12">
+    <br />
+    <div class="card">
+      <div class="card-header">
+        <strong>{{user.FavoritedRestaurants.length}}</strong> 收藏的餐廳
+      </div>
+      <div class="card-body">
+        {{#each user.FavoritedRestaurants}}
+          <a href="/restaurants/{{this.id}}" class="text-decoration-none">
+            <img src="{{this.image}}" width="60" height="60" class="avatar" style="transition: opacity 0.5s; opacity:0;"
+              onload="this.style.opacity=1;" />
+          </a>
+        {{/each}}
+      </div>
+    </div>
+  </div>
+</div>
