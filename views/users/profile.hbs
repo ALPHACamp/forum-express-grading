@@ -1,0 +1,35 @@
+<div class="container">
+	<div class="card d-flex flex-wrap flex-row p-0">
+		<div>
+			{{#if userProfile.image}}
+			<img src="{{ userProfile.image }}" alt="avatar" class="rounded-circle m-3"
+				style="height:300px; width:300px; object-fit:cover;">
+			{{else}}
+			<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS72W94k0WgvejvRt7nFEe8sxOTLqLRk9Xaww&usqp=CAU" alt="avatar"
+				class="rounded-circle m-3" style="height:300px; width:300px; object-fit:cover;">
+			{{/if}}
+		</div>
+		<div class="m-5" style="width:300px">
+			<h5>{{ userProfile.name }}</h5>
+			<p class="mt-3">{{ userProfile.email }}</p>
+			{{#ifCond userProfile.id user.id}}
+			<a href="/users/{{user.id}}/edit" class="btn btn-primary">edit</a>
+			{{/ifCond}}
+		</div>
+	</div>
+	<div class="card mt-3">
+		<h5 class="card-header">{{comments.length}}已評論餐廳</h5>
+		<div class="card-body">
+			{{#if comments}}
+			{{#each comments}}
+			<a href="/restaurants/{{this.restaurantId}}" style="text-decoration:none;">
+				<img src="{{this.Restaurant.image}}" title="{{this.Restaurant.name}}" class="m-3"
+					style="height:100px; width:100px; object-fit:cover">
+			</a>
+			{{/each}}
+			{{else}}
+			<p>尚未有任何評論</p>
+			{{/if}}
+		</div>
+	</div>
+</div>
