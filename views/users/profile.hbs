@@ -1,0 +1,13 @@
+<div class="row mb-5">
+  <div class="col-md-4 text-center">
+    <img class="img-responsive center-block mb-5" src={{user.avatar}} style="width: 250px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+  </div>
+  <div class="col-md-8">
+    <div class="well">
+      <ul class="list-unstyled">
+        <li><h2><strong>{{user.name}}</strong></h2></li>
+        <li>{{user.email}}</li>
+      </ul>
+      <a href="/users/{{user.id}}/edit" class="btn btn-outline-secondary">Edit</a>
+    </div>
+  </div>
