@@ -10,6 +10,7 @@ const { authenticated, authenticatedAdmin } = require('../middleware/auth')
 
 // routes for administrator
 router.use('/admin', authenticatedAdmin, admin)
+router.delete('/comments/:id', authenticatedAdmin, commentController.deleteComment)
 
 // routes for normal users
 router.get('/signup', userController.signUpPage)
