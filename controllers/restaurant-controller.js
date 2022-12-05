@@ -102,6 +102,29 @@ const restaurantController = {
         })
       })
       .catch(err => next(err))
+  },
+  getTopRestaurants: (req, res, next) => {
+    // 撈出所有 Restaurant 與 FavoritedUsers 資料
+    return Restaurant.findAll({
+      include: [{ model: User, as: 'FavoritedUsers' }]
+    })
+      .then(restaurants => {
+        const result = restaurants
+          // 整理 restaurants 資料，把每個 restaurant 項目都拿出來處理一次，並把新陣列儲存在 restaurants 裡
+          .map(restaurant => ({
+            // 整理格式
+            ...restaurant.dataValues,
+            description: restaurant.dataValues.description.substring(0, 50),
+            // 計算收藏該餐廳的人數
+            favoritedCount: restaurant.FavoritedUsers.length,
+            // 判斷目前登入使用者是否已收藏該 restaurant 物件
+            isFavorited: req.user && req.user.FavoritedRestaurants.map(d => d.id).includes(restaurant.id)
+          }))
+          .sort((a, b) => b.favoritedCount - a.favoritedCount)
+          .slice(0, 10)
+        res.render('top-restaurants', { restaurants: result })
+      })
+      .catch(err => next(err))
   }
 }
 
