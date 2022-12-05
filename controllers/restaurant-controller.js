@@ -1,5 +1,6 @@
 const { Restaurant, User, Category, Comment } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
+
 module.exports = {
   getRestaurants: (req, res, next) => {
     const categoryId = Number(req.query.categoryId) || ''
@@ -88,6 +89,26 @@ module.exports = {
           restaurants,
           comments
         })
+      })
+      .catch(err => next(err))
+  },
+  getTopRestaurants: (req, res, next) => {
+    return Restaurant.findAll({
+      include: { model: User, as: 'FavoritedUsers' },
+      nest: true
+    })
+      .then(restaurants => {
+        const result = restaurants.map(r => {
+          return {
+            ...r.toJSON(),
+            description: r.description.substring(0, 50),
+            favoritedCount: r.FavoritedUsers.length,
+            isFavorited: req.user && req.user.FavoritedRestaurants.some(fr => fr.id === r.id)
+          }
+        })
+          .sort((a, b) => b.favoritedCount - a.favoritedCount)
+          .slice(0, 10)
+        res.render('top-restaurants', { restaurants: result })
       })
       .catch(err => next(err))
   }
