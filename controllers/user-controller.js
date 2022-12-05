@@ -1,4 +1,5 @@
 const bcrypt = require('bcryptjs')
+const { getUser } = require('../helpers/auth-helpers')
 const { User, Restaurant, Comment, Favorite, Like } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
@@ -44,16 +45,23 @@ const userController = {
     res.redirect('/signin')
   },
   getUser: (req, res, next) => {
-    return User.findByPk(req.params.id, {
-      // raw: true
-      include: {
-        model: Comment, include: Restaurant
-      }
-    })
-      .then(user => {
-        if (!user) throw new Error("User didn't exist!")
-        console.log(user.toJSON())
-        res.render('users/profile', { user: user.toJSON() })
+    const user = getUser(req)
+    return Promise.all([
+      User.findByPk(req.params.id, { raw: true }),
+      Comment.findAndCountAll({
+        include: Restaurant,
+        where: { userId: req.params.id },
+        raw: true,
+        nest: true
+      })
+    ])
+      .then(([theUser, comments]) => {
+        if (!theUser) throw new Error("User didn't exist!")
+        res.render('users/profile', {
+          user,
+          theUser,
+          comments
+        })
       })
       .catch(err => next(err))
   },

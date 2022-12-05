@@ -4,14 +4,16 @@
     <div class="col-md-4">
       <img class="img-fluid rounded-start" style="width: 250px; transition: opacity 0.5s; opacity:0;"
         onload="this.style.opacity=1;"
-        src="{{#if user.image}}{{user.image}}{{else}}https://i.pinimg.com/736x/f1/0f/f7/f10ff70a7155e5ab666bcdd1b45b726d.jpg{{/if}}">
+        src="{{#if theUser.image}}{{theUser.image}}{{else}}https://i.pinimg.com/736x/f1/0f/f7/f10ff70a7155e5ab666bcdd1b45b726d.jpg{{/if}}">
     </div>
     <div class="col-md-8">
       <div class="card-body">
-        <h2>{{user.name}}</h2>
-        <p style="white-space: break-spaces">{{user.email}}</p>
-        <p style="white-space: break-spaces">5 已評論餐廳</p>
-        <a class="btn btn btn-primary" href="/users/{{user.id}}/edit">Edit</a>
+        <h2>{{theUser.name}}</h2>
+        <p style="white-space: break-spaces">{{theUser.email}}</p>
+        <p style="white-space: break-spaces">{{ comments.count }} 已評論餐廳</p>
+        {{#ifCond user.id theUser.id}}
+        <a class="btn btn btn-primary" href="/users/{{theUser.id}}/edit">Edit</a>
+        {{/ifCond}}
         <a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
       </div>
     </div>
@@ -19,12 +21,13 @@
 </div>
 
 <div class="card mb-3" style="max-width: 1200px;">
-  <h5 class="card-header">5 已評論餐廳</h5>
+  <h5 class="card-header">{{ comments.count }} 已評論餐廳</h5>
   <div class="card-body">
-    {{!-- {{#each user.Comments}}
-    {{#if user.Comments}} --}}
-    <img class="img-fluid rounded-start" style="width: 100px; height: 100px; margin: 10px"
-      src="https://i.pinimg.com/736x/f1/0f/f7/f10ff70a7155e5ab666bcdd1b45b726d.jpg">
-    {{!-- {{/each}} --}}
+    {{#each comments.rows}}
+    <a href="/restaurants/{{this.Restaurant.id}}">
+      <img class="img-fluid rounded-start" style="width: 100px; height: 100px; margin: 10px"
+        src="{{this.Restaurant.image}}">
+    </a>
+    {{/each}}
   </div>
 </div>
