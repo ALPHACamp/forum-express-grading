@@ -1,6 +1,6 @@
-const { User, Restaurant } = require('../models')
-const { imgurFileHandler } = require('../helpers/file-helpers')
-const superuser = require('../superuser.json')
+const { User, Restaurant } = require('../../models/')
+const { imgurFileHandler } = require('../../helpers/file-helpers')
+const superuser = require('../../superuser.json')
 
 const adminController = {
   getRestaurants: (req, res, next) => {
