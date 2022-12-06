@@ -2,7 +2,7 @@ const adminServices = require('../../services/admin-services')
 
 const adminController = {
   getRestaurants: (req, res, next) => {
-    adminServices.getRestaurants(req, (err, data) => err ? next(err) : res.render('restaurants', { data }))
+    adminServices.getRestaurants(req, (err, data) => err ? next(err) : res.json(data))
   },
   createRestaurant: (req, res, next) => {
     return Restaurant.findAll({
@@ -45,12 +45,11 @@ const adminController = {
   },
   editRestaurant: (req, res, next) => {
     return Promise.all([
-      Restaurant.findByPk(req.params.id, { raw: true }),
-      Category.findAll({ raw: true })
+      Restaurant.findByPk(req.params.id, { raw: true })
     ])
-      .then(([restaurant, categories]) => {
+      .then(([restaurant]) => {
         if (!restaurant) throw new Error("Restaurant doesn't exist!")
-        res.render('admin/edit-restaurant', { restaurant, categories })
+        res.render('admin/edit-restaurant', { restaurant })
       })
       .catch(err => next(err))
   },

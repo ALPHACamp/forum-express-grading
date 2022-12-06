@@ -1,8 +1,16 @@
-const adminServices = require('../../services/admin-services')
+const { User, Restaurant, Category } = require('../models/')
+const { imgurFileHandler } = require('../helpers/file-helpers')
+const superuser = require('../superuser.json')
 
-const adminController = {
-  getRestaurants: (req, res, next) => {
-    adminServices.getRestaurants(req, (err, data) => err ? next(err) : res.render('restaurants', { data }))
+const adminServices = {
+  getRestaurants: (req, cb) => {
+    return Restaurant.findAll({
+      raw: true,
+      nest: true,
+      include: [Category]
+    })
+      .then(restaurants => cb(null, { restaurants }))
+      .catch(err => cb(err))
   },
   createRestaurant: (req, res, next) => {
     return Restaurant.findAll({
@@ -35,7 +43,8 @@ const adminController = {
   getRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, { // 去資料庫用 id 找一筆資料
       raw: true, // 找到以後整理格式再回傳
-      nest: true
+      nest: true,
+      include: [Category]
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!") //  如果找不到，回傳錯誤訊息，後面不執行
@@ -117,4 +126,4 @@ const adminController = {
   }
 }
 
-module.exports = adminController
+module.exports = adminServices
