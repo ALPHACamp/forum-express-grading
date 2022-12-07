@@ -12,26 +12,8 @@ const adminController = {
       .catch(err => next(err))
   },
   postRestaurant: (req, res, next) => {
-    const { name, tel, address, openingHours, description, categoryId } = req.body // 從 req.body 拿出表單裡的資料
-    if (!name) throw new Error('Restaurant name is required!') // name 是必填，若發現是空值就會終止程式碼，並在畫面顯示錯誤提示
-    const { file } = req // 把檔案取出來，也可以寫成 const file = req.file
-    return imgurFileHandler(file) // 把取出的檔案傳給 file-helper 處理後
-      .then(filePath => Restaurant.create({ // 產生一個新的 Restaurant 物件實例，並存入資料庫
-        name,
-        tel,
-        address,
-        openingHours,
-        description,
-        image: filePath || null,
-        categoryId
-      }))
-      .then(() => {
-        req.flash('success_messages', 'restaurant was successfully created') // 在畫面顯示成功提示
-        res.redirect('/admin/restaurants') // 新增完成後導回後台首頁
-      })
-      .catch(err => next(err))
+    adminServices.postRestaurant(req, (err, data) => err ? next(err) : res.json({ status: 'success', data }))
   },
-
   getRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, { // 去資料庫用 id 找一筆資料
       raw: true, // 找到以後整理格式再回傳

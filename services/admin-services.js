@@ -19,7 +19,7 @@ const adminServices = {
       .then(categories => res.render('admin/create-restaurant', { categories }))
       .catch(err => next(err))
   },
-  postRestaurant: (req, res, next) => {
+  postRestaurant: (req, cb) => {
     const { name, tel, address, openingHours, description, categoryId } = req.body // 從 req.body 拿出表單裡的資料
     if (!name) throw new Error('Restaurant name is required!') // name 是必填，若發現是空值就會終止程式碼，並在畫面顯示錯誤提示
     const { file } = req // 把檔案取出來，也可以寫成 const file = req.file
@@ -33,11 +33,8 @@ const adminServices = {
         image: filePath || null,
         categoryId
       }))
-      .then(() => {
-        req.flash('success_messages', 'restaurant was successfully created') // 在畫面顯示成功提示
-        res.redirect('/admin/restaurants') // 新增完成後導回後台首頁
-      })
-      .catch(err => next(err))
+      .then(newRestaurant => cb(null, { restaurant: newRestaurant }))
+      .catch(err => cb(err))
   },
 
   getRestaurant: (req, res, next) => {
