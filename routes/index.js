@@ -8,7 +8,6 @@ const upload = require('../middleware/multer')
 const admin = require('./modules/admin')
 const { generalErrorHandler } = require('../middleware/error-handler')
 const { authenticated, authenticatedAdmin } = require('../middleware/auth')
-const { route } = require('../app')
 
 // routes for administrator
 router.use('/admin', authenticatedAdmin, admin)
@@ -35,8 +34,8 @@ router.put('/users/:id', authenticated, upload.single('avatar'), userController.
 router.post('/favorite/:restaurantId', authenticated, userController.addFavorite)
 router.delete('/favorite/:restaurantId', authenticated, userController.removeFavorite)
 // like
-// router.post('/like/:restaurantId', authenticated, userController.like)
-// router.delete('/like/:restaurantId', authenticated, userController.unlike)
+router.post('/like/:restaurantId', authenticated, userController.addLike)
+router.delete('/like/:restaurantId', authenticated, userController.removeLike)
 // others
 router.get('/', (req, res) => res.redirect('/restaurants'))
 router.use('/', generalErrorHandler)
