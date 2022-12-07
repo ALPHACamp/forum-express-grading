@@ -1,0 +1,31 @@
+<div class="card style="outline:rgb(207, 203, 203) solid"">
+  <div class="row p-3"  >
+    <div class="col-md-4 text-center">
+      <img class="img-responsive center-block mb-5" src={{user.avatar}} style="width: 250px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+    </div>
+    <div class="col-md-8 p-5">
+      <div class="well">
+        <ul class="list-unstyled">
+          <li><h2><strong>{{user.name}}</strong></h2></li>
+          <li><p>{{user.email}}</p></li>
+          <li><p><strong>{{ comments.count }} </strong>已評論餐廳</p></li>
+        </ul>
+        <a href="/users/{{user.id}}/edit" class="btn btn-outline-secondary">Edit</a>
+      </div>
+    </div>
+  </div>
+</div>
+<br>
+<div class="card style="outline:rgb(207, 203, 203) solid">
+  <div class="card-header">
+    <strong>{{ comments.count }} </strong>已評論餐廳
+  </div>
+  <div class="card-body">
+    {{#each comments.rows}}
+    <a href="/restaurants/{{this.dataValues.restaurantId}}" style="text-decoration:none">
+      <img src={{this.dataValues.Restaurant.dataValues.image}} alt="image" class="img-fluid rounded"
+    style="width:10%;">
+    </a>
+    {{/each}}
+  </div>
+</div>
