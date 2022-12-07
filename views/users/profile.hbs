@@ -1,0 +1,41 @@
+<div class="row mb-5">
+  <div class="col-md-4">
+    {{#if user.image}}
+    <img class="img-responsive center-block mb-5" src="{{user.image}}"
+      style="width: 250px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+    {{/if}}
+  </div>
+  <div class="col-md-4">
+    <div class="well">
+      <ul class="list-unstyled">
+        <li><strong>{{users.name}}</strong></li>
+        <li><strong>{{users.email}}</strong></li>
+        <li><strong>{{comments.count}}</strong>已評論餐廳</li>
+      </ul>
+    </div>
+  </div>
+  <a href="/users/{{user.id}}/edit" class="btn btn-primary">edit</a>
+</div>
+<table class="table table-striped">
+  <tbody>
+    <tr>
+      <td>
+        <ul class="list-unstyled">
+          <li><strong>{{comments.count}}</strong>已評論餐廳</li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        {{#if comments.rows.length}}
+        {{#each comments.rows}}
+        <a href="/restaurants/{{this.Restaurant.id}}" class="text-decoration-none">
+          <img src={{this.Restaurant.image}} width="100" height="100" class="avatar"
+            style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;" />
+        </a>
+        {{/each}}
+        {{/if}}
+      </td>
+    </tr>
+  </tbody>
+</table>
