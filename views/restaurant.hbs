@@ -25,6 +25,7 @@
 {{#each restaurant.Comments}}
 {{#if ../user.isAdmin}}
 <form action="/comments/{{this.id}}?_method=DELETE" method="POST" class="float-end">
+  <input type="hidden" name="restaurantId" value="{{this.restaurantId}}" />
   <button type="submit" class="btn btn-danger">Delete</button>
 </form>
 {{/if}}

@@ -11,6 +11,7 @@ const commentController = {
       .then(([user, restaurant]) => {
         if (!user) throw new Error("User didn't exist!")
         if (!restaurant) throw new Error("Restaurant didn't exist!")
+        restaurant.increment('commentCounts', { by: 1 })
         return Comment.create({
           text,
           restaurantId,
@@ -23,12 +24,15 @@ const commentController = {
       .catch(err => next(err))
   },
   deleteComment: (req, res, next) => {
-    return Comment.findByPk(req.params.id)
-      .then(comment => {
+    const { restaurantId } = req.body
+    return Promise.all([Comment.findByPk(req.params.id), Restaurant.findByPk(restaurantId)])
+      .then(([comment, restaurant]) => {
         if (!comment) throw new Error("Comment didn't exist!")
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        restaurant.decrement('commentCounts', { by: 1 })
         return comment.destroy()
       })
-      .then(deletedComment => res.redirect(`/restaurants/${deletedComment.restaurantId}`))
+      .then(() => res.redirect(`/restaurants/${restaurantId}`))
       .catch(err => next(err))
   }
 }
