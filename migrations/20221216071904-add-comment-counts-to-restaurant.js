@@ -8,6 +8,6 @@ module.exports = {
     })
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.removeColumn('Restaurants', 'category_id')
+    await queryInterface.removeColumn('Restaurants', 'comment_counts')
   }
 }

@@ -1,0 +1,11 @@
+<div class="row card d-flex flex-row" style="background-color: white;">
+  <div class="col-md-4 text-center">
+    <img class="img-responsive center-block mb-3 mt-3" src="{{#if user.image}}{{user.image}} {{else}}https://i.imgur.com/cjDJeKe.jpg{{/if}}"
+      style="width: 300px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+  </div>
+  <div class="col-md-8 mt-3">
+        <h3>{{user.name}}</h1>
+        <p>{{user.email}}</p>
+    <a href="/users/{{user.id}}/edit" class="btn btn-primary">Edit</a>
+  </div>
+</div>
