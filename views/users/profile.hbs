@@ -1,4 +1,4 @@
-<div class="row card d-flex flex-row" style="background-color: white;">
+<div class="row card d-flex flex-row" style="position:relative">
   <div class="col-md-4 text-center">
     <img class="img-responsive center-block mb-3 mt-3" src="{{#if user.image}}{{user.image}} {{else}}https://i.imgur.com/cjDJeKe.jpg{{/if}}"
       style="width: 300px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
@@ -6,6 +6,17 @@
   <div class="col-md-8 mt-3">
         <h3>{{user.name}}</h1>
         <p>{{user.email}}</p>
-    <a href="/users/{{user.id}}/edit" class="btn btn-primary">Edit</a>
+        <p>{{commentCount}} 已評論的餐廳</p>
+    <a href="/users/{{user.id}}/edit" class="btn btn-primary" style="position:absolute;bottom:10%">Edit</a>
+  </div>
+</div>
+<div class="row card d-flex flex-row mt-3" style="">
+  <div class="card-header">
+    {{commentCount}} 已評論的餐廳
+  </div>
+  <div class="card-body">
+    {{#each comments}}
+    <a href="/restaurants/{{this.Restaurant.id}}"><img src="{{#if this.Restaurant.image}}{{this.Restaurant.image}} {{else}} https://cdn.pixabay.com/photo/2021/05/25/02/03/restaurant-6281067_1280.png  {{/if}}" alt=""style="width: 100px;height: 75px; margin:5px"></a>
+    {{/each}}
   </div>
 </div>

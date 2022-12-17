@@ -1,7 +1,9 @@
 const bcrypt = require('bcryptjs')
 const db = require('../models')
+const Sequelize = require('sequelize')
 const { imgurFileHandler } = require('../helpers/file-helpers')
-const { User } = db
+const { User, Comment, Restaurant } = db
+
 const userController = {
   signUpPage: (req, res) => {
     res.render('signup')
@@ -38,9 +40,21 @@ const userController = {
     req.logout()
     res.redirect('/signin')
   },
-  getUser: (req, res, next) => User.findByPk(req.params.id, { raw: true })
-    .then(user => res.render('users/profile', { user }))
-    .catch(err => next(err)),
+  getUser: (req, res, next) => {
+    return Promise.all([
+      User.findByPk(req.params.id, { raw: true }),
+      Comment.findAndCountAll({
+        where: { userId: req.params.id },
+        include: [Restaurant],
+        attributes: [[Sequelize.fn('DISTINCT', Sequelize.col('restaurant_id')), 'restaurant_id']],
+        distinct: true,
+        col: 'restaurant_id',
+        raw: true,
+        nest: true
+      })])
+      .then(([user, comments]) => res.render('users/profile', { user, comments: comments.rows, commentCount: comments.count }))
+      .catch(err => next(err))
+  },
   editUser: (req, res, next) => User.findByPk(req.params.id, { raw: true })
     .then(user => res.render('users/edit', { user }))
     .catch(err => next(err)),
@@ -60,8 +74,8 @@ const userController = {
         })
       })
       .then(user => {
-        req.flash('success_messages', 'user successfully updated')
-        res.render('users/profile', { user: user.toJSON() })
+        req.flash('success_messages', '使用者資料編輯成功')
+        res.redirect(`/users/${req.params.id}`)
       })
       .catch(err => next(err))
   }
