@@ -47,6 +47,9 @@ const userController = {
         where: { userId: req.params.id },
         include: [Restaurant],
         attributes: [[Sequelize.fn('DISTINCT', Sequelize.col('restaurant_id')), 'restaurant_id']],
+        order: [
+          [{ model: Restaurant }, 'id', 'ASC']
+        ],
         distinct: true,
         col: 'restaurant_id',
         raw: true,
