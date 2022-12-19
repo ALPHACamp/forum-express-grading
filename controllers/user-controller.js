@@ -63,14 +63,23 @@ const userController = {
           Followers: Followers.length,
           Followings: Followings.length
         }
-        res.render('users/profile', { user, CommenttedRestaurants: comments.rows, FavoritedRestaurants, Followers, Followings, Counts })
+        const isFollowed = req.user.Followings.some(f => f.id === Number(req.params.id))
+        res.render('users/profile', { user: req.user, userBySearch: user, CommenttedRestaurants: comments.rows, FavoritedRestaurants, Followers, Followings, Counts, isFollowed })
       })
       .catch(err => next(err))
   },
-  editUser: (req, res, next) => User.findByPk(req.params.id, { raw: true })
-    .then(user => res.render('users/edit', { user }))
-    .catch(err => next(err)),
+  editUser: (req, res, next) => {
+    // if (Number(req.params.id) !== req.user.id) throw new Error('You are not allowed to change others profile.')
+    if (Number(req.params.id) !== req.user.id) {
+      req.flash('error_messages', 'You are not allowed to change others profile.')
+      return res.redirect(`/users/${req.params.id}`)
+    }
+    return User.findByPk(req.params.id, { raw: true })
+      .then(user => res.render('users/edit', { user }))
+      .catch(err => next(err))
+  },
   putUser: (req, res, next) => {
+    if (req.params.id !== req.user.id) throw new Error('You are not allowed to change others profile.')
     const { name } = req.body
     if (!name) throw new Error('User name is required!')
     const { file } = req

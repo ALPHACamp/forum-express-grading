@@ -1,17 +1,28 @@
 <div class="row card d-flex flex-row">
   <div class="col-md-4 text-center">
     <img class="img-responsive center-block mb-3 mt-3"
-      src="{{#if user.image}}{{user.image}} {{else}}https://i.imgur.com/cjDJeKe.jpg{{/if}}"
+      src="{{#if userBySearch.image}}{{userBySearch.image}} {{else}}https://i.imgur.com/cjDJeKe.jpg{{/if}}"
       style="width: 250px; height:250px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
   </div>
   <div class="col-md-8 mt-3">
-    <h3>{{user.name}}</h1>
-      <p>{{user.email}}</p>
+    <h3>{{userBySearch.name}}</h1>
+      <p>{{userBySearch.email}}</p>
       <p style="margin: 0 auto; font-weight: bold">{{Counts.CommenttedRestaurants}} 已評論的餐廳</p>
       <p style="margin: 0 auto; font-weight: bold">{{Counts.FavoritedRestaurants}} 收藏的餐廳</p>
       <p style="margin: 0 auto; font-weight: bold">{{Counts.Followings}} 正在追蹤的對象(Following)</p>
       <p style="margin: 0 auto; font-weight: bold">{{Counts.Followers}} 追隨者(Followers)</p>
+      {{#ifCond user.id userBySearch.id}}
       <a href="/users/{{user.id}}/edit" class="btn btn-primary mt-3">Edit</a>
+      {{/ifCond}}
+      {{#if isFollowed }}
+      <form action="/following/{{userBySearch.id}}?_method=DELETE" method="POST" style="display: contents;">
+        <button type="submit" class="btn btn-danger mt-3">取消追蹤</button>
+      </form>
+      {{else}}
+      <form action="/following/{{userBySearch.id}}" method="POST" style="display: contents;">
+        <button type="submit" class="btn btn-primary mt-3">追蹤</button>
+      </form>
+      {{/if}}
   </div>
 </div>
 <div class="d-flex justify-content-between">
@@ -23,8 +34,8 @@
       <div class="card-body">
         {{#each Followings}}
         <a href="/users/{{this.id}}"><img
-            src="{{#if this.image}}{{this.image}} {{else}} https://i.imgur.com/cjDJeKe.jpg  {{/if}}"
-            alt="" style="width: 75px;height: 75px; margin:5px"></a>
+            src="{{#if this.image}}{{this.image}} {{else}} https://i.imgur.com/cjDJeKe.jpg  {{/if}}" alt=""
+            style="width: 75px;height: 75px; margin:5px"></a>
         {{/each}}
       </div>
     </div>
@@ -35,8 +46,8 @@
       <div class="card-body">
         {{#each Followers}}
         <a href="/users/{{this.id}}"><img
-            src="{{#if this.image}}{{this.image}} {{else}} https://i.imgur.com/cjDJeKe.jpg{{/if}}"
-            alt="" style="width: 75px;height: 75px; margin:5px"></a>
+            src="{{#if this.image}}{{this.image}} {{else}} https://i.imgur.com/cjDJeKe.jpg{{/if}}" alt=""
+            style="width: 75px;height: 75px; margin:5px"></a>
         {{/each}}
       </div>
     </div>
