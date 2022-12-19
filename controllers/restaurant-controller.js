@@ -70,7 +70,7 @@ const restaurantController = {
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
-        const FavoritedUsersCount = restaurant.toJSON().FavoritedUsers.length
+        const FavoritedUsersCount = restaurant.toJSON().FavoritedUsers ? restaurant.toJSON().FavoritedUsers.length : null
         res.render('dashboard', {
           restaurant: restaurant.toJSON(),
           FavoritedUsersCount
