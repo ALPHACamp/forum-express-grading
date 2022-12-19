@@ -1,22 +1,70 @@
-<div class="row card d-flex flex-row" style="position:relative">
+<div class="row card d-flex flex-row">
   <div class="col-md-4 text-center">
-    <img class="img-responsive center-block mb-3 mt-3" src="{{#if user.image}}{{user.image}} {{else}}https://i.imgur.com/cjDJeKe.jpg{{/if}}"
-      style="width: 300px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+    <img class="img-responsive center-block mb-3 mt-3"
+      src="{{#if user.image}}{{user.image}} {{else}}https://i.imgur.com/cjDJeKe.jpg{{/if}}"
+      style="width: 250px; height:250px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
   </div>
   <div class="col-md-8 mt-3">
-        <h3>{{user.name}}</h1>
-        <p>{{user.email}}</p>
-        <p>{{commentCount}} 已評論的餐廳</p>
-    <a href="/users/{{user.id}}/edit" class="btn btn-primary" style="position:absolute;bottom:10%">Edit</a>
+    <h3>{{user.name}}</h1>
+      <p>{{user.email}}</p>
+      <p style="margin: 0 auto; font-weight: bold">{{Counts.CommenttedRestaurants}} 已評論的餐廳</p>
+      <p style="margin: 0 auto; font-weight: bold">{{Counts.FavoritedRestaurants}} 收藏的餐廳</p>
+      <p style="margin: 0 auto; font-weight: bold">{{Counts.Followings}} 正在追蹤的對象(Following)</p>
+      <p style="margin: 0 auto; font-weight: bold">{{Counts.Followers}} 追隨者(Followers)</p>
+      <a href="/users/{{user.id}}/edit" class="btn btn-primary mt-3">Edit</a>
   </div>
 </div>
-<div class="row card d-flex flex-row mt-3" style="">
-  <div class="card-header">
-    {{commentCount}} 已評論的餐廳
+<div class="d-flex justify-content-between">
+  <div class="col-md-3" style="width: 30%;">
+    <div class="row card d-flex mt-3">
+      <div class="card-header">
+        {{Counts.Followings}} 正在追蹤的對象(Following)
+      </div>
+      <div class="card-body">
+        {{#each Followings}}
+        <a href="/users/{{this.id}}"><img
+            src="{{#if this.image}}{{this.image}} {{else}} https://i.imgur.com/cjDJeKe.jpg  {{/if}}"
+            alt="" style="width: 75px;height: 75px; margin:5px"></a>
+        {{/each}}
+      </div>
+    </div>
+    <div class="row card d-flex mt-3">
+      <div class="card-header">
+        {{Counts.Followers}} 追隨者(Followers)
+      </div>
+      <div class="card-body">
+        {{#each Followers}}
+        <a href="/users/{{this.id}}"><img
+            src="{{#if this.image}}{{this.image}} {{else}} https://i.imgur.com/cjDJeKe.jpg{{/if}}"
+            alt="" style="width: 75px;height: 75px; margin:5px"></a>
+        {{/each}}
+      </div>
+    </div>
   </div>
-  <div class="card-body">
-    {{#each comments}}
-    <a href="/restaurants/{{this.Restaurant.id}}"><img src="{{#if this.Restaurant.image}}{{this.Restaurant.image}} {{else}} https://cdn.pixabay.com/photo/2021/05/25/02/03/restaurant-6281067_1280.png  {{/if}}" alt=""style="width: 100px;height: 75px; margin:5px"></a>
-    {{/each}}
+  <div class="col-md-8">
+    <div class="row card d-flex mt-3">
+      <div class="card-header">
+        {{Counts.CommenttedRestaurants}} 已評論的餐廳
+      </div>
+      <div class="card-body">
+        {{#each CommenttedRestaurants}}
+        <a href="/restaurants/{{this.Restaurant.id}}"><img
+            src="{{#if this.Restaurant.image}}{{this.Restaurant.image}} {{else}} https://cdn.pixabay.com/photo/2021/05/25/02/03/restaurant-6281067_1280.png  {{/if}}"
+            alt="" style="width: 100px;height: 75px; margin:5px"></a>
+        {{/each}}
+      </div>
+    </div>
+    <div class="row card d-flex mt-3">
+      <div class="card-header">
+        {{Counts.FavoritedRestaurants}} 收藏的餐廳
+      </div>
+      <div class="card-body">
+        {{#each FavoritedRestaurants}}
+        <a href="/restaurants/{{this.id}}"><img
+            src="{{#if this.image}}{{this.image}} {{else}} https://cdn.pixabay.com/photo/2021/05/25/02/03/restaurant-6281067_1280.png  {{/if}}"
+            alt="" style="width: 100px;height: 75px; margin:5px"></a>
+        {{/each}}
+      </div>
+    </div>
   </div>
 </div>
