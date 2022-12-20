@@ -1,4 +1,4 @@
-const { Restaurant, User, Category } = require('../models')
+const { Restaurant, Category } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helpers')
 
 const adminServices = {
@@ -19,6 +19,19 @@ const adminServices = {
         restaurants: restaurants.rows,
         pagination: getPagination(limit, page, restaurants.count)
       }))
+      .catch(err => cb(err))
+  },
+  deleteRestaurant: (req, cb) => {
+    Restaurant.findByPk(req.params.id)
+      .then(restaurant => {
+        if (!restaurant) {
+          const err = new Error("Restaurant didn't exist!")
+          err.status = 404
+          throw err
+        }
+        return restaurant.destroy()
+      })
+      .then(deletedRestaurant => cb(null, { restaurant: deletedRestaurant }))
       .catch(err => cb(err))
   }
 }
