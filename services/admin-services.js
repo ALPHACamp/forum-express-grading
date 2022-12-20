@@ -1,5 +1,6 @@
 const { Restaurant, Category } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helpers')
+const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const adminServices = {
   getRestaurants: (req, cb) => {
@@ -19,6 +20,23 @@ const adminServices = {
         restaurants: restaurants.rows,
         pagination: getPagination(limit, page, restaurants.count)
       }))
+      .catch(err => cb(err))
+  },
+  postRestaurant: (req, cb) => {
+    const { name, tel, address, openingHours, description, categoryId } = req.body
+    if (!name) throw new Error('Restaurant name is required!')
+    const { file } = req
+    imgurFileHandler(file)
+      .then(filePath => Restaurant.create({
+        name,
+        tel,
+        address,
+        openingHours,
+        description,
+        image: filePath || null,
+        categoryId
+      }))
+      .then(newRestaurant => cb(null, { restaurant: newRestaurant }))
       .catch(err => cb(err))
   },
   deleteRestaurant: (req, cb) => {
