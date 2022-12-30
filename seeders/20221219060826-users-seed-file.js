@@ -8,21 +8,26 @@ module.exports = {
       is_admin: true,
       name: 'root',
       created_at: new Date(),
-      updated_at: new Date()
-    }, {
+      updated_at: new Date(),
+      image: 'https://i.imgur.com/B4tXSd1.gif'
+    },
+    {
       email: 'user1@example.com',
       password: await bcrypt.hash('12345678', 10),
       is_admin: false,
       name: 'user1',
       created_at: new Date(),
-      updated_at: new Date()
-    }, {
+      updated_at: new Date(),
+      image: 'https://i.imgur.com/cqUuduj.gif'
+    },
+    {
       email: 'user2@example.com',
       password: await bcrypt.hash('12345678', 10),
       is_admin: false,
       name: 'user2',
       created_at: new Date(),
-      updated_at: new Date()
+      updated_at: new Date(),
+      image: 'https://i.imgur.com/fLoAK64.gif'
     }], {})
   },
   down: async (queryInterface, Sequelize) => { // 清空資料表中所有資料
