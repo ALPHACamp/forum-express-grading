@@ -1,0 +1,20 @@
+<div class="container">
+  <div class="card d-flex flex-wrap flex-row p-0">
+    <div>
+      {{#if userProfile.image}}
+      <img src="{{ userProfile.image }}" alt="avatar" class="rounded-circle m-3"
+        style="object-fit:cover;height:300px; width:300px">
+      {{else}}
+      <img src="https://i.imgur.com/8IcjBP4.jpeg" alt="avatar"
+        class="rounded-circle m-3" style="object-fit:cover;height:300px; width:300px">
+      {{/if}}
+    </div>
+    <div class="m-5" style="width:300px">
+      <h5>{{ userProfile.name }}</h5>
+      <p class="mt-3">{{userProfile.email}}</p>
+      {{#ifCond userProfile.id user.id}}
+      <a href="/users/{{user.id}}/edit" class="btn btn-primary">edit</a>
+      {{/ifCond}}
+    </div>
+  </div>
+</div>

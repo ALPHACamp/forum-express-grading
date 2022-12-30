@@ -40,7 +40,8 @@ const restaurantController = {
       include: [
         Category,
         { model: Comment, include: User }
-      ]
+      ],
+      order: [[Comment, 'createdAt', 'DESC']]
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
