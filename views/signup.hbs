@@ -1,0 +1,25 @@
+<div class="mb-4 text-center">
+  <h1 class="h3 font-weight-normal mb-3">Sign Up</h1>
+</div>
+<form class="form-signup" action="/signup" method="POST" style="width: 100%;">
+  <div class="form-row mb-3">
+    <label class="form-label" for="name">Name</label>
+    <input type="text" id="name" name="name" class="form-control" placeholder="Name" value="{{name}}" required autofocus>
+  </div>
+  <div class="form-row mb-3">
+    <label class="form-label" for="email">Email</label>
+    <input type="text" id="email" name="email" class="form-control" placeholder="Email" value="{{email}}" required>
+  </div>
+  <div class="form-row mb-3">
+    <label class="form-label" for="password">Password</label>
+    <input type="password" id="password" name="password" class="form-control" placeholder="Password" value="{{password}}" required>
+  </div>
+  <div class="form-row mb-3">
+    <label class="form-label" for="passwordCheck">Password Check</label>
+    <input type="password" id="passwordCheck" name="passwordCheck" class="form-control" placeholder="Password Check" value="{{passwordCheck}}" required>
+  </div>
+  <button class="btn btn-primary btn-block" type="submit">Submit</button>
+</form>
+<div class="mb-4 text-end">
+  <p>Already have account? <a href="/signin">Sign In</a></p>
+</div>
