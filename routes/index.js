@@ -3,7 +3,11 @@ const router = express.Router()
 
 // Controllers
 const restController = require('../controllers/restaurant-controller')
+// 後台
+const admin = require('./modules/admin')
+router.use('/admin', admin)
 
+// 前台
 router.get('/restaurants', restController.getRestaurants)
 
 // fallback 路由，其他路由條件都不符合時，最終會通過此路由
