@@ -11,8 +11,10 @@ const flash = require('connect-flash')
 const session = require('express-session')
 // 載入
 const passport = require('./config/passport')
+const { getUser } = require('./helpers/auth-helpers')
+const hbsHelpers = require('./helpers/handlebars-helpers') // 自製handlebars helpers
 
-app.engine('hbs', exphbs({ extname: '.hbs' })) // 註冊 Handlebars 樣板引擎，並指定副檔名為 .hbs
+app.engine('hbs', exphbs({ extname: '.hbs', helpers: hbsHelpers })) // 註冊 Handlebars 樣板引擎，並指定副檔名為 .hbs，把 自製 helpers 註冊起來
 app.set('view engine', 'hbs')// 設定使用 Handlebars 做為樣板引擎
 app.use(express.urlencoded({ extended: true }))
 app.use(session({
@@ -27,6 +29,7 @@ app.use((req, res, next) => {
   res.locals.success_msg = req.flash('success_msg') // 設定 success 訊息
   res.locals.warning_msg = req.flash('warning_msg') // 設定 warning 訊息
   res.locals.error_msg = req.flash('error_msg') // 設定 error 訊息
+  res.locals.user = getUser(req)
   next()
 })
 
