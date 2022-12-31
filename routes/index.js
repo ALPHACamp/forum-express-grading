@@ -6,12 +6,12 @@ const passport = require('../config/passport')
 const restController = require('../controllers/restaurant-controller')
 const userController = require('../controllers/user-controller')
 // middleware
-const { authenticated } = require('../middleware/auth')
+const { authenticated, authenticatedAdmin } = require('../middleware/auth')
 // Error handler (middle)
 const { generalErrorHandler } = require('../middleware/error-handler')
 // 後台
 const admin = require('./modules/admin')
-router.use('/admin', admin)
+router.use('/admin', authenticatedAdmin, admin)
 
 // 前台
 router.get('/signup', userController.signUpPage)
