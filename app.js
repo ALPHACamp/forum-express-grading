@@ -9,6 +9,8 @@ const SESSION_SECRET = 'secret'
 const exphbs = require('express-handlebars')
 const flash = require('connect-flash')
 const session = require('express-session')
+// 載入
+const passport = require('./config/passport')
 
 app.engine('hbs', exphbs({ extname: '.hbs' })) // 註冊 Handlebars 樣板引擎，並指定副檔名為 .hbs
 app.set('view engine', 'hbs')// 設定使用 Handlebars 做為樣板引擎
@@ -18,6 +20,8 @@ app.use(session({
   resave: false,
   saveUninitialized: false
 }))
+app.use(passport.initialize()) // 初始化 Passport
+app.use(passport.session()) // 啟動 session 功能
 app.use(flash()) // 掛載套件
 app.use((req, res, next) => {
   res.locals.success_msg = req.flash('success_msg') // 設定 success 訊息

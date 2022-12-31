@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
-
+// 套件
+const passport = require('../config/passport')
 // Controllers
 const restController = require('../controllers/restaurant-controller')
 const userController = require('../controllers/user-controller')
@@ -14,6 +15,13 @@ router.use('/admin', admin)
 router.get('/restaurants', restController.getRestaurants)
 router.get('/signup', userController.signUpPage)
 router.post('/signup', userController.signUp)
+router.get('/login', userController.logInPage)
+router.post('/login', passport.authenticate('local', {
+  failureRedirect: '/login',
+  failureFlash: true
+}), userController.logIn)
+router.get('/logout', userController.logOut)
+
 // 發生 Error
 router.use('/', generalErrorHandler)
 
