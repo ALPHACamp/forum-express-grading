@@ -33,6 +33,35 @@ const adminController = {
       .catch(err => {
         return next(err)
       })
+  },
+  // Update
+  editRestaurantPage: (req, res, next) => {
+    const { id } = req.params
+    Restaurant.findByPk(id, { raw: true })
+      .then(restaurant => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        res.render('admin/edit-restaurant', { restaurant })
+      })
+      .catch(err => {
+        return next(err)
+      })
+  },
+  updateRestaurant: (req, res, next) => {
+    const { id } = req.params
+    const { name, tel, address, openingHours, description } = req.body
+    if (!name.trim()) throw new Error('Restaurant name is required!')
+    Restaurant.findByPk(id) // 不用{ raw: true } 因為等下還要用update()
+      .then(restaurant => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        return restaurant.update({ name, tel, address, openingHours, description })
+      })
+      .then(() => {
+        req.flash('success_msg', 'Restaurant was successfully updated!')
+        res.redirect('/admin/restaurants')
+      })
+      .catch(err => {
+        return next(err)
+      })
   }
 }
 

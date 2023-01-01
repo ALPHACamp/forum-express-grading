@@ -9,6 +9,7 @@ const SESSION_SECRET = 'secret'
 const exphbs = require('express-handlebars')
 const flash = require('connect-flash')
 const session = require('express-session')
+const methodOverride = require('method-override')
 // 載入
 const passport = require('./config/passport')
 const { getUser } = require('./helpers/auth-helpers')
@@ -25,6 +26,7 @@ app.use(session({
 app.use(passport.initialize()) // 初始化 Passport
 app.use(passport.session()) // 啟動 session 功能
 app.use(flash()) // 掛載套件
+app.use(methodOverride('_method')) // 使用 method-override，_method可以自己設定
 app.use((req, res, next) => {
   res.locals.success_msg = req.flash('success_msg') // 設定 success 訊息
   res.locals.warning_msg = req.flash('warning_msg') // 設定 warning 訊息
