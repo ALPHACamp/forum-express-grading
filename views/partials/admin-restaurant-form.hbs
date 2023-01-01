@@ -1,4 +1,9 @@
 <div class="form-row mb-3">
+  <label class="form-label" for="image">Image</label>
+  {{!-- input file 沒有加上 multiple 屬性，代表使用者只允許上傳一張照片 --}}
+  <input class="form-control" type="file" class="form-control-file" id="image" name="image">
+</div>
+<div class="form-row mb-3">
   <label class="form-label" for="name">Name</label>
   <input class="form-control" type="text" name="name" id="name" placeholder="Enter name" value="{{restaurant.name}}" required>
 </div>
@@ -21,4 +26,5 @@
 <a href="/admin/restaurants" style="text-decoration:none" >
   <button type="button" class="btn btn-secondary me-3">Back</button>
 </a>
+{{!-- 寫法二：<a chref="javascript:history.back()">Back</a> --}}
 <button type="submit" class="btn btn-primary">Submit</button>

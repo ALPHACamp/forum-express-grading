@@ -1,4 +1,5 @@
-<form action="/admin/restaurants/{{restaurant.id}}?_method=PUT" method="POST">
+{{!-- enctype="multipart/form-data" 是因爲表單中有包含 <input type="file">（圖片），沒改會沒辦法把圖片一起 POST 進去 --}}
+<form action="/admin/restaurants/{{restaurant.id}}?_method=PUT" method="POST" enctype="multipart/form-data">
   <div class="mb-4 text-center">
     <h1 class="h3 font-weight-normal mb-3">Edit Restaurant</h1>
   </div>

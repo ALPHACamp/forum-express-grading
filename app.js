@@ -1,3 +1,5 @@
+const path = require('path') // Node.js 的原生模組
+
 const express = require('express')
 const routes = require('./routes')
 
@@ -27,6 +29,8 @@ app.use(passport.initialize()) // 初始化 Passport
 app.use(passport.session()) // 啟動 session 功能
 app.use(flash()) // 掛載套件
 app.use(methodOverride('_method')) // 使用 method-override，_method可以自己設定
+app.use('/upload', express.static(path.join(__dirname, 'upload'))) // view 圖片均為：src="/upload/xxxx"，當讀到 /upload時，去找upload這個資料夾：__dirname＝當前檔案所在的資料夾的絕對路徑
+
 app.use((req, res, next) => {
   res.locals.success_msg = req.flash('success_msg') // 設定 success 訊息
   res.locals.warning_msg = req.flash('warning_msg') // 設定 warning 訊息
