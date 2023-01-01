@@ -7,6 +7,7 @@ const adminController = {
       .then(restaurants => res.render('admin/restaurants', { restaurants }))
       .catch(err => next(err))
   },
+  // Create
   createRestaurantPage: (req, res) => {
     res.render('admin/create-restaurant')
   },
@@ -20,8 +21,19 @@ const adminController = {
         res.redirect('/admin/restaurants')
       })
       .catch(err => next(err))
+  },
+  // Read
+  getRestaurantDetail: (req, res, next) => {
+    const { id } = req.params
+    Restaurant.findByPk(id, { raw: true })
+      .then(restaurant => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        res.render('admin/restaurant-detail', { restaurant })
+      })
+      .catch(err => {
+        return next(err)
+      })
   }
-
 }
 
 module.exports = adminController
