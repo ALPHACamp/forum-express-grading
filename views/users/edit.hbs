@@ -1,0 +1,15 @@
+<form action="/users/{{user.id}}?_method=PUT" method="POST" enctype="multipart/form-data">
+  <div class="mb-4 text-center">
+    <h3 class="mb-3">Edit User Profile</h3>
+  </div>
+  <div class="mb-3">
+    <label class="form-label" for="name">Name</label>
+    <input class="form-control" type="text" name="name" id="name" placeholder="name" value="{{user.name}}" required>
+  </div>
+  <div class="mb-3">
+    <label class="form-label" for="image">Image</label>
+    <input class="form-control" type="file" id="image" name="image">
+  </div>
+  <button type="submit" class="btn btn-primary">Submit</button>
+  <a class="btn btn-outline-secondary mx-3" href="javascript:history.back()">Back</a>
+</form>
