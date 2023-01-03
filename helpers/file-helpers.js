@@ -2,6 +2,10 @@
 // fs 是 File system 的縮寫
 const fs = require('fs')
 
+const imgur = require('imgur')
+const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
+imgur.setClientId(IMGUR_CLIENT_ID)
+
 // file 是 multer 處理完的檔案
 // 以下程式：要確認file存在，並且將它從temp那邊複製到專門對外的資料夾upload中，之後前端要拿檔案就會直接去upload
 // localFileHandler：目前是在本地處理圖片，量多可能會有其他做法
@@ -17,6 +21,19 @@ const localFileHandler = file => {
       .catch(err => reject(err))
   })
 }
+
+const imgurFileHandler = file => {
+  return new Promise((resolve, reject) => {
+    if (!file) return resolve(null)
+    return imgur.uploadFile(file.path)
+      .then(img => {
+        resolve(img?.link || null) // 可選串連運算子：會先檢查？前面這個 object 值存不存在，存在才往下取值不存在就直接回傳 undefined，可以避免程式因為取不到值而報錯、終止運行
+      })
+      .catch(err => reject(err))
+  })
+}
+
 module.exports = {
-  localFileHandler
+  localFileHandler,
+  imgurFileHandler
 }

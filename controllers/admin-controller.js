@@ -1,6 +1,6 @@
 // 前台restaurant專用的controller
 const { Restaurant } = require('../models')
-const { localFileHandler } = require('../helpers/file-helpers') // 將 file-helper 載進來，處理圖片
+const { imgurFileHandler } = require('../helpers/file-helpers') // 將 file-helper 載進來，處理圖片
 
 const adminController = {
   getRestaurants: (req, res, next) => {
@@ -17,7 +17,7 @@ const adminController = {
     if (!name.trim()) throw new Error('Restaurant name is required!')
 
     const { file } = req // 拿出圖片
-    localFileHandler(file) // 取得圖片路徑，因為是Promise物件，可接then
+    imgurFileHandler(file) // 取得圖片路徑，因為是Promise物件，可接then
       .then(filePath => Restaurant.create({
         name,
         tel,
@@ -64,7 +64,7 @@ const adminController = {
     // 先後關係：處理圖片＆Restaurant.findByPk(id)無先後關係，But restaurant.update 一定要等前兩者都做完
     Promise.all([
       Restaurant.findByPk(id),
-      localFileHandler(file)
+      imgurFileHandler(file)
     ])
       .then(([restaurant, filePath]) => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")

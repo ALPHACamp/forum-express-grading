@@ -3,9 +3,11 @@ const path = require('path') // Node.js 的原生模組
 const express = require('express')
 const routes = require('./routes')
 
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
 const app = express()
 const port = process.env.PORT || 3000
-const SESSION_SECRET = 'secret'
 
 // 套件
 const exphbs = require('express-handlebars')
@@ -21,7 +23,7 @@ app.engine('hbs', exphbs({ extname: '.hbs', helpers: hbsHelpers })) // 註冊 Ha
 app.set('view engine', 'hbs')// 設定使用 Handlebars 做為樣板引擎
 app.use(express.urlencoded({ extended: true }))
 app.use(session({
-  secret: SESSION_SECRET,
+  secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false
 }))
