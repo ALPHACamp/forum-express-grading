@@ -21,6 +21,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'User',
+    tableName: 'Users', // 避免 Travis 找不到資料表
     underscored: true
   })
   return User

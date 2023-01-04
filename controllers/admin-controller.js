@@ -1,5 +1,5 @@
 // 前台restaurant專用的controller
-const { Restaurant } = require('../models')
+const { Restaurant, User } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers') // 將 file-helper 載進來，處理圖片
 
 const adminController = {
@@ -27,7 +27,7 @@ const adminController = {
         image: filePath || null
       }))
       .then(() => {
-        req.flash('success_msg', 'Restaurant was successfully created')
+        req.flash('success_messages', 'Restaurant was successfully created')
         res.redirect('/admin/restaurants')
       })
       .catch(err => next(err))
@@ -79,7 +79,7 @@ const adminController = {
         })
       })
       .then(() => {
-        req.flash('success_msg', 'Restaurant was successfully updated!')
+        req.flash('success_messages', 'Restaurant was successfully updated!')
         res.redirect('/admin/restaurants')
       })
       .catch(err => {
@@ -92,7 +92,7 @@ const adminController = {
     Restaurant.findByPk(id)
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
-        req.flash('success_msg', `${restaurant.toJSON().name} was successfully deleted!`)
+        req.flash('success_messages', `${restaurant.toJSON().name} was successfully deleted!`)
         return restaurant.destroy()
       })
       .then(() => {
@@ -101,6 +101,29 @@ const adminController = {
       .catch(err => {
         return next(err)
       })
+  },
+
+  // get users
+  getUsers: (req, res, next) => {
+    return User.findAll({ raw: true })
+      .then(users => res.render('admin/users', { users }))
+      .catch(err => next(err))
+  },
+  patchUser: (req, res, next) => {
+    const { id } = req.params
+    return User.findByPk(id)
+      .then(user => {
+        if (user.email === 'root@example.com') {
+          req.flash('error_messages', '禁止變更 root 權限')
+          return res.redirect('back')
+        }
+        user.update({ isAdmin: !user.isAdmin })
+          .then(() => {
+            req.flash('success_messages', '使用者權限變更成功')
+            return res.redirect('/admin/users')
+          })
+      })
+      .catch(err => next(err))
   }
 }
 
