@@ -28,25 +28,25 @@ const userController = {
       .then(hash => User.create({ name, email, password: hash }))
       .then(() => {
         req.flash('success_msg', '註冊成功')
-        res.redirect('/login')
+        res.redirect('/signin')
       })
       .catch(err => next(err, req)) // 接住前面拋出的錯誤，呼叫專門做錯誤處理的 middleware
   },
-  logInPage: (req, res) => {
-    res.render('login')
+  signInPage: (req, res) => {
+    res.render('signin')
   },
-  logIn: (req, res) => {
+  signIn: (req, res) => {
     req.flash('success_msg', '登入成功！')
-    const user = req.user.toJSON()
-    if (user.isAdmin) {
-      return res.redirect('/admin/restaurants')
-    }
+    // const user = req.user.toJSON()
+    // if (user.isAdmin) {
+    //   return res.redirect('/admin/restaurants')
+    // }
     res.redirect('/restaurants')
   },
   logOut: (req, res) => {
     req.flash('success_msg', '登出成功！')
     req.logout()
-    res.redirect('/login')
+    res.redirect('/signin')
   }
 }
 

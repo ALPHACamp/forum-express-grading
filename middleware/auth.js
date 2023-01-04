@@ -4,7 +4,7 @@ const authenticated = (req, res, next) => {
   if (helpers.ensureAuthenticated(req)) {
     return next()
   }
-  res.redirect('/login') // 丟回登入頁
+  res.redirect('/signin') // 丟回登入頁
 }
 
 const authenticatedAdmin = (req, res, next) => {
@@ -13,7 +13,7 @@ const authenticatedAdmin = (req, res, next) => {
     if (helpers.getUser(req).isAdmin) return next() // isAdmin 為 true（是admin）可以繼續
     res.redirect('/') // 不是admin，丟回首頁
   } else {
-    res.redirect('/login')
+    res.redirect('/signin')
   }
 }
 
