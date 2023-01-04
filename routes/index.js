@@ -16,11 +16,11 @@ router.use('/admin', authenticatedAdmin, admin)
 // 前台
 router.get('/signup', userController.signUpPage)
 router.post('/signup', userController.signUp)
-router.get('/login', userController.logInPage)
-router.post('/login', passport.authenticate('local', {
-  failureRedirect: '/login',
+router.get('/signin', userController.signInPage)
+router.post('/signin', passport.authenticate('local', {
+  failureRedirect: '/signin',
   failureFlash: true
-}), userController.logIn)
+}), userController.signIn)
 router.get('/logout', userController.logOut)
 router.get('/restaurants', authenticated, restController.getRestaurants)
 

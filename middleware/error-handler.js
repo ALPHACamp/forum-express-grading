@@ -6,10 +6,10 @@ module.exports = {
     // 判斷傳入的 err 是不是一個 Error 物件
     if (err instanceof Error) {
       // 是，Error 物件裡面會有屬性 name 和 message
-      req.flash('error_msg', `${err.name}: ${err.message}`)
+      req.flash('error_messages', `${err.name}: ${err.message}`)
     } else {
       // 不是，可能傳的是錯誤報告，直接印出字串
-      req.flash('error_msg', `${err}`)
+      req.flash('error_messages', `${err}`)
     }
     res.redirect('back') // 把使用者導回錯誤發生的前一頁
 

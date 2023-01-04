@@ -14,6 +14,8 @@ router.put('/restaurants/:id', upload.single('image'), adminController.updateRes
 router.delete('/restaurants/:id', adminController.deleteRestaurant)
 router.get('/restaurants', adminController.getRestaurants)
 router.post('/restaurants', upload.single('image'), adminController.postRestaurant)
+router.get('/users', adminController.getUsers)
+router.patch('/users/:id', adminController.patchUser)
 
 // fallback 路由，其他路由條件都不符合時，最終會通過此路由
 router.use('', (req, res) => res.redirect('/admin/restaurants'))
