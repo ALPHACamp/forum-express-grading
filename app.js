@@ -35,9 +35,9 @@ app.use(methodOverride('_method')) // 使用 method-override，_method可以自�
 app.use('/upload', express.static(path.join(__dirname, 'upload'))) // view 圖片均為：src="/upload/xxxx"，當讀到 /upload時，去找upload這個資料夾：__dirname＝當前檔案所在的資料夾的絕對路徑
 
 app.use((req, res, next) => {
-  res.locals.success_msg = req.flash('success_msg') // 設定 success 訊息
-  res.locals.warning_msg = req.flash('warning_msg') // 設定 warning 訊息
-  res.locals.error_msg = req.flash('error_msg') // 設定 error 訊息
+  res.locals.success_messages = req.flash('success_messages') // 設定 success 訊息
+  res.locals.warning_messages = req.flash('warning_messages') // 設定 warning 訊息
+  res.locals.error_messages = req.flash('error_messages') // 設定 error 訊息
   res.locals.user = getUser(req)
   next()
 })

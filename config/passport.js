@@ -13,11 +13,11 @@ passport.use(new LocalStrategy(
   (req, email, password, cb) => {
     User.findOne({ where: { email } })
       .then(user => {
-        if (!user) return cb(null, false, req.flash('warning_msg', 'Email is not registered!'))
+        if (!user) return cb(null, false, req.flash('warning_messages', 'Email is not registered!'))
 
         bcrypt.compare(password, user.password)
           .then(isMatch => {
-            if (!isMatch) return cb(null, false, req.flash('error_msg', 'Password is not correct'))
+            if (!isMatch) return cb(null, false, req.flash('error_messages', 'Password is not correct'))
             return cb(null, user)
           })
       })
