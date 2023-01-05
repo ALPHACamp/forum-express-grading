@@ -14,10 +14,13 @@ const adminController = {
   },
   // Create
   createRestaurantPage: (req, res) => {
-    res.render('admin/create-restaurant')
+    Category.findAll({
+      raw: true
+    })
+      .then(categories => res.render('admin/create-restaurant', { categories }))
   },
   postRestaurant: (req, res, next) => {
-    const { name, tel, address, openingHours, description } = req.body
+    const { name, tel, address, openingHours, description, categoryId } = req.body
     if (!name.trim()) throw new Error('Restaurant name is required!')
 
     const { file } = req // 拿出圖片
@@ -28,6 +31,7 @@ const adminController = {
         address,
         openingHours,
         description,
+        categoryId,
         image: filePath || null
       }))
       .then(() => {
@@ -56,10 +60,11 @@ const adminController = {
   // Update
   editRestaurantPage: (req, res, next) => {
     const { id } = req.params
-    Restaurant.findByPk(id, { raw: true })
-      .then(restaurant => {
+    return Promise.all([Restaurant.findByPk(id, { raw: true }), Category.findAll({ raw: true })])
+      .then(([restaurant, categories]) => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
-        res.render('admin/edit-restaurant', { restaurant })
+        const { categoryId } = restaurant
+        res.render('admin/edit-restaurant', { restaurant, categories, categoryId })
       })
       .catch(err => {
         return next(err)
@@ -68,7 +73,7 @@ const adminController = {
   updateRestaurant: (req, res, next) => {
     const { file } = req
     const { id } = req.params
-    const { name, tel, address, openingHours, description } = req.body
+    const { name, tel, address, openingHours, description, categoryId } = req.body
     if (!name.trim()) throw new Error('Restaurant name is required!')
     // 先後關係：處理圖片＆Restaurant.findByPk(id)無先後關係，But restaurant.update 一定要等前兩者都做完
     Promise.all([
@@ -84,6 +89,7 @@ const adminController = {
           address,
           openingHours,
           description,
+          categoryId,
           image: filePath || restaurant.image
         })
       })
