@@ -1,10 +1,14 @@
 // 前台restaurant專用的controller
-const { Restaurant, User } = require('../models')
+const { Restaurant, User, Category } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers') // 將 file-helper 載進來，處理圖片
 
 const adminController = {
   getRestaurants: (req, res, next) => {
-    Restaurant.findAll({ raw: true })
+    Restaurant.findAll({
+      raw: true,
+      nest: true, //  將包在restaurant 回傳的 Category 物件，整理成比較容易取用的結構
+      include: [Category] // 把關聯資料拉進來，關聯資料才會被拿到 findAll 的回傳值裡(restaurants裡)
+    })
       .then(restaurants => res.render('admin/restaurants', { restaurants }))
       .catch(err => next(err))
   },
@@ -35,10 +39,15 @@ const adminController = {
   // Read
   getRestaurantDetail: (req, res, next) => {
     const { id } = req.params
-    Restaurant.findByPk(id, { raw: true })
+    Restaurant.findByPk(id, {
+      // 可以用.toJSON()也可以用以下兩行
+      // raw: true,
+      // nest: true,
+      include: [Category]
+    })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
-        res.render('admin/restaurant-detail', { restaurant })
+        res.render('admin/restaurant-detail', { restaurant: restaurant.toJSON() })
       })
       .catch(err => {
         return next(err)
