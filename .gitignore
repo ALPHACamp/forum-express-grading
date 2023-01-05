@@ -1,6 +1,7 @@
 node_modules/ 
 temp/
 upload/
+/config/config.json
 
 .DS_Store
 .env
