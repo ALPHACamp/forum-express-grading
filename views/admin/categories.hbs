@@ -1,0 +1,42 @@
+{{> admin-tabs route='categories'}}
+<form class="row g-3 my-3" action="/admin/categories" method="POST">
+  <div class="col-4">
+    <input type="text" class="form-control" id="create" placeholder="Enter new category's name">
+  </div>
+  <div class="col">
+    <button type="submit" class="btn btn-primary mb-3">Create</button>
+  </div>
+</form>
+
+<table class="table align-middle mt-3">
+  <thead class="table-dark">
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Name</th>
+      <th scope="col">#</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each categories}}
+      <tr>
+        <th scope="row">{{this.id}}</th>
+        <td>{{this.name}}</td>
+        <td>
+          <button type="button" class="btn btn-link">
+            <a class="btn btn-link link-primary" href="/admin/categories/{{this.id}}">
+              Show Restaurants
+            </a>
+          </button>
+          <button type="button" class="btn btn-link">
+            <a class="btn btn-link link-primary" href="/admin/categories/{{this.id}}/edit">
+              Edit Name
+            </a>
+          </button>
+          <form action="/admin/categories/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
+            <button type="submit" class="btn btn-link link-danger" onclick="return confirm(`確定要刪除分類「{{ this.name }}」嗎？`)">Delete</button>
+          </form>
+        </td>
+      </tr>
+    {{/each}}
+  </tbody>
+</table>
