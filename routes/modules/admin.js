@@ -21,6 +21,7 @@ router.get('/users', adminController.getUsers)
 router.patch('/users/:id', adminController.patchUser)
 // 後台分類CRUD
 router.get('/categories', categoryController.getCategories)
+router.post('/categories', categoryController.postCategory)
 
 // fallback 路由，其他路由條件都不符合時，最終會通過此路由
 router.use('', (req, res) => res.redirect('/admin/restaurants'))

@@ -1,7 +1,7 @@
 {{> admin-tabs route='categories'}}
 <form class="row g-3 my-3" action="/admin/categories" method="POST">
   <div class="col-4">
-    <input type="text" class="form-control" id="create" placeholder="Enter new category's name">
+    <input type="text" class="form-control" id="name" name="name" placeholder="Enter new category's name">
   </div>
   <div class="col">
     <button type="submit" class="btn btn-primary mb-3">Create</button>
