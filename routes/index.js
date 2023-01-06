@@ -14,6 +14,7 @@ const admin = require('./modules/admin')
 router.use('/admin', authenticatedAdmin, admin)
 
 // 前台
+// 登入登出註冊
 router.get('/signup', userController.signUpPage)
 router.post('/signup', userController.signUp)
 router.get('/signin', userController.signInPage)
@@ -22,6 +23,7 @@ router.post('/signin', passport.authenticate('local', {
   failureFlash: true
 }), userController.signIn)
 router.get('/logout', userController.logOut)
+// 瀏覽頁面
 router.get('/restaurants', authenticated, restController.getRestaurants)
 
 // fallback 路由，其他路由條件都不符合時，最終會通過此路由
