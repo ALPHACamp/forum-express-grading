@@ -1,12 +1,26 @@
 {{> admin-tabs route='categories'}}
-<form class="row g-3 my-3" action="/admin/categories" method="POST">
-  <div class="col-4">
-    <input type="text" class="form-control" id="name" name="name" placeholder="Enter new category's name">
-  </div>
-  <div class="col">
-    <button type="submit" class="btn btn-primary mb-3">Create</button>
-  </div>
-</form>
+{{#if category}}
+  <form class="row g-3 my-3" action="/admin/categories/{{category.id}}?_method=PUT" method="POST">
+    <div class="col-4">
+      <input type="text" class="form-control" id="name" name="name" placeholder="Edit category's name" value="{{category.name}}">
+    </div>
+    <div class="col-auto d-grid gap-2">
+      <button type="submit" class="btn btn-success mb-3">Update</button>
+    </div>
+    <div class="col-auto">
+      <a class="btn btn-secondary" style="text-decoration: none;" href="/admin/categories">Cancel</a>
+    </div>
+  </form>
+{{else}}
+  <form class="row g-3 my-3" action="/admin/categories" method="POST">
+    <div class="col-4">
+      <input type="text" class="form-control" id="name" name="name" placeholder="Enter new category's name">
+    </div>
+    <div class="col-auto">
+      <button type="submit" class="btn btn-primary mb-3">Create</button>
+    </div>
+  </form>
+{{/if}}
 
 <table class="table align-middle mt-3">
   <thead class="table-dark">
@@ -24,11 +38,6 @@
         <td>
           <button type="button" class="btn btn-link">
             <a class="btn btn-link link-primary" href="/admin/categories/{{this.id}}">
-              Show Restaurants
-            </a>
-          </button>
-          <button type="button" class="btn btn-link">
-            <a class="btn btn-link link-primary" href="/admin/categories/{{this.id}}/edit">
               Edit Name
             </a>
           </button>
