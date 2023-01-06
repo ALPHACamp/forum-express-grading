@@ -46,7 +46,22 @@ const categoryController = {
       })
       .then(category => category.update({ name }))
       .then(() => {
-        req.flash('success_messages', 'Category was successfully created')
+        req.flash('success_messages', 'Category was successfully updated')
+        res.redirect('/admin/categories')
+      })
+      .catch(err => next(err))
+  },
+  deleteCategory: (req, res, next) => {
+    const { id } = req.params
+
+    Category.findByPk(id)
+      .then(category => {
+        if (!category) throw new Error("Category isn't existed!")
+        // 進入刪除流程(使用預設的 SET NULL)
+        return category.destroy()
+      })
+      .then(() => {
+        req.flash('success_messages', 'Category was successfully deleted')
         res.redirect('/admin/categories')
       })
       .catch(err => next(err))
