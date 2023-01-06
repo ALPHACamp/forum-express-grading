@@ -18,10 +18,21 @@ const restaurantController = {
         // 縮減字數到50 --方法2（用Bootstrap text-truncate class）
         res.render('restaurants', { restaurants })
       })
-      // .then(restaurants => res.render('restaurants', { restaurants }))
+      .catch(err => next(err))
   },
-  getRestaurantDetail: (req, res) => {
-    return res.render('restaurant')
+  getRestaurantDetail: (req, res, next) => {
+    const { id } = req.params
+    Restaurant.findByPk(id, {
+      raw: true,
+      nest: true,
+      include: [Category]
+    })
+      .then(restaurant => {
+        if (!restaurant) throw new Error('This restaurant is not existed!')
+        console.log(restaurant)
+        res.render('restaurant-detail', { restaurant })
+      })
+      .catch(err => next(err))
   }
 }
 

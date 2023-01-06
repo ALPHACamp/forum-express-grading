@@ -24,6 +24,7 @@ router.post('/signin', passport.authenticate('local', {
 }), userController.signIn)
 router.get('/logout', userController.logOut)
 // 瀏覽頁面
+router.get('/restaurants/:id', authenticated, restController.getRestaurantDetail)
 router.get('/restaurants', authenticated, restController.getRestaurants)
 
 // fallback 路由，其他路由條件都不符合時，最終會通過此路由
