@@ -89,7 +89,7 @@ const restaurantController = {
       Comment.findAll({
         limit: 10,
         order: [['createdAt', 'DESC']],
-        include: [User, Restaurant],
+        include: [User, Restaurant, { model: Restaurant, include: Category }],
         raw: true,
         nest: true
       })
@@ -99,6 +99,25 @@ const restaurantController = {
           restaurants,
           comments
         })
+      })
+      .catch(err => next(err))
+  },
+  getTopRestaurants: (req, res, next) => {
+    return Restaurant.findAll({
+      limit: 10,
+      include: [{ model: User, as: 'FavoritedUsers' }]
+    })
+      .then(restaurants => {
+        const data = restaurants
+          .map(r => ({
+            ...r.toJSON(),
+            description: r.description.substring(0, 50),
+            favoritedCount: r.FavoritedUsers.length,
+            isFavorited: req.user && req.user.FavoritedRestaurants.some(f => f.id === r.id)
+          }))
+          .sort((a, b) => b.favoritedCount - a.favoritedCount)
+
+        res.render('top-restaurants', { restaurants: data })
       })
       .catch(err => next(err))
   }
