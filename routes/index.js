@@ -24,6 +24,7 @@ router.post('/signin', passport.authenticate('local', {
 }), userController.signIn)
 router.get('/logout', userController.logOut)
 // 瀏覽頁面
+router.get('/restaurants/:id/dashboard', authenticated, restController.getDashboard)
 router.get('/restaurants/:id', authenticated, restController.getRestaurantDetail)
 router.get('/restaurants', authenticated, restController.getRestaurants)
 

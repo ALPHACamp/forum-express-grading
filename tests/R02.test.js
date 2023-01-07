@@ -31,9 +31,9 @@ describe('# R02: 餐廳資訊整理：Dashboard', function () {
       }])
 
       // 連向模擬的 tables
-      this.restController = createControllerProxy('../controllers/restaurant-controller', { 
-        User: this.UserMock, 
-        Category: this.CategoryMock, 
+      this.restController = createControllerProxy('../controllers/restaurant-controller', {
+        User: this.UserMock,
+        Category: this.CategoryMock,
         Restaurant: this.RestaurantMock,
         Comment: this.CommentMock,
       })
@@ -44,7 +44,7 @@ describe('# R02: 餐廳資訊整理：Dashboard', function () {
       const req = mockRequest({ params: { id: 1 } }) // 帶入 params.id = 1，對 GET /restaurants/1/dashboard 發出請求
       const res = mockResponse()
       const next = mockNext
-      
+
       // 測試 restController.getDashBoard 函式
       await this.restController.getDashboard(req, res, next)
 
