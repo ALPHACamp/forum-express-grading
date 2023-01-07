@@ -3,12 +3,22 @@ const { Restaurant, Category } = require('../models')
 
 const restaurantController = {
   getRestaurants: (req, res, next) => {
-    return Restaurant.findAll({
-      raw: true,
-      nest: true,
-      include: [Category]
-    })
-      .then(restaurants => {
+    // 有點分類 or 全部
+    const categoryId = Number(req.query.categoryId) || '' // 也可以寫成 = +req.query.categoryId || ''
+    return Promise.all([
+      Restaurant.findAll({
+        // 期望：where { categoryId } or {}
+        where: {
+          ...(categoryId ? { categoryId } : {}) // 檢查 categoryId 存在與否回傳{ categoryId } or {}，最後再展開
+        },
+        raw: true,
+        nest: true,
+        include: [Category]
+      }),
+      Category.findAll({
+        raw: true
+      })])
+      .then(([restaurants, categories]) => {
         // 縮減字數到50 --方法1
         // const data = restaurants.map(r => ({
         //   ...r, // 展開運算子：把 r 的 key-value pair 展開，直接放進來
@@ -16,7 +26,7 @@ const restaurantController = {
         // }))
         // res.render('restaurants', { restaurants: data })
         // 縮減字數到50 --方法2（用Bootstrap text-truncate class）
-        res.render('restaurants', { restaurants })
+        res.render('restaurants', { restaurants, categories, categoryId })
       })
       .catch(err => next(err))
   },
