@@ -8,6 +8,7 @@ const userController = require('../controllers/user-controller')
 const commentController = require('../controllers/comment-controller')
 // middleware
 const { authenticated, authenticatedAdmin } = require('../middleware/auth')
+const upload = require('../middleware/multer')
 // Error handler (middle)
 const { generalErrorHandler } = require('../middleware/error-handler')
 // 後台
@@ -24,6 +25,10 @@ router.post('/signin', passport.authenticate('local', {
   failureFlash: true
 }), userController.signIn)
 router.get('/logout', userController.logOut)
+// 使用者 Profile
+router.get('/users/:id/edit', authenticated, userController.editUser) // 瀏覽編輯頁
+router.get('/users/:id', authenticated, userController.getUser) // 單純瀏覽Profile頁面
+router.put('/users/:id', authenticated, upload.single('image'), userController.putUser) // 更新資料
 // 瀏覽頁面
 router.get('/restaurants/:id/dashboard', authenticated, restController.getDashboard)
 router.get('/restaurants/:id', authenticated, restController.getRestaurantDetail)

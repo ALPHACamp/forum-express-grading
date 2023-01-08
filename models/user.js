@@ -4,11 +4,6 @@ const {
 } = require('sequelize')
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
     static associate (models) {
       User.hasMany(models.Comment, { foreignKey: 'userId' })
     }
@@ -17,7 +12,8 @@ module.exports = (sequelize, DataTypes) => {
     name: DataTypes.STRING,
     email: DataTypes.STRING,
     password: DataTypes.STRING,
-    isAdmin: DataTypes.BOOLEAN // 寫小駝峰式 isAdmin 就可以了，因為這邊是純 JavaScript 實作
+    isAdmin: DataTypes.BOOLEAN, // 寫小駝峰式 isAdmin 就可以了，因為這邊是純 JavaScript 實作
+    image: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'User',
