@@ -1,12 +1,16 @@
-const day = require('dayjs')
+const dayjs = require('dayjs')
+const relativeTime = require('dayjs/plugin/relativeTime')
+dayjs.extend(relativeTime)
+
 module.exports = {
-  currentYear: () => day().year(),
+  currentYear: () => dayjs().year(),
   role: isAdmin => {
     if (isAdmin) {
       return 'admin'
     }
     return 'user'
   },
+  relativeTimeFromNow: date => dayjs(date).fromNow(),
   setOption: isAdmin => {
     if (!isAdmin) {
       return 'admin'

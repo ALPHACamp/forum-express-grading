@@ -1,5 +1,5 @@
 // 前台restaurant專用的controller
-const { Restaurant, Category } = require('../models')
+const { Restaurant, Category, Comment, User } = require('../models')
 // 引用helper
 const { getOffset, getPagination } = require('../helpers/page-helper')
 
@@ -48,13 +48,21 @@ const restaurantController = {
   getRestaurantDetail: (req, res, next) => {
     const { id } = req.params
     return Restaurant.findByPk(id, {
-      include: [Category]
+      include: [
+        Category,
+        { model: Comment, include: User }
+      ]
     })
       .then(restaurant => {
+        console.log('================================')
+        console.log(restaurant.toJSON().Comments[0])
         if (!restaurant) throw new Error('This restaurant is not existed!')
         return restaurant.increment('view_counts', { by: 1 })
       })
-      .then(restaurant => res.render('restaurant-detail', { restaurant: restaurant.toJSON() }))
+      .then(restaurant => res.render('restaurant-detail', {
+        restaurant: restaurant.toJSON(),
+        comment: restaurant.Comments
+      }))
       .catch(err => next(err))
   },
   getDashboard: (req, res, next) => {

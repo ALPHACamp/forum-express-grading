@@ -25,7 +25,23 @@
 </div>
 
 {{!-- Comment --}}
-<form action="/comments" method="POST" class="mt-3">
+<h4 class="mb-3">所有評論：</h4>
+{{#each restaurant.Comments}}
+  <blockquote class="blockquote mb-3">
+    <h5><a href="/users/{{this.userId}}">{{this.User.name}}</a></h5>
+    <div class="row">
+      <div class="col me-auto">
+        <p class="m-0 text-break">{{this.text}}</p>
+      </div>
+      <div class="col-auto d-flex align-items-end">
+        <p class="m-0 text-secondary">{{relativeTimeFromNow this.createdAt}}</p>
+      </div>
+    </div>
+  </blockquote>
+  <hr/>
+{{/each}}
+
+<form action="/comments" method="POST" class="mt-4">
   <div class="form-row mb-3">
     <label class="form-label" for="text"><h5>留下評論：</h5></label>
     <textarea class="form-control" id="text" name="text" rows="3"></textarea>
