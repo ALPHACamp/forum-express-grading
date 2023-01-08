@@ -5,6 +5,7 @@ const passport = require('../config/passport')
 // Controllers
 const restController = require('../controllers/restaurant-controller')
 const userController = require('../controllers/user-controller')
+const commentController = require('../controllers/comment-controller')
 // middleware
 const { authenticated, authenticatedAdmin } = require('../middleware/auth')
 // Error handler (middle)
@@ -27,6 +28,8 @@ router.get('/logout', userController.logOut)
 router.get('/restaurants/:id/dashboard', authenticated, restController.getDashboard)
 router.get('/restaurants/:id', authenticated, restController.getRestaurantDetail)
 router.get('/restaurants', authenticated, restController.getRestaurants)
+// 評論
+router.post('/comments', authenticated, commentController.postComment)
 
 // fallback 路由，其他路由條件都不符合時，最終會通過此路由
 router.use('/', (req, res) => res.redirect('/restaurants'))

@@ -11,7 +11,6 @@ const restaurantController = {
     const page = Number(req.query.page) || 1
     const limit = Number(req.query.limit) || DEFAULT_LIMIT
     const offset = getOffset(limit, page)
-    // console.log('================================')
     Promise.all([
       Restaurant.findAndCountAll({
         // 期望：where { categoryId } or {}
@@ -29,8 +28,6 @@ const restaurantController = {
       })
     ])
       .then(([restaurants, categories]) => {
-        console.log('================================')
-        console.log(getPagination(limit, page, restaurants.count))
         // 縮減字數到50 --方法1
         // const data = restaurants.map(r => ({
         //   ...r, // 展開運算子：把 r 的 key-value pair 展開，直接放進來
