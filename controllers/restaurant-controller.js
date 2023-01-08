@@ -54,8 +54,6 @@ const restaurantController = {
       ]
     })
       .then(restaurant => {
-        console.log('================================')
-        console.log(restaurant.toJSON().Comments[0])
         if (!restaurant) throw new Error('This restaurant is not existed!')
         return restaurant.increment('view_counts', { by: 1 })
       })
@@ -67,14 +65,20 @@ const restaurantController = {
   },
   getDashboard: (req, res, next) => {
     const { id } = req.params
-    return Restaurant.findByPk(id, {
-      raw: true,
-      nest: true,
-      includ: [Category]
-    })
-      .then(restaurant => {
+    return Promise.all([
+      Restaurant.findByPk(id, {
+        nest: true,
+        raw: true,
+        include: [Category, Comment]
+      }),
+      Comment.findAndCountAll({
+        where: { restaurantId: id },
+        raw: true
+      })
+    ])
+      .then(([restaurant, comments]) => {
         if (!restaurant) throw new Error('This restaurant is not existed!')
-        res.render('dashboard', { restaurant })
+        res.render('dashboard', { restaurant, commentCounts: comments.count })
       })
       .catch(err => next(err))
   }
