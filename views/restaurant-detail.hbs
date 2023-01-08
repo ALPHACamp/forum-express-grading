@@ -36,6 +36,18 @@
       <div class="col-auto d-flex align-items-end">
         <p class="m-0 text-secondary">{{relativeTimeFromNow this.createdAt}}</p>
       </div>
+      {{!-- Delete Comment 只有管理員可以用 --}}
+      {{#if ../user.isAdmin}}
+        <div class="col-auto ms-4">
+          <form action="/comments/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
+            <input type="hidden" name="restaurantId" value="{{../restaurant.id}}">
+            <button type="submit" class="btn btn-danger" onclick="return confirm(`確定要刪除此評論？
+評論人：{{this.User.name}}
+內容：{{ this.text }}`)">Delete
+            </button>
+          </form>
+        </div>
+      {{/if}}
     </div>
   </blockquote>
   <hr/>

@@ -30,6 +30,7 @@ router.get('/restaurants/:id', authenticated, restController.getRestaurantDetail
 router.get('/restaurants', authenticated, restController.getRestaurants)
 // 評論
 router.post('/comments', authenticated, commentController.postComment)
+router.delete('/comments/:id', authenticatedAdmin, commentController.deleteComment) // 若為管理員才可以刪除
 
 // fallback 路由，其他路由條件都不符合時，最終會通過此路由
 router.use('/', (req, res) => res.redirect('/restaurants'))
