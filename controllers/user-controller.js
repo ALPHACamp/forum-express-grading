@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs')
 const db = require('../models')
-const { User } = db
+const { User, Comment, Restaurant } = db
 const { imgurFileHandler } = require('../helpers/file-helpers') // 將 file-helper 載進來，處理圖片
 
 const userController = {
@@ -47,12 +47,18 @@ const userController = {
   },
   getUser: (req, res, next) => {
     const { id } = req.params
-    return User.findByPk(id, {
-      raw: true
-    })
-      .then(user => {
+    return Promise.all([
+      User.findByPk(id, { raw: true }),
+      Comment.findAndCountAll({
+        where: { userId: id },
+        include: Restaurant,
+        raw: true,
+        nest: true
+      })
+    ])
+      .then(([user, commits]) => {
         if (!user) throw new Error('User is not existed!')
-        res.render('users/profile', { user })
+        res.render('users/profile', { user, commits })
       })
       .catch(err => next(err))
   },
