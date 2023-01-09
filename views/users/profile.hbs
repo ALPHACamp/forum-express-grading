@@ -1,0 +1,31 @@
+<div class="card">
+  <div class="card-body p-0 m-3">
+    <div class="row g-md-5">
+      <div class="col-md-4">
+        <img class="rounded img-responsive center-block m-0" src="{{user.image}}"
+        style="width: 350px; margin-bottom: 25px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+      </div>
+      <div class="col-md-8">
+        <div class="mx-auto mb-5">
+          <h3>{{user.name}}</h3>
+          <h6>{{user.email}}</h6>
+        </div>
+        <a href="/users/{{user.id}}/edit" class="btn btn-secondary">Edit</a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="card my-4">
+  <div class="card-header">
+    已評論餐廳：{{commits.count}} 個
+  </div>
+  <div class="d-flex flex-wrap">
+  {{#each commits.rows}}
+    <a href="/restaurants/{{this.Restaurant.id}}" class="m-2" style="text-decoration:none">
+      <img class="rounded img-responsive center-block m-0" src="{{this.Restaurant.image}}" style="width: 120px; height: 80px; margin-bottom: 25px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+    </a>
+  {{/each}}
+  </div>
+</div>
