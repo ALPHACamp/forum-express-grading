@@ -1,4 +1,4 @@
 const dayjs = require('dayjs')
-module.export = {
+module.exports = {
   currentYear: () => dayjs().year()
 }
