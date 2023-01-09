@@ -6,16 +6,16 @@ const { getOffset, getPagination } = require('../helpers/page-helper')
 const restaurantController = {
   getRestaurants: (req, res, next) => {
     const DEFAULT_LIMIT = 9
-    // 有點分類 or 全部
-    const categoryId = Number(req.query.categoryId) || '' // 也可以寫成 = +req.query.categoryId || ''
+    // 有點分類、未分類 or 一進首頁 or 點全部
+    const categoryId = (req.query.categoryId === undefined || req.query.categoryId === '') ? '' : Number(req.query.categoryId)
     const page = Number(req.query.page) || 1
     const limit = Number(req.query.limit) || DEFAULT_LIMIT
     const offset = getOffset(limit, page)
     Promise.all([
       Restaurant.findAndCountAll({
-        // 期望：where { categoryId } or {}
+        // 期望：where { categoryId } or { categoryId: null } or {}
         where: {
-          ...categoryId ? { categoryId } : {} // 檢查 categoryId 存在與否回傳{ categoryId } or {}，最後再展開
+          ...(categoryId) ? { categoryId } : (typeof categoryId === 'number') ? { categoryId: null } : {} // 檢查 categoryId 存在與否回傳{ categoryId } or {}，最後再展開
         },
         limit,
         offset,

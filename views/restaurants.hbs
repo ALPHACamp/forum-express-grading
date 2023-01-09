@@ -11,6 +11,10 @@
             href="?categoryId={{this.id}}">{{this.name}}</a>
         </li>
       {{/each}}
+      <li class="nav-item">
+        {{!-- 在「為分類」的情況，categoryId 給0 --}}
+        <a class="nav-link {{#ifCond 0 categoryId}}active{{/ifCond}}" href="?categoryId=0">未分類</a>
+      </li>
     </ul>
   </div>
 </div>
