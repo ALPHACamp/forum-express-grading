@@ -30,6 +30,7 @@ router.get('/users/:id/edit', authenticated, userController.editUser) // 瀏覽�
 router.get('/users/:id', authenticated, userController.getUser) // 單純瀏覽Profile頁面
 router.put('/users/:id', authenticated, upload.single('image'), userController.putUser) // 更新資料
 // 瀏覽頁面
+router.get('/restaurants/feeds', authenticated, restController.getFeeds)
 router.get('/restaurants/:id/dashboard', authenticated, restController.getDashboard)
 router.get('/restaurants/:id', authenticated, restController.getRestaurantDetail)
 router.get('/restaurants', authenticated, restController.getRestaurants)

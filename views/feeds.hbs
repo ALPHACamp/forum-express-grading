@@ -1,0 +1,71 @@
+{{> restaurant-tabs route='feeds'}}
+<h1>最新動態</h1>
+<hr />
+<div class="row mt-3 mt-md-4 gy-4 gy-md-0">
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-header">
+        最新餐廳
+      </div>
+      <div class="card-body">
+        {{#each restaurants}}
+          <div class="row mb-3">
+            <div class="col-5 col-md-12 col-lg-5 mb-md-2 mb-lg-0"><img src="{{this.image}}" class="img-fluid" alt="..." width="100%"></div>
+            <div class="col d-flex flex-column">
+              <h4 class="row">
+                <div class="col-12"><a class="link-primary" href="/restaurants/{{this.id}}">{{this.name}}</a></div>
+                <div class="col">
+                  {{#if this.Category.name}}
+                    <small class="fs-6">[{{this.Category.name}}]</small>
+                  {{else}}
+                    <small class="fs-6">[未分類]</small>
+                  {{/if}}
+                </div>
+              </h4>
+
+              {{#if this.description}}
+                <p class="m-0 flex-grow-1">{{this.description}}</p>
+              {{else}}
+                <p class="m-0 flex-grow-1">--</p>
+              {{/if}}
+
+              <p class="m-0 text-secondary">{{relativeTimeFromNow this.createdAt}}</p>
+            </div>
+          </div>
+        {{/each}}
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-header">
+        最新評論
+      </div>
+      <div class="card-body">
+        {{#each comments}}
+          <div class="row mb-3">
+            <div class="col-5 col-md-12 col-lg-5 mb-md-2 mb-lg-0"><img src="{{this.Restaurant.image}}" class="img-fluid" alt="..." width="100%"></div>
+            <div class="col d-flex flex-column">
+              <h4 class="row">
+
+                <div class="col-12">
+                  <a class="link-primary" href="/restaurants/{{this.Restaurant.id}}">{{this.Restaurant.name}}</a>
+                </div>
+
+                <div class="col">
+                    <small class="fs-6">
+                      <a class="link-secondary" href="/users/{{this.User.id}}">{{this.User.name}}</a>
+                    </small>
+                </div>
+
+              </h4>
+
+              <p class="m-0 flex-grow-1">{{this.text}}</p>
+              <p class="m-0 text-secondary">{{relativeTimeFromNow this.createdAt}}</p>
+            </div>
+          </div>
+        {{/each}}
+      </div>
+    </div>
+  </div>
+</div>

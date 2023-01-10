@@ -81,6 +81,35 @@ const restaurantController = {
         res.render('dashboard', { restaurant, commentCounts: comments.count })
       })
       .catch(err => next(err))
+  },
+  getFeeds: (req, res, next) => {
+    const limit = 10
+    return Promise.all([
+      Restaurant.findAll({
+        order: [['createdAt', 'DESC']],
+        limit,
+        raw: true,
+        nest: true,
+        include: [Category]
+      }),
+      Comment.findAll({
+        order: [['createdAt', 'DESC']],
+        limit,
+        raw: true,
+        nest: true,
+        include: [Restaurant, User]
+      })
+    ])
+      .then(([restaurants, comments]) => {
+        // 縮減字數到50 --方法1
+        const data = restaurants.map(r => (
+          // 展開運算子：把 r 的 key-value pair 展開，直接放進來
+          // 只有description的部份會被新的（r.description.subs...）覆蓋
+          (r.description.length >= 20) ? { ...r, description: r.description.substring(0, 20) + '...' } : { ...r }
+        ))
+        res.render('feeds', { restaurants: data, comments })
+      })
+      .catch(err => next(err))
   }
 }
 
