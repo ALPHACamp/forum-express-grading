@@ -83,31 +83,48 @@ const restaurantController = {
       .catch(err => next(err))
   },
   getFeeds: (req, res, next) => {
+    const categoryId = (req.query.categoryId === undefined || req.query.categoryId === '') ? '' : Number(req.query.categoryId)
+    const order = [['createdAt', 'DESC']]
     const limit = 10
     return Promise.all([
       Restaurant.findAll({
-        order: [['createdAt', 'DESC']],
+        where: {
+          ...(categoryId) ? { categoryId } : (typeof categoryId === 'number') ? { categoryId: null } : {} // 檢查 categoryId 存在與否回傳{ categoryId } or {}，最後再展開
+        },
+        order,
         limit,
         raw: true,
         nest: true,
         include: [Category]
       }),
       Comment.findAll({
-        order: [['createdAt', 'DESC']],
+        order,
         limit,
         raw: true,
         nest: true,
-        include: [Restaurant, User]
-      })
+        include: [
+          {
+            model: Restaurant,
+            where: { ...(categoryId) ? { categoryId } : (typeof categoryId === 'number') ? { categoryId: null } : {} }
+          },
+          User
+        ]
+      }),
+      Category.findAll({ raw: true })
     ])
-      .then(([restaurants, comments]) => {
-        // 縮減字數到50 --方法1
-        const data = restaurants.map(r => (
-          // 展開運算子：把 r 的 key-value pair 展開，直接放進來
-          // 只有description的部份會被新的（r.description.subs...）覆蓋
-          (r.description.length >= 20) ? { ...r, description: r.description.substring(0, 20) + '...' } : { ...r }
+      .then(([restaurants, comments, categories]) => {
+        const restData = restaurants.map(el => (
+          (el.description.length >= 20) ? { ...el, description: el.description.substring(0, 20) + '...' } : { ...el }
         ))
-        res.render('feeds', { restaurants: data, comments })
+        const comData = comments.map(el => (
+          (el.text.length >= 20) ? { ...el, text: el.text.substring(0, 20) + '...' } : { ...el }
+        ))
+        res.render('feeds', {
+          restaurants: restData,
+          comments: comData,
+          categoryId,
+          categories
+        })
       })
       .catch(err => next(err))
   }
