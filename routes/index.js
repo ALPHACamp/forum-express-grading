@@ -6,6 +6,8 @@ const passport = require('../config/passport')
 const restController = require('../controllers/restaurant-controller')
 const userController = require('../controllers/user-controller')
 const commentController = require('../controllers/comment-controller')
+const favoriteController = require('../controllers/favorite-controller')
+
 // middleware
 const { authenticated, authenticatedAdmin } = require('../middleware/auth')
 const upload = require('../middleware/multer')
@@ -37,6 +39,9 @@ router.get('/restaurants', authenticated, restController.getRestaurants)
 // 評論
 router.post('/comments', authenticated, commentController.postComment)
 router.delete('/comments/:id', authenticatedAdmin, commentController.deleteComment) // 若為管理員才可以刪除
+// 最愛清單
+router.post('/favorite/:restaurantId', authenticated, favoriteController.addFavorite)
+router.delete('/favorite/:restaurantId', authenticated, favoriteController.removeFavorite)
 
 // fallback 路由，其他路由條件都不符合時，最終會通過此路由
 router.use('/', (req, res) => res.redirect('/restaurants'))

@@ -25,6 +25,23 @@
             <span class="badge bg-secondary mb-2">未分類</span>
           {{/if}}
           <p class="card-text text-truncate">{{this.description}}</p>
+
+          <div class="btn-option d-flex">
+            {{!-- 判斷是否有加入最愛，顯示不同按鈕 可寫this.isFavorited or isFavorited--}}
+            {{#if isFavorited}}
+              <form action="/favorite/{{this.id}}?_method=DELETE" method="POST">
+                <button type="submit" class="btn p-0">
+                  <span style="color: Tomato;"><i class="fa-solid fa-heart fa-xl"></i></span>
+                </button>
+              </form>
+            {{else}}
+              <form action="/favorite/{{this.id}}" method="POST">
+                <button type="submit" class="btn p-0">
+                  <span style="color: rgb(145, 145, 145);"><i class="fa-regular fa-heart fa-xl"></i></span>
+                </button>
+              </form>
+            {{/if}}
+          </div>
         </div>
       </div>
     </div>

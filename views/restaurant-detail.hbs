@@ -23,7 +23,27 @@
   </div>
   <div class="col-md-8">
     <p style="white-space: break-spaces;">{{restaurant.description}}</p>
-    <a class="btn btn-primary" href="/restaurants/{{restaurant.id}}/dashboard">Dashboard</a>
+
+    <div class="btn-option d-flex">
+      <a class="btn btn-primary" href="/restaurants/{{restaurant.id}}/dashboard">Dashboard</a>
+      <div class="btn-option d-flex align-items-center ms-4">
+        {{!-- 判斷是否有加入最愛，顯示不同按鈕 可寫this.isFavorited or isFavorited--}}
+        {{#if isFavorited}}
+          <form action="/favorite/{{restaurant.id}}?_method=DELETE" method="POST">
+            <button type="submit" class="btn p-0">
+              <span style="color: Tomato;"><i class="fa-solid fa-heart fa-2x"></i></span>
+            </button>
+          </form>
+        {{else}}
+          <form action="/favorite/{{restaurant.id}}" method="POST">
+            <button type="submit" class="btn p-0">
+              <span style="color: rgb(145, 145, 145);"><i class="fa-regular fa-heart fa-2x"></i></span>
+            </button>
+          </form>
+        {{/if}}
+      </div>
+
+    </div>
   </div>
   <hr class="mt-3">
 </div>
@@ -47,7 +67,7 @@
             <input type="hidden" name="restaurantId" value="{{../restaurant.id}}">
             <button type="submit" class="btn btn-danger" onclick="return confirm(`確定要刪除此評論？
 評論人：{{this.User.name}}
-內容：{{ this.text }}`)">Delete
+內容：{{ this.text }}`)"><i class="fa-solid fa-trash-can"></i>
             </button>
           </form>
         </div>

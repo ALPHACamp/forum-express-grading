@@ -28,16 +28,16 @@ const restaurantController = {
       })
     ])
       .then(([restaurants, categories]) => {
-        // 縮減字數到50 --方法1
-        // const data = restaurants.map(r => ({
-        //   ...r, // 展開運算子：把 r 的 key-value pair 展開，直接放進來
-        //   description: r.description.substring(0, 50) // 只有description的部份會被新的（r.description.subs...）覆蓋
-        // }))
-        // res.render('restaurants', { restaurants: data })
-        // 縮減字數到50 --方法2（用Bootstrap text-truncate class）
+        const FavoritedRestaurantsId = req.user.FavoritedRestaurants.map(item => item.id)
+        // 縮減字數到50 --方法1：substring --方法2（用Bootstrap text-truncate class）
+        const data = restaurants.rows.map(item => ({
+          ...item, // 展開運算子：把 r 的 key-value pair 展開，直接放進來
+          description: item.description.substring(0, 50), // 只有description的部份會被新的（r.description.subs...）覆蓋
+          isFavorited: FavoritedRestaurantsId.includes(item.id) // 回傳true or false
+        }))
 
         res.render('restaurants', {
-          restaurants: restaurants.rows,
+          restaurants: data,
           categories,
           categoryId,
           pagination: getPagination(limit, page, restaurants.count)
@@ -50,17 +50,22 @@ const restaurantController = {
     return Restaurant.findByPk(id, {
       include: [
         Category,
-        { model: Comment, include: User }
+        { model: Comment, include: User },
+        { model: User, as: 'FavoritedUsers' }
       ]
     })
       .then(restaurant => {
         if (!restaurant) throw new Error('This restaurant is not existed!')
         return restaurant.increment('view_counts', { by: 1 })
       })
-      .then(restaurant => res.render('restaurant-detail', {
-        restaurant: restaurant.toJSON(),
-        comment: restaurant.Comments
-      }))
+      .then(restaurant => {
+        // 使用 some：迭代過程中找到一個符合條件的項目後，就會立刻回傳 true
+        const isFavorited = restaurant.FavoritedUsers.some(item => item.id === req.user.id)
+        res.render('restaurant-detail', {
+          restaurant: restaurant.toJSON(),
+          isFavorited
+        })
+      })
       .catch(err => next(err))
   },
   getDashboard: (req, res, next) => {
