@@ -1,6 +1,6 @@
 <div class="row">
   <div class="col-md-12">
-    <a class="btn btn-secondary mb-3" href="/restaurants">Back</a>
+    <a class="btn btn-secondary mb-3" href="javascript:history.back()">Back</a>
     <h1>{{restaurant.name}}</h1>
     <p class="text-secondary">
       {{#if restaurant.Category.name}}
@@ -26,23 +26,41 @@
 
     <div class="btn-option d-flex">
       <a class="btn btn-primary" href="/restaurants/{{restaurant.id}}/dashboard">Dashboard</a>
-      <div class="btn-option d-flex align-items-center ms-4">
-        {{!-- 判斷是否有加入最愛，顯示不同按鈕 可寫this.isFavorited or isFavorited--}}
-        {{#if isFavorited}}
-          <form action="/favorite/{{restaurant.id}}?_method=DELETE" method="POST">
-            <button type="submit" class="btn p-0">
-              <span style="color: Tomato;"><i class="fa-solid fa-heart fa-2x"></i></span>
-            </button>
-          </form>
-        {{else}}
-          <form action="/favorite/{{restaurant.id}}" method="POST">
-            <button type="submit" class="btn p-0">
-              <span style="color: rgb(145, 145, 145);"><i class="fa-regular fa-heart fa-2x"></i></span>
-            </button>
-          </form>
-        {{/if}}
-      </div>
 
+      <div class="btn-option d-flex align-items-center ms-3">
+        <div class="favorite">
+          {{!-- 判斷是否有加入最愛，顯示不同按鈕 可寫this.isFavorited or isFavorited--}}
+          {{#if isFavorited}}
+            <form action="/favorite/{{restaurant.id}}?_method=DELETE" method="POST">
+              <button type="submit" class="btn p-0">
+                <span style="color: Tomato;"><i class="fa-solid fa-heart fa-2x"></i></span>
+              </button>
+            </form>
+          {{else}}
+            <form action="/favorite/{{restaurant.id}}" method="POST">
+              <button type="submit" class="btn p-0">
+                <span style="color: rgb(145, 145, 145);"><i class="fa-regular fa-heart fa-2x"></i></span>
+              </button>
+            </form>
+          {{/if}}
+        </div>
+
+        <div class="like ms-3">
+          {{#if isLiked}}
+            <form action="/like/{{restaurant.id}}?_method=DELETE" method="POST">
+              <button type="submit" class="btn p-0">
+                <span style="color: rgb(0, 138, 224);"><i class="fa-solid fa-thumbs-up fa-2x"></i></span>
+              </button>
+            </form>
+          {{else}}
+            <form action="/like/{{restaurant.id}}" method="POST">
+              <button type="submit" class="btn p-0">
+                <span style="color: rgb(145, 145, 145);"><i class="fa-regular fa-thumbs-up fa-2x"></i></span>
+              </button>
+            </form>
+          {{/if}}
+        </div>
+      </div>
     </div>
   </div>
   <hr class="mt-3">
