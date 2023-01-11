@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs')
 const db = require('../models')
-const { User, Comment, Restaurant } = db
+const { User, Comment, Restaurant, Like } = db
 const { imgurFileHandler } = require('../helpers/file-helpers') // 將 file-helper 載進來，處理圖片
 
 const userController = {
@@ -92,6 +92,36 @@ const userController = {
         req.flash('success_messages', '使用者資料編輯成功')
         res.redirect(`/users/${id}`)
       })
+      .catch(err => next(err))
+  },
+  addLike: (req, res, next) => {
+    const userId = req.user.id
+    const { restaurantId } = req.params
+    return Promise.all([
+      Restaurant.findByPk(restaurantId),
+      Like.findOne({
+        where: { restaurantId, userId }
+      })
+    ])
+      .then(([restaurant, like]) => {
+        if (!restaurant) throw new Error('This restaurant is not existed!')
+        if (like) throw new Error('Already liked!')
+        return Like.create({ restaurantId, userId })
+      })
+      .then(() => res.redirect('back'))
+      .catch(err => next(err))
+  },
+  removeLike: (req, res, next) => {
+    const userId = req.user.id
+    const { restaurantId } = req.params
+    return Like.findOne({
+      where: { restaurantId, userId }
+    })
+      .then(like => {
+        if (!like) throw new Error('Have not liked!')
+        return like.destroy()
+      })
+      .then(() => res.redirect('back'))
       .catch(err => next(err))
   }
 }

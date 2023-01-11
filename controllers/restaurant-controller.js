@@ -29,11 +29,13 @@ const restaurantController = {
     ])
       .then(([restaurants, categories]) => {
         const FavoritedRestaurantsId = req.user.FavoritedRestaurants.map(item => item.id)
+        const LikedRestaurantsId = req.user.LikedRestaurants.map(item => item.id)
         // 縮減字數到50 --方法1：substring --方法2（用Bootstrap text-truncate class）
         const data = restaurants.rows.map(item => ({
           ...item, // 展開運算子：把 r 的 key-value pair 展開，直接放進來
           description: item.description.substring(0, 50), // 只有description的部份會被新的（r.description.subs...）覆蓋
-          isFavorited: FavoritedRestaurantsId.includes(item.id) // 回傳true or false
+          isFavorited: FavoritedRestaurantsId.includes(item.id), // 回傳true or false
+          isLiked: LikedRestaurantsId.includes(item.id) // 回傳true or false
         }))
 
         res.render('restaurants', {
@@ -51,7 +53,8 @@ const restaurantController = {
       include: [
         Category,
         { model: Comment, include: User },
-        { model: User, as: 'FavoritedUsers' }
+        { model: User, as: 'FavoritedUsers' },
+        { model: User, as: 'LikedUsers' }
       ]
     })
       .then(restaurant => {
@@ -61,9 +64,11 @@ const restaurantController = {
       .then(restaurant => {
         // 使用 some：迭代過程中找到一個符合條件的項目後，就會立刻回傳 true
         const isFavorited = restaurant.FavoritedUsers.some(item => item.id === req.user.id)
+        const isLiked = restaurant.LikedUsers.some(item => item.id === req.user.id)
         res.render('restaurant-detail', {
           restaurant: restaurant.toJSON(),
-          isFavorited
+          isFavorited,
+          isLiked
         })
       })
       .catch(err => next(err))

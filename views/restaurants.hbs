@@ -26,22 +26,42 @@
           {{/if}}
           <p class="card-text text-truncate">{{this.description}}</p>
 
-          <div class="btn-option d-flex">
-            {{!-- 判斷是否有加入最愛，顯示不同按鈕 可寫this.isFavorited or isFavorited--}}
-            {{#if isFavorited}}
-              <form action="/favorite/{{this.id}}?_method=DELETE" method="POST">
-                <button type="submit" class="btn p-0">
-                  <span style="color: Tomato;"><i class="fa-solid fa-heart fa-xl"></i></span>
-                </button>
-              </form>
-            {{else}}
-              <form action="/favorite/{{this.id}}" method="POST">
-                <button type="submit" class="btn p-0">
-                  <span style="color: rgb(145, 145, 145);"><i class="fa-regular fa-heart fa-xl"></i></span>
-                </button>
-              </form>
-            {{/if}}
+          <div class="d-flex btn-option">
+            <div class="favorite me-3">
+              {{!-- 判斷是否有加入最愛，顯示不同按鈕 可寫this.isFavorited or isFavorited--}}
+              {{#if isFavorited}}
+                <form action="/favorite/{{this.id}}?_method=DELETE" method="POST">
+                  <button type="submit" class="btn p-0">
+                    <span style="color: Tomato;"><i class="fa-solid fa-heart fa-xl"></i></span>
+                  </button>
+                </form>
+              {{else}}
+                <form action="/favorite/{{this.id}}" method="POST">
+                  <button type="submit" class="btn p-0">
+                    <span style="color: rgb(145, 145, 145);"><i class="fa-regular fa-heart fa-xl"></i></span>
+                  </button>
+                </form>
+              {{/if}}
+            </div>
+
+            <div class="like me-3">
+              {{#if isLiked}}
+                <form action="/like/{{this.id}}?_method=DELETE" method="POST">
+                  <button type="submit" class="btn p-0">
+                    <span style="color: rgb(0, 138, 224);"><i class="fa-solid fa-thumbs-up fa-xl"></i></span>
+                  </button>
+                </form>
+              {{else}}
+                <form action="/like/{{this.id}}" method="POST">
+                  <button type="submit" class="btn p-0">
+                    <span style="color: rgb(145, 145, 145);"><i class="fa-regular fa-thumbs-up fa-xl"></i></span>
+                  </button>
+                </form>
+              {{/if}}
+            </div>
+
           </div>
+
         </div>
       </div>
     </div>

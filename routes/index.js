@@ -42,6 +42,9 @@ router.delete('/comments/:id', authenticatedAdmin, commentController.deleteComme
 // 最愛清單
 router.post('/favorite/:restaurantId', authenticated, favoriteController.addFavorite)
 router.delete('/favorite/:restaurantId', authenticated, favoriteController.removeFavorite)
+// 按讚清單
+router.post('/like/:restaurantId', authenticated, userController.addLike)
+router.delete('/like/:restaurantId', authenticated, userController.removeLike)
 
 // fallback 路由，其他路由條件都不符合時，最終會通過此路由
 router.use('/', (req, res) => res.redirect('/restaurants'))
