@@ -29,10 +29,12 @@ passport.serializeUser((user, cb) => {
 })
 passport.deserializeUser((id, cb) => {
   User.findByPk(id, {
-    include: [
+    include: [ // 一併取出使用者收藏的餐廳資料，用as才知道是引入哪個關係
       { model: Restaurant, as: 'FavoritedRestaurants' },
-      { model: Restaurant, as: 'LikedRestaurants' }
-    ] // 一併取出使用者收藏的餐廳資料，用as才知道是引入哪個關係
+      { model: Restaurant, as: 'LikedRestaurants' },
+      { model: User, as: 'Followers' },
+      { model: User, as: 'Followings' }
+    ]
   })
     .then(user => cb(null, user.toJSON())) // 整理格式
     .catch(err => cb(err))
