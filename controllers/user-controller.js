@@ -123,6 +123,27 @@ const userController = {
       })
       .then(() => res.redirect('back'))
       .catch(err => next(err))
+  },
+  getTopUsers: (req, res, next) => {
+    return User.findAll({
+      include: [{ model: User, as: 'Followers' }],
+      raw: true,
+      nest: true
+    })
+      .then(users => {
+        console.log('================================')
+        console.log(users)
+        // 整理 users 資料，把每個 user 項目都拿出來處理一次，並把新陣列儲存在 users 裡
+        const data = users.map(user => ({
+          ...user,
+          // 計算追蹤者人數
+          followerCount: user.Followers.length || 0,
+          // 判斷目前登入使用者是否已追蹤該 user 物件
+          isFollowed: req.user.Followings.some(following => following.id === user.id)
+        }))
+        res.render('top-users', { users: data })
+      })
+      .catch(err => next(err))
   }
 }
 

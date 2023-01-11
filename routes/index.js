@@ -27,6 +27,7 @@ router.post('/signin', passport.authenticate('local', {
   failureFlash: true
 }), userController.signIn)
 router.get('/logout', userController.logOut)
+router.get('/users/top', authenticated, userController.getTopUsers) // 最多追蹤的使用者
 // 使用者 Profile
 router.get('/users/:id/edit', authenticated, userController.editUser) // 瀏覽編輯頁
 router.get('/users/:id', authenticated, userController.getUser) // 單純瀏覽Profile頁面
