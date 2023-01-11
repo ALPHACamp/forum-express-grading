@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs')
 const db = require('../models')
-const { User, Comment, Restaurant, Like } = db
+const { User, Comment, Restaurant, Like, Followship } = db
 const { imgurFileHandler } = require('../helpers/file-helpers') // 將 file-helper 載進來，處理圖片
 
 const userController = {
@@ -124,23 +124,49 @@ const userController = {
       .then(() => res.redirect('back'))
       .catch(err => next(err))
   },
+  addFollowing: (req, res, next) => {
+    const followingId = req.params.userId
+    const followerId = req.user.id
+    return Promise.all([
+      User.findByPk(followingId),
+      Followship.findOne({
+        where: { followingId, followerId }
+      })
+    ])
+      .then(([user, followship]) => {
+        if (!user) throw new Error('User is not existed!')
+        if (followship) throw new Error('Already followed')
+        Followship.create({ followingId, followerId })
+      })
+      .then(() => res.redirect('back'))
+      .catch(err => next(err))
+  },
+  removeFollowing: (req, res, next) => {
+    const followingId = req.params.userId
+    const followerId = req.user.id
+    return Followship.findOne({
+      where: { followingId, followerId }
+    })
+      .then(followship => {
+        if (!followship) throw new Error('Have not followed')
+        return followship.destroy()
+      })
+      .then(() => res.redirect('back'))
+      .catch(err => next(err))
+  },
   getTopUsers: (req, res, next) => {
     return User.findAll({
-      include: [{ model: User, as: 'Followers' }],
-      raw: true,
-      nest: true
+      include: [{ model: User, as: 'Followers' }]
     })
       .then(users => {
-        console.log('================================')
-        console.log(users)
         // 整理 users 資料，把每個 user 項目都拿出來處理一次，並把新陣列儲存在 users 裡
-        const data = users.map(user => ({
-          ...user,
-          // 計算追蹤者人數
-          followerCount: user.Followers.length || 0,
-          // 判斷目前登入使用者是否已追蹤該 user 物件
-          isFollowed: req.user.Followings.some(following => following.id === user.id)
-        }))
+        const data = users
+          .map(user => ({
+            ...user.toJSON(),
+            followerCount: user.Followers.length, // 計算追蹤者人數
+            isFollowed: req.user.Followings.some(following => following.id === user.id) // 判斷目前登入使用者是否已追蹤該 user 物件
+          }))
+          .sort((a, b) => b.followerCount - a.followerCount)
         res.render('top-users', { users: data })
       })
       .catch(err => next(err))
