@@ -10,3 +10,4 @@ rules:
   arrow-parens:
     - warn
     - as-needed
+  semi: 0

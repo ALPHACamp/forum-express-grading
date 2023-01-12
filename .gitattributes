@@ -1,3 +1,4 @@
+# note 此行讓git知道換行字元採用何種格式，是使用crlf or lf，因作業系統不同，換行方式也不同。
 *                 text=auto
 
 # Source code
@@ -25,6 +26,7 @@
 .gitattributes    text
 .gitconfig        text
 *.lock            text -diff
+# note eol = end of line Mac使用的換行字元為lf   Windows為crlf  
 package.json      text eol=lf
 package-lock.json text -diff
 yarn.lock         text -diff
