@@ -28,8 +28,8 @@ const restaurantController = {
       })
     ])
       .then(([restaurants, categories]) => {
-        const FavoritedRestaurantsId = req.user.FavoritedRestaurants.map(item => item.id)
-        const LikedRestaurantsId = req.user.LikedRestaurants.map(item => item.id)
+        const FavoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(item => item.id)
+        const LikedRestaurantsId = req.user && req.user.LikedRestaurants.map(item => item.id)
         // 縮減字數到50 --方法1：substring --方法2（用Bootstrap text-truncate class）
         const data = restaurants.rows.map(item => ({
           ...item, // 展開運算子：把 r 的 key-value pair 展開，直接放進來
@@ -63,7 +63,7 @@ const restaurantController = {
       })
       .then(restaurant => {
         // 使用 some：迭代過程中找到一個符合條件的項目後，就會立刻回傳 true
-        const isFavorited = restaurant.FavoritedUsers.some(item => item.id === req.user.id)
+        const isFavorited = req.user && restaurant.FavoritedUsers.some(item => item.id === req.user.id) // req.user 有可能是空的
         const isLiked = restaurant.LikedUsers.some(item => item.id === req.user.id)
         res.render('restaurant-detail', {
           restaurant: restaurant.toJSON(),
@@ -135,6 +135,23 @@ const restaurantController = {
           categoryId,
           categories
         })
+      })
+      .catch(err => next(err))
+  },
+  getTopRestaurants: (req, res, next) => {
+    return Restaurant.findAll({
+      include: { model: User, as: 'FavoritedUsers' }
+    })
+      .then(restaurants => {
+        const data = restaurants
+          .map(item => ({
+            ...item.toJSON(),
+            description: (item.description.length > 40) ? item.description.substring(0, 40) + '...' : item.description,
+            favoritedCount: item.FavoritedUsers.length,
+            isFavorited: req.user && item.FavoritedUsers.some(user => user.id === req.user.id) // req.user 有可能是空的
+          }))
+          .sort((a, b) => b.favoritedCount - a.favoritedCount)
+        res.render('top-restaurants', { restaurants: data })
       })
       .catch(err => next(err))
   }

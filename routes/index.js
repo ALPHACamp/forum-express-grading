@@ -6,7 +6,6 @@ const passport = require('../config/passport')
 const restController = require('../controllers/restaurant-controller')
 const userController = require('../controllers/user-controller')
 const commentController = require('../controllers/comment-controller')
-const favoriteController = require('../controllers/favorite-controller')
 
 // middleware
 const { authenticated, authenticatedAdmin } = require('../middleware/auth')
@@ -33,6 +32,7 @@ router.get('/users/:id/edit', authenticated, userController.editUser) // 瀏覽�
 router.get('/users/:id', authenticated, userController.getUser) // 單純瀏覽Profile頁面
 router.put('/users/:id', authenticated, upload.single('image'), userController.putUser) // 更新資料
 // 瀏覽頁面
+router.get('/restaurants/top', authenticated, restController.getTopRestaurants) // Top 10 餐廳
 router.get('/restaurants/feeds', authenticated, restController.getFeeds)
 router.get('/restaurants/:id/dashboard', authenticated, restController.getDashboard)
 router.get('/restaurants/:id', authenticated, restController.getRestaurantDetail)
@@ -41,8 +41,8 @@ router.get('/restaurants', authenticated, restController.getRestaurants)
 router.post('/comments', authenticated, commentController.postComment)
 router.delete('/comments/:id', authenticatedAdmin, commentController.deleteComment) // 若為管理員才可以刪除
 // 最愛清單
-router.post('/favorite/:restaurantId', authenticated, favoriteController.addFavorite)
-router.delete('/favorite/:restaurantId', authenticated, favoriteController.removeFavorite)
+router.post('/favorite/:restaurantId', authenticated, userController.addFavorite)
+router.delete('/favorite/:restaurantId', authenticated, userController.removeFavorite)
 // 按讚清單
 router.post('/like/:restaurantId', authenticated, userController.addLike)
 router.delete('/like/:restaurantId', authenticated, userController.removeLike)
