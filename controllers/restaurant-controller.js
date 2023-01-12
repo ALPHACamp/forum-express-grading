@@ -1,5 +1,5 @@
 const { Restaurant, Category } = require('../models')
-// const categoryController = require('./category-controller')
+
 const restaurantController = {
   getRestaurants: (req, res) => {
     return Restaurant.findAll({
@@ -18,16 +18,13 @@ const restaurantController = {
   },
   getRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
-      include: Category,
-      nest: true,
-      raw: true
+      include: Category
     })
       .then(restaurant => {
-        if (!restaurant) throw new Error("Restaurant didn't exist!")
-        res.render('restaurant', {
-          restaurant
-        })
+        if (!restaurant) throw new Error("Restaurant doesn't exist!")
+        return restaurant.increment('viewCounts', { by: 1 })
       })
+      .then(restaurant => res.render('restaurant', { restaurant: restaurant.toJSON() }))
       .catch(err => next(err))
   },
   getDashboard: (req, res, next) => {
@@ -36,9 +33,8 @@ const restaurantController = {
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
-        return restaurant.increment('view_count', { by: 1 })
+        res.render('dashboard', { restaurant: restaurant.toJSON() })
       })
-      .then(restaurant => res.render('dashboard', { restaurant: restaurant.toJSON() }))
       .catch(err => next(err))
   }
 }
