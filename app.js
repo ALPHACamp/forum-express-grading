@@ -2,6 +2,7 @@ const express = require('express');
 const { engine } = require('express-handlebars'); // the syntax is already changed by newest version
 const flash = require('connect-flash');
 const session = require('express-session');
+const passport = require('./config/passport');
 const routes = require('./routes');
 
 const app = express();
@@ -16,6 +17,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use(
   session({ secret: SESSION_SECRET, resave: false, saveUninitialized: false })
 );
+
+app.use(passport.initialize());
+app.use(passport.session()); // active session function
 
 app.use(flash());
 app.use((req, res, next) => {
