@@ -1,0 +1,42 @@
+{{> restaurant-tabs route='topRestaurants'}}
+<h1>Top 10 人氣餐廳</h1>
+<hr/>
+{{#each restaurants}}
+  <div class="row mb-4 d-flex justify-content-center">
+    <div class="card col-8">
+      <div class="row card-body">
+        <div class="col-12 col-lg-auto px-0 me-lg-2">
+          <a href="/restaurants/{{this.id}}">
+            <img src="{{this.image}}" width="100%" style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;" />
+          </a>
+        </div>
+        <div class="col d-flex flex-column">
+          <h2>{{this.name}}</h2>
+          <span class="bg-secondary badge my-2 me-auto">收藏數：{{this.favoritedCount}}</span>
+          {{#if this.description}}
+            <p class="m-0 flex-grow-1">{{this.description}}</p>
+          {{else}}
+            <p class="m-0 flex-grow-1">--</p>
+          {{/if}}
+
+          <div class="btn-option d-flex align-items-center mt-2">
+            <a href="/restaurants/{{this.id}}" class="btn btn-success me-3">詳細</a>
+            {{#if this.isFavorited}}
+              <form action="/favorite/{{this.id}}?_method=DELETE" method="POST">
+                <button type="submit" class="btn p-0">
+                  <span style="color: Tomato;"><i class="fa-solid fa-heart fa-xl"></i></span>
+                </button>
+              </form>
+            {{else}}
+              <form action="/favorite/{{this.id}}" method="POST">
+                <button type="submit" class="btn p-0">
+                  <span style="color: rgb(145, 145, 145);"><i class="fa-regular fa-heart fa-xl"></i></span>
+                </button>
+              </form>
+            {{/if}}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{{/each}}

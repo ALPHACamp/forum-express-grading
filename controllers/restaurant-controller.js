@@ -137,6 +137,24 @@ const restaurantController = {
         })
       })
       .catch(err => next(err))
+  },
+  getTopRestaurants: (req, res, next) => {
+    return Restaurant.findAll({
+      include: { model: User, as: 'FavoritedUsers' }
+    })
+      .then(restaurants => {
+        const data = restaurants
+          .map(item => ({
+            ...item.toJSON(),
+            description: (item.description.length > 40) ? item.description.substring(0, 40) + '...' : item.description,
+            favoritedCount: item.FavoritedUsers.length,
+            isFavorited: req.user && item.FavoritedUsers.some(user => user.id === req.user.id) // req.user 有可能是空的
+          }))
+          .sort((a, b) => b.favoritedCount - a.favoritedCount)
+          .splice(0, 10)
+        res.render('top-restaurants', { restaurants: data })
+      })
+      .catch(err => next(err))
   }
 }
 
