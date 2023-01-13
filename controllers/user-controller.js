@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs')
 const { User } = require('../models')
-const { localFileHandler } = require('../helpers/file-helper')
+// const { localFileHandler } = require('../helpers/file-helper')
+const {imgurFileHandler } = require('../helpers/file-helper')
 
 const userController = {
   signUpPage: (req, res) => {
@@ -60,7 +61,7 @@ const userController = {
     const { file } = req
     return Promise.all([
       User.findByPk(req.params.id),
-      localFileHandler(file)])
+      imgurFileHandler(file)])
       .then(([user, filePath]) => {
         if (!user) throw new Error('使用者不存在')
         return user.update({
