@@ -5,9 +5,18 @@ const userController = {
   signUpPage: (req, res) => {
     res.render('signup');
   },
-  signUp: (req, res) => {
-    bcrypt
-      .hash(req.body.password, 10)
+  signUp: (req, res, next) => {
+    if (req.body.password !== req.body.passwordCheck) {
+      // note 直接丟出error的物件
+      throw new Error('Passwords do not match');
+    }
+
+    User.findOne({ where: { email: req.body.email } })
+      .then(user => {
+        if (user) throw new Error('Email already exists!');
+
+        return bcrypt.hash(req.body.password, 10);
+      })
       .then(hash =>
         User.create({
           name: req.body.name,
@@ -16,8 +25,11 @@ const userController = {
         })
       )
       .then(() => {
-        res.redirect('signin');
-      });
+        req.flash('success_messages', 'Account is signed up successfully !');
+        res.redirect('/signin');
+      })
+      .catch(err => next(err));
+    // note next()帶入err參數變成Error物件，代表使用express所給予的error處理，也可以自己寫一個
   }
 };
 
