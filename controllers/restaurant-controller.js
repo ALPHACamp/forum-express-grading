@@ -51,7 +51,7 @@ const restaurantController = {
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         const restJSON = restaurant.toJSON()
-        restJSON.commentCounts = restJSON.Comments.length
+        // restJSON.commentCounts = restJSON.Comments.length
         res.render('dashboard', { restaurant: restJSON })
       })
     // return Restaurant.findByPk(req.params.id, {

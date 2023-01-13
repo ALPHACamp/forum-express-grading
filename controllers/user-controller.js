@@ -36,12 +36,12 @@ const userController = {
     res.redirect('/signin')
   },
   getUser: (req, res, next) => {
-    const userId = req.user.id
+    // const userId = req.user.id
     return User.findByPk(req.params.id)
       .then(user => {
         console.log(user.toJSON())
         if (!user) throw new Error('使用者不存在')
-        res.render('users/profile', { user: user.toJSON(), userId })
+        res.render('users/profile', { user: user.toJSON() })
       })
       .catch(err => next(err))
   },
@@ -54,7 +54,7 @@ const userController = {
       .catch(err => next(err))
   },
   putUser: (req, res, next) => {
-    const { email } = req.body
+    const { name } = req.body
     const { file } = req
     return Promise.all([
       User.findByPk(req.params.id),
@@ -62,7 +62,7 @@ const userController = {
       .then(([user, filePath]) => {
         if (!user) throw new Error('使用者不存在')
         return user.update({
-          email,
+          name,
           image: filePath || user.image
         })
       })
