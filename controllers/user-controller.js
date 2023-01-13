@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs')
-const db = require('../models')
-const { User } = db
+const { User } = require('../models')
+const { localFileHandler } = require('../helpers/file-helper')
+
 const userController = {
   signUpPage: (req, res) => {
     res.render('signup')
@@ -35,6 +36,43 @@ const userController = {
 			if (err) { return next(err); }
 			res.redirect('/');
 		});
+  },
+  getUser: (req, res, next) => {
+    const userId = req.user.id
+    return User.findByPk(req.params.id)
+      .then(user => {
+        console.log(user.toJSON())
+        if (!user) throw new Error('使用者不存在')
+        res.render('users/profile', { user: user.toJSON(), userId })
+      })
+      .catch(err => next(err))
+  },
+  editUser: (req, res, next) => {
+    return User.findByPk(req.params.id)
+      .then(user => {
+        if (!user) throw new Error('使用者不存在')
+        res.render('users/edit', { user: user.toJSON() })
+      })
+      .catch(err => next(err))
+  },
+  putUser: (req, res, next) => {
+    const { email } = req.body
+    const { file } = req
+    return Promise.all([
+      User.findByPk(req.params.id),
+      localFileHandler(file)])
+      .then(([user, filePath]) => {
+        if (!user) throw new Error('使用者不存在')
+        return user.update({
+          email,
+          image: filePath || user.image
+        })
+      })
+      .then(() => {
+        req.flash('success_messages', '使用者資料編輯成功')
+        res.redirect(`/users/${req.params.id}`)
+      })
+      .catch(err => next(err))
   }
 }
 module.exports = userController
