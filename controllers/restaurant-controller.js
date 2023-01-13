@@ -47,14 +47,21 @@ const restaurantController = {
       .catch(err => next(err))
   },
   getDashboard: (req, res, next) => {
-    return Restaurant.findByPk(req.params.id, {
-      include: Category
-    })
+    return Restaurant.findByPk(req.params.id, { include: [Category, Comment] })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
-        res.render('dashboard', { restaurant: restaurant.toJSON() })
+        const restJSON = restaurant.toJSON()
+        restJSON.commentCounts = restJSON.Comments.length
+        res.render('dashboard', { restaurant: restJSON })
       })
-      .catch(err => next(err))
+    // return Restaurant.findByPk(req.params.id, {
+    //   include: Category
+    // })
+    //   .then(restaurant => {
+    //     if (!restaurant) throw new Error("Restaurant didn't exist!")
+    //     res.render('dashboard', { restaurant: restaurant.toJSON() })
+    //   })
+    //   .catch(err => next(err))
   }
 }
 module.exports = restaurantController
