@@ -36,12 +36,11 @@ const userController = {
     res.redirect('/signin')
   },
   getUser: (req, res, next) => {
-    // const userId = req.user.id
+    const userId = req.user
     return User.findByPk(req.params.id)
       .then(user => {
-        console.log(user.toJSON())
         if (!user) throw new Error('使用者不存在')
-        res.render('users/profile', { user: user.toJSON() })
+        res.render('users/profile', { user: user.toJSON(), userId })
       })
       .catch(err => next(err))
   },
