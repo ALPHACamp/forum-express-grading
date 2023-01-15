@@ -1,3 +1,5 @@
+/* For front-end system */
+
 const bcrypt = require('bcryptjs');
 const db = require('../models');
 const { User } = db;
