@@ -9,7 +9,11 @@ const adminController = require('../../controllers/admin-controller');
 // notice authenticatedAdmin使用太多，抽離到index去見證
 router.get('/restaurants/create', adminController.createRestaurant);
 
-router.get('/restaurants/:res_id', adminController.getRestaurant);
+router.get('/restaurants/:id/edit', adminController.editRestaurant);
+
+router.get('/restaurants/:id', adminController.getRestaurant);
+
+router.put('/restaurants/:id', adminController.putRestaurant);
 
 router.get('/restaurants', adminController.getRestaurants);
 
