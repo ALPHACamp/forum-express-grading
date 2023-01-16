@@ -12,14 +12,17 @@ module.exports = {
       name: {
         type: Sequelize.STRING
       },
-      address: {
+      tel: {
         type: Sequelize.STRING
       },
-      opening_hours: {
+      address: {
         type: Sequelize.STRING
       },
       description: {
         type: Sequelize.TEXT
+      },
+      opening_hours: {
+        type: Sequelize.STRING
       },
       created_at: {
         allowNull: false,
