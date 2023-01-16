@@ -42,7 +42,8 @@ const restaurantController = {
       include: [
         Category,
         { model: Comment, include: User },
-        { model: User, as: 'FavoritedUsers' }
+        { model: User, as: 'FavoritedUsers' },
+        { model: User, as: 'LikedUsers' }
       ]
     })
       .then(restaurant => {
@@ -51,7 +52,8 @@ const restaurantController = {
       })
       .then(restaurant => {
         const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id)
-        res.render('restaurant', { restaurant: restaurant.toJSON(), isFavorited })
+        const isLiked = restaurant.LikedUsers.some(f => f.id === req.user.id)
+        res.render('restaurant', { restaurant: restaurant.toJSON(), isFavorited, isLiked })
       })
       .catch(err => next(err))
   },
