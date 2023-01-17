@@ -1,4 +1,5 @@
-<form action="/admin/restaurants/{{restaurant.id}}?_method=PUT" method="POST">
+{{!-- note enctype為指定提供三種編碼的Content-type傳送格式，此處使用multipart/form-data --}}
+<form action="/admin/restaurants/{{restaurant.id}}?_method=PUT" method="POST" enctype="multipart/form-data">
   <div class="mb-4 text-center">
     <h1 class="h3 font-weight-normal mb-3">Edit Restaurant</h1>
   </div>

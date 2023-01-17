@@ -1,5 +1,6 @@
 /* For back-end system */
 const { Restaurant } = require('../models');
+const { localFileHandler } = require('../helpers/file-helpers');
 
 const adminController = {
   // the object
@@ -16,17 +17,23 @@ const adminController = {
     return res.render('admin/create-restaurant');
   },
   postRestaurant: (req, res, next) => {
-    const { name, tel, address, openingHours, description } = req.body;
     // !! note 雖然前端有用required來驗證，但是容易被修改，所以要在後端做一次驗證，避免被直接修改或侵入
+    const { name, tel, address, openingHours, description } = req.body;
     if (!name) throw new Error('Restaurant name is required');
 
-    Restaurant.create({
-      name,
-      tel,
-      address,
-      openingHours,
-      description
-    })
+    const file = req.file;
+    console.log(file);
+    localFileHandler(file) // 先經multer處理後再給下面繼續
+      .then(filePath => {
+        return Restaurant.create({
+          name,
+          tel,
+          address,
+          openingHours,
+          description,
+          image: filePath || null
+        });
+      })
       .then(() => {
         req.flash('success_messages', 'Restaurant was created successfully');
         res.redirect('/admin/restaurants');
@@ -55,10 +62,14 @@ const adminController = {
     const { name, tel, address, openingHours, description } = req.body;
     if (!name) throw new Error('Restaurant name is required');
 
-    console.log(req.body);
-    // note 不使用raw是因為還需要利用Sequelize的instance進行資料操作，若是轉成JS則無法使用update()
-    Restaurant.findByPk(req.params.id)
-      .then(restaurant => {
+    const { file } = req;
+    // Thinking 需要找到餐廳資料，在處理相片的檔案，會有時間差為非同步，需要做同步處理
+    // notice 注意parameter數量，Promise.all([a, b]).then([a, b])
+    Promise.all([
+      Restaurant.findByPk(req.params.id), // note 不使用raw是因為還需要利用Sequelize的instance進行資料操作，若是轉成JS則無法使用update()
+      localFileHandler(file)
+    ])
+      .then(([restaurant, filePath]) => {
         if (!restaurant) throw new Error("Restaurant didn't exist");
 
         // note return避免形成nest結構，較易閱讀，且update()也是個Promise
@@ -67,7 +78,8 @@ const adminController = {
           tel,
           address,
           openingHours,
-          description
+          description,
+          image: filePath || restaurant.image
         });
       })
       .then(() => {

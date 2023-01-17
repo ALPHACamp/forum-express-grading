@@ -1,3 +1,4 @@
+const path = require('path') // node.js原生語法
 const express = require('express');
 const { engine } = require('express-handlebars'); // the syntax is already changed by newest version
 const flash = require('connect-flash');
@@ -20,6 +21,11 @@ app.set('view engine', 'hbs');
 app.use(express.urlencoded({ extended: true }));
 
 app.use(methodOverride('_method'));
+
+// note 靜態檔案(如影音, 相片or 文件檔案類)會使用express.static()處理
+// note path.join()為node.js語法，路徑碎片的拼接
+// Thinking 當req過來後，接收到/upload的路徑字串，便由express.static處理。而收到當下檔案的絕對路徑(__dirname)，在增加upload字串，並放入裡面。
+app.use('/upload', express.static(path.join(__dirname, 'upload')))
 
 app.use(
   session({ secret: SESSION_SECRET, resave: false, saveUninitialized: false })

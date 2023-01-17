@@ -1,5 +1,7 @@
 node_modules/ 
+# note 圖片檔案傳送過程為一堆碎片，temp為暫存這些碎片
 temp/
+# note 圖片上傳完後拷貝到這個對外的資料夾
 upload/
 
 .DS_Store
