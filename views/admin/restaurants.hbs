@@ -29,7 +29,9 @@
           </a>
         </button>
         <form action="/admin/restaurants/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
-          <button type="submit" class="btn btn-link link-danger">Delete</button>
+          <button type="submit" class="btn btn-link link-danger"
+            onclick="return confirm(`Are you sure you want to delete {{this.name}}?`)">Delete</button>
+          {{!-- notice 使用onclick or confirm()引入的時候注意引號的使用，如有人使用xxx's restaurant,則使用一般的引號會造成HTML解析引號錯誤且有資安問題 --}}
         </form>
       </td>
     </tr>
