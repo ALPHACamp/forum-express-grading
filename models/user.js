@@ -22,6 +22,7 @@ module.exports = (sequelize, DataTypes) => {
       sequelize,
       modelName: 'User',
       tableName: 'Users',
+      // note underscored 可以讓JS這邊使用駝峰命名，但是到了資料庫自動變成snake-case
       underscored: true
     }
   );
