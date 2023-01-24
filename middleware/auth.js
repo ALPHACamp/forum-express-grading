@@ -1,8 +1,8 @@
-const { ensureAuthenticated, getUser } = require('../helpers/auth-helpers');
+const helpers = require('../helpers/auth-helpers');
 
 // 使用者是否驗證
 const authenticated = (req, res, next) => {
-  if (ensureAuthenticated(req)) {
+  if (helpers(req)) {
     return next();
   }
 
@@ -11,8 +11,8 @@ const authenticated = (req, res, next) => {
 
 // admin使用者與一般使用者判斷驗證邏輯
 const authenticatedAdmin = (req, res, next) => {
-  if (ensureAuthenticated(req)) {
-    if (getUser(req).isAdmin) return next();
+  if (helpers(req)) {
+    if (helpers(req).isAdmin) return next();
 
     res.redirect('/');
   } else {
