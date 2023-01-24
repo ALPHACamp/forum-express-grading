@@ -17,6 +17,8 @@ if (config.use_env_variable) {
 }
 
 // 動態引入其他 models
+// fs: file system，，會在model底下尋找.js結尾的檔案。偵測到後，自動運用 sequelize 將其引入。
+// 假設model底下有的User.js，fs偵測到放進來就可以用 db.User來存Model
 fs
   .readdirSync(__dirname)
   .filter(file => {
