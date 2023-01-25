@@ -20,7 +20,9 @@ router.post(
 )
 router.get('/logout', userController.logout)
 router.get('/restaurants', authenticated, restController.getRestaurants)
-router.get('/', (req, res) => res.redirect('/restaurants'))
+router.get('/', (req, res) => {
+  res.redirect('/restaurants')
+})
 router.use('/', generalErrorHandler)
 
 module.exports = router
