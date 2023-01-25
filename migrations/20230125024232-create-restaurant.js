@@ -17,7 +17,7 @@ module.exports = {
       address: {
         type: Sequelize.STRING
       },
-      openin_hours: {
+      opening_hours: {
         type: Sequelize.STRING
       },
       description: {
