@@ -1,4 +1,5 @@
 const { Restaurant } = require('../models')
+const { localFileHandler } = require('../helpers/file-helpers')
 const adminController = {
   getRestaurants: (req, res, next) => {
     Restaurant.findAll({
@@ -13,13 +14,18 @@ const adminController = {
   postRestaurant: (req, res, next) => {
     const { name, tel, adress, openingHours, description } = req.body
     if (!name) throw new Error('Restaurant name is required!')
-    Restaurant.create({
-      name,
-      tel,
-      adress,
-      openingHours,
-      description
-    })
+    const { file } = req
+    localFileHandler(file)
+      .then(filePath => {
+        Restaurant.create({
+          name,
+          tel,
+          adress,
+          openingHours,
+          description,
+          image: filePath || null
+        })
+      })
       .then(() => {
         req.flash('success_messages', 'restaurant was successfully created')
         res.redirect('/admin/restaurants')
@@ -48,15 +54,20 @@ const adminController = {
     const { id } = req.params
     const { name, tel, address, openingHours, description } = req.body
     if (!name) throw new Error('Restaurant name is required!')
-    Restaurant.findByPk(id) // 需要修改資料不能使用{ raw: true }
-      .then(restaurant => {
+    const { file } = req
+    Promise.all(
+      [Restaurant.findByPk(id), localFileHandler(file)]
+      // 需要修改資料不能使用{ raw: true }
+    )
+      .then(([restaurant, filePath]) => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         return restaurant.update({
           name,
           tel,
           address,
           openingHours,
-          description
+          description,
+          image: filePath || restaurant.image
         })
       })
       .then(() => {
