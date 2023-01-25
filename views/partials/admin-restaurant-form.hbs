@@ -22,6 +22,8 @@
   <textarea class="form-control" id="description" name="description" rows="3">{{restaurant.description}}</textarea>
 </div> 
 <div class="form-row mb-3">
+  <img class="img-responsive center-block" src="{{restaurant.image}}" style="width: 250px; margin-bottom: 25px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+    <br>
   <label class="form-label" for="image">Image</label>
   <input class="form-control" type="file" class="form-control-file" id="image" name="image">
 </div>
