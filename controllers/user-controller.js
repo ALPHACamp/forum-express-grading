@@ -6,10 +6,17 @@ const userController = {
   signUppage: (req, res) => {
     res.render('singup')
   },
-  signUp: (req, res) => {
-    const { name, email, password } = req.body
-    bcrypt
-      .hash(password, 10)
+  signUp: (req, res, next) => {
+    const { name, email, password, passwordCheck } = req.body
+
+    if (password !== passwordCheck) throw new Error('Password do not match')
+
+    User.findOne({ where: { email } })
+      .then(user => {
+        if (user) throw new Error('Email already exists!')
+        return bcrypt.hash(password, 10)
+        // 讓Promise resolve 的值傳到下個then再繼續接著做事，避免巢狀結構或非同步狀態不知道誰會先完成
+      })
       .then(hash => {
         return User.create({
           name,
@@ -17,7 +24,11 @@ const userController = {
           password: hash
         })
       })
-      .then(() => res.redirect('/signin'))
+      .then(() => {
+        req.flash('success_messages', '成功註冊帳號！')
+        res.redirect('/signin')
+      })
+      .catch(err => next(err))
   }
 }
 
