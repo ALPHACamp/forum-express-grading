@@ -109,7 +109,8 @@ const adminController = {
   },
   patchUser: (req, res, next) => {
     const { id } = req.params
-    return User.findByPk(id)
+    return User
+      .findByPk(id)
       .then(user => {
         if (user.email === 'root@example.com') {
           req.flash('error_messages', '禁止變更 root 權限')
