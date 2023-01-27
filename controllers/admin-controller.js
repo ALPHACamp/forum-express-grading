@@ -1,4 +1,4 @@
-const { Restaurant } = require('../models')
+const { Restaurant, User } = require('../models')
 const { localFileHandler } = require('../helpers/file-helpers')
 const adminController = {
   getRestaurants: (req, res, next) => {
@@ -85,6 +85,30 @@ const adminController = {
       })
       .then(() => {
         res.redirect('/admin/restaurants')
+      })
+      .catch(err => next(err))
+  },
+  getUsers: (req, res, next) => {
+    User.findAll({
+      raw: true
+    })
+      .then(users => res.render('admin/users', { users }))
+      .catch(err => next(err))
+  },
+  patchUser: (req, res, next) => {
+    const { id } = req.params
+    User.findByPk(id)
+      .then(user => {
+        if (user.name === 'root') throw new Error('禁止變更 root 權限')
+        if (user.isAdmin) {
+          user.isAdmin = false
+        } else {
+          user.isAdmin = true
+        }
+        return user.save()
+      })
+      .then(() => {
+        res.redirect('/admin/users')
       })
       .catch(err => next(err))
   }
