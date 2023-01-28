@@ -1,6 +1,6 @@
 const path = require('path')
 const express = require('express')
-const { pages } = require('./routes')
+const { pages, apis } = require('./routes')
 const handlebars = require('express-handlebars')
 const app = express()
 const port = process.env.PORT || 3000
@@ -29,6 +29,7 @@ app.use((req, res, next) => {
   res.locals.user = getUser(req)
   next()
 })
+app.use('/api', apis)
 app.use(pages)
 
 app.listen(port, () => {
