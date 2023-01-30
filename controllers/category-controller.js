@@ -1,4 +1,5 @@
-const { Category } = require('../models')
+const { Category, Restaurant } = require('../models')
+const restaurant = require('../models/restaurant')
 const categoryController = {
   getCategories: (req, res, next) => {
     const { id } = req.params
@@ -29,6 +30,25 @@ const categoryController = {
       })
       .then(() => res.redirect('/admin/categories'))
       .catch(err => next(err))
+  },
+  deleteCategory: (req, res, next) => {
+    const { id } = req.params
+    return Restaurant.findAll({ where: { categoryId: id } })
+      .then(Restaurants => {
+        Promise.all(
+          Restaurants.map(
+            Restaurant => Restaurant.update({ categoryId: 17 })
+          )
+        ).then(() =>
+          Category.findByPk(id)
+            .then(category => {
+              if (!category) throw new Error("Category didn't exist!")
+              return category.destroy()
+            })
+            .then(() => res.redirect('/admin/categories'))
+            .catch(err => next(err))
+        )
+      })
   }
 }
 
