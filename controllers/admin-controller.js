@@ -1,9 +1,11 @@
-const { Restaurant, User } = require('../models')
+const { Restaurant, User, Category } = require('../models')
 const { localFileHandler } = require('../helpers/file-helpers')
 const adminController = {
   getRestaurants: (req, res, next) => {
     Restaurant.findAll({
-      raw: true
+      raw: true,
+      nest: true,
+      include: [Category]
     })
       .then(restaurants => res.render('admin/restaurants', { restaurants }))
       .catch(err => next(err))
@@ -34,7 +36,7 @@ const adminController = {
   },
   getRestaurant: (req, res, next) => {
     const { id } = req.params
-    Restaurant.findByPk(id, { raw: true })
+    Restaurant.findByPk(id, { raw: true, nest: true, include: [Category] })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         res.render('admin/restaurant', { restaurant })
@@ -97,8 +99,7 @@ const adminController = {
   },
   patchUser: (req, res, next) => {
     const { id } = req.params
-    return User
-      .findByPk(id)
+    return User.findByPk(id)
       .then(user => {
         if (user.email === 'root@example.com') {
           req.flash('error_messages', '禁止變更 root 權限')
