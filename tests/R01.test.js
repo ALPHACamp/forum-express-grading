@@ -75,11 +75,14 @@ describe('# R01', () => {
         // res.render 的第 2 個參數應是 users
         // 根據測試資料，users 中的第 1 筆資料，name 屬性值應該要是 'admin'
 <<<<<<< HEAD
+<<<<<<< HEAD
         console.log('test')
         console.log('=======================================================================')
         console.log(res.render.getCall(0))
 =======
 >>>>>>> origin/R02-test
+=======
+>>>>>>> origin/R03-test
         res.render.getCall(0).args[1].users[0].name.should.equal('admin')
       })
     })
