@@ -12,10 +12,10 @@ module.exports = {
           is_admin: true,
           name: 'root',
           created_at: new Date(),
-          updated_at: new Date()user1@example.com
+          updated_at: new Date()
         },
         {
-          email: '',
+          email: 'user1@example.com',
           password: await bcrypt.hash('12345678', 10),
           is_admin: false,
           name: 'user1',
