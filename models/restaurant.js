@@ -8,7 +8,9 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
+      // note 資料互相關聯性的設定用於此
       // define association here
+      Restaurant.belongsTo(models.Category, { foreignKey: 'categoryId' })
     }
   }
   Restaurant.init(
