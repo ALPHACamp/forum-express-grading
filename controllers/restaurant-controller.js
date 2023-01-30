@@ -59,6 +59,17 @@ const restaurantController = {
         })
       })
       .catch(err => next(err))
+  },
+  getRestaurant: (req, res, next) => {
+    const { id } = req.params
+    return Restaurant.findByPk(id, { include: Category, raw: true, nest: true })
+      .then(restaurant => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        return res.render('restaurant', {
+          restaurant
+        })
+      })
+      .catch(err => next(err))
   }
 }
 
