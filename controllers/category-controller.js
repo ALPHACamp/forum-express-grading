@@ -1,5 +1,4 @@
 const { Category, Restaurant } = require('../models')
-const restaurant = require('../models/restaurant')
 const categoryController = {
   getCategories: (req, res, next) => {
     const { id } = req.params
