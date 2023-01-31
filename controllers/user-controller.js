@@ -62,7 +62,8 @@ const userController = {
     const { id } = req.params
     if (!name) throw new Error('Name is required!')
     const { file } = req
-    Promise.all([User.findByPk(id), localFileHandler(file)])
+    return Promise
+      .all([User.findByPk(id), localFileHandler(file)])
       .then(([user, filePath]) => {
         return user.update({
           name,
@@ -70,7 +71,7 @@ const userController = {
         })
       })
       .then(() => {
-        req.flash('success_messages', 'profile was successfully to update')
+        req.flash('success_messages', '使用者資料編輯成功')
         res.redirect(`/users/${id}`)
       })
       .catch(err => next(err))
