@@ -1,17 +1,12 @@
 // const { restart } = require('nodemon')
+const adminServices = require('../../services/admin-services')
 const { localFileHandler } = require('../../helpers/file-helper')
 const { Restaurant, User, Category } = require('../../models')
 
 const adminController = {
 
   getRestaurants: (req, res, next) => {
-    Restaurant.findAll({
-      raw: true,
-      nest: true,
-      include: [Category]
-    })
-      .then(restaurants => res.render('admin/restaurants', { restaurants }))
-      .catch(err => next(err))
+    adminServices.getRestaurants(req, (err, data) => err ? next(err) : res.render('admin/restaurants', data))
   },
   createRestaurant: (req, res, next) => {
     return Category.findAll({
