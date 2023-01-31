@@ -1,12 +1,17 @@
 /* For back-end system */
-const { Restaurant } = require('../models');
+const { Restaurant, User, Category } = require('../models');
 const { localFileHandler } = require('../helpers/file-helpers');
 
 const adminController = {
   // the object
   getRestaurants: (req, res, next) => {
     //  note raw 是讓資料呈現簡化為單純的JS物件，若是不加的話，則會是原生Sequelize的instance，除非需要對後續取得的資料操作，才不加。
-    Restaurant.findAll({ raw: true })
+    // note nest 因取用兩個model，所以未加入的話則會變成'Category.name': 'XXX', 加入後可以變成Category: {xx:xx, xx:xx}，較方便操作
+    Restaurant.findAll({
+      raw: true,
+      nest: true,
+      include: [Category] // note 帶入另一個model
+    })
       .then(restaurants => {
         // console.log(restaurants);
         res.render('admin/restaurants', { restaurants });
@@ -41,10 +46,12 @@ const adminController = {
       .catch(err => next(err));
   },
   getRestaurant: (req, res, next) => {
-    Restaurant.findByPk(req.params.id, { raw: true })
+    // note 單筆資料操作可以不加入
+    Restaurant.findByPk(req.params.id, { raw: true, nest: true, include: [Category] })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist");
 
+        // ** method 單筆資料操作可以不加入raw and nest, 這樣的話最後則需要在render這塊進行toJSON()，例如：{ restaurant: restaurant.toJSON() }使其格式可以讓hbs讀到 */
         res.render('admin/restaurant', { restaurant });
       })
       .catch(err => next(err));
