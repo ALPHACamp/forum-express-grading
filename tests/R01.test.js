@@ -74,12 +74,9 @@ describe('# R01', () => {
         // getUser 正確執行的話，應呼叫 res.render
         // res.render 的第 2 個參數應是 users
         // 根據測試資料，users 中的第 1 筆資料，name 屬性值應該要是 'admin'
-<<<<<<< HEAD
         console.log('test')
         console.log('=======================================================================')
         console.log(res.render.getCall(0))
-=======
->>>>>>> origin/R02-test
         res.render.getCall(0).args[1].users[0].name.should.equal('admin')
       })
     })
