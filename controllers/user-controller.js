@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs')
-const db = require('../models')
-const { User } = db
+const { User } = require('../models')
+// const { User } = db
 const userController = {
   signUpPage: (req, res) => {
     res.render('signup')
@@ -36,6 +36,14 @@ const userController = {
     req.flash('success_messages', '登出成功！')
     req.logout() // 這個方法會把 user id 對應的 session 清除掉，對伺服器來說 session 消失就等於是把使用者登出了
     res.redirect('/signin')
+  },
+  getUser: (req, res, next) => {
+    const { id } = req.params
+    User.findByPk(id, { raw: true })
+      .then(user => {
+        return res.render('user', { user })
+      })
+      .catch(err => next(err))
   }
 }
 
