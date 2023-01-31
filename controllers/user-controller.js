@@ -48,11 +48,30 @@ const userController = {
       })
       .catch(err => next(err))
   },
-  editUserUser: (req, res, next) => {
+  editUser: (req, res, next) => {
     const { id } = req.params
     return User.findByPk(id, { raw: true })
       .then(user => {
         return res.render('users/edit', { user })
+      })
+      .catch(err => next(err))
+  },
+  putUser: (req, res, next) => {
+    console.log(req.body)
+    const { name } = req.body
+    const { id } = req.params
+    if (!name) throw new Error('Name is required!')
+    const { file } = req
+    Promise.all([User.findByPk(id), localFileHandler(file)])
+      .then(([user, filePath]) => {
+        return user.update({
+          name,
+          image: filePath || user.image
+        })
+      })
+      .then(() => {
+        req.flash('success_messages', 'profile was successfully to update')
+        res.redirect(`/users/${id}`)
       })
       .catch(err => next(err))
   }
