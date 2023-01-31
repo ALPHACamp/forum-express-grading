@@ -4,6 +4,11 @@ const { faker } = require('@faker-js/faker')
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
+    // Thinking 在部署後，Categories對於每個廠牌的資料庫id產生的方式不一樣，所以要先查找該資料庫的Categories的id後再去做隨機分配
+    const categories = await queryInterface.sequelize.query(
+      'SELECT id FROM Categories;', { type: queryInterface.sequelize.QueryTypes.SELECT }
+    )
+
     await queryInterface.bulkInsert('Restaurants',
     //  note 下面等同於Array.from({ XXX }).map(() => ({ XXX }))
       Array.from({ length: 50 }, () => ({
@@ -16,7 +21,9 @@ module.exports = {
         image: `https://loremflickr.com/320/240/restaurant,food/?random=${Math.random() * 100}`,
         description: faker.lorem.text(),
         created_at: new Date(),
-        updated_at: new Date()
+        updated_at: new Date(),
+        // note 配合部署後的Categories產生的id, 找到後為一陣列值，隨機取其中一個index作為他的id value
+        category_id: categories[Math.floor(Math.random() * categories.length)].id
       })))
   },
 

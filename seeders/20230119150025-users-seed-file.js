@@ -25,11 +25,11 @@ module.exports = {
       created_at: new Date(),
       updated_at: new Date()
     }
-    ])
+    ], {})
   },
 
   down: async (queryInterface, Sequelize) => {
     //  note 清空資料表
-    await queryInterface.bulkDelete('Users', {})
+    await queryInterface.bulkDelete('Users', null, {})
   }
 };
