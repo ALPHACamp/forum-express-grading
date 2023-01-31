@@ -1,4 +1,5 @@
 const bcrypt = require('bcryptjs')
+const { localFileHandler } = require('../helpers/file-helpers')// 照片上傳
 const { User } = require('../models')
 // const { User } = db
 const userController = {
@@ -6,7 +7,9 @@ const userController = {
     res.render('signup')
   },
   signUp: (req, res, next) => {
-    if (req.body.password !== req.body.passwordCheck) { throw new Error('Passwords do not match!') }
+    if (req.body.password !== req.body.passwordCheck) {
+      throw new Error('Passwords do not match!')
+    }
     User.findOne({ where: { email: req.body.email } })
       .then(user => {
         if (user) throw new Error('Email already exists!')
@@ -39,9 +42,37 @@ const userController = {
   },
   getUser: (req, res, next) => {
     const { id } = req.params
-    User.findByPk(id, { raw: true })
+    return User.findByPk(id, { raw: true })
       .then(user => {
-        return res.render('user', { user })
+        return res.render('users/profile', { user })
+      })
+      .catch(err => next(err))
+  },
+  editUser: (req, res, next) => {
+    const { id } = req.params
+    return User.findByPk(id, { raw: true })
+      .then(user => {
+        return res.render('users/edit', { user })
+      })
+      .catch(err => next(err))
+  },
+  putUser: (req, res, next) => {
+    console.log(req.body)
+    const { name } = req.body
+    const { id } = req.params
+    if (!name) throw new Error('Name is required!')
+    const { file } = req
+    return Promise
+      .all([User.findByPk(id), localFileHandler(file)])
+      .then(([user, filePath]) => {
+        return user.update({
+          name,
+          image: filePath || user.image
+        })
+      })
+      .then(() => {
+        req.flash('success_messages', '使用者資料編輯成功')
+        res.redirect(`/users/${id}`)
       })
       .catch(err => next(err))
   }
