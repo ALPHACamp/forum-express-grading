@@ -1,6 +1,6 @@
 // const { restart } = require('nodemon')
 const adminServices = require('../../services/admin-services')
-const { localFileHandler } = require('../../helpers/file-helper')
+const { imgurFileHandler } = require('../../helpers/file-helpers')
 const { Restaurant, User, Category } = require('../../models')
 
 const adminController = {
@@ -16,19 +16,12 @@ const adminController = {
       .catch(err => next(err))
   },
   postRestaurant: (req, res, next) => {
-    const { name, tel, address, openingHours, description, categoryId } = req.body
-    if (!name) throw new Error('Restaurant name is required!')
-
-    const { file } = req
-    localFileHandler(file).then(filePath => {
-      return Restaurant.create({
-        name, tel, address, openingHours, description, image: filePath || null, categoryId
-      })
+    adminServices.postRestaurant(req, (err, data) => {
+      if (err) return next(err)
+      req.flash('success_messages', 'restaurant was created successfully')
+      req.session.createdData = data
+      res.redirect('/admin/restaurants')
     })
-      .then(() => {
-        req.flash('success_messages', 'restaurant was created successfully')
-        res.redirect('/admin/restaurants')
-      }).catch(err => next(err))
   },
   getRestaurant: (req, res, next) => {
     Restaurant.findByPk(req.params.id, {
@@ -59,7 +52,7 @@ const adminController = {
     const { file } = req
     Promise.all([
       Restaurant.findByPk(req.params.id),
-      localFileHandler(file)
+      imgurFileHandler(file)
     ])
       .then(([restaurant, filePath]) => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
