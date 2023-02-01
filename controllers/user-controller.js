@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs')
-const { localFileHandler } = require('../helpers/file-helpers')// 照片上傳
-const { User } = require('../models')
+const { localFileHandler } = require('../helpers/file-helpers') // 照片上傳
+const { User, Restaurant, Comment, Favorite } = require('../models')
 // const { User } = db
 const userController = {
   signUpPage: (req, res) => {
@@ -57,13 +57,11 @@ const userController = {
       .catch(err => next(err))
   },
   putUser: (req, res, next) => {
-    console.log(req.body)
     const { name } = req.body
     const { id } = req.params
     if (!name) throw new Error('Name is required!')
     const { file } = req
-    return Promise
-      .all([User.findByPk(id), localFileHandler(file)])
+    return Promise.all([User.findByPk(id), localFileHandler(file)])
       .then(([user, filePath]) => {
         return user.update({
           name,
@@ -74,6 +72,35 @@ const userController = {
         req.flash('success_messages', '使用者資料編輯成功')
         res.redirect(`/users/${id}`)
       })
+      .catch(err => next(err))
+  },
+  addFavorite: (req, res, next) => {
+    const { restaurantId } = req.params
+    const userId = req.user.id
+    return Promise.all([
+      Restaurant.findByPk(restaurantId),
+      Favorite.findOne({ where: { userId, restaurantId } })
+    ])
+      .then(([restaurant, favorite]) => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        if (favorite) throw new Error('You have favorited this restaurant!')
+        return Favorite.create({
+          userId,
+          restaurantId
+        })
+      })
+      .then(() => res.redirect('back'))
+      .catch(err => next(err))
+  },
+  removeFavorite: (req, res, next) => {
+    const { restaurantId } = req.params
+    const userId = req.user.id
+    return Favorite.findOne({ where: { userId, restaurantId } })
+      .then(favorite => {
+        if (favorite) throw new Error('You have favorited this restaurant!')
+        return favorite.destroy()
+      })
+      .then(() => res.redirect('back'))
       .catch(err => next(err))
   }
 }
