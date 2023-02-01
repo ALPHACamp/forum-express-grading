@@ -23,17 +23,19 @@ const restaurantController = {
       })
     ])
       .then(([restaurants, categories]) => {
-        // map後的()是IIFE嗎？
+        // map後的()是IIFE嗎？不是！！是省略一個大括號，並用括號區分是在return object
         // const data = restaurants.rows.map(r => ({
         // ...r,
         // description: r.description.substring(0, 50),
         // isFavorite: req.user && req.user.FavoritedRestaurants.map(fr => fr.id).includes(r.id)
         // &&(logical operator) if the left hand side is true, then evaluates as the right hand side
         const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
+        const likedRestaurantsId = req.user && req.user.LikedRestaurants.map(fr => fr.id)
         const data = restaurants.rows.map(r => ({
           ...r,
           description: r.description.substring(0, 50),
-          isFavorited: favoritedRestaurantsId.includes(r.id)
+          isFavorited: favoritedRestaurantsId.includes(r.id),
+          isLiked: likedRestaurantsId.includes(r.id)
         }))
         return res.render('restaurants', {
           restaurants: data,
@@ -50,7 +52,8 @@ const restaurantController = {
       include: [
         Category,
         { model: Comment, include: User },
-        { model: User, as: 'FavoritedUsers' }
+        { model: User, as: 'FavoritedUsers' },
+        { model: User, as: 'LikedUsers' }
       ]
     })
       .then(restaurant => {
@@ -58,10 +61,14 @@ const restaurantController = {
         const isFavorited = restaurant.FavoritedUsers.some(
           f => f.id === req.user.id
         )
+        const isLiked = restaurant.LikedUsers.some(
+          f => f.id === req.user.id
+        )
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         res.render('restaurant', {
           restaurant: restaurant.toJSON(),
-          isFavorited
+          isFavorited,
+          isLiked
         })
         restaurant.increment('viewCounts')
       })
