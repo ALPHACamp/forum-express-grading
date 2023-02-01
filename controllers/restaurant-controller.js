@@ -56,13 +56,36 @@ const restaurantController = {
     return Promise.all([
       Restaurant.findByPk(id, { include: Category, raw: true, nest: true }),
       Comment.findAndCountAll({ where: { restaurantId: 153 } })
-    ]).then(([restaurant, commentCounts]) => {
-      if (!restaurant) throw new Error("Restaurant didn't exist!")
-      return res.render('dashboard', {
-        restaurant,
-        commentCounts: commentCounts.count
+    ])
+      .then(([restaurant, commentCounts]) => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        return res.render('dashboard', {
+          restaurant,
+          commentCounts: commentCounts.count
+        })
       })
-    })
+      .catch(err => next(err))
+  },
+  getFeeds: (req, res, next) => {
+    return Promise.all([
+      Restaurant.findAll({
+        limit: 10,
+        order: [['createdAt', 'DESC']],
+        include: [Category],
+        raw: true,
+        nest: true
+      }),
+      Comment.findAll({
+        limit: 10,
+        order: [['createdAt', 'DESC']],
+        include: [User, Restaurant],
+        raw: true,
+        nest: true
+      })
+    ])
+      .then(([restaurants, comments]) => {
+        res.render('feeds', { restaurants, comments })
+      })
       .catch(err => next(err))
   }
 }
