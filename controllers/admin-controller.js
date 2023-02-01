@@ -1,6 +1,6 @@
 /* For back-end system */
 const { Restaurant, User, Category } = require('../models');
-const { localFileHandler } = require('../helpers/file-helpers');
+const { imgurFileHandler } = require('../helpers/file-helpers');
 
 const adminController = {
   // the object
@@ -28,7 +28,7 @@ const adminController = {
 
     const file = req.file;
     console.log(file);
-    localFileHandler(file) // 先經multer處理後再給下面繼續
+    imgurFileHandler(file) // 先經multer處理後再給下面繼續
       .then(filePath => {
         return Restaurant.create({
           name,
@@ -74,7 +74,7 @@ const adminController = {
     // notice 注意parameter數量，Promise.all([a, b]).then([a, b])
     Promise.all([
       Restaurant.findByPk(req.params.id), // note 不使用raw是因為還需要利用Sequelize的instance進行資料操作，若是轉成JS則無法使用update()
-      localFileHandler(file)
+      imgurFileHandler(file)
     ])
       .then(([restaurant, filePath]) => {
         if (!restaurant) throw new Error("Restaurant didn't exist");

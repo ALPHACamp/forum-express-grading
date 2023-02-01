@@ -7,5 +7,9 @@
   "files.autoSave": "onFocusChange",
   "[javascript]": {
     "editor.defaultFormatter": "rvest.vs-code-prettier-eslint"
-  } // optional but recommended
+  },
+  "cSpell.words": [
+    "imgur",
+    "IMGUR"
+  ] // optional but recommended
 }
