@@ -24,9 +24,16 @@ const restaurantController = {
     ])
       .then(([restaurants, categories]) => {
         // map後的()是IIFE嗎？
+        // const data = restaurants.rows.map(r => ({
+        // ...r,
+        // description: r.description.substring(0, 50),
+        // isFavorite: req.user && req.user.FavoritedRestaurants.map(fr => fr.id).includes(r.id)
+        // &&(logical operator) if the left hand side is true, then evaluates as the right hand side
+        const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
         const data = restaurants.rows.map(r => ({
           ...r,
-          description: r.description.substring(0, 50)
+          description: r.description.substring(0, 50),
+          isFavorited: favoritedRestaurantsId.includes(r.id)
         }))
         return res.render('restaurants', {
           restaurants: data,
@@ -40,12 +47,21 @@ const restaurantController = {
   getRestaurant: (req, res, next) => {
     const { id } = req.params
     return Restaurant.findByPk(id, {
-      include: [Category, { model: Comment, include: User }]
+      include: [
+        Category,
+        { model: Comment, include: User },
+        { model: User, as: 'FavoritedUsers' }
+      ]
     })
       .then(restaurant => {
+        // restaurant.FavoritedUsers中如果有登入的user.id則return true
+        const isFavorited = restaurant.FavoritedUsers.some(
+          f => f.id === req.user.id
+        )
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         res.render('restaurant', {
-          restaurant: restaurant.toJSON()
+          restaurant: restaurant.toJSON(),
+          isFavorited
         })
         restaurant.increment('viewCounts')
       })
