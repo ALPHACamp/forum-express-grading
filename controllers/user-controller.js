@@ -97,7 +97,7 @@ const userController = {
     const userId = req.user.id
     return Favorite.findOne({ where: { userId, restaurantId } })
       .then(favorite => {
-        if (favorite) throw new Error('You have favorited this restaurant!')
+        if (!favorite) throw new Error("You haven't favorited this restaurant")
         return favorite.destroy()
       })
       .then(() => res.redirect('back'))
