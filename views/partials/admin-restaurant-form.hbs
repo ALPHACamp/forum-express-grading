@@ -4,11 +4,15 @@
     required>
 </div>
 
+{{!-- Thinking 此段context說明 外層先傳入restaurant and categories資料，到內層{{each}}則this開始指向categories的迭代項目 --}}
+{{!-- notice 若不寫相對路徑，則this會跑去 categories中尋找叫restaurant的屬性，會找不到--}}
 <div class="form-row mb-3">
   <label class="form-label" for="categoryId">Category</label>
   <select class="form-control" id="categoryId" name="categoryId">
     {{#each categories}}
-    <option value="{{this.id}}">{{this.name}}</option>
+    {{!-- note ../XXX 此為handlebar的path語法 --}}
+    <option value="{{this.id}}" {{ifCond this.id ../restaurant.categoryId}} selected {{/ifCond}}>
+      {{this.name}}</option>
     {{/each}}
   </select>
 </div>

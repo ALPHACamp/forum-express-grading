@@ -19,6 +19,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 const SESSION_SECRET = 'secret';
 
+// note 此處多加helpers把handlebars-helpers.js掛載進去
 app.engine('hbs', engine({ extname: '.hbs', helpers: handlebarsHelpers }));
 app.set('view engine', 'hbs');
 
