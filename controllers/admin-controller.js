@@ -1,5 +1,5 @@
 const { Restaurant, User, Category } = require('../models')
-const { localFileHandler } = require('../helpers/file-helpers')
+const { localFileHandler } = require('../helpers/file-helpers')// 照片上傳
 const adminController = {
   getRestaurants: (req, res, next) => {
     Restaurant.findAll({
@@ -109,7 +109,8 @@ const adminController = {
   },
   patchUser: (req, res, next) => {
     const { id } = req.params
-    return User.findByPk(id)
+    return User
+      .findByPk(id)
       .then(user => {
         if (user.email === 'root@example.com') {
           req.flash('error_messages', '禁止變更 root 權限')
