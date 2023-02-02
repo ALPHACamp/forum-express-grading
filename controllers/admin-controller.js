@@ -119,6 +119,22 @@ const adminController = {
         res.render('admin/users', { users })
       })
       .catch(err => next(err))
+  },
+  patchUser: (req, res, next) => {
+    User.findByPk(req.params.id)
+      .then(user => {
+        console.log(user.isAdmin)
+        if (user.isAdmin) {
+          return user.update({ isAdmin: false })
+        } else {
+          return user.update({ isAdmin: true })
+        }
+      })
+      .then(() => {
+        req.flash('success_messages', 'user was successfully to update')
+        res.redirect('/admin/users')
+      })
+      .catch(err => next(err))
   }
 }
 module.exports = adminController
