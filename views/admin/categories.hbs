@@ -1,6 +1,14 @@
 {{> admin-tab route='categories'}}
-<form action="/admin/categories" method="POST">
-  <input class="" type="text" name="name" placeholder="Category Name">
-  <button type="sumbit" class="btn btn-primary">Create</button>
-</form>
+
+<div class="d-flex align-items-center pt-3 pb-5 my-3 text-white-50 bg-purple">
+  <form class="row" action="/admin/categories" method="POST">
+    <div class="col-auto">
+      <input class="form-control" type="text" name="name" placeholder="Category Name">
+    </div>
+    <div class="col-auto">
+      <button type="sumbit" class="btn btn-success">Create</button>
+    </div>
+  </form>
+</div>
+
 {{> admin-category-form}}
