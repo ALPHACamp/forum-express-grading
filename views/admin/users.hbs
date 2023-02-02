@@ -1,0 +1,32 @@
+{{> admin-tab route='users'}}
+<br />
+<br />
+<table class="table align-middle">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Name</th>
+      <th scope="col">Email</th>
+      <th scope="col">Role</th>
+      <th scope="col">#</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each users}}
+      <tr>
+        <th scope="row">{{this.id}}</th>
+        <td>{{this.name}}</td>
+        <td>{{this.email}}</td>
+        <td>{{#ifCond this.isAdmin 1}}admin{{/ifCond}}{{#ifCond this.isAdmin 0}}user{{/ifCond}}</td>
+        <td>
+          <button type="button" class="btn btn-link">
+            <a class="btn btn-link link-primary" href="/admin/users/{{this.id}}">
+              {{#ifCond this.isAdmin 1}}set as user{{/ifCond}}
+              {{#ifCond this.isAdmin 0}}set as admin{{/ifCond}}
+            </a>
+          </button>
+        </td>
+      </tr>
+    {{/each}}
+  </tbody>
+</table>
