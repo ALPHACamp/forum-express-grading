@@ -1,0 +1,6 @@
+{{> admin-tab route='categories'}}
+<form action="/admin/categories/{{category.id}}?_method=PUT" method="POST">
+  <input class="" type="text" name="name" placeholder="Category Name" value="{{category.name}}">
+  <button type="sumbit" class="btn btn-warning">Update</button>
+</form>
+{{> admin-category-form}}
