@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs')
 const { localFileHandler } = require('../helpers/file-helpers') // 照片上傳
-const { User, Restaurant, Comment, Favorite, Like, Followship } = require('../models')
+const { User, Restaurant, Favorite, Like, Followship } = require('../models')
 // const { User } = db
 const userController = {
   signUpPage: (req, res) => {
