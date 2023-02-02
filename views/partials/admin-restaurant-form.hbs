@@ -11,7 +11,7 @@
   <select class="form-control" id="categoryId" name="categoryId">
     {{#each categories}}
     {{!-- note ../XXX 此為handlebar的path語法 --}}
-    <option value="{{this.id}}" {{ifCond this.id ../restaurant.categoryId}} selected {{/ifCond}}>
+    <option value="{{this.id}}" {{#ifCond this.id ../restaurant.categoryId}} selected {{/ifCond}}>
       {{this.name}}</option>
     {{/each}}
   </select>

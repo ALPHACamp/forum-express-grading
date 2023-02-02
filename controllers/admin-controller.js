@@ -115,6 +115,31 @@ const adminController = {
       })
       .then(() => res.redirect('/admin/restaurants'))
       .catch(err => next(err));
+  },
+  getUsers: (req, res, next) => {
+    return User.findAll({
+      raw: true
+    })
+      .then(users => res.render('admin/users', { users }))
+      .catch(err => next(err))
+  },
+  patchUser: (req, res, next) => {
+    return User.findByPk(req.params.id)
+      .then(user => {
+        if (!user) throw new Error("The user didn't exist !!")
+
+        if (user.email === 'root@example.com') {
+          req.flash('error_messages', "You can't change Superuser permission")
+          return res.redirect('back')
+        }
+
+        // note 利用logical not(!)來改變boolean
+        return user.update({ isAdmin: !user.isAdmin })
+          .then(() => {
+            req.flash('success_messages', "The user's permission changed successfully")
+            res.redirect('/admin/users')
+          })
+      })
   }
 };
 
