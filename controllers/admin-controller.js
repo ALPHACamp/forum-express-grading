@@ -8,7 +8,14 @@ const adminController = {
       nest: true,
       include: [Category]
     })
-      .then(restaurants => res.render('admin/restaurants', { restaurants }))
+      .then(restaurants => {
+        restaurants.forEach(rest => {
+          if (rest.categoryId === null) {
+            rest.Category.name = '(未分類)'
+          }
+        })
+        res.render('admin/restaurants', { restaurants })
+      })
       .catch(err => next(err))
   },
 
@@ -72,7 +79,6 @@ const adminController = {
     const { name, tel, address, openingHours, description, categoryId } = req.body
     const { file } = req
     if (!name) throw new Error('Restaurant name is required!')
-
     Promise.all([
       Restaurant.findByPk(req.params.id),
       imgurFileHandler(file)
@@ -87,7 +93,7 @@ const adminController = {
           openingHours,
           description,
           image: filePath || restaurant.image,
-          categoryId
+          categoryId: categoryId || null
         })
       })
       .then(() => {
