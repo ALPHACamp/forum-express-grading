@@ -116,6 +116,7 @@ const adminController = {
       .then(() => res.redirect('/admin/restaurants'))
       .catch(err => next(err));
   },
+  // TODO User permission
   getUsers: (req, res, next) => {
     return User.findAll({
       raw: true

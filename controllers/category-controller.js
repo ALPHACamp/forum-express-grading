@@ -33,6 +33,19 @@ const categoryController = {
       })
       .then(() => res.redirect('/admin/categories'))
       .catch(err => next(err))
+  },
+  deleteCategory: (req, res, next) => {
+    // !! 可再優化，如類別有餐廳了，刪除會連動的情況下，要如何去處理（標示未分類？ or 該類別的餐廳全刪掉)
+    return Category.findByPk(req.params.id)
+      .then(category => {
+        if (!category) throw new Error("Category doesn't exist")
+
+        req.flash('success_messages', 'Category is deleted successfully')
+
+        return category.destroy()
+      })
+      .then(() => res.redirect('/admin/categories'))
+      .catch(err => next(err))
   }
 }
 
