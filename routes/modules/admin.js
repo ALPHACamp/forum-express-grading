@@ -8,6 +8,7 @@ const categoryController = require('../../controllers/category-controller')
 const upload = require('../../middleware/multer');
 
 // Section all routes
+// About restaurants
 // note 條件多或最嚴格的的要擺最前面，不然一匹配到就會直接進入該指定的位置
 // notice authenticatedAdmin使用太多，抽離到index去見證
 router.get('/restaurants/create', adminController.createRestaurant);
@@ -32,11 +33,16 @@ router.post(
   adminController.postRestaurant
 );
 
+// About Users
 router.patch('/users/:id', adminController.patchUser)
 router.get('/users', adminController.getUsers)
 
+// About Categories
 router.get('/categories', categoryController.getCategories)
 
+router.post('/categories', categoryController.postCategory)
+
+// Others
 router.get('/', (req, res) => {
   res.redirect('/admin/restaurants');
 });
