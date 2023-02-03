@@ -3,6 +3,7 @@ const dayjs = require('dayjs');
 module.exports = {
   // note 利用dayjs套件取得當前年份
   currentYear: () => dayjs().year(),
+  // note hbs提供的客製化條件式，a,b 為conditional
   ifCond: function (a, b, options) {
     return a === b ? options.fn(this) : options.inverse(this)
   }
