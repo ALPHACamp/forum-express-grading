@@ -6,7 +6,7 @@ const adminController = {
   // TODO  Read all restaurants
   getRestaurants: (req, res, next) => {
     //  note raw 是讓資料呈現簡化為單純的JS物件，若是不加的話，則會是原生Sequelize的instance，除非需要對後續取得的資料操作，才不加。
-    // note nest 因取用兩個model，所以未加入的話則會變成'Category.name': 'XXX', 加入後可以變成Category: {xx:xx, xx:xx}，較方便操作
+    // note nest 因取用兩個model，所以未加入的話則會變成restaurant[X]['Category.name'], 加入後可以變成restaurant[X].Category.name，較方便操作
     Restaurant.findAll({
       raw: true,
       nest: true,
