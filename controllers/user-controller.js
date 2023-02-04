@@ -5,18 +5,27 @@ const userController = {
   singUpPage: (req, res) => {
     return res.render('signup')
   },
-  signUp: (req, res) => {
+  signUp: (req, res, next) => {
     const { name, email, password, passwordCheck } = req.body
-    bcrypt.genSalt(10)
-      .then(salt => bcrypt.hash(password, salt))
+    if (password !== passwordCheck) throw new Error('密碼與確認密碼不一致!')
+
+    User.findOne({ where: { email } })
+      .then(user => {
+        if (user) throw new Error('使用者已存在!')
+
+        return bcrypt.hash(password, 10)
+      })
       .then(hash => User.create({
         name,
         email,
         password: hash
       }))
-      .then(() => res.redirect('/signin'))
-      .catch(error => console.log(error))
-    }
+      .then(() => {
+        req.flash('success_message', '註冊成功!')
+        res.redirect('/signin')
+      })
+      .catch(error => next(error))
+  }
 }
 
 module.exports = userController
