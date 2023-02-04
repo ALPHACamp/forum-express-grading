@@ -1,3 +1,18 @@
+{{!-- category navigator--}}
+<ul class="nav nav-pills">
+  <li class="nav-item">
+    {{!-- note 因為是全類別，所以產生空字串，但是後面的href要保留 --}}
+    <a class="nav-link {{#ifCond '' categoryId}}active{{/ifCond}}" href="?categoryId=">全部</a>
+  </li>
+  {{#each categories}}
+  <li class="nav-item">
+    {{!-- notice ../categoryId 這寫法是因為在#each or #if這圈裡面，無法取用外層變數，因此要多個階層".../"來取用 --}}
+    <a class="nav-link {{#ifCond this.id ../categoryId}}active{{/ifCond}}"
+      href="?categoryId={{this.id}}">{{this.name}}</a>
+  </li>
+  {{/each}}
+</ul>
+
 <div class="row mt-3">
   {{#each restaurants}}
   <div class="col-md-4">
