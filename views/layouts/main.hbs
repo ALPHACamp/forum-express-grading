@@ -1,4 +1,4 @@
-<html>
+<html class="h-100">
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -9,10 +9,11 @@
       href="https://bootswatch.com/5/flatly/bootstrap.min.css"
     />
   </head>
-  <body>
-    <main role="main">
-      <div class="album bg-light pt-5">
-        <div class="container">
+  <body class="d-flex flex-column h-100 bg-light">
+    {{> header}}
+    <main class="flex-shrink-0" role="main" >
+      <div class="album container bg-light pt-5">
+        <div class="pt-5">
           {{!-- partial messages --}}
           {{> messages}}
           
@@ -20,6 +21,7 @@
         </div>
       </div>
     </main>
+    {{> footer}}
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
     ></script>

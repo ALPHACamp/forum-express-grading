@@ -45,13 +45,14 @@ module.exports = app => {
 
   // - serialization & deserialization
   passport.serializeUser((user, done) => {
+    user = user.toJSON()
     return done(null, user.id)
   })
   passport.deserializeUser(async (id, done) => {
     try {
       const foundUser = await User.findByPk(id)
       if (!foundUser) return done(null, false)
-      return done(null, foundUser)
+      return done(null, foundUser.toJSON())
     } catch (error) {
       return done(error, null)
     }
