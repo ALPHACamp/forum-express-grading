@@ -1,5 +1,6 @@
 const express = require('express')
 const handlebars = require('express-handlebars')
+const usePassport = require('./config/passport')
 const session = require('express-session')
 const flash = require('connect-flash')
 const routes = require('./routes')
@@ -18,6 +19,7 @@ app.use(
     resave: false
   })
 )
+usePassport(app)
 app.use(flash())
 app.use((req, res, next) => {
   res.locals.success_msg = req.flash('success_msg')
