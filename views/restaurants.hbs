@@ -41,7 +41,7 @@
   <ul class="pagination">
     <li class="page-item {{#ifCond pagination.currentPage 1}}disabled{{/ifCond}}">
       <a class="page-link" href="/restaurants?page={{pagination.prev}}&categoryId={{categoryId}}" aria-label="Previous">
-        <span aria-hidden="true">&laquo;</span>
+        {{!-- note 因"<<"會被HTML當作一部分而解析，因此採用字符實體寫法 "&laquo" --}} <span aria-hidden="true">&laquo;</span>
       </a>
     </li>
     {{#each pagination.pages}}

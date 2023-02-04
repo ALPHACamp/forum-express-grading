@@ -47,6 +47,22 @@ const restaurantController = {
   },
   getRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
+      nest: true,
+      include: [Category]
+    })
+      .then(restaurant => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+
+        // note 導入瀏覽增加次數
+        restaurant.increment('viewCounts', { by: 1 })
+
+        // note 因要操作資料庫，所以不使用raw來進行，所以導入變數的時候要先進行純JS的格式化
+        return res.render('restaurant', { restaurant: restaurant.toJSON() })
+      })
+      .catch(err => next(err))
+  },
+  getDashboard: (req, res, next) => {
+    return Restaurant.findByPk(req.params.id, {
       raw: true,
       nest: true,
       include: [Category]
@@ -54,7 +70,7 @@ const restaurantController = {
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
 
-        return res.render('restaurant', { restaurant })
+        return res.render('dashboard', { restaurant })
       })
       .catch(err => next(err))
   }
