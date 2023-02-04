@@ -20,6 +20,7 @@ if (config.use_env_variable) {
 fs
   .readdirSync(__dirname)
   .filter(file => {
+    // 開頭為. 通常代表隱藏檔案, ex: .env    不是當前檔案            想讀取的其他模組
     return (file.indexOf('.') !== 0) && (file !== basename) && (file.slice(-3) === '.js')
   })
   .forEach(file => {
@@ -35,7 +36,7 @@ Object.keys(db).forEach(modelName => {
 })
 
 // 匯出需要的物件
-db.sequelize = sequelize
-db.Sequelize = Sequelize
+db.sequelize = sequelize // 建構的實體 : 連線資料庫的 instance。這個 instance 擁有一些屬性如 queryInterface、config 等，後面會常用到。
+db.Sequelize = Sequelize // 套件 : Sequelize 這個 class，代表 Sequelize 函式庫本身。
 
 module.exports = db
