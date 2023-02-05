@@ -51,10 +51,15 @@ const restaurantController = {
       include: [
         Category,
         { model: Comment, include: User }
+      ],
+      // note 使comment按照時間排序
+      order: [
+        [Comment, 'createdAt', 'DESC']
       ]
     })
       .then(restaurant => {
         // notice 建議console出來以了解output格式的變化
+
         if (!restaurant) throw new Error("Restaurant didn't exist!")
 
         // note 導入瀏覽增加次數
