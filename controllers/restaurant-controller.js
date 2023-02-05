@@ -46,6 +46,7 @@ const restaurantController = {
       .catch(err => next(err))
   },
   getRestaurant: (req, res, next) => {
+    // notice 有關兩個以上table的關聯使用上，用include來結合，include: { model: XXX, as: 'abc'} => 關聯XXX的table並以abc的名字作為別名，所以console後會出現abc來取代物件XXX的名字，若沒有as設定別名的話，則會以XXXs作為名稱來操作
     return Restaurant.findByPk(req.params.id, {
       nest: true,
       include: [
@@ -59,7 +60,6 @@ const restaurantController = {
     })
       .then(restaurant => {
         // notice 建議console出來以了解output格式的變化
-
         if (!restaurant) throw new Error("Restaurant didn't exist!")
 
         // note 導入瀏覽增加次數
@@ -72,14 +72,16 @@ const restaurantController = {
   },
   getDashboard: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
-      raw: true,
       nest: true,
-      include: [Category]
+      include: [
+        Category,
+        { model: Comment, include: User }
+      ]
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
 
-        return res.render('dashboard', { restaurant })
+        return res.render('dashboard', { restaurant: restaurant.toJSON() })
       })
       .catch(err => next(err))
   }

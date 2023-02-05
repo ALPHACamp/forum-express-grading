@@ -10,7 +10,8 @@ const adminController = {
     Restaurant.findAll({
       raw: true,
       nest: true,
-      include: [Category] // note 帶入另一個model
+      // note 帶入另一個model，在sequelize此為eager loading
+      include: [Category]
     })
       .then(restaurants => {
         res.render('admin/restaurants', { restaurants });
