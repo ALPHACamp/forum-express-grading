@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
       // note 資料互相關聯性的設定用於此
       // define association here
       Restaurant.belongsTo(models.Category, { foreignKey: 'categoryId' })
+      Restaurant.hasMany(models.Comment, { foreignKey: 'restaurantId' })
     }
   }
   Restaurant.init(
