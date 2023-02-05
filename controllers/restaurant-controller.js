@@ -1,6 +1,6 @@
 /* For front-end system */
 
-const { Restaurant, Category } = require('../models')
+const { Restaurant, Category, Comment, User } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
 
 const restaurantController = {
@@ -48,9 +48,13 @@ const restaurantController = {
   getRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
       nest: true,
-      include: [Category]
+      include: [
+        Category,
+        { model: Comment, include: User }
+      ]
     })
       .then(restaurant => {
+        // notice 建議console出來以了解output格式的變化
         if (!restaurant) throw new Error("Restaurant didn't exist!")
 
         // note 導入瀏覽增加次數
