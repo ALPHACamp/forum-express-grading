@@ -35,6 +35,7 @@ router.get('/restaurants/:id', authenticated, restController.getRestaurant)
 // note 原先驗證一般使用者，之後多authenticated來驗證admin user
 router.get('/restaurants', authenticated, restController.getRestaurants);
 
+router.delete('/comments/:id', authenticatedAdmin, commentController.deleteComment)
 router.post('/comments', authenticated, commentController.postComment)
 
 router.get('/', (req, res) => {

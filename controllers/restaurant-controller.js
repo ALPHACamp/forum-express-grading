@@ -52,7 +52,7 @@ const restaurantController = {
         Category,
         { model: Comment, include: User }
       ],
-      // note 使comment按照時間排序
+      // note 使comment按照時間排序 order: [tableNAme, 'filedName', 'DESC or ASC]
       order: [
         [Comment, 'createdAt', 'DESC']
       ]

@@ -24,6 +24,13 @@
 {{!-- Comment --}}
 <h3 class="mb-3">所有評論：</h3>
 {{#each restaurant.Comments}}
+{{!-- notice 注意，要取外層的變數 --}}
+{{#if ../user.isAdmin}}
+<form action="/comments/{{this.id}}?_method=DELETE" method="POST" class="float-end">
+  <button type="submit" class="btn btn-danger"
+    onclick="return confirm(`Are you sure you want to delete this comment ?`)">Delete</button>
+</form>
+{{/if}}
 {{!-- note blockquote : 顯示帶有顏色的區域 --}}
 <blockquote class="blockquote mb-0">
   <h4><a href="/users/{{this.User.id}}">{{this.User.name}}</a></h4>
