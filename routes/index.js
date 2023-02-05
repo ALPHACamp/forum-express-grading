@@ -4,6 +4,7 @@ const admin = require('./modules/admin')
 const userController = require('../controllers/user-controller')
 const restController = require('../controllers/restaurant-controller')
 const { generalErrorHandler } = require('../middleware/error-handler')
+const { authenticated } = require('../middleware/auth')
 const passport = require('passport')
 
 router.use('/admin', admin)
@@ -19,7 +20,7 @@ router.post(
   userController.signIn
 )
 router.get('/logout', userController.logout)
-router.get('/restaurants', restController.getRestaurants)
+router.get('/restaurants', authenticated, restController.getRestaurants)
 router.use('/', (req, res) => res.redirect('/restaurants'))
 // - 將其餘無對應路由導向restaurants頁面
 router.use('/', generalErrorHandler)

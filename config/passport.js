@@ -45,7 +45,6 @@ module.exports = app => {
 
   // - serialization & deserialization
   passport.serializeUser((user, done) => {
-    user = user.toJSON()
     return done(null, user.id)
   })
   passport.deserializeUser(async (id, done) => {
