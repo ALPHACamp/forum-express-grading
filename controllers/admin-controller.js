@@ -29,6 +29,16 @@ const adminController = {
     } catch (error) {
       return next(error)
     }
+  },
+  getRestaurant: async (req, res, next) => {
+    const { id } = req.params
+    try {
+      const restaurant = await Restaurant.findByPk(id, { raw: true })
+      if (!restaurant) throw new Error('此餐廳不存在!')
+      return res.render('admin/restaurant', { restaurant })
+    } catch (error) {
+      return next(error)
+    }
   }
 }
 
