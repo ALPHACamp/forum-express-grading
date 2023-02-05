@@ -9,6 +9,26 @@ const adminController = {
     } catch (error) {
       return next(error)
     }
+  },
+  createRestaurant: (req, res) => {
+    return res.render('admin/create-restaurant')
+  },
+  postRestaurant: async (req, res, next) => {
+    const { name, tel, address, openingHours, description } = req.body
+    try {
+      if (!name) throw new Error('Restaurant name is required!')
+      await Restaurant.create({
+        name,
+        tel,
+        address,
+        openingHours,
+        description
+      })
+      req.flash('success_msg', '成功建立新餐廳!')
+      return res.redirect('/admin/restaurants')
+    } catch (error) {
+      return next(error)
+    }
   }
 }
 
