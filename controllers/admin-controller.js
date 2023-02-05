@@ -39,6 +39,37 @@ const adminController = {
     } catch (error) {
       return next(error)
     }
+  },
+  editRestaurant: async (req, res, next) => {
+    const { id } = req.params
+    try {
+      const restaurant = await Restaurant.findByPk(id, { raw: true })
+      if (!restaurant) throw new Error('此餐廳不存在!')
+      return res.render('admin/edit-restaurant', { restaurant })
+    } catch (error) {
+      return next(error)
+    }
+  },
+  putRestaurant: async (req, res, next) => {
+    const { id } = req.params
+    const { name, tel, address, openingHours, description } = req.body
+    try {
+      if (!name) throw new Error('Restaurant name is required!')
+      const restaurant = await Restaurant.findByPk(id)
+      if (!restaurant) throw new Error('此餐廳不存在!')
+      // - 利用回傳的instance再次使用sequelize提供的方法
+      await restaurant.update({
+        name,
+        tel,
+        address,
+        openingHours,
+        description
+      })
+      req.flash('success_msg', '成功更新餐廳資料!')
+      return res.redirect('/admin/restaurants')
+    } catch (error) {
+      return next(error)
+    }
   }
 }
 
