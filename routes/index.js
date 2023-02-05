@@ -1,8 +1,10 @@
+/* For front-end system */
 const express = require('express');
 const router = express.Router();
 const passport = require('../config/passport');
 const restController = require('../controllers/restaurant-controller');
 const userController = require('../controllers/user-controller');
+const commentController = require('../controllers/comment-controller')
 const { authenticated, authenticatedAdmin } = require('../middleware/auth');
 const { generalErrorHandler } = require('../middleware/error-handle');
 const admin = require('./modules/admin');
@@ -32,6 +34,8 @@ router.get('/restaurants/:id', authenticated, restController.getRestaurant)
 
 // note 原先驗證一般使用者，之後多authenticated來驗證admin user
 router.get('/restaurants', authenticated, restController.getRestaurants);
+
+router.post('/comments', authenticated, commentController.postComment)
 
 router.get('/', (req, res) => {
   res.redirect('/restaurants');
