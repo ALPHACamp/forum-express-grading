@@ -1,6 +1,6 @@
 /* For back-end system */
 const { Restaurant, User, Category } = require('../models');
-const { imgurFileHandler } = require('../helpers/file-helpers');
+const { imgurFileHandler } = require('../helpers/file-helpers'); // 載入檔案處理
 
 const adminController = {
   // TODO  Read all restaurants
