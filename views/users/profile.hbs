@@ -10,8 +10,24 @@
       <div class="card-body">
         <h5 class="card-title">{{ user.name }}</h5>
         <p class="card-text">{{ user.email }}</p>
+        <p class="card-text">{{user.Comments.length}}則已評論餐廳</p>
         <a class="btn btn-primary" href="/users/{{ user.id }}/edit" role="button">Edit</a>
       </div>
     </div>
+  </div>
+</div>
+
+<div class="row card mb-3 mt-3">
+  <h5 class="card-header">已評論餐廳數：{{comments.length}}</h5>
+  <div class="card-body">
+    {{#if comments}}
+    {{#each comments}}
+    <a href="/restaurants/{{this.Restaurant.id}}" title="{{this.Restaurant.name}}" style="text-decoration: none;">
+      <img src="{{this.Restaurant.image}}" class="m-3" style="height:100px; width:100px;">
+    </a>
+    {{/each}}
+    {{else}}
+    <h5 class="m-3 d-flex align-items-center">目前無任何評論過的餐廳</h5>
+    {{/if}}
   </div>
 </div>

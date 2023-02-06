@@ -1,6 +1,6 @@
 /* For front-end system */
 const bcrypt = require('bcryptjs');
-const { User } = require('../models');
+const { User, Restaurant, Comment } = require('../models');
 const { getUser } = require('../helpers/auth-helpers')
 const { imgurFileHandler } = require('../helpers/file-helpers');
 
@@ -52,14 +52,28 @@ const userController = {
     });
   },
   getUser: (req, res, next) => {
-    return User.findByPk(req.params.id, {
-      raw: true,
-      nest: true
-    })
-      .then(user => {
+    return Promise.all([
+      User.findByPk(req.params.id, {
+        //  note 關聯comment以計算使用者評論數
+        include: [Comment],
+        nest: true
+      }),
+      // note 單獨使用group 會報錯，因SQL使用的mode => sql_mode=only_full_group_by有關，因此使用attribute來選取columnName，在套入group才不會報錯
+      Comment.findAll({
+        where: { userId: req.params.id },
+        attributes: [
+          'restaurant_id'
+        ],
+        include: [Restaurant],
+        group: 'restaurant_id',
+        raw: true,
+        nest: true
+      })
+    ])
+      .then(([user, comments]) => {
         if (!user) throw new Error("User didn't exist !")
 
-        return res.render('users/profile', { user })
+        return res.render('users/profile', { user: user.toJSON(), comments })
       })
       .catch(err => next(err))
   },

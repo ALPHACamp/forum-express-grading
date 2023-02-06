@@ -8,7 +8,7 @@ module.exports = {
     const categories = await queryInterface.sequelize.query(
       'SELECT id FROM Categories;', { type: queryInterface.sequelize.QueryTypes.SELECT }
     )
-
+    // Thinking 查找完之後，開始坎入假資料
     await queryInterface.bulkInsert('Restaurants',
     //  note 下面等同於Array.from({ XXX }).map(() => ({ XXX }))
       Array.from({ length: 50 }, () => ({
