@@ -1,4 +1,5 @@
 const passport = require('passport')
+const { v4: uuidv4 } = require('uuid')
 const { User } = require('../models')
 const bcrypt = require('bcryptjs')
 
@@ -14,7 +15,7 @@ const userController = {
     }
     return User.findOrCreate({
       where: { email },
-      defaults: { name, email, password: bcrypt.hashSync(password, 10) }
+      defaults: { id: uuidv4(), name, email, password: bcrypt.hashSync(password, 10) }
     })
       .then(([user, created]) => {
         if (!created) return console.log('Email is already existed!')
