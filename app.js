@@ -1,5 +1,6 @@
 const express = require('express')
 const routes = require('./routes')
+const passport = require('./config/passpoet')
 
 const app = express()
 const port = process.env.PORT || 3000
@@ -18,6 +19,8 @@ app.use(session({
   resave: false,
   saveUninitialized: false
 }))
+app.use(passport.initialize()) // 初始化 Passport
+app.use(passport.session()) // 啟動 session 功能
 app.use(flash())
 app.use((req, res, next) => {
   res.locals.success_messages = req.flash('success_messages')

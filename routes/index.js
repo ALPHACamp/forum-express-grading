@@ -1,5 +1,6 @@
 const express = require('express')
 const router = express.Router()
+
 // 後台
 const admin = require('./modules/admin')
 router.use('/admin', admin)
@@ -10,6 +11,9 @@ const restaurantController = require('../controllers/restaurant-controller')
 
 router.get('/signup', userController.signUpPage)
 router.post('/signup', userController.signUp)
+router.get('/signin', userController.signInPage)
+router.post('/signin', userController.signIn)
+router.get('/logout', userController.logOut)
 
 router.get('/restaurants', restaurantController.getRestaurants)
 
