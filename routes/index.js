@@ -5,8 +5,14 @@ const admin = require('./modules/admin')
 router.use('/admin', admin)
 
 // 前台
+const userController = require('../controllers/user-controller')
 const restaurantController = require('../controllers/restaurant-controller')
+
+router.get('/signup', userController.signUpPage)
+router.post('/signup', userController.signUp)
+
 router.get('/restaurants', restaurantController.getRestaurants)
-router.get('/', (req, res) => res.redirect('/restaurants')) // fallback
+
+router.get('*', (req, res) => res.redirect('/restaurants')) // fallback
 
 module.exports = router
