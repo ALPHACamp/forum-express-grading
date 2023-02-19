@@ -1,17 +1,29 @@
 <nav class="navbar navbar-dark navbar-expand-lg bg-dark">
   <div class="container-sm justify-content-start gap-3">
     <a class="navbar-brand" href="/restaurants">餐廳評論網</a>
-    <p class="text-secondary m-0 fs-5 me-auto">歡迎回來 User!</p>
+    <p class="text-secondary m-0 fs-5 me-auto">
+      {{#if loggedUser}}歡迎回來{{loggedUser.name}}{{/if}}
+    </p>
     <ul class="navbar-nav mb-2 mb-lg-0 d-flex gap-3">
-      <li class="nav-item">
-        <a class="nav-link" aria-current="admin" href="#">後台</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" aria-current="profile" href="#">個人頁面</a>
-      </li>
-      <li class="nav-item">
-        <a class="btn btn-outline-secondary" href="/logout">登出</a>
-      </li>
+      {{#if loggedUser}}
+        <li class="nav-item">
+          <a class="nav-link" aria-current="admin" href="#">後台</a>
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link"
+            aria-current="profile"
+            href="/users/{{loggedUser.id}}"
+          >個人頁面</a>
+        </li>
+        <li class="nav-item">
+          <a class="btn btn-outline-secondary" href="/logout">登出</a>
+        </li>
+      {{else}}
+        <li class="nav-item">
+          <a class="btn btn-outline-secondary" href="/signin">登入</a>
+        </li>
+      {{/if}}
     </ul>
   </div>
 </nav>

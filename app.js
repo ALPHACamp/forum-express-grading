@@ -1,6 +1,7 @@
 const express = require('express')
 const routes = require('./routes')
 const passport = require('./config/passpoet')
+const { getUser } = require('./helpers/auth-helpers')
 
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config()
@@ -29,6 +30,7 @@ app.use((req, res, next) => {
   res.locals.success_messages = req.flash('success_messages')
   res.locals.warning_messages = req.flash('warning_messages')
   res.locals.error_messages = req.flash('error_messages')
+  res.locals.loggedUser = getUser(req)
   next()
 })
 

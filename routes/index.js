@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const { generalErrorHandler } = require('../middleware/error-handler')
+const { authenticated } = require('../middleware/auth')
 
 // 後台
 const admin = require('./modules/admin')
@@ -19,7 +20,7 @@ router.get('/signin', userController.signInPage)
 router.post('/signin', userController.signIn)
 router.get('/logout', userController.logOut)
 
-router.get('/restaurants', restaurantController.getRestaurants)
+router.get('/restaurants', authenticated, restaurantController.getRestaurants)
 
 router.get('*', (req, res) => res.redirect('/restaurants')) // fallback
 
