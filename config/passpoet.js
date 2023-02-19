@@ -43,9 +43,10 @@ passport.use(new FacebookStrategy(
     User.findOne({ where: { email } })
       .then(user => {
         if (user) return done(null, user)
-        return User.create({ id: uuidv4(), name, email, password: bcrypt.hashSync(randomPassword, 10) })
+        User.create({ id: uuidv4(), name, email, password: bcrypt.hashSync(randomPassword, 10) })
+          .then(user => { return done(null, user) })
+          .catch(err => { return done(err, false) })
       })
-      .then(user => done(null, user))
       .catch(err => done(err, false))
   }
 ))

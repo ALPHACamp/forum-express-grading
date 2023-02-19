@@ -5,10 +5,10 @@ const authController = {
   facebookSignin: passport.authenticate('facebook', {
     scope: ['email', 'public_profile']
   }),
-  facebookCallback: [passport.authenticate('facebook', {
+  facebookCallback: passport.authenticate('facebook', {
     failureRedirect: '/signin',
-    successRedirect: '/#'
-  })]
+    successRedirect: '/restaurants'
+  })
 }
 
 module.exports = authController
