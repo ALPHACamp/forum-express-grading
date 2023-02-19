@@ -1,11 +1,11 @@
 const express = require('express')
 const router = express.Router()
 const { generalErrorHandler } = require('../middleware/error-handler')
-const { authenticated } = require('../middleware/auth')
+const { authenticated, authenticatedAdmin } = require('../middleware/auth')
 
 // 後台
 const admin = require('./modules/admin')
-router.use('/admin', admin)
+router.use('/admin', authenticatedAdmin, admin)
 
 // 前台
 const userController = require('../controllers/user-controller')

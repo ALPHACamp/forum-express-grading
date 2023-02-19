@@ -6,9 +6,15 @@
     </p>
     <ul class="navbar-nav mb-2 mb-lg-0 d-flex gap-3">
       {{#if loggedUser}}
-        <li class="nav-item">
-          <a class="nav-link" aria-current="admin" href="#">後台</a>
-        </li>
+        {{#if loggedUser.isAdmin}}
+          <li class="nav-item">
+            <a
+              class="nav-link"
+              aria-current="admin"
+              href="/admin/restaurants"
+            >後台</a>
+          </li>
+        {{/if}}
         <li class="nav-item">
           <a
             class="nav-link"
