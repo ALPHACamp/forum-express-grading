@@ -27,16 +27,10 @@ const userController = {
   signInPage: (req, res) => {
     res.render('signin')
   },
-  signIn: [
-    passport.authenticate('local', {
-      failureRedirect: '/signin',
-      failureFlash: true
-    }),
-    (req, res, next) => {
-      req.flash('success_messages', '登入成功')
-      res.redirect('/restaurants')
-    }
-  ],
+  signIn: passport.authenticate('local', {
+    failureRedirect: '/signin',
+    successRedirect: '/restaurants'
+  }),
   logOut: (req, res, next) => {
     req.flash('success_messages', '登出成功！')
     req.logout()
