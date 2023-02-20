@@ -12,6 +12,7 @@ module.exports = {
 
   // note hbs提供的客製化條件式，a,b 為conditional
   ifCond: function (a, b, options) {
+    // note 三元運算子，a===b 是true 則fn, false 則inverse
     return a === b ? options.fn(this) : options.inverse(this)
   }
 };
