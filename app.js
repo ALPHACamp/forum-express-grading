@@ -24,7 +24,7 @@ app.use((req, res, next) => {
   res.locals.user = getUser(req)
   next()
 })
-app.use(express.urlencoded({ extended: true }))
+app.use(express.urlencoded({ extended: true }))// req.body
 app.use(routes)
 
 app.listen(port, () => {

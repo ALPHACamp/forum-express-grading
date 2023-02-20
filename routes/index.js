@@ -7,8 +7,9 @@ const passport = require('../config/passport')
 
 const { authenticated } = require('../middleware/auth')
 const { generalErrorHandler } = require('../middleware/error-handler')
+const { authenticatedAdmin } = require('../middleware/auth')
 
-router.use('/admin', admin)
+router.use('/admin', authenticatedAdmin, admin)
 
 router.get('/signup', userController.singUpPage)
 router.post('/signup', userController.signUp)
