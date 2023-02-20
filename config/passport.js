@@ -19,7 +19,7 @@ passport.use(
           return cb(
             null,
             false,
-            req.flash('error_messages', 'Email or password is incorrect !!')
+            req.flash('error_messages', 'This email is not registered!!')
           );
         }
 

@@ -71,6 +71,7 @@ const restaurantController = {
       .catch(err => next(err))
   },
   getDashboard: (req, res, next) => {
+    // notice 使用raw時，會把comments的整體內容與長度都被清理掉，因此要傳遞length的話則需要用到sequelize操作
     return Restaurant.findByPk(req.params.id, {
       nest: true,
       include: [
