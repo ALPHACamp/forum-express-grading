@@ -6,6 +6,7 @@ const { removesWhitespace } = require('../helpers/object-helpers')
 
 const adminController = {
   getRestaurants: (req, res, next) => {
+    req.session.pathFrom = 'restaurants'
     sequelize.query('SELECT id, name FROM restaurants', { type: QueryTypes.SELECT })
       .then(restaurants => res.render('admin/restaurants', { restaurants }))
       .catch(err => next(err))
@@ -22,8 +23,24 @@ const adminController = {
   },
   getRestaurantDetail: (req, res, next) => {
     const id = req.params.id
-    Restaurant.findByPk(id, { raw: true })
-      .then(restaurants => res.render('admin/restaurant-detail', { restaurants }))
+    req.session.pathFrom = `restaurants/${id}`
+    return Restaurant.findByPk(id, { raw: true })
+      .then(restaurant => res.render('admin/restaurant-detail', { restaurant }))
+      .catch(err => next(err))
+  },
+  editRestaurantPage: (req, res, next) => {
+    const { id } = req.params
+    return Restaurant.findByPk(id, { raw: true })
+      .then(restaurant => res.render('admin/edit-restaurant', { restaurant }))
+      .catch(err => next(err))
+  },
+  patchRestaurant: (req, res, next) => {
+    const { id } = req.params
+    const { pathFrom } = req.session // 利用這個紀錄是從 detail頁面進入編輯 or restaurants 頁面
+    const restaurantData = removesWhitespace(req.body)
+    return Restaurant.update(restaurantData, { where: { id } })
+      .then(() => res.redirect(`/admin/${pathFrom}`))
+      .catch(err => next(err))
   }
 }
 module.exports = adminController

@@ -7,7 +7,7 @@ module.exports = {
       name: `${faker.name.fullName()} Restaurant`,
       tel: faker.phone.number('0#-#######'),
       address: `${faker.address.streetAddress(true)},${faker.address.cityName()},${faker.address.state()},${faker.address.county()}`,
-      opening_hours: `${Math.floor(Math.random() * 24) + 1}:00`, // 回傳1:00~24:00
+      opening_hours: `${(Math.floor(Math.random() * 24) + 1)}`.padStart(2, '0') + ':00', // 回傳01:00~24:00，padStart用來捕0
       description: faker.lorem.text(),
       image: faker.image.food(320, 240, true),
       created_at: new Date(),
