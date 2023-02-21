@@ -10,6 +10,7 @@ const handlebarsHelpers = require('./helpers/handlebars-helpers')
 const port = process.env.PORT || 3000
 const SESSION_SECRET = 'secret'
 const methodOverride = require('method-override')
+const path = require('path')
 
 // 註冊 Handlebars 樣板引擎，並指定副檔名為 .hbs
 app.engine('hbs', handlebars({ extname: '.hbs', helpers: handlebarsHelpers }))
@@ -27,6 +28,7 @@ app.use((req, res, next) => {
   next()
 })
 app.use(methodOverride('_method'))
+app.use('/upload', express.static(path.join(__dirname, 'upload')))
 
 app.use(express.urlencoded({ extended: true }))// req.body
 app.use(routes)
