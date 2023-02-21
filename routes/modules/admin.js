@@ -6,6 +6,7 @@ router.get('/restaurants/create', adminController.createRestaurantPage)
 router.get('/restaurants/:id/edit', adminController.editRestaurantPage)
 router.get('/restaurants/:id', adminController.getRestaurantDetail)
 router.patch('/restaurants/:id', adminController.patchRestaurant)
+router.delete('/restaurants/:id', adminController.deleteRestaurant)
 router.get('/restaurants', adminController.getRestaurants)
 router.post('/restaurants', adminController.createRestaurant)
 

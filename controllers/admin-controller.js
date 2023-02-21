@@ -41,6 +41,12 @@ const adminController = {
     return Restaurant.update(restaurantData, { where: { id } })
       .then(() => res.redirect(`/admin/${pathFrom}`))
       .catch(err => next(err))
+  },
+  deleteRestaurant: (req, res, next) => {
+    const { id } = req.params
+    return Restaurant.destroy({ where: { id } })
+      .then(() => res.redirect('/admin/restaurants'))
+      .catch(err => next(err))
   }
 }
 module.exports = adminController
