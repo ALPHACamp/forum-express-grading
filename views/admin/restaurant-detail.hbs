@@ -1,0 +1,32 @@
+{{!-- <h1>id:{{id}}</h1> --}}
+<div class="container w-75 d-flex flex-column gap-4">
+  <div class="d-flex gap-3">
+    <a href="/admin/restaurants" type="button" class="btn btn-secondary">
+      <i class="fa-solid fa-arrow-left"></i>
+    </a>
+    <a href="/admin/restaurants/{{restaurants.id}}/edit" type="button" class="btn btn-success">
+      <i class="fa-solid fa-pen"></i>
+    </a>
+    <form action="/admin/restaurants/{{restaurants.id}}?_method=DELETE" method="POST">
+      <button type="submit" class="btn btn-danger" onclick="return confirm(`確定要刪除此餐廳？`)"><i class="fa-solid fa-trash-can"></i></button>
+    </form>
+  </div>
+  <div class="row gap-3">
+    <div class="col-12  col-md">
+      <img src={{restaurants.image}} alt="餐廳封面" width="100%">
+    </div>
+    <div class="col-12 col-md-6 d-flex flex-column gap-2">
+      <h3>{{restaurants.name}}</h3>
+      <p><strong>電話：</strong>{{restaurants.tel}}</p>
+      <p><strong>營業時間：</strong>{{restaurants.openingHours}}</p>
+      <p><strong>地址：</strong>{{restaurants.address}}</p>
+    </div>
+  </div>
+  <div class="row">
+    <hr>
+    <div class="col d-flex flex-column gap-2">
+      <h3>餐廳描述</h3>
+      <p>{{restaurants.description}}</p>
+    </div>
+  </div>
+</div>

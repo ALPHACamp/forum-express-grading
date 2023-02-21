@@ -11,29 +11,17 @@
     </thead>
     <tbody>
       {{#each restaurants}}
-        <tr>
-          <th scope="row">{{this.id}}</th>
-          <td>{{this.name}}</td>
-          <td class="d-flex gap-2">
-            <a
-              href="/admin/restaurants/{{this.id}}"
-              class="btn btn-link text-primary"
-            >Show</a>
-            <a
-              href="/admin/restaurants/{{this.id}}/edit"
-              class="btn btn-link text-primary"
-            >Edit</a>
-            <form
-              action="/admin/restaurants/{{this.id}}?_method=DELETE"
-              method="POST"
-            >
-              <button
-                type="submit"
-                class="btn btn-link text-danger border-0"
-              >Delete</button>
-            </form>
-          </td>
-        </tr>
+      <tr>
+        <th scope="row">{{this.id}}</th>
+        <td>{{this.name}}</td>
+        <td class="d-flex gap-2">
+          <a href="/admin/restaurants/{{this.id}}" class="btn btn-link text-primary">Show</a>
+          <a href="/admin/restaurants/{{this.id}}/edit" class="btn btn-link text-primary">Edit</a>
+          <form action="/admin/restaurants/{{this.id}}?_method=DELETE" method="POST">
+            <button type="submit" class="btn btn-link text-danger border-0">Delete</button>
+          </form>
+        </td>
+      </tr>
       {{/each}}
     </tbody>
   </table>
