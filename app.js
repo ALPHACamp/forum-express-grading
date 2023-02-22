@@ -18,6 +18,7 @@ const methodOverride = require('method-override')
 
 app.use(express.static('public'))
 app.use('/public/images', express.static(path.join(__dirname, 'public/images'))) // 讀取預設圖片
+app.use('/upload', express.static(path.join(__dirname, 'upload'))) // 讀取上傳圖片
 app.use(methodOverride('_method')) // 使用 method-override，_method可以自己設定
 app.engine('hbs', exphbs({ extname: '.hbs' }))
 app.set('view engine', 'hbs')

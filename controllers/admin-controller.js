@@ -3,6 +3,7 @@ const { sequelize } = require('../models')
 const { QueryTypes } = require('sequelize')
 const { Restaurant } = require('../models')
 const { removesWhitespace } = require('../helpers/object-helpers')
+const { localFileHandler } = require('../helpers/file-helpers')
 
 const adminController = {
   getRestaurants: (req, res, next) => {
@@ -15,10 +16,15 @@ const adminController = {
     res.render('admin/create-restaurant')
   },
   createRestaurant: (req, res, next) => {
-    const restaurantData = req.body
-    return Restaurant.create(removesWhitespace(restaurantData))
-      .then(r => req.flash('success_messages', `成功新增餐廳：${r.name || '未命名餐廳'}`))
-      .then(() => res.redirect('/admin/restaurants'))
+    localFileHandler(req.file)
+      .then(imgPath => {
+        const restaurantData = removesWhitespace({ ...req.body, image: imgPath })
+        return Restaurant.create(restaurantData)
+      })
+      .then(restaurant => {
+        req.flash('success_messages', `成功新增餐廳：${restaurant.name || '未命名餐廳'}`)
+        res.redirect('/admin/restaurants')
+      })
       .catch(err => next(err))
   },
   getRestaurantDetail: (req, res, next) => {
@@ -37,10 +43,13 @@ const adminController = {
   patchRestaurant: (req, res, next) => {
     const { id } = req.params
     const { pathFrom } = req.session // 利用這個紀錄是從 detail頁面進入編輯 or restaurants 頁面
-    const restaurantData = removesWhitespace(req.body)
-    return Restaurant.update(restaurantData, { where: { id } })
-      .then(() => res.redirect(`/admin/${pathFrom}`))
-      .catch(err => next(err))
+    localFileHandler(req.file)
+      .then(imgPath => {
+        const restaurantData = removesWhitespace({ ...req.body, image: imgPath })
+        return Restaurant.update(restaurantData, { where: { id } })
+          .then(() => res.redirect(`/admin/${pathFrom}`))
+          .catch(err => next(err))
+      })
   },
   deleteRestaurant: (req, res, next) => {
     const { id } = req.params
