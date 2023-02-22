@@ -9,7 +9,8 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       name: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        defaultValue: '未命名餐廳'
       },
       tel: {
         type: Sequelize.STRING
@@ -21,7 +22,8 @@ module.exports = {
         type: Sequelize.STRING
       },
       image: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        defaultValue: '/public/images/default-restaurant.jpg'
       },
       description: {
         type: Sequelize.TEXT

@@ -1,1 +1,28 @@
-<h1>Admin Restaurant.hbs</h1>
+<h1>後台</h1>
+<section class="mt-4">
+  <a href="/admin/restaurants/create" class="btn btn-success mb-3">新增餐廳</a>
+  <table class="table table-striped table-bordered align-middle">
+    <thead class="table-dark">
+      <tr>
+        <th scope="col">Id</th>
+        <th scope="col">Name</th>
+        <th scope="col">Controls</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each restaurants}}
+      <tr>
+        <th scope="row">{{this.id}}</th>
+        <td>{{this.name}}</td>
+        <td class="d-flex gap-2">
+          <a href="/admin/restaurants/{{this.id}}" class="btn btn-link text-primary">Show</a>
+          <a href="/admin/restaurants/{{this.id}}/edit" class="btn btn-link text-primary">Edit</a>
+          <form action="/admin/restaurants/{{this.id}}?_method=DELETE" method="POST">
+            <button type="submit" class="btn btn-link text-danger border-0" onclick="return confirm(`確定要刪除此餐廳？`)">Delete</button>
+          </form>
+        </td>
+      </tr>
+      {{/each}}
+    </tbody>
+  </table>
+</section>

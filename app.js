@@ -1,4 +1,5 @@
 const express = require('express')
+const path = require('path') // Node.js 的原生模組
 const routes = require('./routes')
 const passport = require('./config/passpoet')
 const { getUser } = require('./helpers/auth-helpers')
@@ -13,8 +14,12 @@ const SESSION_SECRET = 'secret'
 const exphbs = require('express-handlebars')
 const flash = require('connect-flash')
 const session = require('express-session')
+const methodOverride = require('method-override')
 
 app.use(express.static('public'))
+app.use('/public/images', express.static(path.join(__dirname, 'public/images'))) // 讀取預設圖片
+app.use('/upload', express.static(path.join(__dirname, 'upload'))) // 讀取上傳圖片
+app.use(methodOverride('_method')) // 使用 method-override，_method可以自己設定
 app.engine('hbs', exphbs({ extname: '.hbs' }))
 app.set('view engine', 'hbs')
 app.use(express.urlencoded({ extended: true }))

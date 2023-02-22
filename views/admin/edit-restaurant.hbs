@@ -1,0 +1,30 @@
+<div class="w-75 mx-auto">
+  <h1>編輯餐廳</h1>
+  <form action="/admin/restaurants/{{restaurant.id}}?_method=PATCH" method="POST" enctype="multipart/form-data" class="mt-4">
+    {{> admin-restaurant-form}}
+  </form>
+</div>
+
+<script>
+  function telFormat(event) {
+    const inputType = event.inputType
+    const telInput = document.getElementById("tel")
+    let tel = telInput.value
+    if (inputType === "insertText") {
+      telInput.value = (tel.length === 3) ? `${tel.slice(0, 2)}-${tel.slice(2)}` : tel
+    } else if (inputType === "deleteContentBackward") {
+      telInput.value = (tel.length === 3) ? tel.slice(0, 2) : tel
+    }
+  }
+  function readURL(input) {
+    if (input.files && input.files[0]) {
+      const imageTagID = input.getAttribute("targetID");
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        const img = document.getElementById(imageTagID);
+        img.setAttribute("src", e.target.result)
+      }
+      reader.readAsDataURL(input.files[0]);
+    }
+  }
+</script>
