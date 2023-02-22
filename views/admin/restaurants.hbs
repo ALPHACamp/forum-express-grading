@@ -18,7 +18,7 @@
           <a href="/admin/restaurants/{{this.id}}" class="btn btn-link text-primary">Show</a>
           <a href="/admin/restaurants/{{this.id}}/edit" class="btn btn-link text-primary">Edit</a>
           <form action="/admin/restaurants/{{this.id}}?_method=DELETE" method="POST">
-            <button type="submit" class="btn btn-link text-danger border-0" onclick="return confirm(`確定要刪除此餐廳？`)">Delete</button>
+            <button type="submit" class="btn btn-link text-danger border-0" onclick="return confirm('確定要刪除餐廳: {{this.name}}')">Delete</button>
           </form>
         </td>
       </tr>

@@ -49,7 +49,10 @@ const adminController = {
         const restaurantData = removesWhitespace({ ...req.body, image: imgPath })
         if (!restaurantData.name) throw new Error('餐廳名稱為必填')
         return Restaurant.update(restaurantData, { where: { id } })
-          .then(() => res.redirect(`/admin/${pathFrom}`))
+          .then(() => {
+            req.flash('success_messages', '成功修改餐廳')
+            res.redirect(`/admin/${pathFrom}`)
+          })
           .catch(err => next(err))
       })
       .catch(err => next(err))
@@ -57,7 +60,10 @@ const adminController = {
   deleteRestaurant: (req, res, next) => {
     const { id } = req.params
     return Restaurant.destroy({ where: { id } })
-      .then(() => res.redirect('/admin/restaurants'))
+      .then(restaurant => {
+        req.flash('success_messages', '成功刪除餐廳')
+        res.redirect('/admin/restaurants')
+      })
       .catch(err => next(err))
   }
 }
