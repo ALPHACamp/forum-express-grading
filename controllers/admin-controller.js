@@ -19,10 +19,11 @@ const adminController = {
     localFileHandler(req.file)
       .then(imgPath => {
         const restaurantData = removesWhitespace({ ...req.body, image: imgPath })
+        if (!restaurantData.name) throw new Error('餐廳名稱為必填')
         return Restaurant.create(restaurantData)
       })
       .then(restaurant => {
-        req.flash('success_messages', `成功新增餐廳：${restaurant.name || '未命名餐廳'}`)
+        req.flash('success_messages', `成功新增餐廳：${restaurant.name}`)
         res.redirect('/admin/restaurants')
       })
       .catch(err => next(err))
@@ -46,10 +47,12 @@ const adminController = {
     localFileHandler(req.file)
       .then(imgPath => {
         const restaurantData = removesWhitespace({ ...req.body, image: imgPath })
+        if (!restaurantData.name) throw new Error('餐廳名稱為必填')
         return Restaurant.update(restaurantData, { where: { id } })
           .then(() => res.redirect(`/admin/${pathFrom}`))
           .catch(err => next(err))
       })
+      .catch(err => next(err))
   },
   deleteRestaurant: (req, res, next) => {
     const { id } = req.params
