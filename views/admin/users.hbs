@@ -1,0 +1,37 @@
+<h1>餐廳後台</h1>
+<nav class="nav">
+  <a class="nav-link" href="/admin/restaurants">Restaurants</a>
+  <P class="my-auto">|</P>
+  <a class="nav-link" href="/admin/users">Users</a>
+</nav>
+<br />
+<br />
+<table class="table align-middle">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Name</th>
+      <th scope="col">Email</th>
+      <th scope="col">Role</th>
+      <th scope="col">#</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each users}}
+    <tr>
+      <th scope="row">{{this.id}}</th>
+      <td class="name">{{this.name}}</td>
+      <td class="email">{{this.email}}</td>
+      <th class="role">{{#if this.isAdmin }}<img
+          src="https://maurits.tv/data/garrysmod/wiki/wiki.garrysmod.com/images/c/cf/Shield.png" alt=""> admin {{else}}
+        <img src="https://maurits.tv/data/garrysmod/wiki/wiki.garrysmod.com/images/d/db/User.png" alt=""> user {{/if}}
+      </th>
+      <th>
+        <form action="/admin/users/{{this.id}}?_method=PATCH" method="post">
+          <button type="submit" class="btn btn-link">set as {{#if this.isAdmin }} user {{else}} admin {{/if}}</button>
+        </form>
+      </th>
+    </tr>
+    {{/each}}
+  </tbody>
+</table>
