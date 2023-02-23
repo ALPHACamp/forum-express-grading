@@ -13,7 +13,7 @@ const storage = multer.diskStorage({
   }
 })
 
-const uploadSingleImage = multer({
+const uploadLocal = multer({
   storage: storage,
   fileFilter: (req, file, cb) => {
     const fileType = file.mimetype.split('/')[1]
@@ -21,8 +21,18 @@ const uploadSingleImage = multer({
   }
 }).single('image')
 
+const uploadImgur = multer({
+  dest: 'temp/',
+  fileFilter: (req, file, cb) => {
+    const fileType = file.mimetype.split('/')[1]
+    return (!fileType.match(/jpeg|png|jpg/)) ? cb(new Error('只能上傳jpg或是png檔')) : cb(null, true)
+  }
+}).single('image')
+
 const uploadImage = (req, res, next) => {
-  uploadSingleImage(req, res, err => (err) ? next(err) : next())
+  (process.env.NODE_ENV !== 'production')
+    ? uploadLocal(req, res, err => (err) ? next(err) : next())
+    : uploadImgur(req, res, err => (err) ? next(err) : next())
 }
 
 module.exports = uploadImage
