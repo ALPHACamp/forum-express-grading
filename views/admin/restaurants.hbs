@@ -1,6 +1,11 @@
 <link rel="stylesheet" href="/stylesheets/style.css">
 
 <h1>餐廳後台</h1>
+<nav class="nav">
+  <a class="nav-link" href="/admin/restaurants">Restaurants</a>
+  <P class="my-auto">|</P>
+  <a class="nav-link" href="/admin/users">Users</a>
+</nav>
 <a href='/admin/restaurants/create'>
   <button type="button" class="btn btn-primary">New Restaurant</button>
 </a>
@@ -19,7 +24,6 @@
     <tr>
       <th scope="row">{{this.id}}</th>
       <td class="name" >{{this.name}}<span><img src={{this.image}} /></span></td>
-      {{!-- <td class="name">{{this.name}}<span><img src="{{this.image}}" /><br />Dynamic Drive</span></td><br /> --}}
       <td>
         <button type="button" class="btn btn-link">
           <a class="btn btn-link link-primary" href="/admin/restaurants/{{this.id}}">
