@@ -1,0 +1,38 @@
+<h1>後台</h1>
+{{> admin-tabs route="users"}}
+<section class="mt-4">
+  <table class="table table-striped table-bordered align-middle">
+    <thead class="table-dark">
+      <tr>
+        <th scope="col">Id</th>
+        <th scope="col">Name</th>
+        <th scope="col">Email</th>
+        <th scope="col">Role</th>
+        <th scope="col">Controls</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        {{#each users}}
+        <th scope="row">{{this.id}}</th>
+        <td>{{this.name}}</td>
+        <td>{{this.email}}</td>
+        <td>
+          {{#if isAdmin}}
+          <span class="text-primary">Admin</span>
+          {{else}}
+          <span>User</span>
+          {{/if}}
+        </td>
+        <td>
+          <form action="/admin/users/{{this.id}}?_method=PATCH" method="POST">
+            <button type="submit" class="btn btn-outline-success" style="width: 120px;" onclick="return confirm('確定變更使用者的權限？')">
+              設定為{{#if isAdmin}}User{{else}}Admin{{/if}}
+            </button>
+          </form>
+        </td>
+      </tr>
+      {{/each}}
+    </tbody>
+  </table>
+</section>
