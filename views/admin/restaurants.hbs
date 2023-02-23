@@ -1,3 +1,5 @@
+<link rel="stylesheet" href="/stylesheets/style.css">
+
 <h1>餐廳後台</h1>
 <a href='/admin/restaurants/create'>
   <button type="button" class="btn btn-primary">New Restaurant</button>
@@ -16,7 +18,8 @@
     {{#each restaurants}}
     <tr>
       <th scope="row">{{this.id}}</th>
-      <td>{{this.name}}</td>
+      <td class="name" >{{this.name}}<span><img src={{this.image}} /></span></td>
+      {{!-- <td class="name">{{this.name}}<span><img src="{{this.image}}" /><br />Dynamic Drive</span></td><br /> --}}
       <td>
         <button type="button" class="btn btn-link">
           <a class="btn btn-link link-primary" href="/admin/restaurants/{{this.id}}">

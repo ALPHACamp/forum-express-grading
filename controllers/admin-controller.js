@@ -1,5 +1,5 @@
 const { Restaurant } = require('../models')
-const { localFileHandler, imgurFileHandler } = require('../helpers/file-helpers')
+const { imgurFileHandler } = require('../helpers/file-helpers')
 const adminController = {
   getRestaurants: (req, res, next) => {
     Restaurant.findAll({ raw: true })

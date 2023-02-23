@@ -32,6 +32,7 @@ app.use((req, res, next) => {
 })
 app.use(methodOverride('_method'))
 app.use('/upload', express.static(path.join(__dirname, 'upload')))
+app.use(express.static('public'))
 
 app.use(express.urlencoded({ extended: true }))// req.body
 app.use(routes)
