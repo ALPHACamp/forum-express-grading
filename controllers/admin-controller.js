@@ -38,7 +38,7 @@ const adminController = {
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
-        return res.render('admin/restaurant', { restaurant })
+        res.render('admin/restaurant', { restaurant })
       })
       .catch(err => next(err))
   },
