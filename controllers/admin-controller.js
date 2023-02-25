@@ -38,7 +38,7 @@ const adminController = {
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
-        res.render('admin/restaurant', { restaurant })
+        return res.render('admin/restaurant', { restaurant })
       })
       .catch(err => next(err))
   },
@@ -99,16 +99,15 @@ const adminController = {
         if (!user) throw new Error("User didn't exist!")
         if (user.email === 'root@example.com') {
           req.flash('error_messages', '禁止變更 root 權限')
-          res.redirect('back')
-        } else if (user.isAdmin) {
-          user.update({ isAdmin: false })
-          req.flash('success_messages', '使用者權限變更成功')
-        } else {
-          user.update({ isAdmin: true })
-          req.flash('success_messages', '使用者權限變更成功')
+          return res.redirect('back')
         }
+        const isAdmin = user.isAdmin
+        return isAdmin ? user.update({ isAdmin: false }) : user.update({ isAdmin: true })
       })
-      .then(() => res.redirect('/admin/users'))
+      .then(() => {
+        req.flash('success_messages', '使用者權限變更成功')
+        res.redirect('/admin/users')
+      })
       .catch(err => next(err))
   }
 }
