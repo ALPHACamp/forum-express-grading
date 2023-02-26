@@ -21,8 +21,8 @@ router.post(
 )
 router.get('/logout', userController.logout)
 router.get('/restaurants', authenticated, restController.getRestaurants)
-router.use('/', (req, res) => res.redirect('/restaurants'))
 // - 將其餘無對應路由導向restaurants頁面
+router.use('/', (req, res) => res.redirect('/restaurants'))
 router.use('/', generalErrorHandler)
 
 module.exports = router

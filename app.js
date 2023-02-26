@@ -1,3 +1,4 @@
+const path = require('path')
 const express = require('express')
 const handlebars = require('express-handlebars')
 const usePassport = require('./config/passport')
@@ -31,6 +32,8 @@ app.use(
 usePassport(app)
 app.use(flash())
 app.use(methodOverride('_method'))
+// - 存取上傳圖片(static file)
+app.use('/upload', express.static(path.join(__dirname, 'upload')))
 app.use((req, res, next) => {
   res.locals.success_msg = req.flash('success_msg')
   res.locals.error_msg = req.flash('error_msg')
