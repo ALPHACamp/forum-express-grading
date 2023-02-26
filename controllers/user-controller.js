@@ -22,10 +22,22 @@ const userController = {
         password: hash
       }))
       .then(() => {
-        req.flash('success_message', 'Registered successfully')
+        req.flash('success_messages', 'Registered successfully')
         return res.redirect('/signin')
       })
       .catch(error => next(error))
+  },
+  signInPage: (req, res) => {
+    return res.render('signin')
+  },
+  signIn: (req, res) => {
+    req.flash('success_messages', 'Sign in successfully')
+    return res.redirect('/restaurants')
+  },
+  logout: (req, res) => {
+    req.flash('success_messages', 'Logout successfully')
+    req.logout()
+    return res.redirect('/signin')
   }
 }
 
