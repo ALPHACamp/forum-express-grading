@@ -3,6 +3,8 @@ const routes = require('./routes')
 const app = express()
 const port = process.env.PORT || 3000
 const handlebars = require('express-handlebars')
+// check for DB
+// const db = require('./models')
 
 // handlebas setting
 app.engine('hbs', handlebars({ extname: '.hbs' }))
