@@ -1,0 +1,25 @@
+<ul class="nav nav-tabs mt-2">
+  {{#if restaurants}}
+    <li class="nav-item">
+      <a
+        class="nav-link active fw-bolder"
+        aria-current="page"
+        href="/admin/restaurants"
+      >Restaurants</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/admin/users">Users</a>
+    </li>
+  {{else}}
+    <li class="nav-item">
+      <a class="nav-link" href="/admin/restaurants">Restaurants</a>
+    </li>
+    <li class="nav-item">
+      <a
+        class="nav-link active fw-bolder"
+        aria-current="page"
+        href="/admin/users"
+      >Users</a>
+    </li>
+  {{/if}}
+</ul>
