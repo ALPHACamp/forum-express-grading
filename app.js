@@ -8,6 +8,7 @@ const handlebars = require('express-handlebars')
 const SESSION_SECRET = 'secret'
 const passport = require('./config/passport')
 const { getUser } = require('./helpers/auth-helpers')
+const methodOverride = require('method-override')
 // const getUser = require('./helpers/auth-helpers').getUser
 const handlebarsHelpers = require('./helpers/handlebars-helpers')
 // check for DB
@@ -27,6 +28,8 @@ app.use(session({
 // setting passport
 app.use(passport.initialize())
 app.use(passport.session())
+// for PUT & DELETE routes
+app.use(methodOverride('_method'))
 // setting flash
 app.use(flash())
 // flash middleware

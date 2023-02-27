@@ -32,7 +32,7 @@ const adminController = {
       })
       .catch(err => next(err))
   },
-  // for one restaurant
+  // for one restaurant view
   getRestaurant: (req, res, next) => {
     // SQLize use "id" to find one data
     Restaurant.findByPk(req.params.id, {
@@ -43,6 +43,38 @@ const adminController = {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         // if cannot find, throw error message and end of this code
         res.render('admin/restaurant', { restaurant })
+      })
+      .catch(err => next(err))
+  },
+  // for one restaurant edit view
+  editRestaurant: (req, res, next) => {
+    Restaurant.findByPk(req.params.id, {
+      raw: true
+    })
+      .then(restaurant => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        res.render('admin/edit-restaurant', { restaurant })
+      })
+      .catch(err => next(err))
+  },
+  // for one restaurant edit update
+  putRestaurant: (req, res, next) => {
+    const { name, tel, address, openingHours, description } = req.body
+    if (!name) throw new Error('Restaurant name is required!')
+    Restaurant.findByPk(req.params.id)
+      .then(restaurant => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        return restaurant.update({
+          name,
+          tel,
+          address,
+          openingHours,
+          description
+        })
+      })
+      .then(() => {
+        req.flash('success_messages', 'restaurant was successfully to update')
+        res.redirect('/admin/restaurants')
       })
       .catch(err => next(err))
   }
