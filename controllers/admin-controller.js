@@ -1,4 +1,5 @@
 const { Restaurant } = require('../models')
+const { localFileHandler } = require('../helpers/file-helpers') // 將 file-helper 載進來
 
 const adminController = {
   // for all restaurants
@@ -18,13 +19,17 @@ const adminController = {
     // double check name exists!! if doesn't exist, trow error message
     if (!name) throw new Error('Restaurant name is required!')
     // else(name exist) create the restaurant data, which data from req.body
-    Restaurant.create({
-      name,
-      tel,
-      address,
-      openingHours,
-      description
-    })
+    // for image upload, 把檔案取出來，也可以寫成 const file = req.file
+    const { file } = req
+    localFileHandler(file) // 把取出的檔案傳給 file-helper 處理後
+      .then(filePath => Restaurant.create({ // 再 create 這筆餐廳資料
+        name,
+        tel,
+        address,
+        openingHours,
+        description,
+        image: filePath || null
+      }))
       .then(() => {
         req.flash('success_messages', 'restaurant was successfully created')
         // finish create new restaurant, redirect to admin home page
@@ -61,15 +66,25 @@ const adminController = {
   putRestaurant: (req, res, next) => {
     const { name, tel, address, openingHours, description } = req.body
     if (!name) throw new Error('Restaurant name is required!')
-    Restaurant.findByPk(req.params.id)
-      .then(restaurant => {
+    // for image upload
+    // 把檔案取出來
+    const { file } = req
+    // 非同步處理，這裡沒有先後順序 -> promise.all
+    Promise.all([
+      // 去資料庫查有沒有這間餐廳
+      Restaurant.findByPk(req.params.id),
+      // 把檔案傳到 file-helper 處理
+      localFileHandler(file)
+    ])
+      .then(([restaurant, filePath]) => { // 以上兩樣事都做完以後
         if (!restaurant) throw new Error("Restaurant didn't exist!")
-        return restaurant.update({
+        return restaurant.update({ // 修改這筆資料
           name,
           tel,
           address,
           openingHours,
-          description
+          description,
+          image: filePath || restaurant.image
         })
       })
       .then(() => {

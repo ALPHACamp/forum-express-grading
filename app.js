@@ -5,6 +5,7 @@ const routes = require('./routes')
 const app = express()
 const port = process.env.PORT || 3000
 const handlebars = require('express-handlebars')
+const path = require('path')
 const SESSION_SECRET = 'secret'
 const passport = require('./config/passport')
 const { getUser } = require('./helpers/auth-helpers')
@@ -30,6 +31,8 @@ app.use(passport.initialize())
 app.use(passport.session())
 // for PUT & DELETE routes
 app.use(methodOverride('_method'))
+// for image upload
+app.use('/upload', express.static(path.join(__dirname, 'upload')))
 // setting flash
 app.use(flash())
 // flash middleware
