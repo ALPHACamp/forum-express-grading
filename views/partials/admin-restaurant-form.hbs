@@ -6,6 +6,7 @@
 <div class="form-row mb-3">
   <label class="form-label" for="categoryId">Category</label>
   <select class="form-control" id="categoryId" name="categoryId">
+    <option value=""> -- </option>
     {{#each categories}}
     <option value="{{this.id}}" {{#ifCond this.id ../restaurant.categoryId}}selected {{/ifCond}}>{{this.name}}</option>
     {{/each}}

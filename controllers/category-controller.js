@@ -1,4 +1,4 @@
-const { Category } = require('../models')
+const { Category, Restaurant } = require('../models')
 const categoryController = {
   getCategories: (req, res, next) => {
     return Promise.all([
@@ -28,9 +28,10 @@ const categoryController = {
   },
   deleteCategory: (req, res, next) => {
     return Category.findByPk(req.params.id)
-      .then(category => {
+      .then(async category => {
         if (!category) throw new Error("Category didn't exist!")
-        return category.destroy()
+        await Restaurant.update({ categoryId: null }, { where: { categoryId: category.id } })
+        await category.destroy()
       })
       .then(() => res.redirect('/admin/categories'))
       .catch(err => next(err))
