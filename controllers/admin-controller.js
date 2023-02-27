@@ -111,15 +111,9 @@ const adminController = {
         return res.redirect('back')
       }
       // -切換一般管理員與使用者權限
-      if (foundUser.isAdmin) {
-        await foundUser.update({
-          isAdmin: false
-        })
-      } else {
-        await foundUser.update({
-          isAdmin: true
-        })
-      }
+      await foundUser.update({
+        isAdmin: !foundUser.isAdmin
+      })
       req.flash('success_messages', '使用者權限變更成功')
       return res.redirect('/admin/users')
     } catch (error) {
