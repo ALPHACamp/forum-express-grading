@@ -1,6 +1,7 @@
 const { Restaurant } = require('../models')
 
 const adminController = {
+  // for all restaurants
   getRestaurants: (req, res, next) => {
     Restaurant.findAll({
       raw: true
@@ -28,6 +29,20 @@ const adminController = {
         req.flash('success_messages', 'restaurant was successfully created')
         // finish create new restaurant, redirect to admin home page
         res.redirect('/admin/restaurants')
+      })
+      .catch(err => next(err))
+  },
+  // for one restaurant
+  getRestaurant: (req, res, next) => {
+    // SQLize use "id" to find one data
+    Restaurant.findByPk(req.params.id, {
+      // clean data no SQLize operate
+      raw: true
+    })
+      .then(restaurant => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        // if cannot find, throw error message and end of this code
+        res.render('admin/restaurant', { restaurant })
       })
       .catch(err => next(err))
   }
