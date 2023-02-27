@@ -28,6 +28,30 @@ const adminController = {
         return res.render('admin/restaurant', { restaurant })
       })
       .catch(error => next(error))
+  },
+  editRestaurant: (req, res, next) => {
+    return Restaurant.findByPk(req.params.id, { raw: true })
+      .then(restaurant => {
+        if (!restaurant) throw new Error("Restaurant didn't exist.")
+        return res.render('admin/edit-restaurant', { restaurant })
+      })
+      .catch(error => next(error))
+  },
+  putRestaurant: (req, res, next) => {
+    const { name, tel, address, openingHour, description } = req.body
+    if (!name) throw new Error('Restaurant name is required.')
+    return Restaurant.findByPk(req.params.id)
+      .then(restaurant => {
+        if (!restaurant) throw new Error("Restaurant didn't exist")
+        return restaurant.update({
+          name, tel, address, openingHour, description
+        })
+      })
+      .then(() => {
+        req.flash('success_messages', 'Restaurant was successfully to update.')
+        return res.redirect('/admin/restaurants')
+      })
+      .catch(error => next(error))
   }
 }
 
