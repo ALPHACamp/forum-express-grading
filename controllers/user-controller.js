@@ -17,7 +17,7 @@ const userController = {
       if (foundUser) throw new Error('User already exists!')
       const hash = bcrypt.hashSync(password, 10)
       await User.create({ name, email, password: hash })
-      req.flash('success_msg', '註冊成功! 可進行登入了!')
+      req.flash('success_messages', '註冊成功! 可進行登入了!')
       return res.redirect('/signin')
     } catch (error) {
       return next(error)
@@ -27,14 +27,14 @@ const userController = {
     return res.render('signin')
   },
   signIn: (req, res) => {
-    req.flash('success_msg', '已成功登入!')
+    req.flash('success_messages', '已成功登入!')
     return res.redirect('/restaurants')
   },
   logout: (req, res, next) => {
     req.logout(error => {
       if (error) return next(error)
     })
-    req.flash('success_msg', '已成功登出!')
+    req.flash('success_messages', '已成功登出!')
     return res.redirect('/signin')
   }
 }

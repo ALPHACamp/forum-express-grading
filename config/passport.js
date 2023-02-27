@@ -23,7 +23,7 @@ module.exports = app => {
             return done(
               null,
               false,
-              req.flash('error_msg', '信箱或密碼輸入錯誤!')
+              req.flash('error_messages', '信箱或密碼輸入錯誤!')
             )
           }
           // - 用戶存在
@@ -32,7 +32,7 @@ module.exports = app => {
             return done(
               null,
               false,
-              req.flash('error_msg', '信箱或密碼輸入錯誤!')
+              req.flash('error_messages', '信箱或密碼輸入錯誤!')
             )
           }
           return done(null, foundUser)

@@ -11,6 +11,8 @@ router.put(
   adminController.putRestaurant
 )
 router.delete('/restaurants/:id', adminController.deleteRestaurant)
+router.get('/users', adminController.getUsers)
+router.patch('/users/:id', adminController.patchUser)
 router.get('/restaurants', adminController.getRestaurants)
 router.post(
   '/restaurants',
