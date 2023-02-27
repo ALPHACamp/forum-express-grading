@@ -1,4 +1,5 @@
 const fs = require('fs')
+const imgur = require('imgur')
 // - file 代表 multer 處理完的檔案
 const localFileHandler = file => {
   return new Promise((resolve, reject) => {
@@ -12,6 +13,17 @@ const localFileHandler = file => {
       .catch(err => reject(err))
   })
 }
+
+const imgurFileHandler = file => {
+  return new Promise((resolve, reject) => {
+    if (!file) return resolve(null)
+    return imgur
+      .uploadFile(file.path)
+      .then(img => resolve(img?.link || null)) // -檢查 img 是否存在
+      .catch(err => reject(err))
+  })
+}
 module.exports = {
-  localFileHandler
+  localFileHandler,
+  imgurFileHandler
 }

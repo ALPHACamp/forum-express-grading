@@ -1,6 +1,6 @@
 // - 處理屬於restaurant路由的相關請求
 const { Restaurant } = require('../models')
-const { localFileHandler } = require('../helpers/file-helpers')
+const { imgurFileHandler } = require('../helpers/file-helpers')
 const adminController = {
   getRestaurants: async (req, res, next) => {
     try {
@@ -19,7 +19,7 @@ const adminController = {
     const { file } = req // - 取圖片檔
     try {
       if (!name) throw new Error('Restaurant name is required!')
-      const filePath = await localFileHandler(file)
+      const filePath = await imgurFileHandler(file)
       await Restaurant.create({
         name,
         tel,
@@ -62,7 +62,7 @@ const adminController = {
       if (!name) throw new Error('Restaurant name is required!')
       const [restaurant, filePath] = await Promise.all([
         Restaurant.findByPk(id),
-        localFileHandler(file)
+        imgurFileHandler(file)
       ])
       if (!restaurant) throw new Error('此餐廳不存在!')
       // - 利用回傳的instance再次使用sequelize提供的方法
