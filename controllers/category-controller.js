@@ -13,6 +13,13 @@ const categoryController = {
       })
       .catch(err => next(err))
   },
+  postCategory: (req, res, next) => {
+    const { name } = req.body
+    if (!name) throw new Error('category name is required!')
+    return Category.create({ name })
+      .then(() => res.redirect('/admin/categories'))
+      .catch(err => next(err))
+  },
   putCategory: (req, res, next) => {
     const { name } = req.body
     if (!name) throw new Error('Category name is required!')
@@ -24,10 +31,12 @@ const categoryController = {
       .then(() => res.redirect('/admin/categories'))
       .catch(err => next(err))
   },
-  postCategory: (req, res, next) => {
-    const { name } = req.body
-    if (!name) throw new Error('category name is required!')
-    return Category.create({ name })
+  deleteCategory: (req, res, next) => {
+    return Category.findByPk(req.params.id)
+      .then(category => {
+        if (!category) throw new Error("Category doesn't exit!")
+        return category.destroy()
+      })
       .then(() => res.redirect('/admin/categories'))
       .catch(err => next(err))
   }
