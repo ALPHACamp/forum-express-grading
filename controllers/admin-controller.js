@@ -1,19 +1,25 @@
 // 後台專用
-const { sequelize } = require('../models')
-const { QueryTypes } = require('sequelize')
-const { Restaurant, User } = require('../models')
+// const { sequelize } = require('../models')
+// const { QueryTypes } = require('sequelize')
+const { Restaurant, User, Category } = require('../models')
 const { removesWhitespace } = require('../helpers/object-helpers')
 const { localFileHandler } = require('../helpers/file-helpers')
 
 const adminController = {
   getRestaurants: (req, res, next) => {
     req.session.pathFrom = 'restaurants'
-    sequelize.query('SELECT id, name FROM restaurants', { type: QueryTypes.SELECT })
-      .then(restaurants => res.render('admin/restaurants', { restaurants, route: 'restaurants' }))
+    return Restaurant.findAll({
+      raw: true,
+      nest: true,
+      include: [Category]
+    })
+      .then(restaurants => res.render('admin/restaurants', { restaurants }))
       .catch(err => next(err))
   },
-  createRestaurantPage: (req, res) => {
-    res.render('admin/create-restaurant')
+  createRestaurantPage: (req, res, next) => {
+    return Category.findAll({ raw: true })
+      .then(categories => res.render('admin/create-restaurant', { categories }))
+      .catch(err => next(err))
   },
   createRestaurant: (req, res, next) => {
     localFileHandler(req.file)
@@ -31,14 +37,21 @@ const adminController = {
   getRestaurantDetail: (req, res, next) => {
     const id = req.params.id
     req.session.pathFrom = `restaurants/${id}`
-    return Restaurant.findByPk(id, { raw: true })
+    return Restaurant.findByPk(id, {
+      raw: true,
+      nest: true,
+      include: [Category]
+    })
       .then(restaurant => res.render('admin/restaurant-detail', { restaurant }))
       .catch(err => next(err))
   },
   editRestaurantPage: (req, res, next) => {
     const { id } = req.params
-    return Restaurant.findByPk(id, { raw: true })
-      .then(restaurant => res.render('admin/edit-restaurant', { restaurant }))
+    return Promise.all([
+      Restaurant.findByPk(id, { raw: true }),
+      Category.findAll({ raw: true })
+    ])
+      .then(([restaurant, categories]) => res.render('admin/edit-restaurant', { restaurant, categories }))
       .catch(err => next(err))
   },
   patchRestaurant: (req, res, next) => {

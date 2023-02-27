@@ -10,9 +10,20 @@
       </div>
       <div class="col-12 col-lg">
         <div class="row gy-2">
-          <div class="col-12">
+          <div class="col-12 col-lg-8">
             <label for="name" class="form-label"><span class="text-danger">*</span>餐廳名稱</label>
             <input id="name" name="name" type="text" class="form-control" value="{{restaurant.name}}" />
+          </div>
+          <div class="col-12 col-lg">
+            <label for="category" class="form-label">分類</label>
+            <select id="category" class="form-select" aria-label="category">
+              <option selected disabled>選擇餐廳分類</option>
+              {{#each categories}}
+              <option value="{{this.id}}" {{#ifCond this.id ../restaurant.categoryId}}selected{{/ifCond}}>
+                {{this.name}}
+              </option>
+              {{/each}}
+            </select>
           </div>
           <div class="col-12 col-lg-7">
             <label for="tel" class="form-label">電話</label>
