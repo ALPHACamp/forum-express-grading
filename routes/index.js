@@ -10,10 +10,7 @@ router.use('/admin', authenticatedAdmin, admin)
 // 前台
 const userController = require('../controllers/user-controller')
 const restaurantController = require('../controllers/restaurant-controller')
-const authController = require('../controllers/auth-controller')
 
-router.get('/auth/facebook/callback', authController.facebookCallback)
-router.get('/auth/facebook', authController.facebookSignin)
 router.get('/signup', userController.signUpPage)
 router.post('/signup', userController.signUp)
 router.get('/signin', userController.signInPage)

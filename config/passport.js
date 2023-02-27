@@ -1,8 +1,6 @@
 const passport = require('passport')
 const LocalStrategy = require('passport-local').Strategy
-const FacebookStrategy = require('passport-facebook').Strategy
 const bcrypt = require('bcryptjs')
-const { v4: uuidv4 } = require('uuid')
 const { User } = require('../models')
 
 if (process.env.NODE_ENV !== 'production') {
@@ -27,27 +25,6 @@ passport.use(new LocalStrategy(
           .catch(err => done(err, null))
       })
       .catch(err => done(err, null))
-  }
-))
-
-passport.use(new FacebookStrategy(
-  {
-    clientID: process.env.FACEBOOK_APP_ID,
-    clientSecret: process.env.FACEBOOK_APP_SECRET,
-    callbackURL: process.env.FACEBOOK_CALLBACK,
-    profileFields: ['email', 'displayName'] // 取得使用者資料的哪些欄位,並回傳至 callback 的 profile 參數
-  },
-  (token, refreshToken, profile, done) => {
-    const { name, email } = profile._json
-    const randomPassword = Math.random().toString(36).slice(-8)
-    User.findOne({ where: { email } })
-      .then(user => {
-        if (user) return done(null, user)
-        User.create({ id: uuidv4(), name, email, password: bcrypt.hashSync(randomPassword, 10) })
-          .then(user => { return done(null, user) })
-          .catch(err => { return done(err, false) })
-      })
-      .catch(err => done(err, false))
   }
 ))
 

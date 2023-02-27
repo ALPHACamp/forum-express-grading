@@ -1,7 +1,7 @@
 const express = require('express')
 const path = require('path') // Node.js 的原生模組
 const routes = require('./routes')
-const passport = require('./config/passpoet')
+const passport = require('./config/passport')
 const { getUser } = require('./helpers/auth-helpers')
 const hbsHelpers = require('./helpers/hbs-helpers') // 自製handlebars helpers
 
@@ -21,11 +21,7 @@ app.use(express.static('public'))
 app.use('/public/images', express.static(path.join(__dirname, 'public/images'))) // 讀取預設圖片
 app.use('/upload', express.static(path.join(__dirname, 'upload'))) // 讀取上傳圖片
 app.use(methodOverride('_method')) // 使用 method-override，_method可以自己設定
-<<<<<<< HEAD
-app.engine('hbs', exphbs({ extname: '.hbs' }))
-=======
 app.engine('hbs', exphbs({ extname: '.hbs', helpers: hbsHelpers }))
->>>>>>> b174df1a903250f787c13e5fae2443e0dce6fb4b
 app.set('view engine', 'hbs')
 app.use(express.urlencoded({ extended: true }))
 app.use(session({
