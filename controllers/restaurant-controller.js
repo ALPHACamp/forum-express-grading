@@ -1,6 +1,6 @@
 const restaurantController = {
   getRestaurants: (req, res) => {
-    return res.render('restaurants.hbs')
+    return res.render('restaurants')
   }
 }
 
