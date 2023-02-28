@@ -1,3 +1,4 @@
+const { urlencoded } = require('express')
 const express = require('express')
 const handlebars = require('express-handlebars')
 const routes = require('./routes')
@@ -9,6 +10,7 @@ const port = process.env.PORT || 3000
 app.engine('hbs', handlebars({ extname: 'hbs' }))
 // Setting hbs as view engine
 app.set('view engine', 'hbs')
+app.use(express.urlencoded({ extended: true }))
 app.use(routes)
 
 app.listen(port, () => {
