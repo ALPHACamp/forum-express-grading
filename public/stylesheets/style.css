@@ -1,14 +1,14 @@
-.name {
+.name-p {
   position: relative;
   z-index: 0;
 }
 
-.name:hover {
+.name-p:hover {
   background-color: transparent;
   z-index: 50;
 }
 
-.name span {
+.name-p span {
   /*CSS for enlarged image*/
   position: absolute;
   /* background-color: lightyellow;
@@ -20,14 +20,14 @@
   text-decoration: none;
 }
 
-.name span img {
+.name-p span img {
   /*CSS for enlarged image*/
   width: 250px;
   border-width: 20px;
   padding: 2px;
 }
 
-.name:hover span {
+.name-p:hover span {
   /*CSS for enlarged image on hover*/
   visibility: visible;
   top: -180px;
