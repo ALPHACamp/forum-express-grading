@@ -1,0 +1,20 @@
+<div class="container w-75 d-flex flex-column gap-4">
+  <div class="d-flex gap-3">
+    <button type="button" class="btn btn-secondary" onclick="history.back()">
+      <i class="fa-solid fa-arrow-left"></i>
+    </button>
+  </div>
+  <div class="row gap-3 gap-md-4">
+    <div class="col-12 col-md-4 ">
+      <h3>{{restaurant.name}}</h3>
+      <p><strong>分類：</strong>{{restaurant.Category.name}}</p>
+    </div>
+    <div class="col shadow-sm p-3 mb-5 bg-white bg-body-tertiary rounded">
+      <ul class="d-flex flex-column gap-3 m-0">
+        <li><strong>瀏覽次數：</strong>{{restaurant.viewCounts}}</li>
+        <li><strong>評論數：</strong></li>
+        <li><strong>收藏數：</strong></li>
+      </ul>
+    </div>
+  </div>
+</div>

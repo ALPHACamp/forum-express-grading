@@ -19,12 +19,24 @@ const restaurantController = {
   getRestaurant: async (req, res, next) => {
     const { id } = req.params
     const data = await Restaurant.findByPk(id, {
-      include: [Category],
-      raw: true,
-      nest: true
+      include: [Category]
     })
-    const restaurant = nullCategoryHandle(data)
+    await data.increment('view_counts')
+    const restaurant = nullCategoryHandle(data.toJSON())
     res.render('restaurant', { restaurant })
+  },
+  getDashboard: async (req, res, next) => {
+    const { id } = req.params
+    try {
+      const restaurant = await Restaurant.findByPk(id, {
+        raw: true,
+        nest: true,
+        include: [Category]
+      })
+      res.render('dashboard', { restaurant })
+    } catch (err) {
+      next(err)
+    }
   }
 }
 
