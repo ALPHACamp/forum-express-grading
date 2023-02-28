@@ -14,7 +14,7 @@ module.exports = {
       address: `${faker.address.streetAddress(true)},${faker.address.cityName()},${faker.address.state()},${faker.address.county()}`,
       opening_hours: `${(Math.floor(Math.random() * 24) + 1)}`.padStart(2, '0') + ':00', // 回傳01:00~24:00，padStart用來捕0
       description: faker.lorem.text(),
-      image: faker.image.food(320, 240, true),
+      image: `https://loremflickr.com/320/240/restaurant,cooking/all?lock=${Math.floor(Math.random() * 1000)}/random=${Math.random() * 100}`,
       category_id: categories[Math.floor(Math.random() * categories.length)].id,
       created_at: new Date(),
       updated_at: new Date()
