@@ -1,11 +1,14 @@
 // - 處理屬於restaurant路由的相關請求
-const { Restaurant, User } = require('../models')
+const { Restaurant, User, Category } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 const adminController = {
   getRestaurants: async (req, res, next) => {
     try {
-      const restaurants = await Restaurant.findAll({ raw: true })
-      // - render admin版的頁面
+      const restaurants = await Restaurant.findAll({
+        raw: true,
+        nest: true, // -將關聯資料包裝成物件
+        include: [Category] // -取得關聯資料
+      })
       return res.render('admin/restaurants', { restaurants })
     } catch (error) {
       return next(error)
@@ -37,7 +40,11 @@ const adminController = {
   getRestaurant: async (req, res, next) => {
     const { id } = req.params
     try {
-      const restaurant = await Restaurant.findByPk(id, { raw: true })
+      const restaurant = await Restaurant.findByPk(id, {
+        raw: true,
+        nest: true,
+        include: [Category]
+      })
       if (!restaurant) throw new Error('此餐廳不存在!')
       return res.render('admin/restaurant', { restaurant })
     } catch (error) {
