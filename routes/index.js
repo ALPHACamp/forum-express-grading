@@ -17,6 +17,7 @@ router.get('/signin', userController.signInPage)
 router.post('/signin', userController.signIn)
 router.get('/logout', userController.logOut)
 
+router.get('/restaurants/:id/dashboard', authenticated, restController.getDashboard)
 router.get('/restaurants/:id', authenticated, restController.getRestaurant)
 router.get('/restaurants', authenticated, restController.getRestaurants)
 
