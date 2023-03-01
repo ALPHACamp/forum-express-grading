@@ -49,7 +49,7 @@ describe('# R04: Like / Unlike', function () {
       this.likeMock = createModelMock('Like', this.mockLikeData)
       
       // 連向模擬的 Like table
-      this.userController = createControllerProxy('../controllers/user-controller', {
+      this.userController = createControllerProxy('../controllers/pages/user-controller', {
         Like: this.likeMock,
         Restaurant: this.restaurantMock
       })
