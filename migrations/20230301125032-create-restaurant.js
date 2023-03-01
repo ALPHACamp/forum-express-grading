@@ -1,4 +1,5 @@
 'use strict'
+// 使用npx語法創建格式並用db:migrate語法套用
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable('Restaurants', {
