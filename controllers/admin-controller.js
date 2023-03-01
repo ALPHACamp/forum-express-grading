@@ -9,7 +9,11 @@ const adminController = {
         nest: true, // -將關聯資料包裝成物件
         include: [Category] // -取得關聯資料
       })
-      return res.render('admin/restaurants', { restaurants })
+      const isInRestaurantPage = true
+      return res.render('admin/restaurants', {
+        restaurants,
+        isInRestaurantPage
+      })
     } catch (error) {
       return next(error)
     }
