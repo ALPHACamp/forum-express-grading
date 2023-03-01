@@ -2,7 +2,7 @@
 
 <h1>餐廳後台</h1>
 
-<nav class="mb-3">
+<nav class="mb-5">
   <ul class="nav nav-tabs">
     <li class="nav-item">
       <a class="nav-link " href="/admin/restaurants">Restaurants</a>
@@ -15,7 +15,16 @@
     </li>
   </ul>
 </nav>
-
+<form action="/admin/categories" method="post">
+  <div class="row g-3 align-items-center mb-5">
+    <div class="col-auto align-items-center">
+      <input type="text" id="categoryName" name="category" class="form-control ">
+    </div>
+    <div class="col-auto">
+      <button type="submit" class="btn btn-success">Create</button>
+    </div>
+  </div>
+</form>
 
 <table class="table align-middle">
   <thead class="thead-dark">

@@ -112,6 +112,13 @@ const adminController = {
       .then(categories => {
         res.render('admin/categories', { categories })
       })
+      .catch(err => next(err))
+  },
+  createCategories: (req, res, next) => {
+    const name = req.body.category
+    Category.create({ name })
+      .then(() => res.redirect('/admin/categories'))
+      .catch(err => next(err))
   }
 }
 module.exports = adminController
