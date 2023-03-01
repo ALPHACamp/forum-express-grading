@@ -1,12 +1,12 @@
 <div class="row mx-auto">
     <div class="col-md-6 text-center">
-        <img class="img-responsive center-block" src="{{user.image}}" alt="avatar" style="border-radius: 50%; width: 350px; margin-bottom: 25px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+        <img class="img-responsive center-block" src="{{userProfile.image}}" alt="avatar" style="border-radius: 50%; width: 350px; margin-bottom: 25px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
     </div>
     <div class="col-md-6">
-        <h2>{{user.name}}</h2>
-        <h3>{{user.email}}</h3>
-        {{#ifCond user.id loginUser.id}}
-        <a class="btn  btn-primary" href="/users/{{user.id}}/edit">Edit</a>
+        <h2>{{userProfile.name}}</h2>
+        <h3>{{userProfile.email}}</h3>
+        {{#ifCond userProfile.id loginUser.id}}
+        <a class="btn  btn-primary" href="/users/{{userProfile.id}}/edit">Edit</a>
         {{/ifCond}}
     </div>
 </div>

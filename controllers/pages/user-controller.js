@@ -10,7 +10,7 @@ const userController = {
     userServices.signUp(req, (err, user) => {
       if (err) return next(err)
       req.flash('success_messages', '成功註冊帳號！')
-      res.redirect('/signin', user)
+      res.redirect('/signin')
     })
   },
   signInPage: (req, res) => {
@@ -29,31 +29,31 @@ const userController = {
   },
   getUser: (req, res, next) => {
     const loginUser = req.user
-    Promise.all([
+    return Promise.all([
       User.findByPk(req.params.id, {
         raw: true,
         nest: true
       }),
       Comment.findAndCountAll({ where: { userId: req.params.id }, include: Restaurant, raw: true, nest: true })
     ])
-      .then(([user, comments]) => {
-        if (!user) throw new Error("User didn't exist!")
+      .then(([userProfile, comments]) => {
+        if (!userProfile) throw new Error("User didn't exist!")
 
-        return res.render('users/profile', { user, comments, loginUser })
+        return res.render('users/profile', { userProfile, comments, loginUser })
       })
       .catch(err => next(err))
   },
   editUser: (req, res, next) => {
-    if (req.user.id !== Number(req.params.id)) return res.redirect(`/users/${req.params.id}`)
+    // if (req.user.id !== Number(req.params.id)) return res.redirect(`/users/${req.user.id}`)
     // check if loginUser and requestUser is same
 
-    User.findByPk(req.params.id, {
+    return User.findByPk(req.params.id, {
       raw: true
     })
       .then(user => {
         if (!user) throw new Error("User didn't exist!")
 
-        return res.render('users/edit-profile', { user })
+        return res.render('users/edit', { user })
       })
       .catch(err => next(err))
   },
@@ -61,7 +61,7 @@ const userController = {
     const { file } = req
     if (!req.body.name) throw new Error('User name is required!')
 
-    Promise.all([
+    return Promise.all([
       User.findByPk(req.params.id),
       imgurFileHandler(file)
     ])
@@ -72,9 +72,9 @@ const userController = {
           image: filePath || user.image
         })
       })
-      .then(updateUser => {
-        req.flash('success_messages', 'user was successfully to update')
-        res.redirect(`/users/${updateUser.id}`)
+      .then(() => {
+        req.flash('success_messages', '使用者資料編輯成功')
+        res.redirect(`/users/${req.params.id}`)
       })
       .catch(err => next(err))
   },

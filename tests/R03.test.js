@@ -25,7 +25,7 @@ describe('# R03', () => {
         }])
 
         // 修改 userController 中的資料庫連線設定，由連向真實的資料庫 -> 改為連向模擬的 User table
-        this.userController = createControllerProxy('../controllers/user-controller', { User: this.UserMock })
+        this.userController = createControllerProxy('../controllers/pages/user-controller', { User: this.UserMock })
       })
 
       // 開始測試
@@ -42,7 +42,7 @@ describe('# R03', () => {
         // res.render 的第 1 個參數要是 'users/profile' 
         // res.render 的第 2 個參數要是 user，其 id 屬性的值應是 1
         res.render.getCall(0).args[0].should.equal('users/profile')
-        res.render.getCall(0).args[1].user.id.should.equal(1)
+        res.render.getCall(0).args[1].userProfile.id.should.equal(1)
       })
       
       // 測試完畢，清除資料
@@ -71,7 +71,7 @@ describe('# R03', () => {
         }])
 
         // 連向模擬的 User table
-        this.userController = createControllerProxy('../controllers/user-controller', { User: this.UserMock })
+        this.userController = createControllerProxy('../controllers/pages/user-controller', { User: this.UserMock })
       })
 
       it(' GET /users/:id/edit ', async () => {
@@ -117,7 +117,7 @@ describe('# R03', () => {
         )
 
         // 連向模擬的 User table
-        this.userController = createControllerProxy('../controllers/user-controller', { User: this.UserMock })
+        this.userController = createControllerProxy('../controllers/pages/user-controller', { User: this.UserMock })
       })
 
       it(' PUT /users/:id ', async () => {
