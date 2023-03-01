@@ -28,8 +28,6 @@ const userController = {
     res.render('signin')
   },
   signIn: (req, res) => {
-    console.log(req)
-    console.log(res)
     req.flash('success_messages', 'success for Sign In!')
     res.redirect('/restaurants')
   },
