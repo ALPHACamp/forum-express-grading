@@ -120,14 +120,27 @@ const adminController = {
   },
   postCategories: (req, res, next) => {
     const { name } = req.body
-    Category.create({ name })
+    if (!name) throw new Error('Category name is required!')
+
+    return Category.create({ name })
       .then(() => res.redirect('/admin/categories'))
       .catch(err => next(err))
   },
   putCategories: (req, res, next) => {
     const { name } = req.body
+    if (!name) throw new Error('Category name is required!')
+
     return Category.findByPk(req.params.id)
       .then(category => category.update({ name }))
+      .then(() => res.redirect('/admin/categories'))
+      .catch(err => next(err))
+  },
+  deleteCategories: (req, res, next) => {
+    return Category.findByPk(req.params.id)
+      .then(category => {
+        if (!category) throw new Error("category didn't exist!")
+        return category.destroy()
+      })
       .then(() => res.redirect('/admin/categories'))
       .catch(err => next(err))
   }
