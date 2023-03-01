@@ -14,7 +14,15 @@
   <label class="form-label" for="categoryId">Category</label>
   <select class="form-control" name="categoryId" id="categoryId">
     {{#each categories}}
-      <option value="{{this.id}}">{{this.name}}</option>
+      <option value="{{this.id}}"  
+      {{!-- 使用 Handlebars 路徑語法 " ../ " 表達上一層結構中的 restaurant 
+       避免讓 Handlebars 以為在 each 區塊中找尋 this.restaurant --}}
+        {{#isSame this.id ../restaurant.categoryId}} 
+          selected 
+        {{/isSame}}
+      >
+        {{this.name}}
+      </option>
     {{/each}}
   </select>
 </div>
