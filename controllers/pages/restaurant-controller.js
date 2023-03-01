@@ -58,7 +58,7 @@ const restaurantController = {
       .catch(err => next(err))
   },
   getDashboard: (req, res, next) => {
-    Restaurant.findByPk(req.params.id, {
+    return Restaurant.findByPk(req.params.id, {
       attributes: {
         include: [[Sequelize.fn('COUNT', Sequelize.col('Comments.id')), 'commentsCount']]
       },
@@ -66,7 +66,7 @@ const restaurantController = {
       include: [Category, { model: Comment, attributes: [] }]
     })
       .then(restaurant => {
-        return res.render('restaurant-dashboard', { restaurant: restaurant.toJSON() })
+        return res.render('dashboard', { restaurant: restaurant.toJSON() })
       })
       .catch(err => next(err))
   },
