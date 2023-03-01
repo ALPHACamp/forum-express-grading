@@ -1,11 +1,21 @@
 <link rel="stylesheet" href="/stylesheets/style.css">
 
 <h1>餐廳後台</h1>
-<nav class="nav">
-  <a class="nav-link" href="/admin/restaurants">Restaurants</a>
-  <P class="my-auto">|</P>
-  <a class="nav-link" href="/admin/users">Users</a>
+
+<nav class="mb-3">
+  <ul class="nav nav-tabs">
+    <li class="nav-item">
+      <a class="nav-link active" href="/admin/restaurants">Restaurants</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/admin/users">Users</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/admin/categories">Category</a>
+    </li>
+  </ul>
 </nav>
+
 <a href='/admin/restaurants/create'>
   <button type="button" class="btn btn-primary">New Restaurant</button>
 </a>
@@ -24,7 +34,10 @@
     {{#each restaurants}}
     <tr>
       <th scope="row">{{this.id}}</th>
-      <td><p class="name-p m-0" style="display: inline-block;">{{this.name}}<span><img src={{this.image}} /></span></p></td>
+      <td>
+        <p class="name-p m-0" style="display: inline-block;">{{this.name}}<span><img src={{this.image}} /></span>
+        </p>
+      </td>
       <td>{{this.Category.name}}</td>
       <td>
         <button type="button" class="btn btn-link">
@@ -38,7 +51,8 @@
           </a>
         </button>
         <form action="/admin/restaurants/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
-          <button type="submit" class="btn btn-link link-danger" onclick="return confirm(`確定要刪除 {{ this.name }} 嗎？`)">Delete</button>
+          <button type="submit" class="btn btn-link link-danger"
+            onclick="return confirm(`確定要刪除 {{ this.name }} 嗎？`)">Delete</button>
         </form>
       </td>
     </tr>
