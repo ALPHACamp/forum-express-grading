@@ -5,6 +5,7 @@ const flash = require('connect-flash')
 const session = require('express-session')
 const passport = require('./config/passport')
 const handlebarsHelpers = require('./helpers/handlebars-helpers')
+const methodOverride = require('method-override')
 
 // 這裡用解構賦值，等於是直接配合 export 多個變數的寫法，為了未來可能輸出多個變數做準備 (我猜的)
 const { getUser } = require('./helpers/auth-helpers')
@@ -22,6 +23,7 @@ app.use(session({ secret: SESSION_SECRET, resave: false, saveUninitialized: fals
 // passport 需在 session 後，因為會用到 session 嘛~
 app.use(passport.initialize())
 app.use(passport.session()) // 這裡會用到
+app.use(methodOverride('_method'))
 app.use(flash()) // 掛載套件
 // 使用 connect-flash
 app.use((req, res, next) => {
