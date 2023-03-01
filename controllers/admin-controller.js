@@ -108,15 +108,26 @@ const adminController = {
       .catch(err => next(err))
   },
   getCategories: (req, res, next) => {
-    return Category.findAll({ raw: true })
-      .then(categories => {
-        res.render('admin/categories', { categories })
+    const id = req.params.id || null
+    return Promise.all([
+      Category.findByPk(id, { raw: true }),
+      Category.findAll({ raw: true })
+    ])
+      .then(([category, categories]) => {
+        res.render('admin/categories', { category, categories })
       })
       .catch(err => next(err))
   },
-  createCategories: (req, res, next) => {
-    const name = req.body.category
+  postCategories: (req, res, next) => {
+    const { name } = req.body
     Category.create({ name })
+      .then(() => res.redirect('/admin/categories'))
+      .catch(err => next(err))
+  },
+  putCategories: (req, res, next) => {
+    const { name } = req.body
+    return Category.findByPk(req.params.id)
+      .then(category => category.update({ name }))
       .then(() => res.redirect('/admin/categories'))
       .catch(err => next(err))
   }

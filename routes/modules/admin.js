@@ -3,8 +3,10 @@ const router = express.Router()
 const adminController = require('../../controllers/admin-controller')
 const upload = require('../../middleware/multer')
 
+router.get('/categories/:id', adminController.getCategories)
+router.put('/categories/:id', adminController.putCategories)
 router.get('/categories', adminController.getCategories)
-router.post('/categories', adminController.createCategories)
+router.post('/categories', adminController.postCategories)
 
 router.patch('/users/:id', adminController.patchUser)
 router.get('/users', adminController.getUsers)

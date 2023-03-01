@@ -15,16 +15,30 @@
     </li>
   </ul>
 </nav>
+{{#if category}}
+<form action="/admin/categories/{{category.id}}?_method=PUT" method="post">
+  <div class="row g-3 align-items-center mb-5">
+    <div class="col-auto align-items-center">
+      <input type="text" id="categoryName" name="name" class="form-control" value="{{category.name}}">
+    </div>
+    <div class="col-auto">
+      <button type="submit" class="btn btn-warning">Update</button>
+      <a href="/admin/categories" class="text-muted ms-3">or Create New</a>
+    </div>
+  </div>
+</form>
+{{else}}
 <form action="/admin/categories" method="post">
   <div class="row g-3 align-items-center mb-5">
     <div class="col-auto align-items-center">
-      <input type="text" id="categoryName" name="category" class="form-control ">
+      <input type="text" id="categoryName" name="name" class="form-control ">
     </div>
     <div class="col-auto">
       <button type="submit" class="btn btn-success">Create</button>
     </div>
   </div>
 </form>
+{{/if}}
 
 <table class="table align-middle">
   <thead class="thead-dark">
@@ -43,7 +57,7 @@
       </td>
       <td>
         <button type="button" class="btn btn-link">
-          <a class="btn btn-link link-primary" href="/admin/categories/{{this.id}}/edit">
+          <a class="btn btn-link link-primary" href="/admin/categories/{{this.id}}">
             Edit
           </a>
         </button>
