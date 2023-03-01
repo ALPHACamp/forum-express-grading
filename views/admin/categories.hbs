@@ -34,23 +34,27 @@
   </thead>
   <tbody>
     {{#each categories}}
-    <tr>
-      <th scope="row">{{this.id}}</th>
-      <td>
-        <p>{{this.name}}</p>
-      </td>
-      <td>
-        <button type="button" class="btn btn-link">
-          <a class="btn btn-link link-primary" href="/admin/categories/{{this.id}}">
-            Edit
-          </a>
-        </button>
-        <form action="/admin/categories/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
-          <button type="submit" class="btn btn-link link-danger"
-            onclick="return confirm(`確定要刪除 {{ this.name }} 嗎？`)">Delete</button>
-        </form>
-      </td>
-    </tr>
+      <tr>
+        <th scope="row">{{this.id}}</th>
+        <td>
+          <p>{{this.name}}</p>
+        </td>
+        {{#ifCond this.name '分類不存在'}}
+          <td></td>
+        {{else}}
+          <td>
+            <button type="button" class="btn btn-link">
+              <a class="btn btn-link link-primary" href="/admin/categories/{{this.id}}">
+                Edit
+              </a>
+            </button>
+            <form action="/admin/categories/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
+              <button type="submit" class="btn btn-link link-danger"
+                onclick="return confirm(`確定要刪除 {{ this.name }} 嗎？`)">Delete</button>
+            </form>
+          </td>
+        </tr>
+      {{/ifCond}}
     {{/each}}
   </tbody>
 </table>

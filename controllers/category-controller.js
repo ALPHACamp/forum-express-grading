@@ -1,4 +1,4 @@
-const { Category } = require('../models')
+const { Category, Restaurant } = require('../models')
 const categoryController = {
   getCategories: (req, res, next) => {
     const id = req.params.id || null
@@ -16,7 +16,10 @@ const categoryController = {
     if (!name) throw new Error('Category name is required!')
 
     return Category.create({ name })
-      .then(() => res.redirect('/admin/categories'))
+      .then(() => {
+        req.flash('success_messages', 'Category was successfully to create')
+        res.redirect('/admin/categories')
+      })
       .catch(err => next(err))
   },
   putCategories: (req, res, next) => {
@@ -25,16 +28,33 @@ const categoryController = {
 
     return Category.findByPk(req.params.id)
       .then(category => category.update({ name }))
-      .then(() => res.redirect('/admin/categories'))
+      .then(() => {
+        req.flash('success_messages', 'Category was successfully to update')
+        res.redirect('/admin/categories')
+      })
       .catch(err => next(err))
   },
   deleteCategories: (req, res, next) => {
-    return Category.findByPk(req.params.id)
-      .then(category => {
-        if (!category) throw new Error("category didn't exist!")
-        return category.destroy()
+    return Promise.all([
+      Category.findByPk(req.params.id, {
+        nest: true,
+        include: [Restaurant]
+      }),
+      Category.findOne({ where: { name: '分類不存在' } }, {
+        raw: true
       })
-      .then(() => res.redirect('/admin/categories'))
+    ])
+      .then(([category, categoryRaw]) => {
+        if (!category) throw new Error("category didn't exist!")
+        Promise.all(category.Restaurants.map(restaurant => restaurant.update({ categoryId: categoryRaw.id })
+        ))
+          .then(() => category.destroy())
+          .then(() => {
+            req.flash('success_messages', 'Category was successfully to delete')
+            res.redirect('/admin/categories')
+          })
+          .catch(err => next(err))
+      })
       .catch(err => next(err))
   }
 }
