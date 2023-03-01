@@ -63,7 +63,7 @@ const adminController = { // 修改這裡
         res.redirect('/admin/restaurants')
       })
       .catch(err => next(err))
-  }
+  },
   // putRestaurant: (req, res, next) => {
   //   const { name, tel, address, openingHours, description } = req.body
   //   if (!name) throw new Error('Restaurant name is required!')
@@ -80,6 +80,27 @@ const adminController = { // 修改這裡
   //     })
   //     .catch(err => next(err))
   // }
+  // deleteRestaurant: (req, res, next) => { // 新增以下
+  //   return Restaurant.findByPk(req.params.id)
+  //     .then(restaurant => {
+  //       if (!restaurant) throw new Error("Restaurant didn't exist!")
+  //       return restaurant.destroy()
+  //     })
+  //     .then(() => res.redirect('/admin/restaurants'))
+  //     .catch(err => next(err))
+  // }
+  deleteRestaurant: (req, res, next) => {
+    return Restaurant.destroy({
+      where: {
+        id: req.params.id
+      }
+    })
+      .then(restaurant => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+      })
+      .then(() => res.redirect('/admin/restaurants'))
+      .catch(err => next(err))
+  }
 }
 
 module.exports = adminController
