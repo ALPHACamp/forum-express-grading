@@ -8,7 +8,8 @@
   <div class="row gap-3 gap-md-4">
     <div class="col-12 col-md">
       <div class="restaurant-img-container">
-        <img src={{restaurant.image}} alt="餐廳" class="image" onload="this.style.opacity=1;" onerror="this.src='/public/images/default-restaurant.jpg'">
+        <img src={{restaurant.image}} alt="餐廳" class="image" onload="this.style.opacity=1;"
+          onerror="this.src='/public/images/default-restaurant.jpg'" />
       </div>
     </div>
     <div class="col-12 col-md-6 d-flex flex-column gap-2">
@@ -20,7 +21,7 @@
     </div>
   </div>
   <div class="row">
-    <hr>
+    <hr />
     <div class="col d-flex flex-column gap-2">
       <h3>餐廳描述</h3>
       <p>{{restaurant.description}}</p>

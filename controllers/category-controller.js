@@ -5,7 +5,7 @@ const categoryController = {
     try {
       const { id } = req.params
       const categories = await Category.findAll({ raw: true })
-      const category = (id) ? await Category.findByPk(id, { raw: true }) : null
+      const category = id ? await Category.findByPk(id, { raw: true }) : null
       res.render('admin/categories', { categories, category })
     } catch (err) {
       next(err)

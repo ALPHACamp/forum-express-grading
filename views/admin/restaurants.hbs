@@ -13,18 +13,19 @@
     </thead>
     <tbody>
       {{#each restaurants}}
-      <tr>
-        <th scope="row">{{this.id}}</th>
-        <td>{{this.name}}</td>
-        <td>{{this.Category.name}}</td>
-        <td class="d-flex gap-3">
-          <a href="/admin/restaurants/{{this.id}}" class="btn btn-outline-primary">Show</a>
-          <a href="/admin/restaurants/{{this.id}}/edit" class="btn btn-outline-success">Edit</a>
-          <form action="/admin/restaurants/{{this.id}}?_method=DELETE" method="POST">
-            <button type="submit" class="btn btn-outline-danger" onclick="return confirm('確定要刪除餐廳: {{this.name}}')">Delete</button>
-          </form>
-        </td>
-      </tr>
+        <tr>
+          <th scope="row">{{this.id}}</th>
+          <td>{{this.name}}</td>
+          <td>{{this.Category.name}}</td>
+          <td class="d-flex gap-3">
+            <a href="/admin/restaurants/{{this.id}}" class="btn btn-outline-primary">Show</a>
+            <a href="/admin/restaurants/{{this.id}}/edit" class="btn btn-outline-success">Edit</a>
+            <form action="/admin/restaurants/{{this.id}}?_method=DELETE" method="POST">
+              <button type="submit" class="btn btn-outline-danger"
+                onclick="return confirm('確定要刪除餐廳: {{this.name}}')">Delete</button>
+            </form>
+          </td>
+        </tr>
       {{/each}}
     </tbody>
   </table>

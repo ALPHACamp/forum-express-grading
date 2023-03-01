@@ -7,6 +7,7 @@ module.exports = {
     }))
   },
   nullCategoryHandle: data => {
+    if (!data.length) return data
     return (data.length)
       ? data.map(el => ({
         ...el,

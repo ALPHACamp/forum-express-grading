@@ -1,20 +1,73 @@
 <div class="row mt-3">
-  {{#each restaurants}}
-  <div class="col-md-4">
-    <div class="card mb-4 shadow-sm">
-      <a href="/restaurants/{{this.id}}">
-        <img class="card-img-top img-fluid" src="{{this.image}}" alt="Card image cap" width="286px" height="180px" style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
-      </a>
-      <div class="card-body">
-        <p class="card-text">
-          <a href="/restaurants/{{this.id}}">
-            {{this.name}}
-          </a>
-        </p>
-        <span class="badge bg-secondary">{{this.Category.name}}</span>
-        <p class="card-text text-truncate">{{this.description}}</p>
+  <div class="col-12 my-4">
+    <div class="row gap-4 mx-1">
+      <div class="col-12 col-md-9 px-0">
+        <ul class="nav nav-pills">
+          <li class="nav-item">
+            <a class="nav-link {{#ifCond '' categoryId}}active{{/ifCond}}" href="?page=1&categoryId=&limit={{limit}}">全部</a>
+          </li>
+          {{#each categories}}
+            <li class="nav-item">
+              <a class="nav-link {{#ifCond this.id ../categoryId}}active{{/ifCond}}" href="?page=1&categoryId={{this.id}}&limit={{../limit}}">{{this.name}}</a>
+            </li>
+          {{/each}}
+          <li class="nav-item">
+            <a class="nav-link {{#ifCond 0 categoryId}}active{{/ifCond}}" href="?page=1&categoryId=0&limit={{limit}}">未分類</a>
+          </li>
+        </ul>
       </div>
+      <div class="col-12 col-md px-0">
+        <select class="form-select" aria-label="restaurants per page" onchange="window.location.href=this.value">
+          {{#each limitOption}}
+            <option value=" /restaurants?page=1&categoryId={{../categoryId}}&limit={{this}}" {{#ifCond ../limit this}}selected{{/ifCond}}>
+              每頁顯示{{this}}間餐廳
+            </option>
+          {{/each}}
+        </select>
+      </div>
+      <hr>
     </div>
   </div>
-  {{/each}}
+
+  {{#if restaurants}}
+    {{#each restaurants}}
+      <div class="col-md-4">
+        <div class="card mb-4 shadow-sm">
+          <a href="/restaurants/{{this.id}}">
+            <img class="card-img-top img-fluid" src="{{this.image}}" alt="Card image cap" width="286px" height="180px" style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+          </a>
+          <div class="card-body">
+            <p class="card-text">
+              <a href="/restaurants/{{this.id}}">{{this.name}}</a>
+            </p>
+            <span class="badge bg-secondary">{{this.Category.name}}</span>
+            <p class="card-text text-truncate">{{this.description}}</p>
+          </div>
+        </div>
+      </div>
+    {{/each}}
+    <nav class="d-flex justify-content-center mt-4">
+      <ul class="pagination">
+        <li class="page-item {{#ifCond pagination.currentPage pagination.prevPage}}disabled{{/ifCond}}"> {{!-- 上一頁 --}}
+          <a class="page-link" href="?page={{pagination.prevPage}}&categoryId={{categoryId}}&limit={{limit}}">
+            <span aria-hidden="true">&laquo;</span>
+          </a>
+        </li>
+        {{#each pagination.pages}}
+          <li class="page-item {{#ifCond ../pagination.currentPage this}}active{{/ifCond}}">
+            <a class="page-link" href="?page={{this}}&categoryId={{../categoryId}}&limit={{../limit}}">{{this}}</a>
+          </li>
+        {{/each}}
+        <li class="page-item {{#ifCond pagination.currentPage pagination.nextPage}}disabled{{/ifCond}}"> {{!-- 下一頁 --}}
+          <a class="page-link" href="?page={{pagination.nextPage}}&categoryId={{categoryId}}&limit={{limit}}">
+            <span aria-hidden="true">&raquo;</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  {{else}}
+    <div class="col text-center">
+      <h3 class="text-secondary mt-5">此分類尚無餐廳</h3>
+    </div>
+  {{/if}}
 </div>

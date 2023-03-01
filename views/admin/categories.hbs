@@ -2,24 +2,24 @@
 {{> admin-tabs route="categories"}}
 <section class="mt-4">
   {{#if category}}
-  <form action="/admin/categories/{{category.id}}?_method=PUT" method="POST" class="row my-4">
-    <div class="col-auto">
-      <input type="text" name="name" class="form-control" placeholder="輸入分類" value="{{category.name}}" />
-    </div>
-    <div class="col-auto">
-      <button type="submit" class="btn btn-success me-2">更新</button>
-      <a href="/admin/categories" class="btn btn-secondary">取消</a>
-    </div>
-  </form>
+    <form action="/admin/categories/{{category.id}}?_method=PUT" method="POST" class="row my-4">
+      <div class="col-auto">
+        <input type="text" name="name" class="form-control" placeholder="輸入分類" value="{{category.name}}" />
+      </div>
+      <div class="col-auto">
+        <button type="submit" class="btn btn-success me-2">更新</button>
+        <a href="/admin/categories" class="btn btn-secondary">取消</a>
+      </div>
+    </form>
   {{else}}
-  <form action="/admin/categories" method="POST" class="row my-4">
-    <div class="col-auto">
-      <input type="text" name="name" class="form-control" placeholder="輸入分類" />
-    </div>
-    <div class="col-auto">
-      <button type="submit" class="btn btn-primary">新增</button>
-    </div>
-  </form>
+    <form action="/admin/categories" method="POST" class="row my-4">
+      <div class="col-auto">
+        <input type="text" name="name" class="form-control" placeholder="輸入分類" />
+      </div>
+      <div class="col-auto">
+        <button type="submit" class="btn btn-primary">新增</button>
+      </div>
+    </form>
   {{/if}}
   <table class="table table-striped table-bordered align-middle">
     <thead class="table-dark">
@@ -32,14 +32,15 @@
     <tbody>
       <tr>
         {{#each categories}}
-        <th scope="row">{{this.id}}</th>
-        <td>{{this.name}}</td>
-        <td class="d-flex gap-3">
-          <a href="/admin/categories/{{this.id}}/edit" class="btn btn-outline-success">Edit</a>
-          <form action="/admin/categories/{{this.id}}?_method=DELETE" method="POST">
-            <button type="submit" class="btn btn-outline-danger" onclick="return confirm('確定要刪除分類: {{this.name}}')">Delete</button>
-          </form>
-        </td>
+          <th scope="row">{{this.id}}</th>
+          <td>{{this.name}}</td>
+          <td class="d-flex gap-3">
+            <a href="/admin/categories/{{this.id}}/edit" class="btn btn-outline-success">Edit</a>
+            <form action="/admin/categories/{{this.id}}?_method=DELETE" method="POST">
+              <button type="submit" class="btn btn-outline-danger"
+                onclick="return confirm('確定要刪除分類: {{this.name}}')">Delete</button>
+            </form>
+          </td>
       </tr>
       {{/each}}
     </tbody>
