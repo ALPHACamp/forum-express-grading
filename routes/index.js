@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
 
+const passport = require('../config/passport')
 const restController = require('../controllers/restaurant-controller')
 const userController = require('../controllers/user-controller')
 const admin = require('./modules/admin')
@@ -14,9 +15,14 @@ router.use('/admin', admin)
 router.get('/signup', userController.signUpPage)
 router.post('/signup', userController.signUp)
 
+router.get('/signin', userController.signInPage)
+router.post('/signin', passport.authenticate('local', { failureRedirect: '/signin', failureFlash: true }), userController.signIn) // 注意是 post
+router.get('/logout', userController.logout)
+
 router.get('/restaurants', restController.getRestaurants)
 // router.get('/', (req, res) => res.redirect('/restaurants'))
 router.use('/', (req, res) => res.redirect('/restaurants')) //! 教案說要改成這樣，我先試試上面的
 router.use('/', generalErrorHandler)
+// (上1) 其實加在前後都沒啥關係，因為 error handler 在 express 是另一類別，會另外處理
 
 module.exports = router
