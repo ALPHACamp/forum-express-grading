@@ -1,5 +1,5 @@
 const { Restaurant } = require('../models')
-const { localFileHandler } = require('../helpers/file-helpers') // 將 file-helper 載進來
+const { imgurFileHandler } = require('../helpers/file-helpers') // 將 file-helper 載進來
 
 const adminController = {
   // for all restaurants
@@ -21,7 +21,7 @@ const adminController = {
     // else(name exist) create the restaurant data, which data from req.body
     // for image upload, 把檔案取出來，也可以寫成 const file = req.file
     const { file } = req
-    localFileHandler(file) // 把取出的檔案傳給 file-helper 處理後
+    imgurFileHandler(file) // 把取出的檔案傳給 file-helper 處理後
       .then(filePath => Restaurant.create({ // 再 create 這筆餐廳資料
         name,
         tel,
@@ -74,7 +74,7 @@ const adminController = {
       // 去資料庫查有沒有這間餐廳
       Restaurant.findByPk(req.params.id),
       // 把檔案傳到 file-helper 處理
-      localFileHandler(file)
+      imgurFileHandler(file)
     ])
       .then(([restaurant, filePath]) => { // 以上兩樣事都做完以後
         if (!restaurant) throw new Error("Restaurant didn't exist!")
