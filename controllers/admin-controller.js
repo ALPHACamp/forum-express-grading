@@ -14,11 +14,18 @@ const adminController = {
       return next(error)
     }
   },
-  createRestaurant: (req, res) => {
-    return res.render('admin/create-restaurant')
+  createRestaurant: async (req, res, next) => {
+    try {
+      // - 取得目前餐廳種類
+      const categories = await Category.findAll({ raw: true })
+      return res.render('admin/create-restaurant', { categories })
+    } catch (error) {
+      return next(error)
+    }
   },
   postRestaurant: async (req, res, next) => {
-    const { name, tel, address, openingHours, description } = req.body
+    const { name, tel, address, openingHours, description, categoryId } =
+      req.body
     const { file } = req // - 取圖片檔
     try {
       if (!name) throw new Error('Restaurant name is required!')
@@ -29,7 +36,8 @@ const adminController = {
         address,
         openingHours,
         description,
-        image: filePath || null
+        image: filePath || null,
+        categoryId
       })
       req.flash('success_messages', '成功建立新餐廳!')
       return res.redirect('/admin/restaurants')
@@ -54,16 +62,20 @@ const adminController = {
   editRestaurant: async (req, res, next) => {
     const { id } = req.params
     try {
-      const restaurant = await Restaurant.findByPk(id, { raw: true })
+      const [restaurant, categories] = await Promise.all([
+        Restaurant.findByPk(id, { raw: true }),
+        Category.findAll({ raw: true })
+      ])
       if (!restaurant) throw new Error('此餐廳不存在!')
-      return res.render('admin/edit-restaurant', { restaurant })
+      return res.render('admin/edit-restaurant', { restaurant, categories })
     } catch (error) {
       return next(error)
     }
   },
   putRestaurant: async (req, res, next) => {
     const { id } = req.params
-    const { name, tel, address, openingHours, description } = req.body
+    const { name, tel, address, openingHours, description, categoryId } =
+      req.body
     const { file } = req
     try {
       if (!name) throw new Error('Restaurant name is required!')
@@ -81,7 +93,8 @@ const adminController = {
         description,
         // - 如果為Truthy(user有上傳新圖片)使用filePath
         // - 否則就用原先DB的image
-        image: filePath || restaurant.image
+        image: filePath || restaurant.image,
+        categoryId
       })
       req.flash('success_messages', '成功更新餐廳資料!')
       return res.redirect('/admin/restaurants')
