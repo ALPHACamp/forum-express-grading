@@ -1,5 +1,5 @@
 // 前台使用者用
-const { Restaurant, Category } = require('../models')
+const { Restaurant, Category, Comment, User } = require('../models')
 const { nullCategoryHandle } = require('../helpers/object-helpers')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
 
@@ -32,12 +32,23 @@ const restaurantController = {
   },
   getRestaurant: async (req, res, next) => {
     const { id } = req.params
-    const data = await Restaurant.findByPk(id, {
-      include: [Category]
-    })
-    await data.increment('view_counts')
-    const restaurant = nullCategoryHandle(data.toJSON())
-    res.render('restaurant', { restaurant })
+    try {
+      const data = await Restaurant.findByPk(id, {
+        include: [
+          Category,
+          { model: Comment, include: User }
+        ],
+        order: [
+          [Comment, 'createdAt', 'DESC']
+        ]
+      })
+      if (!data) throw new Error('此餐廳不存在')
+      await data.increment('view_counts')
+      const restaurant = nullCategoryHandle(data.toJSON())
+      res.render('restaurant', { restaurant })
+    } catch (err) {
+      next(err)
+    }
   },
   getDashboard: async (req, res, next) => {
     const { id } = req.params

@@ -8,8 +8,7 @@
   <div class="row gap-3 gap-md-4">
     <div class="col-12 col-md">
       <div class="restaurant-img-container">
-        <img src={{restaurant.image}} alt="餐廳" class="image" onload="this.style.opacity=1;"
-          onerror="this.src='/public/images/default-restaurant.jpg'" />
+        <img src={{restaurant.image}} alt="餐廳" class="image" onload="this.style.opacity=1;" onerror="this.src='/public/images/default-restaurant.jpg'" />
       </div>
     </div>
     <div class="col-12 col-md-6 d-flex flex-column gap-2">
@@ -25,6 +24,45 @@
     <div class="col d-flex flex-column gap-2">
       <h3>餐廳描述</h3>
       <p>{{restaurant.description}}</p>
+    </div>
+  </div>
+  <div class="row">
+    <hr />
+    <div class="col d-flex flex-column gap-3">
+      <h3>評論區</h3>
+      <form action="/comments" method="POST" class="border-bottom pb-4">
+        <div class="form-row mb-3 me-auto">
+          <label class="form-label" for="text">留下評論：</label>
+          <textarea class="form-control" id="text" name="text" rows="3"></textarea>
+        </div>
+        <input type="hidden" name="restaurantId" value="{{restaurant.id}}" /> {{!-- 負責送restaurantId --}}
+        <div class="d-flex justify-content-end gap-3">
+          <a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+      </form>
+      <h5>所有評論</h5>
+      <div class="row-cols-1 gap-4">
+        {{#each restaurant.Comments}}
+          <figure class="col bg-white rounded p-3">
+            <div class="d-flex mb-2">
+              <div class="flex-1 me-auto">
+                <blockquote class="blockquote mb-2">
+                  <p>{{this.text}}</p>
+                </blockquote>
+              </div>
+              {{#if ../loggedUser.isAdmin}}
+                <form action="/comments/{{this.id}}?_method=DELETE" method="POST">
+                  <button type="submit" class="btn btn-outline-danger rounded-circle" onclick="return confirm('確定要刪除評論: {{this.text}}')"><i class="fa-solid fa-xmark"></i></button>
+                </form>
+              {{/if}}
+            </div>
+            <figcaption class="blockquote-footer m-0 text-end">
+              at {{relativeTimeFromNow this.createdAt}}, by <a href="/users/{{this.User.id}}" style="text-decoration: none;"><strong>{{this.User.name}}</strong></a>
+            </figcaption>
+          </figure>
+        {{/each}}
+      </div>
     </div>
   </div>
 </div>
