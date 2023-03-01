@@ -3,4 +3,9 @@ temp/
 upload/
 
 .DS_Store
+
+# dotenv
 .env
+
+#text
+test.text
