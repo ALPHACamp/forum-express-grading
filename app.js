@@ -4,14 +4,18 @@ const routes = require('./routes')
 const flash = require('connect-flash')
 const session = require('express-session')
 const passport = require('./config/passport')
+const handlebarsHelpers = require('./helpers/handlebars-helpers')
+
+// 這裡用解構賦值，等於是直接配合 export 多個變數的寫法，為了未來可能輸出多個變數做準備 (我猜的)
+const { getUser } = require('./helpers/auth-helpers')
 
 const app = express()
 const port = process.env.PORT || 3000
 const SESSION_SECRET = 'secret'
 
-const db = require('./models')
+// const db = require('./models') // 一開始明明加了，但好像一直沒用到
 
-app.engine('hbs', handlebars({ extname: '.hbs' }))
+app.engine('hbs', handlebars({ extname: '.hbs', helpers: handlebarsHelpers }))
 app.set('view engine', 'hbs')
 app.use(express.urlencoded({ extended: true }))
 app.use(session({ secret: SESSION_SECRET, resave: false, saveUninitialized: false }))
@@ -23,6 +27,7 @@ app.use(flash()) // 掛載套件
 app.use((req, res, next) => {
   res.locals.success_messages = req.flash('success_messages') // 設定 success_msg 訊息
   res.locals.error_messages = req.flash('error_messages') // 設定 warning_msg 訊息
+  res.locals.user = getUser(req) // 注意增減的 code 與這個檔案到底有無關係 (這段跟 passport 有關，而非 app.js)
   next()
 })
 
