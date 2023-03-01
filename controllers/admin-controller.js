@@ -9,10 +9,10 @@ const adminController = {
         nest: true, // -將關聯資料包裝成物件
         include: [Category] // -取得關聯資料
       })
-      const isInRestaurantPage = true
+      const isInRestaurantTab = true
       return res.render('admin/restaurants', {
         restaurants,
-        isInRestaurantPage
+        isInRestaurantTab
       })
     } catch (error) {
       return next(error)
@@ -120,7 +120,8 @@ const adminController = {
   getUsers: async (req, res, next) => {
     try {
       const users = await User.findAll({ raw: true })
-      return res.render('admin/users', { users })
+      const isInUserTab = true
+      return res.render('admin/users', { users, isInUserTab })
     } catch (error) {
       return next(error)
     }
@@ -140,6 +141,26 @@ const adminController = {
       })
       req.flash('success_messages', '使用者權限變更成功')
       return res.redirect('/admin/users')
+    } catch (error) {
+      return next(error)
+    }
+  },
+  getCategories: async (req, res, next) => {
+    try {
+      const categories = await Category.findAll({ raw: true })
+      const isInCategoryTab = true
+      return res.render('admin/categories', { categories, isInCategoryTab })
+    } catch (error) {
+      return next(error)
+    }
+  },
+  postCategories: async (req, res, next) => {
+    const { name } = req.body
+    try {
+      if (!name) throw new Error('名稱為必填!')
+      await Category.create({ name })
+      req.flash('success_messages', '新增類別成功!')
+      return res.redirect('/admin/categories')
     } catch (error) {
       return next(error)
     }

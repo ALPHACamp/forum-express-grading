@@ -1,5 +1,5 @@
 <ul class="nav nav-tabs my-2">
-  {{#if isInRestaurantPage}}
+  {{#if isInRestaurantTab}}
     <li class="nav-item">
       <a
         class="nav-link active fw-bolder"
@@ -10,7 +10,11 @@
     <li class="nav-item">
       <a class="nav-link" href="/admin/users">Users</a>
     </li>
-  {{else}}
+    <li class="nav-item">
+      <a class="nav-link" href="/admin/categories">Categories</a>
+    </li>
+  {{/if}}
+  {{#if isInUserTab}}
     <li class="nav-item">
       <a class="nav-link" href="/admin/restaurants">Restaurants</a>
     </li>
@@ -20,6 +24,24 @@
         aria-current="page"
         href="/admin/users"
       >Users</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/admin/categories">Categories</a>
+    </li>
+  {{/if}}
+  {{#if isInCategoryTab}}
+    <li class="nav-item">
+      <a class="nav-link" href="/admin/restaurants">Restaurants</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/admin/users">Users</a>
+    </li>
+    <li class="nav-item">
+      <a
+        class="nav-link active fw-bolder"
+        aria-current="page"
+        href="/admin/categories"
+      >Categories</a>
     </li>
   {{/if}}
 </ul>
