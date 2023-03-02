@@ -35,6 +35,17 @@
           user
           {{/if}}
         </td>
+        <td>
+          <form action="/admin/users/{{this.id}}?_method=PATCH" method="POST" style="display: inline;">
+            <button type="submit" class="btn btn-link" onclick="return confirm(`確定要變更 {{ this.name }} 權限嗎？`)">Set as 
+              {{#if this.isAdmin}}
+              user
+              {{else}}
+              admin
+              {{/if}}
+            </button>
+          </form>
+        </td>
       </tr>
     {{/each}}
   </tbody>
