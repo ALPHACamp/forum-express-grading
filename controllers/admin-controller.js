@@ -4,7 +4,7 @@ const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const adminController = {
   getRestaurants: (req, res, next) => {
-    Restaurant.findAll({
+    return Restaurant.findAll({
       raw: true
     })
       .then(restaurants => res.render('admin/restaurants', { restaurants }))
@@ -18,7 +18,7 @@ const adminController = {
     if (!name) throw new Error('Restaurant name is required!')
 
     const { file } = req
-    imgurFileHandler(file)
+    return imgurFileHandler(file)
       .then(filePath =>
         Restaurant.create({
           name,
@@ -36,7 +36,7 @@ const adminController = {
       .catch(err => next(err))
   },
   getRestaurant: (req, res, next) => {
-    Restaurant.findByPk(req.params.id, {
+    return Restaurant.findByPk(req.params.id, {
       raw: true
     })
       .then(restaurant => {
@@ -46,7 +46,7 @@ const adminController = {
       .catch(err => next(err))
   },
   editRestaurant: (req, res, next) => {
-    Restaurant.findByPk(req.params.id, {
+    return Restaurant.findByPk(req.params.id, {
       raw: true
     })
       .then(restaurant => {
@@ -60,7 +60,7 @@ const adminController = {
     if (!name) throw new Error('Restaurant name is required!')
 
     const { file } = req
-    Promise.all([Restaurant.findByPk(req.params.id), imgurFileHandler(file)])
+    return Promise.all([Restaurant.findByPk(req.params.id), imgurFileHandler(file)])
       .then(([restaurant, filePath]) => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         return restaurant.update({
@@ -90,14 +90,14 @@ const adminController = {
 
   // Access rights management
   getUsers: (req, res, next) => {
-    User.findAll({
+    return User.findAll({
       raw: true
     })
       .then(users => res.render('admin/users', { users }))
       .catch(err => next(err))
   },
   patchUser: (req, res, next) => {
-    User.findByPk(req.params.id)
+    return User.findByPk(req.params.id)
       .then(user => {
         if (!user) throw new Error("User didn't exist!")
         // for root
@@ -106,11 +106,7 @@ const adminController = {
           return res.redirect('back')
         }
         // admin -> user ; user -> admin
-        if (user.isAdmin) {
-          return user.update({ isAdmin: false })
-        } else {
-          return user.update({ isAdmin: true })
-        }
+        return user.update({ isAdmin: !user.isAdmin })
       })
       .then(() => {
         req.flash('success_messages', '使用者權限變更成功')
