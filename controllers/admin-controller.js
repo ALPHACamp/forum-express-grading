@@ -15,7 +15,6 @@ const adminController = {
   },
   postRestaurant: (req, res, next) => { // 送出表單餐廳
     const { name, tel, address, openingHours, description } = req.body // 從 req.body 拿出表單裡的資料
-    console.log(req.body)
     if (!name) throw new Error('Restaurant name is required!') // name 是必填，若發先是空值就會終止程式碼，並在畫面顯示錯誤提示
     Restaurant.create({ // 產生一個新的 Restaurant 物件實例，並存入資料庫
       name,
@@ -50,9 +49,8 @@ const adminController = {
       })
       .catch(err => next(err))
   },
-  putRestaurant: (req, res, next) => { // 判斷編輯表單
+  putRestaurant: (req, res, next) => { // 判斷編輯表單/不row:true來過濾掉sequelize
     const { name, tel, address, openingHours, description } = req.body
-    console.log(req.body)
     if (!name) throw new Error('Restaurant name is required!')
     Restaurant.findByPk(req.params.id)
       .then(restaurant => {
@@ -69,6 +67,15 @@ const adminController = {
         req.flash('success_messages', 'restaurant was successfully to update')
         res.redirect('/admin/restaurants')
       })
+      .catch(err => next(err))
+  },
+  deleteRestaurant: (req, res, next) => { // 刪除/不row:true來過濾掉sequelize
+    return Restaurant.findByPk(req.params.id)
+      .then(restaurant => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        return restaurant.destroy()
+      })
+      .then(() => res.redirect('/admin/restaurants'))
       .catch(err => next(err))
   }
 }
