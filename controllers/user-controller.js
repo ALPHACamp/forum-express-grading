@@ -6,8 +6,7 @@ const userController = {
     res.render('signup')
   },
   signUp: (req, res, next) => {
-    if (req.body.password !== req.body.passwordCheck) { throw new Error('Passwords do not match!') }
-
+    if (req.body.password !== req.body.passwordCheck) throw new Error('Passwords do not match!')
     User.findOne({ where: { email: req.body.email } })
       .then(user => {
         if (user) throw new Error('Email already exists!')
@@ -28,13 +27,15 @@ const userController = {
     res.render('signin')
   },
   signIn: (req, res) => {
-    req.flash('success_messages', 'Logged In Successfully!')
+    req.flash('success_messages', 'Logged In Successfully')
     res.redirect('/restaurants')
   },
   logout: (req, res) => {
-    req.flash('success_message', 'Logged Out Successfully!')
+    req.flash('success_messages', 'Logged Out Successfully')
     req.logout()
     res.redirect('/signin')
   }
+
 }
+
 module.exports = userController
