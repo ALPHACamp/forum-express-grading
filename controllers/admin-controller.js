@@ -122,20 +122,6 @@ const adminController = {
         res.redirect('/admin/users')
       })
       .catch(err => next(err))
-  },
-  getCategories: (req, res, next) => {
-    return Category.findAll({
-      raw: true
-    })
-      .then(categories => res.render('admin/categories', { categories }))
-  },
-  postCategory: (req, res, next) => {
-    const { name } = req.body
-    return Category.create({
-      name
-    })
-      .then(() => res.redirect('/admin/categories'))
-      .catch(err => next(err))
   }
 }
 module.exports = adminController
