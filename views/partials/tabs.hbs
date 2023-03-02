@@ -1,47 +1,15 @@
+<h1>餐廳後台</h1>
 <ul class="nav nav-tabs my-2">
-  {{#if isInRestaurantTab}}
-    <li class="nav-item">
-      <a
-        class="nav-link active fw-bolder"
-        aria-current="page"
-        href="/admin/restaurants"
-      >Restaurants</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" href="/admin/users">Users</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" href="/admin/categories">Categories</a>
-    </li>
-  {{/if}}
-  {{#if isInUserTab}}
-    <li class="nav-item">
-      <a class="nav-link" href="/admin/restaurants">Restaurants</a>
-    </li>
-    <li class="nav-item">
-      <a
-        class="nav-link active fw-bolder"
-        aria-current="page"
-        href="/admin/users"
-      >Users</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" href="/admin/categories">Categories</a>
-    </li>
-  {{/if}}
-  {{#if isInCategoryTab}}
-    <li class="nav-item">
-      <a class="nav-link" href="/admin/restaurants">Restaurants</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" href="/admin/users">Users</a>
-    </li>
-    <li class="nav-item">
-      <a
-        class="nav-link active fw-bolder"
-        aria-current="page"
-        href="/admin/categories"
-      >Categories</a>
-    </li>
-  {{/if}}
+  <li class="nav-item">
+    <a
+      class="nav-link {{#isSame  route 'restaurants'}}active fw-bolder{{/isSame}}"
+      href="/admin/restaurants"
+    >Restaurants</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link {{#isSame  route 'users'}}active fw-bolder{{/isSame}}" href="/admin/users">Users</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link {{#isSame  route 'categories'}}active fw-bolder{{/isSame}}" href="/admin/categories">Categories</a>
+  </li>
 </ul>

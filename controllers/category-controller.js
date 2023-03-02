@@ -7,11 +7,9 @@ const categoryController = {
         Category.findAll({ raw: true }),
         Category.findByPk(id, { raw: true })
       ])
-      const isInCategoryTab = true
       return res.render('admin/categories', {
         categories,
         category,
-        isInCategoryTab,
         id
       })
     } catch (error) {
