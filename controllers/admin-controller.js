@@ -1,5 +1,6 @@
 const { Restaurant, User } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
+const assert = require('assert')
 
 const adminController = {
   getRestaurants: (req, res, next) => {
@@ -96,7 +97,7 @@ const adminController = {
     return User.findByPk(id)
       .then(user => {
         const switchRole = !user.isAdmin
-        if (!user) throw new Error("User didn't exist!")
+        assert(user, "User didn't exist!")
         if (user.email === 'root@example.com') {
           req.flash('error_messages', '禁止變更 root 權限')
           return res.redirect('back')
