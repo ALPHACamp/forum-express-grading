@@ -1,6 +1,6 @@
 /* For front-end system */
 const bcrypt = require('bcryptjs');
-const { User, Restaurant, Comment } = require('../models');
+const { User, Restaurant, Comment, Favorite } = require('../models');
 const { getUser } = require('../helpers/auth-helpers')
 const { imgurFileHandler } = require('../helpers/file-helpers');
 
@@ -119,6 +119,40 @@ const userController = {
         res.redirect(`/users/${userId}`);
       })
       .catch(err => next(err));
+  },
+  addFavorite: (req, res, next) => {
+    const { restaurantId } = req.params
+    return Promise.all([
+      Restaurant.findByPk(restaurantId),
+      Favorite.findOne({
+        where: {
+          userId: req.user.id,
+          restaurantId
+        }
+      })
+    ])
+      .then(([restaurant, favorite]) => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        if (favorite) throw new Error('The restaurant is already added in your favorite')
+
+        return Favorite.create({ userId: req.user.id, restaurantId })
+      })
+      .catch(err => next(err))
+  },
+  removeFavorite: (req, res, next) => {
+    return Favorite.findOne({
+      where: {
+        userId: req.user.id,
+        restaurantId: req.params.restaurantId
+      }
+    })
+      .then(favorite => {
+        if (!favorite) throw new Error("You haven't added the restaurant in your favorite!")
+
+        return favorite.destroy()
+      })
+      .then(() => res.redirect('back'))
+      .catch(err => next(err))
   }
 };
 
