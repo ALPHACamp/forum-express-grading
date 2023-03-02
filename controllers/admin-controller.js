@@ -1,4 +1,5 @@
 const { Restaurant } = require('../models')
+const { localFileHandler } = require('../helpers/file-helpers')
 
 const adminController = {
   getRestaurants: (req, res, next) => {
@@ -11,7 +12,16 @@ const adminController = {
   postRestaurant: (req, res, next) => {
     const { name, tel, address, openingHours, description } = req.body // 從 req.body 拿出表單裡的資料
     if (!name) throw new Error('Restaurant name is required!') // name 是必填，若發先是空值就會終止程式碼，並在畫面顯示錯誤提示
-    Restaurant.create({ name, tel, address, openingHours, description })
+
+    const { file } = req // 圖片資料會存這，而非 req.body (multipart/form-data)
+    localFileHandler(file).then(filePath => Restaurant.create({
+      name,
+      tel,
+      address,
+      openingHours,
+      description,
+      image: filePath || null
+    }))
       .then(() => {
         req.flash('success_messages', 'restaurant was successfully created') // 在畫面顯示成功提示
         res.redirect('/admin/restaurants') // 新增完成後導回後台首頁
@@ -37,14 +47,19 @@ const adminController = {
   putRestaurant: (req, res, next) => {
     const { name, tel, address, openingHours, description } = req.body
     if (!name) throw new Error('Restaurant name is required!')
-    Restaurant.findByPk(req.params.id)
-      .then(restaurant => {
+
+    const { file } = req
+    Promise.all([
+      Restaurant.findByPk(req.params.id),
+      localFileHandler(file)
+    ])
+      .then(([restaurant, filePath]) => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
-        return restaurant.update({ name, tel, address, openingHours, description })
+        return restaurant.update({ name, tel, address, openingHours, description, image: filePath || restaurant.image }) // image 路徑，更新或是沿用舊值
       })
       .then(() => {
         req.flash('success_messages', 'restaurant was successfully to update')
-        res.redirect('/admin/restaurant')
+        res.redirect('/admin/restaurants')
       })
       .catch(err => next(err))
   },
