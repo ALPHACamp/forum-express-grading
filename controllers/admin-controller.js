@@ -95,6 +95,28 @@ const adminController = {
     })
       .then(users => res.render('admin/users', { users }))
       .catch(err => next(err))
+  },
+  patchUser: (req, res, next) => {
+    User.findByPk(req.params.id)
+      .then(user => {
+        if (!user) throw new Error("User didn't exist!")
+        // for root
+        if (user.email === 'root@example.com') {
+          req.flash('error_messages', '禁止變更 root 權限')
+          return res.redirect('back')
+        }
+        // admin -> user ; user -> admin
+        if (user.isAdmin) {
+          return user.update({ isAdmin: false })
+        } else {
+          return user.update({ isAdmin: true })
+        }
+      })
+      .then(() => {
+        req.flash('success_messages', '使用者權限變更成功')
+        res.redirect('/admin/users')
+      })
+      .catch(err => next(err))
   }
 }
 module.exports = adminController
