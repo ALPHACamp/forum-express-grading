@@ -3,7 +3,7 @@
 // const { QueryTypes } = require('sequelize')
 const { Restaurant, User, Category } = require('../models')
 const { removesWhitespace } = require('../helpers/object-helpers')
-const { localFileHandler } = require('../helpers/file-helpers')
+const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const adminController = {
   getRestaurants: (req, res, next) => {
@@ -22,7 +22,7 @@ const adminController = {
       .catch(err => next(err))
   },
   createRestaurant: (req, res, next) => {
-    localFileHandler(req.file)
+    imgurFileHandler(req.file)
       .then(imgPath => {
         const restaurantData = removesWhitespace({ ...req.body, image: imgPath })
         if (!restaurantData.name) throw new Error('餐廳名稱為必填')
@@ -57,7 +57,7 @@ const adminController = {
   patchRestaurant: (req, res, next) => {
     const { id } = req.params
     const { pathFrom } = req.session // 利用這個紀錄是從 detail頁面進入編輯 or restaurants 頁面
-    localFileHandler(req.file)
+    imgurFileHandler(req.file)
       .then(imgPath => {
         const restaurantData = removesWhitespace({ ...req.body, image: imgPath })
         if (!restaurantData.name) throw new Error('餐廳名稱為必填')

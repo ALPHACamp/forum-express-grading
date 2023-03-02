@@ -2,7 +2,7 @@ const passport = require('passport')
 const { v4: uuidv4 } = require('uuid')
 const { User, Comment, Restaurant } = require('../models')
 const { removesWhitespace } = require('../helpers/object-helpers')
-const { localFileHandler } = require('../helpers/file-helpers')
+const { imgurFileHandler } = require('../helpers/file-helpers')
 const bcrypt = require('bcryptjs')
 
 const userController = {
@@ -60,11 +60,12 @@ const userController = {
   },
   putUser: async (req, res, next) => {
     const { id } = req.params
-    const { name } = req.body
-    const image = await localFileHandler(req.file)
     try {
       const user = await User.findByPk(id)
       if (!user) throw new Error('使用者不存在，更新失敗')
+
+      const { name } = req.body
+      const image = await imgurFileHandler(req.file) || user.image
       await user.update({ name, image })
     } catch (err) {
       next(err)

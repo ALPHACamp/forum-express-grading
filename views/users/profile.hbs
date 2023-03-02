@@ -3,7 +3,9 @@
     <div class="col card-body">
       <div class="row p-sm-5 p-md-0">
         <div class="col-12 col-md-4 col-lg-3 mb-3 mb-md-0">
-          <img class="rounded img-responsive center-block m-0" src="{{user.image}}" style="width: 100%; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+          <div class="user-img-container">
+            <img id="previewImg" src="{{user.image}}" class="rounded" width="100%" max-width="320px" style="object-fit: cover;" onerror="this.src='/public/images/default-avatar.jpg'" />
+          </div>
         </div>
         <div class="col">
           <div class="row h-100">
