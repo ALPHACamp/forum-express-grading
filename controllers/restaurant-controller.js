@@ -23,7 +23,7 @@ const restaurantController = {
           // notice where這個做法可以在後面多加好幾個條件，以便於未來擴充查詢條件。spread operator優先級較低，會先執行三元運算子後再執行spread operator
           ...categoryId ? { categoryId } : {}
         },
-        limit,
+        limit, // note 限制顯示的個數
         offset
       }),
       Category.findAll({ raw: true })
@@ -83,6 +83,28 @@ const restaurantController = {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
 
         return res.render('dashboard', { restaurant: restaurant.toJSON() })
+      })
+      .catch(err => next(err))
+  },
+  getFeeds: (req, res, next) => {
+    return Promise.all([
+      Restaurant.findAll({
+        limit: 10,
+        order: [['createdAt', 'DESC']],
+        include: [Category],
+        raw: true,
+        nest: true
+      }),
+      Comment.findAll({
+        limit: 10,
+        order: [['createdAt', 'DESC']],
+        include: [User, Restaurant],
+        raw: true,
+        nest: true
+      })
+    ])
+      .then(([restaurants, comments]) => {
+        res.render('feeds', { restaurants, comments })
       })
       .catch(err => next(err))
   }

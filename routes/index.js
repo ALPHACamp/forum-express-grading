@@ -30,6 +30,8 @@ router.get('/users/:id/edit', authenticated, userController.editUser)
 router.get('/users/:id', authenticated, userController.getUser)
 router.put('/users/:id', authenticated, upload.single('image'), userController.putUser);
 
+// note feeds為動態路由，若feeds擺在:id後面，根據express走法，會先抓到id後，判定feed = id而導致錯誤
+router.get('/restaurants/feeds', authenticated, restController.getFeeds)
 router.get('/restaurants/:id/dashboard', authenticated, restController.getDashboard)
 router.get('/restaurants/:id', authenticated, restController.getRestaurant)
 // note 原先驗證一般使用者，之後多authenticated來驗證admin user
