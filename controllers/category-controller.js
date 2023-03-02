@@ -6,6 +6,7 @@ const categoryController = {
       raw: true
     })
       .then(categories => res.render('admin/categories', { categories }))
+      .catch(err => next(err))
   },
   postCategory: (req, res, next) => {
     const { name } = req.body

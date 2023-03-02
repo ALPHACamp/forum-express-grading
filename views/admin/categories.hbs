@@ -1,22 +1,4 @@
-<h1>餐廳後台</h1>
-
-<br>
-
-<ul class="nav nav-tabs">
-  <li class="nav-item">
-    <a class="nav-link" href="restaurants">Restaurants</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" href="users">Users</a>
-  </li>
-    <li class="nav-item">
-    <a class="nav-link active" href="categories">Categories</a>
-  </li>
-</ul>
-
-<br />
-{{> admin-category-form}}
-<br />
+{{>admin-tabs route='categories'}}
 <table class="table align-middle">
   <thead class="thead-dark">
     <tr>
@@ -31,16 +13,18 @@
       <th scope="row">{{this.id}}</th>
       <td>{{this.name}}</td>
       <td>
-        <form action="/admin/categories/{{this.id}}" method="GET" style="display: inline;">
-          <button type="submit" class="btn btn-link link-primary">Edit</button>
-        </form>
+        <button type="button" class="btn btn-link">
+          <a class="btn btn-link link-primary" href="/admin/categories/{{this.id}}">
+            Edit
+          </a>
+        </button>
         <form action="/admin/categories/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
-          <button type="submit" class="btn btn-link link-danger"
-            onclick="return confirm(`確定要刪除 {{ this.name }} 嗎？`)">Delete</button>
+          <button type="submit" class="btn btn-link link-danger">Delete</button>
         </form>
       </td>
-
     </tr>
     {{/each}}
   </tbody>
 </table>
+<br />
+<br />
