@@ -2,6 +2,7 @@ const express = require('express')
 const routes = require('./routes')
 const handlebars = require('express-handlebars') // 引入 express-handlebars
 const flash = require('connect-flash')
+const methodOverride = require('method-override')
 const session = require('express-session')
 const passport = require('./config/passport')
 const { getUser } = require('./helpers/auth-helpers') // 增加這行，引入自定義的 auth-helpers
@@ -21,12 +22,15 @@ app.use(session({ secret: SESSION_SECRET, resave: false, saveUninitialized: fals
 app.use(passport.initialize()) // 增加這行，初始化 Passport
 app.use(passport.session()) // 增加這行，啟動 session 功能
 app.use(flash())
+app.use(methodOverride('_method'))
+
 app.use((req, res, next) => {
   res.locals.success_messages = req.flash('success_messages') // 設定 success_msg 訊息
   res.locals.error_messages = req.flash('error_messages') // 設定 warning_msg 訊息
   res.locals.user = getUser(req)
   next()
 })
+
 app.use(routes)
 
 app.listen(port, () => {
