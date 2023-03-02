@@ -13,8 +13,8 @@ const restaurantController = {
         where: {
           ...categoryId ? { categoryId } : {}
         },
-        limit,
         offset,
+        limit,
         nest: true,
         raw: true
       }),
