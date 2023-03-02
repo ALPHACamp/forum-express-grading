@@ -1,0 +1,24 @@
+<div class="container">
+  <div class="row card mb-3">
+    <div class="col card-body">
+      <div class="row p-sm-5 p-md-0">
+        <div class="col-12 col-md-4 col-lg-3 mb-3 mb-md-0">
+          <img class="rounded img-responsive center-block m-0" src="{{user.image}}" style="width: 100%; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+        </div>
+        <div class="col">
+          <div class="user-info row">
+            <div class="col col-md-6 col-lg-3">
+              <h3 class="mb-3">{{user.name}}</h3>
+              <h6 class="mb-4">{{user.email}}</h6>
+              {{#ifCond loggedUser.id user.id}}
+                <div class="btn-option">
+                  <a href="/users/{{user.id}}/edit" class="btn btn-secondary">Edit</a>
+                </div>
+              {{/ifCond}}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

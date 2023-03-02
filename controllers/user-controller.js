@@ -2,6 +2,7 @@ const passport = require('passport')
 const { v4: uuidv4 } = require('uuid')
 const { User } = require('../models')
 const { removesWhitespace } = require('../helpers/object-helpers')
+const { localFileHandler } = require('../helpers/file-helpers')
 const bcrypt = require('bcryptjs')
 
 const userController = {
@@ -34,6 +35,40 @@ const userController = {
     req.flash('success_messages', '登出成功！')
     req.logout()
     res.redirect('/signin')
+  },
+  getUser: async (req, res, next) => {
+    const { id } = req.params
+    try {
+      const user = await User.findByPk(id, { raw: true })
+      if (!user) throw new Error('使用者不存在')
+      res.render('users/profile', { user })
+    } catch (err) {
+      next(err)
+    }
+  },
+  editUser: async (req, res, next) => {
+    const { id } = req.params
+    try {
+      const user = await User.findByPk(id, { raw: true })
+      if (!user) throw new Error('使用者不存在')
+      res.render('users/edit', { user })
+    } catch (err) {
+      next(err)
+    }
+  },
+  putUser: async (req, res, next) => {
+    const { id } = req.params
+    const { name } = req.body
+    const image = await localFileHandler(req.file)
+    try {
+      const user = await User.findByPk(id)
+      if (!user) throw new Error('使用者不存在，更新失敗')
+      await user.update({ name, image })
+    } catch (err) {
+      next(err)
+    }
+    req.flash('success_messages', '使用者資料編輯成功')
+    res.redirect(`/users/${id}`)
   }
 }
 
