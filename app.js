@@ -5,7 +5,7 @@ const flash = require('connect-flash')
 const methodOverride = require('method-override')
 const path = require('path')
 const passport = require('./config/passport')
-const { handlebarsHelpers } = require('./helper/handlebars-helper')
+const handlebarsHelpers = require('./helper/handlebars-helpers')
 const { getUser } = require('./helper/auth-helpers')
 const routes = require('./routes')
 
@@ -17,7 +17,7 @@ const app = express()
 const port = process.env.PORT || 3000
 const SESSION_SERECT = 'secret'
 
-app.engine('hbs', handlebars({ extname: '.hbs', helps: handlebarsHelpers }))
+app.engine('hbs', handlebars({ extname: '.hbs', helpers: handlebarsHelpers }))
 app.set('view engine', 'hbs')
 app.use(express.urlencoded({ extended: true }))
 app.use(session({ secret: SESSION_SERECT, resave: false, saveUninitialized: false }))
