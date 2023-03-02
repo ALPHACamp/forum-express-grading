@@ -8,11 +8,11 @@ const admin = require('./modules/admin') // 導入後台管理
 const restController = require('../controllers/restaurant-controller') // 導入餐廳控制
 const userController = require('../controllers/user-controller') // 導入使用者控制
 
-const { authenticated, authenticatedAdmin } = require('../middleware/auth') // 導入登入驗證以及後台驗證
+const { authenticated } = require('../middleware/auth') // 導入登入驗證
 
 const { generalErrorHandler } = require('../middleware/error-handler') // 導入錯誤訊息提示
 
-router.use('/admin', authenticatedAdmin, admin) // 在這邊就做判斷
+router.use('/admin', admin)
 
 router.get('/signup', userController.signUpPage)
 router.post('/signup', userController.signUp)
