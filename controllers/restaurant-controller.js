@@ -1,3 +1,4 @@
+const { assert } = require('chai')
 const { Restaurant, Category } = require('../models')
 
 const restaurantController = {
@@ -5,7 +6,7 @@ const restaurantController = {
     return Restaurant.findAll({
       include: Category,
       raw: true,
-      nset: true
+      nest: true
     })
       .then(restaurants => {
         const data = restaurants.map(r => ({
@@ -16,6 +17,19 @@ const restaurantController = {
           restaurants: data
         })
       })
+  },
+  getRestaurant: (req, res, next) => {
+    const { id } = req.params
+    return Restaurant.findByPk(id, {
+      include: Category,
+      raw: true,
+      nest: true
+    })
+      .then(restaurant => {
+        assert(restaurant, "Restaurant didn't exist!")
+        res.render('restaurant', { restaurant })
+      })
+      .catch(err => next(err))
   }
 }
 module.exports = restaurantController
