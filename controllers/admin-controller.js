@@ -146,10 +146,14 @@ const adminController = {
     }
   },
   getCategories: async (req, res, next) => {
+    const { id } = req.params
     try {
-      const categories = await Category.findAll({ raw: true })
+      const [category, categories] = await Promise.all([
+        Category.findByPk(id, { raw: true }),
+        Category.findAll({ raw: true })
+      ])
       const isInCategoryTab = true
-      return res.render('admin/categories', { categories, isInCategoryTab })
+      return res.render('admin/categories', { category, categories, isInCategoryTab, id })
     } catch (error) {
       return next(error)
     }
