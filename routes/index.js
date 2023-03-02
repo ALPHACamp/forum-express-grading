@@ -4,6 +4,7 @@ const passport = require('../config/passport')
 const admin = require('./modules/admin')
 const restController = require('../controllers/restaurant-controller')
 const userController = require('../controllers/user-controller')
+const { authenticated } = require('../middleware/auth')
 const { generalErrorHandler } = require('../middleware/error-handler')
 const { route } = require('../app')
 router.use('/admin', admin)
@@ -19,7 +20,7 @@ router.post(
   userController.signIn
 )
 router.get('/logout', userController.logout)
-router.get('/restaurants', restController.getRestaurants)
+router.get('/restaurants', authenticated, restController.getRestaurants)
 // fallback route
 router.use('/', (req, res) => res.redirect('/restaurants'))
 router.use('/', generalErrorHandler)
