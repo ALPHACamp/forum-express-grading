@@ -5,6 +5,8 @@ const adminController = require('../../controllers/admin-controller')
 
 const upload = require('../../middleware/multer')
 
+router.get('/users', adminController.getUsers)
+
 router.get('/restaurants/create', adminController.createRestaurant)
 router.get('/restaurants/:id/edit', adminController.editRestaurant)
 router.get('/restaurants/:id', adminController.getRestaurant)
