@@ -21,6 +21,7 @@ const imgurFileHandler = file => {
 
     return imgur.uploadFile(file.path)
       .then(img => resolve(img?.link || null)) // 若 img 為 true (存在)，對 img 執行 .link (三元運算子的延伸)
+      // 檢查時使用的寫法
       // .then(img => {
       //   console.log(img)
       //   // resolve(img && img.link) // 若 img 存在，會給 img link
