@@ -46,7 +46,8 @@ const categoryController = {
     try {
       const category = await Category.findByPk(id)
       if (!category) throw new Error('類別不存在!')
-      await category.destroy()
+      // - 將類別進行軟刪除
+      await category.update({ isDeleted: true })
       req.flash('success_messages', '刪除類別成功!')
       return res.redirect('/admin/categories')
     } catch (error) {

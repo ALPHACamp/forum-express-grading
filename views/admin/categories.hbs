@@ -43,6 +43,8 @@
   </thead>
   <tbody>
     {{#each categories}}
+      {{#if this.isDeleted}}
+      {{else}}
       <tr>
         <th scope="row">{{this.id}}</th>
         <td>{{this.name}}</td>
@@ -68,6 +70,7 @@
           </form>
         </td>
       </tr>
+      {{/if}}
     {{/each}}
   </tbody>
 </table>
