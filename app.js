@@ -8,6 +8,10 @@ const passport = require('./config/passport')
 const handlebarsHelpers = require('./helpers/handlebars-helpers')
 const methodOverride = require('method-override')
 
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
+
 // 這裡用解構賦值，等於是直接配合 export 多個變數的寫法，為了未來可能輸出多個變數做準備 (我猜的)
 const { getUser } = require('./helpers/auth-helpers')
 
