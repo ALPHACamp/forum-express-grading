@@ -1,8 +1,8 @@
 {{> tabs route='categories'}}
 <div class="container">
-  {{#if id}}
+  {{#if category}}
     <form
-      action="/admin/categories/{{id}}?_method=PUT"
+      action="/admin/categories/{{category.id}}?_method=PUT"
       class="d-flex align-items-center"
       method="POST"
     >

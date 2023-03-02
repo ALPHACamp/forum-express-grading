@@ -3,14 +3,14 @@ const categoryController = {
   getCategories: async (req, res, next) => {
     const { id } = req.params
     try {
+      // -透過 id 是否有值來決定是否發出請求
       const [categories, category] = await Promise.all([
         Category.findAll({ raw: true }),
-        Category.findByPk(id, { raw: true })
+        id ? Category.findByPk(id, { raw: true }) : null
       ])
       return res.render('admin/categories', {
         categories,
-        category,
-        id
+        category
       })
     } catch (error) {
       return next(error)
