@@ -6,5 +6,8 @@ module.exports = {
     } else {
       return null
     }
+  },
+  ensureAuthenticated: req => {
+    return req.isAuthenticated()
   }
 }

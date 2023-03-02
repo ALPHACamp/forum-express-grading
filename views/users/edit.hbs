@@ -1,0 +1,46 @@
+<div class="row">
+  <div class="col-md-8 mx-auto">
+    <div class="mb-4 text-center">
+      <h1 class="h3 font-weight-normal mb-3">Edit Profile</h1>
+    </div>
+    <form action="/users/{{user.id}}?_method=PUT" method="POST" enctype="multipart/form-data">
+      <div class="row gap-3">
+        <div class="col-12 col-md-4">
+          <div class="user-img-container">
+            <img id="previewImg" src="{{user.image}}" class="rounded" width="100%" max-width="320px" style="object-fit: cover;" onerror="this.src='/public/images/default-avatar.jpg'" />
+          </div>
+        </div>
+        <div class="col col-md d-flex flex-column gap-3">
+          <div>
+            <label class="form-label" for="image">大頭貼</label>
+            {{!-- input file 沒有加上 multiple 屬性，代表使用者只允許上傳一張照片 --}}
+            <input id="image" name="image" type="file" class="form-control" value="{{user.image}}" onchange="readURL(this)" targetID="previewImg">
+          </div>
+          <div>
+            <label class="form-label" for="name"><span class="text-danger me-1">*</span>名字</label>
+            <input class="form-control" type="text" name="name" id="name" placeholder="輸入名稱" value="{{user.name}}" required>
+          </div>
+        </div>
+      </div>
+      <hr />
+      <div class="d-flex justify-content-end">
+        <button type="button" class="btn btn-secondary me-3" onclick="history.back()">取消</button>
+        <button type="submit" class="btn btn-success">送出</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  function readURL(input) {
+    if (input.files && input.files[0]) {
+      const imageTagID = input.getAttribute("targetID");
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        const img = document.getElementById(imageTagID);
+        img.setAttribute("src", e.target.result)
+      }
+      reader.readAsDataURL(input.files[0]);
+    }
+  }
+</script>
