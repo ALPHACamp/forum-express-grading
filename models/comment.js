@@ -22,6 +22,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'Comment',
+    tableNAme: 'Comments',
     underscored: true
   });
   return Comment;
