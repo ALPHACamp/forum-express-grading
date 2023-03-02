@@ -74,6 +74,23 @@ const userController = {
       })
       .then(() => res.redirect('back'))
       .catch(err => next(err))
+  },
+  getTopUsers: (req, res, next) => {
+    return User.findAll({
+      include: [{ model: User, as: 'Followers' }]
+    })
+      .then(users => {
+        users = users.map(user => ({
+          // 整理格式
+          ...user.toJSON(),
+          // 計算追蹤人數
+          followerCount: user.Followers.length,
+          // 判斷目前登入使用者是否已追蹤該 user 物件
+          isFollowed: req.user.Followings.some(f => f.id === user.id)
+        }))
+        res.render('top-users', { users: users })
+      })
+      .catch(err => next(err))
   }
 }
 module.exports = userController
