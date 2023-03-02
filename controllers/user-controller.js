@@ -100,7 +100,8 @@ const userController = {
     if (currentId !== Number(userId)) throw new Error("You can't alter the info of user !")
     if (!name) throw new Error('You have to input the name !')
 
-    Promise.all([
+    // notice 跑測試程式的時候，Promise前面要加return，因為測試程式不知道express的非同步已完成了沒，而繼續執行驗證作業造成出錯。，若是改用async/await，則在前面會加await，比較沒有這個問題
+    return Promise.all([
       User.findByPk(userId), // note 不使用raw是因為還需要利用Sequelize的instance進行資料操作，若是轉成JS則無法使用update()
       imgurFileHandler(file)
     ])
@@ -114,7 +115,7 @@ const userController = {
         });
       })
       .then(() => {
-        req.flash('success_messages', "User's profile was updated successfully");
+        req.flash('success_messages', '使用者資料編輯成功')
         res.redirect(`/users/${userId}`);
       })
       .catch(err => next(err));
