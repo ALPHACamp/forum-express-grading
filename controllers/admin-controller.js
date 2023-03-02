@@ -55,7 +55,6 @@ const adminController = {
       .catch(err => next(err))
   },
   putRestaurant: (req, res, next) => {
-    console.log(req.body)
     const { name } = req.body
     if (!name) throw new Error('Restaurant name is required!')
     const { file } = req
