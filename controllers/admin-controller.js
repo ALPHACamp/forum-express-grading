@@ -94,7 +94,10 @@ const adminController = {
   patchUser: (req, res, next) => {
     return User.findByPk(req.params.id)
       .then(user => {
-        if (user.dataValues.email === 'root@example.com') throw new Error('禁止變更 root 權限')
+        if (user.dataValues.email === 'root@example.com') {
+          req.flash('error_messages', '禁止變更 root 權限')
+          return res.redirect('back')
+        }
         user.update({ isAdmin: !user.isAdmin })
       })
       .then(() => {
