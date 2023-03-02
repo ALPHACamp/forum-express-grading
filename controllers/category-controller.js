@@ -46,8 +46,7 @@ const categoryController = {
     ])
       .then(([category, categoryRaw]) => {
         if (!category) throw new Error("category didn't exist!")
-        Promise.all(category.Restaurants.map(restaurant => restaurant.update({ categoryId: categoryRaw.id })
-        ))
+        Promise.all(category.Restaurants.map(restaurant => restaurant.update({ categoryId: categoryRaw.id })))
           .then(() => category.destroy())
           .then(() => {
             req.flash('success_messages', 'Category was successfully to delete')
