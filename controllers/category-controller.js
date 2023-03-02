@@ -29,7 +29,20 @@ const categoryController = {
       return next(error)
     }
   },
-  putCategory: async (req, res, next) => {},
+  putCategory: async (req, res, next) => {
+    const { id } = req.params
+    const { name } = req.body
+    try {
+      if (!name) throw new Error('名稱為必填!')
+      const category = await Category.findByPk(id)
+      if (!category) throw new Error('類別不存在!')
+      await category.update({ name })
+      req.flash('success_messages', '更新類別成功!')
+      return res.redirect('/admin/categories')
+    } catch (error) {
+      return next(error)
+    }
+  },
   deleteCategory: async (req, res, next) => {}
 }
 

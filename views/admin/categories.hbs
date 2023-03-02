@@ -3,7 +3,7 @@
 <div class="container">
   {{#if id}}
     <form
-      aciton="/admin/categories/{{id}}?_method=PUT"
+      action="/admin/categories/{{id}}?_method=PUT"
       class="d-flex align-items-center"
       method="POST"
     >
@@ -20,7 +20,7 @@
       <a href="/admin/categories">or Create New</a>
     </form>
   {{else}}
-    <form aciton="/admin/categories" class="d-flex" method="POST">
+    <form action="/admin/categories" class="d-flex" method="POST">
       <div class="form-row">
         <input
           class="form-control"
