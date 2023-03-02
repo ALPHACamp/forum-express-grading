@@ -1,18 +1,38 @@
 <h1>餐廳後台</h1>
 {{> tabs}}
 <div class="container">
-  <form aciton="/admin/categories" class="d-flex" method="POST">
-    <div class="form-row">
-      <input
-        class="form-control"
-        type="text"
-        name="name"
-        value="{{category.name}}"
-        placeholder="Category Name"
-      />
-    </div>
-    <button type="submit" class="btn btn-primary mx-3 ">Create</button>
-  </form>
+  {{#if id}}
+    <form
+      aciton="/admin/categories/{{id}}?_method=PUT"
+      class="d-flex align-items-center"
+      method="POST"
+    >
+      <div class="form-row">
+        <input
+          class="form-control"
+          type="text"
+          name="name"
+          value="{{category.name}}"
+          placeholder="Category Name"
+        />
+      </div>
+      <button type="submit" class="btn btn-warning mx-3">Update</button>
+      <a href="/admin/categories">or Create New</a>
+    </form>
+  {{else}}
+    <form aciton="/admin/categories" class="d-flex" method="POST">
+      <div class="form-row">
+        <input
+          class="form-control"
+          type="text"
+          name="name"
+          value="{{category.name}}"
+          placeholder="Category Name"
+        />
+      </div>
+      <button type="submit" class="btn btn-primary mx-3">Create</button>
+    </form>
+  {{/if}}
 </div>
 <table class="table align-middle">
   <thead class="thead-dark">
@@ -31,7 +51,7 @@
           <button type="button" class="btn btn-link">
             <a
               class="btn btn-link link-primary"
-              href="/admin/categories/{{this.id}}/edit"
+              href="/admin/categories/{{this.id}}"
             >
               Edit
             </a>
