@@ -6,8 +6,8 @@
           <img class="rounded img-responsive center-block m-0" src="{{user.image}}" style="width: 100%; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
         </div>
         <div class="col">
-          <div class="user-info row">
-            <div class="col col-md-6 col-lg-3">
+          <div class="row h-100">
+            <div class="col-7 col-md-5 col-lg-3">
               <h3 class="mb-3">{{user.name}}</h3>
               <h6 class="mb-4">{{user.email}}</h6>
               {{#ifCond loggedUser.id user.id}}
@@ -16,9 +16,38 @@
                 </div>
               {{/ifCond}}
             </div>
+            <div class="col-auto border-start">
+              <p><strong>已評論餐廳：</strong>{{user.Comments.length}}</p>
+              {{!-- <p>已收藏餐廳：{{user.FavoritedRestaurants.length}}</p> --}}
+              {{!-- <p>已說讚餐廳：{{user.LikedRestaurants.length}}</p> --}}
+              {{!-- <p>Followers（跟隨者）：{{user.Followers.length}}</p> --}}
+              {{!-- <p>Followings（追蹤中）：{{user.Followings.length}}</p> --}}
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-</div>
+
+  <div class="row g-3">
+    <div class="col d-flex flex-column gap-3">
+      <div class="row card">
+        <div class="col card-header">已評論的餐廳 : {{user.Comments.length}} 個</div>
+        <div class="col card-body">
+          <div class="row g-2">
+            {{#if user.Comments}}
+              {{#each user.Comments}}
+                <div class="col-2 col-lg-1">
+                  <a href="/restaurants/{{this.Restaurant.id}}" style="text-decoration:none">
+                    <img class="rounded img-responsive center-block" src="{{this.Restaurant.image}}" style="width: 100%; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+                  </a>
+                </div>
+              {{/each}}
+            {{else}}
+              <p class="my-2">尚未評論餐廳</p>
+            {{/if}}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

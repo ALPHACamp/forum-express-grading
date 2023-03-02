@@ -1,6 +1,6 @@
 const passport = require('passport')
 const { v4: uuidv4 } = require('uuid')
-const { User } = require('../models')
+const { User, Comment, Restaurant } = require('../models')
 const { removesWhitespace } = require('../helpers/object-helpers')
 const { localFileHandler } = require('../helpers/file-helpers')
 const bcrypt = require('bcryptjs')
@@ -39,9 +39,11 @@ const userController = {
   getUser: async (req, res, next) => {
     const { id } = req.params
     try {
-      const user = await User.findByPk(id, { raw: true })
+      const user = await User.findByPk(id, {
+        include: { model: Comment, include: Restaurant }
+      })
       if (!user) throw new Error('使用者不存在')
-      res.render('users/profile', { user })
+      res.render('users/profile', { user: user.toJSON() })
     } catch (err) {
       next(err)
     }
