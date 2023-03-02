@@ -30,6 +30,14 @@
         <span class="badge bg-secondary" style="color:rgb(252, 209, 19)">未分類</span>
         {{/if}}
         <p class="card-text text-truncate">{{this.description}}</p>
+        <div class="d-flex">
+          <form action="/favorite/{{this.id}}?_method=DELETE" method="POST">
+            <button type="submit" class="btn btn-danger m-1">移除最愛</button>
+          </form>
+          <form action="/favorite/{{this.id}}" method="POST">
+            <button type="submit" class="btn btn-primary m-1">加到最愛</button>
+          </form>
+        </div>
       </div>
     </div>
   </div>
