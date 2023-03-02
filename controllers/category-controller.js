@@ -41,14 +41,19 @@ const categoryController = {
       return next(error)
     }
   },
-  deleteCategory: async (req, res, next) => {
+  pathCategory: async (req, res, next) => {
     const { id } = req.params
     try {
       const category = await Category.findByPk(id)
       if (!category) throw new Error('類別不存在!')
+      const { isDeleted } = category
       // - 將類別進行軟刪除
-      await category.update({ isDeleted: true })
-      req.flash('success_messages', '刪除類別成功!')
+      await category.update({ isDeleted: !isDeleted })
+      if (isDeleted) {
+        req.flash('success_messages', '恢復類別成功!')
+      } else {
+        req.flash('success_messages', '刪除類別成功!')
+      }
       return res.redirect('/admin/categories')
     } catch (error) {
       return next(error)
