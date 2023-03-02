@@ -23,6 +23,18 @@ const userController = {
         res.redirect('/signin')
       })
       .catch(err => next(err))
+  },
+  signInPage: (req, res) => {
+    res.render('signin')
+  },
+  signIn: (req, res) => {
+    req.flash('success_messages', 'Logged In Successfully!')
+    res.redirect('/restaurants')
+  },
+  logout: (req, res) => {
+    req.flash('success_message', 'Logged Out Successfully!')
+    req.logout()
+    res.redirect('/signin')
   }
 }
 module.exports = userController
