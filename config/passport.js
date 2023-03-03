@@ -1,8 +1,7 @@
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
 const bcrypt = require('bcryptjs');
-const db = require('../models');
-const User = db.User;
+const { User, Restaurant } = require('../models');
 
 // set up local strategy
 passport.use(
@@ -44,11 +43,17 @@ passport.serializeUser((user, cb) => {
 });
 
 passport.deserializeUser((id, cb) => {
-  User.findByPk(id).then(user => {
-    // note JSON化後，可以容易透過Sequelize來操作此筆資料。若無JSON化，則會多出Sequelize的instance
-    user = user.toJSON();
-    return cb(null, user);
-  });
+  return User.findByPk(id, {
+    include: [
+      //  note as:所取的名稱會對應到user model裡使用的名稱，所以要修正要同時修正model裡面的as:
+      { model: Restaurant, as: 'FavoritedRestaurants' }
+    ]
+  })
+    .then(user => {
+      // note JSON化後，可以容易透過Sequelize來操作此筆資料。若無JSON化，則會多出Sequelize的instance
+      cb(null, user.toJSON());
+    })
+    .catch(err => cb(err))
 });
 
 module.exports = passport;

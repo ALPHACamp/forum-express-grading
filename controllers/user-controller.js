@@ -137,6 +137,7 @@ const userController = {
 
         return Favorite.create({ userId: req.user.id, restaurantId })
       })
+      .then(() => res.redirect('back'))
       .catch(err => next(err))
   },
   removeFavorite: (req, res, next) => {

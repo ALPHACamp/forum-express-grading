@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
       Restaurant.hasMany(models.Comment, { foreignKey: 'restaurantId' })
       // notice many to many做法中間多個媒介的table，即可串接關聯
       Restaurant.belongsToMany(models.User, {
-        // note 利用through 來建立關聯性，表示透過該favorite table去關聯其主要的user table, as表用來做為一個別名
+        // note 利用through 來建立關聯性，表示透過該favorite table去關聯其主要的user table, as：用來替這個來關聯的table取個別名
         through: models.Favorite,
         foreignKey: 'restaurantId',
         as: 'FavoritedUsers'

@@ -30,10 +30,13 @@ const restaurantController = {
     ])
       .then(([restaurants, categories]) => {
         // notice 使用findAndCountAll 會產生count以及物件被rows包住，所以後面使用要變成restaurants.count and restaurants.rows
+        const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
+
         const data = restaurants.rows.map(r => ({
-          // note spread operator可以把重複的項目已後面的為基準取代前面的，所以description變成所要的50個字以內
+          // note spread operator可以把重複的項目以後面的為基準取代前面的，所以description變成所要的50個字以內
           ...r,
-          description: r.description.substring(0, SUBSTRING_END)
+          description: r.description.substring(0, SUBSTRING_END),
+          isFavorited: favoritedRestaurantsId.includes(r.id)
         }))
 
         return res.render('restaurants', {
@@ -51,7 +54,8 @@ const restaurantController = {
       nest: true,
       include: [
         Category,
-        { model: Comment, include: User }
+        { model: Comment, include: User },
+        { model: User, as: 'FavoritedUsers' }
       ],
       // note 使comment按照時間排序 order: [tableNAme, 'filedName', 'DESC or ASC]
       order: [
@@ -63,10 +67,16 @@ const restaurantController = {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
 
         // note 導入瀏覽增加次數
-        restaurant.increment('viewCounts', { by: 1 })
+        return restaurant.increment('viewCounts', { by: 1 })
+      })
+      .then(restaurant => {
+        const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id)
 
         // note 因要操作資料庫，所以不使用raw來進行，所以導入變數的時候要先進行純JS的格式化
-        return res.render('restaurant', { restaurant: restaurant.toJSON() })
+        return res.render('restaurant', {
+          restaurant: restaurant.toJSON(),
+          isFavorited
+        })
       })
       .catch(err => next(err))
   },
