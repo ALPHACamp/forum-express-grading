@@ -1,6 +1,6 @@
 // 前台使用者用
 const { Restaurant, Category, Comment, User } = require('../models')
-const { nullCategoryHandle } = require('../helpers/object-helpers')
+const { nullCategoryHandle, descriptionCut } = require('../helpers/object-helpers')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
 
 const restaurantController = {
@@ -78,6 +78,32 @@ const restaurantController = {
     } catch (err) {
       next(err)
     }
+  },
+  getFeeds: async (req, res, next) => {
+    const limit = 10
+    const order = [['createdAt', 'DESC']]
+    const [restData, commentData] = await Promise.all([
+      Restaurant.findAll({
+        limit,
+        order,
+        include: [Category],
+        raw: true,
+        nest: true
+      }),
+      Comment.findAll({
+        limit,
+        order,
+        include: [
+          User,
+          { model: Restaurant, include: Category }
+        ],
+        raw: true,
+        nest: true
+      })
+    ])
+    const restaurants = descriptionCut(restData)
+    const comments = descriptionCut(commentData)
+    res.render('feeds', { restaurants, comments })
   }
 }
 

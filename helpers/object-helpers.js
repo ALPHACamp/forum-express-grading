@@ -25,5 +25,18 @@ module.exports = {
             name: data.Category.name || '未分類'
           }
         }
+  },
+  descriptionCut: arr => {
+    const stringLimit = 40
+    if (!arr.length) return arr
+    return arr.map(el => {
+      if (el.description) {
+        return (el.description.length >= stringLimit) ? { ...el, description: el.description.substring(0, stringLimit) + '...' } : { ...el }
+      } else if (el.text) {
+        return (el.text.length >= stringLimit) ? { ...el, text: el.text.substring(0, stringLimit) + '...' } : { ...el }
+      } else {
+        return el
+      }
+    })
   }
 }
