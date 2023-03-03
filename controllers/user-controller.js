@@ -8,25 +8,41 @@ const userController = {
   signUp: (req, res, next) => {
     const { name, email, password } = req.body
 
-    if (password !== req.body.passwordCheck) throw new Error('Passwords do not match!')
+    if (password !== req.body.passwordCheck) { throw new Error('Passwords do not match!') }
 
     User.findOne({ where: { email } })
       .then(user => {
         if (user) throw new Error('Email already exists!')
 
-        return bcrypt.hash(password, 10);
+        return bcrypt.hash(password, 10)
       })
-      .then(hash => User.create({
-        name,
-        email,
-        password: hash
-      }))
+      .then(hash =>
+        User.create({
+          name,
+          email,
+          password: hash
+        })
+      )
       .then(() => {
         req.flash('success_messages', '成功註冊帳號!')
         res.redirect('/signin')
       })
       .catch(error => next(error))
+  },
+
+  signInPage: (req, res) => res.render('signin'),
+
+  signIn: (req, res) => {
+    req.flash('success_messages', '成功登入!')
+    res.redirect('/restaurants')
+  },
+
+  logout: (req, res) => {
+    req.flash('success_messages', '登出成功!')
+    req.logout()
+    res.redirect('/signin')
   }
+
 }
 
 module.exports = userController
