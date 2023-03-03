@@ -21,6 +21,7 @@
     "express-session": "^1.17.2",
     "lint": "^0.8.19",
     "method-override": "^3.0.0",
+    "multer": "^1.4.3",
     "mysql2": "^2.3.0",
     "passport": "^0.4.1",
     "passport-local": "^1.0.0",
