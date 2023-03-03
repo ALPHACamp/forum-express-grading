@@ -32,6 +32,8 @@ router.put('/users/:id', authenticated, uploadImage, userController.putUser)
 
 router.post('/favorite/:id', authenticated, userController.addFavorite)
 router.delete('/favorite/:id', authenticated, userController.removeFavorite)
+router.post('/like/:restaurantId', authenticated, userController.addLike)
+router.delete('/like/:restaurantId', authenticated, userController.removeLike)
 
 router.get('*', (req, res) => res.redirect('/restaurants')) // fallback
 

@@ -12,6 +12,11 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'restaurantId', // Favorite 表的FK，表示會在 Favorite 表上找 restaurant_id = restaurant.id 的紀錄
         as: 'FavoritedUsers' // 此關聯的名稱，之後用 Restaurant.FavoritedUsers 抓出 users
       })
+      Restaurant.belongsToMany(models.User, {
+        through: models.Like,
+        foreignKey: 'restaurantId', // Favorite 表的FK，表示會在 Favorite 表上找 restaurant_id = restaurant.id 的紀錄
+        as: 'LikedUsers' // 此關聯的名稱，之後用 Restaurant.FavoritedUsers 抓出 users
+      })
     }
   };
   Restaurant.init({

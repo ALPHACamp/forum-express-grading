@@ -25,9 +25,12 @@ const restaurantController = {
       ])
       const pagination = getPagination(restData.count, limit, page)
       const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
+      const likedRestaurantsId = req.user && req.user.LikedRestaurants.map(lr => lr.id)
+
       const restaurants = restData.rows.map(r => ({
         ...r,
         isFavorite: favoritedRestaurantsId.includes(r.id),
+        isLike: likedRestaurantsId.includes(r.id),
         categoryId: r.categoryId || 0,
         Category: {
           ...r.Category,
@@ -46,7 +49,8 @@ const restaurantController = {
         include: [
           Category,
           { model: Comment, include: User },
-          { model: User, as: 'FavoritedUsers' }
+          { model: User, as: 'FavoritedUsers' },
+          { model: User, as: 'LikedUsers' }
         ],
         order: [
           [Comment, 'createdAt', 'DESC']
@@ -56,7 +60,8 @@ const restaurantController = {
       await data.increment('view_counts')
       const restaurant = nullCategoryHandle(data.toJSON())
       const isFavorite = restaurant.FavoritedUsers.some(user => user.id === req.user.id) // 迭代時只要找到一個符合條件，就會立刻回傳 true，後面的項目不會繼續執行
-      res.render('restaurant', { restaurant, isFavorite })
+      const isLike = restaurant.LikedUsers.some(user => user.id === req.user.id)
+      res.render('restaurant', { restaurant, isFavorite, isLike })
     } catch (err) {
       next(err)
     }
