@@ -14,7 +14,9 @@ router.get('/restaurants/create', adminController.createRestaurant) // 渲染新
 router.get('/restaurants/:id/edit', adminController.editRestaurant) // 渲染編輯餐廳葉面
 router.put('/restaurants/:id', upload.single('image'), adminController.putRestaurant) // 送出編輯餐廳資料
 router.get('/restaurants/:id', adminController.getRestaurant) // 渲染單一餐廳細節瀏覽
-router.delete('/restaurants/:id', adminController.deleteRestaurant) // 渲染單一餐廳細節瀏覽
+router.delete('/restaurants/:id', adminController.deleteRestaurant) // 送出刪除單一餐廳訊息
+router.patch('/users/:id', adminController.patchUser) // 使用者權限更改 送出
+router.get('/users', adminController.getUsers) // 渲染使用者列表
 router.get('/restaurants', adminController.getRestaurants) // 渲染餐廳列表
 // router.get('/', (req, res) => res.redirect('/restaurants'))
 router.post('/restaurants', upload.single('image'), adminController.postRestaurant) // 送出新增餐廳資料
