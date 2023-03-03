@@ -58,12 +58,11 @@ const restaurantController = {
   getDashboard: (req, res, next) => {
     const { id } = req.params
     return Promise.all([
-      Comment.findAndCountAll({
+      Comment.count({
         where: {
           restaurantId: id
         },
-        raw: true,
-        nest: true
+        raw: true
       }),
       Restaurant.findByPk(id, {
         raw: true,
