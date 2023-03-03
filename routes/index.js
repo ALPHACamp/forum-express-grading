@@ -8,9 +8,10 @@ const restController = require('../controllers/restaurant-controller')
 const userController = require('../controllers/user-controller')
 
 const { generalErrorHandler } = require('../middleware/error-handler')
-const { authenticated } = require('../middleware/auth')
+const { authenticated, authenticatedAdmin } = require('../middleware/auth')
 
-router.use('/admin', admin)
+// admin
+router.use('/admin', authenticatedAdmin, admin)
 // signup
 router.get('/signup', userController.signUpPage)
 router.post('/signup', userController.signUp)
