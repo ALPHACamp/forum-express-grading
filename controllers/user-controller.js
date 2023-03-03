@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs')
-const { User } = require('../models')
+const { User, Restaurant, Comment } = require('../models')
 // const { localFileHandler } = require('../helpers/file-helper')
 const {imgurFileHandler } = require('../helpers/file-helper')
 
@@ -39,12 +39,15 @@ const userController = {
 		});
   },
   getUser: (req, res, next) => {
-    // const userId = req.user.id
-    return User.findByPk(req.params.id)
+    return User.findByPk(req.params.id,{
+			include: [
+				{model: Comment, include:Restaurant}]
+
+		})
       .then(user => {
-        console.log(user.toJSON())
         if (!user) throw new Error('使用者不存在')
-        res.render('users/profile', { user: user.toJSON() })
+        res.render('users/profile', { user: user.toJSON()
+				 })
       })
       .catch(err => next(err))
   },
