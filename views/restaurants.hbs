@@ -1,1 +1,45 @@
-<div> restaurants</div>
+{{!-- search bar --}}
+<form class="row" action="/restaurants/search" method="GET">
+  <div class="col-md-4">
+    <div class="input-group mb-3">
+      <input type="text" name="keyword" class="form-control" placeholder="輸入餐廳名稱" aria-label="Restaurant Name..."
+        value="{{keyword}}" aria-describedby="search-button" required>
+      <button class="btn btn-info" type="submit" id="search-button">搜尋</button>
+    </div>
+  </div>
+  {{#if keyword}}
+  <div class="col-md-4">
+    <a class="btn btn-outline-secondary" href="/restaurants">Back</a>
+  </div>
+  {{/if}}
+</form>
+{{!-- restaurant list --}}
+<div class="container mt-5">
+  <div class="row">
+  
+    {{#if restaurants}}
+    {{#each restaurants}}
+    <div class="col-md-4 mb-3 px-2">
+      <div class="card">
+        <img class="card-img-top" src="{{this.image}}" alt="Card image cap">
+        <div class="card-body p-3">
+          <h6 class="card-title mb-1">店名: {{this.name}}</h6>
+          <div class="restaurant-phone mb-1">
+            <i class="fa-solid fa-phone"></i> 電話: {{this.tel}}
+          </div>
+          <div class="restaurant-phone mb-1">
+            <i class="fa-solid fa-house"></i> 地址: {{this.address}}
+          </div>
+        </div>
+      </div>
+    </div>
+    {{/each}}
+    {{else}}
+    <div class="mx-auto">
+      {{#if keyword}}
+      <div class="alert alert-warning" role="alert">沒有符合 "{{keyword}}" 的資料喔!</div>
+      {{/if}}
+    </div>
+    {{/if}}
+  </div>
+</div>
