@@ -6,7 +6,7 @@ module.exports = {
       { type: queryInterface.sequelize.QueryTypes.SELECT }
     )
     const restaurants = await queryInterface.sequelize.query(// 對隨機前五家餐廳評論
-      'SELECT id FROM forum.restaurants ORDER BY id ASC LIMIT 5',
+      'SELECT id FROM Restaurants ORDER BY id ASC LIMIT 5',
       { type: queryInterface.sequelize.QueryTypes.SELECT }
     )
     for (let i = 0; i < 3; i++) { // 每人隨機評論3次
