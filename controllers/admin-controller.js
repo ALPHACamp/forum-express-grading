@@ -3,7 +3,7 @@ const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const adminController = {
   getRestaurants: (req, res, next) => {
-    Restaurant.findAll({
+    return Restaurant.findAll({
       raw: true
     })
       .then(restaurants => res.render('admin/restaurants', { restaurants }))
@@ -17,7 +17,7 @@ const adminController = {
     if (!name) throw new Error('Restaurant name is required!')
 
     const { file } = req // 這裡是解構賦值，也可以寫成 const file = req.file
-    imgurFileHandler(file).then(filePath => Restaurant.create({
+    return imgurFileHandler(file).then(filePath => Restaurant.create({
       name,
       tel,
       address,
@@ -32,7 +32,7 @@ const adminController = {
       .catch(err => next(err))
   },
   getRestaurant: (req, res, next) => {
-    Restaurant.findByPk(req.params.id, {
+    return Restaurant.findByPk(req.params.id, {
       raw: true
     })
       .then(restaurant => {
@@ -43,7 +43,7 @@ const adminController = {
       .catch(err => next(err))
   },
   editRestaurant: (req, res, next) => {
-    Restaurant.findByPk(req.params.id, {
+    return Restaurant.findByPk(req.params.id, {
       raw: true
     })
       .then(restaurant => {
@@ -58,7 +58,7 @@ const adminController = {
     if (!name) throw new Error('Restaurant name is required!')
 
     const { file } = req
-    Promise.all([
+    return Promise.all([
       Restaurant.findByPk(req.params.id),
       imgurFileHandler(file)
     ])
