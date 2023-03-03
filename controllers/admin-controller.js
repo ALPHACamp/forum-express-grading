@@ -1,11 +1,13 @@
-const { Restaurant, User } = require('../models')
+const { Restaurant, User, Category } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers') // 將 file-helper 載進來
 
 const adminController = {
   // for all restaurants
   getRestaurants: (req, res, next) => {
     return Restaurant.findAll({
-      raw: true
+      raw: true,
+      nest: true, // 做關聯的 category 物件 key 名字簡單化
+      include: [Category]
     })
       .then(restaurants => res.render('admin/restaurants', { restaurants }))
       .catch(err => next(err))
@@ -42,7 +44,9 @@ const adminController = {
     // SQLize use "id" to find one data
     return Restaurant.findByPk(req.params.id, {
       // clean data no SQLize operate
-      raw: true
+      raw: true,
+      nest: true,
+      include: [Category]
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
