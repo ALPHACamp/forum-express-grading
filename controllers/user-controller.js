@@ -1,6 +1,6 @@
 const passport = require('passport')
 const { v4: uuidv4 } = require('uuid')
-const { User, Comment, Restaurant } = require('../models')
+const { User, Comment, Restaurant, Favorite } = require('../models')
 const { removesWhitespace } = require('../helpers/object-helpers')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 const bcrypt = require('bcryptjs')
@@ -72,6 +72,35 @@ const userController = {
     }
     req.flash('success_messages', '使用者資料編輯成功')
     res.redirect(`/users/${id}`)
+  },
+  addFavorite: async (req, res, next) => {
+    const restaurantId = req.params.id
+    const userId = req.user.id
+    try {
+      const [restaurant, favorite] = await Promise.all([
+        Restaurant.findByPk(restaurantId),
+        Favorite.findOne({ where: { restaurantId, userId } })
+      ])
+      if (!restaurant) throw new Error('此餐廳不存在')
+      if (favorite) throw new Error('已經收藏過此餐廳了')
+      const created = await Favorite.create({ restaurantId, userId })
+      if (created) res.redirect('back')
+    } catch (err) {
+      next(err)
+    }
+  },
+  removeFavorite: async (req, res, next) => {
+    const restaurantId = req.params.id
+    const userId = req.user.id
+    try {
+      const restaurant = await Restaurant.findByPk(restaurantId)
+      if (!restaurant) throw new Error('此餐廳不存在')
+      const isRemoved = await Favorite.destroy({ where: { restaurantId, userId } }) // 回傳0 or 1
+      if (!isRemoved) throw new Error('尚未收藏此餐廳了')
+      res.redirect('back')
+    } catch (err) {
+      next(err)
+    }
   }
 }
 

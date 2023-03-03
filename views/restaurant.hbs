@@ -4,6 +4,15 @@
       <i class="fa-solid fa-arrow-left"></i>
     </a>
     <a href="/restaurants/{{restaurant.id}}/dashboard" class="btn btn-primary">Dashboard</a>
+    {{#if isFavorite}}
+      <form action="/favorite/{{restaurant.id}}?_method=DELETE" method="POST">
+        <button class="btn btn-success" type="submit"><i class="fa-solid fa-bookmark"></i></button>
+      </form>
+    {{else}}
+      <form action="/favorite/{{restaurant.id}}" method="POST">
+        <button class="btn btn-success" type="submit"><i class="fa-regular fa-bookmark"></i></button>
+      </form>
+    {{/if}}
   </div>
   <div class="row gap-3 gap-md-4">
     <div class="col-12 col-md">

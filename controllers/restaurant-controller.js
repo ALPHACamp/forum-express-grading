@@ -24,7 +24,16 @@ const restaurantController = {
         Category.findAll({ raw: true })
       ])
       const pagination = getPagination(restData.count, limit, page)
-      const restaurants = nullCategoryHandle(restData.rows)
+      const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
+      const restaurants = restData.rows.map(r => ({
+        ...r,
+        isFavorite: favoritedRestaurantsId.includes(r.id),
+        categoryId: r.categoryId || 0,
+        Category: {
+          ...r.Category,
+          name: r.Category.name || '未分類'
+        }
+      }))
       res.render('restaurants', { restaurants, categories, categoryId, pagination, limit, limitOption })
     } catch (err) {
       next(err)
@@ -36,7 +45,8 @@ const restaurantController = {
       const data = await Restaurant.findByPk(id, {
         include: [
           Category,
-          { model: Comment, include: User }
+          { model: Comment, include: User },
+          { model: User, as: 'FavoritedUsers' }
         ],
         order: [
           [Comment, 'createdAt', 'DESC']
@@ -45,7 +55,8 @@ const restaurantController = {
       if (!data) throw new Error('此餐廳不存在')
       await data.increment('view_counts')
       const restaurant = nullCategoryHandle(data.toJSON())
-      res.render('restaurant', { restaurant })
+      const isFavorite = restaurant.FavoritedUsers.some(user => user.id === req.user.id) // 迭代時只要找到一個符合條件，就會立刻回傳 true，後面的項目不會繼續執行
+      res.render('restaurant', { restaurant, isFavorite })
     } catch (err) {
       next(err)
     }

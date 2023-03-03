@@ -1,7 +1,7 @@
 const passport = require('passport')
 const LocalStrategy = require('passport-local').Strategy
 const bcrypt = require('bcryptjs')
-const { User } = require('../models')
+const { User, Restaurant } = require('../models')
 
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config()
@@ -33,7 +33,11 @@ passport.use(new LocalStrategy(
 passport.serializeUser((user, done) => done(null, user.id))
 // 以ID去撈user資料 (要資料庫回傳的資料寫這)
 passport.deserializeUser((id, done) => {
-  User.findByPk(id)
+  User.findByPk(id, {
+    include: [
+      { model: Restaurant, as: 'FavoritedRestaurants' }
+    ]
+  })
     .then(user => done(null, user.toJSON()))
     .catch(err => done(err, null))
 })

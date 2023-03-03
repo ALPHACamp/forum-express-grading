@@ -45,6 +45,17 @@
             <span class="badge bg-secondary">{{this.Category.name}}</span>
             <p class="card-text text-truncate">{{this.description}}</p>
           </div>
+          <div class="card-footer d-flex gap-2">
+            {{#if this.isFavorite}}
+              <form action="/favorite/{{this.id}}?_method=DELETE" method="POST">
+                <button class="btn btn-success" type="submit"><i class="fa-solid fa-bookmark"></i></button>
+              </form>
+            {{else}}
+              <form action="/favorite/{{this.id}}" method="POST">
+                <button class="btn btn-success" type="submit"><i class="fa-regular fa-bookmark"></i></button>
+              </form>
+            {{/if}}
+          </div>
         </div>
       </div>
     {{/each}}
