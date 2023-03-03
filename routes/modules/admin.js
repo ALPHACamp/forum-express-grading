@@ -9,6 +9,7 @@ router.get('/users', adminController.getUsers)
 router.patch('/users/:id', adminController.patchUser)
 // for categories
 router.get('/categories', categoryController.getCategories)
+router.post('/categories', categoryController.postCategory)
 // create new restaurant
 router.get('/restaurants/create', adminController.createRestaurant)
 // one restaurant edit
