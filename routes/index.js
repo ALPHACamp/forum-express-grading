@@ -5,6 +5,7 @@ const userController = require('../controllers/user-controller')
 const commentController = require('../controllers/​​comment-controller')
 const admin = require('./modules/admin')
 const passport = require('../config/passport')
+const upload = require('../middleware/multer')
 
 const { authenticated } = require('../middleware/auth')
 const { generalErrorHandler } = require('../middleware/error-handler')
@@ -18,6 +19,10 @@ router.get('/signin', userController.signInPage)
 router.post('/signin', passport.authenticate('local', { failureRedirect: '/signin', failureFlash: true }), userController.signIn)
 
 router.get('/logout', userController.logout)
+
+router.get('/users/:id/edit', authenticated, userController.editUser)
+router.get('/users/:id', authenticated, userController.getUser)
+router.put('/users/:id', authenticated, upload.single('image'), userController.putUser)
 
 router.delete('/comments/:id', authenticatedAdmin, commentController.deleteComment)
 router.post('/comments', authenticated, commentController.postComment)
