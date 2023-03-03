@@ -43,10 +43,12 @@ passport.serializeUser((user, cb) => {
 });
 
 passport.deserializeUser((id, cb) => {
+  //  notice 在操作多對多table的時候，跟user table相關時，因會經過passport驗證並帶出資料，所以要先將反序列化部分設定一並帶出，例如favorite and like的清單
   return User.findByPk(id, {
     include: [
       //  note as:所取的名稱會對應到user model裡使用的名稱，所以要修正要同時修正model裡面的as:
-      { model: Restaurant, as: 'FavoritedRestaurants' }
+      { model: Restaurant, as: 'FavoritedRestaurants' },
+      { model: Restaurant, as: 'LikedRestaurants' }
     ]
   })
     .then(user => {
