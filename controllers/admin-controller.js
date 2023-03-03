@@ -3,9 +3,9 @@ const { imgurFileHandler } = require('../helpers/file-helpers')
 const adminController = {
   getUsers: (req, res, next) => {
     return User.findAll({
-      where: {
-        name: 'admin'
-      },
+      // where: {
+      //   name: 'admin'
+      // },
       raw: true
     })
       .then(users => res.render('admin/users', { users }))
@@ -17,6 +17,7 @@ const adminController = {
         if (user.email === 'root@example.com') {
           req.flash('error_messages', '禁止變更 root 權限')
           res.redirect('back')
+          return
         }
 
         if (user.isAdmin) {
