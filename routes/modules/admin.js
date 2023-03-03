@@ -10,6 +10,7 @@ router.patch('/users/:id', adminController.patchUser)
 // for one category
 router.get('/categories/:id', categoryController.getCategories)
 router.put('/categories/:id', categoryController.putCategory)
+router.delete('/categories/:id', categoryController.deleteCategory)
 // for categories
 router.get('/categories', categoryController.getCategories)
 router.post('/categories', categoryController.postCategory)

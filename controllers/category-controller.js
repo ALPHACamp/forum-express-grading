@@ -1,4 +1,4 @@
-const { Category } = require('../models')
+const { Category, Restaurant } = require('../models')
 
 const categoryController = {
   getCategories: (req, res, next) => {
@@ -30,6 +30,28 @@ const categoryController = {
         return category.update({ name })
       })
       .then(() => res.redirect('/admin/categories'))
+      .catch(err => next(err))
+  },
+  deleteCategory: (req, res, next) => {
+    return Promise.all([
+      Category.findByPk(req.params.id, {
+        nest: true,
+        include: [Restaurant]
+      }),
+      Category.findOne({ where: { name: '未分類' } }, {
+        raw: true
+      })
+    ])
+      .then(([category, noCategory]) => {
+        if (!category) throw new Error("category didn't exist!")
+        Promise.all(category.Restaurants.map(restaurant => restaurant.update({ categoryId: noCategory.id })))
+          .then(() => category.destroy())
+          .then(() => {
+            req.flash('success_messages', 'category was successfully to delete')
+            res.redirect('/admin/categories')
+          })
+          .catch(err => next(err))
+      })
       .catch(err => next(err))
   }
 }
