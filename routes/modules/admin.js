@@ -1,11 +1,14 @@
 const express = require('express')
 const router = express.Router()
 const adminController = require('../../controllers/admin-controller')
+const categoryController = require('../../controllers/category-controller')
 const upload = require('../../middleware/multer')
 
 // for auth-management
 router.get('/users', adminController.getUsers)
 router.patch('/users/:id', adminController.patchUser)
+// for categories
+router.get('/categories', categoryController.getCategories)
 // create new restaurant
 router.get('/restaurants/create', adminController.createRestaurant)
 // one restaurant edit
