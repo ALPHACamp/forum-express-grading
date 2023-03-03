@@ -32,11 +32,19 @@ const userController = {
     res.redirect('/restaurants')
   },
   logout: (req, res) => {
-    req.flash('success_messages', '登出成功！')
-    req.logout(function(err) {
-			if (err) { return next(err); }
-			res.redirect('/');
-		});
+    // req.flash('success_messages', '登出成功！')
+    // req.logout(function(err) {
+		// 	if (err) { return next(err); }
+		// 	res.redirect('/');
+		// });
+		// 以上給本機端，以下給Heroku
+		req.logout(err => {
+      if (err) {
+        return next(err);
+      }
+      req.flash('success_messages', '登出成功！');
+      res.redirect('/signin');
+		})
   },
   getUser: (req, res, next) => {
     return User.findByPk(req.params.id,{
