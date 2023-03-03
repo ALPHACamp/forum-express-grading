@@ -1,6 +1,7 @@
-const { User } = require('../models')
+const { User, Comment, Restaurant } = require('../models')
 const bcrypt = require('bcryptjs')
 const { imgurFileHandler } = require('../helpers/file-helpers')
+const Sequelize = require('sequelize')
 const userController = {
   singUpPage: (req, res) => {
     return res.render('signup')
@@ -39,23 +40,40 @@ const userController = {
     res.redirect('/signin')
   },
   getUser: (req, res, next) => {
-    return User.findByPk(req.params.id, {
-      raw: true
-    })
-      .then(user => {
+    const { id } = req.params
+    return Promise.all([
+      User.findByPk(id, {
+        raw: true
+      }),
+      Comment.findAndCountAll({
+        attributes: [[Sequelize.fn('DISTINCT', Sequelize.col('restaurant_id')), 'restaurantId']],
+        distinct: true,
+        col: 'restaurant_id',
+        include: [
+          {
+            model: Restaurant
+          }
+        ],
+        where: { userId: id },
+        nest: true,
+        raw: true
+      })
+    ])
+      .then(([user, comments]) => {
         if (!user) throw new Error("User didn't exist!")
-        res.render('users/profile', { user })
+        res.render('users/profile', { user, comments })
       })
       .catch(err => next(err))
   },
   editUser: (req, res, next) => {
     // const USER = req.user // 訪問的使用者
     const { id } = req.params
+    // if (USER.id !== Number(id)) throw new Error('不可編輯其他使用者的資料!')
     return User.findByPk(id, { raw: true })
       .then(user => {
-        // if (USER.id !== Number(id)) throw new Error('不可編輯其他使用者的資料!') // 防止A user修改B user的資料，若無註解無法通過test
         res.render('users/edit', { user })
       })
+      .catch(err => next(err))
   },
   putUser: (req, res, next) => {
     const { file } = req
