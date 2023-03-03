@@ -7,6 +7,9 @@ const upload = require('../../middleware/multer')
 // for auth-management
 router.get('/users', adminController.getUsers)
 router.patch('/users/:id', adminController.patchUser)
+// for one category
+router.get('/categories/:id', categoryController.getCategories)
+router.put('/categories/:id', categoryController.putCategory)
 // for categories
 router.get('/categories', categoryController.getCategories)
 router.post('/categories', categoryController.postCategory)
