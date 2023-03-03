@@ -16,7 +16,7 @@ passport.use(new LocalStrategy(
     try {
       const user = await User.findOne({ where: { email } })
       if (!user) return cb(null, false, req.flash('error_messages', 'Account or passport incorrect！'))
-      const res = bcrypt.compare(password, user.password)
+      const res = await bcrypt.compare(password, user.password)
       if (!res) return cb(null, false, req.flash('error_messages', 'Account or passport incorrect！'))
       return cb(null, user)
     } catch (err) { console.log(err) }
