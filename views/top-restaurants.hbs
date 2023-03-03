@@ -1,10 +1,10 @@
 {{> restaurant-tabs route='topRestaurants'}}
-<h1>Top10人氣餐廳</h1>
+<h1>Top 10 人氣餐廳</h1>
 <hr />
-<div class="row" style="text-align: center;">
+<div class="col-md-6 mx-auto" style="text-align: center;">
   {{#each restaurants}}
-    <div class="card col-6">
-        <div class="card-body row">
+    <div class="card">
+        <div class="card-body">
             <div class="col">
                 <a href="/restaurants/{{this.id}}">
                     {{#if this.image}}
