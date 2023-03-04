@@ -1,15 +1,26 @@
 // - 處理屬於restaurant路由的相關請求
 const { Restaurant, User, Category } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
+const { getOffset, getPagination } = require('../helpers/pagination-helper')
 const adminController = {
   getRestaurants: async (req, res, next) => {
+    const DEFAULT_LIMIT = 8
+    const FIRST_PAGE = 1
+    const limit = Number(req.query.limit) || DEFAULT_LIMIT
+    const page = Number(req.query.page) || FIRST_PAGE
+    const offset = getOffset(limit, page)
     try {
-      const restaurants = await Restaurant.findAll({
+      const restaurants = await Restaurant.findAndCountAll({
         raw: true,
         nest: true, // -將關聯資料包裝成物件
-        include: [Category] // -取得關聯資料
+        include: [Category], // -取得關聯資料
+        limit,
+        offset
       })
-      return res.render('admin/restaurants', { restaurants })
+      return res.render('admin/restaurants', {
+        restaurants: restaurants.rows,
+        pagination: getPagination(limit, page, restaurants.count)
+      })
     } catch (error) {
       return next(error)
     }
