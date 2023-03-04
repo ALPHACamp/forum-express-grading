@@ -25,6 +25,7 @@ router.post('/signup', userController.signUp)
 router.get('/signin', userController.signInPage)
 router.post('/signin', passport.authenticate('local', { failureRedirect: '/signin', badRequestMessage: '信箱及密碼皆不得為空', failureFlash: true }), userController.signIn)
 router.get('/logout', userController.logout)
+router.get('/restaurants/:id/dashboard', authenticated, restController.getDashboard)
 router.get('/restaurants/:id', authenticated, restController.getRestaurant)
 router.get('/restaurants', authenticated, restController.getRestaurants)
 
