@@ -2,18 +2,29 @@
 const { Restaurant, Category } = require('../models')
 const restaurantController = {
   getRestaurants: async (req, res, next) => {
+    const categoryId = Number(req.query.categoryId) || ''
     try {
-      const restaurants = await Restaurant.findAll({
-        raw: true,
-        nest: true,
-        include: [Category]
-      })
+      const [restaurants, categories] = await Promise.all([
+        Restaurant.findAll({
+          raw: true,
+          nest: true,
+          where: {
+            ...(categoryId ? { categoryId } : {})
+          },
+          include: [Category]
+        }),
+        Category.findAll({ raw: true })
+      ])
       // - 對原有description進行字數刪減
       const data = restaurants.map(r => ({
         ...r,
         description: r.description.substring(0, 50)
       }))
-      return res.render('restaurants', { restaurants: data })
+      return res.render('restaurants', {
+        restaurants: data,
+        categories,
+        categoryId
+      })
     } catch (error) {
       return next(error)
     }
