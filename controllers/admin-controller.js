@@ -97,7 +97,7 @@ const adminController = {
     const id = req.params.id
     return User.findByPk(id)
       .then(user => {
-        if (!user) throw new Error('Restaurant name is required!')
+        if (!user) throw new Error('User name is required!')
         if (user.email === 'root@example.com') {
           req.flash('error_messages', '禁止變更 root 權限')
           return res.redirect('back')
