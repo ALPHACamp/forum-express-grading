@@ -6,13 +6,8 @@ const router = express.Router()
 
 const restController = require('../controllers/restaurant-controller')
 
-// 刪除
-
-router.get('/', (req, res) => {
-  res.send('Hello World!')
-})
-
-// 新增
+const admin = require('./modules/admin')
+router.use('/admin', admin)
 
 router.get('/restaurants', restController.getRestaurants)
 
