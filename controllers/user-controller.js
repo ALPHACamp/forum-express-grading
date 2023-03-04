@@ -74,7 +74,7 @@ const userController = {
     res.redirect(`/users/${id}`)
   },
   addFavorite: async (req, res, next) => {
-    const restaurantId = req.params.id
+    const { restaurantId } = req.params
     const userId = req.user.id
     try {
       const [restaurant, favorite] = await Promise.all([
@@ -90,17 +90,16 @@ const userController = {
     }
   },
   removeFavorite: async (req, res, next) => {
-    const restaurantId = req.params.id
+    const { restaurantId } = req.params
     const userId = req.user.id
     try {
-      const restaurant = await Restaurant.findByPk(restaurantId)
-      if (!restaurant) throw new Error('此餐廳不存在')
-      const isRemoved = await Favorite.destroy({ where: { restaurantId, userId } }) // 回傳0 or 1
-      if (!isRemoved) throw new Error('尚未收藏此餐廳了')
-      res.redirect('back')
+      const favorite = await Favorite.findOne({ where: { restaurantId, userId } })
+      if (!favorite) throw new Error('尚未收藏此餐廳了')
+      return await favorite.destroy()
     } catch (err) {
       next(err)
     }
+    res.redirect('back')
   },
   addLike: async (req, res, next) => {
     const { restaurantId } = req.params

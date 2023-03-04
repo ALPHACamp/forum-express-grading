@@ -104,6 +104,36 @@ const restaurantController = {
     const restaurants = descriptionCut(restData)
     const comments = descriptionCut(commentData)
     res.render('feeds', { restaurants, comments })
+  },
+  getTopRestaurants: async (req, res, next) => {
+    // const FavoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
+    try {
+      const restData = await Restaurant.findAll({
+        include: [
+          // Category,
+          { model: User, as: 'FavoritedUsers' }
+        ]
+      })
+      const topRest = restData.map(r => {
+        r = r.toJSON()
+        return {
+          ...r,
+          favoritedCount: r.FavoritedUsers.length
+        }
+      })
+        .sort((a, b) => b.favoritedCount - a.favoritedCount)
+        .slice(0, 10)
+
+      const restaurants = topRest.map(r => ({
+        ...r,
+        description: r.description.length >= 40 ? r.description.substring(0, 40) + '...' : r.description,
+        // isFavorite: FavoritedRestaurantsId.includes(r.id)
+        isFavorite: req.user && r.FavoritedUsers.some(user => user.id === req.user.id)
+      }))
+      res.render('top-restaurants', { restaurants })
+    } catch (err) {
+      next(err)
+    }
   }
 }
 

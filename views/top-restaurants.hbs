@@ -1,0 +1,41 @@
+{{> restaurant-tabs route='topRestaurants'}}
+<h3>Top 10 人氣餐廳</h3>
+<hr />
+
+<div class="row justify-content-center mt-5">
+  <div class="col-md-6">
+    <div class="row gap-3">
+      {{#each restaurants}}
+        <div class="card p-0">
+          <div class="card-body">
+            <div class="row gy-4">
+              <div class="col-12 col-lg-5">
+                <div class="restaurant-img-container">
+                  <img src={{this.image}} alt="餐廳" class="image rounded" style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;" onerror="this.src='/public/images/default-restaurant.jpg'" />
+                </div>
+              </div>
+              <div class="col">
+                <h4><a class="link-primary" href="/restaurants/{{this.id}}">{{this.name}}</a></h4>
+                <h5><span class="badge bg-secondary">{{this.Category.name}}</span></h5>
+                <p class="">收藏數 : {{this.favoritedCount}}</p>
+                <p class="my-3" style="white-space: break-spaces;">{{this.description}}</p>
+                <small class="text-secondary">- {{relativeTimeFromNow this.createdAt}}</small>
+              </div>
+            </div>
+          </div>
+          <div class="card-footer text-end">
+            {{#if this.isFavorite}}
+              <form action="/favorite/{{this.id}}?_method=DELETE" method="POST">
+                <button class="btn btn-success" type="submit"><i class="fa-solid fa-bookmark"></i></button>
+              </form>
+            {{else}}
+              <form action="/favorite/{{this.id}}" method="POST">
+                <button class="btn btn-success" type="submit"><i class="fa-regular fa-bookmark"></i></button>
+              </form>
+            {{/if}}
+          </div>
+        </div>
+      {{/each}}
+    </div>
+  </div>
+</div>
