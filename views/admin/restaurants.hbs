@@ -1,0 +1,90 @@
+<link rel="stylesheet" href="/stylesheets/style.css">
+
+{{>admin-tabs route='restaurants'}}
+<div class="row">
+
+  <div class="col-auto">
+    <a href='/admin/restaurants/create'>
+      <button type="button" class="btn btn-primary">New Restaurant</button>
+    </a>
+  </div>
+
+  <div class="col-auto align-self-center ">
+    <div class="btn-group">
+      <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown"
+        aria-expanded="false">
+        單頁顯示數量
+      </button>
+      <ul class="dropdown-menu">
+        <li><a class="dropdown-item {{#ifCond limit 12}}active{{else}}{{/ifCond}}" href="?limit=12">12</a></li>
+        <li><a class="dropdown-item {{#ifCond limit 24}}active{{else}}{{/ifCond}}" href="?limit=24">24</a></li>
+        <li><a class="dropdown-item {{#ifCond limit 36}}active{{else}}{{/ifCond}}" href="?limit=36">36</a></li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+<br />
+<br />
+<table class="table align-middle">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Name</th>
+      <th scope="col">Category</th>
+      <th scope="col"></th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each restaurants}}
+    <tr>
+      <th scope="row">{{this.id}}</th>
+      <td>
+        <p class="name-p m-0" style="display: inline-block;">{{this.name}}<span><img src={{this.image}} /></span>
+        </p>
+      </td>
+      <td>{{this.Category.name}}</td>
+      <td>
+        <button type="button" class="btn btn-link">
+          <a class="btn btn-link link-primary" href="/admin/restaurants/{{this.id}}">
+            Show
+          </a>
+        </button>
+        <button type="button" class="btn btn-link">
+          <a class="btn btn-link link-primary" href="/admin/restaurants/{{this.id}}/edit">
+            Edit
+          </a>
+        </button>
+        <form action="/admin/restaurants/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
+          <button type="submit" class="btn btn-link link-danger"
+            onclick="return confirm(`確定要刪除 {{ this.name }} 嗎？`)">Delete</button>
+        </form>
+      </td>
+    </tr>
+    {{/each}}
+  </tbody>
+</table>
+
+<nav class="mt-3" aria-label="page navigation">
+  <ul class="pagination">
+    <li class="page-item {{#ifCond pagination.currentPage 1}}disabled{{/ifCond}}">
+      <a class="page-link" href="/admin/restaurants?page={{pagination.prev}}&?limit={{limit}}" aria-label="Previous">
+        <span aria-hidden="true">&laquo;</span>
+      </a>
+    </li>
+    {{#each pagination.pages}}
+    {{#ifCond this ../pagination.currentPage}}
+    <li class="page-item active"><a class="page-link" href="#">{{this}}</a></li>
+    {{else}}
+    <li class="page-item">
+      <a class="page-link" href="/admin/restaurants?page={{this}}&?limit={{limit}}">{{this}}</a>
+    </li>
+    {{/ifCond}}
+    {{/each}}
+    <li class="page-item {{#ifCond pagination.currentPage pagination.totalPage}}disabled{{/ifCond}}">
+      <a class="page-link" href="/admin/restaurants?page={{pagination.next}}&?limit={{limit}}" aria-label="Next">
+        <span aria-hidden="true">&raquo;</span>
+      </a>
+    </li>
+  </ul>
+</nav>
