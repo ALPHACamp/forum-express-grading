@@ -4,6 +4,7 @@ const router = express.Router()
 const passport = require('../config/passport')
 const restController = require('../controllers/restaurant-controller')
 const userController = require('../controllers/user-controller')
+const commentController = require('../controllers/​​comment-controller')
 const admin = require('./modules/admin')
 const { authenticated } = require('../middleware/auth')
 const { authenticatedAdmin } = require('../middleware/auth')
@@ -23,6 +24,8 @@ router.get('/restaurants/:id/dashboard', authenticated, restController.getDashbo
 router.get('/restaurants/:id', authenticated, restController.getRestaurant)
 router.get('/restaurants', authenticated, restController.getRestaurants)
 router.get('/', (req, res) => res.redirect('/restaurants'))
+
+router.post('/comments', authenticated, commentController.postComment)
 
 router.use('/', generalErrorHandler)
 
