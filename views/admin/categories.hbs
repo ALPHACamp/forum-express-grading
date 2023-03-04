@@ -1,9 +1,8 @@
-<h1>餐廳後台</h1>
-{{> tabs}}
+{{> tabs route='categories'}}
 <div class="container">
-  {{#if id}}
+  {{#if category}}
     <form
-      aciton="/admin/categories/{{id}}?_method=PUT"
+      action="/admin/categories/{{category.id}}?_method=PUT"
       class="d-flex align-items-center"
       method="POST"
     >
@@ -20,7 +19,7 @@
       <a href="/admin/categories">or Create New</a>
     </form>
   {{else}}
-    <form aciton="/admin/categories" class="d-flex" method="POST">
+    <form action="/admin/categories" class="d-flex" method="POST">
       <div class="form-row">
         <input
           class="form-control"
@@ -57,15 +56,23 @@
             </a>
           </button>
           <form
-            action="/admin/categories/{{this.id}}?_method=DELETE"
+            action="/admin/categories/{{this.id}}?_method=PATCH"
             method="POST"
             style="display: inline;"
           >
+          {{#if this.isDeleted}}
+            <button
+              type="submit"
+              class="btn btn-link link-info"
+            >Recover</button>
+          </form>
+          {{else}}
             <button
               type="submit"
               class="btn btn-link link-danger"
               onclick="return confirm(`確定要刪除{{this.name}}嗎?`)"
             >Delete</button>
+          {{/if}}
           </form>
         </td>
       </tr>

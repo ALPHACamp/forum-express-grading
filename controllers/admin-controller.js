@@ -9,11 +9,7 @@ const adminController = {
         nest: true, // -將關聯資料包裝成物件
         include: [Category] // -取得關聯資料
       })
-      const isInRestaurantTab = true
-      return res.render('admin/restaurants', {
-        restaurants,
-        isInRestaurantTab
-      })
+      return res.render('admin/restaurants', { restaurants })
     } catch (error) {
       return next(error)
     }
@@ -120,8 +116,7 @@ const adminController = {
   getUsers: async (req, res, next) => {
     try {
       const users = await User.findAll({ raw: true })
-      const isInUserTab = true
-      return res.render('admin/users', { users, isInUserTab })
+      return res.render('admin/users', { users })
     } catch (error) {
       return next(error)
     }
@@ -144,6 +139,7 @@ const adminController = {
     } catch (error) {
       return next(error)
     }
+<<<<<<< HEAD
   },
   getCategories: async (req, res, next) => {
     const { id } = req.params
@@ -168,6 +164,8 @@ const adminController = {
     } catch (error) {
       return next(error)
     }
+=======
+>>>>>>> origin
   }
 }
 

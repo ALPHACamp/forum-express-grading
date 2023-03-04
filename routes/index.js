@@ -8,6 +8,7 @@ const { authenticated, authenticatedAdmin } = require('../middleware/auth')
 const passport = require('passport')
 
 router.use('/admin', authenticatedAdmin, admin)
+
 router.get('/signup', userController.signUpPage)
 router.post('/signup', userController.signUp)
 router.get('/signin', userController.signInPage)
@@ -20,9 +21,13 @@ router.post(
   userController.signIn
 )
 router.get('/logout', userController.logout)
+
+router.get('/restaurants/:id', authenticated, restController.getRestaurant)
 router.get('/restaurants', authenticated, restController.getRestaurants)
+
 // - 將其餘無對應路由導向restaurants頁面
 router.use('/', (req, res) => res.redirect('/restaurants'))
+
 router.use('/', generalErrorHandler)
 
 module.exports = router

@@ -1,5 +1,4 @@
-<h1>餐廳後台</h1>
-{{> tabs}}
+{{> tabs route='restaurants'}}
 <a href="/admin/restaurants/create">
   <button type="button" class="btn btn-primary">New Restaurant</button>
 </a>
@@ -18,7 +17,15 @@
       <tr>
         <th scope="row">{{this.id}}</th>
         <td>{{this.name}}</td>
-        <td>{{this.Category.name}}</td>
+        {{#if this.Category.isDeleted}}
+        <td class="fw-bold text-danger">
+          無對應類別
+        </td>
+        {{else}}
+        <td>
+          {{this.Category.name}}
+        </td>
+        {{/if}}
         <td>
           <button type="button" class="btn btn-link">
             <a
