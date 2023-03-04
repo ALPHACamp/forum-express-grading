@@ -36,7 +36,7 @@
             <a class="link-primary name-p" href="/restaurants/{{this.Restaurant.id}}">{{this.Restaurant.name}}<span><img src={{this.Restaurant.image}} /></span></a>
           </h4>
           <p class="my-4" style="white-space: break-spaces;">{{this.text}}</p>
-          <a class="link-secondary" href="/users/{{this.User.id}}"><img class="user-image" src="{{this.User.image}}">- {{this.User.name}}</a>
+          - <a class="link-secondary" href="/users/{{this.User.id}}">{{this.User.name}}<img class="user-image ms-2" src="{{this.User.image}}"></a>
           <small>at {{relativeTimeFromNow this.createdAt}}</small>
           <hr>
         </div>
