@@ -1,5 +1,5 @@
 const assert = require('assert')
-const { Restaurant, Category } = require('../models')
+const { Restaurant, Category, Comment, User } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
 
 const restaurantController = {
@@ -39,7 +39,14 @@ const restaurantController = {
   getRestaurant: (req, res, next) => {
     const { id } = req.params
     return Restaurant.findByPk(id, {
-      include: Category
+      include: [
+        Category,
+        { model: Comment, include: User }
+      ],
+      // 依照時間調整留言順序
+      order: [
+        [Comment, 'updatedAt', 'DESC']
+      ]
     })
       .then(restaurant => {
         assert(restaurant, "Restaurant didn't exist!")
