@@ -1,6 +1,7 @@
-const { User, Comment, Restaurant } = require('../models')
+const { User, Restaurant, Comment } = require('../models')
 const bcrypt = require('bcryptjs')
 const { imgurFileHandler } = require('../helpers/file-helpers')
+const { getUser } = require('../helpers/auth-helpers')
 const Sequelize = require('sequelize')
 const userController = {
   singUpPage: (req, res) => {
@@ -40,7 +41,11 @@ const userController = {
     res.redirect('/signin')
   },
   getUser: (req, res, next) => {
+    const currentUser = getUser(req)
     const { id } = req.params
+    if (currentUser.id !== Number(id)) {
+      return res.redirect('/restaurants')
+    }
     return Promise.all([
       User.findByPk(id, {
         raw: true
@@ -67,9 +72,11 @@ const userController = {
       .catch(err => next(err))
   },
   editUser: (req, res, next) => {
-    const USER = req.user || User._defaults// 訪問的使用者
-    const id = req.params.id // 欲修改之使用者id
-    if (USER.id !== Number(id)) throw new Error('不可編輯其他使用者的資料!')
+    const currentUser = getUser(req)
+    const { id } = req.params
+    if (currentUser.id !== Number(id)) {
+      return res.redirect('/restaurants')
+    }
     return User.findByPk(id, { raw: true })
       .then(user => {
         res.render('users/edit', { user })
@@ -77,12 +84,12 @@ const userController = {
       .catch(err => next(err))
   },
   putUser: (req, res, next) => {
-    const USER = req.user || User._defaults// 訪問的使用者
-    const id = req.params.id // 欲修改之使用者id
-    if (USER.id !== Number(id)) throw new Error('不可編輯其他使用者的資料!')
+    const currentUser = getUser(req)
+    const id = req.params.id
+    if (currentUser.id !== Number(id)) throw new Error()
     const { file } = req
     return Promise.all([
-      User.findByPk(req.params.id),
+      User.findByPk(id),
       imgurFileHandler(file)
     ])
       .then(([user, filePath]) => user.update({ ...req.body, image: filePath || user.image }))
@@ -93,5 +100,4 @@ const userController = {
       .catch(err => next(err))
   }
 }
-
 module.exports = userController
