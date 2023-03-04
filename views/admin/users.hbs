@@ -1,1 +1,43 @@
-<h1>餐廳後台使用者切換</h1>
+<h1>餐廳後台</h1>
+<a href='/admin/restaurants'>
+  <button type="button" class="btn btn-primary">Restaurants</button>
+</a>
+<a href='/admin/users'>
+  <button type="button" class="btn btn-success">User</button>
+</a>
+<br />
+<br />
+<table class="table align-middle">
+  <thead class="thead-dark bg-info">
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Name</th>
+      <th scope="col">Email</th>
+      <th scope="col">Role</th>
+      <th scope="col">#</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each users}}
+    <tr>
+      <th scope="row">{{this.id}}</th>
+      <td class="name">{{this.name}}</td>
+      <td class="email">{{this.email}}</td>
+      <th class="role">
+        {{#if this.isAdmin }}
+        admin 
+        {{else}}
+        user 
+        {{/if}}
+      </th>
+      <th>
+        <form action="/admin/users/{{this.id}}?_method=PATCH" method="post">
+          <button type="submit" class="btn btn-link">
+            set as {{#if this.isAdmin }} user {{else}} admin {{/if}}
+          </button>
+        </form>
+      </th>
+    </tr>
+    {{/each}}
+  </tbody>
+</table>

@@ -4,6 +4,7 @@ const router = express.Router()
 const adminController = require('../../controllers/admin-controller')
 const upload = require('../../middleware/multer')
 
+router.patch('/users/:id', adminController.patchUser) // 使用者權限管理
 router.get('/users', adminController.getUsers) // 使用者管理路由
 router.get('/restaurants/create', adminController.createRestaurant) // 新增路由
 router.get('/restaurants/:id/edit', adminController.editRestaurant) // 編輯路由
