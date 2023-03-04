@@ -97,7 +97,7 @@ const adminController = {
       })
       .catch(err => next(err))
   },
-  patchUser: (req, res, next) => { // 使用者權限管理
+  patchUser: (req, res, next) => { // 使用者權限改變
     return User.findByPk(req.params.id)
       .then(user => {
         if (user.email === 'root@example.com') {
