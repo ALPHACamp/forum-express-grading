@@ -69,6 +69,7 @@ const userController = {
       .catch(err => next(err))
   },
   putUser: (req, res, next) => {
+    if (Number(req.user.id) !== Number(req.params.id)) throw new Error("You can't edit other user's profile") // 只能改自己的修改頁面
     const { name, email, password } = req.body
     if (!name) throw new Error('User name is required')
     const { file } = req

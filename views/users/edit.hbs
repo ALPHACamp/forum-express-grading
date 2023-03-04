@@ -1,12 +1,15 @@
 <form action="/users/{{user.id}}?_method=PUT" method="post" enctype="multipart/form-data">
   <div class="mb-3">
     <label for="name" class="form-label">Name</label>
-    <input type="text" class="form-control" id="name" name="name" placeholder="Name" value="{{user.name}}" required>
+    <input type="text" class="form-control" id="name" name="name" placeholder="Name" value="{{user.name}}" required
+      {{#ifCond loginUser.id user.id}} {{else}} disabled {{/ifCond}}>
   </div>
+  {{#ifCond loginUser.id user.id}}
   <div class="mb-3">
     <label for="image" class="form-label">Image</label>
     <input class="form-control" type="file" id="image" name="image">
   </div>
   <button type="submit" class="btn btn-primary">Submit</button>
+  {{/ifCond}}
   <a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
 </form>
