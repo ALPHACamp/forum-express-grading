@@ -17,7 +17,6 @@ const localFileHandler = file => { // file 是 multer 處理完的檔案
 
 const imgurFileHandler = file => {
   return new Promise((resolve, reject) => {
-    console.log(IMGUR_CLIENT_ID) //! 測試，用完殺
     if (!file) return resolve(null)
 
     return imgur.uploadFile(file.path)
