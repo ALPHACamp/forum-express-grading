@@ -1,4 +1,4 @@
-const { Restaurant, Category, Comment, User } = require('../models')
+const { Restaurant, Category, Comment, User, Favorite } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
 const restaurantController = {
   getRestaurants: (req, res, next) => {
@@ -21,11 +21,13 @@ const restaurantController = {
       Category.findAll({ raw: true })
     ])
       .then(([restaurants, categories]) => {
+        const likedRestaurants = req.user && req.user.LikedRestaurants.map(lr => lr.id)
         const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
         const data = restaurants.rows.map(r => ({
           ...r,
           description: r.description.substring(0, 50),
-          isFavorited: favoritedRestaurantsId.includes(r.id)
+          isFavorited: favoritedRestaurantsId.includes(r.id),
+          isLiked: likedRestaurants.includes(r.id)
         }))
         return res.render('restaurants', {
           restaurants: data,
@@ -42,7 +44,8 @@ const restaurantController = {
       include: [
         Category,
         { model: Comment, include: User },
-        { model: User, as: 'FavoritedUsers' }
+        { model: User, as: 'FavoritedUsers' },
+        { model: User, as: 'LikedUsers' }
       ],
       order: [
         [{ model: Comment, include: User }, 'createdAt', 'DESC']
@@ -54,9 +57,11 @@ const restaurantController = {
       })
       .then(restaurant => {
         const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id)
+        const isLiked = restaurant.LikedUsers.some(f => f.id === req.user.id)
         res.render('restaurant', {
           restaurant: restaurant.toJSON(),
-          isFavorited
+          isFavorited,
+          isLiked
         })
       })
       .catch(err => next(err))
@@ -74,11 +79,17 @@ const restaurantController = {
         raw: true,
         nest: true,
         include: [Category]
+      }),
+      Favorite.count({
+        where: {
+          restaurantId: id
+        },
+        raw: true
       })
     ])
-      .then(([comments, restaurant]) => {
+      .then(([comments, restaurant, favorite]) => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
-        res.render('dashboard', { restaurant, comments })
+        res.render('dashboard', { restaurant, comments, favorite })
       })
       .catch(err => next(err))
   },
