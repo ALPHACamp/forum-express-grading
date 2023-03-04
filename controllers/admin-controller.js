@@ -1,6 +1,6 @@
 // const db = require('../models')
 // const Restaurant = db.Restaurant
-const { Restaurant } = require('../models') // 解構賦值
+const { Restaurant, User } = require('../models') // 解構賦值
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const adminController = {
@@ -89,6 +89,16 @@ const adminController = {
       })
       .then(() => res.redirect('/admin/restaurants'))
       .catch(err => next(err))
+  },
+  getUsers: (req, res, next) => {
+    return User.findAll({ raw: true })
+      .then(users => {
+        res.render('admin/users', { users })
+      })
+      .catch(err => next(err))
+  },
+  patchUser: (req, res, next) => {
+    // 使用者權限管理
   }
 }
 
