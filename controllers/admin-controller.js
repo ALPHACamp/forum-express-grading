@@ -139,33 +139,6 @@ const adminController = {
     } catch (error) {
       return next(error)
     }
-<<<<<<< HEAD
-  },
-  getCategories: async (req, res, next) => {
-    const { id } = req.params
-    try {
-      const [category, categories] = await Promise.all([
-        Category.findByPk(id, { raw: true }),
-        Category.findAll({ raw: true })
-      ])
-      const isInCategoryTab = true
-      return res.render('admin/categories', { category, categories, isInCategoryTab, id })
-    } catch (error) {
-      return next(error)
-    }
-  },
-  postCategories: async (req, res, next) => {
-    const { name } = req.body
-    try {
-      if (!name) throw new Error('名稱為必填!')
-      await Category.create({ name })
-      req.flash('success_messages', '新增類別成功!')
-      return res.redirect('/admin/categories')
-    } catch (error) {
-      return next(error)
-    }
-=======
->>>>>>> origin
   }
 }
 
