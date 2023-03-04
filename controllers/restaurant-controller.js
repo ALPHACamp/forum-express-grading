@@ -1,29 +1,39 @@
 // - 處理屬於前台restaurant路由的相關請求
 const { Restaurant, Category } = require('../models')
+const { getOffset, getPagination } = require('../helpers/pagination-helper')
 const restaurantController = {
   getRestaurants: async (req, res, next) => {
+    const DEFAULT_LIMIT = 9
+    const FIRST_PAGE = 1
+    const limit = Number(req.query.limit) || DEFAULT_LIMIT
+    const page = Number(req.query.page) || FIRST_PAGE
+    const offset = getOffset(limit, page)
     const categoryId = Number(req.query.categoryId) || ''
     try {
       const [restaurants, categories] = await Promise.all([
-        Restaurant.findAll({
+        Restaurant.findAndCountAll({
           raw: true,
           nest: true,
           where: {
-            ...(categoryId ? { categoryId } : {})
+            ...(categoryId ? { categoryId } : {}) // -進行判斷後再展開
           },
+          limit,
+          offset,
           include: [Category]
         }),
         Category.findAll({ raw: true })
       ])
       // - 對原有description進行字數刪減
-      const data = restaurants.map(r => ({
+      const MAX_OF_DESCRIPTION_LENGTH = 50
+      const data = restaurants.rows.map(r => ({
         ...r,
-        description: r.description.substring(0, 50)
+        description: r.description.substring(0, MAX_OF_DESCRIPTION_LENGTH)
       }))
       return res.render('restaurants', {
         restaurants: data,
         categories,
-        categoryId
+        categoryId,
+        pagination: getPagination(limit, page, restaurants.count)
       })
     } catch (error) {
       return next(error)
