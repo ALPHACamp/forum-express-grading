@@ -35,3 +35,9 @@
   /*position where enlarged image should offset horizontally */
 
 }
+
+.user-image {
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+}
