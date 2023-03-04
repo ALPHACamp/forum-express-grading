@@ -45,13 +45,14 @@ const userController = {
       User.findByPk(id, {
         raw: true
       }),
-      Comment.findAndCountAll({
+      Comment.findAll({
         attributes: [[Sequelize.fn('DISTINCT', Sequelize.col('restaurant_id')), 'restaurantId']],
         distinct: true,
         col: 'restaurant_id',
         include: [
           {
-            model: Restaurant
+            model: Restaurant,
+            attributes: ['image']
           }
         ],
         where: { userId: id },
@@ -66,9 +67,9 @@ const userController = {
       .catch(err => next(err))
   },
   editUser: (req, res, next) => {
-    // const USER = req.user // 訪問的使用者
-    const { id } = req.params
-    // if (USER.id !== Number(id)) throw new Error('不可編輯其他使用者的資料!')
+    const USER = req.user || User._defaults// 訪問的使用者
+    const id = req.params.id // 欲修改之使用者id
+    if (USER.id !== Number(id)) throw new Error('不可編輯其他使用者的資料!')
     return User.findByPk(id, { raw: true })
       .then(user => {
         res.render('users/edit', { user })
@@ -76,6 +77,9 @@ const userController = {
       .catch(err => next(err))
   },
   putUser: (req, res, next) => {
+    const USER = req.user || User._defaults// 訪問的使用者
+    const id = req.params.id // 欲修改之使用者id
+    if (USER.id !== Number(id)) throw new Error('不可編輯其他使用者的資料!')
     const { file } = req
     return Promise.all([
       User.findByPk(req.params.id),
