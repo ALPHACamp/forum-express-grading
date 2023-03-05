@@ -20,6 +20,17 @@ const commentController = {
     } catch (error) {
       return next(error)
     }
+  },
+  deleteComment: async (req, res, next) => {
+    const { id } = req.params
+    try {
+      const comment = await Comment.findByPk(id)
+      if (!comment) throw new Error('不存在的評論!')
+      const deletedComment = await comment.destroy()
+      return res.redirect(`/restaurants/${deletedComment.restaurantId}`)
+    } catch (error) {
+      return next(error)
+    }
   }
 }
 
