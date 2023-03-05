@@ -1,5 +1,5 @@
 // - 處理屬於前台restaurant路由的相關請求
-const { Restaurant, Category } = require('../models')
+const { Restaurant, Category, User, Comment } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
 const restaurantController = {
   getRestaurants: async (req, res, next) => {
@@ -44,7 +44,16 @@ const restaurantController = {
     try {
       const restaurant = await Restaurant.findByPk(id, {
         nest: true,
-        include: [Category]
+        include: [
+          { model: Category },
+          {
+            model: Comment, // -餐廳對評論為1對多，會以複數型命名屬性並以 Array 包裝資料
+            include: [{ model: User }]
+          }
+        ],
+        order: [
+          [Comment, 'created_at', 'DESC']
+        ]
       })
       if (!restaurant) throw new Error('此餐廳不存在!')
       // - 若餐廳存在增加瀏覽次數(累加值若為1可省略第二參數)
