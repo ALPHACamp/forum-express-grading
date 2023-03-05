@@ -1,0 +1,24 @@
+<div class="card">
+  <div class="card-body">
+    <div class="row">
+      <div class="col-md-4 text-center align-items-center">
+        <img class="img-responsive center-block" src="
+        {{#if user.image}}
+        {{user.image}}
+        {{else}}
+        https://cdn-icons-png.flaticon.com/512/1144/1144760.png
+        {{/if}}"
+          style="width: 250px;" onload="this.style.opacity=1;">
+      </div>
+      <div class="col-md-8">
+        <div class="well mt-4">
+          <ul class="list-unstyled">
+            <li><strong><h4>{{user.name}}</h4></strong></li>
+            <li>{{user.email}}</li>
+          </ul>
+        </div>
+        <a href="/users/{{user.id}}/edit" class="btn btn-primary">Edit</a>
+      </div>
+    </div>
+  </div>
+</div>
