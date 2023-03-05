@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs')
-const db = require('../models')
-const { User } = db
+const { User } = require('../models')
+const { getUser } = require('../helpers/auth-helpers')
 
 const userController = {
   signUpPage: (req, res) => {
@@ -37,6 +37,18 @@ const userController = {
     req.flash('success_messages', 'Logout successfully')
     req.logout()
     return res.redirect('/signin')
+  },
+  getUser: (req, res, next) => {
+    return User.findByPk(req.params.id)
+      .then(userProfile => {
+        if (!userProfile) throw new Error("User didn't exist.")
+
+        return res.render('users/profile', {
+          user: getUser(req),
+          userProfile: userProfile.toJSON()
+        })
+      })
+      .catch(error => next(error))
   }
 }
 
