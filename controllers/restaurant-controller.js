@@ -66,16 +66,16 @@ const restaurantController = {
   getDashboard: async (req, res, next) => {
     const { id } = req.params
     try {
-      const restaurant = await Restaurant.findByPk(id, {
+      let restaurant = await Restaurant.findByPk(id, {
         nest: true,
         include: [
           Category,
           Comment
         ]
       })
-      const numOfComments = restaurant.Comments.length
+      restaurant = restaurant.toJSON()
       if (!restaurant) throw new Error('此餐廳不存在!')
-      return res.render('dashboard', { restaurant: restaurant.toJSON(), numOfComments })
+      return res.render('dashboard', { restaurant })
     } catch (error) {
       return next(error)
     }
