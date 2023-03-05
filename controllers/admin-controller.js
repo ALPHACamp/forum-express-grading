@@ -45,6 +45,7 @@ const adminController = {
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist.")
+
         return res.render('admin/restaurant', { restaurant: restaurant.toJSON() })
       })
       .catch(error => next(error))
@@ -72,6 +73,7 @@ const adminController = {
     ])
       .then(([restaurant, filePath]) => {
         if (!restaurant) throw new Error("Restaurant didn't exist.")
+
         return restaurant.update({
           name,
           tel,
@@ -92,6 +94,7 @@ const adminController = {
     return Restaurant.findByPk(req.params.id)
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist/")
+
         return restaurant.destroy()
       })
       .then(() => res.redirect('/admin/restaurants'))
@@ -111,6 +114,7 @@ const adminController = {
           req.flash('error_messages', '禁止變更 root 權限')
           return res.redirect('back')
         }
+
         return user.update({ isAdmin: !user.isAdmin })
       })
       .then(() => {

@@ -22,6 +22,9 @@ const restaurantController = {
       Category.findAll({ raw: true })
     ])
       .then(([restaurants, categories]) => {
+        if (!restaurants.rows.length) throw new Error("Restaurant didn't exist.")
+        if (!categories.length) throw new Error("Category didn't exist.")
+
         const data = restaurants.rows.map(restaurant => ({
           ...restaurant,
           description: restaurant.description.substring(0, 50)
@@ -40,10 +43,12 @@ const restaurantController = {
       include: [
         Category,
         { model: Comment, include: User }
-      ]
+      ],
+      order: [[Comment, 'createdAt', 'DESC']]
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist.")
+
         return restaurant.increment('view_counts')
       })
       .then(restaurant => res.render('restaurant', { restaurant: restaurant.toJSON() }))
@@ -56,6 +61,7 @@ const restaurantController = {
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exits")
+
         return res.render('dashboard', { restaurant: restaurant.toJSON() })
       })
       .catch(error => next(error))

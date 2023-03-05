@@ -8,7 +8,6 @@ const userController = {
   },
   signUp: (req, res, next) => {
     if (!req.body.name || !req.body.email || !req.body.password || !req.body.passwordCheck) throw new Error('All field is required.')
-
     if (req.body.password !== req.body.passwordCheck) throw new Error('Passwords do not match.')
 
     return User.findOne({ where: { email: req.body.email } })
