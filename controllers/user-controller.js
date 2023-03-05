@@ -40,14 +40,14 @@ const userController = {
   getUser: async (req, res, next) => {
     const { id } = req.params
     try {
-      const user = await User.findByPk(id, {
+      let user = await User.findByPk(id, {
         nest: true,
         include: [{ model: Comment, include: [Restaurant] }],
         order: [[Comment, 'created_at', 'DESC']]
       })
       if (!user) throw new Error('使用者不存在!')
-      const commentsLength = user.Comments.length
-      return res.render('users/profile', { user: user.toJSON(), commentsLength })
+      user = user.toJSON()
+      return res.render('users/profile', { user })
     } catch (error) {
       return next(error)
     }

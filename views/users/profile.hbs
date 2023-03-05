@@ -10,7 +10,7 @@
     <section class="col-md-6 m-2">
       <h5>{{user.name}}</h5>
       <p>{{user.email}}</p>
-      <p>{{commentsLength}} 已評論餐廳</p>
+      <p>{{user.Comments.length}} 已評論餐廳</p>
       <a class="btn btn-primary" href="/users/{{user.id}}/edit">Edit</a>
     </section>
   </div>
@@ -18,10 +18,10 @@
 
 <div class="card mt-4">
   <div class="card-header fw-bold">
-    {{commentsLength}} 已評論餐廳
+    {{user.Comments.length}} 已評論餐廳
   </div>
   <div class="card-body d-flex justify-content-around">
-    {{#if commentsLength}}
+    {{#if user.Comments.length}}
       {{#each user.Comments}}
         <a href="/restaurants/{{this.Restaurant.id}}">
           <img
