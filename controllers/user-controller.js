@@ -3,7 +3,7 @@ const assert = require('assert')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 const db = require('../models')
 
-const { User } = db
+const { User, Comment, Restaurant } = db
 
 const userController = {
   signUpPage: (req, res) => {
@@ -40,11 +40,27 @@ const userController = {
     res.redirect('/signin')
   },
   getUser: (req, res, next) => {
-    return User.findByPk(req.params.id)
-      .then(user => {
+    const userId = req.params.id
+    return Promise.all([
+      User.findByPk(userId),
+      Comment.findAll({
+        include: Restaurant,
+        where: {
+          ...userId ? { userId } : {}
+        },
+        raw: true,
+        nest: true
+      }),
+      Comment.count({
+        where: {
+          ...userId ? { userId } : {}
+        }
+      })
+    ])
+      .then(([user, comments, totalComments]) => {
         // assert.equal(user.id, req.user.id, 'Only can update your own profile!')
         assert(user, "User didn't exist!")
-        return res.render('users/profile', { user: user.toJSON() })
+        return res.render('users/profile', { user: user.toJSON(), comments, totalComments })
       })
       .catch(err => next(err))
   },
