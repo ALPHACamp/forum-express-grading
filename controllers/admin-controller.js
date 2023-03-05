@@ -1,4 +1,5 @@
 const { Restaurant } = require('../models')
+const { User } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 const adminController = {
   getRestaurants: (req, res, next) => {
@@ -88,6 +89,31 @@ const adminController = {
       })
       .then(() => res.redirect('/admin/restaurants'))
       .catch(err => next(err))
+  },
+  getUsers: (req, res, next) => {
+    User.findAll({
+      raw: true
+    })
+      .then(users => res.render('admin/users', { users }))
+      .catch(err => next(err))
+  },
+  patchUser: (req, res, next) => {
+    User.findByPk(req.params.id)
+      .then(user => {
+        if (!user) throw new Error('User does not exist!')
+        if (user.email === 'root@example.com') {
+          req.flash('error_messages', 'This user cannot be modified.')
+          return res.redirect('back')
+        }
+
+        return user.update({ isAdmin: !user.isAdmin })
+      })
+      .then(() => {
+        req.flash('success_messages', 'role was successfully updated')
+        res.redirect('/admin/users')
+      })
+      .catch(err => next(err))
   }
+
 }
 module.exports = adminController
