@@ -1,7 +1,7 @@
 // - 處理屬於user路由的相關請求
 const bcrypt = require('bcryptjs')
-const db = require('../models')
-const { User } = db
+const { User } = require('../models')
+const { imgurFileHandler } = require('../helpers/file-helpers')
 const userController = {
   signUpPage: (req, res) => {
     return res.render('signup')
@@ -36,6 +36,46 @@ const userController = {
     })
     req.flash('success_messages', '已成功登出!')
     return res.redirect('/signin')
+  },
+  getUser: async (req, res, next) => {
+    const { id } = req.params
+    try {
+      const user = await User.findByPk(id, { raw: true })
+      if (!user) throw new Error('使用者不存在!')
+      return res.render('users/profile', { user })
+    } catch (error) {
+      return next(error)
+    }
+  },
+  editUser: async (req, res, next) => {
+    const { id } = req.params
+    try {
+      const user = await User.findByPk(id, { raw: true })
+      if (!user) throw new Error('使用者不存在!')
+      return res.render('users/edit', { user })
+    } catch (error) {
+      return next(error)
+    }
+  },
+  putUser: async (req, res, next) => {
+    const { id } = req.params
+    const { name } = req.body
+    const { file } = req
+    try {
+      if (!name) throw new Error('名稱為必填!')
+      const [user, filePath] = await Promise.all([
+        User.findByPk(id),
+        imgurFileHandler(file)
+      ])
+      await user.update({
+        name,
+        image: filePath || user.image
+      })
+      req.flash('success_messages', '使用者資料編輯成功')
+      return res.redirect(`/users/${user.id}`)
+    } catch (error) {
+      return next(error)
+    }
   }
 }
 
