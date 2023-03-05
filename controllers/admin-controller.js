@@ -93,40 +93,36 @@ const adminController = { // 修改這裡
   },
 
   getUsers: (req, res, next) => {
-    User.findAll({
+    return User.findAll({
       raw: true,
       next: true
     })
       .then(users => {
-        res.render('admin/users', { users: users })
+        return res.render('admin/users', { users: users })
       })
       .catch(err => next(err))
   },
-  patchUser: async (req, res, next) => {
-    try {
-      const user = await User.findByPk(req.params.id)
-      if (user.email === 'root@example.com') {
-        req.flash('error_messages', '禁止變更 root 權限')
-        res.redirect('back')
-        return
-      }
-      if (user.isAdmin) {
-        await User.update({ isAdmin: false }, { where: { id: user.id } })
+  patchUser: (req, res, next) => {
+    return User.findByPk(req.params.id)
+      .then(user => {
+        if (user.email === 'root@example.com') {
+          req.flash('error_messages', '禁止變更 root 權限')
+          return res.redirect('back')
+        }
+        if (user.isAdmin) {
+          return User.update({ isAdmin: false }, { where: { id: user.id } })
+        }
+        if (user.isAdmin === false) {
+          return User.update({ isAdmin: true }, { where: { id: user.id } })
+        }
+      })
+      .then(() => {
         req.flash('success_messages', '使用者權限變更成功')
-        res.redirect('/admin/users')
-        return
-      }
-
-      if (user.isAdmin === false) {
-        await User.update({ isAdmin: true }, { where: { id: user.id } })
-        req.flash('success_messages', '使用者權限變更成功')
-        res.redirect('/admin/users')
-        return
-      }
-    } catch (error) {
-      next(error)
-    }
+        return res.redirect('/admin/users')
+      })
+      .catch(err => next(err))
   }
 }
+
 
 module.exports = adminController
