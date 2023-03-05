@@ -96,7 +96,7 @@ const adminController = { // 修改這裡
       .then(user => {
         if (!user) throw new Error("User didn't exist!")
         if (user.email === 'root@example.com') {
-          req.flash('error_messages', '禁止變更root權限')
+          req.flash('error_messages', '禁止變更 root 權限')
           return res.redirect('back')
         }
         return user.update({ isAdmin: !user.isAdmin })
