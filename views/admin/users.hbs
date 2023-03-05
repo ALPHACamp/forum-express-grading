@@ -26,7 +26,16 @@
         {{/if}}
       </td>
       <td>
-        set as user
+        <form action="/admin/users/{{this.id}}?_method=PATCH" method="POST">
+          <button type="submit" class="btn btn-link">
+            set as
+            {{#if this.isAdmin}}
+            user
+            {{else}}
+            admin
+            {{/if}}
+          </button>
+        </form>
       </td>
     </tr>
     {{/each}}
