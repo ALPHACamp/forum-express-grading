@@ -1,4 +1,4 @@
-<div class="card card-body">
+<div class="card card-body p-0">
   <div class="row">
     <section class="img-container col-md-3">
       <img
@@ -7,10 +7,30 @@
         style="width: 100%; height:100%"
       />
     </section>
-    <section class="col-md-6">
-      <h1>{{user.name}}</h1>
+    <section class="col-md-6 m-2">
+      <h5>{{user.name}}</h5>
       <p>{{user.email}}</p>
+      <p>{{commentsLength}} 已評論餐廳</p>
       <a class="btn btn-primary" href="/users/{{user.id}}/edit">Edit</a>
     </section>
+  </div>
+</div>
+
+<div class="card mt-4">
+  <div class="card-header fw-bold">
+    {{commentsLength}} 已評論餐廳
+  </div>
+  <div class="card-body d-flex justify-content-around">
+    {{#if commentsLength}}
+      {{#each user.Comments}}
+        <a href="/restaurants/{{this.Restaurant.id}}">
+          <img
+            src="{{this.Restaurant.image}}"
+            alt="restauarant-image"
+            style="width: 100px;"
+          />
+        </a>
+      {{/each}}
+    {{/if}}
   </div>
 </div>

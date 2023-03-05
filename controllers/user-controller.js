@@ -1,6 +1,6 @@
 // - 處理屬於user路由的相關請求
 const bcrypt = require('bcryptjs')
-const { User } = require('../models')
+const { User, Comment, Restaurant } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 const userController = {
   signUpPage: (req, res) => {
@@ -40,9 +40,14 @@ const userController = {
   getUser: async (req, res, next) => {
     const { id } = req.params
     try {
-      const user = await User.findByPk(id, { raw: true })
+      const user = await User.findByPk(id, {
+        nest: true,
+        include: [{ model: Comment, include: [Restaurant] }],
+        order: [[Comment, 'created_at', 'DESC']]
+      })
       if (!user) throw new Error('使用者不存在!')
-      return res.render('users/profile', { user })
+      const commentsLength = user.Comments.length
+      return res.render('users/profile', { user: user.toJSON(), commentsLength })
     } catch (error) {
       return next(error)
     }
