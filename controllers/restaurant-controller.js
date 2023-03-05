@@ -15,17 +15,27 @@ const restaurantController = {
       })
     })
   },
-  getRestaurant: (req, res, next) => {
+  getRestaurant: async (req, res, next) => {
+    try {
+      const restaurant = await Restaurant.findByPk(req.params.id, {
+        include: Category
+      })
+      if (!restaurant) throw new Error("Restaurant didn't exist!")
+      await restaurant.increment('viewCounts', { by: 1 })
+      res.render('restaurant', { restaurant: restaurant.toJSON() })
+    } catch (err) {
+      next(err)
+    }
+  },
+  getDashboard: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
-      include: Category, // 拿出關聯的 Category model
+      raw: true,
       nest: true,
-      raw: true
+      include: Category
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
-        res.render('restaurant', {
-          restaurant
-        })
+        return res.render('dashboard', { restaurant })
       })
       .catch(err => next(err))
   }
