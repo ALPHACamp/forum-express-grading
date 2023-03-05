@@ -30,7 +30,11 @@
               {{this.name}}
             </a>
           </p>
-          <span class='badge bg-secondary'>{{this.Category.name}}</span>
+          {{#if this.Category.name}}
+            <span class='badge bg-secondary'>{{this.Category.name}}</span>
+          {{else}}
+            <span class='badge bg-secondary'>未標示類別</span>
+          {{/if}}
           <p class='card-text text-truncate'>{{this.description}}</p>
         </div>
       </div>
