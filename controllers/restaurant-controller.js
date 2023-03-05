@@ -41,9 +41,9 @@ const restaurantController = {
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist.")
-        restaurant.increment('view_counts')
-        return res.render('restaurant', { restaurant: restaurant.toJSON() })
+        return restaurant.increment('view_counts')
       })
+      .then(restaurant => res.render('restaurant', { restaurant: restaurant.toJSON() }))
       .catch(error => next(error))
   },
   getDashboard: (req, res, next) => {
@@ -51,7 +51,10 @@ const restaurantController = {
     return Restaurant.findByPk(id, {
       include: Category
     })
-      .then(restaurant => res.render('dashboard', { restaurant: restaurant.toJSON() }))
+      .then(restaurant => {
+        if (!restaurant) throw new Error("Restaurant didn't exits")
+        return res.render('dashboard', { restaurant: restaurant.toJSON() })
+      })
       .catch(error => next(error))
   }
 }
