@@ -47,9 +47,22 @@ const restaurantController = {
     }).then(restaurant => {
       const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id)
       if (!restaurant) throw new Error('Restaurant does not exit!')
+      restaurant.increment('viewCounts', { by: 1 })
       res.render('restaurant', {
         restaurant: restaurant.toJSON(),
         isFavorited
+      })
+    })
+      .catch(err => next(err))
+  },
+  getDashboard: (req, res, next) => {
+    return Restaurant.findByPk(req.params.id, {
+      include: [
+        Category
+      ]
+    }).then(restaurant => {
+      res.render('dashboard', {
+        restaurant: restaurant.toJSON()
       })
     })
       .catch(err => next(err))
