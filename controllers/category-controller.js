@@ -9,6 +9,16 @@ const categoryController = {
     } catch (err) {
       next(err)
     }
+  },
+  postCategory: async (req, res, next) => {
+    try {
+      const { name } = req.body
+      if (!name) throw new Error('Category name is required!')
+      await Category.create({ name })
+      res.redirect('/admin/categories')
+    } catch (err) {
+      next(err)
+    }
   }
 }
 module.exports = categoryController
