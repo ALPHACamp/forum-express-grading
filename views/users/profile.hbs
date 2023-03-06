@@ -18,7 +18,9 @@
             <li>{{totalComments}}已評論餐廳</li>
           </ul>
         </div>
+        {{#if checkUser}}
         <a href="/users/{{user.id}}/edit" class="btn btn-primary">Edit</a>
+        {{/if}}
       </div>
     </div>
   </div>
