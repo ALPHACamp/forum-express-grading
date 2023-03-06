@@ -1,0 +1,24 @@
+<div class="container">
+  <div class="row">
+    <div class="col">
+      {{#if user.image}}
+      <img class="img-responsive center-block col" src="{{user.image}}"
+        style="width: 250px; margin-bottom: 25px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+      {{else}}
+      <img class="img-responsive center-block" src="https://i.imgur.com/MlICwQb.jpg"
+        style="width: 250px; margin-bottom: 25px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+      {{/if}}
+    </div>
+    <div class="col-8 mt-5">
+      <h1>{{user.name}}</h1>
+      <p>{{user.email}}</p>
+      <button type="button" class="btn btn-link">
+        <a class="btn btn-link link-primary" href="/users/{{user.id}}/edit">
+          Edit
+        </a>
+      </button>
+
+    </div>
+    <a class="col-2 mx-auto mt-5 btn btn-outline-secondary" href="javascript:history.back()">Back</a>
+  </div>
+</div>
