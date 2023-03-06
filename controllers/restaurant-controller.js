@@ -18,13 +18,26 @@ const restaurantController = {
   getRestaurant: (req, res, next) => {
     const { id } = req.params
     return Restaurant.findByPk(id, {
-      raw: true,
       nest: true,
       include: [Category]
     })
       .then(restaurant => {
         if (!restaurant) throw new Error('Can not find Restaurant!')
-        res.render('restaurant', { restaurant })
+        return restaurant.increment('viewCounts')
+      })
+      .then(restaurant => res.render('restaurant', { restaurant: restaurant.toJSON() }))
+      .catch(err => next(err))
+  },
+  getDashboard: (req, res, next) => {
+    const { id } = req.params
+    return Restaurant.findByPk(id, {
+      raw: true,
+      nest: true,
+      include: [Category]
+    })
+      .then(restaurant => {
+        if (!restaurant) throw new Error()
+        res.render('dashboard', { restaurant })
       })
       .catch(err => next(err))
   }
