@@ -8,8 +8,12 @@ const upload = require('../../middleware/multer')
 // access management
 router.get('/users', adminController.getUsers)
 router.patch('/users/:id', adminController.patchUser)
+
+router.get('/categories/:id', categoryController.getCategories)
+router.put('/categories/:id', categoryController.putCategory)
 router.get('/categories', categoryController.getCategories)
 router.post('/categories', categoryController.postCategory)
+
 router.get('/restaurants/create', adminController.createRestaurant)
 router.get('/restaurants/:id/edit', adminController.editRestaurant)
 router.get('/restaurants/:id', adminController.getRestaurant)
