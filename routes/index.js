@@ -20,6 +20,9 @@ router.post('/signin', passport.authenticate('local', { failureRedirect: '/signi
 
 router.get('/logout', userController.logout)
 
+router.post('/following/:userId', authenticated, userController.addFollowing)
+router.delete('/following/:userId', authenticated, userController.removeFollowing)
+
 router.get('/users/top', authenticated, userController.getTopUsers)
 router.get('/users/:id/edit', authenticated, userController.editUser)
 router.get('/users/:id', authenticated, userController.getUser)
