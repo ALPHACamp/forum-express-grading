@@ -13,10 +13,11 @@ passport.use(new LocalStrategy(
   },
   // authenticate user
   // 這個就是上面提到的 callback
-  (req, email, password, cb) => { // cb 則是這函式準備的 callback Fn.，就是官方文件的 .done()
+  (req, email, password, cb) => { // cb 則是這函式準備的 callback Fn.，就是官方文件的 .done()，傳驗證的結果
     User.findOne({ where: { email } })
       .then(user => {
         if (!user) return cb(null, false, req.flash('error_messages', '帳號或密碼輸入錯誤！'))
+        // (上1) cb 的三個引數, 1. 是否有錯(沒錯放 null) 2. 使用者資訊(有的話就放 user) 3. 若有錯誤，可在這擺額外資訊
         bcrypt.compare(password, user.password).then(res => {
           if (!res) return cb(null, false, req.flash('error_messages', '帳號或密碼輸入錯誤！'))
           // '帳號或密碼輸入錯誤！' --> 訊息刻意一樣，增加攻擊難度

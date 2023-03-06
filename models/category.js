@@ -3,7 +3,7 @@ const {
   Model
 } = require('sequelize')
 module.exports = (sequelize, DataTypes) => {
-  class Restaurant extends Model {
+  class Category extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -11,20 +11,16 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate (models) {
       // define association here
-      Restaurant.belongsTo(models.Category, { foreignKey: 'categoryId' })
+      Category.hasMany(models.Restaurant, { foreignKey: 'categoryId' })
+      // (上1) 若不設 foreignKey，sequelize 會自動依 model name (Category) 設定一個 (CategoryId)，但想要命名方式更符合 JS 慣例，所以自己寫個 camelCase 版
     }
   };
-  Restaurant.init({
-    name: DataTypes.STRING,
-    tel: DataTypes.STRING,
-    address: DataTypes.STRING,
-    openingHours: DataTypes.STRING,
-    description: DataTypes.TEXT,
-    image: DataTypes.STRING
+  Category.init({
+    name: DataTypes.STRING
   }, {
     sequelize,
-    modelName: 'Restaurant',
+    modelName: 'Category',
     underscored: true
   })
-  return Restaurant
+  return Category
 }
