@@ -1,12 +1,14 @@
 // const db = require('../models')
 // const Restaurant = db.Restaurant
-const { Restaurant, User } = require('../models') // 解構賦值
+const { Restaurant, User, Category } = require('../models') // 解構賦值
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const adminController = {
   getRestaurants: (req, res, next) => { // 瀏覽所有餐廳
     Restaurant.findAll({
-      raw: true
+      raw: true, // 把 sequelize 包裝過的物件轉換成 JS 原生物件
+      nest: true, // 把資料整理成比較容易取用的結構
+      include: [Category] // 把 Category 傳給 Restaurant.findAll
     })
       .then(restaurants => res.render('admin/restaurants', { restaurants }))
       .catch(err => next(err))
@@ -37,11 +39,13 @@ const adminController = {
   },
   getRestaurant: (req, res, next) => { // 瀏覽單筆餐廳
     Restaurant.findByPk(req.params.id, { // 去資料庫用 id 找一筆資料
-      raw: true // 找到以後整理格式再回傳
+      raw: true, // 找到以後整理格式再回傳
+      nest: true,
+      include: [Category]
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!") //  如果找不到，回傳錯誤訊息，後面不執行
-        res.render('admin/restaurant', { restaurant })
+        res.render('admin/restaurant', { restaurant }) // 單筆資料時{{ restaurant: restaurant.toJSON()}}也可以達成raw跟nest一樣的效果
       })
       .catch(err => next(err))
   },
