@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs')
 const db = require('../models')
-const { User } = db
+const { User, Restaurant, Comment } = db
 const { imgurFileHandler } = require('../helpers/file-helpers')
 const { getUser } = require('../helpers/auth-helpers')
 
@@ -16,6 +16,7 @@ const userController = {
     User.findOne({ where: { email: req.body.email } })
       .then(user => {
         if (user) throw new Error('Email already exists!')
+
         // else
         return bcrypt.hash(req.body.password, 10)
       })
@@ -47,10 +48,25 @@ const userController = {
   },
   getUser: (req, res, next) => {
     const userId = req.params.id
-    return User.findByPk(userId, { raw: true })
-      .then(user => {
+
+    return Promise.all([
+      Comment.findAll({
+        where: { userId: req.params.id },
+        attributes: ['restaurantId'],
+        group: 'restaurantId',
+        include: Restaurant,
+        nest: true,
+        raw: true
+      }),
+      User.findByPk(userId, { raw: true })
+    ])
+      .then(([comments, user]) => {
         if (!user) throw new Error("User didn't exist!")
-        res.render('users/profile', { user })
+
+        return res.render('users/profile', {
+          user,
+          comments
+        })
       })
       .catch(err => next(err))
   },
@@ -58,6 +74,7 @@ const userController = {
     const userId = req.params.id
 
     if (Number(getUser(req).id) !== Number(userId)) throw new Error('you dont have permission to edit this page')
+
     return User.findByPk(userId, { raw: true })
       .then(user => {
         if (!user) throw new Error("User didn't exist!")
@@ -77,6 +94,7 @@ const userController = {
     ])
       .then(([user, filePath]) => {
         if (!user) throw new Error("User didn't exist!")
+
         return user.update({
           name,
           image: filePath || user.image
@@ -84,6 +102,7 @@ const userController = {
       })
       .then(() => {
         req.flash('success_messages', '使用者資料編輯成功')
+
         return res.redirect(`/users/${userId}`)
       })
       .catch(err => next(err))
