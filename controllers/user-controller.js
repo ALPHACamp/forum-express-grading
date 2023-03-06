@@ -49,6 +49,17 @@ const userController = {
         })
       })
       .catch(error => next(error))
+  },
+  editUser: (req, res, next) => {
+    if (getUser(req).id !== Number(req.params.id)) throw new Error('You do not have permission to access this page.')
+
+    return User.findByPk(req.params.id)
+      .then(user => {
+        if (!user) throw new Error("User didn't exist.")
+
+        return res.render('users/edit', { user: user.toJSON() })
+      })
+      .catch(error => next(error))
   }
 }
 
