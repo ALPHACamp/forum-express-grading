@@ -1,6 +1,6 @@
 /* For front-end system */
 
-const { Restaurant, Category, Comment, User } = require('../models')
+const { Restaurant, Category, Comment, User, Favorite } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
 
 const restaurantController = {
@@ -90,18 +90,28 @@ const restaurantController = {
       .catch(err => next(err))
   },
   getDashboard: (req, res, next) => {
+    const restaurantId = req.params.id
+
     // notice 使用raw時，會把comments的整體內容與長度都被清理掉，因此要傳遞length的話則需要用到sequelize操作
-    return Restaurant.findByPk(req.params.id, {
-      nest: true,
-      include: [
-        Category,
-        { model: Comment, include: User }
-      ]
-    })
-      .then(restaurant => {
+    return Promise.all([
+      Restaurant.findByPk(restaurantId, {
+        nest: true,
+        include: [
+          Category,
+          { model: Comment }
+        ]
+      }),
+      // Thinking Favorite在model裡面並未設定對Restaurant以及user的關聯性，因此要採用include的做法，必須要像Comment一樣在model裡面設定關聯性，才有辦法套用到。
+      Favorite.findAndCountAll({
+        where: { restaurantId },
+        raw: true,
+        nest: true
+      })
+    ])
+      .then(([restaurant, favorite]) => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
 
-        return res.render('dashboard', { restaurant: restaurant.toJSON() })
+        return res.render('dashboard', { restaurant: restaurant.toJSON(), favorite })
       })
       .catch(err => next(err))
   },
@@ -124,6 +134,23 @@ const restaurantController = {
     ])
       .then(([restaurants, comments]) => {
         res.render('feeds', { restaurants, comments })
+      })
+      .catch(err => next(err))
+  },
+  getTopRestaurants: (req, res, next) => {
+    return Restaurant.findAll({
+      include: [{ model: User, as: 'FavoritedUsers' }]
+    })
+      .then(restaurants => {
+        const modifiedRestaurants = restaurants.map(rest => ({
+          ...rest.toJSON(),
+          favoritedCount: rest.FavoritedUsers.length,
+          isFavorited: req.user?.FavoritedRestaurants.some(f => f.id === rest.id) || []
+        }))
+          .sort((a, b) => b.favoritedCount - a.favoritedCount)
+          .slice(0, 10)
+
+        res.render('top-restaurants', { restaurants: modifiedRestaurants })
       })
       .catch(err => next(err))
   }
