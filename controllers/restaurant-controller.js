@@ -1,4 +1,4 @@
-const { Restaurant, Category } = require('../models')
+const { Restaurant, Category, Comment, User } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
 
 const restaurantController = {
@@ -40,7 +40,10 @@ const restaurantController = {
     try {
       const restaurant = await Restaurant.findByPk(id, {
         nest: true,
-        include: [Category]
+        include: [
+          Category,
+          { model: Comment, include: User }
+        ]
       })
       if (!restaurant) throw new Error('此餐廳不存在!')
       // count views of the restaurant
