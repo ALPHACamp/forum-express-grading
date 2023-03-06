@@ -110,6 +110,7 @@ const restaurantController = {
           .slice(0, 10)
         res.render('top-restaurants', { restaurants: result })
       })
+      .catch(err => next(err))
   }
 }
 module.exports = restaurantController
