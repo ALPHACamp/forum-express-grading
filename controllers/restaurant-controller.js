@@ -31,17 +31,17 @@ const restaurantController = {
       .then(([restaurants, categories]) => {
         // Thinking 要帶入與user table相關聯的資料，需要先到passport的反序列做修正，因使用者資料都會先經過passport驗證並序列化。
 
-        const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
+        const favoritedRestaurantsIds = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
 
-        const likedRestaurantsId = req.user?.LikedRestaurants.map(fr => fr.id) || []
+        const likedRestaurantsIds = req.user?.LikedRestaurants.map(fr => fr.id) || []
 
         // notice 使用findAndCountAll 會產生count以及物件被rows包住，所以後面使用要變成restaurants.count and restaurants.rows
         const data = restaurants.rows.map(r => ({
           // note spread operator可以把重複的項目以後面的為基準取代前面的，所以description變成所要的50個字以內
           ...r,
           description: r.description.substring(0, SUBSTRING_END),
-          isFavorited: favoritedRestaurantsId.includes(r.id),
-          isLiked: likedRestaurantsId.includes(r.id)
+          isFavorited: favoritedRestaurantsIds.includes(r.id),
+          isLiked: likedRestaurantsIds.includes(r.id)
         }))
 
         return res.render('restaurants', {
@@ -54,7 +54,7 @@ const restaurantController = {
       .catch(err => next(err))
   },
   getRestaurant: (req, res, next) => {
-    // notice 有關兩個以上table的關聯使用上，用include來結合，include: { model: XXX, as: 'abc'} => 關聯XXX的table並以abc的名字作為別名，所以console後會出現abc來取代物件XXX的名字，若沒有as設定別名的話，則會以XXXs作為名稱來操作
+    // notice 有關兩個以上table的關聯查詢使用上，用include來結合，include: { model: XXX, as: 'abc'} => 關聯XXX的table並以abc的名字作為別名，所以console後會出現abc來取代物件XXX的名字，若沒有as設定別名的話，則會以XXXs作為名稱來操作(可以關聯同一個table但是取不同的別名)
     return Restaurant.findByPk(req.params.id, {
       nest: true,
       include: [

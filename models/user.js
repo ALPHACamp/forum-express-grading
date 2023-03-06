@@ -24,6 +24,23 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'userId',
         as: 'LikedRestaurants'
       })
+
+      // notice 下面兩個為自關聯，因此需要仔細思考個別的意義
+      // associate to the following（誰追蹤這個使用者） table
+      // note 找出誰在追蹤這個使用者，因此外鍵用following, 並名為追蹤該名使用者的追蹤者們
+      User.belongsToMany(User, {
+        through: models.Followship,
+        foreignKey: 'followingId',
+        as: 'Followers'
+      })
+
+      // associate the follower （這個使用者追蹤了誰）table
+      // note 找出使用者追蹤了誰，因此外鍵用follower, 並命名為使用者追蹤了哪些人們
+      User.belongsToMany(User, {
+        through: models.Followship,
+        foreignKey: 'followerId',
+        as: 'Followings'
+      })
     }
   }
   User.init(

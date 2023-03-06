@@ -48,7 +48,9 @@ passport.deserializeUser((id, cb) => {
     include: [
       //  note as:所取的名稱會對應到user model裡使用的名稱，所以要修正要同時修正model裡面的as:
       { model: Restaurant, as: 'FavoritedRestaurants' },
-      { model: Restaurant, as: 'LikedRestaurants' }
+      { model: Restaurant, as: 'LikedRestaurants' },
+      { model: User, as: 'Followers' },
+      { model: User, as: 'Followings' }
     ]
   })
     .then(user => {

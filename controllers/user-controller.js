@@ -3,6 +3,7 @@ const bcrypt = require('bcryptjs');
 const { User, Restaurant, Comment, Favorite, Like } = require('../models');
 const { getUser } = require('../helpers/auth-helpers')
 const { imgurFileHandler } = require('../helpers/file-helpers');
+const assert = require('assert')
 
 const userController = {
   signUpPage: (req, res) => {
@@ -133,7 +134,8 @@ const userController = {
     ])
       .then(([restaurant, favorite]) => {
         if (!restaurant) throw new Error("The restaurant didn't exist!")
-        if (favorite) throw new Error('The restaurant is already added in your favorite')
+        assert(!favorite, 'The restaurant is already added in your favorite')
+        // if (favorite) throw new Error('The restaurant is already added in your favorite')
 
         return Favorite.create({ userId: req.user.id, restaurantId })
       })
