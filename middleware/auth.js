@@ -13,7 +13,8 @@ const authenticatedOwner = (req, res, next) => {
       return next()
     }
   }
-  throw new Error('用戶只有編輯自有帳戶的權限!')
+  req.flash('error_messages', '用戶只有編輯自有帳戶的權限 : 已跳轉至自有帳戶 !')
+  res.redirect(`/users/${helpers.getUser(req).id}`)
 }
 const authenticatedAdmin = (req, res, next) => {
   // if (req.isAuthenticated)
