@@ -3,7 +3,7 @@ const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const adminController = {
   getRestaurants: (req, res, next) => {
-    Restaurant.findAll({
+    return Restaurant.findAll({
       raw: true,
       nest: true,
       include: [Category]
@@ -46,7 +46,7 @@ const adminController = {
       .catch(err => next(err))
   },
   getRestaurant: (req, res, next) => {
-    Restaurant.findByPk(req.params.id, {
+    return Restaurant.findByPk(req.params.id, {
       // 去資料庫用 id 找一筆資料
       raw: true, // 找到以後整理格式再回傳
       nest: true,
