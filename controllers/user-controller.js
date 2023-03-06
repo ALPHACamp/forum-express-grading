@@ -193,6 +193,24 @@ const userController = {
       })
       .then(() => res.redirect('back'))
       .catch(err => next(err))
+  },
+  getTopUsers: (req, res, next) => {
+    return User.findAll({
+      include: [{ model: User, as: 'Followers' }]
+    })
+      .then(users => {
+        // notice 未進行raw and nest，所以在map要先每個將棋toJSON後才可剔除sequelize的操作
+        users = users.map(user => ({
+          ...user.toJSON(),
+          // note 計算追蹤者的人數
+          followerCount: user.Followers.length,
+          // note 判斷當前使用者是否已追蹤該user的物件
+          isFollowed: req.user.Followings.some(f => f.id === user.id)
+        }))
+
+        res.render('top-users', { users: users })
+      })
+      .catch(err => next(err))
   }
 };
 
