@@ -19,11 +19,9 @@ const restaurantController = {
     return Restaurant.findByPk(req.params.id, {
       include: [Category]
     })
-      .then(restaurant => {
+      .then(async (restaurant) => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
-        return restaurant.increment('viewCounts') // 每點擊一次+1，若+2->('viewCounts', { by: 2 })
-      })
-      .then(restaurant => {
+        await restaurant.increment('viewCounts') // 每點擊一次+1，若+2->('viewCounts', { by: 2 })
         res.render('restaurant', { restaurant: restaurant.toJSON() })
       })
       .catch(err => next(err))
