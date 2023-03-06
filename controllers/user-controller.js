@@ -1,6 +1,6 @@
 /* For front-end system */
 const bcrypt = require('bcryptjs');
-const { User, Restaurant, Comment, Favorite, Like } = require('../models');
+const { User, Restaurant, Comment, Favorite, Like, Followship } = require('../models');
 const { getUser } = require('../helpers/auth-helpers')
 const { imgurFileHandler } = require('../helpers/file-helpers');
 const assert = require('assert')
@@ -200,16 +200,56 @@ const userController = {
     })
       .then(users => {
         // notice 未進行raw and nest，所以在map要先每個將棋toJSON後才可剔除sequelize的操作
-        users = users.map(user => ({
+        const result = users.map(user => ({
           ...user.toJSON(),
           // note 計算追蹤者的人數
           followerCount: user.Followers.length,
           // note 判斷當前使用者是否已追蹤該user的物件
           isFollowed: req.user.Followings.some(f => f.id === user.id)
-        }))
+        })).sort((a, b) => b.followerCount - a.followerCount)
+        // note 使用sort algorithm，可以看其MDN文件，若是只用血users.sort()，則會照字串排序，如[1, 11, 12, 2, 21, 3, 31]這種排法
+        // note 若是a = b 則排序會依造資料庫給的順序來排序
 
-        res.render('top-users', { users: users })
+        res.render('top-users', { users: result })
       })
+      .catch(err => next(err))
+  },
+  addFollowing: (req, res, next) => {
+    const { userId } = req.params
+    Promise.all([
+      User.findByPk(userId),
+      Followship.findOne({
+        where: {
+          followerId: req.user.id,
+          followingId: userId
+        }
+      })
+    ])
+      .then(([user, followship]) => {
+        if (!user) throw new Error("User didn't exist!")
+        if (followship) throw new Error('You are already following this user!')
+
+        return Followship.create({
+          followerId: req.user.id,
+          followingId: userId
+        })
+      })
+      .then(() => res.redirect('back'))
+      .catch(err => next(err))
+  },
+  removeFollowing: (req, res, next) => {
+    Followship.findOne({
+      where: {
+        followerId: req.user.id,
+        followingId: req.params.userId
+      }
+    })
+      .then(followship => {
+        if (!followship) throw new Error("You haven't followed this user!")
+
+        return followship.destroy()
+      })
+      .then(() => res.redirect('back'))
       .catch(err => next(err))
   }
 };
