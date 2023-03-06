@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs')
 const { User } = require('../models')
 const { getUser } = require('../helpers/auth-helpers')
+const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const userController = {
   signUpPage: (req, res) => {
@@ -58,6 +59,29 @@ const userController = {
         if (!user) throw new Error("User didn't exist.")
 
         return res.render('users/edit', { user: user.toJSON() })
+      })
+      .catch(error => next(error))
+  },
+  putUser: (req, res, next) => {
+    const { name } = req.body
+    const { file } = req
+    if (getUser(req).id !== Number(req.params.id)) throw new Error('You do not have permission to access this page.')
+
+    return Promise.all([
+      User.findByPk(req.params.id),
+      imgurFileHandler(file)
+    ])
+      .then(([user, filePath]) => {
+        if (!user) throw new Error("User didn't exist.")
+
+        return user.update({
+          name,
+          image: filePath || user.image
+        })
+      })
+      .then(() => {
+        req.flash('success_messages', '使用者資料編輯成功')
+        return res.redirect(`/users/${req.params.id}`)
       })
       .catch(error => next(error))
   }
