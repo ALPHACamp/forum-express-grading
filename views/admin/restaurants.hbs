@@ -1,9 +1,4 @@
-<h1>餐廳後台</h1>
-<p>
-<a href="/admin/restaurants">Restaurants</a>
-|
-<a href="/admin/users">Users</a>
-</p>
+{{>admin-tabs route='restaurants'}}
 <a href='/admin/restaurants/create'>
   <button type="button" class="btn btn-primary">New Restaurant</button>
 </a>
@@ -15,7 +10,7 @@
       <th scope="col">#</th>
       <th scope="col">Name</th>
       <th scope="col">Category</th>
-      <th scope="col"></th>
+      <th scope="col">#</th>
     </tr>
   </thead>
   <tbody>
