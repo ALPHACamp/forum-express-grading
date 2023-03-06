@@ -1,16 +1,7 @@
-<h1>餐廳後台</h1>
-<p>
-  <a href='/admin/restaurants' class='pe-1'>Restaurants</a>
-  |
-  <a href='/admin/users' class='ps-1'>Users</a>
-</p>
-<a href='/admin/restaurants/create'>
-  <button type="button" class="btn btn-primary">New Restaurant</button>
-</a>
-<br />
-<br />
+{{> admin-tabs route='restaurants'}}
+
 <table class="table align-middle">
-  <thead class="thead-dark">
+  <thead class="table-dark">
     <tr>
       <th scope="col">#</th>
       <th scope="col">Name</th>
