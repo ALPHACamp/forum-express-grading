@@ -11,6 +11,7 @@
       <div class='card-body'>
         <h5 class='card-title'>{{userProfile.name}}</h5>
         <p class='card-text'>{{userProfile.email}}</p>
+        <p>{{comments.length}} 已評論餐廳</p>
         {{#ifCond userProfile.id user.id}}
           <a
             class='btn btn-primary'
@@ -19,6 +20,34 @@
           >edit</a>
         {{/ifCond}}
       </div>
+    </div>
+  </div>
+</div>
+<div class='mt-4'>
+  <div class='card'>
+    <div class='card-header'>
+      <strong>{{comments.length}}</strong>
+      已評論餐廳
+    </div>
+    <div class='card-body d-flex flex-row flex-wrap'>
+      {{#if comments.length}}
+        {{#each comments}}
+          <a
+            href='/restaurants/{{this.restaurantId}}'
+            alt='{{this.Restaurant.name}}'
+          >
+            <img
+              src='{{this.Restaurant.image}}'
+              width='60'
+              height='60'
+              class='rounded m-2'
+              title='{{this.Restaurant.name}}'
+            />
+          </a>
+        {{/each}}
+      {{else}}
+        <p>尚未評論餐廳</p>
+      {{/if}}
     </div>
   </div>
 </div>
