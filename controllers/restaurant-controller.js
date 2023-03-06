@@ -12,7 +12,21 @@ const restaurantsController = {
           ...r,
           description: r.description.substring(0, 50)
         }))
-        return res.render('restaurants', { restaurants: data})
+        return res.render('restaurants', { restaurants: data })
+      })
+      .catch(error => next(error))
+  },
+
+  getRestaurant: (req, res, next) => {
+    Restaurant.findByPk(req.params.id, {
+      include: Category,
+      raw: true,
+      next: true
+    })
+      .then(restaurant => {
+        if (!restaurant) throw new Error("Restaurant doesn't exist!")
+
+        return res.render('restaurant', { restaurant })
       })
       .catch(error => next(error))
   }
