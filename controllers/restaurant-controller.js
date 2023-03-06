@@ -38,7 +38,12 @@ const restaurantController = {
     return Restaurant.findByPk(req.params.id, {
       include: [
         Category,
-        { model: Comment, include: User }
+        {
+          model: Comment, include: User
+        }
+      ],
+      order: [
+        [Comment, 'created_at', 'DESC'] // 加入排序Comments
       ]
     })
       .then(async restaurant => {
