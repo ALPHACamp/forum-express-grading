@@ -51,9 +51,7 @@ const restaurantController = {
             include: [{ model: User }]
           }
         ],
-        order: [
-          [Comment, 'created_at', 'DESC']
-        ]
+        order: [[Comment, 'created_at', 'DESC']]
       })
       if (!restaurant) throw new Error('此餐廳不存在!')
       // - 若餐廳存在增加瀏覽次數(累加值若為1可省略第二參數)
@@ -68,14 +66,35 @@ const restaurantController = {
     try {
       let restaurant = await Restaurant.findByPk(id, {
         nest: true,
-        include: [
-          Category,
-          Comment
-        ]
+        include: [Category, Comment]
       })
       restaurant = restaurant.toJSON()
       if (!restaurant) throw new Error('此餐廳不存在!')
       return res.render('dashboard', { restaurant })
+    } catch (error) {
+      return next(error)
+    }
+  },
+  getFeeds: async (req, res, next) => {
+    // - 獲取最新10筆餐廳與評論
+    try {
+      const [restaurants, comments] = await Promise.all([
+        Restaurant.findAll({
+          limit: 10,
+          include: [Category],
+          order: [['created_at', 'DESC']],
+          raw: true,
+          nest: true
+        }),
+        Comment.findAll({
+          limit: 10,
+          include: [User, Restaurant],
+          order: [['created_at', 'DESC']],
+          raw: true,
+          nest: true
+        })
+      ])
+      return res.render('feeds', { restaurants, comments })
     } catch (error) {
       return next(error)
     }
