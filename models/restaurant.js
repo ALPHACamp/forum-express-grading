@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       // restaurant -> category: 1-1
       // restaurant <- category: n-1
       Restaurant.belongsTo(models.Category, { foreignKey: 'categoryId' })
+      Restaurant.hasMany(models.Comment, { foreignKey: 'restaurantId' })
     }
   };
   Restaurant.init({
