@@ -14,12 +14,19 @@ const adminController = {
       next(err)
     }
   },
-  createRestaurant: (req, res) => {
-    return res.render('admin/create-restaurant')
+  createRestaurant: async (req, res, next) => {
+    try {
+      const categories = await Category.findAll({
+        raw: true
+      })
+      return res.render('admin/create-restaurant', { categories })
+    } catch (err) {
+      next(err)
+    }
   },
   postRestaurant: async (req, res, next) => {
     try {
-      const { name, tel, address, openingHours, description } = req.body
+      const { name, tel, address, openingHours, description, categoryId } = req.body
       if (!name) throw new Error('Restaurant name is required!')
       const file = req.file
       const filePath = await imgurFileHandler(file)
@@ -29,7 +36,8 @@ const adminController = {
         address,
         openingHours,
         description,
-        image: filePath || null
+        image: filePath || null,
+        categoryId
       })
       req.flash('success_messages', 'restaurant was successfully created')
       res.redirect('/admin/restaurants')
@@ -52,18 +60,20 @@ const adminController = {
   },
   editRestaurant: async (req, res, next) => {
     try {
-      const restaurant = await Restaurant.findByPk(req.params.id, {
-        raw: true
-      })
+      const [restaurant, categories] = await Promise.all([
+        Restaurant.findByPk(req.params.id, {
+          raw: true
+        }),
+        Category.findAll({ raw: true })])
       if (!restaurant) throw new Error("Restaurant didn't exist!")
-      res.render('admin/edit-restaurant', { restaurant })
+      res.render('admin/edit-restaurant', { restaurant, categories })
     } catch (err) {
       next(err)
     }
   },
   putRestaurant: async (req, res, next) => {
     try {
-      const { name, tel, address, openingHours, description } = req.body
+      const { name, tel, address, openingHours, description, categoryId } = req.body
       if (!name) throw new Error('Restaurant name is required!')
       const file = req.file
       const [restaurant, filePath] = await Promise.all([
@@ -77,7 +87,8 @@ const adminController = {
         address,
         openingHours,
         description,
-        image: filePath || restaurant.image
+        image: filePath || restaurant.image,
+        categoryId
       })
       req.flash('success_messages', 'restaurant was successfully to update')
       res.redirect('/admin/restaurants')
