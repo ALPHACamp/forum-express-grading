@@ -1,6 +1,7 @@
 // - 處理屬於user路由的相關請求
 const bcrypt = require('bcryptjs')
 const { User, Comment, Restaurant } = require('../models')
+const { getUser } = require('../helpers/auth-helpers')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 const userController = {
   signUpPage: (req, res) => {
@@ -40,7 +41,7 @@ const userController = {
   getUser: async (req, res, next) => {
     const { id } = req.params
     try {
-      if (Number(req.user.id) !== Number(id)) throw new Error('無法存取非本人帳戶!')
+      if (getUser(req).id !== Number(id)) { throw new Error('無法存取非本人帳戶!') }
       let user = await User.findByPk(id, {
         nest: true,
         include: [{ model: Comment, include: [Restaurant] }],
@@ -56,7 +57,7 @@ const userController = {
   editUser: async (req, res, next) => {
     const { id } = req.params
     try {
-      if (Number(req.user.id) !== Number(id)) throw new Error('無法存取非本人帳戶!')
+      if (getUser(req).id !== Number(id)) { throw new Error('無法存取非本人帳戶!') }
       const user = await User.findByPk(id, { raw: true })
       if (!user) throw new Error('使用者不存在!')
       return res.render('users/edit', { user })
@@ -69,7 +70,7 @@ const userController = {
     const { name } = req.body
     const { file } = req
     try {
-      if (Number(req.user.id) !== Number(id)) throw new Error('無法存取非本人帳戶!')
+      if (getUser(req).id !== Number(id)) { throw new Error('無法存取非本人帳戶!') }
       if (!name) throw new Error('名稱為必填!')
       const [user, filePath] = await Promise.all([
         User.findByPk(id),
