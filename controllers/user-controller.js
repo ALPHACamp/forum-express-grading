@@ -63,9 +63,7 @@ const userController = {
       .catch(error => next(error))
   },
   editUser: (req, res, next) => {
-    if (getUser(req).id !== Number(req.params.id)) throw new Error('You do not have permission to access this page.')
-
-    return User.findByPk(req.params.id)
+    return User.findByPk(getUser(req).id)
       .then(user => {
         if (!user) throw new Error("User didn't exist.")
 
@@ -76,10 +74,8 @@ const userController = {
   putUser: (req, res, next) => {
     const { name } = req.body
     const { file } = req
-    if (getUser(req).id !== Number(req.params.id)) throw new Error('You do not have permission to access this page.')
-
     return Promise.all([
-      User.findByPk(req.params.id),
+      User.findByPk(getUser(req).id),
       imgurFileHandler(file)
     ])
       .then(([user, filePath]) => {
