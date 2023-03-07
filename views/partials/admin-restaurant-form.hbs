@@ -5,8 +5,15 @@
 <div class="form-row mb-3">
   <label class="form-label" for="categoryId">Category</label>
   <select class="form-control" id="categoryId" name="categoryId">
+    {{!-- ../ 是指回到上一層context
+    如果忘記加入 ../，由於在 #each categories 的語境下，
+    會以為你在呼叫this.restaurant，
+    會變成去 categories 迭代到的項目裡尋找一個叫做 restaurant 的屬性，結果會找不到東西。
+    --}}
     {{#each categories}}
-    <option value="{{this.id}}">{{this.name}}</option>
+    <option value="{{this.id}}" {{#ifCond this.id ../restaurant.categoryId}} selected {{/ifCond}}>
+      {{this.name}}
+    </option>
     {{/each}}
   </select>
 </div>
