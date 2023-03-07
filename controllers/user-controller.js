@@ -10,7 +10,7 @@ const userController = {
 
     if (password !== req.body.passwordCheck) { throw new Error('Passwords do not match!') }
 
-    User.findOne({ where: { email } })
+    return User.findOne({ where: { email } })
       .then(user => {
         if (user) throw new Error('Email already exists!')
 
