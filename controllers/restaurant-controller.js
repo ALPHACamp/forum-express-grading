@@ -25,9 +25,11 @@ const restaurantController = {
         if (!restaurants.rows.length) throw new Error("Restaurant didn't exist.")
         if (!categories.length) throw new Error("Category didn't exist.")
 
+        const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(favorite => favorite.id)
         const data = restaurants.rows.map(restaurant => ({
           ...restaurant,
-          description: restaurant.description.substring(0, 50)
+          description: restaurant.description.substring(0, 50),
+          isFavorited: favoritedRestaurantsId.includes(restaurant.id)
         }))
         return res.render('restaurants', {
           restaurants: data,
@@ -42,7 +44,8 @@ const restaurantController = {
     return Restaurant.findByPk(req.params.id, {
       include: [
         Category,
-        { model: Comment, include: User }
+        { model: Comment, include: User },
+        { model: User, as: 'FavoritedUsers' }
       ],
       order: [[Comment, 'createdAt', 'DESC']]
     })
@@ -51,7 +54,13 @@ const restaurantController = {
 
         return restaurant.increment('view_counts')
       })
-      .then(restaurant => res.render('restaurant', { restaurant: restaurant.toJSON() }))
+      .then(restaurant => {
+        const isFavorited = restaurant.FavoritedUsers.some(favorite => favorite.id === req.user.id)
+        res.render('restaurant', {
+          restaurant: restaurant.toJSON(),
+          isFavorited
+        })
+      })
       .catch(error => next(error))
   },
   getDashboard: (req, res, next) => {
