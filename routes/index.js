@@ -31,6 +31,8 @@ router.get('/restaurants', authenticated, restController.getRestaurants)
 router.delete('/comments/:id', authenticatedAdmin, commentController.deleteComment)
 router.post('/comments', authenticated, commentController.postComment)
 
+router.get('/users/:id', authenticated, userController.getUser)
+
 router.use('/', (req, res) => res.redirect('/restaurants'))
 
 router.use('/', generalErrorHandler)
