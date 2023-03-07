@@ -20,16 +20,28 @@ const restaurantController = {
   },
   getRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
-      include: Category, // 拿出關聯的 Category model
+      include: Category // 拿出關聯的 Category model
+    })
+      .then(restaurant => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        restaurant.increment('viewCounts', { by: 1 }) //! 教案方法，聰明很多，記下來
+        // restaurant.update({ viewCounts: restaurant.viewCounts++ }) // 我的方法，土法煉鋼
+        restaurant = restaurant.toJSON()
+        return res.render('restaurant', { restaurant })
+      })
+      .catch(err => next(err))
+  },
+  getDashboard: (req, res, next) => {
+    return Restaurant.findByPk(req.params.id, {
+      include: Category,
       nest: true,
       raw: true
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
-        return res.render('restaurant', { restaurant })
+        return res.render('dashboard', { restaurant })
       })
       .catch(err => next(err))
   }
-
 }
 module.exports = restaurantController
