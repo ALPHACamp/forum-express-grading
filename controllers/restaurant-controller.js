@@ -21,7 +21,7 @@ const restaurantController = {
       Category.findAll({ raw: true })
     ])
       .then(([restaurants, categories]) => {
-        const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
+        const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id) // passport已取到關聯
         const data = restaurants.rows.map(r => ({
           ...r,
           description: r.description.substring(0, 50),
