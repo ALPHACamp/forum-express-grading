@@ -22,10 +22,11 @@ router.post('/signin', passport.authenticate('local', { failureRedirect: '/signi
 
 router.get('/logout', userController.logout) // 登出路由
 
+router.get('/restaurants/:id/dashboard', authenticated, restController.getDashboard) // dashboard路由
 router.get('/restaurants/:id', authenticated, restController.getRestaurant) // 瀏覽單筆餐廳路由
 router.get('/restaurants', authenticated, restController.getRestaurants) // 瀏覽所有餐廳並導入登入狀態驗證
-router.use('/', (req, res) => res.redirect('/restaurants'))
 
+router.use('/', (req, res) => res.redirect('/restaurants'))
 router.use('/', generalErrorHandler)
 
 module.exports = router
