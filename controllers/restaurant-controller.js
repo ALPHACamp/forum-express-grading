@@ -7,7 +7,7 @@ const restaurantController = {
       nest: true,
       raw: true
     }).then(restaurants => {
-      console.log(restaurants) // 觀察 include
+      // console.log(restaurants) // 觀察 include
       // (下1) 不錯，運用展開運算子跟箭頭函式，直接改 object 內容
       const data = restaurants.map(r => ({
         ...r,
