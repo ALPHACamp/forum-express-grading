@@ -20,6 +20,7 @@ router.post(
   userController.signIn
 )
 router.get('/logout', userController.logout)
+router.get("/restaurants/:id", authenticated, restController.getRestaurant);
 router.get('/restaurants', authenticated, restController.getRestaurants)
 // fallback route
 router.use('/', (req, res) => res.redirect('/restaurants'))
