@@ -23,6 +23,7 @@ router.post('/restaurants', upload.single('image'), adminController.postRestaura
 
 router.get('/categories/:id', categoryController.getCategories) // 開始編輯單一類別資料
 router.put('/categories/:id', categoryController.putCategory) // 送出更新類別資料
+router.delete('/categories/:id', categoryController.deleteCategory) // 刪除類別資料
 router.get('/categories', categoryController.getCategories)
 router.post('/categories', categoryController.postCategories) // 送出新增類別資料
 // router.get('/', (req, res) => res.redirect('/restaurants'))
