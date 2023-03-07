@@ -38,6 +38,8 @@ router.get('/users/:id', authenticated, userController.getUser)
 
 router.put('/users/:id', authenticated, authenticatedOwner, upload.single('image'), userController.putUser)
 
+router.get('/restaurants/feeds', authenticated, restController.getFeeds)
+
 router.get('/restaurants/:id/dashboard', authenticated, restController.getDashboard)
 
 router.get('/restaurants/:id', authenticated, restController.getRestaurant)

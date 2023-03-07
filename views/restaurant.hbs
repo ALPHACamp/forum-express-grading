@@ -25,11 +25,33 @@
 {{!-- Comment --}}
 <h3 class="mb-3">所有評論：</h3>
 {{#each restaurant.Comments}}
-  {{#if ../user.isAdmin}}
-  <form action="/comments/{{this.id}}?_method=DELETE" method="POST" class="float-end">
-    <button type="submit" class="btn btn-danger">Delete</button>
-  </form>
-  {{/if}}
+{{#if ../user.isAdmin}}
+<button type="button" data-bs-toggle="modal" data-bs-target="#delete{{this.id}}"
+  class="btn btn-danger float-end">Delete</button>
+<!--Delete Modal-->
+<div class="modal fade" id="delete{{this.id}}" tabindex="-1" role="dialog" aria-labelledby="Delete Message Modal"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title text-secondary font-weight-bold"><i class="fas fa-exclamation-triangle"></i>注意</h5>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body text-secondary">
+        你確定要刪除這則評論嗎？
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+        <form action="/comments/{{this.id}}?_method=DELETE" method="POST" class="float-end">
+          <input type="submit" value="刪除" class="btn btn-danger">
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{{/if}}
 <blockquote class="blockquote mb-0">
   <h4><a href="/users/{{this.User.id}}">{{this.User.name}}</a></h4>
   <p>{{this.text}}</p>
