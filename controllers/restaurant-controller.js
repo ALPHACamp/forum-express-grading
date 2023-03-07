@@ -62,10 +62,35 @@ const restaurantController = {
         include: [Category]
       })
       if (!restaurant) throw new Error('此餐廳不存在!')
-      return res.render('dashboard', { restaurant })
+      return res.render('dashboard', { restaurant: restaurant.toJSON() })
     } catch (error) {
       return next(error)
     }
+  }, // 補逗點，新增以下
+  getFeeds: (req, res, next) => {
+    return Promise.all([
+      Restaurant.findAll({
+        limit: 10,
+        order: [['createdAt', 'DESC']],
+        include: [Category],
+        raw: true,
+        nest: true
+      }),
+      Comment.findAll({
+        limit: 10,
+        order: [['createdAt', 'DESC']],
+        include: [User, Restaurant],
+        raw: true,
+        nest: true
+      })
+    ])
+      .then(([restaurants, comments]) => {
+        res.render('feeds', {
+          restaurants,
+          comments
+        })
+      })
+      .catch(err => next(err))
   }
 }
 
