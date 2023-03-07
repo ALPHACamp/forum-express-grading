@@ -20,6 +20,9 @@ router.patch('/users/:id', adminController.patchUser) // 使用者權限更改 �
 router.get('/users', adminController.getUsers) // 渲染使用者列表
 router.get('/restaurants', adminController.getRestaurants) // 渲染餐廳列表
 router.post('/restaurants', upload.single('image'), adminController.postRestaurant) // 送出新增餐廳資料
+
+router.get('/categories/:id', categoryController.getCategories) // 開始編輯單一類別資料
+router.put('/categories/:id', categoryController.putCategory) // 送出更新類別資料
 router.get('/categories', categoryController.getCategories)
 router.post('/categories', categoryController.postCategories) // 送出新增類別資料
 // router.get('/', (req, res) => res.redirect('/restaurants'))
