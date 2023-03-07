@@ -1,12 +1,20 @@
 const { Op } = require('sequelize')
-const { Restaurant } = require('../models')
+const { Restaurant, Category } = require('../models')
 const restaurantController = {
-  getRestaurants: (req, res, next) => {
-    Restaurant.findAll({
+  getRestaurants: (req, res) => {
+    return Restaurant.findAll({
+      include: Category,
+      nest: true,
       raw: true
+    }).then(restaurants => {
+      const data = restaurants.map(r => ({
+        ...r,
+        description: r.description.substring(0, 50)
+      }))
+      return res.render('restaurants', {
+        restaurants: data
+      })
     })
-      .then(restaurants => res.render('restaurants', { restaurants }))
-      .catch(err => next(err))
   },
   getRestaurantsByName: (req, res, next) => {
     const keyword = req.query.keyword
