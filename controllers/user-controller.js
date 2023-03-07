@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs')
-const { User, Comment, Restaurant } = require('../models')
+const { User, Comment, Restaurant, Favorite } = require('../models')
 const { getUser } = require('../helpers/auth-helpers')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
@@ -90,6 +90,38 @@ const userController = {
         req.flash('success_messages', '使用者資料編輯成功')
         return res.redirect(`/users/${getUser(req).id}`)
       })
+      .catch(error => next(error))
+  },
+  addFavorite: (req, res, next) => {
+    const { restaurantId } = req.params
+    const userId = getUser(req).id
+    return Promise.all([
+      Restaurant.findByPk(restaurantId),
+      Favorite.findOne({
+        where: { userId, restaurantId }
+      })
+    ])
+      .then(([restaurant, favorite]) => {
+        if (!restaurant) throw new Error("Restaurant didn't exist.")
+        if (favorite) throw new Error('You have favorite this restaurant')
+
+        return Favorite.create({ userId, restaurantId })
+      })
+      .then(() => res.redirect('back'))
+      .catch(error => next(error))
+  },
+  removeFavorite: (req, res, next) => {
+    const userId = getUser(req).id
+    const { restaurantId } = req.params
+    return Favorite.findOne({
+      where: { userId, restaurantId }
+    })
+      .then(favorite => {
+        if (!favorite) throw new Error("You haven't favorite this restaurant.")
+
+        return favorite.destroy()
+      })
+      .then(() => res.redirect('back'))
       .catch(error => next(error))
   }
 }
