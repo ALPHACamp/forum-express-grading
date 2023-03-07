@@ -15,9 +15,9 @@ const categoryController = {
     Category.findOne({ where: { name } })
       .then(category => {
         if (category) throw new Error('Category is already exist!')
-        Category.create({ name })
+        return Category.create({ name })
       })
-      .then(() => res.redirect('categories'))
+      .then(() => res.redirect('/admin/categories'))
       .catch(err => next(err))
   },
   putCategory: (req, res, next) => {
@@ -28,7 +28,16 @@ const categoryController = {
         if (!category) throw new Error("Category doesn't exist!")
         return category.update({ name })
       })
-      .then(() => res.redirect('categories'))
+      .then(() => res.redirect('/admin/categories'))
+      .catch(err => next(err))
+  },
+  deleteCategory: (req, res, next) => {
+    return Category.findByPk(req.params.id)
+      .then(category => {
+        if (!category) throw new Error("Category didn't exist!")
+        return category.destroy()
+      })
+      .then(() => res.redirect('/admin/categories'))
       .catch(err => next(err))
   }
 }
