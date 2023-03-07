@@ -1,6 +1,6 @@
 // - 處理屬於user路由的相關請求
 const bcrypt = require('bcryptjs')
-const { User, Comment, Restaurant, Favorite } = require('../models')
+const { User, Comment, Restaurant, Favorite, Like } = require('../models')
 const { getUser } = require('../helpers/auth-helpers')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 const userController = {
@@ -133,6 +133,51 @@ const userController = {
 
       await favorite.destroy()
       req.flash('success_messages', '已取消收藏!')
+      return res.redirect('back')
+    } catch (error) {
+      return next(error)
+    }
+  },
+  addLike: async (req, res, next) => {
+    const { restaurantId } = req.params
+    const userId = getUser(req).id
+    try {
+      const [restaurant, like] = await Promise.all([
+        Restaurant.findByPk(restaurantId),
+        Like.findOne({
+          where: {
+            restaurantId,
+            userId
+          }
+        })
+      ])
+      if (!restaurant) throw new Error('餐廳不存在!')
+      if (like) throw new Error('您已 Like 過此餐廳!')
+
+      await Like.create({
+        restaurantId,
+        userId
+      })
+      req.flash('success_messages', '添加為喜愛餐廳成功!')
+      return res.redirect('back')
+    } catch (error) {
+      return next(error)
+    }
+  },
+  removeLike: async (req, res, next) => {
+    const { restaurantId } = req.params
+    const userId = getUser(req).id
+    try {
+      const like = await Like.findOne({
+        where: {
+          restaurantId,
+          userId
+        }
+      })
+      if (!like) throw new Error('您已 Unlike 過此餐廳!!')
+
+      await like.destroy()
+      req.flash('success_messages', '從喜愛餐廳中移除成功!')
       return res.redirect('back')
     } catch (error) {
       return next(error)
