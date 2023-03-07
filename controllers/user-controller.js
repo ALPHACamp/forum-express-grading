@@ -25,7 +25,7 @@ const userController = {
       )
       .then(() => {
         req.flash('success_messages', '成功註冊帳號!')
-        res.redirect('/signin')
+        return res.redirect('/signin')
       })
       .catch(error => next(error))
   },
@@ -34,13 +34,13 @@ const userController = {
 
   signIn: (req, res) => {
     req.flash('success_messages', '成功登入!')
-    res.redirect('/restaurants')
+    return res.redirect('/restaurants')
   },
 
   logout: (req, res) => {
     req.flash('success_messages', '登出成功!')
     req.logout()
-    res.redirect('/signin')
+    return res.redirect('/signin')
   }
 
 }
