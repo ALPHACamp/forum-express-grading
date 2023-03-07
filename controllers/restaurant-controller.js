@@ -13,7 +13,7 @@ const restaurantController = {
     // const where = {}
     // if (categoryId) where.categoryId = categoryId
     return Promise.all([
-      Restaurant.findAndCountAll({
+      Restaurant.findAndCountAll({ // 幫忙數總共會有幾筆
         include: Category,
         // where: where,
         where: { // 新增查詢條件
@@ -27,7 +27,7 @@ const restaurantController = {
       Category.findAll({ raw: true })
     ])
       .then(([restaurants, categories]) => {
-        const data = restaurants.rows.map(r => ({
+        const data = restaurants.rows.map(r => ({ // 多rows來包原本的資料
           ...r,
           description: r.description.substring(0, 50)
         }))
