@@ -8,14 +8,20 @@ const adminController = {
       .then(restaurants => res.render('admin/restaurants', { restaurants }))
       .catch(err => next(err))
   },
-  createRestaurant: (req, res) => res.render('admin/create-restaurant'),
+  createRestaurant: (req, res, next) => {
+    return Category.findAll({ raw: true })
+      .then(categories => res.render('admin/create-restaurant', { categories }))
+      .catch(err => next(err))
+  },
+
   postRestaurant: (req, res, next) => {
-    const { name, tel, address, openingHours, description } = req.body // 從 req.body 拿出表單裡的資料
+    const { name, categoryId, tel, address, openingHours, description } = req.body // 從 req.body 拿出表單裡的資料
     if (!name) throw new Error('Restaurant name is required!') // name 是必填，若發先是空值就會終止程式碼，並在畫面顯示錯誤提示
 
     const { file } = req // 圖片資料會存這，而非 req.body (multipart/form-data)
     return imgurFileHandler(file).then(filePath => Restaurant.create({
       name,
+      categoryId,
       tel,
       address,
       openingHours,
@@ -37,15 +43,18 @@ const adminController = {
       .catch(err => next(err))
   },
   editRestaurant: (req, res, next) => {
-    return Restaurant.findByPk(req.params.id, { raw: true })
-      .then(restaurant => {
+    Promise.all([
+      Restaurant.findByPk(req.params.id, { raw: true }),
+      Category.findAll({ raw: true })
+    ])
+      .then(([restaurant, categories]) => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
-        return res.render('admin/edit-restaurant', { restaurant })
+        return res.render('admin/edit-restaurant', { restaurant, categories })
       })
       .catch(err => next(err))
   },
   putRestaurant: (req, res, next) => {
-    const { name, tel, address, openingHours, description } = req.body
+    const { name, categoryId, tel, address, openingHours, description } = req.body
     if (!name) throw new Error('Restaurant name is required!')
 
     const { file } = req
@@ -55,7 +64,7 @@ const adminController = {
     ])
       .then(([restaurant, filePath]) => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
-        return restaurant.update({ name, tel, address, openingHours, description, image: filePath || restaurant.image }) // image 路徑，更新或是沿用舊值
+        return restaurant.update({ name, categoryId, tel, address, openingHours, description, image: filePath || restaurant.image }) // image 路徑，更新或是沿用舊值
       })
       .then(() => {
         req.flash('success_messages', 'restaurant was successfully to update')

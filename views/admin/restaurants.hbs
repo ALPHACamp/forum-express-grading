@@ -1,15 +1,5 @@
-<h1>餐廳後台</h1>
-<a href='/admin/restaurants/create'>
-  <button type="button" class="btn btn-primary">New Restaurant</button>
-</a>
-<ul class="nav nav-tabs mt-3" role="tablist">
-  <li class="nav-item">
-    <a class="nav-link" href="/admin/restaurants" data-bs-toggle="tab">Restaurants</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" href="/admin/users" data-bs-toggle="tab">Users</a>
-  </li>
-</ul>
+{{> admin-tabs route='restaurants'}}
+
 <br />
 <br />
 <table class="table align-middle">

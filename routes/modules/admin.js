@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router()
 
 const adminController = require('../../controllers/admin-controller')
+const categoryController = require('../../controllers/category-controller.js')
 const upload = require('../../middleware/multer')
 
 // const { authenticatedAdmin } = require('../../middleware/auth')
@@ -18,8 +19,10 @@ router.delete('/restaurants/:id', adminController.deleteRestaurant) // 送出刪
 router.patch('/users/:id', adminController.patchUser) // 使用者權限更改 送出
 router.get('/users', adminController.getUsers) // 渲染使用者列表
 router.get('/restaurants', adminController.getRestaurants) // 渲染餐廳列表
-// router.get('/', (req, res) => res.redirect('/restaurants'))
 router.post('/restaurants', upload.single('image'), adminController.postRestaurant) // 送出新增餐廳資料
+router.get('/categories', categoryController.getCategories)
+router.post('/categories', categoryController.postCategories) // 送出新增類別資料
+// router.get('/', (req, res) => res.redirect('/restaurants'))
 router.use('/', (req, res) => res.redirect('/admin/restaurants')) //! 教案說要改成這樣，我先試試上面的
 
 module.exports = router
