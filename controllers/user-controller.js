@@ -43,7 +43,7 @@ const userController = {
     return User.findByPk(req.params.id)
       .then(user => {
         if (!user) throw new Error("User didn't exist!")
-        res.render('users/profile', { user: user.toJSON() })
+        return res.render('users/profile', { user: user.toJSON() })
       })
       .catch(err => next(err))
   },
