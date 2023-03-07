@@ -44,6 +44,9 @@ router.get('/restaurants', authenticated, restController.getRestaurants)
 router.delete('/comments/:id/', authenticated, commentController.deleteComment)
 router.post('/comments', authenticated, commentController.postComment)
 
+router.post('/favorite/:restaurantId', authenticated, userController.addFavorite)
+router.delete('/favorite/:restaurantId', authenticated, userController.removeFavorite)
+
 // - 將其餘無對應路由導向restaurants頁面
 router.use('/', (req, res) => res.redirect('/restaurants'))
 
