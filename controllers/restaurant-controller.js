@@ -1,5 +1,6 @@
 // - 處理屬於前台restaurant路由的相關請求
 const { Restaurant, Category, User, Comment } = require('../models')
+const { getUser } = require('../helpers/auth-helpers')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
 const restaurantController = {
   getRestaurants: async (req, res, next) => {
@@ -25,9 +26,13 @@ const restaurantController = {
       ])
       // - 對原有description進行字數刪減
       const MAX_OF_DESCRIPTION_LENGTH = 50
+      const favoritedRestaurants = getUser(req).FavoritedRestaurants
+      const favoritedRestaurantsId = favoritedRestaurants.map(fr => fr.id)
       const data = restaurants.rows.map(r => ({
         ...r,
-        description: r.description.substring(0, MAX_OF_DESCRIPTION_LENGTH)
+        description: r.description.substring(0, MAX_OF_DESCRIPTION_LENGTH),
+        // -判斷每間餐廳是否被使用者收藏過
+        isFavorited: getUser(req) && favoritedRestaurantsId.includes(r.id)
       }))
       return res.render('restaurants', {
         restaurants: data,
@@ -49,14 +54,18 @@ const restaurantController = {
           {
             model: Comment, // -餐廳對評論為1對多，會以複數型命名屬性並以 Array 包裝資料
             include: [{ model: User }]
-          }
+          },
+          { model: User, as: 'FavoritedUsers' } // -查找已收藏過的使用者
         ],
         order: [[Comment, 'created_at', 'DESC']]
       })
       if (!restaurant) throw new Error('此餐廳不存在!')
+
       // - 若餐廳存在增加瀏覽次數(累加值若為1可省略第二參數)
       await restaurant.increment('viewCounts', { by: 1 })
-      return res.render('restaurant', { restaurant: restaurant.toJSON() })
+      const userId = getUser(req).id
+      const isFavorited = restaurant.FavoritedUsers.some(fu => fu.id === userId)
+      return res.render('restaurant', { restaurant: restaurant.toJSON(), isFavorited })
     } catch (error) {
       return next(error)
     }

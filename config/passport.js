@@ -1,8 +1,7 @@
 const passport = require('passport')
 const LocalStrategy = require('passport-local')
 const bcrypt = require('bcryptjs')
-const db = require('../models')
-const { User } = db
+const { User, Restaurant } = require('../models')
 
 module.exports = app => {
   // - initialize and session
@@ -49,8 +48,13 @@ module.exports = app => {
   })
   passport.deserializeUser(async (id, done) => {
     try {
-      const foundUser = await User.findByPk(id)
+      const foundUser = await User.findByPk(id, {
+        // -撈取user資料時一併透過別名獲取加入最愛的餐廳
+        include: [{ model: Restaurant, as: 'FavoritedRestaurants' }]
+      })
+
       if (!foundUser) return done(null, false)
+
       return done(null, foundUser.toJSON())
     } catch (error) {
       return done(error, null)
