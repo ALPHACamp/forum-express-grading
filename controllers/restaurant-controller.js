@@ -1,4 +1,3 @@
-const { Op } = require('sequelize')
 const { Restaurant, Category } = require('../models')
 const restaurantController = {
   getRestaurants: (req, res) => {
@@ -16,34 +15,29 @@ const restaurantController = {
       })
     })
   },
-  getRestaurantsByName: (req, res, next) => {
-    const keyword = req.query.keyword
-
-    if (keyword) {
-      return Restaurant.findAll({
-        where: {
-          name: {
-            [Op.like]: `%${keyword}%`
-          }
-        },
-        raw: true
-      })
-        .then(restaurants => res.render('restaurants', { restaurants, keyword }))
-    } else {
-      res.render('restaurants')
-    }
-  },
   getRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
-      include: Category, // 拿出關聯的 Category model
-      nest: true,
-      raw: true
+      include: Category // 拿出關聯的 Category model
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
+        return restaurant.increment('view_counts')
+      })
+      .then(restaurant => {
         res.render('restaurant', {
-          restaurant
+          restaurant: restaurant.toJSON()
         })
+      })
+      .catch(err => next(err))
+  },
+  getDashboard: (req, res, next) => {
+    return Restaurant.findByPk(req.params.id, {
+      include: Category
+    })
+      .then(restaurant => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+
+        res.render('dashboard', { restaurant: restaurant.toJSON() })
       })
       .catch(err => next(err))
   }
