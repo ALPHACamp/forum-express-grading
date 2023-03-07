@@ -20,6 +20,7 @@ router.get('/signin', userController.signInPage)
 router.post('/signin', passport.authenticate('local', { failureRedirect: '/signin', failureFlash: true }), userController.signIn) // 注意是 post
 router.get('/logout', userController.logout)
 
+router.get('/restaurants/:id', authenticated, restController.getRestaurant) // 顯示單一餐廳
 router.get('/restaurants', authenticated, restController.getRestaurants)
 // router.get('/', (req, res) => res.redirect('/restaurants'))
 router.use('/', (req, res) => res.redirect('/restaurants')) //! 教案說要改成這樣，我先試試上面的
