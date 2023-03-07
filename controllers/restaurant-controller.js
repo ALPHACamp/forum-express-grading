@@ -1,4 +1,3 @@
-const { Op } = require('sequelize')
 const { Restaurant, Category } = require('../models')
 const restaurantController = {
   getRestaurants: (req, res) => {
@@ -15,23 +14,6 @@ const restaurantController = {
         restaurants: data
       })
     })
-  },
-  getRestaurantsByName: (req, res, next) => {
-    const keyword = req.query.keyword
-
-    if (keyword) {
-      return Restaurant.findAll({
-        where: {
-          name: {
-            [Op.like]: `%${keyword}%`
-          }
-        },
-        raw: true
-      })
-        .then(restaurants => res.render('restaurants', { restaurants, keyword }))
-    } else {
-      res.render('restaurants')
-    }
   },
   getRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
