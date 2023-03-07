@@ -71,7 +71,11 @@ const restaurantController = {
   getDashboard: (req, res, next) => {
     const id = req.params.id
     return Restaurant.findByPk(id, {
-      include: Category
+      include: [
+        Category,
+        Comment,
+        { model: User, as: 'FavoritedUsers' }
+      ]
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exits")
