@@ -23,9 +23,11 @@ const restaurantController = {
       Category.findAll({ raw: true })
     ])
       .then(([restaurants, categories]) => {
+        const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
         const data = restaurants.rows.map(r => ({ // 加上 .rows
           ...r,
-          description: r.description.substring(0, 50)
+          description: r.description.substring(0, 50),
+          isFavorited: favoritedRestaurantsId.includes(r.id)
         }))
         return res.render('restaurants', {
           restaurants: data,
@@ -36,21 +38,25 @@ const restaurantController = {
       })
   },
   getRestaurant: async (req, res, next) => {
-    const { id } = req.params
     try {
-      const restaurant = await Restaurant.findByPk(id, {
-        nest: true,
+      const restaurant = await Restaurant.findByPk(req.params.id, {
         include: [
           Category,
-          { model: Comment, include: User }
+          { model: Comment, include: User },
+          { model: User, as: 'FavoritedUsers' }
         ]
       })
-      if (!restaurant) throw new Error('此餐廳不存在!')
-      // count views of the restaurant
-      await restaurant.increment('viewCounts', { by: 1 })
-      return res.render('restaurant', { restaurant: restaurant.toJSON() })
-    } catch (error) {
-      return next(error)
+      if (!restaurant) {
+        throw new Error("Restaurant didn't exist!")
+      }
+      await restaurant.increment('viewCounts')
+      const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id)
+      res.render('restaurant', {
+        restaurant: restaurant.toJSON(),
+        isFavorited
+      })
+    } catch (err) {
+      next(err)
     }
   },
   getDashboard: async (req, res, next) => {
@@ -66,7 +72,7 @@ const restaurantController = {
     } catch (error) {
       return next(error)
     }
-  }, // 補逗點，新增以下
+  },
   getFeeds: (req, res, next) => {
     return Promise.all([
       Restaurant.findAll({
