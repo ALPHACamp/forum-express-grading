@@ -25,7 +25,7 @@ const commentController = {
   deleteComment: (req, res, next) => {
     return Comment.findByPk(req.params.id)
       .then(comment => {
-        if (!comment) throw new Error('Comment did not exist!')
+        if (!comment) throw new Error('Comment is required')
 
         return comment.destroy()
       })

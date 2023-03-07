@@ -6,10 +6,27 @@
       <div class="col-md-6">
         <h1>{{user.name}}</h1>
         <p>{{user.email}}</p>
-        
-          <a class="btn btn-link link-primary" href="/users/{{user.id}}/edit"><button type="button" class="btn btn-primary">edit</button>
-          </a>
-        
+        <p><strong>{{comments.length}}</strong> 已評論餐廳</p>
+        <a class="btn btn-link link-primary" href="/users/{{user.id}}/edit"><button type="button" class="btn btn-primary">edit</button>
+        </a>
+      </div>
+      <div class="card card-body mb-3 p-0">
+        <div class="card-header">
+          <strong>{{comments.length}}</strong> 已評論餐廳
+        </div>
+        <div class="row g-0 p-3">
+      {{#if comments.length}}
+        {{#each comments}}
+          <div class="col-md-auto px-3">
+            <a href="/restaurants/{{this.Restaurant.id}}">
+              <img src="{{this.Restaurant.img}}" alt="restaurant-alt" style="width:50px; height:50px;"/>
+            </a>
+          </div>
+        {{/each}}
+      {{else}}
+        <p>尚未有評論的餐廳</p>
+      {{/if}}
+        </div>
       </div>
     </div>
 </div>
