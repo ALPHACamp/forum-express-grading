@@ -18,8 +18,10 @@ router.get('/logout', userController.logout)
 
 router.get('/restaurants/:id/dashboard', authenticated, restController.getDashboard)
 router.get('/restaurants/:id', authenticated, restController.getRestaurant)
-router.post('/comments', authenticated, commentController.postComment)
 router.get('/restaurants', authenticated, restController.getRestaurants)
+
+router.post('/comments', authenticated, commentController.postComment)
+router.delete('/comments/:id', authenticated, commentController.deleteComment)
 
 router.use('/', (req, res) => res.redirect('/restaurants'))
 router.use('/', generalErrorHandler)

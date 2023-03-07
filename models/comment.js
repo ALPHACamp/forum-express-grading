@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
   Comment.init({
     text: DataTypes.STRING,
     userId: DataTypes.INTEGER,
-    restaurantIid: DataTypes.INTEGER
+    restaurantId: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'Comment',
