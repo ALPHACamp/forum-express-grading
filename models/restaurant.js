@@ -15,6 +15,7 @@ module.exports = (sequelize, DataTypes) => {
         onDelete: 'SET NULL',
         onUpdate: 'CASCADE'
       })
+      Restaurant.hasMany(models.Comment, { foreignKey: 'restaurantId' })
     }
   };
   Restaurant.init({
