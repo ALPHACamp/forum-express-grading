@@ -7,6 +7,8 @@ const upload = require('../../middleware/multer')
 
 router.patch('/users/:id', adminController.patchUser) // 使用者權限管理
 router.get('/users', adminController.getUsers) // 後台使用者管理路由
+router.get('/categories/:id', categoryController.getCategories) // 單一分類路由
+router.put('/categories/:id', categoryController.putCategory) // 編輯分類路由
 router.get('/categories', categoryController.getCategories) // 後台分類管理路由
 router.post('/categories', categoryController.postCategory) // 後台分類新增路由
 router.get('/restaurants/create', adminController.createRestaurant) // 新增路由
