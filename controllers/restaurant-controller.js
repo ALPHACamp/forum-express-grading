@@ -45,8 +45,6 @@ const restaurantController = {
         ],
         nest: true
       })
-      console.log(restaurant.toJSON())
-      console.log(restaurant.toJSON().Comments[0].User)
       if (!restaurant) { throw new Error("Restaurant didn't exist!") }
       await restaurant.increment('viewCounts')
       return res.render('restaurant', { restaurant: restaurant.toJSON() })
