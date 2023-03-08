@@ -7,6 +7,7 @@ const admin = require('./modules/admin') // 導入後台管理
 
 const restController = require('../controllers/restaurant-controller') // 導入餐廳控制
 const userController = require('../controllers/user-controller') // 導入使用者控制
+const commentController = require('../controllers/comment-controller') // 導入評論控制
 
 const { authenticated, authenticatedAdmin } = require('../middleware/auth') // 導入登入驗證,新增後台管理驗證
 
@@ -25,7 +26,7 @@ router.get('/logout', userController.logout) // 登出路由
 router.get('/restaurants/:id/dashboard', authenticated, restController.getDashboard) // dashboard路由
 router.get('/restaurants/:id', authenticated, restController.getRestaurant) // 瀏覽單筆餐廳路由
 router.get('/restaurants', authenticated, restController.getRestaurants) // 瀏覽所有餐廳並導入登入狀態驗證
-
+router.post('/comments', authenticated, commentController.postComment) // 評論路由
 router.use('/', (req, res) => res.redirect('/restaurants'))
 router.use('/', generalErrorHandler)
 
