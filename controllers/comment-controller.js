@@ -1,7 +1,7 @@
 const { Comment, User, Restaurant } = require('../models')
 
 const commentController = {
-  postComment: (req, res, next) => {
+  postComment: (req, res, next) => { // 發送評論
     const { restaurantId, text } = req.body
     const userId = req.user.id
     if (!text) throw new Error('Comment text is required!')
@@ -21,6 +21,15 @@ const commentController = {
       .then(() => {
         res.redirect(`/restaurants/${restaurantId}`)
       })
+      .catch(err => next(err))
+  },
+  deleteComment: (req, res, next) => { // 刪除評論
+    return Comment.findByPk(req.params.id)
+      .then(comment => {
+        if (!comment) throw new Error("Comment didn't exist!")
+        return comment.destroy()
+      })
+      .then(deletedComment => res.redirect(`/restaurants/${deletedComment.restaurantId}`))
       .catch(err => next(err))
   }
 }
