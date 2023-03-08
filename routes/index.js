@@ -24,6 +24,7 @@ router.get('/logout', userController.logout)
 router.get('/restaurants/:id/dashboard', authenticated, restController.getDashboard) // 顯示 dashboard
 router.get('/restaurants/:id', authenticated, restController.getRestaurant) // 顯示單一餐廳
 router.get('/restaurants', authenticated, restController.getRestaurants)
+router.delete('/comments/:id', authenticatedAdmin, commentController.deleteComment)
 router.post('/comments', authenticated, commentController.postComment)
 // router.get('/', (req, res) => res.redirect('/restaurants'))
 router.use('/', (req, res) => res.redirect('/restaurants')) //! 教案說要改成這樣，我先試試上面的

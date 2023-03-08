@@ -44,6 +44,16 @@ const restaurantController = {
       .catch(err => next(err))
   },
   getRestaurant: (req, res, next) => {
+    // (下段) 實驗，測試 eager loading 效果
+    // Restaurant.findOne({
+    //   where: { name: "Rochelle O'Conner" },
+    //   include: [
+    //     Category,
+    //     { model: Comment, include: User }
+    //     (上1) 看這裡是根據搜尋結果，還是搜尋條件 (where...) 去做 eager loading 的，結論 --> 用搜尋結果做
+    //   ]
+    // }).then(shop => console.log(shop))
+
     return Restaurant.findByPk(req.params.id, {
       include: [
         Category,
@@ -51,7 +61,7 @@ const restaurantController = {
       ] // 拿出關聯的 Category model
     })
       .then(restaurant => {
-        console.log(restaurant)
+        // console.log(restaurant)
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         restaurant.increment('viewCounts', { by: 1 }) //! 教案方法，聰明很多，記下來
         // restaurant.update({ viewCounts: restaurant.viewCounts++ }) // 我的方法，土法煉鋼
