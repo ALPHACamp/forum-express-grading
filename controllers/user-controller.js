@@ -40,10 +40,11 @@ const userController = {
     res.redirect('/signin')
   },
   getUser: (req, res, next) => {
-    return User.findByPk(req.params.id, { raw: true })
+    return db.sequelize.query(`
+    WITH comment_counts AS (SELECT user_id, restaurant_id, image AS rest_image FROM comments c JOIN restaurants r ON c.restaurant_id = r.id GROUP BY user_id, restaurant_id, rest_image) SELECT u.id, u.name, u.email,u.image, json_arrayagg(rest_image) rest_image, json_arrayagg(restaurant_id) restaurant_id FROM users u LEFT JOIN comment_counts cc ON u.id = cc.user_id WHERE id = ${req.params.id}`, { type: db.sequelize.QueryTypes.SELECT })
       .then(user => {
-        if (!user) throw new Error('沒有此使用者')
-        return res.render('users/profile', { user })
+        if (!user[0].id) throw new Error('沒有此使用者')
+        return res.render('users/profile', { user: user[0] })
       })
       .catch(err => next(err))
   },
