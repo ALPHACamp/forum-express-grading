@@ -8,7 +8,7 @@
         <div class="card-body">
           <h2 class="card-title">{{user.name}}</h2>
           <p class="card-text">{{user.email}}</p>
-          <p class="mt-4"><strong>5&nbsp&nbsp</strong>已評論餐廳</p>
+          <p class="mt-4"><strong>{{comments.length}}&nbsp&nbsp</strong>已評論餐廳</p>
           <a href="/users/{{user.id}}/edit" class="btn btn-secondary">Edit</a>
         </div>
       </div>
@@ -16,12 +16,18 @@
   </div>
   <div class="card mt-4">
     <div class="card-header">
-      <strong>5&nbsp&nbsp</strong>已評論餐廳
+      <strong>{{comments.length}}&nbsp&nbsp</strong>已評論餐廳
     </div>
     <div class="card-body">
-      <a href="/restaurants/{{this.Restaurant.id}}" class="me-2" style="text-decoration:none;">
-        <img class="img-thumbnail" src="{{this.Restaurant.image}}" style="width: 100px; height:100px" alt="{{this.Restaurant.name}}">
-      </a>
+      {{#if comments.length}}
+        {{#each comments}}
+        <a href="/restaurants/{{this.Restaurant.id}}" class="me-2" style="text-decoration:none;">
+          <img class="img-thumbnail" src="{{this.Restaurant.image}}" style="width: 100px; height:100px" alt="{{this.Restaurant.name}}">
+        </a>
+        {{/each}}
+      {{else}}
+        <p class="mt-4"><strong>目前沒有任何評論紀錄</strong><br>趕快前往餐廳頁面，分享您的用餐體驗吧!<br></p>
+      {{/if}}
     </div>
   </div>
 </div>
