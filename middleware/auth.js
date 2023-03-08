@@ -21,8 +21,9 @@ const authenticatedProfile = (req, res, next) => { // 檢查登入與欲編輯�
     if (helpers.getUser(req).id === Number(req.params.id)) {
       return next()
     }
-    throw new Error('user only edit on yourself.')
   }
+  req.flash('error_messages', 'user only edit on yourself!')
+  res.redirect(`/users/${helpers.getUser(req).id}`)
 }
 
 module.exports = {
