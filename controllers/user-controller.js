@@ -1,6 +1,8 @@
 const bcrypt = require('bcryptjs')
 const db = require('../models')
 const { User } = db
+const { getUser } = require('../helpers/auth-helpers')
+
 const userController = {
   signUpPage: (req, res) => {
     res.render('signup')
@@ -44,6 +46,17 @@ const userController = {
       .then(user => {
         if (!user) throw new Error("User didn't exist!")
         res.render('users/profile', { user })
+      })
+      .catch(err => next(err))
+  },
+  editUser: (req, res, next) => {
+    const userId = req.params.id
+    if (getUser(req).id !== Number(userId)) throw new Error('You do not have permission to access or modify this page.')
+
+    return User.findByPk(userId, { raw: true })
+      .then(user => {
+        if (!user) throw new Error("User didn't exist.")
+        return res.render('users/edit', user)
       })
       .catch(err => next(err))
   }

@@ -1,0 +1,29 @@
+<div class="card">
+  <div class="row">
+    <div class="col-md-4">
+        <img src={{user.image}} class="card-img" alt="Avatar">
+    </div>
+      <div class="col-md-8">
+        <div class="card-body">
+          <div class="mb-4">
+            <h1 class="h3 font-weight-normal mb-3">Edit Profile</h1>
+          </div>
+          <form action="/users/{{user.id}}?_method=PUT" method="POST" enctype="multipart/form-data">
+            <div class="form-row mb-3">
+              <label class="form-label" for="name">Name</label>
+              <input class="form-control" type="text" name="name" id="name" placeholder="Enter name" value="{{user.name}}" required>
+            </div>
+            <div class="form-row mb-3">
+              <label class="form-label" for="image">Image</label>
+              <input class="form-control" type="file" class="form-control-file" id="image" name="image">
+            </div>
+          <div class="mt-5 mb-4">
+            <button type="submit" class="btn btn-primary">Submit</button>
+            <a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
+          </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
