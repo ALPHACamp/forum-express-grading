@@ -2,8 +2,8 @@
 const faker = require('faker')
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-		const categories = await queryInterface.sequelize.query(
-      'SELECT id FROM Categories;',
+		const restaurants = await queryInterface.sequelize.query(
+      'SELECT id FROM Restaurants;',
       { type: queryInterface.sequelize.QueryTypes.SELECT }
     )
 		const users = await queryInterface.sequelize.query('SELECT id FROM Users;', { type: queryInterface.sequelize.QueryTypes.SELECT })
@@ -11,7 +11,7 @@ module.exports = {
 			text: faker.lorem.text(20),
 			created_at: new Date(),
       updated_at: new Date(),
-      restaurant_id: categories[Math.floor(Math.random() * categories.length)].id,
+      restaurant_id: restaurants[Math.floor(Math.random() * restaurants.length)].id,
 			user_id: users[Math.floor(Math.random() * users.length)].id
 		})))
   },
