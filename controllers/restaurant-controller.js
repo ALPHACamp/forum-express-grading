@@ -1,4 +1,4 @@
-const { Restaurant, Category } = require('../models')
+const { Restaurant, Category, Comment, User } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
 
 const restaurantController = {
@@ -45,9 +45,13 @@ const restaurantController = {
   },
   getRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
-      include: Category // 拿出關聯的 Category model
+      include: [
+        Category,
+        { model: Comment, include: User }
+      ] // 拿出關聯的 Category model
     })
       .then(restaurant => {
+        console.log(restaurant)
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         restaurant.increment('viewCounts', { by: 1 }) //! 教案方法，聰明很多，記下來
         // restaurant.update({ viewCounts: restaurant.viewCounts++ }) // 我的方法，土法煉鋼
