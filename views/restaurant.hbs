@@ -1,13 +1,28 @@
 <div class="row mb-5">
-  <div class="col-md-12">
+  <div class="col-md-8">
     <h1>{{restaurant.name}}</h1>
-    <p>[{{restaurant.Category.name}}]</p>
   </div>
-  <div>
-    <img class="img-responsive center-block mb-5" src="{{restaurant.image}}"
-      style="width: 250px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+  <div class="col-md-4 d-flex justify-content-end align-items-center">
+    <a class="btn btn-outline-secondary me-1" href="/restaurants">回主頁</a>
+    <a class="btn btn-primary me-1" href="/restaurants/{{restaurant.id}}/dashboard">Dashboard</a>
+    {{#if isFavorited }}
+    <form action="/favorite/{{restaurant.id}}?_method=DELETE" method="POST" style="display: contents;">
+      <button type="submit" class="btn btn-danger">移除最愛</button>
+    </form>
+    {{else}}
+    <form action="/favorite/{{restaurant.id}}" method="POST" style="display: contents;">
+      <button type="submit" class="btn btn-primary">加到最愛</button>
+    </form>
+    {{/if}}
+  </div>
+  <div class="mb-3">
+    <span class="badge bg-secondary">{{restaurant.Category.name}}</span>
   </div>
   <div class="col-md-4">
+    <div>
+      <img class="img-responsive center-block mb-5" src="{{restaurant.image}}"
+        style="width: 250px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+    </div>
     <div class="well">
       <ul class="list-unstyled">
         <li><strong>Opening Hour:</strong> {{restaurant.openingHours}}</li>
@@ -19,7 +34,6 @@
   <div class="col-md-8">
     <p style="white-space: break-spaces;"><strong>Description: </strong>{{restaurant.description}}</p>
   </div>
-  <a class="btn btn-primary col-3 mb-3" href="/restaurants/{{restaurant.id}}/dashboard">Dashboard</a>
   <hr>
 </div>
 {{!-- Comment --}}
