@@ -110,10 +110,10 @@ const adminController = { // 修改這裡
           return res.redirect('back')
         }
         if (user.isAdmin) {
-          return User.update({ isAdmin: false }, { where: { id: user.id } })
+          return user.update({ isAdmin: false })
         }
         if (user.isAdmin === false) {
-          return User.update({ isAdmin: true }, { where: { id: user.id } })
+          return user.update({ isAdmin: true })
         }
       })
       .then(() => {
