@@ -45,7 +45,7 @@ const adminController = {
       include: [Category]
     })
       .then(restaurant => {
-        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        if (!restaurant) throw new Error("Restaurant doesn't exist!")
         res.render('admin/restaurant', { restaurant })
       })
       .catch(err => next(err))
@@ -56,7 +56,7 @@ const adminController = {
       Category.findAll({ raw: true })
     ])
       .then(([restaurant, categories]) => {
-        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        if (!restaurant) throw new Error("Restaurant doesn't exist!")
         res.render('admin/edit-restaurant', { restaurant, categories })
       })
       .catch(err => next(err))
@@ -70,7 +70,7 @@ const adminController = {
       imgurFileHandler(file)
     ])
       .then(([restaurant, filePath]) => {
-        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        if (!restaurant) throw new Error("Restaurant doesn't exist!")
         return restaurant.update({
           name,
           tel,
@@ -90,7 +90,7 @@ const adminController = {
   deleteRestaurant: (req, res, next) => {
     Restaurant.findByPk(req.params.id)
       .then(restaurant => {
-        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        if (!restaurant) throw new Error("Restaurant doesn't exist!")
         return restaurant.destroy()
       })
       .then(() => res.redirect('/admin/restaurants'))
@@ -104,7 +104,7 @@ const adminController = {
   patchUser: (req, res, next) => {
     return User.findByPk(req.params.id) // 加 return 後測試才能過
       .then(user => {
-        if (!user) throw new Error("User didn't exit!")
+        if (!user) throw new Error("User doesn't exit!")
         if (user.email === 'root@example.com') {
           req.flash('error_messages', '禁止變更 root 權限')
           res.redirect('back')

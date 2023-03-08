@@ -1,14 +1,4 @@
-<h1>餐廳後台</h1>
-<a href='/admin/restaurants/create'>
-  <button type="button" class="btn btn-primary">New Restaurant</button>
-</a>
-<br />
-<nav class="nav py-2">
-  <a class="nav-link p-0 active" aria-current="page" href="/admin/restaurants">Restaurants</a>
-  <span class="d-inline-block mx-2">|</span>
-  <a class="nav-link p-0" href="/admin/users">Users</a>
-</nav>
-<br />
+{{> admin-tabs route='users'}}
 <table class="table align-middle">
   <thead class="thead-dark">
     <tr>
