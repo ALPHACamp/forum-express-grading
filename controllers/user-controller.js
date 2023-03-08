@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs')
 const { User, Comment, Restaurant } = require('../models')
+const { getUser } = require('../helper/auth-helpers')
 
 const { imgurFileHander } = require('../helper/file-helpers')
 
@@ -40,6 +41,9 @@ const userController = {
   },
   getUser: (req, res, next) => {
     const { id } = req.params
+
+    if (Number(getUser(req).id) !== Number(id)) throw new Error('只能編輯自己的頁面喔!')
+
     return Promise.all([
       User.findByPk(id),
       Comment.findAll({
@@ -63,6 +67,8 @@ const userController = {
   },
   editUser: (req, res, next) => {
     const { id } = req.params
+    if (getUser(req).id !== Number(id)) throw new Error('只能編輯自己的頁面喔!')
+
     return User.findByPk(id, { raw: true })
       .then(user => {
         if (!user) throw new Error('User did not exist!')
