@@ -8,8 +8,9 @@ const admin = require('./modules/admin') // 導入後台管理
 const restController = require('../controllers/restaurant-controller') // 導入餐廳控制
 const userController = require('../controllers/user-controller') // 導入使用者控制
 const commentController = require('../controllers/comment-controller') // 導入評論控制
+const upload = require('../middleware/multer') // 導入middleware
 
-const { authenticated, authenticatedAdmin } = require('../middleware/auth') // 導入登入驗證,新增後台管理驗證
+const { authenticated, authenticatedAdmin, authenticatedProfile } = require('../middleware/auth') // 導入登入驗證,新增後台管理驗證
 
 const { generalErrorHandler } = require('../middleware/error-handler') // 導入錯誤訊息提示
 
@@ -22,6 +23,10 @@ router.get('/signin', userController.signInPage)
 router.post('/signin', passport.authenticate('local', { failureRedirect: '/signin', failureFlash: true }), userController.signIn) // 加入登入錯誤等提示
 
 router.get('/logout', userController.logout) // 登出路由
+
+router.get('/users/:id/edit', authenticated, authenticatedProfile, userController.editUser) // 編輯個人首頁頁面
+router.get('/users/:id', authenticated, authenticatedProfile, userController.getUser) // 瀏覽個人首頁
+router.put('/users/:id', authenticated, upload.single('image'), userController.putUser) // 修改個人首頁
 
 router.get('/restaurants/:id/dashboard', authenticated, restController.getDashboard) // dashboard路由
 router.get('/restaurants/:id', authenticated, restController.getRestaurant) // 瀏覽單筆餐廳路由

@@ -1,0 +1,21 @@
+<div class="container">
+  <div class="row">
+    <div class="col">
+      {{#if user.image}}
+      <img class="img" src="{{user.image}}"
+        style="width: 300px;">
+      {{else}}
+      <img class="img" src="https://i.imgur.com/eW5xFxj.jpeg"
+        style="width: 300px">
+      {{/if}}
+    </div>
+    <div class="col-8 mt-5">
+      <h1>名稱:{{user.name}}</h1>
+      <h1>信箱:{{user.email}}</h1>
+    </div>
+    <button type="button" class="btn btn-link">
+      <a class="btn btn-success" href="/users/{{user.id}}/edit">編輯</a>
+      <a class="btn btn-info" href="javascript:history.back()">返回</a>
+    </button>
+  </div>
+</div>
