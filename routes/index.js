@@ -31,6 +31,7 @@ router.delete('/favorite/:restaurantId', authenticated, userController.removeFav
 router.post('/favorite/:restaurantId', authenticated, userController.addFavorite)
 router.delete('/comments/:id', authenticatedAdmin, commentController.deleteComment)
 router.post('/comments', authenticated, commentController.postComment)
+router.get('/restaurants/top', authenticated, restaurantController.getTopRestaurants)
 router.get('/restaurants/feeds', authenticated, restaurantController.getFeeds)
 router.get('/restaurants/:id/dashboard', authenticated, restaurantController.getDashboard)
 router.get('/restaurants/:id', authenticated, restaurantController.getRestaurant)
