@@ -57,7 +57,7 @@ const userController = {
     return User.findByPk(userId, { raw: true })
       .then(user => {
         if (!user) throw new Error("User didn't exist.")
-        return res.render('users/edit', user)
+        return res.render('users/edit', { user })
       })
       .catch(err => next(err))
   },
@@ -78,7 +78,7 @@ const userController = {
         })
       })
       .then(() => {
-        req.flash('success_messages', '使用者資料編輯成功！')
+        req.flash('success_messages', '使用者資料編輯成功')
         res.redirect(`/users/${userId}`)
       })
       .catch(err => next(err))
