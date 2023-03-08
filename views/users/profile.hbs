@@ -12,4 +12,14 @@
       </div>
     </div>
   </div>
+  
+  <div class="card mt-3">
+    <h5 class="card-header">{{user.commentRestaurants.length}}已評論餐廳</h5>
+    <div class="card-body">
+      {{#each user.commentRestaurants}}
+      <a href="/restaurants/{{this.id}}" style="text-decoration:none;">
+        <img src="{{this.image}}" title="{{this.name}}" class="m-3" style="height:100px; width:100px; object-fit:cover">
+      </a>
+      {{/each}}
+  </div>
 </div>

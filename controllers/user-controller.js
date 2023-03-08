@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs')
 const db = require('../models')
-const { User } = db
+const { User, Comment, Restaurant } = db
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const userController = {
@@ -41,10 +41,25 @@ const userController = {
   },
   getUser: (req, res, next) => {
     const userId = req.params.id
-    return User.findByPk(userId)
+    return User.findByPk(userId, {
+      include: [{
+        model: Comment, include: Restaurant
+      }]
+    })
       .then(user => {
         if (!user) throw new Error("This User didn't exists!")
-        return res.render('users/profile', { user: user.toJSON() })
+
+        // 避免相同餐廳重複呈現在Profile中。
+        user = user.toJSON()
+        const userComments = user.Comments || []
+        const commentRestaurants = []
+        userComments.filter(comment => {
+          if (!commentRestaurants.some(data => data.id === comment.restaurantId)) { commentRestaurants.push(comment.Restaurant) }
+          return commentRestaurants
+        })
+        user.commentRestaurants = commentRestaurants
+
+        return res.render('users/profile', { user })
       })
       .catch(err => next(err))
   },
@@ -76,7 +91,7 @@ const userController = {
         })
       })
       .then(() => {
-        req.flash('success_messages', '編輯成功!')
+        req.flash('success_messages', '使用者資料編輯成功')
         res.redirect(`/users/${userId}`)
       })
       .catch(err => next(err))
