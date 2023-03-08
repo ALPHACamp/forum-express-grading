@@ -29,12 +29,16 @@
       <strong>{{user.commentedRestaurants.length}}</strong> 已評論餐廳
     </div>
     <div class="card-body">
-      {{#each user.commentedRestaurants}}
-      <a href="/restaurants/{{this.id}}" class="text-decoration-none">
-        <img src={{this.image}} width="60" height="60" class="avatar" style="transition: opacity 0.5s; opacity:0;"
-          onload="this.style.opacity=1;" />
-      </a>
-      {{/each}}
+      {{#if user.commentedRestaurants}}
+        {{#each user.commentedRestaurants}}
+        <a href="/restaurants/{{this.id}}" class="text-decoration-none">
+          <img src={{this.image}} width="60" height="60" class="avatar" style="transition: opacity 0.5s; opacity:0;"
+            onload="this.style.opacity=1;" />
+        </a>
+        {{/each}}
+      {{else}}
+        <p>尚無餐廳評論</p>
+      {{/if}}
     </div>
   </div>
 </div>
