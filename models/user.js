@@ -12,6 +12,14 @@ module.exports = (sequelize, DataTypes) => {
     static associate (models) {
       // define association here
       User.hasMany(models.Comment, { foreignKey: 'userId' })
+      User.belongsToMany(models.Restaurant, {
+        // setting join table: Favorite table
+        through: models.Favorite,
+        // setting foreignKey for Favorite table
+        foreignKey: 'userId',
+        // named the relationship as 'FavoritedUsers'
+        as: 'FavoritedRestaurants'
+      })
     }
   };
   User.init({
