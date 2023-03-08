@@ -59,7 +59,7 @@ const restaurantController = {
   },
   getDashboard: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
-      include: Category
+      include: [Category, Comment]
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
