@@ -2,7 +2,10 @@ const assert = require('assert')
 const { Restaurant, Category, Comment, User, Favorite } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
 const sequelize = require('sequelize')
+<<<<<<< HEAD
 const helpers = require('../helpers/auth-helpers')
+=======
+>>>>>>> 2f164760f3f766797d3ce2e0e351dca9e2445109
 
 const restaurantController = {
   getRestaurants: (req, res, next) => {
