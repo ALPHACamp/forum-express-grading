@@ -2,6 +2,7 @@ const bcrypt = require('bcryptjs')
 const db = require('../models')
 const { Comment, Restaurant, User } = db
 const { imgurFileHandler } = require('../helpers/file-helpers')
+const { getUser } = require('../helpers/auth-helpers')
 const userController = {
   signUpPage: (req, res) => {
     res.render('signup')
@@ -60,7 +61,7 @@ const userController = {
       .catch(err => next(err))
   },
   editUser: (req, res, next) => {
-    return User.findByPk(req.params.id, { raw: true })
+    return User.findByPk(getUser(req).id, { raw: true })
       .then(user => {
         if (!user) throw new Error('User does not exist.')
         res.render('users/edit', { user })
@@ -69,11 +70,10 @@ const userController = {
   },
   putUser: (req, res, next) => {
     const { name } = req.body
-    const userId = req.params.id
     if (!name) throw new Error('Name is required!')
     const { file } = req
     return Promise.all([
-      User.findByPk(userId),
+      User.findByPk(getUser(req).id),
       imgurFileHandler(file)
     ])
       .then(([user, filePath]) => {
@@ -85,7 +85,7 @@ const userController = {
       })
       .then(user => {
         req.flash('success_messages', '使用者資料編輯成功')
-        res.redirect(`/users/${userId}`)
+        res.redirect(`/users/${getUser(req).id}`)
       })
       .catch(err => next(err))
   }
