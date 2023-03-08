@@ -68,10 +68,12 @@ const userController = {
       .catch(err => next(err))
   },
   putUser: (req, res, next) => {
-    if (Number(req.params.id) !== Number(req.user.id)) {
-      res.redirect(`/users/${req.params.id}`)
-    }
     const { file } = req
+    const { name } = req.body
+    if (Number(req.params.id) !== Number(req.currentUser.id)) {
+      throw new Error('Only can edit own profile！')
+    }
+    if (!name.trim()) throw new Error('User name is required!')
 
     return Promise.all([
       User.findByPk(req.params.id),
