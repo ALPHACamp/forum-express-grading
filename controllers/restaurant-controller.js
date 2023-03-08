@@ -21,11 +21,13 @@ const restaurantController = {
       Category.findAll({ raw: true })
     ])
       .then(([restaurants, categories]) => {
-        const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
+        const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id) // passport已取到關聯
+        const likedRestaurantsId = req.user && req.user.LikedRestaurants.map(lr => lr.id)
         const data = restaurants.rows.map(r => ({
           ...r,
           description: r.description.substring(0, 50),
-          isFavorited: favoritedRestaurantsId.includes(r.id)
+          isFavorited: favoritedRestaurantsId.includes(r.id),
+          isLiked: likedRestaurantsId.includes(r.id)
         }))
         return res.render('restaurants', {
           restaurants: data,
@@ -41,18 +43,21 @@ const restaurantController = {
       include: [
         Category,
         { model: Comment, include: User },
-        { model: User, as: 'FavoritedUsers' }
+        { model: User, as: 'FavoritedUsers' },
+        { model: User, as: 'LikedUsers' }
       ],
       nest: true
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id)
+        const isLiked = restaurant.LikedUsers.some(l => l.id === req.user.id)
         // 增加瀏覽次數
         restaurant.increment('viewCounts') // 要使用這個語法，需保留 Sequelize 實例 => 不能用 raw
         res.render('restaurant', {
           restaurant: restaurant.toJSON(),
-          isFavorited
+          isFavorited,
+          isLiked
         })
       })
       .catch(err => next(err))
