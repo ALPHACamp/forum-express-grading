@@ -70,7 +70,7 @@ const userController = {
   putUser: (req, res, next) => {
     const { file } = req
     const { name } = req.body
-    if (Number(req.params.id) !== Number(req.currentUser.id)) {
+    if (Number(req.params.id) !== Number(req.user.id)) {
       throw new Error('Only can edit own profile！')
     }
     if (!name.trim()) throw new Error('User name is required!')
