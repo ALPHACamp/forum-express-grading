@@ -29,10 +29,6 @@ const UserController = {
   singInPage: (req, res) => {
     res.render('signin')
   },
-  // signIn: (req, res) => {
-  //   req.flash('success_messages', '登入成功')
-  //   res.redirect('/restaurants')
-  // },
   signIn: (req, res) => {
     req.flash('success_messages', '登入成功')
     res.redirect('/restaurants')
