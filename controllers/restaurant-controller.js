@@ -13,10 +13,6 @@ const restaurantController = {
     const limit = Number(req.query.limit) || DEFAULT_LIMIT // 前面的 Number(...)，只是留著，未來要用可用
     const offset = getOffset(limit, page)
 
-    // const where = {}
-
-    // if (categoryId) where.categoryId = categoryId
-
     Promise.all([
       Restaurant.findAndCountAll({
         nest: true,

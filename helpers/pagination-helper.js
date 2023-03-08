@@ -1,4 +1,4 @@
-const getOffset = (limit = 10, page = 1) => (page - 1) * limit
+const getOffset = (limit = 10, page = 1) => (page - 1) * limit // 參數的寫法，是給參數預設值，若沒引數就用它
 
 const getPagination = (limit = 10, page = 1, total = 50) => {
   const totalPage = Math.ceil(total / limit)
