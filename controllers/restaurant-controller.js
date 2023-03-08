@@ -1,4 +1,5 @@
 const { Restaurant, Category } = require('../models')
+const sessionCheck = []
 
 const restaurantController = {
   getRestaurants: (req, res) => {
@@ -21,10 +22,16 @@ const restaurantController = {
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant doesn't exist!")
+        // check repeat
+        const user = req.session.passport.user
+        const restaurantId = restaurant.toJSON().id
+        if (sessionCheck.some(item => item === `${user}:${restaurantId}`)) {
+          return restaurant
+        }
+        sessionCheck.push(`${user}:${restaurantId}`)
         return restaurant.increment({ viewCount: 1 })
       })
       .then(restaurant => {
-        console.log(restaurant)
         res.render('restaurant', {
           restaurant: restaurant.toJSON()
         })
