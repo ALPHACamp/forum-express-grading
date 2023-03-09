@@ -11,6 +11,10 @@ const handlebarsHelpers = require('./helpers/handlebars-helpers')
 const Handlebars = require('handlebars')
 const { allowInsecurePrototypeAccess } = require('@handlebars/allow-prototype-access')
 
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
+
 const app = express()
 const port = process.env.PORT || 3000
 const SESSION_SECRET = 'secret'
