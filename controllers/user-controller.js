@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs')
-const { User, Comment, Restaurant, Favorite } = require('../models')
+const { User, Comment, Restaurant, Favorite, Like } = require('../models')
 const { getUser } = require('../helpers/auth-helpers')
 
 const { imgurFileHander } = require('../helpers/file-helpers')
@@ -104,7 +104,6 @@ const userController = {
   },
   addFavorite: (req, res, next) => {
     const { restaurantId } = req.params
-    console.log(req.params)
     return Promise.all([
       Restaurant.findByPk(restaurantId),
       Favorite.findOne({
@@ -116,7 +115,7 @@ const userController = {
     ])
       .then(([restaurant, favorite]) => {
         if (!restaurant) throw new Error('Restaurant did not exist!')
-        if (favorite) throw new Error('You have favorited this restaurant!')
+        if (favorite) throw new Error('You have not favorited this restaurant!')
         return Favorite.create({
           userId: req.user.id,
           restaurantId
@@ -136,6 +135,44 @@ const userController = {
         if (!favorite) throw new Error('You have not favorited this restaurant!')
 
         return favorite.destroy()
+      })
+      .then(() => res.redirect('back'))
+      .catch(err => next(err))
+  },
+  addLike: (req, res, next) => {
+    const { restaurantId } = req.params
+    return Promise.all([
+      Restaurant.findByPk(restaurantId),
+      Like.findOne({
+        where: {
+          userId: req.user.id,
+          restaurantId
+        }
+      })
+    ])
+      .then(([restaurant, like]) => {
+        if (!restaurant) throw new Error('Restaurant did not exist!')
+        if (like) throw new Error('You have not like this restaurant')
+
+        return Like.create({
+          userId: req.user.id,
+          restaurantId
+        })
+      })
+      .then(() => res.redirect('back'))
+      .catch(err => next(err))
+  },
+  removeLike: (req, res, next) => {
+    return Like.findOne({
+      where: {
+        userId: req.user.id,
+        restaurantId: req.params.restaurantId
+      }
+    })
+      .then(like => {
+        if (!like) throw new Error('You have not like this restaurant.')
+
+        return like.destroy()
       })
       .then(() => res.redirect('back'))
       .catch(err => next(err))
