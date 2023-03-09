@@ -183,6 +183,23 @@ const userController = {
       })
       .then(() => res.redirect('back'))
       .catch(err => next(err))
+  },
+  getTopUsers: (req, res, next) => {
+    // all User & Followers data
+    return User.findAll({
+      include: [{ model: User, as: 'Followers' }]
+    })
+      .then(users => {
+        // 整理 users 資料，把每個 user 項目都拿出來處理一次，並把新陣列儲存在 users 裡
+        users = users.map(user => ({
+          ...user.toJSON(),
+          followerCount: user.Followers.length,
+          // 單一 user，用 some 就好，不用 map 來全部檢查
+          isFollowed: req.user.Followings.some(f => f.id === user.id)
+        }))
+        res.render('top-users', { users: users })
+      })
+      .catch(err => next(err))
   }
 }
 module.exports = userController
