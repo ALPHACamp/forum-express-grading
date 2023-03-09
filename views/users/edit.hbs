@@ -1,0 +1,15 @@
+<form action="/users/{{user.id}}?_method=PUT" method="POST" enctype="multipart/form-data">
+  <div class="mb-5 text-center">
+    <h1 class="h1 mb-5">編輯個人首頁</h1>
+  </div>
+  <div class="form-row mb-5">
+    <label class="form-label" for="name">名稱:</label>
+    <input class="form-control" type="text" name="name" id="name" placeholder="Enter name" value="{{user.name}}"
+      required>
+  </div>
+  <div class="form-row mb-5">
+    <label class="form-label" for="image">頭像:</label>
+    <input class="form-control" type="file" class="form-control-file" id="image" name="image">
+  </div>
+  <button type="submit" class="btn btn-success">編輯</button>
+  <a class="btn btn-info" href="javascript:history.back()">返回</a>
