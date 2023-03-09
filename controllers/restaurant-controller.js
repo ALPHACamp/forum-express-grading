@@ -1,12 +1,12 @@
-const { Restaurant, Category } = require('../models')
-const { getOffset, getPagination } = require("../helpers/pagination-helper"); 
+const { Restaurant, Category, Comment, User } = require('../models')
+const { getOffset, getPagination } = require('../helpers/pagination-helper')
 const restaurantController = {
   getRestaurants: (req, res, next) => {
     const DEFAULT_LIMIT = 12
     const categoryId = Number(req.query.categoryId) || ''
     const page = Number(req.query.page) || 1
     const limit = Number(req.query.limit) || DEFAULT_LIMIT
-    const offset = getOffset(limit, page);
+    const offset = getOffset(limit, page)
     return Promise.all([
       Restaurant.findAndCountAll({
         include: Category,
@@ -37,14 +37,13 @@ const restaurantController = {
   },
   getRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
-      include: Category, // 拿出關聯的 Category model
-      nest: true,
-      raw: true
+      include: [Category, { model: Comment, include: User }] // 拿出關聯的 Category model
     })
       .then(restaurant => {
+        console.log(restaurant.Comments[0].dataValues)
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         res.render('restaurant', {
-          restaurant
+          restaurant: restaurant.toJSON()
         })
       })
       .catch(err => next(err))
