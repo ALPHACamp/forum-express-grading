@@ -42,7 +42,8 @@ const restaurantController = {
       include: [
         Category,
         { model: Comment, include: User }
-      ]
+      ],
+      order: [[{ model: Comment }, 'createdAt', 'DESC']] // 讓最新的comment可顯示在最上面。
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
@@ -61,6 +62,32 @@ const restaurantController = {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         res.render('dashboard', { restaurant })
       })
+  },
+  getFeeds: (req, res, next) => {
+    return Promise.all([
+      Restaurant.findAll({
+        limit: 10,
+        // 正序排列為ASC，也可同時設多種排序條件，例如：order: [['createdAt', 'DESC'], ['name', 'ASC'], ...]
+        order: [['createdAt', 'DESC']],
+        include: [Category],
+        raw: true,
+        nest: true
+      }),
+      Comment.findAll({
+        limit: 10,
+        order: [['createdAt', 'DESC']],
+        include: [User, Restaurant],
+        raw: true,
+        nest: true
+      })
+    ])
+      .then(([restaurants, comments]) => {
+        res.render('feeds', {
+          restaurants,
+          comments
+        })
+      })
+      .catch(err => next(err))
   }
 }
 

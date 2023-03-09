@@ -50,6 +50,7 @@ const userController = {
         if (!user) throw new Error("This User didn't exists!")
 
         // 避免相同餐廳重複呈現在Profile中。
+        // 作法一：
         user = user.toJSON()
         const userComments = user.Comments || []
         const commentRestaurants = []
@@ -58,6 +59,15 @@ const userController = {
           return commentRestaurants
         })
         user.commentRestaurants = commentRestaurants
+
+        // 作法二：
+        // 利用物件的 property 是 unique 的特性 => 即使重覆 assign 也只是新的蓋掉舊的而已，不會存在重覆的值，判斷有沒有重覆的動作可以完全省略掉。
+
+        // const filteredRestaurants = {}
+        // userComments.forEach(comment => {
+        //   filteredRestaurants[comment.restaurantId] = comment.Restaurant
+        // })
+        // user.commentRestaurants = Object.values(filteredRestaurants)
 
         return res.render('users/profile', { user })
       })
