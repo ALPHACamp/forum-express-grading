@@ -12,3 +12,21 @@
     </div>
   </div>
 </div>
+
+<div class="card">
+  <div class="card-header">
+    {{#if user.Comments.length}}
+    {{user.Comments.length}} commented restaurant(s).
+    {{else}}
+    No commented restaurant yet.
+    {{/if}}
+  </div>
+  <div class="card-body row">
+    {{#each user.Comments}}
+    <div class="col-3">
+      <a href="/restaurants/{{this.Restaurant.id}}"><img src="{{ this.Restaurant.image }}"
+          alt="{{ this.Restaurant.name }}" class="img-fluid"></a>
+    </div>
+    {{/each}}
+  </div>
+</div>
