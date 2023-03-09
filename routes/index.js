@@ -43,6 +43,9 @@ router.delete('/favorite/:restaurantId', authenticated, userController.removeFav
 router.post('/like/:restaurantId', authenticated, userController.addLike) // 點like路由
 router.delete('/like/:restaurantId', authenticated, userController.removeLike) // 收回like路由
 
+router.post('/following/:userId', authenticated, userController.addFollowing) // 追蹤路由
+router.delete('/following/:userId', authenticated, userController.removeFollowing) // 退追路由
+
 router.use('/', (req, res) => res.redirect('/restaurants'))
 router.use('/', generalErrorHandler)
 
