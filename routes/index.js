@@ -34,6 +34,9 @@ router.get('/restaurants/:id', authenticated, restController.getRestaurant) // �
 router.get('/restaurants', authenticated, restController.getRestaurants) // 瀏覽所有餐廳並導入登入狀態驗證
 router.delete('/comments/:id', authenticatedAdmin, commentController.deleteComment) // 評論刪除路由
 router.post('/comments', authenticated, commentController.postComment) // 評論路由
+router.post('/favorite/:restaurantId', authenticated, userController.addFavorite) // 點like路由
+router.delete('/favorite/:restaurantId', authenticated, userController.removeFavorite) // 收回like路由
+
 router.use('/', (req, res) => res.redirect('/restaurants'))
 router.use('/', generalErrorHandler)
 
