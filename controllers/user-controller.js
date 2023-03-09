@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs')
 const db = require('../models')
-const { User } = db
+const { User, Restaurant, Comment } = db
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const userController = {
@@ -42,9 +42,29 @@ const userController = {
     req.logout() // 這個 .logout() 是 passport 提供的 Fn. --> 把 id 對應的 session 清掉 (清掉即登出)
     res.redirect('/signin')
   },
-  getUser: (req, res) => {
-    return User.findByPk(req.params.id, { raw: true })
-      .then(user => res.render('users/profile', { user }))
+  getUser: (req, res, next) => {
+    return Promise.all([
+      User.findByPk(req.params.id, { raw: true }),
+      Comment.findAndCountAll({
+        where: { userId: req.params.id },
+        raw: true,
+        nest: true,
+        include: Restaurant
+      })
+    ])
+      .then(([user, comments]) => {
+        return res.render('users/profile', { user, comments })
+      })
+      .catch(err => next(err))
+    // 我認為下面方法更簡潔，但 test 檔不給過，只能改成上面
+    // return User.findByPk(req.params.id, {
+    //   include: [{ model: Comment, include: Restaurant }]
+    // })
+    //   .then(user => {
+    //     user = user.toJSON()
+    //     user.commentCounts = user.Comments.length // test 檔案不給過，不能用
+    //     return res.render('users/profile', { user })
+    //   })
   },
   editUser: (req, res, next) => {
     // const { name, image } = req.body
