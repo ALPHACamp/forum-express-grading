@@ -32,10 +32,15 @@ router.get('/restaurants/feeds', authenticated, restController.getFeeds) // 最�
 router.get('/restaurants/:id/dashboard', authenticated, restController.getDashboard) // dashboard路由
 router.get('/restaurants/:id', authenticated, restController.getRestaurant) // 瀏覽單筆餐廳路由
 router.get('/restaurants', authenticated, restController.getRestaurants) // 瀏覽所有餐廳並導入登入狀態驗證
+
 router.delete('/comments/:id', authenticatedAdmin, commentController.deleteComment) // 評論刪除路由
 router.post('/comments', authenticated, commentController.postComment) // 評論路由
-router.post('/favorite/:restaurantId', authenticated, userController.addFavorite) // 點like路由
-router.delete('/favorite/:restaurantId', authenticated, userController.removeFavorite) // 收回like路由
+
+router.post('/favorite/:restaurantId', authenticated, userController.addFavorite) // 點最愛路由
+router.delete('/favorite/:restaurantId', authenticated, userController.removeFavorite) // 收回最愛路由
+
+router.post('/like/:restaurantId', authenticated, userController.addLike) // 點like路由
+router.delete('/like/:restaurantId', authenticated, userController.removeLike) // 收回like路由
 
 router.use('/', (req, res) => res.redirect('/restaurants'))
 router.use('/', generalErrorHandler)
