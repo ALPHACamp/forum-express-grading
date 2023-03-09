@@ -11,6 +11,12 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate (models) {
       User.hasMany(models.Comment, { foreignKey: 'userId' }) // 一個使用者可以留多則評論
+
+      User.belongsToMany(models.Restaurant, { // 多對多:Favorite
+        through: models.Favorite,
+        foreignKey: 'userId',
+        as: 'FavoritedRestaurants'
+      })
     }
   };
   User.init({
