@@ -49,10 +49,12 @@ module.exports = app => {
   passport.deserializeUser(async (id, done) => {
     try {
       const foundUser = await User.findByPk(id, {
-        // -撈取user資料時一併透過別名獲取加入最愛的餐廳
+        // -撈取user資料時一併透過別名獲取相關資訊
         include: [
           { model: Restaurant, as: 'FavoritedRestaurants' },
-          { model: Restaurant, as: 'LikedRestaurants' }
+          { model: Restaurant, as: 'LikedRestaurants' },
+          { model: User, as: 'Followers' },
+          { model: User, as: 'Followings' }
         ]
       })
 
