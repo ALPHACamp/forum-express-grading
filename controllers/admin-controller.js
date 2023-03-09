@@ -1,11 +1,6 @@
 
 const { imgurFileHandler } = require('../helpers/file-helpers')
-<<<<<<< HEAD
 const { Restaurant, User, Category } = require('../models')
-=======
-const { Restaurant, User } = require('../models')
->>>>>>> R01
-
 const adminController = {
   getRestaurants: (req, res, next) => {
     Restaurant.findAll({
