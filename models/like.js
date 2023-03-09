@@ -10,11 +10,8 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate (models) {
-<<<<<<< HEAD
       // define association here
 
-=======
->>>>>>> R04
     }
   };
   Like.init({
