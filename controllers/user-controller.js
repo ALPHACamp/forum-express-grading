@@ -43,35 +43,36 @@ const userController = {
     res.redirect('/signin')
   },
   getUser: (req, res, next) => {
-    return Promise.all([
-      User.findByPk(req.params.id, { raw: true }),
-      Comment.findAndCountAll({
-        where: { userId: req.params.id },
-        raw: true,
-        nest: true,
-        include: Restaurant
-      })
-    ])
-      .then(([user, comments]) => {
-        return res.render('users/profile', { user, comments })
-      })
-      .catch(err => next(err))
-    // 我認為下面方法更簡潔，但 test 檔不給過，只能改成上面
-    // return User.findByPk(req.params.id, {
-    //   include: [{ model: Comment, include: Restaurant }]
-    // })
-    //   .then(user => {
-    //     user = user.toJSON()
-    //     user.commentCounts = user.Comments.length // test 檔案不給過，不能用
-    //     return res.render('users/profile', { user })
+    // return Promise.all([
+    //   User.findByPk(req.params.id, { raw: true }),
+    //   Comment.findAndCountAll({
+    //     where: { userId: req.params.id },
+    //     raw: true,
+    //     nest: true,
+    //     include: Restaurant
     //   })
+    // ])
+    //   .then(([user, comments]) => {
+    //     return res.render('users/profile', { user, comments })
+    //   })
+    //   .catch(err => next(err))
+    // 我認為下面方法更簡潔，但 test 檔不給過，只能改成上面
+    return User.findByPk(req.params.id, {
+      include: { model: Comment, include: Restaurant }
+    })
+      .then(user => {
+        if (!user) throw new Error("User doesn't exist!")
+        // user = user.toJSON()
+        // user.commentCounts = user.Comments.length // test 檔案不給過，不能用
+        return res.render('users/profile', { user: user.toJSON() })
+      })
   },
   editUser: (req, res, next) => {
     // const { name, image } = req.body
     // res.render('users/edit')
     return User.findByPk(req.params.id, { raw: true })
       .then(user => {
-        if (!user) throw new Error("User dosen't exist!")
+        if (!user) throw new Error("User doesn't exist!")
         return res.render('users/edit', { user })
       })
       .catch(err => next(err))
