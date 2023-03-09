@@ -2,17 +2,27 @@ const { Restaurant, Category } = require('../models')
 const restaurant = require('../models/restaurant')
 const restaurantController = {
   getRestaurants: (req, res) => {
-    return Restaurant.findAll({
-      include: Category, // 運用 include 一併拿出關聯的 Category model
-      nest: true,
-      raw: true
-    }).then(restaurants => {
+    const categoryId = Number(req.query.categoryId) || ''
+    return Promise.all([
+      Restaurant.findAll({
+        include: Category, // 運用 include 一併拿出關聯的 Category model
+        where: {
+          ...categoryId ? { categoryId } : {} // 檢查categoryId是否為空值
+        },
+        nest: true,
+        raw: true
+      }),
+      Category.findAll({ raw: true })
+    ])
+    .then(([restaurants, categories]) => {
       const data = restaurants.map(r => ({
         ...r,
         description: r.description.substring(0, 50)
       }))
       return res.render('restaurants', {
-        restaurants: data
+        restaurants: data,
+        categories,
+        categoryId
       })
     })
   },
