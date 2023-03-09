@@ -20,7 +20,7 @@ module.exports = {
       opening_hours: {
         type: Sequelize.STRING
       },
-      dscription: {
+      description: {
         type: Sequelize.TEXT
       },
       created_at: {
