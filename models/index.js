@@ -16,7 +16,7 @@ if (config.use_env_variable) {
   sequelize = new Sequelize(config.database, config.username, config.password, config)
 }
 
-// 動態引入其他 models
+// 動態引入其他 models，自動偵測 model 所有檔案，然後載進來
 fs
   .readdirSync(__dirname)
   .filter(file => {
