@@ -34,7 +34,9 @@ passport.deserializeUser((id, cb) => { // 從資料庫取出使用者資料
   return User.findByPk(id, {
     include: [
       { model: Restaurant, as: 'FavoritedRestaurants' },
-      { model: Restaurant, as: 'LikedRestaurants' }
+      { model: Restaurant, as: 'LikedRestaurants' },
+      { model: User, as: 'Followers' }, // 追蹤者
+      { model: User, as: 'Followings' } // 正在追蹤
     ]
   })
     .then(user => cb(null, user.toJSON())) // 整理sequelize包裝了幾層的物件

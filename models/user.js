@@ -11,17 +11,26 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate (models) {
       User.hasMany(models.Comment, { foreignKey: 'userId' }) // 一個使用者可以留多則評論
-
       User.belongsToMany(models.Restaurant, { // 多對多:Favorite
         through: models.Favorite,
         foreignKey: 'userId',
         as: 'FavoritedRestaurants'
       })
-
       User.belongsToMany(models.Restaurant, {
         through: models.Like,
         foreignKey: 'userId',
         as: 'LikedRestaurants'
+      })
+      // 自關聯 (Self-referential Relationships) 或自連接 (Self Joins)
+      User.belongsToMany(User, { // 找出追蹤者
+        through: models.Followship,
+        foreignKey: 'followingId',
+        as: 'Followers'
+      })
+      User.belongsToMany(User, { // 找出自己在追蹤哪些人
+        through: models.Followship,
+        foreignKey: 'followerId',
+        as: 'Followings'
       })
     }
   };
