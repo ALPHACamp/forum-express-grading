@@ -1,9 +1,11 @@
 const { Restaurant, Category, Comment, User } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
-const sessionCheck = []
 
 const restaurantController = {
   getRestaurants: (req, res, next) => {
+    // reset session views
+    req.session.views = 0
+
     const DEFAULT_LIMIT = 9
 
     const categoryId = Number(req.query.categoryId) || ''
@@ -49,12 +51,8 @@ const restaurantController = {
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant doesn't exist!")
         // check repeat
-        const user = req.session.passport.user
-        const restaurantId = restaurant.toJSON().id
-        if (sessionCheck.some(item => item === `${user}:${restaurantId}`)) {
-          return restaurant
-        }
-        sessionCheck.push(`${user}:${restaurantId}`)
+        if (req.session.views === 1) return restaurant
+        req.session.views = 1
         return restaurant.increment({ viewCount: 1 })
       })
       .then(restaurant => {
