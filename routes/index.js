@@ -24,6 +24,7 @@ router.post('/signin', passport.authenticate('local', { failureRedirect: '/signi
 
 router.get('/logout', userController.logout) // 登出路由
 
+router.get('/users/top', authenticated, userController.getTopUsers) // 美食達人
 router.get('/users/:id/edit', authenticated, authenticatedProfile, userController.editUser) // 編輯個人首頁頁面
 router.get('/users/:id', authenticated, userController.getUser) // 瀏覽個人首頁
 router.put('/users/:id', authenticated, upload.single('image'), userController.putUser) // 修改個人首頁
