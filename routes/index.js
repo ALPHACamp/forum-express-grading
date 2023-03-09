@@ -28,6 +28,7 @@ router.get('/users/:id/edit', authenticated, authenticatedProfile, userControlle
 router.get('/users/:id', authenticated, authenticatedProfile, userController.getUser) // 瀏覽個人首頁
 router.put('/users/:id', authenticated, upload.single('image'), userController.putUser) // 修改個人首頁
 
+router.get('/restaurants/feeds', authenticated, restController.getFeeds) // 最新動態路由
 router.get('/restaurants/:id/dashboard', authenticated, restController.getDashboard) // dashboard路由
 router.get('/restaurants/:id', authenticated, restController.getRestaurant) // 瀏覽單筆餐廳路由
 router.get('/restaurants', authenticated, restController.getRestaurants) // 瀏覽所有餐廳並導入登入狀態驗證
