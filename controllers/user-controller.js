@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs')
 const db = require('../models')
-const { User } = db
+const { User, Comment, Restaurant } = db
 const { imgurFileHandler } = require('../helpers/file-helpers')
 const userController = {
   signUpPage: (req, res) => {
@@ -37,9 +37,18 @@ const userController = {
   },
   getUser: async (req, res, next) => {
     try {
-      const user = await User.findByPk(req.params.id, { raw: true })
+      const [user, comments] = await Promise.all([
+        User.findByPk(req.params.id, { raw: true }),
+        Comment.findAndCountAll({
+          include: Restaurant,
+          where: { userId: req.params.id },
+          nest: true,
+          raw: true
+        })
+      ])
       if (!user) throw new Error('Can not find user!')
-      return res.render('users/profile', { user })
+      console.log(comments)
+      return res.render('users/profile', { user, count: comments.count, comments: comments.rows })
     } catch (err) {
       next(err)
     }
