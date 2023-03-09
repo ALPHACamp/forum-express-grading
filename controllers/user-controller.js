@@ -47,7 +47,6 @@ const userController = {
         })
       ])
       if (!user) throw new Error('Can not find user!')
-      console.log(comments)
       return res.render('users/profile', { user, count: comments.count, comments: comments.rows })
     } catch (err) {
       next(err)
