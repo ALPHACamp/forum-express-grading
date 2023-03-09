@@ -16,9 +16,11 @@
   </div>
   <div class="col-md-8">
     <p style="white-space: break-spaces;">{{restaurant.description}}</p>
+
     <a class="btn btn-primary" href="/restaurants/{{restaurant.id}}/dashboard">
       Dashboard
     </a>
+    <div class="d-inline-flex">
       {{#if isFavorited }}
       <form action="/favorite/{{restaurant.id}}?_method=DELETE" method="POST" style="display: contents;">
         <button type="submit" class="btn btn-danger">移除最愛</button>
@@ -28,26 +30,42 @@
         <button type="submit" class="btn btn-primary">加到最愛</button>
       </form>
       {{/if}}
+    </div>
+    <div class="d-inline-flex">
+      {{#if isLiked}}
+      <form action="/like/{{restaurant.id}}?_method=DELETE" method="POST">
+        <button type="submit" class="btn btn-danger m-1">移除like</button>
+      </form>
+      {{else}}
+      <form action="/like/{{restaurant.id}}" method="POST">
+        <button type="submit" class="btn btn-primary m-1">Like</button>
+      </form>
+      {{/if}}
+    </div>
+    
   </div>
-
-  <hr>
 </div>
-{{!-- Comment --}}
-{{!-- 瀏覽評論 --}}
-<h3 class="mb-3">所有評論：</h3>
-{{#each restaurant.Comments}}
+<hr>
+
+<div>
+  {{!-- Comment --}}
+  {{!-- 瀏覽評論 --}}
+  <h3 class="mb-3">所有評論：</h3>
+  {{#each restaurant.Comments}}
   {{#if ../user.isAdmin}}
   <form action="/comments/{{this.id}}?_method=DELETE" method="POST" class="float-end">
     <button type="submit" class="btn btn-danger">Delete</button>
   </form>
   {{/if}}
-<blockquote class="blockquote mb-0">
-  <h4><a href="/users/{{this.User.id}}">{{this.User.name}}</a></h4>
-  <p>{{this.text}}</p>
-  <footer class="blockquote-footer">{{relativeTimeFromNow this.createdAt}}</footer>
-</blockquote>
-<hr />
-{{/each}}
+  <blockquote class="blockquote mb-0">
+    <h4><a href="/users/{{this.User.id}}">{{this.User.name}}</a></h4>
+    <p>{{this.text}}</p>
+    <footer class="blockquote-footer">{{relativeTimeFromNow this.createdAt}}</footer>
+  </blockquote>
+  <hr />
+  {{/each}}
+</div>
+
 {{!--新增評論 --}}
 <form action="/comments" method="POST">
   <div class="form-row mb-3">
@@ -58,3 +76,5 @@
   <button type="submit" class="btn btn-primary">Submit</button>
   <a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
 </form>
+
+</div>
