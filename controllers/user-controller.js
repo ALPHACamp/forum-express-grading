@@ -182,6 +182,24 @@ const userController = {
     } catch (error) {
       return next(error)
     }
+  },
+  getTopUsers: async (req, res, next) => {
+    try {
+      let users = await User.findAll({
+        include: [{ model: User, as: 'Followers' }]
+      })
+
+      users = users.map(user => ({
+        ...user.toJSON(), // -整理格式
+        followerCount: user.Followers.length,
+        // - 判斷目前登入者的是否有追蹤 user 物件
+        isFollowed: getUser(req).Followings.some(f => f.id === user.id)
+      }))
+
+      return res.render('top-users', { users })
+    } catch (error) {
+      return next(error)
+    }
   }
 }
 
