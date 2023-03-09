@@ -22,10 +22,12 @@ const restaurantController = {
     ])
       .then(([restaurants, categories]) => {
         const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
+        const likedRestaurantsId = req.user && req.user.LikedRestaurants.map(lk => lk.id)
         const data = restaurants.rows.map(r => ({
           ...r,
           description: r.description.substring(0, 50),
-          isFavorited: favoritedRestaurantsId.includes(r.id)
+          isFavorited: favoritedRestaurantsId.includes(r.id),
+          isLiked: likedRestaurantsId.includes(r.id)
         }))
         return res.render('restaurants', {
           restaurants: data,
@@ -41,7 +43,8 @@ const restaurantController = {
       include: [
         Category,
         { model: Comment, include: User },
-        { model: User, as: 'FavoritedUsers' }
+        { model: User, as: 'FavoritedUsers' },
+        { model: User, as: 'LikedUsers' }
       ],
       order: [
         [Comment, 'created_at', 'DESC'] // 加入排序Comments
@@ -49,9 +52,10 @@ const restaurantController = {
     })
       .then(async restaurant => {
         const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id)
+        const isLiked = restaurant.LikedUsers.some(lk => lk.id === req.user.id)
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         await restaurant.increment('viewCounts') // 每點擊一次+1，若+2->('viewCounts', { by: 2 })
-        res.render('restaurant', { restaurant: restaurant.toJSON(), isFavorited })
+        res.render('restaurant', { restaurant: restaurant.toJSON(), isFavorited, isLiked })
       })
       .catch(err => next(err))
   },
