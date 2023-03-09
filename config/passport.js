@@ -1,8 +1,11 @@
 const passport = require('passport')
 const LocalStrategy = require('passport-local')
 const bcrypt = require('bcryptjs')
-const db = require('../models')
-const User = db.User
+
+// const db = require('../models')
+// const User = db.User
+const { User, Restaurant } = require('../models')
+
 // set up Passport strategy 設定策略
 passport.use(new LocalStrategy(
   // customize user field 設定客製化選項,passReqToCallback:客製化使用者欄位名稱
@@ -27,11 +30,20 @@ passport.use(new LocalStrategy(
 passport.serializeUser((user, cb) => {
   cb(null, user.id)
 })
-passport.deserializeUser((id, cb) => {
-  User.findByPk(id).then(user => {
-    user = user.toJSON() // 整理sequelize包裝了幾層的物件
-    console.log(user) // 暫時添加
-    return cb(null, user)
+passport.deserializeUser((id, cb) => { // 從資料庫取出使用者資料
+  return User.findByPk(id, {
+    include: [
+      { model: Restaurant, as: 'FavoritedRestaurants' }
+    ]
   })
+    .then(user => cb(null, user.toJSON())) // 整理sequelize包裝了幾層的物件
+    .catch(err => cb(err))
+
+  // 檢查用
+  // .then(user => {
+  // user = user.toJSON()
+  // console.log(user)
+  // return cb(null, user)
+  // })
 })
 module.exports = passport
