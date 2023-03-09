@@ -19,10 +19,10 @@ const restaurantController = {
     return Restaurant.findByPk(req.params.id, {
       include: [Category]
     })
-      .then(restaurant => {
+      .then(async (restaurant) => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
-        restaurant = restaurant.toJSON()
-        return res.render('restaurant', { restaurant })
+        await restaurant.increment('viewCounts')
+        res.render('restaurant', { restaurant: restaurant.toJSON() })
       })
       .catch(err => next(err))
   },
