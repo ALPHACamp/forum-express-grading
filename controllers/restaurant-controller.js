@@ -1,5 +1,6 @@
-const { Restaurant, Category, Comment, User } = require('../models')
+const { Restaurant, Category, Comment, User, Favorite } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
+const assert = require('assert') // 練習用assert
 
 const restaurantController = {
   getRestaurants: (req, res, next) => { // 瀏覽所有餐廳頁面:運用展開運算子 ...
@@ -28,10 +29,12 @@ const restaurantController = {
     ])
       .then(([restaurants, categories]) => {
         const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
+        const likedRestaurants = req.user && req.user.LikedRestaurants.map(lr => lr.id)
         const data = restaurants.rows.map(r => ({ // 多rows來包原本的資料
           ...r,
           description: r.description.substring(0, 50),
-          isFavorited: favoritedRestaurantsId.includes(r.id)
+          isFavorited: favoritedRestaurantsId.includes(r.id),
+          isLiked: likedRestaurants.includes(r.id)
         }))
         return res.render('restaurants', {
           restaurants: data,
@@ -47,24 +50,45 @@ const restaurantController = {
       include: [
         Category,
         { model: Comment, include: User },
-        { model: User, as: 'FavoritedUsers' }
+        { model: User, as: 'FavoritedUsers' },
+        { model: User, as: 'LikedUsers' }
       ]
     }).then(restaurant => {
-      if (!restaurant) throw new Error("Restaurant didn't exist!")
+      assert(restaurant, "Restaurant didn't exist!")
+      // if (!restaurant) throw new Error("Restaurant didn't exist!")
       return restaurant.increment('viewCounts')
     }).then(restaurant => {
+      // 運用some來做迭代,只要一個符合條件的就會立刻回傳停止後方搜尋,做單筆資料搜尋來說更有效率
       const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id)
-      res.render('restaurant', { restaurant: restaurant.toJSON(), isFavorited })
+      const isLiked = restaurant.LikedUsers.some(l => l.id === req.user.id)
+      res.render('restaurant', { restaurant: restaurant.toJSON(), isFavorited, isLiked })
     })
       .catch(err => next(err))
   },
   getDashboard: (req, res, next) => {
-    return Restaurant.findByPk(req.params.id, { // 顯示dashboard
-      include: Category
-    })
-      .then(restaurant => {
+    const { id } = req.params
+    return Promise.all([ // 搜尋三個資料庫:Comment,Restaurant,Favorite
+      Comment.count({
+        where: {
+          restaurantId: id
+        },
+        raw: true
+      }),
+      Restaurant.findByPk(id, {
+        include: [Category],
+        raw: true,
+        nest: true
+      }),
+      Favorite.count({
+        where: {
+          restaurantId: id
+        },
+        raw: true
+      })
+    ])
+      .then(([comments, restaurant, favorite]) => { // 將三筆資料呈現在hbs
         if (!restaurant) throw new Error("Restaurant didn't exist!")
-        res.render('dashboard', { restaurant: restaurant.toJSON() })
+        res.render('dashboard', { restaurant, comments, favorite })
       })
       .catch(err => next(err))
   },
