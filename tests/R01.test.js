@@ -32,7 +32,6 @@ describe('# R01', () => {
         .expect(302, done)
     })
 
-
     it('#3 成功登入', function(done){
       request(app)
         // 對 POST /signin 發出請求，參數是作業指定的使用者帳號密碼
@@ -60,6 +59,7 @@ describe('# R01', () => {
       // 修改 adminController 中的資料庫連線設定，由連向真實的資料庫 -> 改為連向模擬的 User table
       this.adminController = createControllerProxy('../controllers/admin-controller', { User: this.UserMock })
     })
+    
     // 開始測試
     context('# [顯示使用者清單]', () => {
       it(' GET /admin/users ', async () => {
@@ -80,7 +80,6 @@ describe('# R01', () => {
 
     context('# [修改使用者權限] for root', () => {
       before(() => {
-
       // 製作假資料
       // 本 context 會用這筆資料進行測試
         this.UserMock = createModelMock(
