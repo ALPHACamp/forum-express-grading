@@ -42,16 +42,27 @@
       </form>
       {{/if}}
     </div>
+<<<<<<< HEAD
+=======
     
+>>>>>>> R04
   </div>
 </div>
 <hr>
 
 <div>
+<<<<<<< HEAD
+<<<<<<< HEAD
+{{!-- Comment --}}
+{{!-- 瀏覽評論 --}}
+<h3 class="mb-3">所有評論：</h3>
+{{#each restaurant.Comments}}
+=======
   {{!-- Comment --}}
   {{!-- 瀏覽評論 --}}
   <h3 class="mb-3">所有評論：</h3>
   {{#each restaurant.Comments}}
+>>>>>>> R04
   {{#if ../user.isAdmin}}
   <form action="/comments/{{this.id}}?_method=DELETE" method="POST" class="float-end">
     <button type="submit" class="btn btn-danger">Delete</button>

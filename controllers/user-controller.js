@@ -1,6 +1,9 @@
 const bcrypt = require('bcryptjs')
 const { User, Restaurant, Favorite, Followship, Comment, Like } = require('../models')
-const { localFileHandler } = require('../helpers/file-helpers')
+const { getUser } = require('../helpers/auth-helpers')
+// const { localFileHandler } = require('../helpers/file-helpers')
+const { imgurFileHandler } = require('../helpers/file-helpers')
+
 const userController = {
   signUpPage: (req, res) => {
     res.render('signup')
@@ -39,19 +42,18 @@ const userController = {
     res.redirect('/signin')
   },
   getUser: (req, res, next) => {
-    return User.findByPk(req.params.id, {
+    return User.findByPk(getUser(req).id, {
       include: { model: Comment, include: Restaurant },
       nest: true
     })
       .then(user => {
-        console.log('user:', user)
         if (!user) throw new Error("User didn't exist!")
         return res.render('users/profile', { user: user.toJSON() })
       })
       .catch(err => next(err))
   },
   editUser: (req, res, next) => {
-    return User.findByPk(req.params.id, {
+    return User.findByPk(getUser(req).id, {
       raw: true
     })
       .then(user => {
@@ -65,8 +67,8 @@ const userController = {
     if (!name) throw new Error('User name is required!')
     const { file } = req
     return Promise.all([
-      User.findByPk(req.params.id), // 去資料庫查有沒有這間餐廳
-      localFileHandler(file) // 把檔案傳到 file-helper 處理
+      User.findByPk(getUser(req).id), // 去資料庫查有沒有這間餐廳
+      imgurFileHandler(file) // 把檔案傳到 file-helper 處理
     ])
       .then(([user, filePath]) => {
         if (!user) throw new Error("User doesn't exist!")
