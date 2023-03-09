@@ -9,21 +9,27 @@
       <img src="{{this.image}}" width="140px" height="140px" style="transition: opacity 0.5s; opacity:0;"
         onload="this.style.opacity=1;" />
       {{else}}
-      <img src="https://images.squarespace-cdn.com/content/v1/528252b7e4b00150d03a4848/1503802784774-N1DQMHKRAUCNCWGQN31X/RickAndMorty_RickHappy1500.png?format=500w" width="140px" height="140px" />
+      <img
+        src="https://images.squarespace-cdn.com/content/v1/528252b7e4b00150d03a4848/1503802784774-N1DQMHKRAUCNCWGQN31X/RickAndMorty_RickHappy1500.png?format=500w"
+        width="140px" height="140px" />
       {{/if}}
     </a>
     <h2>{{this.name}}</h2>
     <span class="bg-secondary badge">追蹤人數：{{this.followerCount}}</span>
     <p>
+      {{!-- 判斷若是自己，不會顯示追蹤自己 --}}
+      {{#ifCond this.id ../reqUser}}
+      {{else}}
       {{#if this.isFollowed }}
-    <form action="/following/{{this.id}}?_method=DELETE" method="POST" style="display: contents;">
-      <button type="submit" class="btn btn-danger">取消追蹤</button>
-    </form>
-    {{else}}
-    <form action="/following/{{this.id}}" method="POST" style="display: contents;">
-      <button type="submit" class="btn btn-primary">追蹤</button>
-    </form>
-    {{/if}}
+      <form action="/following/{{this.id}}?_method=DELETE" method="POST" style="display: contents;">
+        <button type="submit" class="btn btn-danger">取消追蹤</button>
+      </form>
+      {{else}}
+      <form action="/following/{{this.id}}" method="POST" style="display: contents;">
+        <button type="submit" class="btn btn-primary">追蹤</button>
+      </form>
+      {{/if}}
+      {{/ifCond}}
     </p>
   </div>
   {{/each}}
