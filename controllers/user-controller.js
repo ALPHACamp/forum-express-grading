@@ -1,7 +1,8 @@
 const bcrypt = require('bcryptjs')
-const db = require('../models')
 
-const { User } = db
+const { User } = require('../models')
+const { imgurFileHandler } = require('../helpers/file-helpers')
+const { Promise } = require('sequelize-mock')
 
 const userController = {
   signUpPage: (req, res) => {
@@ -39,6 +40,42 @@ const userController = {
     req.flash('success_messages', '登出成功！')
     req.logout()
     res.redirect('/signin')
+  },
+  getUser: (req, res, next) => {
+    User.findByPk(req.params.id, {
+      raw: true
+    })
+      .then(user => res.render('user/profile', { user }))
+      .catch(err => next(err))
+  },
+  editUser: (req, res, next) => {
+    return User.findByPk(req.params.id, {
+      raw: true
+    })
+      .then(user => {
+        if (!user) throw new Error("User didn't exist!")
+        return res.render('user/edit', { user })
+      })
+      .catch(err => next(err))
+  },
+  putUser: (req, res, next) => {
+    const { name } = req.body
+    const { file } = req
+    if (!name) throw new Error('Name is required!')
+
+    return Promise.all([
+      User.findByPk(req.params.id),
+      imgurFileHandler(file)
+    ])
+      .then(([user, filePath]) => user.update({
+        name: name || user.name,
+        image: filePath || user.image
+      }))
+      .then(user => {
+        req.flash('success_messages', '使用者資料編輯成功')
+        return res.render('user/profile', { user: user.toJSON() })
+      })
+      .catch(err => next(err))
   }
 }
 
