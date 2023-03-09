@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs')
 
-const { User } = require('../models')
+const { User, Restaurant, Comment } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 const { Promise } = require('sequelize-mock')
 
@@ -42,10 +42,19 @@ const userController = {
     res.redirect('/signin')
   },
   getUser: (req, res, next) => {
-    User.findByPk(req.params.id, {
-      raw: true
+    return User.findByPk(req.params.id, {
+      include: [{
+        model: Comment,
+        include: Restaurant
+      }]
     })
-      .then(user => res.render('user/profile', { user }))
+      .then(user => {
+        if (!user) throw new Error("User didn't exist!")
+        return res.render('users/profile', {
+          user: user.toJSON(),
+          comment: user.toJSON().Comments
+        })
+      })
       .catch(err => next(err))
   },
   editUser: (req, res, next) => {
@@ -54,7 +63,7 @@ const userController = {
     })
       .then(user => {
         if (!user) throw new Error("User didn't exist!")
-        return res.render('user/edit', { user })
+        return res.render('users/edit', { user })
       })
       .catch(err => next(err))
   },
@@ -67,13 +76,16 @@ const userController = {
       User.findByPk(req.params.id),
       imgurFileHandler(file)
     ])
-      .then(([user, filePath]) => user.update({
-        name: name || user.name,
-        image: filePath || user.image
-      }))
+      .then(([user, filePath]) => {
+        if (!user) throw new Error("User didn't exist!")
+        user.update({
+          name: name || user.name,
+          image: filePath || user.image
+        })
+      })
       .then(user => {
         req.flash('success_messages', '使用者資料編輯成功')
-        return res.render('user/profile', { user: user.toJSON() })
+        return res.redirect(`/users/${req.params.id}`)
       })
       .catch(err => next(err))
   }
