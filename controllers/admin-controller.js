@@ -48,7 +48,7 @@ const adminController = {
       include: [Category]
     })
       .then(restaurant => {
-        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        if (!restaurant) throw new Error('Restaurant does not exist!')
         res.render('admin/restaurant', { restaurant })
       })
       .catch(err => next(err))
