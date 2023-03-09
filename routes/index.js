@@ -1,8 +1,8 @@
 const express = require('express')
 const router = express.Router()
-
 const passport = require('../config/passport')
 const admin = require('./modules/admin')
+const upload = require('../middleware/multer')
 
 const restController = require('../controllers/restaurant-controller')
 const userController = require('../controllers/user-controller')
@@ -28,6 +28,10 @@ router.get('/restaurants', authenticated, restController.getRestaurants)
 // comment
 router.delete('/comments/:id', commentController.deleteComment)
 router.post('/comments', commentController.postComment)
+// users
+router.get('/users/:id/edit', authenticated, userController.editUser)
+router.get('/users/:id', authenticated, userController.getUser)
+router.put('/users/:id', authenticated, upload.single('image'), userController.putUser)
 
 router.get('/', (req, res) => res.redirect('/restaurants'))
 router.use('/', generalErrorHandler)
