@@ -50,7 +50,7 @@ const userController = {
       .then(user => {
         if (!user) throw new Error("User didn't exist!")
         return res.render('users/profile', {
-          user: user.toJSON(),
+          currentUser: user.toJSON(),
           comment: user.toJSON().Comments
         })
       })
@@ -69,6 +69,11 @@ const userController = {
   putUser: (req, res, next) => {
     const { name } = req.body
     const { file } = req
+
+    if (Number(req.params.id) !== Number(req.user.id)) {
+      return res.redirect(`/users/${req.params.id}`)
+    }
+
     if (!name) throw new Error('Name is required!')
 
     return Promise.all([

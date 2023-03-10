@@ -14,7 +14,7 @@ const restaurantController = {
     const limit = Number(req.query.limit) || DEFAULT_LIMIT
     const offset = getOffset(limit, page)
 
-    Promise.all([
+    return Promise.all([
       Restaurant.findAndCountAll({
         raw: true,
         nest: true,

@@ -1,5 +1,4 @@
-'use strict';
-const { query } = require('express');
+'use strict'
 const faker = require('faker')
 module.exports = {
   up: async (queryInterface, Sequelize) => {
@@ -24,4 +23,4 @@ module.exports = {
   down: async (queryInterface, Sequelize) => {
     await queryInterface.bulkDelete('Comments', null, {})
   }
-};
+}
