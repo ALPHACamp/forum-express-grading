@@ -15,14 +15,14 @@
 
 <div class="card">
   <div class="card-header">
-    {{#ifCond count 0}}
-    No commented restaurant yet.
+    {{#if user.Comments.length}}
+    {{user.Comments.length}} commented restaurant(s).
     {{else}}
-    {{count}} commented restaurant(s).
-    {{/ifCond}}
+    No commented restaurant yet.
+    {{/if}}
   </div>
   <div class="card-body row">
-    {{#each comments}}
+    {{#each user.Comments}}
     <div class="col-3">
       <a href="/restaurants/{{this.Restaurant.id}}"><img src="{{ this.Restaurant.image }}"
           alt="{{ this.Restaurant.name }}" class="img-fluid"></a>

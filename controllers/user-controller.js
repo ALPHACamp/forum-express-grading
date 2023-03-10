@@ -37,18 +37,13 @@ const userController = {
   },
   getUser: async (req, res, next) => {
     try {
-      const [user, comments] = await Promise.all([
-        User.findByPk(req.params.id, { raw: true }),
-        Comment.findAndCountAll({
-          include: Restaurant,
-          where: { userId: req.params.id },
-          nest: true,
-          raw: true
+      const user = await User.findByPk(req.params.id,
+        {
+          include: { model: Comment, include: Restaurant },
+          nest: true
         })
-      ])
       if (!user) throw new Error('Can not find user!')
-      console.log(comments)
-      return res.render('users/profile', { user, count: comments.count, comments: comments.rows })
+      return res.render('users/profile', { user: user.toJSON() })
     } catch (err) {
       next(err)
     }
