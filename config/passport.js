@@ -37,7 +37,9 @@ passport.deserializeUser((id, cb) => {
   User.findByPk(id, {
     include: [
       { model: Restaurant, as: 'FavoritedRestaurants' },
-      { model: Restaurant, as: 'LikeRestaurants' }
+      { model: Restaurant, as: 'LikeRestaurants' },
+      { model: User, as: 'Followers' },
+      { model: User, as: 'Followings' }
     ]
   })
     .then(user => cb(null, user.toJSON())) // 雖然改成 plain object，但暫時不知原因

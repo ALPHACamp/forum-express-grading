@@ -20,7 +20,17 @@ module.exports = (sequelize, DataTypes) => {
       User.belongsToMany(models.Restaurant, {
         through: models.Like,
         foreignKey: 'userId',
-        as: 'LikeRestaurants' // 幫關係取名字
+        as: 'LikeRestaurants' // 幫關係取名字，有點像是命名一個 table
+      })
+      User.belongsToMany(User, {
+        through: models.Followship,
+        foreignKey: 'followingId',
+        as: 'Followers' // 幫關係取名字，我先想成命名一個 table，也就是說，這張表是 followers，它會記錄這個 followingId 被那些 follower follow 了
+      })
+      User.belongsToMany(User, {
+        through: models.Followship,
+        foreignKey: 'followerId',
+        as: 'Followings' // 假設是張表，表的名字 followings(被追蹤者)，意思是 "藉由搜尋某一 followerId，找到他 following 的人們"
       })
     }
   };
