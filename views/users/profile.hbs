@@ -1,0 +1,29 @@
+<div class="card mb-3">
+  <div class="row g-0">
+    <div class="col-md-4">
+      <img src="{{user.image}}" class="img-fluid rounded-start" alt="..." >
+    </div>
+    <div class="col-md-8">
+      <div class="card-body">
+        <h5 class="card-title">{{user.name}}</h5>
+        <p class="card-text">{{user.email}}</p>
+        <p class="card-text">{{length}} 已評論餐廳</p>
+        <a href="/users/{{user.id}}/edit" class="btn btn-primary">edit</a>
+      </div>
+      
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <h5 class="card-header">{{length}} 已評論餐廳</h5>
+  <div class="card-body px-3 py-5">
+    {{#each comment}}
+    <div class="d-inline mx-2">
+      <a href="/restaurants/{{this.Restaurant.id}}">
+        <img src="{{this.Restaurant.image}}" alt="" style="max-height: 100px; max-width: 100px;">
+      </a>
+    </div>
+    {{/each}}
+  </div>
+</div>
