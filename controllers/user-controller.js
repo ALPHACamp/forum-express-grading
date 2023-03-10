@@ -1,4 +1,5 @@
 const bcrypt = require('bcryptjs')
+const assert = require('assert')
 const { User, Restaurant, Comment, Favorite, Like, Followship } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
@@ -41,7 +42,10 @@ const userController = {
   getUser: (req, res, next) => {
     return User.findByPk(req.params.id, {
       include: [
-        { model: Comment, include: Restaurant }
+        { model: Comment, include: Restaurant },
+        { model: Restaurant, as: 'FavoritedRestaurants' },
+        { model: User, as: 'Followers' },
+        { model: User, as: 'Followings' }
       ]
     })
       .then(user => {
@@ -54,7 +58,9 @@ const userController = {
           }
           return acc
         }, [])
-        return res.render('users/profile', { user })
+
+        const isFollowed = user.Followings?.some(d => d.id === user.id)
+        return res.render('users/profile', { user, isFollowed })
       })
       .catch(err => next(err))
   },
@@ -62,17 +68,13 @@ const userController = {
     return User.findByPk(req.params.id)
       .then(user => {
         if (!user) throw new Error("User didn't exist!")
-
-        res.render('users/edit', { user: user.toJSON() })
+        return res.render('users/edit', { user: user.toJSON() })
       })
       .catch(err => next(err))
   },
   putUser: (req, res, next) => {
     const { file } = req
     const { name } = req.body
-    if (Number(req.params.id) !== Number(req.user.id)) {
-      throw new Error('Only can edit own profile！')
-    }
     if (!name.trim()) throw new Error('User name is required!')
 
     return Promise.all([
@@ -81,8 +83,9 @@ const userController = {
     ])
       .then(([user, filePath]) => {
         if (!user) throw new Error("User didn't exist!")
+        assert.equal(user.id, req.user.id, 'Only can edit own profile！')
         return user.update({
-          name: req.body.name,
+          name,
           image: filePath || user.image
         })
       })
