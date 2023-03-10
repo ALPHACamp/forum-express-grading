@@ -26,6 +26,7 @@ router.get('/logout', userController.logout)
 router.get('/users/:id/edit', authenticated, userController.editUser) // 顯示使用者編輯頁面
 router.get('/users/:id', authenticated, userController.getUser) // 顯示使用者資料
 router.put('/users/:id', authenticated, upload.single('image'), userController.putUser) // 送出使用者更新資料
+router.get('/restaurants/feeds', authenticated, restController.getFeeds)
 router.get('/restaurants/:id/dashboard', authenticated, restController.getDashboard) // 顯示 dashboard
 router.get('/restaurants/:id', authenticated, restController.getRestaurant) // 顯示單一餐廳
 router.get('/restaurants', authenticated, restController.getRestaurants)

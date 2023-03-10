@@ -20,6 +20,8 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'Category',
+    tableName: 'Categories',
+    // (加上1) 為避免不同機子可能出現 Uncaught SequelizeDatabaseError: Table 'forum.users' doesn't exist
     underscored: true
   })
   return Category

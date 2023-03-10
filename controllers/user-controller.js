@@ -43,6 +43,7 @@ const userController = {
     res.redirect('/signin')
   },
   getUser: (req, res, next) => {
+    // 第二次嘗試，本地成了，Travis 不行
     // return Promise.all([
     //   User.findByPk(req.params.id, { raw: true }),
     //   Comment.findAndCountAll({
@@ -56,7 +57,6 @@ const userController = {
     //     return res.render('users/profile', { user, comments })
     //   })
     //   .catch(err => next(err))
-    // 我認為下面方法更簡潔，但 test 檔不給過，只能改成上面
     return User.findByPk(req.params.id, {
       include: { model: Comment, include: Restaurant }
     })
@@ -66,6 +66,7 @@ const userController = {
         // user.commentCounts = user.Comments.length // test 檔案不給過，不能用
         return res.render('users/profile', { user: user.toJSON() })
       })
+      .catch(err => next(err))
   },
   editUser: (req, res, next) => {
     // const { name, image } = req.body
