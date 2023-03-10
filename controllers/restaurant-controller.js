@@ -29,7 +29,9 @@ const restaurantController = {
       Category.findAll({ raw: true })
     ])
       .then(([restaurants, categories]) => {
+        // (下1) fr 是 favoritedRestaurant 的縮寫
         const favoritedRestaurantsId = req.user?.FavoritedRestaurants.map(fr => fr.id)
+        const likeRestaurantsId = req.user?.LikeRestaurants.map(lr => lr.id)
         // (下1) 不錯，運用展開運算子跟箭頭函式，直接改 object 內容
         const data = restaurants.rows.map(r => ({
           ...r,
@@ -37,9 +39,9 @@ const restaurantController = {
           // (下1) fr 是 favoritedRestaurant 的縮寫
           // isFavorited: req.user?.FavoritedRestaurants.map(fr => fr.id).includes(r.id)
           // (上1) 效能沒那麼好，可改成 (下1)
-          isFavorited: favoritedRestaurantsId.includes(r.id)
+          isFavorited: favoritedRestaurantsId.includes(r.id),
+          isLiked: likeRestaurantsId.includes(r.id)
         }))
-        console.log(data[0])
         return res.render('restaurants', {
           restaurants: data,
           categories,
@@ -64,16 +66,20 @@ const restaurantController = {
       include: [
         Category,
         { model: Comment, include: User },
-        { model: User, as: 'FavoritedUsers' } // 新增這行 (與 getRestaurants 用法不同)
+        { model: User, as: 'FavoritedUsers' }, // 新增這行 (與 getRestaurants 用法不同)
+        { model: User, as: 'LikedUsers' } // 新增這行 (與 getRestaurants 用法不同)
       ] // 拿出關聯的 Category model
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
+        // (下1) f 是 favoritedUser
         const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id)
+        // (下1) l 是 LikedUser
+        const isLiked = restaurant.LikedUsers.some(l => l.id === req.user.id)
         restaurant.increment('viewCounts', { by: 1 }) //! 教案方法，聰明很多，記下來
         // restaurant.update({ viewCounts: restaurant.viewCounts++ }) // 我的方法，土法煉鋼
         restaurant = restaurant.toJSON()
-        return res.render('restaurant', { restaurant, isFavorited })
+        return res.render('restaurant', { restaurant, isFavorited, isLiked })
       })
       .catch(err => next(err))
   },
