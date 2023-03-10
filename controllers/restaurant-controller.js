@@ -7,8 +7,7 @@ const restaurantController = {
     const page = Number(req.query.page) || 1
     const limit = Number(req.query.limit) || DEFAULT_LIMIT
     const offset = getOffset(limit, page)
-
-    return Promise.all([
+    Promise.all([
       Restaurant.findAndCountAll({
         include: Category,
         where: {
