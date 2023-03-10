@@ -119,6 +119,7 @@ const adminController = {
         if (user.email === 'root@example.com') {
           req.flash('error_messages', 'This user cannot be modified.')
           return res.redirect('back')
+          return next()
         }
 
         return user.update({ isAdmin: !user.isAdmin })
