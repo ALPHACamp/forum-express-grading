@@ -22,18 +22,24 @@ const restaurantController = {
         offset,
         where: { // 這個 where 的 value，物件包物件，原來能這樣
           ...categoryId ? { categoryId } : {} // 這裡的 ...，我猜不是展開運算子，畢竟下面實驗失敗，而且，categoryId 明明就是"一個"數字，為啥要展開？
+          // 結論上，這裡的 ... 還是展開運算子，只是讀取的語法關係，讓上面成功，下面失敗
           // categoryId ? { categoryId } : {}
         }
       }),
       Category.findAll({ raw: true })
     ])
       .then(([restaurants, categories]) => {
-      // console.log(restaurants) // 觀察 include
-      // (下1) 不錯，運用展開運算子跟箭頭函式，直接改 object 內容
+        const favoritedRestaurantsId = req.user?.FavoritedRestaurants.map(fr => fr.id)
+        // (下1) 不錯，運用展開運算子跟箭頭函式，直接改 object 內容
         const data = restaurants.rows.map(r => ({
           ...r,
-          description: r.description.substring(0, 50)
+          description: r.description.substring(0, 50),
+          // (下1) fr 是 favoritedRestaurant 的縮寫
+          // isFavorited: req.user?.FavoritedRestaurants.map(fr => fr.id).includes(r.id)
+          // (上1) 效能沒那麼好，可改成 (下1)
+          isFavorited: favoritedRestaurantsId.includes(r.id)
         }))
+        console.log(data[0])
         return res.render('restaurants', {
           restaurants: data,
           categories,
@@ -57,16 +63,17 @@ const restaurantController = {
     return Restaurant.findByPk(req.params.id, {
       include: [
         Category,
-        { model: Comment, include: User }
+        { model: Comment, include: User },
+        { model: User, as: 'FavoritedUsers' } // 新增這行 (與 getRestaurants 用法不同)
       ] // 拿出關聯的 Category model
     })
       .then(restaurant => {
-        // console.log(restaurant)
         if (!restaurant) throw new Error("Restaurant didn't exist!")
+        const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id)
         restaurant.increment('viewCounts', { by: 1 }) //! 教案方法，聰明很多，記下來
         // restaurant.update({ viewCounts: restaurant.viewCounts++ }) // 我的方法，土法煉鋼
         restaurant = restaurant.toJSON()
-        return res.render('restaurant', { restaurant })
+        return res.render('restaurant', { restaurant, isFavorited })
       })
       .catch(err => next(err))
   },

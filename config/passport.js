@@ -2,7 +2,7 @@ const passport = require('passport')
 const LocalStrategy = require('passport-local')
 const bcrypt = require('bcryptjs')
 const db = require('../models')
-const User = db.User
+const { User, Restaurant } = db
 // set up Passport strategy
 passport.use(new LocalStrategy(
   // customize user field
@@ -34,9 +34,12 @@ passport.serializeUser((user, cb) => {
 })
 passport.deserializeUser((id, cb) => {
   // 反序列化，還原，用 id 找到使用者的物件實例並使用
-  User.findByPk(id).then(user => {
-    user = user.toJSON() // 雖然改成 plain object，但暫時不知原因
-    return cb(null, user)
+  User.findByPk(id, {
+    include: [
+      { model: Restaurant, as: 'FavoritedRestaurants' }
+    ]
   })
+    .then(user => cb(null, user.toJSON())) // 雖然改成 plain object，但暫時不知原因
+    .catch(err => cb(err))
 })
 module.exports = passport
