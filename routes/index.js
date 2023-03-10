@@ -22,6 +22,10 @@ router.get('/signin', userController.signInPage)
 router.post('/signin', passport.authenticate('local', { failureRedirect: '/signin', failureFlash: true }), userController.signIn)
 // logout
 router.get('/logout', userController.logout)
+// users
+router.get('/users/:id/edit', authenticated, userController.editUser)
+router.get('/users/:id', authenticated, userController.getUser)
+router.put('/users/:id', authenticated, upload.single('image'), userController.putUser)
 // restaurant
 router.get('/restaurants/feeds', authenticated, restaurantController.getFeeds)
 router.get('/restaurants/:id/dashboard', authenticated, restController.getDashboard)
@@ -30,15 +34,14 @@ router.get('/restaurants', authenticated, restController.getRestaurants)
 // comment
 router.delete('/comments/:id', commentController.deleteComment)
 router.post('/comments', commentController.postComment)
-// users
-router.get('/users/:id/edit', authenticated, userController.editUser)
-router.get('/users/:id', authenticated, userController.getUser)
-router.put('/users/:id', authenticated, upload.single('image'), userController.putUser)
 // favorite
 router.post('/favorite/:restaurantId', authenticated, userController.addFavorite)
 router.delete('/favorite/:restaurantId', authenticated, userController.removeFavorite)
+// like
+router.post('/like/:restaurantId', authenticated, userController.addLike)
+router.delete('/like/:restaurantId', authenticated, userController.removeLike)
 
-router.get('/', (req, res) => res.redirect('/restaurants'))
+router.use('/', (req, res) => res.redirect('/restaurants'))
 router.use('/', generalErrorHandler)
 
 module.exports = router
