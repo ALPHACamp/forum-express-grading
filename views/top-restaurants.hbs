@@ -15,11 +15,13 @@
           <a href="/restaurants/{{this.id}}">
             <h5 class="card-title">{{this.name}}</h5>
           </a>
-          <p class="card-text">{{this.description}}</p>
           <span class="badge bg-success mb-3">收藏數: {{this.favoritedCount}}</span>
-          <a href="/restaurant/{{this.id}}/dashboard"><button type="button"
+          <p class="card-text">{{this.description}}</p>
+          
+          <a class="btn btn-primary" href="/restaurants/{{this.id}}">Show</a>
+          <a href="/restaurants/{{this.id}}/dashboard"><button type="button"
               class="btn btn-warning">Dashboard</button></a>
-
+              
           {{#if this.isFavorited }}
           <form action="/favorite/{{this.id}}?_method=DELETE" method="POST" style="display: contents;">
             <button type="submit" class="btn btn-danger">移除最愛</button>
