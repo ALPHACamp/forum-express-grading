@@ -111,6 +111,7 @@ const userController = {
       .then(([restaurant, favorite]) => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         if (favorite) throw new Error('You have favorited this restaurant!')
+        // restaurant.increment('favoritedCount', { by: 1 })
 
         return Favorite.create({
           userId: req.user.id,
@@ -129,7 +130,9 @@ const userController = {
     })
       .then(favorite => {
         if (!favorite) throw new Error("You haven't favorited this restaurant")
-
+        // 方法鳥一點，如果 test 沒過再改 Promise.all
+        // Restaurant.findByPk(req.params.restaurantId).decrement('favoriteCounts', { by: 1 }) // 沒成功 先擺著
+        // restaurant.decrement('favoritedCount')
         return favorite.destroy()
       })
       .then(() => res.redirect('back'))
@@ -179,7 +182,7 @@ const userController = {
       include: [{ model: User, as: 'Followers' }]
     })
       .then(users => {
-        //! console.log(users.toJSON()) // 等下來試試
+        // console.log(users.toJSON()) // 等下來試試，沒辦法，非單個結果，還是會噴掉
         // 整理 users 資料，把每個 user 項目都拿出來處理一次，並把新陣列儲存在 users 裡
         const result = users
           .map(user => ({

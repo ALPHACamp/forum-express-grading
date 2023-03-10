@@ -7,7 +7,7 @@ const restaurantController = {
 
     const categoryId = Number(req.query.categoryId) || '' // 還不知 或 當空字元的原因
     // const categoryId = +req.params.categoryId || '' // 與上同意，之後查 + 的用處
-    console.log(categoryId)
+    // console.log(categoryId)
 
     const page = Number(req.query.page) || 1
     const limit = Number(req.query.limit) || DEFAULT_LIMIT // 前面的 Number(...)，只是留著，未來要用可用
@@ -119,6 +119,49 @@ const restaurantController = {
         })
       })
       .catch(err => next(err))
+  },
+  // 可用，但 test 檔不給過，改
+  // getTopRestaurants: (req, res, next) => {
+  //   return Restaurant.findAll({
+  //     // where: { [Op.gt]: 0 }, // 設定收藏數至少大於 0 的事以後再說
+  //     order: [['favoritedCount', 'DESC'], ['name', 'ASC']],
+  //     limit: 10,
+  //     raw: true,
+  //     nest: true
+  //     // include: { model: User, as: 'FavoritedUsers' }
+
+  //   })
+  //     .then(restaurants => {
+  //       // (下1) frIDs 是 favorited restaurant IDs 的縮寫
+  //       const favoritedRestaurantsId = req.user?.FavoritedRestaurants.map(fr => fr.id)
+  //       const data = restaurants.map(r => ({
+  //         ...r,
+  //         // isFavorited: favoritedRestaurantsId.includes(r.id)
+  //         isFavorited: favoritedRestaurantsId.some(frID => frID === r.id)
+  //       }))
+  //       return data
+  //     })
+  //     .then(restaurants => res.render('top-restaurants', { restaurants }))
+  //     .catch(err => next(err))
+  // }
+  getTopRestaurants: (req, res, next) => {
+    return Restaurant.findAll({
+      include: [{ model: User, as: 'FavoritedUsers' }]
+    })
+      .then(restaurants => {
+        restaurants = restaurants.map(restaurant => ({
+          ...restaurant.toJSON(),
+          // description: restaurant.description.substring(0, 50),
+          favoritedCount: restaurant.FavoritedUsers.length,
+          // (下1) fr 代表 favorite restaurant
+          isFavorited: req.user?.FavoritedRestaurants.some(fr => fr.id === restaurant.id)
+        }))
+          .sort((a, b) => b.favoritedCount - a.favoritedCount)
+          .slice(0, 10)
+        res.render('top-restaurants', { restaurants })
+      })
+      .catch(err => next(err))
   }
+
 }
 module.exports = restaurantController
