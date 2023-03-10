@@ -54,7 +54,7 @@ const userController = {
     const { FavoritedRestaurants, Followers, Followings } = req.user
     return Promise.all([
       User.findByPk(req.params.id, { raw: true }),
-      Comment.findAndCountAll({
+      Comment?.findAndCountAll({
         where: { userId: req.params.id },
         include: [Restaurant],
         attributes: [[Sequelize.fn('DISTINCT', Sequelize.col('restaurant_id')), 'restaurant_id']],
@@ -68,13 +68,13 @@ const userController = {
       })])
       .then(([user, comments]) => {
         const Counts = {
-          CommenttedRestaurants: comments.count,
+          CommenttedRestaurants: comments?.count,
           FavoritedRestaurants: FavoritedRestaurants ? FavoritedRestaurants.length : null,
           Followers: Followers.length,
           Followings: Followings.length
         }
         const isFollowed = req.user.Followings.some(f => f.id === Number(req.params.id))
-        res.render('users/profile', { user: req.user, userBySearch: user, CommenttedRestaurants: comments.rows, FavoritedRestaurants, Followers, Followings, Counts, isFollowed })
+        res.render('users/profile', { user: req.user, userBySearch: user, CommenttedRestaurants: comments?.rows, FavoritedRestaurants, Followers, Followings, Counts, isFollowed })
       })
       .catch(err => next(err))
   },
