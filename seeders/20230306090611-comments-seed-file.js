@@ -11,13 +11,13 @@ module.exports = {
       'SELECT id FROM Restaurants ORDER BY id ASC;',
       { type: queryInterface.sequelize.QueryTypes.SELECT }
     )
-    console.log(restaurants)
+    // console.log(restaurants) // 檢查用 可殺
 
     await queryInterface.bulkInsert('Comments',
       Array.from({ length: 50 }, () => ({
         text: faker.lorem.text(),
         user_id: users[Math.floor(Math.random() * users.length)].id,
-        restaurant_id: restaurants[Math.floor(Math.random() * 10)].id, // 僅在前十間餐廳產生 comments，但 restaurant 回傳的順序不定呀
+        restaurant_id: restaurants[Math.floor(Math.random() * 10)].id, // 僅在前十間餐廳產生 comments (restaurant 已調好順序)
         created_at: new Date(),
         updated_at: new Date()
       }))
