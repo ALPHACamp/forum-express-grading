@@ -1,5 +1,6 @@
-const { Restaurant, Category, Comment, User } = require('../models')
+const { Restaurant, Category, Comment, Favorite, User, sequelize } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
+
 const restaurantController = {
   getRestaurants: (req, res, next) => {
     const DEFAULT_LIMIT = 9
@@ -69,17 +70,20 @@ const restaurantController = {
         nest: true,
         raw: true
       }),
-      Comment.findAll({
+      Comment.count({
         where: { restaurantId: req.params.id },
         raw: true
+      }),
+      Favorite.count({
+        where: { restaurantId: req.params.id }
       })
     ])
-      .then(([restaurant, comments]) => {
-        const commentCounts = comments.length
+      .then(([restaurant, commentCount, favoriteCount]) => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         res.render('dashboard', {
           restaurant,
-          commentCounts
+          commentCount,
+          favoriteCount
         })
       })
       .catch(err => next(err))
@@ -106,6 +110,25 @@ const restaurantController = {
           restaurants,
           comments
         })
+      })
+      .catch(err => next(err))
+  },
+  getTopRestaurants: (req, res, next) => {
+    return sequelize.query(`SELECT r.id, name, image, COALESCE(user_count, 0) favoritedCount , description, isFavorited FROM restaurants r
+        LEFT JOIN
+        (SELECT restaurant_id, COUNT(user_id) user_count
+        FROM favorites
+        GROUP BY restaurant_id) AS fc ON r.id = fc.restaurant_id
+        LEFT JOIN
+        (SELECT restaurant_id, COUNT(user_id) AS isFavorited
+        FROM favorites
+        WHERE user_id = ${req.user ? req.user.id : 0}
+        GROUP BY restaurant_id) AS fu ON r.id = fu.restaurant_id
+    ORDER BY user_count DESC
+    LIMIT 10`, { type: sequelize.QueryTypes.SELECT })
+      .then(restaurants => {
+        if (!restaurants) throw new Error('沒有餐廳')
+        return res.render('top-restaurants', { restaurants })
       })
       .catch(err => next(err))
   }
