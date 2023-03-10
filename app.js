@@ -8,7 +8,7 @@ const session = require('express-session')
 const passport = require('./config/passport')
 
 const handlebarsHelpers = require('./helpers/handlebars-helper')
-const { getUser } = require('./helpers/auth-helper')
+const { getUser } = require('./helpers/auth-helpers')
 
 const routes = require('./routes')
 
