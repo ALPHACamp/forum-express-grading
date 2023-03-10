@@ -10,6 +10,7 @@ const commentController = require('../controllers/comment-controller')
 
 const { generalErrorHandler } = require('../middleware/error-handler')
 const { authenticated, authenticatedAdmin } = require('../middleware/auth')
+const restaurantController = require('../controllers/restaurant-controller')
 
 // admin
 router.use('/admin', authenticatedAdmin, admin)
@@ -22,6 +23,7 @@ router.post('/signin', passport.authenticate('local', { failureRedirect: '/signi
 // logout
 router.get('/logout', userController.logout)
 // restaurant
+router.get('/restaurants/feeds', authenticated, restaurantController.getFeeds)
 router.get('/restaurants/:id/dashboard', authenticated, restController.getDashboard)
 router.get('/restaurants/:id', authenticated, restController.getRestaurant)
 router.get('/restaurants', authenticated, restController.getRestaurants)
