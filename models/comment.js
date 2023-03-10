@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
       Comment.belongsTo(models.User, { foreignKey: 'userId' })
     }
   };
-Comment.init({
+  Comment.init({
     text: DataTypes.STRING,
     userId: DataTypes.INTEGER, // 修改這裡
     restaurantId: DataTypes.INTEGER // 修改這裡
