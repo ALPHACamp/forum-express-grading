@@ -15,7 +15,16 @@
     <p style="white-space: break-spaces;">{{restaurant.description}}</p>
     <a class="btn btn-primary" href="/restaurants/{{restaurant.id}}/dashboard">Dashboard</a>
   </div>
-  <hr>
+  {{#if isFavorited }}
+  <form action="/favorite/{{restaurant.id}}?_method=DELETE" method="POST" style="display: contents;">
+    <button type="submit" class="btn btn-danger">Remove from Favorite</button>
+  </form>
+  {{else}}
+  <form action="/favorite/{{restaurant.id}}" method="POST" style="display: contents;">
+    <button type="submit" class="btn btn-primary">Add to Favorite</button>
+  </form>
+  {{/if}}
+  <hr class="mt-5">
 </div>
 {{!-- Comment --}}
 <h3 class="mb-3">All Comments：</h3>
