@@ -85,7 +85,7 @@ const restaurantController = {
       }),
       Comment.findAll({
         limit: 10,
-        include: [Restaurant,User],
+        include: [Restaurant, User],
         order: [['createdAt', 'DESC']],
         raw: true,
         nest: true
