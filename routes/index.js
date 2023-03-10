@@ -18,7 +18,6 @@ router.use('/admin', authenticatedAdmin, admin)
 
 router.get('/signup', userController.signUpPage)
 router.post('/signup', userController.signUp)
-
 router.get('/signin', userController.signInPage)
 router.post('/signin', passport.authenticate('local', { failureRedirect: '/signin', failureFlash: true }), userController.signIn) // 注意是 post
 router.get('/logout', userController.logout)
@@ -26,12 +25,18 @@ router.get('/logout', userController.logout)
 router.get('/users/:id/edit', authenticated, userController.editUser) // 顯示使用者編輯頁面
 router.get('/users/:id', authenticated, userController.getUser) // 顯示使用者資料
 router.put('/users/:id', authenticated, upload.single('image'), userController.putUser) // 送出使用者更新資料
+
 router.get('/restaurants/feeds', authenticated, restController.getFeeds)
 router.get('/restaurants/:id/dashboard', authenticated, restController.getDashboard) // 顯示 dashboard
 router.get('/restaurants/:id', authenticated, restController.getRestaurant) // 顯示單一餐廳
 router.get('/restaurants', authenticated, restController.getRestaurants)
+
 router.delete('/comments/:id', authenticatedAdmin, commentController.deleteComment)
 router.post('/comments', authenticated, commentController.postComment)
+
+router.post('/favorite/:restaurantId', authenticated, userController.addFavorite)
+router.delete('/favorite/:restaurantId', authenticated, userController.removeFavorite)
+
 // router.get('/', (req, res) => res.redirect('/restaurants'))
 router.use('/', (req, res) => res.redirect('/restaurants')) //! 教案說要改成這樣，我先試試上面的
 router.use('/', generalErrorHandler)
