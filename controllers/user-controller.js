@@ -184,7 +184,7 @@ const userController = {
         // 純數字時sort(b-a) 降序,sort(a-b)升序;有字串時 sort((a-b)=>a-b)
         users = users.sort((a, b) => b.followerCount - a.followerCount)
 
-        // 優化版本:另外宣告一個變數
+        // 優化版本:另外宣告一個變數,保留原始的資料不覆蓋
         // const result = users.map(user => ({...user.toJSON(), followerCount: user.Followers.length,
         // isFollowed: req.user.Followings.some(f => f.id === user.id) }))
         // .sort((a, b) => b.followerCount - a.followerCount)
