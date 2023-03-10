@@ -30,10 +30,7 @@ passport.deserializeUser((id, cb) => {
       { model: Restaurant, as: 'LikedRestaurants' }
     ]
   })
-    .then(user => {
-      console.log(user)
-      cb(null, user.toJSON())
-    })
+    .then(user => cb(null, user.toJSON()))
     .catch(err => cb(err))
 })
 module.exports = passport
