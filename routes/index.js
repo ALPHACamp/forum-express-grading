@@ -22,6 +22,7 @@ router.get('/signin', userController.signInPage)
 router.post('/signin', passport.authenticate('local', { failureRedirect: '/signin', failureFlash: true }), userController.signIn) // 注意是 post
 router.get('/logout', userController.logout)
 
+router.get('/users/top', authenticated, userController.getTopUsers)
 router.get('/users/:id/edit', authenticated, userController.editUser) // 顯示使用者編輯頁面
 router.get('/users/:id', authenticated, userController.getUser) // 顯示使用者資料
 router.put('/users/:id', authenticated, upload.single('image'), userController.putUser) // 送出使用者更新資料
@@ -39,6 +40,9 @@ router.delete('/favorite/:restaurantId', authenticated, userController.removeFav
 
 router.post('/like/:restaurantId', authenticated, userController.addLike)
 router.delete('/like/:restaurantId', authenticated, userController.removeLike)
+
+router.post('/following/:userId', authenticated, userController.addFollowing)
+router.delete('/following/:userId', authenticated, userController.removeFollowing)
 
 // router.get('/', (req, res) => res.redirect('/restaurants'))
 router.use('/', (req, res) => res.redirect('/restaurants')) //! 教案說要改成這樣，我先試試上面的
