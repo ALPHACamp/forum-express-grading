@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs') // 載入 bcrypt
 const db = require('../models')
 const assert = require('assert')
-const { User, Restaurant, Comment, Favorite } = db
+const { User, Restaurant, Comment, Favorite, Like } = db
 const { imgurFileHandler } = require('../helpers/file-helpers')
 const helpers = require('../helpers/auth-helpers')
 const userController = {
@@ -117,6 +117,38 @@ const userController = {
       })
       .then(() => res.redirect('back'))
       .catch(err => next(err))
+  },
+  addLike: (req, res, next) => {
+    const { restaurantId } = req.params
+    const userId = helpers.getUser(req).id
+    return Promise.all([
+      Restaurant.findByPk(restaurantId),
+      Like.findOne({
+        where: { userId, restaurantId }
+      })
+    ])
+      .then(([restaurant, like]) => {
+        if (!restaurant) throw new Error("Restaurant didn't exist.")
+        if (like) throw new Error('You already liked this restaurant')
+
+        return Like.create({ userId, restaurantId })
+      })
+      .then(() => res.redirect('back'))
+      .catch(error => next(error))
+  },
+  removeLike: (req, res, next) => {
+    const { restaurantId } = req.params
+    const userId = helpers.getUser(req).id
+    return Like.findOne({
+      where: { userId, restaurantId }
+    })
+      .then(like => {
+        if (!like) throw new Error("You haven't liked this restaurant")
+
+        return like.destroy()
+      })
+      .then(() => res.redirect('back'))
+      .catch(error => next(error))
   }
 }
 module.exports = userController
