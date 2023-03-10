@@ -36,7 +36,8 @@ passport.deserializeUser((id, cb) => {
   // 反序列化，還原，用 id 找到使用者的物件實例並使用
   User.findByPk(id, {
     include: [
-      { model: Restaurant, as: 'FavoritedRestaurants' }
+      { model: Restaurant, as: 'FavoritedRestaurants' },
+      { model: Restaurant, as: 'LikeRestaurants' }
     ]
   })
     .then(user => cb(null, user.toJSON())) // 雖然改成 plain object，但暫時不知原因
