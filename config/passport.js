@@ -33,7 +33,7 @@ passport.deserializeUser(async (id, cb) => {
         { model: Restaurant, as: 'LikedRestaurants' }
       ]
     })
-    return cb(null, user.toJSON())
+    return cb(null, user.toJSON() || user)
   } catch (err) {
     cb(err)
   }
