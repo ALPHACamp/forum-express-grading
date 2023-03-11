@@ -11,3 +11,14 @@
     <a class="btn btn-outline-primary" href="/users/{{user.id}}/edit">Edit</a>
   </div>
 </div>
+<div class="card">
+  <div class="card-header">
+    {{user.Comments.length}}個已評論餐廳
+  </div>
+  <div class="card-body">
+    {{#each user.Comments}}
+      <a href="/restaurants/{{this.Restaurant.id}}"><img src="{{ this.Restaurant.image }}" alt="{{ this.Restaurant.name }}"
+          class="img-fluid" style="max-width: 100px;"></a>
+    {{/each}}
+  </div>
+</div>
