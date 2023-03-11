@@ -1,11 +1,11 @@
-const { Restautant, User, Comment } = require('../models')
+const { Restaurant, User, Comment } = require('../models')
 const commentController = {
   postComment: (req, res, next) => {
     const { text, restaurantId } = req.body
     const userId = req.user.id
     if (!text) throw new Error('comment text id required')
     return Promise.all([
-      Restautant.findByPk(restaurantId),
+      Restaurant.findByPk(restaurantId),
       User.findByPk(userId)
     ])
       .then(([restaurant, user]) => {
@@ -17,6 +17,8 @@ const commentController = {
           userId
         })
       })
+      .then(() => res.redirect(`/restaurants/${restaurantId}`))
+      .catch(err => next(err))
   }
 }
 module.exports = commentController
