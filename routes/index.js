@@ -33,6 +33,7 @@ router.post(
 )
 router.get('/logout', userController.logout)
 
+router.get('/restaurants/top', authenticated, restController.getTopRestaurants)
 router.get('/restaurants/feeds', authenticated, restController.getFeeds)
 router.get(
   '/restaurants/:id/dashboard',
