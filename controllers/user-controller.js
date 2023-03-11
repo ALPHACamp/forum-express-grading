@@ -64,6 +64,8 @@ const userController = {
   },
 
   editUser: (req, res, next) => {
+    if (getUser(req).id !== req.params.id) throw new Error("You can't edit others profile!")
+
     return User.findByPk(getUser(req).id)
       .then(user => {
         if (!user) throw new Error("User didn't exist!")
