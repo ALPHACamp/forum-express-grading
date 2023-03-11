@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs') // 載入 bcrypt
-const { User } = require('../models')
+const { User, Restaurant, Comment } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const userController = {
@@ -40,10 +40,25 @@ const userController = {
     res.redirect('/signin')
   },
   getUser: (req, res, next) => {
-    return User.findByPk(req.params.id)
-      .then(user => {
+    const userId = req.params.id
+    return Promise.all([
+      User.findByPk(userId, { raw: true }),
+      Comment.findAll({
+        // 查詢符合 userId 的評論
+        where: { userId },
+        // 只選取評論中的 restaurantId 欄位
+        attributes: ['restaurantId'],
+        // 以 restaurantId 欄位進行分組
+        group: ['restaurantId'],
+        // 在查詢結果中加入 Restaurant model 的資料
+        include: [Restaurant],
+        nest: true,
+        raw: true
+      })
+    ])
+      .then(([user, comments]) => {
         if (!user) throw new Error("User didn't exist!")
-        res.render('users/profile', { user: user.toJSON() })
+        return res.render('users/profile', { user, comments })
       })
       .catch(err => next(err))
   },
