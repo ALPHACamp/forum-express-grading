@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs')
-const { User } = require('../models')
+const { User, Comment, Restaurant } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const userController = {
@@ -36,11 +36,24 @@ const userController = {
     res.redirect('/signin')
   },
   getUser: (req, res, next) => {
-    return User.findByPk(req.params.id, { raw: true })
-      .then(user => {
+    const userId = req.params.id
+    return Promise.all([
+      User.findByPk(userId, { raw: true }),
+      Comment.findAndCountAll({
+        include: Restaurant,
+        nest: true,
+        raw: true,
+        where: { userId }
+      })
+    ])
+      .then(([user, comments]) => {
         if (!user) throw new Error("User doesn't exist!")
         // user.editable = user.id === req.user.id // 會導致測試無法通過，暫時刪除
-        res.render('users/profile', { user })
+        res.render('users/profile', {
+          user,
+          commentCounts: comments.count || 0,
+          comments: comments.rows || null
+        })
       })
       .catch(err => next(err))
   },

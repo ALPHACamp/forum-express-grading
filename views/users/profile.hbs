@@ -8,10 +8,24 @@
       <div class="card-body">
         <h5 class="card-title fw-bold">{{user.name}}</h5>
         <p class="card-text">{{user.email}}</p>
+        <p class="card-text">{{commentCounts}} 已評論餐廳</p>
         {{!-- {{#if user.editable}} // 會導致測試無法通過，暫時刪除 --}}
         <a href="/users/{{user.id}}/edit" class="btn btn-primary">Edit</a>
         {{!-- {{/if}} --}}
       </div>
     </div>
+  </div>
+</div>
+{{!-- Comment --}}
+<div class="card">
+  <div class="card-header fw-bold">{{commentCounts}} 已評論餐廳</div>
+  <div class="card-body p-4">
+    {{#if comments}}
+    {{#each comments}}
+    <a href="/restaurants/{{this.restaurantId}}" class="d-inline-flex me-4">
+      <img class="img-responsive center-block" src="{{this.Restaurant.image}}" style="width: 100px;">
+    </a>
+    {{/each}}
+    {{/if}}
   </div>
 </div>
