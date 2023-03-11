@@ -37,6 +37,14 @@ const UserController = {
     req.flash('success_messages', '登出成功')
     req.logout()
     res.redirect('/signin')
+  },
+  getUser: (req, res, next) => {
+    const userId = req.params.id
+    return User.findByPk(userId)
+      .then(user => {
+        res.render('users/profile', { user })
+      })
+      .catch(err => next(err))
   }
 }
 module.exports = UserController
