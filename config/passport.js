@@ -2,6 +2,7 @@ const passport = require('passport')
 const LocalStrategy = require('passport-local')
 const bcrypt = require('bcryptjs')
 const { User, Restaurant } = require('../models')
+
 // setup passport strategy
 passport.use(new LocalStrategy(
   // customize user field
@@ -15,18 +16,21 @@ passport.use(new LocalStrategy(
     User.findOne({ where: { email } })
       .then(user => {
         if (!user) return cb(null, false, req.flash('error_messages', '帳號或密碼輸入錯誤！'))
+
         bcrypt.compare(password, user.password).then(res => {
           if (!res) return cb(null, false, req.flash('error_messages', '帳號或密碼輸入錯誤！'))
+
           return cb(null, user)
         })
       })
   }
 ))
 
-passport.serializeUser((user, done) => {
-  done(null, user.id)
+// serialize and deserialize user
+passport.serializeUser((user, cb) => {
+  cb(null, user.id)
 })
-passport.deserializeUser((id, done) => {
+passport.deserializeUser((id, cb) => {
   User.findByPk(id, {
     include: [
       { model: Restaurant, as: 'FavoritedRestaurants' },
@@ -35,7 +39,11 @@ passport.deserializeUser((id, done) => {
       { model: User, as: 'Followings' }
     ]
   })
-    .then(user => { done(null, user.toJSON()) })
-    .catch(err => done(err))
+    .then(user => {
+      user = user.toJSON()
+      return cb(null, user)
+    })
+    .catch(err => cb(err))
 })
+
 module.exports = passport
