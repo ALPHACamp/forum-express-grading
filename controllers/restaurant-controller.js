@@ -1,11 +1,12 @@
-const { Restaurant, Category } = require('../models')
+const { Restaurant, Category, Comment, User } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
+
 const restaurantController = {
   getRestaurants: (req, res, next) => {
     const DEFAULT_LIMIT = 9
     const categoryId = Number(req.query.categoryId) || ''
     const page = Number(req.query.page) || 1
-    const limit = Number(req.query.DEFAULT_LIMIT) || DEFAULT_LIMIT
+    const limit = Number(req.query.limit) || DEFAULT_LIMIT
     const offset = getOffset(limit, page)
     return Promise.all([
       Restaurant.findAndCountAll({
@@ -36,11 +37,13 @@ const restaurantController = {
   },
   getRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
-      include: Category
+      include: [
+        Category,
+        { model: Comment, include: User }
+      ]
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
-
         return restaurant.increment('viewCounts')
       })
       .then(restaurant => {
@@ -58,12 +61,9 @@ const restaurantController = {
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
-
         res.render('dashboard', { restaurant })
       })
       .catch(err => next(err))
   }
-
 }
-
 module.exports = restaurantController
