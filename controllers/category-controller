@@ -13,11 +13,47 @@ const categoryController = {
   },
   postCategory: (req, res, next) => {
     const name = req.body.name
+    console.log(req.body)
     return Category.create({ name })
       .then(() => {
         req.flash('success_messages', 'category was successfully created')
         res.redirect('/admin/categories')
       })
+      .catch(err => next(err))
+  },
+  editCategory: (req, res, next) => { // 新增這段
+    console.log(req.params.id)
+    return Category.findByPk(req.params.id, { raw: true })
+      .then(category => res.render('admin/edit-category', { category }))
+      .catch(err => next(err))
+  },
+  putCategory: (req, res, next) => {
+    const id = req.params.id
+    const { name } = req.body
+    console.log(req.body.name)
+    console.log(name)
+
+    Category.findByPk(id)
+      .then(category => {
+        return category.update({ name });
+      })
+      .then(updatedCategory => {
+        req.flash('success_messages', 'Category updated successfully!');
+        res.redirect('/admin/categories');
+      })
+      .catch(error => {
+        console.error(error);
+        req.flash('error_messages', 'Failed to update category!');
+        res.redirect('/admin/categories');
+      });
+  },
+  deleteCategory: (req, res, next) => {
+    return Category.findByPk(req.params.id)
+      .then(restaurant => {
+        if (!restaurant) throw new Error("Category didn't exist!")
+        return restaurant.destroy()
+      })
+      .then(() => res.redirect('/admin/categories'))
       .catch(err => next(err))
   }
 }
