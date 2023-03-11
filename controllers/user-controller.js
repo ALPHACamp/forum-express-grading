@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs') // 載入 bcrypt
 const db = require('../models')
 const assert = require('assert')
-const { User, Restaurant, Comment, Favorite, Like } = db
+const { User, Restaurant, Comment, Favorite, Like, Followship } = db
 const { imgurFileHandler } = require('../helpers/file-helpers')
 const helpers = require('../helpers/auth-helpers')
 const userController = {
@@ -149,6 +149,57 @@ const userController = {
       })
       .then(() => res.redirect('back'))
       .catch(error => next(error))
+  },
+  getTopUsers: (req, res, next) => {
+    // 撈出所有 User 與 followers 資料
+    return User.findAll({
+      include: [{ model: User, as: 'Followers' }]
+    })
+      .then(users => {
+        users = users.map(user => ({
+          ...user.toJSON(),
+          followerCount: user.Followers.length,
+          isFollowed: req.user.Followings.some(f => f.id === user.id)
+        }))
+        res.render('top-users', { users: users })
+      })
+      .catch(err => next(err))
+  },
+  addFollowing: (req, res, next) => {
+    const { userId } = req.params
+    Promise.all([
+      User.findByPk(userId),
+      Followship.findOne({
+        where: {
+          followerId: req.user.id,
+          followingId: req.params.userId
+        }
+      })
+    ])
+      .then(([user, followship]) => {
+        if (!user) throw new Error("User didn't exist!")
+        if (followship) throw new Error('You are already following this user!')
+        return Followship.create({
+          followerId: req.user.id,
+          followingId: userId
+        })
+      })
+      .then(() => res.redirect('back'))
+      .catch(err => next(err))
+  },
+  removeFollowing: (req, res, next) => {
+    Followship.findOne({
+      where: {
+        followerId: req.user.id,
+        followingId: req.params.userId
+      }
+    })
+      .then(followship => {
+        if (!followship) throw new Error("You haven't followed this user!")
+        return followship.destroy()
+      })
+      .then(() => res.redirect('back'))
+      .catch(err => next(err))
   }
 }
 module.exports = userController
