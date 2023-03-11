@@ -70,11 +70,7 @@ const restaurantController = {
   },
   getDashboard: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
-      include: [
-        Category,
-        Comment,
-        { model: User, as: 'FavoritedUsers' }
-      ]
+      include: [Category, Comment, { model: User, as: 'FavoritedUsers' }]
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
@@ -106,6 +102,23 @@ const restaurantController = {
           restaurants,
           comments
         })
+      })
+      .catch(err => next(err))
+  },
+  getTopRestaurants: (req, res, next) => {
+    return Restaurant.findAll({
+      include: [{ model: User, as: 'FavoritedUsers' }]
+    })
+      .then(restaurants => {
+        const topRestaurants = restaurants.map(restaurant => ({
+          ...restaurant.toJSON(),
+          description: restaurant.description.substring(0, 50),
+          favoritedCount: req.user && restaurant.FavoritedUsers.length,
+          isFavorited: req.user && req.user.FavoritedRestaurants.some(f => f.id === restaurant.id)
+        }))
+          .sort((a, b) => b.favoritedCount - a.favoritedCount)
+          .slice(0, 10)
+        res.render('top-restaurants', { restaurants: topRestaurants })
       })
       .catch(err => next(err))
   }
