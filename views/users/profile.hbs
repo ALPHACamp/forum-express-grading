@@ -1,0 +1,36 @@
+<div class="card-body">
+  <div class="card mb-3 col-10">
+    <div class="row g-0">
+      <div class="col-md-4">
+        <img
+          src="{{#if user.image}}{{user.image}}{{else}}https://inews.gtimg.com/newsapp_bt/0/14664808285/1000.jpg{{/if}}"
+          class="rounded-circle mt-3 ms-3 mb-3" height="320px" width="320px">
+      </div>
+      <div class="col-md-8">
+        <div class="card-body">
+          <h5 class="card-title">{{user.name}}</h5>
+          <p class="card-text">{{user.email}}</p>
+          <p class="mt-4"><strong>{{comments.length}}</strong>已評論餐廳</p>
+          <a href="/users/{{user.id}}/edit" class="btn btn-primary">Edit</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card mt-4">
+    <div class="card-header">
+      <strong>{{comments.length}}</strong>已評論餐廳
+    </div>
+    <div class="card-body">
+      {{#if comments.length}}
+      {{#each comments}}
+      <a href="/restaurants/{{this.Restaurant.id}}" class="me-2" style="text-decoration:none;">
+        <img class="img-thumbnail" src="{{this.Restaurant.image}}" style="width: 100px; height:100px"
+          alt="{{this.Restaurant.name}}">
+      </a>
+      {{/each}}
+      {{else}}
+      <p class="mt-4"><strong>目前沒有任何評論紀錄</strong><br>歡迎分享您的用餐體驗!<br></p>
+      {{/if}}
+    </div>
+  </div>
+</div>
