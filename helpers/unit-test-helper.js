@@ -31,7 +31,7 @@ const createModelMock = (name, data, joinedTableName, sourceData) => {
 
   // 模擬 Sequelize 行為
   // 將 mock user db 中的 findByPK 用 findOne 取代 (sequelize mock not support findByPK)
-  mockModel.findByPk = id => mockModel.findOne({ where: { id } })
+  mockModel.findByPk = id => mockModel.findOne({ where: { id: id } })
   // 將 count 的 function 預設回傳假資料數目 1
   mockModel.count = () => 1
   // 因為 mock 中的 create 有問題，因此指向 upsert function, 這樣可以在 useHandler 中取得 create 呼叫
