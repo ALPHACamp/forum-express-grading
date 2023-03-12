@@ -1,30 +1,33 @@
 {{> restaurant-tabs route='topRestaurants'}}
 <h1>Top 10 人氣餐廳</h1>
 <hr />
-<div class="d-flex flex-column align-items-center" style="text-align: center;">
-  {{#each restaurants}}
-  <div class="card mb-3" style="max-width: 540px;">
-    <div class="row g-0">
-      <div class="col-md-4">
-        <img src="{{this.image}}" class="img-fluid rounded-start" alt="...">
-      </div>
-      <div class="col-md-8">
-        <div class="card-body">
-          <h5 class="card-title"><a class="link-primary" href="/restaurants/{{this.id}}">{{this.name}}</a></h5>
-          <span class="bg-secondary badge bg-secondary">收藏數：{{this.favoritedCount}}</span>
-          <p class="my-4 card-text" style="white-space: break-spaces;">{{this.description}}</p>
-          <a href="/restaurants/{{this.id}}"><button type="button" class="btn btn-primary">Show</button></a>
-          {{#if this.isFavorited }}
-            <form action="/favorite/{{this.id}}?_method=DELETE" method="POST" style="display: contents;"><button
-                type="submit" class="btn btn-danger">移除最愛
-                </button>    
-            </form>
-          {{else}}
-          <form action="/favorite/{{this.id}}" method="POST" style="display: contents;"><button type="submit"
-              class="btn btn-primary">加到最愛</button></form>
-          {{/if}}
-        </div>
-      </div>
+{{#each restaurants}}
+<div class="row w-75 border rounded m-auto my-4 py-3">
+  <div class="col-md-4 d-flex align-items-center justify-content-center">
+    <a href="/restaurants/{{this.id}}">
+      <img src="{{this.image}}" width="160px" height="160px" class="rounded" style="object-fit:cover;" />
+    </a>
+  </div>
+  <div class="col-md-8">
+    <a href="/restaurants/{{this.id}}">
+      <h5 class="card-title">{{this.name}}</h5>
+    </a>
+    <span class="bg-secondary badge">收藏數：{{this.favoritedCount}}</span>
+    <div class="d-flex align-items-center" style="height: 100px;">
+      <div>{{this.description}}</div>
+    </div>
+    <div>
+      <a href="/restaurants/{{this.id}}" class="btn btn-primary me-2">Show</a>
+      {{#if this.isFavorited }}
+      <form action="/favorite/{{this.id}}?_method=DELETE" method="POST" style="display: contents;">
+        <button type="submit" class="btn btn-danger">移除最愛</button>
+      </form>
+      {{else}}
+      <form action="/favorite/{{this.id}}" method="POST" style="display: contents;">
+        <button type="submit" class="btn btn-primary">加到最愛</button>
+      </form>
+      {{/if}}
     </div>
   </div>
-  {{/each}}
+</div>
+{{/each}}
