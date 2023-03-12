@@ -60,20 +60,6 @@ const UserController = {
       .then(() => res.redirect('back'))
       .catch(err => next(err))
   },
-  // removeFavorite: (req, res, next) => {
-  //   return Favorite.findOne({
-  //     where: {
-  //       userId: req.user.id,
-  //       restaurantId: req.params.restaurantId
-  //     }
-  //   })
-  //     .then(favorite => {
-  //       if (!favorite) throw new Error("you have't favorited this restaurant")
-  //       return favorite.destory()
-  //     })
-  //     .then(() => res.redirect('back'))
-  //     .catch(err => next(err))
-  // }
   removeFavorite: (req, res, next) => {
     return Favorite.findOne({
       where: {

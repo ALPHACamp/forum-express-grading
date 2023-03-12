@@ -14,9 +14,11 @@ const restController = {
       Category.findAll({ raw: true })
     ])
       .then(([restaurants, categories]) => {
+        const favoriteRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
         const data = restaurants.map(r => ({
           ...r,
-          description: r.description.substring(0, 50)
+          description: r.description.substring(0, 50),
+          isFavorited: favoriteRestaurantsId.includes(r.id)
         }))
         return res.render('restaurants', { restaurants: data, categories, categoryId })
       })
@@ -26,13 +28,15 @@ const restController = {
     return Restaurant.findByPk(req.params.id, {
       include: [
         Category,
-        { model: Comment, include: User }
+        { model: Comment, include: User },
+        { model: User, as: 'FavoritedUsers' }
       ]
     })
       .then(restaurant => {
+        const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id)
         if (!restaurant) throw new Error("restaurant didn't exist")
         restaurant.increment('viewCounts')
-        res.render('restaurant', { restaurant: restaurant.toJSON() })
+        res.render('restaurant', { restaurant: restaurant.toJSON(), isFavorited })
       })
       .catch(err => next(err))
   },
