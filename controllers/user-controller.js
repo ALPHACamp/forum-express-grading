@@ -2,6 +2,7 @@ const bcrypt = require('bcryptjs')
 // 有點在意和db連線和使用model的部分
 const db = require('../models')
 const { User } = db
+const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const UserController = {
   signUpPage: (req, res) => {
@@ -48,6 +49,24 @@ const UserController = {
   },
   editUser: (req, res, next) => {
     res.render('users/edit')
+  },
+  putUser: (req, res, next) => {
+    const { name } = req.body
+    if (!name) throw new Error('Restaurant name is required!')
+    const { file } = req
+    Promise.all([
+      User.findByPk(req.user.id),
+      imgurFileHandler(file)
+    ])
+      .then(([user, filePath]) => user.update({
+        name,
+        image: filePath || null
+      }))
+      .then(() => {
+        req.flash('success_messages', 'profile was successfully updated')
+        res.redirect(`/users/${req.user.id}`)
+      })
+      .catch(err => next(err))
   }
 }
 module.exports = UserController
