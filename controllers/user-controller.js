@@ -48,22 +48,29 @@ const UserController = {
       .catch(err => next(err))
   },
   editUser: (req, res, next) => {
-    res.render('users/edit')
+    const userId = req.params.id
+    return User.findByPk(userId)
+      .then(user => {
+        res.render('users/edit', { user })
+      })
+      .catch(err => next(err))
   },
   putUser: (req, res, next) => {
     const { name } = req.body
     if (!name) throw new Error('Restaurant name is required!')
     const { file } = req
-    Promise.all([
+    return Promise.all([
       User.findByPk(req.user.id),
       imgurFileHandler(file)
     ])
-      .then(([user, filePath]) => user.update({
-        name,
-        image: filePath || null
-      }))
+      .then(([user, filePath]) => {
+        return user.update({
+          name,
+          image: filePath || user.image
+        })
+      })
       .then(() => {
-        req.flash('success_messages', 'profile was successfully updated')
+        req.flash('success_messages', '使用者資料編輯成功')
         res.redirect(`/users/${req.user.id}`)
       })
       .catch(err => next(err))
