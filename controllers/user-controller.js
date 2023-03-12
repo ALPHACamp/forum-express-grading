@@ -45,6 +45,9 @@ const UserController = {
         res.render('users/profile', { user })
       })
       .catch(err => next(err))
+  },
+  editUser: (req, res, next) => {
+    res.render('users/edit')
   }
 }
 module.exports = UserController
