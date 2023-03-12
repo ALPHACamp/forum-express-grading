@@ -17,14 +17,14 @@
   <hr>
 </div>
 <div class="row">
-  <div class="col-md-4">
-    <div class="row"><strong>{{user.Comments.length}} 已評論餐廳</strong> </div>
-    <div class="row">
+  <div class="row"><strong>{{user.Comments.length}} 已評論餐廳</strong> </div>
+  <div class="row d-flex">
       {{#each user.Comments}}
-      <div class="card" style="width: 18rem;">
-        <a href="/restaurants/{{this.Restaurant.id}}"><img src="{{this.Restaurant.image}}" class="card-img-top" alt="..."></a>
+      <div class="col-md-2" >
+        <div class="card" >
+          <a href="/restaurants/{{this.Restaurant.id}}"><img src="{{this.Restaurant.image}}" class="card-img-top" alt="..."></a>
+        </div>
       </div>
       {{/each}}
-    </div>
   </div>
 </div>
