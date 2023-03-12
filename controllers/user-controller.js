@@ -1,6 +1,6 @@
+const { User } = require('../models')
+const { imgurFileHandler } = require('../helpers/file-helpers')
 const bcrypt = require('bcryptjs')
-const db = require('../models')
-const { User } = db
 const userController = {
   signUpPage: (req, res) => {
     res.render('signup')
@@ -37,6 +37,45 @@ const userController = {
     req.flash('success_messages', '登出成功！')
     req.logout()
     res.redirect('/signin')
+  },
+  getUser: (req, res, next) => {
+    console.log(req.params.id.toString() === req.user.id.toString())
+    if (req.params.id.toString() !== req.user.id.toString()) throw new Error('Access denied: not current user')
+    return User.findByPk(req.params.id)
+      .then(user => {
+        res.render('users/profile', { user: user.toJSON() })
+      })
+      .catch(err => next(err))
+  },
+  editUser: (req, res, next) => {
+    User.findByPk(req.params.id)
+      .then(user => {
+        console.log(user.id)
+        if (user.id !== req.user.id) throw new Error('Access denied: not current user')
+        res.render('users/edit', { user: user.toJSON() })
+      })
+      .catch(err => next(err))
+  },
+  putUser: (req, res, next) => {
+    const { name } = req.body
+    if (!name) throw new Error('Restaurant name is required!')
+    const { file } = req // 把檔案取出來
+    Promise.all([ // 非同步處理
+      User.findByPk(req.params.id), // 去資料庫查有沒有這間餐廳
+      imgurFileHandler(file) // 把檔案傳到 file-helper 處理
+    ])
+      .then(([user, filePath]) => { // 以上兩樣事都做完以後
+        if (!user) throw new Error("User didn't exist!")
+        return user.update({ // 修改這筆資料
+          name,
+          image: filePath || user.image
+        })
+      })
+      .then(() => {
+        req.flash('success_messages', 'user was successfully to update')
+        res.redirect('/admin/restaurants')
+      })
+      .catch(err => next(err))
   }
 }
 module.exports = userController

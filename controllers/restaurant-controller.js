@@ -1,6 +1,6 @@
-const { Restaurant, Category } = require('../models')
+const { Restaurant, Category, Comment, User } = require('../models')
 const restaurantController = {
-  getRestaurants: (req, res) => {
+  getRestaurants: (req, res, next) => {
     return Restaurant.findAll({
       include: Category,
       nest: true,
@@ -14,18 +14,22 @@ const restaurantController = {
         restaurants: data
       })
     })
+      .catch(err => next(err))
   }, // 加逗號，新增以下
   getRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
-      include: Category, // 拿出關聯的 Category model
-      nest: true,
-      raw: true
+      include: [
+        Category,
+        { model: Comment, include: User }
+      ],
+      nest: true
     })
       .then(restaurant => {
+        const rest = restaurant.toJSON()
+        console.log(rest)
         if (!restaurant) throw new Error("Restaurant didn't exist!")
-        console.log(restaurant)
         Restaurant.increment('viewCount', { where: { id: req.params.id } })
-          .then(() => res.render('restaurant', { restaurant }))
+          .then(() => res.render('restaurant', { restaurant: restaurant.toJSON() }))
       })
       .catch(err => next(err))
   },
@@ -40,6 +44,7 @@ const restaurantController = {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         res.render('dashboard', { restaurant })
       })
+      .catch(err => next(err))
   }
 }
 module.exports = restaurantController
