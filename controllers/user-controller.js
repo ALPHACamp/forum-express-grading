@@ -50,6 +50,12 @@ const userController = {
 
         user = user.toJSON()
 
+        user.commentedRestaurants = user.Comments && user.Comments.reduce((acc, c) => {
+          if (!acc.some(r => r.id === c.restaurantId)) {
+            acc.push(c.Restaurant)
+          }
+          return acc
+        }, [])
         res.render('users/profile', {
           user
         })
@@ -61,7 +67,7 @@ const userController = {
       .then(user => {
         if (!user) throw new Error("User didn't exist!")
 
-        res.render('users/edit', { user:user.toJSON() })
+        res.render('users/edit', { user: user.toJSON() })
       })
       .catch(err => next(err))
   },
