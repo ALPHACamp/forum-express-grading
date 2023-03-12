@@ -1,12 +1,6 @@
 const bcrypt = require('bcryptjs')
-<<<<<<< HEAD
 const { imgurFileHandler } = require('../helpers/file-helpers')
-const { User, Restaurant, Comment, Favorite } = require('../models')
-
-=======
-
 const { User, Restaurant, Comment, Favorite, Like } = require('../models')
->>>>>>> R04
 const userController = {
   signUpPage: (req, res) => {
     res.render('signup')
@@ -85,7 +79,6 @@ const userController = {
       .then(() => res.redirect('back'))
       .catch(err => next(err))
   },
-<<<<<<< HEAD
   getUser: (req, res, next) => {
     return User.findByPk(req.params.id, {
       include: { model: Comment, include: Restaurant },
@@ -119,7 +112,8 @@ const userController = {
         req.flash('success_messages', '使用者資料編輯成功')
         return res.redirect(`/users/${req.params.id}`)
       })
-=======
+      .catch(err => next(err))
+  },
   addLike: (req, res, next) => {
     const { restaurantId } = req.params
     return Promise.all([
@@ -156,7 +150,6 @@ const userController = {
         return like.destroy()
       })
       .then(() => res.redirect('back'))
->>>>>>> R04
       .catch(err => next(err))
   }
 }
