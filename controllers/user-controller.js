@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs')
 // 有點在意和db連線和使用model的部分
 const db = require('../models')
-const { User } = db
+const { User, Restaurant, Comment, Favorite } = db
 
 const UserController = {
   signUpPage: (req, res) => {
@@ -37,6 +37,57 @@ const UserController = {
     req.flash('success_messages', '登出成功')
     req.logout()
     res.redirect('/signin')
+  },
+  addFavorite: (req, res, next) => {
+    const { restaurantId } = req.params
+    return Promise.all([
+      Restaurant.findByPk(restaurantId),
+      Favorite.findOne({
+        where: {
+          userId: req.user.id,
+          restaurantId
+        }
+      })
+    ])
+      .then(([restaurant, favorite]) => {
+        if (!restaurant) throw new Error("restaurant didn't exixst")
+        if (favorite) throw new Error('you have favorited this restaurant')
+        return Favorite.create({
+          userId: req.user.id,
+          restaurantId
+        })
+      })
+      .then(() => res.redirect('back'))
+      .catch(err => next(err))
+  },
+  // removeFavorite: (req, res, next) => {
+  //   return Favorite.findOne({
+  //     where: {
+  //       userId: req.user.id,
+  //       restaurantId: req.params.restaurantId
+  //     }
+  //   })
+  //     .then(favorite => {
+  //       if (!favorite) throw new Error("you have't favorited this restaurant")
+  //       return favorite.destory()
+  //     })
+  //     .then(() => res.redirect('back'))
+  //     .catch(err => next(err))
+  // }
+  removeFavorite: (req, res, next) => {
+    return Favorite.findOne({
+      where: {
+        userId: req.user.id,
+        restaurantId: req.params.restaurantId
+      }
+    })
+      .then(favorite => {
+        if (!favorite) throw new Error("You haven't favorited this restaurant")
+
+        return favorite.destroy()
+      })
+      .then(() => res.redirect('back'))
+      .catch(err => next(err))
   }
 }
 module.exports = UserController
