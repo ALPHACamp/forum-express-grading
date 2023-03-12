@@ -1,4 +1,4 @@
-const { User } = require('../models')
+const { User, Comment, Restaurant } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 const bcrypt = require('bcryptjs')
 const userController = {
@@ -40,9 +40,18 @@ const userController = {
   },
   getUser: (req, res, next) => {
     if (req.params.id.toString() !== req.user.id.toString()) throw new Error('Access denied: not current user')
-    return User.findByPk(req.params.id, { raw: true })
+    return User.findByPk(req.params.id, {
+      include: { model: Comment, include: Restaurant }
+    })
       .then(user => {
-        return res.render('users/profile', { user })
+        user = user.toJSON()
+        console.log(user)
+        const uniqueRest = new Set()
+        for (let i = 0; i < user.Comments.length; i++) {
+          uniqueRest.add(user.Comments[i].restaurantId)
+        }
+        console.log(uniqueRest.size)
+        return res.render('users/profile', { user, uniqueRest: uniqueRest.size })
       })
       .catch(err => next(err))
   },
