@@ -63,7 +63,7 @@ const userController = {
       .catch(err => next(err))
   },
   editUser: (req, res, next) => {
-    User.findByPk(req.params.id)
+    return User.findByPk(req.params.id)
       .then(user => {
         if (!user) throw new Error("User didn't exist!")
 
