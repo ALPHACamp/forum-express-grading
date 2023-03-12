@@ -39,20 +39,18 @@ const userController = {
     res.redirect('/signin')
   },
   getUser: (req, res, next) => {
-    console.log(req.params.id.toString() === req.user.id.toString())
     if (req.params.id.toString() !== req.user.id.toString()) throw new Error('Access denied: not current user')
-    return User.findByPk(req.params.id)
+    return User.findByPk(req.params.id, { raw: true })
       .then(user => {
-        res.render('users/profile', { user: user.toJSON() })
+        return res.render('users/profile', { user })
       })
       .catch(err => next(err))
   },
   editUser: (req, res, next) => {
-    User.findByPk(req.params.id)
+    if (req.params.id.toString() !== req.user.id.toString()) throw new Error('Access denied: not current user')
+    return User.findByPk(req.params.id, { raw: true })
       .then(user => {
-        console.log(user.id)
-        if (user.id !== req.user.id) throw new Error('Access denied: not current user')
-        res.render('users/edit', { user: user.toJSON() })
+        return res.render('users/edit', { user })
       })
       .catch(err => next(err))
   },
@@ -60,7 +58,7 @@ const userController = {
     const { name } = req.body
     if (!name) throw new Error('Restaurant name is required!')
     const { file } = req // 把檔案取出來
-    Promise.all([ // 非同步處理
+    return Promise.all([ // 非同步處理
       User.findByPk(req.params.id), // 去資料庫查有沒有這間餐廳
       imgurFileHandler(file) // 把檔案傳到 file-helper 處理
     ])
@@ -72,8 +70,8 @@ const userController = {
         })
       })
       .then(() => {
-        req.flash('success_messages', 'user was successfully to update')
-        res.redirect('/admin/restaurants')
+        req.flash('success_messages', '使用者資料編輯成功')
+        res.redirect(`/users/${req.params.id}`)
       })
       .catch(err => next(err))
   }
