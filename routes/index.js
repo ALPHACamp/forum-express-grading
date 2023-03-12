@@ -10,7 +10,6 @@ const commentController = require('../controllers/comment-controller')
 
 const { generalErrorHandler } = require('../middleware/error-handler')
 const { authenticated, authenticatedAdmin } = require('../middleware/auth')
-const restaurantController = require('../controllers/restaurant-controller')
 
 // admin
 router.use('/admin', authenticatedAdmin, admin)
