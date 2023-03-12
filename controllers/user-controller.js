@@ -45,12 +45,10 @@ const userController = {
     })
       .then(user => {
         user = user.toJSON()
-        console.log(user)
         const uniqueRest = new Set()
         for (let i = 0; i < user.Comments.length; i++) {
           uniqueRest.add(user.Comments[i].restaurantId)
         }
-        console.log(uniqueRest.size)
         return res.render('users/profile', { user, uniqueRest: uniqueRest.size })
       })
       .catch(err => next(err))

@@ -71,7 +71,6 @@ const restaurantController = {
       nest: true
     })
       .then(restaurant => {
-        console.log(restaurant)
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         res.render('dashboard', { restaurant })
       })
