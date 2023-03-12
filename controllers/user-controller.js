@@ -1,5 +1,6 @@
 const { User, Comment, Restaurant, Favorite, Like } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
+const helpers = require('../helpers/auth-helpers')
 const bcrypt = require('bcryptjs')
 const userController = {
   signUpPage: (req, res) => {
@@ -39,26 +40,27 @@ const userController = {
     res.redirect('/signin')
   },
   getUser: (req, res, next) => {
-    if (req.params.id.toString() !== req.user.id.toString()) throw new Error('Access denied: not current user')
     return User.findByPk(req.params.id, {
       include: { model: Comment, include: Restaurant }
     })
       .then(user => {
+        if (req.params.id.toString() !== user.id.toString()) throw new Error('Access denied: not current user')
         user = user.toJSON()
         console.log(user)
         const uniqueRest = new Set()
-        for (let i = 0; i < user.Comments.length; i++) {
-          uniqueRest.add(user.Comments[i].restaurantId)
+        if (user.Comment !== undefined) {
+          for (let i = 0; i < user.Comments.length; i++) {
+            uniqueRest.add(user.Comments[i].restaurantId)
+          }
         }
-        console.log(uniqueRest.size)
         return res.render('users/profile', { user, uniqueRest: uniqueRest.size })
       })
       .catch(err => next(err))
   },
   editUser: (req, res, next) => {
-    if (req.params.id.toString() !== req.user.id.toString()) throw new Error('Access denied: not current user')
     return User.findByPk(req.params.id, { raw: true })
       .then(user => {
+        if (req.params.id.toString() !== user.id.toString()) throw new Error('Access denied: not current user')
         return res.render('users/edit', { user })
       })
       .catch(err => next(err))
