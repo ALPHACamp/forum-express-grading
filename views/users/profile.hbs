@@ -5,13 +5,26 @@
       <ul class="list-unstyled">
         <li><strong>Name:</strong> {{user.name}}</li>
         <li><strong>Email:</strong> {{user.email}}</li>
+        <li><strong>{{user.Comments.length}} 已評論餐廳</strong></li>
       </ul>
       <button type="button" class="btn btn-link">
-        <a class="btn btn-link link-primary" href="/users/{{user.id}}/edit">
-        Edit
+        <a class="btn btn-primary" href="/users/{{user.id}}/edit">
+        Edit My Profile
         </a>
       </button>
     </div>
   </div>
   <hr>
+</div>
+<div class="row">
+  <div class="col-md-4">
+    <div class="row"><strong>{{user.Comments.length}} 已評論餐廳</strong> </div>
+    <div class="row">
+      {{#each user.Comments}}
+      <div class="card" style="width: 18rem;">
+        <a href="/restaurants/{{this.Restaurant.id}}"><img src="{{this.Restaurant.image}}" class="card-img-top" alt="..."></a>
+      </div>
+      {{/each}}
+    </div>
+  </div>
 </div>
