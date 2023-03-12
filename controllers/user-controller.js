@@ -1,4 +1,5 @@
 const bcrypt = require('bcryptjs')
+const { raw } = require('express')
 
 const { User, Restaurant, Comment, Favorite } = require('../models')
 const userController = {
@@ -77,6 +78,14 @@ const userController = {
         return favorite.destroy()
       })
       .then(() => res.redirect('back'))
+      .catch(err => next(err))
+  },
+  getUser: (req, res, next) => {
+    return User.findByPk(req.params.id, { raw: true })
+      .then(user => {
+        if (!user) throw new Error('User does not exist!')
+        return res.render('users/profile', { user })
+      })
       .catch(err => next(err))
   }
 }
