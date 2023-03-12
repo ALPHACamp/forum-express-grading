@@ -55,7 +55,7 @@ const restaurantController = {
         const isFavorited = restaurant.FavoritedUsers.some(
           f => f.id === req.user.id
         )
-        const isLiked = restaurant.FavoritedUsers.some(
+        const isLiked = restaurant.LikedUsers.some(
           f => f.id === req.user.id
         )
         restaurant.increment('viewCounts')
