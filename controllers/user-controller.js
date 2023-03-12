@@ -1,5 +1,6 @@
-const { User, Comment, Restaurant } = require('../models')
+const { User, Comment, Restaurant, Favorite, Like } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
+const helpers = require('../helpers/auth-helpers')
 const bcrypt = require('bcryptjs')
 const userController = {
   signUpPage: (req, res) => {
@@ -39,26 +40,26 @@ const userController = {
     res.redirect('/signin')
   },
   getUser: (req, res, next) => {
-    if (req.params.id.toString() !== req.user.id.toString()) throw new Error('Access denied: not current user')
     return User.findByPk(req.params.id, {
       include: { model: Comment, include: Restaurant }
     })
       .then(user => {
+        if (req.params.id.toString() !== user.id.toString()) throw new Error('Access denied: not current user')
         user = user.toJSON()
-        console.log(user)
         const uniqueRest = new Set()
-        for (let i = 0; i < user.Comments.length; i++) {
-          uniqueRest.add(user.Comments[i].restaurantId)
+        if (user.Comment !== undefined) {
+          for (let i = 0; i < user.Comments.length; i++) {
+            uniqueRest.add(user.Comments[i].restaurantId)
+          }
         }
-        console.log(uniqueRest.size)
         return res.render('users/profile', { user, uniqueRest: uniqueRest.size })
       })
       .catch(err => next(err))
   },
   editUser: (req, res, next) => {
-    if (req.params.id.toString() !== req.user.id.toString()) throw new Error('Access denied: not current user')
     return User.findByPk(req.params.id, { raw: true })
       .then(user => {
+        if (req.params.id.toString() !== user.id.toString()) throw new Error('Access denied: not current user')
         return res.render('users/edit', { user })
       })
       .catch(err => next(err))
@@ -82,6 +83,82 @@ const userController = {
         req.flash('success_messages', '使用者資料編輯成功')
         res.redirect(`/users/${req.params.id}`)
       })
+      .catch(err => next(err))
+  },
+  addFavorite: (req, res, next) => {
+    const { restaurantId } = req.params
+    return Promise.all([
+      Restaurant.findByPk(restaurantId),
+      Favorite.findOne({
+        where: {
+          userId: req.user.id,
+          restaurantId
+        }
+      })
+    ])
+      .then(([restaurant, favorite]) => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        if (favorite) throw new Error('You have favorited this restaurant!')
+
+        return Favorite.create({
+          userId: req.user.id,
+          restaurantId
+        })
+      })
+      .then(() => res.redirect('back'))
+      .catch(err => next(err))
+  },
+  removeFavorite: (req, res, next) => {
+    return Favorite.findOne({
+      where: {
+        userId: req.user.id,
+        restaurantId: req.params.restaurantId
+      }
+    })
+      .then(favorite => {
+        if (!favorite) throw new Error("You haven't favorited this restaurant")
+
+        return favorite.destroy()
+      })
+      .then(() => res.redirect('back'))
+      .catch(err => next(err))
+  },
+  addLike: (req, res, next) => {
+    const { restaurantId } = req.params
+    return Promise.all([
+      Restaurant.findByPk(restaurantId),
+      Like.findOne({
+        where: {
+          userId: req.user.id,
+          restaurantId
+        }
+      })
+    ])
+      .then(([restaurant, like]) => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        if (like) throw new Error('You have liked this restaurant!')
+
+        return Like.create({
+          userId: req.user.id,
+          restaurantId
+        })
+      })
+      .then(() => res.redirect('back'))
+      .catch(err => next(err))
+  },
+  removeLike: (req, res, next) => {
+    return Like.findOne({
+      where: {
+        userId: req.user.id,
+        restaurantId: req.params.restaurantId
+      }
+    })
+      .then(like => {
+        if (!like) throw new Error("You haven't liked this restaurant")
+
+        return like.destroy()
+      })
+      .then(() => res.redirect('back'))
       .catch(err => next(err))
   }
 }

@@ -13,7 +13,6 @@ const categoryController = {
   },
   postCategory: (req, res, next) => {
     const name = req.body.name
-    console.log(req.body)
     return Category.create({ name })
       .then(() => {
         req.flash('success_messages', 'category was successfully created')
@@ -22,7 +21,6 @@ const categoryController = {
       .catch(err => next(err))
   },
   editCategory: (req, res, next) => { // 新增這段
-    console.log(req.params.id)
     return Category.findByPk(req.params.id, { raw: true })
       .then(category => res.render('admin/edit-category', { category }))
       .catch(err => next(err))
@@ -30,8 +28,6 @@ const categoryController = {
   putCategory: (req, res, next) => {
     const id = req.params.id
     const { name } = req.body
-    console.log(req.body.name)
-    console.log(name)
 
     Category.findByPk(id)
       .then(category => {
