@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs')
 // 有點在意和db連線和使用model的部分
 const db = require('../models')
-const { User, Restaurant, Comment, Favorite } = db
+const { User, Restaurant, Favorite, Like } = db
 
 const UserController = {
   signUpPage: (req, res) => {
@@ -71,6 +71,42 @@ const UserController = {
         if (!favorite) throw new Error("You haven't favorited this restaurant")
 
         return favorite.destroy()
+      })
+      .then(() => res.redirect('back'))
+      .catch(err => next(err))
+  },
+  addLike: (req, res, next) => {
+    const { restaurantId } = req.params
+    return Promise.all([
+      Restaurant.findByPk(restaurantId),
+      Like.findOne({
+        where: {
+          userId: req.user.id,
+          restaurantId
+        }
+      })
+    ])
+      .then(([restaurant, like]) => {
+        if (!restaurant) throw new Error("restaurant didn't exixst")
+        if (like) throw new Error('you have liked this restaurant')
+        return Like.create({
+          userId: req.user.id,
+          restaurantId
+        })
+      })
+      .then(() => res.redirect('back'))
+      .catch(err => next(err))
+  },
+  removeLike: (req, res, next) => {
+    return Like.findOne({
+      where: {
+        userId: req.user.id,
+        restaurantId: req.params.restaurantId
+      }
+    })
+      .then(like => {
+        if (!like) throw new Error("you haven't liked this restaurant")
+        return like.destroy()
       })
       .then(() => res.redirect('back'))
       .catch(err => next(err))
