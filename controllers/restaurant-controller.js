@@ -59,6 +59,7 @@ const restaurantController = {
           f => f.id === req.user.id
         )
         restaurant.increment('viewCounts')
+        return restaurant.increment('viewCounts')
         return res.render('restaurant', {
           restaurant: restaurant.toJSON(),
           isFavorited,
@@ -88,6 +89,20 @@ const restaurantController = {
         res.render('feeds', {
           restaurants,
           comments
+        })
+      })
+      .catch(err => next(err))
+  },
+  getDashboard: (req, res, next) => {
+    return Restaurant.findByPk(req.params.id, {
+      include: [
+        Category
+      ]
+    })
+      .then(restaurant => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        return res.render('dashboard', {
+          restaurant: restaurant.toJSON()
         })
       })
       .catch(err => next(err))
