@@ -22,6 +22,7 @@ router.post(
 )
 router.get('/logout', userController.logout)
 router.get('/restaurants/feeds', authenticated, restController.getFeeds)
+router.get('/restaurants/:id/dashboard', restController.getDashboard)
 router.get('/restaurants/:id', authenticated, restController.getRestaurant)
 router.get('/restaurants', authenticated, restController.getRestaurants)
 router.delete(
