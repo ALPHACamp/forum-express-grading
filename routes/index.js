@@ -7,6 +7,7 @@ const userController = require('../controllers/user-controller')
 const commentController = require('../controllers/comment-controller')
 const { authenticated, authenticatedAdmin } = require('../middleware/auth')
 const { generalErrorHandler } = require('../middleware/error-handler')
+const upload = require('../middleware/multer')
 
 router.use('/admin', authenticatedAdmin, admin)
 router.get('/signup', userController.signUpPage)
@@ -21,6 +22,14 @@ router.post(
   userController.signIn
 )
 router.get('/logout', userController.logout)
+router.get('/users/:id/edit', authenticated, userController.editUser)
+router.put(
+  '/users/:id',
+  upload.single('image'),
+  authenticated,
+  userController.putUser
+)
+router.get('/users/:id', authenticated, userController.getUser)
 router.get('/restaurants/feeds', authenticated, restController.getFeeds)
 router.get('/restaurants/:id/dashboard', restController.getDashboard)
 router.get('/restaurants/:id', authenticated, restController.getRestaurant)
