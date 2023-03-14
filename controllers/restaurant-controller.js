@@ -1,5 +1,6 @@
 const { Restaurant, Category, Comment, User } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
+const { getUser } = require('../helpers/auth-helpers')
 const restaurantController = {
   getRestaurants: (req, res, next) => {
     const DEFAULT_LIMIT = 12
@@ -55,9 +56,7 @@ const restaurantController = {
         const isFavorited = restaurant.FavoritedUsers.some(
           f => f.id === req.user.id
         )
-        const isLiked = restaurant.LikedUsers.some(
-          f => f.id === req.user.id
-        )
+        const isLiked = restaurant.LikedUsers.some(f => f.id === req.user.id)
         restaurant.increment('viewCounts')
         return res.render('restaurant', {
           restaurant: restaurant.toJSON(),
@@ -94,14 +93,38 @@ const restaurantController = {
   },
   getDashboard: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
-      include: [
-        Category
-      ]
+      include: [Category]
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         return res.render('dashboard', {
           restaurant: restaurant.toJSON()
+        })
+      })
+      .catch(err => next(err))
+  },
+  getTopRestaurants: (req, res, next) => {
+    // 撈出所有 User 與 followers 資料
+    return Restaurant.findAll({
+      include: [{ model: User, as: 'FavoritedUsers' }]
+    })
+      .then(restaurants => {
+        // 整理 restaurants 資料，把每個 restaurant 項目都拿出來處理一次，並把新陣列儲存在 restaurants 裡
+        restaurants = restaurants
+          .map(restaurant => ({
+            // 整理格式
+            ...restaurant.toJSON(),
+            // 計算追蹤者人數
+            favoritedCount: restaurant.FavoritedUsers.length,
+            // 判斷目前登入使用者是否已追蹤該 user 物件
+            isFavorited: req.user?.FavoritedRestaurants.some(
+              f => f.id === restaurant.id
+            ) || null
+          }))
+          .sort((a, b) => b.favoritedCount - a.favoritedCount)
+          .slice(0, 10)
+        res.render('top-restaurants', {
+          restaurants
         })
       })
       .catch(err => next(err))
