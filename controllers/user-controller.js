@@ -40,14 +40,14 @@ const userController = {
     res.redirect('/signin')
   },
   getUser: (req, res, next) => {
+    if (req.params.id.toString() !== helpers.getUser(req).id.toString()) throw new Error('Access denied: not current user')
     return User.findByPk(req.params.id, {
       include: { model: Comment, include: Restaurant }
     })
       .then(user => {
-        if (req.params.id.toString() !== user.id.toString()) throw new Error('Access denied: not current user')
         user = user.toJSON()
         const uniqueRest = new Set()
-        if (user.Comment !== undefined) {
+        if (user.Comments !== undefined) {
           for (let i = 0; i < user.Comments.length; i++) {
             uniqueRest.add(user.Comments[i].restaurantId)
           }
@@ -57,9 +57,9 @@ const userController = {
       .catch(err => next(err))
   },
   editUser: (req, res, next) => {
+    if (req.params.id.toString() !== helpers.getUser(req).id.toString()) throw new Error('Access denied: not current user')
     return User.findByPk(req.params.id, { raw: true })
       .then(user => {
-        if (req.params.id.toString() !== user.id.toString()) throw new Error('Access denied: not current user')
         return res.render('users/edit', { user })
       })
       .catch(err => next(err))
