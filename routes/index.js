@@ -57,6 +57,12 @@ router.delete(
   authenticated,
   userController.removeLike
 )
+router.post('/following/:userId', authenticated, userController.addFollowing)
+router.delete(
+  '/following/:userId',
+  authenticated,
+  userController.removeFollowing
+)
 // fallback route
 router.use('/', (req, res) => res.redirect('/restaurants'))
 router.use('/', generalErrorHandler)
