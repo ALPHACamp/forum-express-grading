@@ -8,5 +8,8 @@ module.exports = {
   roleToBe: isAdmin => {
     if (!isAdmin) return 'admin'
     return 'user'
+  },
+  ifCond: function (a, b, options) {
+    return a === b ? options.fn(this) : options.inverse(this)
   }
 }
