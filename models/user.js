@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
         as: 'FavoritedRestaurants'
       })
     }
-  };
+  }
   User.init({
     name: DataTypes.STRING,
     email: DataTypes.STRING,
@@ -27,6 +27,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'User',
+    tableName: 'Users',
     underscored: true
   })
   return User
