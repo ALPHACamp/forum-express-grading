@@ -162,6 +162,12 @@ const userController = {
         restaurantId: req.params.restaurantId
       }
     })
+      .then(like => {
+        if (!like) throw new Error("You haven't liked this restaurant!")
+        return like.destroy()
+      })
+      .then(() => res.redirect('back'))
+      .catch(err => next(err))
   }
 }
 

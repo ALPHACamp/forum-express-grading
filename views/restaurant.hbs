@@ -16,7 +16,6 @@
   </div>
   <div class="col-md-8">
     <p style="white-space: break-spaces;">{{restaurant.description}}</p>
-
     <a class="btn btn-primary" href="/restaurants/{{restaurant.id}}/dashboard">Dashboard</a>
     {{#if isFavorited }}
     <form action="/favorite/{{restaurant.id}}?_method=DELETE" method="POST" style="display: contents;">
@@ -27,11 +26,18 @@
       <button type="submit" class="btn btn-primary">加到最愛</button>
     </form>
     {{/if}}
-    
+    {{#if isLiked }}
+    <form action="/like/{{restaurant.id}}?_method=DELETE" method="POST" style="display: contents;">
+      <button type="submit" class="btn btn-danger">Unlike</button>
+    </form>
+    {{else}}
+    <form action="/like/{{restaurant.id}}" method="POST" style="display: contents;">
+      <button type="submit" class="btn btn-primary">Like</button>
+    </form>
+    {{/if}}
   </div>
   <hr>
 </div>
-
 {{!-- Comment --}}
 <h3 class="mb-3">所有評論：</h3>
 {{#each restaurant.Comments}}
@@ -47,7 +53,6 @@
 </blockquote>
 <hr />
 {{/each}}
-
 <form action="/comments" method="POST">
   <div class="form-row mb-3">
     <label class="form-label" for="text">留下評論：</label>
