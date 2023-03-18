@@ -16,7 +16,8 @@ module.exports = (sequelize, DataTypes) => {
   User.init({
     name: DataTypes.STRING,
     email: DataTypes.STRING,
-    password: DataTypes.STRING
+    password: DataTypes.STRING,
+    isAdmin: DataTypes.BOOLEAN // 純 JS 的實作 => 採用駝峰式命名
   }, {
     sequelize,
     modelName: 'User',
