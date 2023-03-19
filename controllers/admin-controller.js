@@ -1,7 +1,27 @@
-const { Restaurant } = require('../models')
+const { Restaurant, User } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const adminController = {
+  getUsers: (req, res, next) => {
+    User.findAll({
+      raw: true
+    })
+      .then(users => res.render('admin/users', { users }))
+      .catch(err => next(err))
+  },
+  patchUser: (req, res, next) => {
+    User.findByPk(req.params.id)
+      .then(user => {
+        if (user.email === 'root@example.com') {
+          return req.flash('error_messages', '禁止變更 root 權限')
+        }
+        user.update({ isAdmin: !user.isAdmin })
+      })
+      .then(() => {
+        res.redirect('/admin/users')
+      })
+      .catch(err => next(err))
+  },
   getRestaurants: (req, res, next) => {
     Restaurant.findAll({
       raw: true
