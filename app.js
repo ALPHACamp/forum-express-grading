@@ -14,7 +14,9 @@ const { getUser } = require('./helpers/auth-helpers') // 解構賦值的用法
 const app = express()
 const port = process.env.PORT || 3000
 const SESSION_SECRET = 'secret'
-app.engine('hbs', handlebars({ extname: '.hbs', helpers: handlebarsHelpers }))
+const helpers = require('handlebars-helpers')
+const multihelpers = helpers()
+app.engine('hbs', handlebars({ extname: '.hbs', helpers: handlebarsHelpers, multihelpers }))
 app.set('view engine', 'hbs')
 app.use(express.urlencoded({ extended: true }))
 app.use(session({ secret: SESSION_SECRET, resave: false, saveUninitialized: false }))
