@@ -3,19 +3,21 @@ const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const adminController = {
   getUsers: (req, res, next) => {
-    User.findAll({
+    return User.findAll({
       raw: true
     })
       .then(users => res.render('admin/users', { users }))
       .catch(err => next(err))
   },
   patchUser: (req, res, next) => {
-    User.findByPk(req.params.id)
+    return User.findByPk(req.params.id)
       .then(user => {
         if (user.email === 'root@example.com') {
-          return req.flash('error_messages', '禁止變更 root 權限')
+          req.flash('error_messages', '禁止變更 root 權限')
+          return res.redirect('back')
         }
         user.update({ isAdmin: !user.isAdmin })
+        req.flash('success_messages', '使用者權限變更成功')
       })
       .then(() => {
         res.redirect('/admin/users')
