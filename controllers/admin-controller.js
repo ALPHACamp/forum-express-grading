@@ -62,7 +62,7 @@ const adminController = {
   },
   getRestaurant: (req, res, next) => {
     Restaurant.findByPk(req.params.id, { // 去資料庫用 id 找一筆資料
-      raw: true, // 找到以後整理格式再回傳
+      raw: true,
       nest: true,
       include: [Category]
     })
@@ -72,7 +72,7 @@ const adminController = {
       })
       .catch(err => next(err))
   },
-  editRestaurant: (req, res, next) => { // 新增這段
+  editRestaurant: (req, res, next) => {
     return Promise.all([
       Restaurant.findByPk(req.params.id, { raw: true }),
       Category.findAll({ raw: true })
@@ -86,14 +86,14 @@ const adminController = {
   putRestaurant: (req, res, next) => {
     const { name, tel, address, openingHours, description, categoryId } = req.body
     if (!name) throw new Error('Restaurant name is required!')
-    const { file } = req // 把檔案取出來
+    const { file } = req
     Promise.all([ // 非同步處理
-      Restaurant.findByPk(req.params.id), // 去資料庫查有沒有這間餐廳
-      imgurFileHandler(file) // 把檔案傳到 file-helper 處理
+      Restaurant.findByPk(req.params.id),
+      imgurFileHandler(file)
     ])
-      .then(([restaurant, filePath]) => { // 以上兩樣事都做完以後
+      .then(([restaurant, filePath]) => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
-        return restaurant.update({ // 修改這筆資料
+        return restaurant.update({
           name,
           tel,
           address,
@@ -109,7 +109,7 @@ const adminController = {
       })
       .catch(err => next(err))
   },
-  deleteRestaurant: (req, res, next) => { // 新增以下
+  deleteRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id)
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
