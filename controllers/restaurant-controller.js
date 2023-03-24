@@ -17,8 +17,9 @@ const restaurantController = {
     })
   },
   getRestaurant: (req, res, next) => {
+    Restaurant.increment('view_counts', { where: { id: req.params.id } })
     return Restaurant.findByPk(req.params.id, {
-      include: Category, // 拿出關聯的 Category model
+      include: Category,
       nest: true,
       raw: true
     })
@@ -29,6 +30,17 @@ const restaurantController = {
         })
       })
       .catch(err => next(err))
+  },
+  getDashboard: (req, res, next) => {
+    return Restaurant.findByPk(req.params.id, {
+      include: Category,
+      nest: true,
+      raw: true
+    })
+      .then(restaurant => {
+        console.log(restaurant.viewCount)
+        res.render('dashboard', { restaurant })
+      })
   }
 }
 module.exports = restaurantController
