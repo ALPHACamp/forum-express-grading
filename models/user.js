@@ -17,7 +17,8 @@ module.exports = (sequelize, DataTypes) => {
     name: DataTypes.STRING,
     email: DataTypes.STRING,
     password: DataTypes.STRING,
-    isAdmin: DataTypes.BOOLEAN // 純 JS 的實作 => 採用駝峰式命名
+    isAdmin: DataTypes.BOOLEAN,
+    image: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'User',
