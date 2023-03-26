@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs')
 const db = require('../models')
-const { User } = db
+const { Restaurant, User, Comment } = db
 const { imgurFileHandler } = require('../helpers/file-helpers')
 const userController = {
   signUpPage: (req, res) => {
@@ -38,13 +38,16 @@ const userController = {
   },
   getUser: (req, res, next) => {
     return User.findByPk(req.params.id, {
-      nest: true,
-      raw: true
+      include: { model: Comment, include: Restaurant },
+      nest: true
     })
       .then(user => {
-        return res.render('users/profile', { user })
+        return res.render('users/profile', {
+          user: user.toJSON(),
+          commentedRestaurants: user.toJSON().Comments
+        })
       })
-      .catch(err => next(err)) // 接住前面拋出的錯誤，呼叫專門做錯誤處理的 middleware
+      .catch(err => next(err))
   },
   editUser: (req, res, next) => {
     return User.findByPk(req.params.id, {
