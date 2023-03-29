@@ -1,10 +1,12 @@
 const { Restaurant } = require('../models') // 新增這裡
 
 const adminController = {
-  getRestaurants: (req, res) => {
-    return Restaurant.findAll({ raw: true }).then(restaurants => {
-      return res.render('admin/restaurants', { restaurants: restaurants })
+  getRestaurants: (req, res, next) => {
+    Restaurant.findAll({
+      raw: true
     })
+      .then(restaurants => res.render('admin/restaurants', { restaurants }))
+      .catch(err => next(err))
   }, // 補逗點
   createRestaurant: (req, res) => {
     return res.render('admin/create-restaurant')
@@ -23,6 +25,16 @@ const adminController = {
       .then(() => {
         req.flash('success_messages', 'restaurant was successfully created') // 在畫面顯示成功提示
         res.redirect('/admin/restaurants') // 新增完成後導回後台首頁
+      })
+      .catch(err => next(err))
+  },
+  getRestaurant: (req, res, next) => {
+    Restaurant.findByPk(req.params.id, {
+      raw: true
+    })
+      .then(restaurant => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        res.render('admin/restaurant', { restaurant })
       })
       .catch(err => next(err))
   }
