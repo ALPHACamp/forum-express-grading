@@ -3,6 +3,7 @@ const handlebars = require('express-handlebars')
 const routes = require('./routes')
 const flash = require('connect-flash')
 const session = require('express-session')
+const passport = require('passport')
 
 const app = express()
 const port = process.env.PORT || 3000
@@ -13,6 +14,8 @@ app.engine('hbs', handlebars({ extname: '.hbs' }))
 app.use(express.urlencoded({ extended: true }))
 
 app.use(session({ secret: SESSION_SECRET, resave: false, saveUninitialized: false }))
+app.use(passport.initialize())
+app.use(passport.session())
 
 app.use(flash())
 app.use((req, res, next) => {
