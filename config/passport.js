@@ -28,6 +28,9 @@ passport.serializeUser((user, cb) => {
 
 passport.deserializeUser((id, cb) => {
   User.findByPk(id).then(user => {
+    // 將 user 變為 JSON 格式才能讓 view 讀取
+    user = user.toJSON()
+    console.log(user)
     return cb(null, user)
   })
 })
