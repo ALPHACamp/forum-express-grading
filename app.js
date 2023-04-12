@@ -5,12 +5,13 @@ const flash = require('connect-flash')
 const session = require('express-session')
 const passport = require('passport')
 const { getUser } = require('./helpers/auth-helpers')
+const handlebarsHelper = require('./helpers/handlebars-helper')
 
 const app = express()
 const port = process.env.PORT || 3000
 const SESSION_SECRET = 'secret'
 
-app.engine('hbs', handlebars({ extname: '.hbs' }))
+app.engine('hbs', handlebars({ extname: '.hbs', helpers: handlebarsHelper }))
 
 app.use(express.urlencoded({ extended: true }))
 
