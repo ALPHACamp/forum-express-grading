@@ -39,6 +39,38 @@ const adminController = {
         res.render('admin/restaurant', { restaurant })
       })
       .catch(err => next(err))
+  },
+  editRestaurant: (req, res, next) => {
+    Restaurant.findByPk(req.params.id, {
+      raw: true
+    })
+      .then(restaurant => {
+        if (!restaurant) throw new Error("Restaurant didn't exit")
+
+        res.render('admin/edit-restaurant', { restaurant })
+      })
+      .catch(err => next(err))
+  },
+  putRestaurant: (req, res, next) => {
+    const { name, tel, address, openingHours, description } = req.body
+
+    if (!name) throw new Error('Restaurant name is required!')
+    // 不需要設置 raw 因為後續還要進行 sequelize 的處裡
+    Restaurant.findByPk(req.params.id)
+      .then(restaurant => {
+        return restaurant.update({
+          name,
+          tel,
+          address,
+          openingHours,
+          description
+        })
+      })
+      .then(() => {
+        req.flash('success_messages', 'restaurant was updated successfully!')
+        res.redirect('/admin/restaurants')
+      })
+      .catch(err => next(err))
   }
 }
 
