@@ -7,6 +7,7 @@ const admin = require('./modules/admin.js')
 const restController = require('../controllers/restaurant-controller.js')
 const userController = require('../controllers/user-controller.js')
 
+const  { authenticated } = require('../middleware/auth.js')
 const { generalErrorHandler } = require('../middleware/error-handler.js')
 
 router.use('/admin', admin)
@@ -21,7 +22,7 @@ router.post('/signin', passport.authenticate('local', { failureRedirect: '/signi
 
 router.get('/logout', userController.signOut)
 
-router.get('/restaurants', restController.getRestaurants)
+router.get('/restaurants', authenticated, restController.getRestaurants)
 
 router.get('/', (req, res) => res.redirect('/restaurants'))
 

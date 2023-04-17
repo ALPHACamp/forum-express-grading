@@ -5,7 +5,7 @@ const connectFlash = require('connect-flash')
 
 const routes = require('./routes')
 const passport = require('./config/passport.js')
-const getUser = require('./helpers/auth-helpers.js')
+const { getUser } = require('./helpers/auth-helpers.js')
 
 const app = express()
 const port = process.env.PORT || 3000
