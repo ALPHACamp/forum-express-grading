@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
 
+const passport = require('../config/passport.js')
 const admin = require('./modules/admin.js')
 
 const restController = require('../controllers/restaurant-controller.js')
@@ -14,11 +15,16 @@ router.get('/signup', userController.signUpPage)
 
 router.post('/signup', userController.signUp)
 
+router.get('/signin', userController.signInPage)
+
+router.post('/signin', passport.authenticate('local', { failureRedirect: '/signin' }), userController.signIn)
+
+router.get('/logout', userController.signOut)
+
 router.get('/restaurants', restController.getRestaurants)
 
 router.get('/', (req, res) => res.redirect('/restaurants'))
 
-router.use('/', generalErrorHandler)
-// router.use(generalErrorHandler)
+router.use(generalErrorHandler)
 
 module.exports = router

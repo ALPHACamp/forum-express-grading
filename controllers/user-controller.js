@@ -7,6 +7,7 @@ const userController = {
   signUpPage: (req, res) => {
     return res.render('signup')
   },
+
   signUp: async (req, res, next) => {
     try {
       if (req.body.password !== req.body.passwordCheck) throw new Error('Passwords do not match!')
@@ -20,6 +21,21 @@ const userController = {
       console.log(err)
       next(err)
     }
+  },
+
+  signInPage: (req, res) => {
+    return res.render('signin')
+  },
+
+  signIn: (req, res) => {
+      req.flash('success_messages', '成功登入！')
+      res.redirect('/restaurants')
+  },
+
+  signOut: (req, res) => {
+    req.logout()
+    req.flash('success_messages', '登出成功！')
+    res.redirect('/signin')
   }
 }
 
