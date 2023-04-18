@@ -3,9 +3,11 @@ const router = express.Router()
 
 const adminController = require('../../controllers/admin-controller.js')
 
-router.get('/restaurants', adminController.getRestaurants)
-
 router.get('/restaurants/create', adminController.createRestaurant)
+
+router.get('/restaurants/:id', adminController.getRestaurant)
+
+router.get('/restaurants', adminController.getRestaurants)
 
 router.post('/restaurants', adminController.postRestaurant)
 
