@@ -1,5 +1,5 @@
 const { Restaurant } = require('../models')
-const { localFileHandler } = require('../helpers/file-helper')
+const { imgurFileHandler } = require('../helpers/file-helper')
 const adminController = {
   getRestaurants: (req, res, next) => {
     Restaurant.findAll({
@@ -19,7 +19,7 @@ const adminController = {
 
     const { file } = req
 
-    localFileHandler(file)
+    imgurFileHandler(file)
       .then(filePath => Restaurant.create({
         name,
         tel,
@@ -64,7 +64,7 @@ const adminController = {
     const { file } = req
     // 非同步處理，要首先處理這兩個 promise 且這兩個 promise沒有優先順序，因此用 promise.all 來等這兩個 promise 處理完畢後才接續下面的動作。
     Promise.all([
-      localFileHandler(file),
+      imgurFileHandler(file),
       Restaurant.findByPk(req.params.id)
     ])
       .then(([filePath, restaurant]) => {
