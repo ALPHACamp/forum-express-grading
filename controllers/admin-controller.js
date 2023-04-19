@@ -1,5 +1,7 @@
 const { Restaurant } = require('../models')
 
+const { localFileHandler } = require('../helpers/file-helpers.js')
+
 const adminController = {
   getRestaurants: async (req, res, next) => {
     try {
@@ -17,7 +19,9 @@ const adminController = {
   postRestaurant: async (req, res, next) => {
     try {
       if (!req.body.name) throw new Error('Restaurant name is required!')
-      await Restaurant.create(Object.assign({}, req.body))
+      const { file } = req
+      const filePath = await localFileHandler(file)
+      await Restaurant.create(Object.assign({ image: filePath || null }, req.body))
       req.flash('success_messages', 'restaurant was successfully created')
       res.redirect('/admin/restaurants')
     } catch (err) {
@@ -51,9 +55,11 @@ const adminController = {
     try {
       if (!req.body.name) throw new Error('Restaurant name is required!')
       const id = req.params.id
+      const { file } = req
+      const filePath = await localFileHandler(file)
       const restaurant = await Restaurant.findByPk(id)
       if (!restaurant) throw new Error("Restaurant didn't exist!")
-      await restaurant.update(Object.assign({}, req.body))
+      await restaurant.update(Object.assign({ image: filePath || restaurant.image }, req.body))
       req.flash('success_messages', 'restaurant was successfully to update')
       res.redirect('/admin/restaurants')
     } catch (err) {

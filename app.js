@@ -3,6 +3,7 @@ const exphbs = require('express-handlebars')
 const expSession = require('express-session')
 const connectFlash = require('connect-flash')
 const methodOverride = require('method-override')
+const path = require('path')
 
 const routes = require('./routes')
 const passport = require('./config/passport.js')
@@ -14,6 +15,7 @@ const port = process.env.PORT || 3000
 app.engine('hbs', exphbs({ extname: '.hbs', helpers: require('./helpers/hbs-helpers.js') }))
 app.set('view engine', 'hbs')
 
+app.use('/upload', express.static(path.join(__dirname, 'upload')))
 app.use(methodOverride('_method'))
 app.use(express.urlencoded({ extended: true }))
 app.use(expSession({ secret: 'secret', resave: false, saveUninitialized: false }))
