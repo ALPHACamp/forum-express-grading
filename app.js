@@ -5,6 +5,10 @@ const connectFlash = require('connect-flash')
 const methodOverride = require('method-override')
 const path = require('path')
 
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
+
 const routes = require('./routes')
 const passport = require('./config/passport.js')
 const { getUser } = require('./helpers/auth-helpers.js')
