@@ -10,7 +10,8 @@ const { getUser } = require('./helpers/auth-helpers') // 增加這行，引入�
 const routes = require('./routes')
 
 const app = express()
-const port = process.env.PORT || 3000
+// const port = process.env.PORT || 3000
+const port = process.env.PORT || 8080
 const db = require('./models') // 暫時新增這行，引入資料庫，檢查完可刪
 const SESSION_SECRET = 'secret'
 
