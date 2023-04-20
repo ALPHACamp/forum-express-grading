@@ -1,4 +1,4 @@
-const { Restaurant } = require('../models')
+const { Restaurant, User } = require('../models')
 
 const { localFileHandler, imgurFileHandler } = require('../helpers/file-helpers.js')
 
@@ -76,6 +76,33 @@ const adminController = {
       if (!restaurant) throw new Error("Restaurant didn't exist!")
       await restaurant.destroy()
       res.redirect('/admin/restaurants')
+    } catch (err) {
+      next(err)
+    }
+  },
+
+  getUsers: async (req, res, next) => {
+    try {
+      const users = await User.findAll({ raw: true, nest: true })
+      res.render('admin/users', { users })
+    } catch (err) {
+      next(err)
+    }
+  },
+
+  patchUser: async (req, res, next) => {
+    try {
+      const id = req.params.id
+      const user = await User.findByPk(id)
+      if (!user) throw new Error("User didn't exist!")
+      if (user.email === 'root@example.com') {
+        req.flash('error_messages', '禁止變更 root 權限')
+        return res.redirect('back')
+      }
+      const isAdmin = !user.isAdmin  // user.isAdmin ? false : true || user.isAdmin === false
+      await user.update({ isAdmin })
+      req.flash('success_messages', '使用者權限變更成功')
+      res.redirect('/admin/users')
     } catch (err) {
       next(err)
     }
