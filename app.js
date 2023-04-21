@@ -6,6 +6,7 @@ const flash = require('connect-flash')
 const passport = require('./config/passport')
 const handlebarsHelpers = require('./helpers/handlebars-helpers')
 const { getUser } = require('./helpers/auth-helpers')
+const methodOverride = require('method-override')
 const SESSION_SECRET = 'secret'
 const app = express()
 const port = process.env.PORT || 3000
@@ -17,6 +18,7 @@ app.use(session({ secret: SESSION_SECRET, resave: false, saveUninitialized: fals
 app.use(passport.initialize())
 app.use(passport.session())
 app.use(flash()) // 掛載套件
+app.use(methodOverride('_method'))
 app.use((req, res, next) => {
   res.locals.success_messages = req.flash('success_messages') // 設定 success_msg 訊息
   res.locals.error_messages = req.flash('error_messages') // 設定 warning_msg 訊息
