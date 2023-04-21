@@ -4,6 +4,8 @@ const adminController = require('../../controllers/admin-controller')
 
 // 新增餐廳頁面
 router.get('/restaurants/create', adminController.createRestaurant)
+// 瀏覽單一餐廳
+router.get('/restaurants/:id', adminController.getRestaurant)
 // 新增餐廳功能
 router.post('/restaurants', adminController.postRestaurant)
 // 瀏覽全部頁面
