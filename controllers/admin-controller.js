@@ -12,8 +12,13 @@ const adminController = {
     }
   },
 
-  createRestaurant: (req, res, next) => {
-    res.render('admin/create-restaurant')
+  createRestaurant: async (req, res, next) => {
+    try {
+      const categories = await Category.findAll({ raw: true })
+      res.render('admin/create-restaurant', { categories })
+    } catch (err) {
+      next(err)
+    }
   },
 
   postRestaurant: async (req, res, next) => {
@@ -44,9 +49,9 @@ const adminController = {
   getEditRestaurant: async (req, res, next) => {
     try {
       const id = req.params.id
-      const restaurant = await Restaurant.findByPk(id, { raw: true })
+      const [restaurant, categories] = await Promise.all([Restaurant.findByPk(id, { raw: true }), Category.findAll({ raw: true })])
       if (!restaurant) throw new Error("Restaurant didn't exist!")
-      res.render('admin/edit-restaurant', { restaurant })
+      res.render('admin/edit-restaurant', { restaurant, categories })
     } catch (err) {
       next(err)
     }

@@ -1,5 +1,7 @@
 const fs = require('fs')
 const imgur = require('imgur')
+const IMGUR_ID = process.env.IMGUR_ID
+imgur.setClientId(IMGUR_ID)
 
 const localFileHandler = (file) => {
   return new Promise(async (resolve, reject) => {
