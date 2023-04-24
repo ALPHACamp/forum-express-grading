@@ -146,6 +146,19 @@ const adminController = {
     } catch (err) {
       next(err)
     }
+  },
+
+  deleteCategory: async (req, res, next) => {
+    try {
+      const id = req.params.id
+      const category = await Category.findByPk(id)
+      if (!category) throw new Error("Category doesn't exist!")
+      await category.destroy()
+      req.flash('error_messages', `category "${category.name}" was already delete`)
+      res.redirect('/admin/categories')
+    } catch (err) {
+      next(err)
+    }
   }
 }
 
