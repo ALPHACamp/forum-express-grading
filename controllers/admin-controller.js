@@ -120,6 +120,17 @@ const adminController = {
     } catch (err) {
       next(err)
     }
+  },
+
+  postCategory: async (req, res, next) => {
+    try {
+      if (!req.body.name) throw new Error('Category name is required!')
+      await Category.create(Object.assign({}, req.body))
+      req.flash('success_messages', 'category was successfully created')
+      res.redirect('/admin/categories')
+    } catch (err) {
+      next(err)
+    }
   }
 }
 
