@@ -115,8 +115,9 @@ const adminController = {
 
   getCategories: async (req, res, next) => {
     try {
-      const categories = await Category.findAll({ raw: true })
-      res.render('admin/categories', { categories })
+      const id = req.params.id || null
+      const [categories, category] = await Promise.all([Category.findAll({ raw: true }), id ? Category.findByPk(id, { raw: true }) : null])
+      res.render('admin/categories', { categories, category })
     } catch (err) {
       next(err)
     }
@@ -127,6 +128,20 @@ const adminController = {
       if (!req.body.name) throw new Error('Category name is required!')
       await Category.create(Object.assign({}, req.body))
       req.flash('success_messages', 'category was successfully created')
+      res.redirect('/admin/categories')
+    } catch (err) {
+      next(err)
+    }
+  },
+
+  putCategory: async (req, res, next) => {
+    try {
+      if (!req.body.name) throw new Error('Category name is required!')
+      const id = req.params.id
+      const category = await Category.findByPk(id)
+      if (!category) throw new Error("Category doesn't exist!")
+      await category.update(Object.assign({}, req.body))
+      req.flash('success_messages', 'category was successfully to update')
       res.redirect('/admin/categories')
     } catch (err) {
       next(err)
