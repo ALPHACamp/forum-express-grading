@@ -3,9 +3,10 @@ const { Restaurant, User, Category } = require('../models')
 const restaurantController = {
   getRestaurants: async (req, res, next) => {
     try {
-      const restaurants = await Restaurant.findAll({ raw: true, nest: true, include: [Category] })
+      const categoryId = Number(req.query.categoryId) || ''
+      const [restaurants, categories] = await Promise.all([Restaurant.findAll({ raw: true, nest: true, include: [Category], where: { ...categoryId ? { categoryId } : null } }), Category.findAll({ raw: true })]) 
       restaurants.forEach(r => r = Object.assign(r, { description: r.description.substring(0, 50)}))
-      res.render('restaurants', { restaurants })
+      res.render('restaurants', { restaurants, categories, categoryId })
     } catch (err) {
       next(err)
     }
