@@ -18,11 +18,10 @@
   <div class="col-md-8">
     <p style="white-space: break-spaces;">{{restaurant.description}}</p>
   </div>
+  <div class="mb-3">
+    <a class="btn btn-primary" href="/restaurants/{{restaurant.id}}/dashboard">Dashboard</a>
+  </div>
   <hr>
-</div>
-<div class="btns mb-4">
-  <a class="btn btn-outline-secondary me-3" href="javascript:history.back()">Back</a>
-  <a class="btn btn-primary" href="/restaurants/{{restaurant.id}}/dashboard">Dashboard</a>
 </div>
 
 {{!-- Comment --}}
@@ -33,4 +32,17 @@
   </div>
   <input type="hidden" name="restaurantId" value="{{restaurant.id}}" />
   <button type="submit" class="btn btn-primary">Submit</button>
+  <a class="btn btn-outline-secondary me-3" href="javascript:history.back()">Back</a>
 </form>
+
+<h3 class="mb-3 fw-bold">所有評論：</h3>
+<div class="mb-5">
+  {{#each restaurant.Comments}}
+  <blockquote class="blockquote mb-0">
+    <h4><a href="/users/{{this.User.id}}">{{this.User.name}}</a></h4>
+    <p>{{this.text}}</p>
+    <footer class="blockquote-footer">{{relativeTimeFromNow this.createdAt}}</footer>
+  </blockquote>
+  <hr />
+  {{/each}}
+</div>

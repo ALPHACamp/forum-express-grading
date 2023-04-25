@@ -1,4 +1,4 @@
-const { Restaurant, User, Category } = require('../models')
+const { Restaurant, User, Category, Comment } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helpers.js')
 
 const restaurantController = {
@@ -23,7 +23,7 @@ const restaurantController = {
   getRestaurant: async (req, res, next) => {
     try {
       const id = req.params.id
-      const restaurant = await Restaurant.findByPk(id, { nest: true, include: [Category]})
+      const restaurant = await Restaurant.findByPk(id, { nest: true, include: [Category, { model: Comment, include: [User], separate: true, order: [['createdAt', 'DESC']] }] })
       if (!restaurant) throw new Error("Restaurant didn't exist!")
       await restaurant.increment('viewCounts')
       res.render('restaurant', { restaurant: restaurant.toJSON() })
