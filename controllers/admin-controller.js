@@ -8,17 +8,18 @@ const adminController = {
       nest: true,
       include: [Category]
     })
-      .then(restaurants => {
-        console.log(restaurants)
-        res.render('admin/restaurants', { restaurants })
-      })
+      .then(restaurants => res.render('admin/restaurants', { restaurants }))
       .catch(err => next(err))
   },
   createRestaurant: (req, res, next) => {
-    res.render('admin/create-restaurant')
+    Category.findAll({
+      raw: true
+    })
+      .then(categories => res.render('admin/create-restaurant', { categories }))
+      .catch(err => next(err))
   },
   postRestaurant: (req, res, next) => {
-    const { name, tel, address, openingHours, description } = req.body
+    const { name, tel, address, openingHours, description, categoryId } = req.body
 
     if (!name) throw new Error('Restaurant name is required!')
 
@@ -31,7 +32,8 @@ const adminController = {
         address,
         openingHours,
         description,
-        image: filePath || null
+        image: filePath || null,
+        categoryId
       }))
       .then(() => {
         req.flash('success_messages', 'Restaurant was successfully created')
@@ -53,18 +55,20 @@ const adminController = {
       .catch(err => next(err))
   },
   editRestaurant: (req, res, next) => {
-    Restaurant.findByPk(req.params.id, {
-      raw: true
-    })
-      .then(restaurant => {
+    // 查詢 Restaurants table、 查詢 Categories table 沒有先後順序，不需要互相等待
+    Promise.all([
+      Restaurant.findByPk(req.params.id, { raw: true }),
+      Category.findAll({ raw: true })
+    ])
+      .then(([restaurant, categories]) => {
         if (!restaurant) throw new Error("Restaurant didn't exit")
 
-        res.render('admin/edit-restaurant', { restaurant })
+        res.render('admin/edit-restaurant', { restaurant, categories })
       })
       .catch(err => next(err))
   },
   putRestaurant: (req, res, next) => {
-    const { name, tel, address, openingHours, description } = req.body
+    const { name, tel, address, openingHours, description, categoryId } = req.body
 
     if (!name) throw new Error('Restaurant name is required!')
     // 不需要設置 raw 因為後續還要進行 sequelize 的處裡
@@ -82,7 +86,8 @@ const adminController = {
           address,
           openingHours,
           description,
-          image: filePath || restaurant.image
+          image: filePath || restaurant.image,
+          categoryId
         })
       })
       .then(() => {
