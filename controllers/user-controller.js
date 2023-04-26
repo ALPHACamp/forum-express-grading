@@ -146,6 +146,23 @@ const userController = {
     } catch (err) {
       next(err)
     }
+  },
+
+  getTopUsers: async (req, res, next) => {
+    try {
+      const users = await User.findAll({
+        nest: true,
+        include: [{ model: User, as: 'Followers', order: [['Followers', 'DESC']] }]
+      })
+      console.log(users)
+      users.forEach(user => {
+        user.followerCount = user.Followers.length
+        user.isFollowed = req.user.Followings.some(follow => follow.id === user.id)
+      })
+      res.render('top-users', { users })
+    } catch (err) {
+      next(err)
+    }
   }
 }
 
