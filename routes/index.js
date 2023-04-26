@@ -7,6 +7,7 @@ const admin = require('./modules/admin.js')
 const restaurants = require('./modules/restaurants.js')
 const comments = require('./modules/comments.js')
 const users = require('./modules/users.js')
+const favorites = require('./modules/favorites.js')
 
 const userController = require('../controllers/user-controller.js')
 
@@ -20,6 +21,8 @@ router.use('/restaurants', authenticated, restaurants)
 router.use('/comments', authenticated, comments)
 
 router.use('/users', authenticated, users)
+
+router.use('/favorites', authenticated, favorites)
 
 router.get('/signup', userController.signUpPage)
 
