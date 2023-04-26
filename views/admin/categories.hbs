@@ -1,27 +1,10 @@
-<h1>餐廳後台</h1>
+{{> admin-tabs route="categories"}}
 <form action="/admin/categories" method="POST">
   <input type="text" name="name" id="category" placeholder="Enter Category">
   <button type="submit">Create</button>
 </form>
 <br />
 <br />
-<ul class="nav nav-tabs">
-  <li class="nav-item">
-    <a href="/admin/restaurants" class="nav-link">
-      Restaurants
-    </a>
-  </li>
-  <li class="nav-item">
-    <a href="/admin/users" class="nav-link">
-      Users
-    </a>
-  </li>
-  <li class="nav-item">
-    <a href="/admin/categories" class="nav-link">
-      Categories
-    </a>
-  </li>
-</ul>
 <table class="table align-middle">
   <thead class="thead-dark">
     <tr>
