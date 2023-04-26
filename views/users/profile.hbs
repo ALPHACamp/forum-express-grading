@@ -14,7 +14,19 @@
         {{/ifCond}}
         <h5 class="card-title fw-bold fs-2 mb-3">{{user.name}}</h5>
         <p class="card-text mb-2">{{user.email}}</p>
+        <p class="card-text mb-2">已評論餐廳： {{commentCounts}}</p>
       </div>
     </div>
+  </div>
+</div>
+
+<div class="card mb-5 mx-auto" style="max-width: 70%;">
+  <h5 class="card-header fs-6">已評論餐廳 ( {{commentCounts}} )</h5>
+  <div class="card-body row ms-2" style="min-height: 17vh">
+    {{#each restaurants}}
+    <span class="col-md-2 mb-5">
+      <a href="/restaurants/{{this.id}}"><img src="{{this.image}}" width="100px" height="100px" style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;" alt="image"></a>
+    </span>
+    {{/each}}
   </div>
 </div>
