@@ -20,6 +20,17 @@ const categoryController = {
         res.redirect('/admin/categories')
       })
       .catch(err => next(err))
+  },
+  getCategory: (req, res, next) => {
+    Promise.all([
+      Category.findByPk(req.params.id, { raw: true }),
+      Category.findAll({ raw: true })
+    ])
+      .then(([category, categories]) => {
+        if (!category) throw new Error("Category isn't extist!")
+        res.render('admin/category', { categories, category })
+      })
+      .catch(err => next(err))
   }
 }
 
