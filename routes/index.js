@@ -6,6 +6,7 @@ const passport = require('../config/passport.js')
 const admin = require('./modules/admin.js')
 const restaurants = require('./modules/restaurants.js')
 const comments = require('./modules/comments.js')
+const users = require('./modules/users.js')
 
 const userController = require('../controllers/user-controller.js')
 
@@ -17,6 +18,8 @@ router.use('/admin', authenticatedAdmin, admin)
 router.use('/restaurants', authenticated, restaurants)
 
 router.use('/comments', authenticated, comments)
+
+router.use('/users', authenticated, users)
 
 router.get('/signup', userController.signUpPage)
 
