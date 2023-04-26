@@ -1,7 +1,8 @@
 <h1>餐廳後台</h1>
-<a href='/admin/restaurants/create'>
-  <button type="button" class="btn btn-primary">New Category</button>
-</a>
+<form action="/admin/categories" method="POST">
+  <input type="text" name="name" id="category" placeholder="Enter Category">
+  <button type="submit">Create</button>
+</form>
 <br />
 <br />
 <ul class="nav nav-tabs">
