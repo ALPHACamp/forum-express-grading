@@ -43,18 +43,18 @@ const userController = {
     try {
       const id = req.params.id
       const userId = req.user?.id
-      const [user, userOfLogin] = await Promise.all([
+      const [user, userOfLogin, comments] = await Promise.all([
         User.findByPk(id, { nest: true, include: [{ model: Comment, include: [Restaurant], separate: true, order: [['createdAt', 'DESC']] }] }), 
         User.findByPk(userId, { raw: true })
       ])
       if (!user) throw new Error("User didn't exist!")
-      const obj = {}
       const userData = user.toJSON()
+      const map = new Map()
       userData.Comments?.forEach(comment => {
         const restId = comment.restaurantId
-        if (!obj[restId]) obj[restId] = comment.Restaurant
+        if (!map.has(restId)) map.set(restId, comment.Restaurant)
       })
-      res.render('users/profile', { user: userData, userOfLogin, commentCounts: Object.keys(obj).length, restaurants: Object.values(obj) })
+      res.render('users/profile', { user: userData, userOfLogin, commentCounts: map.size, restaurants: Array.from(map.values()) })
     } catch (err) {
       next(err)
     }
