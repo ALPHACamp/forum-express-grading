@@ -64,7 +64,7 @@ const userController = {
     try {
       const id = req.params.id
       const userId = req.user?.id
-      // if (id !== userId.toString()) return res.redirect(`/users/${req.params.id}`)
+      if (id !== userId.toString()) return res.redirect(`/users/${req.params.id}`)
       const user = await User.findByPk(id, { raw: true })
       if (!user) throw new Error("User didn't exist!")
       res.render('users/edit', { user })
