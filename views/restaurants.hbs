@@ -30,16 +30,31 @@
         <p class="card-text text-truncate">{{this.description}}</p>
         
         <div class="d-flex">
-          {{#if isFavorited}}
-          <form action="/favorites/{{this.id}}?_method=DELETE" method="POST">
-            <button type="submit" class="btn btn-danger m-1">移除最愛</button>
-          </form>
-          {{else}}
-          <form action="/favorites/{{this.id}}" method="POST">
-            <button type="submit" class="btn btn-primary m-1">加到最愛</button>
-          </form>
-          {{/if}}
+          <div class="d-flex">
+            {{#if isFavorited}}
+            <form action="/favorites/{{this.id}}?_method=DELETE" method="POST">
+              <button type="submit" class="btn btn-danger m-1">移除最愛</button>
+            </form>
+            {{else}}
+            <form action="/favorites/{{this.id}}" method="POST">
+              <button type="submit" class="btn btn-primary m-1">加到最愛</button>
+            </form>
+            {{/if}}
+          </div>
+        
+          <div class="d-flex">
+            {{#if isLiked}}
+            <form action="/likes/{{this.id}}?_method=DELETE" method="POST">
+              <button type="submit" class="btn btn-success m-1"><i class="fa-solid fa-heart"></i></button>
+            </form>
+            {{else}}
+            <form action="/likes/{{this.id}}" method="POST">
+              <button type="submit" class="btn btn-success m-1"><i class="fa-regular fa-heart"></i></button>
+            </form>
+            {{/if}}
+          </div>
         </div>
+
       </div>
     </div>
   </div>
