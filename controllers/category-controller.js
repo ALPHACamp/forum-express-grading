@@ -28,7 +28,7 @@ const categoryController = {
     ])
       .then(([category, categories]) => {
         if (!category) throw new Error("Category isn't extist!")
-        res.render('admin/category', { categories, category })
+        res.render('admin/categories', { categories, category })
       })
       .catch(err => next(err))
   }
