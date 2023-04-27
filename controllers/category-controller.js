@@ -31,6 +31,22 @@ const categoryController = {
         res.render('admin/categories', { categories, category })
       })
       .catch(err => next(err))
+  },
+  putCategory: (req, res, next) => {
+    const { name } = req.body
+    if (!name) throw new Error('Category name is required!')
+    Category.findByPk(req.params.id)
+      .then(category => {
+        if (!category) throw new Error("Category doesn't exist!")
+        return category.update({
+          name
+        })
+      })
+      .then(() => {
+        req.flash('success_messages', 'Category is successfully updated')
+        res.redirect('/admin/categories')
+      })
+      .catch(err => next(err))
   }
 }
 

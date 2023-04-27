@@ -6,6 +6,7 @@ const upload = require('../../middleware/multer')
 // const { authenticatedAdmin } = require('../../middleware/auth')
 
 router.get('/categories/:id', categoryController.getCategory)
+router.put('/categories/:id', categoryController.putCategory)
 router.get('/categories', categoryController.getCategories)
 router.post('/categories', categoryController.postCategory)
 router.patch('/users/:id', adminController.patchUser)
