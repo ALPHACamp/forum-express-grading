@@ -1,6 +1,8 @@
 const bcrypt = require('bcryptjs')
 
-const { User, Comment, Restaurant, Favorite, Like } = require('../models')
+const { User, Comment, Restaurant, Favorite, Like, Followship } = require('../models')
+
+const Sequelize = require('sequelize')
 
 const { localFileHandler, imgurFileHandler } = require('../helpers/file-helpers.js')
 
@@ -12,7 +14,7 @@ const userController = {
   signUp: async (req, res, next) => {
     try {
       if (req.body.password !== req.body.passwordCheck) throw new Error('Passwords do not match!')
-      const user = await User.findOne({ where: { email: req.body.email }})
+      const user = await User.findOne({ where: { email: req.body.email } })
       if (user) throw new Error('Email already exists!')
       const hash = await bcrypt.hash(req.body.password, 10)
       await User.create({ name: req.body.name, email: req.body.email, password: hash })
@@ -29,8 +31,8 @@ const userController = {
   },
 
   signIn: (req, res) => {
-      req.flash('success_messages', '成功登入！')
-      res.redirect('/restaurants')
+    req.flash('success_messages', '成功登入！')
+    res.redirect('/restaurants')
   },
 
   signOut: (req, res) => {
@@ -44,7 +46,7 @@ const userController = {
       const id = req.params.id
       const userId = req.user?.id
       const [user, userOfLogin, comments] = await Promise.all([
-        User.findByPk(id, { nest: true, include: [{ model: Comment, include: [Restaurant], separate: true, order: [['createdAt', 'DESC']] }] }), 
+        User.findByPk(id, { nest: true, include: [{ model: Comment, include: [Restaurant], separate: true, order: [['createdAt', 'DESC']] }] }),
         User.findByPk(userId, { raw: true })
       ])
       if (!user) throw new Error("User didn't exist!")
@@ -92,7 +94,7 @@ const userController = {
     try {
       const userId = req.user.id
       const restaurantId = req.params.restaurantId
-      const [ restaurant, favorite] = await Promise.all([
+      const [restaurant, favorite] = await Promise.all([
         Restaurant.findByPk(restaurantId),
         Favorite.findOne({ where: { restaurantId, userId } })
       ])
@@ -150,16 +152,45 @@ const userController = {
 
   getTopUsers: async (req, res, next) => {
     try {
+      const { or, and, gt, lt } = Sequelize.Op
       const users = await User.findAll({
         nest: true,
-        include: [{ model: User, as: 'Followers', order: [['Followers', 'DESC']] }]
+        include: [{ model: User, as: 'Followers' }]
       })
-      console.log(users)
-      users.forEach(user => {
-        user.followerCount = user.Followers.length
-        user.isFollowed = req.user.Followings.some(follow => follow.id === user.id)
-      })
-      res.render('top-users', { users })
+      const userData = users.map(user => {
+        const followerCount = user.Followers.length
+        const isFollowed = req.user.Followings.some(follow => follow.id === user.id)
+        return Object.assign(user.toJSON(), { followerCount, isFollowed })
+      }).sort((a, b) => b.followerCount - a.followerCount)
+      res.render('top-users', { users: userData })
+    } catch (err) {
+      next(err)
+    }
+  },
+
+  addFollowing: async (req, res, next) => {
+    try {
+      const userId = req.user?.id
+      const followingId = req.params.followingId
+      if (userId.toString() === followingId) throw new Error("You can't follow your self !")
+      const [user, followship] = await Promise.all([User.findByPk(followingId), Followship.findOne({ where: { followerId: userId, followingId } })])
+      if (!user) throw new Error("User didn't exist!")
+      if (followship) throw new Error('You are already following this user!')
+      await Followship.create({ followerId: userId, followingId })
+      res.redirect('back')
+    } catch (err) {
+      next(err)
+    }
+  },
+
+  removeFollowing: async (req, res, next) => {
+    try {
+      const userId = req.user?.id
+      const followingId = req.params.followingId
+      const followship = await Followship.findOne({ where: { followerId: userId, followingId } })
+      if (!followship) throw new Error("You haven't followed this user!")
+      await followship.destroy()
+      res.redirect('back')
     } catch (err) {
       next(err)
     }

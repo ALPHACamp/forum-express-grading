@@ -9,6 +9,7 @@ const comments = require('./modules/comments.js')
 const users = require('./modules/users.js')
 const favorites = require('./modules/favorites.js')
 const likes = require('./modules/likes.js')
+const following = require('./modules/following.js')
 
 const userController = require('../controllers/user-controller.js')
 
@@ -26,6 +27,8 @@ router.use('/users', authenticated, users)
 router.use('/favorites', authenticated, favorites)
 
 router.use('/likes', authenticated, likes)
+
+router.use('/following', authenticated, following)
 
 router.get('/signup', userController.signUpPage)
 
