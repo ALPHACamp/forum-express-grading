@@ -13,6 +13,11 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       Restaurant.belongsTo(models.Category, { foreignKey: 'categoryId' })
       Restaurant.hasMany(models.Comment, { foreignKey: 'restaurantId' })
+      Restaurant.belongsToMany(models.User, {
+        through: models.Favorite, // 透過 Favorite 表來建立關聯
+        foreignKey: 'restaurantId',
+        as: 'FavoriteUsers' // 幫這個關聯取名字
+      })
     }
   };
   Restaurant.init({
