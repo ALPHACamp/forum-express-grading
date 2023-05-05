@@ -28,11 +28,13 @@ const restaurantController = {
       .then(([restaurants, categories]) => {
         // 優化，避免於迭代器中重複執行
         const favoriteRestaurantsId = req.user.FavoriteRestaurants.map(fr => fr.id)
+        const likedRestaurantsId = req.user.LikedRestaurants.map(lr => lr.id)
         const data = restaurants.rows.map(r => ({
           ...r,
           description: r.description.substring(0, 50),
           // 確認是否有user，將餐廳新增isFavorite，並篩選是否有被加入 Favorite，把不能掌控的變數來源做檢查，降低風險。
-          isFavorite: req.user && favoriteRestaurantsId.includes(r.id)
+          isFavorite: req.user && favoriteRestaurantsId.includes(r.id),
+          isLiked: likedRestaurantsId.includes(r.id)
         }))
         res.render('restaurants', {
           restaurants: data,
@@ -48,18 +50,22 @@ const restaurantController = {
       include: [
         Category,
         { model: Comment, include: User },
-        { model: User, as: 'FavoriteUsers' }
+        { model: User, as: 'FavoriteUsers' },
+        { model: User, as: 'LikedUsers' }
       ]
     })
       .then(restaurant => {
+        console.log(restaurant)
         // .some() 執行到 true 就會停止
         const isFavorite = restaurant.FavoriteUsers.some(f => f.id === req.user.id)
+        const isLiked = restaurant.LikedUsers.some(l => l.id === req.user.id)
         // const favoriteRestaurantsId = req.user.FavoriteRestaurants.map(fr => fr.id)
         if (!restaurant) throw new Error("Restaurant doesn't exist!")
         res.render('restaurant', {
           restaurant: restaurant.toJSON(),
           // isFavorite: favoriteRestaurantsId.includes(restaurant.id)
-          isFavorite
+          isFavorite,
+          isLiked
         })
       })
   },
