@@ -5,6 +5,8 @@ const handlebars = require('express-handlebars')
 const app = express()
 const port = process.env.PORT || 3000
 
+const db = require('./models')
+
 // view engine
 app.engine('hbs', handlebars({ extname: '.hbs' }))
 app.set('view engine', 'hbs')
