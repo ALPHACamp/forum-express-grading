@@ -2,11 +2,16 @@ const express = require('express')
 const router = express.Router()
 const restController = require('../controllers/restaurant-controller')
 const admin = require('./modules/admin')
+const userController = require('../controllers/user-controller')
 
 router.use('/admin', admin)
+// user routes
+router.get('/signup', userController.signUpPage)
+router.post('/signup', userController.signUp)
+
 router.get('/restaurants', restController.getRestaurants)
 
 // 設定fallback 路由
-router.use('/', (req, res) => res.redirect('/restaurants'))
+router.get('/', (req, res) => res.redirect('/restaurants'))
 
 module.exports = router
