@@ -9,6 +9,7 @@ const userController = {
   },
 
   signUp: (req, res, next) => {
+    next('hihihihihi')
     // 驗證：兩次密碼不同就回傳 Error
     if (req.body.password !== req.body.passwordCheck) {
       throw new Error('Password do not match')
