@@ -41,6 +41,42 @@ const adminController = {
     })
       .then(() => {
         req.flash('success_messages', `${name} was successfully created!`)
+        res.redirect('admin/restaurants')
+      })
+      .catch(err => next(err))
+  },
+
+  editRestaurant: (req, res, next) => {
+    Restaurant.findByPk(req.params.id, {
+      raw: true
+    })
+      .then(restaurant => {
+        if (!restaurant) throw new Error('Can not find restaurant to edit!')
+        res.render('admin/edit-restaurant', { restaurant })
+      })
+      .catch(err => next(err))
+  },
+
+  putRestaurant: (req, res, next) => {
+    const { name, tel, address, openingHours, description } = req.body
+    // 驗證：沒有填名字
+    if (!name) throw new Error('Name can not be empty!')
+
+    Restaurant.findByPk(req.params.id)
+      .then(restaurant => {
+        if (!restaurant) throw new Error('Can not find restaurant to edit!')
+
+        // 修改餐廳 update
+        return restaurant.update({
+          name,
+          tel,
+          address,
+          openingHours,
+          description
+        })
+      })
+      .then(() => {
+        req.flash('success_messages', `${name} successfully updated!`)
         res.redirect('/admin/restaurants')
       })
       .catch(err => next(err))
