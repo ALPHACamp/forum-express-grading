@@ -28,6 +28,14 @@ const adminController = {
       req.flash('success_messages', 'restaurant was successfully created')
       res.redirect('/admin/restaurants')
     } catch (err) { next(err) }
+  },
+  getRestaurant: async (req, res, next) => {
+    try {
+      const restaurant = await Restaurant.findByPk(req.params.id, { raw: true })
+      if (!restaurant) throw new Error("Restaurant didn't exist!")
+
+      res.render('admin/restaurant', { restaurant })
+    } catch (err) { next(err) }
   }
 }
 module.exports = adminController
