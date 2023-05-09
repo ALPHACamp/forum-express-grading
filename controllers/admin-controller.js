@@ -1,5 +1,6 @@
 // controllers/admin-controller.js
 const { Restaurant } = require('../models')
+const { localFileHandler } = require('../helpers/file-helpers')
 
 const adminController = {
   getRestaurants: async (req, res, next) => {
@@ -18,13 +19,16 @@ const adminController = {
       const { name, tel, address, openingHours, description } = req.body
 
       if (!name) throw new Error('Restaurant name is required!')
+      const { file } = req
 
+      const filePath = await localFileHandler(file)
       await Restaurant.create({
         name,
         tel,
         address,
         openingHours,
-        description
+        description,
+        image: filePath || null
       })
       req.flash('success_messages', 'restaurant was successfully created')
       res.redirect('/admin/restaurants')
@@ -50,8 +54,11 @@ const adminController = {
     try {
       const { name, tel, address, openingHours, description } = req.body
       if (!name) throw new Error('Restaurant name is required!')
+      const { file } = req
+      const [restaurant, filePath] = await Promise.all([Restaurant.findByPk(req.params.id),
+        localFileHandler(file)
+      ])
 
-      const restaurant = await Restaurant.findByPk(req.params.id)
       if (!restaurant) throw new Error("Restaurant didn't exist!")
 
       await restaurant.update({
@@ -59,7 +66,8 @@ const adminController = {
         tel,
         address,
         openingHours,
-        description
+        description,
+        image: filePath || restaurant.image
       })
       req.flash('success_messages', 'restaurant was successfully to update')
       res.redirect('/admin/restaurants')
