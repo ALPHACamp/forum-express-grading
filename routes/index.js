@@ -5,7 +5,6 @@ const admin = require('./modules/admin')
 const { authenticated } = require('../middleware/auth')
 const { generalErrorHandler } = require('../middleware/error-handler')
 
-
 // 載入 controller
 const restController = require('../controllers/restaurant-controller')
 const userController = require('../controllers/user-controller')
