@@ -5,6 +5,7 @@ const flash = require('connect-flash')
 const session = require('express-session')
 const passport = require('./config/passport')
 const { getUser } = require('./helpers/auth-helpers')
+const handlebarsHelpers = require('./helpers/handlebars-helpers')
 
 // app
 const app = express()
@@ -12,7 +13,7 @@ const port = process.env.PORT || 3000
 const SESSION_SECRET = 'secret'
 
 // view engine
-app.engine('hbs', handlebars({ extname: '.hbs' }))
+app.engine('hbs', handlebars({ extname: '.hbs', helpers: handlebarsHelpers }))
 app.set('view engine', 'hbs')
 
 // middleware
