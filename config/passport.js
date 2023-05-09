@@ -14,7 +14,7 @@ passport.serializeUser((user, done) => {
 // 已經登入過後，每次驗證都把session裡面的User.id 拿去找資料庫的User
 passport.deserializeUser((id, done) => {
   User.findByPk(id).then(user => {
-    return done(null, user)
+    return done(null, user.toJSON())
   })
 })
 
