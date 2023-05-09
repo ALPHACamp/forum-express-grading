@@ -13,15 +13,18 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
   };
-  User.init({
-    name: DataTypes.STRING,
-    email: DataTypes.STRING,
-    password: DataTypes.STRING
-  }, {
-    sequelize,
-    modelName: 'User',
-    tableName: 'Users', // 手動指定table name
-    underscored: true
-  })
+  User.init(
+    {
+      name: DataTypes.STRING,
+      email: DataTypes.STRING,
+      password: DataTypes.STRING
+    },
+    {
+      sequelize, // We need to pass the connection instance
+      modelName: 'User',
+      tableName: 'Users', // 手動指定table name
+      underscored: true
+    }
+  )
   return User
 }
