@@ -1,32 +1,10 @@
 const passport = require('passport')
-const LocalStrategy = require('passport-local')
-const bcrypt = require('bcryptjs')
+const LocalStrategy = require('./strategies/local')
 const db = require('../models')
 const User = db.User
 
-passport.use(new LocalStrategy({
-  usernameField: 'email',
-  passwordField: 'password',
-  passReqToCallback: true
-}, (req, email, password, done) => {
-  User.findOne({ where: { email } })
-    .then(user => {
-      // email沒有使用者
-      if (!user) {
-        console.log('email not registered')
-        return done(null, false, req.flash('error_messages', 'Email not registered!'))
-      }
-      // 對比password
-      bcrypt.compare(password, user.password).then(isMatch => {
-        if (!isMatch) {
-          console.log('password incorrect')
-          return done(null, false, req.flash('error_messages', 'Email or Password incorrect!'))
-        }
-        // 認證成功，回傳使用者
-        return done(null, user)
-      })
-    })
-}))
+// Strategies
+LocalStrategy(passport)
 
 // 第一次登入成功時，把User.id存入session
 passport.serializeUser((user, done) => {
