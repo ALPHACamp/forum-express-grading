@@ -1,6 +1,18 @@
 const { Restaurant } = require('../models/')
 
 const adminController = {
+  getRestaurant: (req, res, next) => {
+    const id = req.params.id
+    Restaurant.findByPk(id, {
+      raw: true
+    })
+      .then(restaurant => {
+        if (!restaurant) throw new Error('Can not find this restaurant!')
+        res.render('restaurant', { restaurant })
+      })
+      .catch(err => next(err))
+  },
+
   getRestaurants: (req, res, next) => {
     Restaurant.findAll({
       raw: true
