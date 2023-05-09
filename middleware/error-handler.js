@@ -5,7 +5,7 @@ module.exports = {
     } else {
       req.flash('error_messages', `${err}`)
     }
-    res.redirect('back') // 回上一頁
+    res.redirect('back') // 把訪問重新定向 req header 的 referer:
     next(err) // 傳到下一個middleware 目前沒有功用，只是示範
   }
 }
