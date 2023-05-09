@@ -25,11 +25,9 @@ const userController = {
         password: hash
       }))
       .then(() => {
-        console.log('signin')
         res.redirect('/signin')
       })
       .catch(err => {
-        console.log('catch error')
         next(err)
       }) // 接住前面拋出的錯誤，呼叫專門做錯誤處理的 middleware
   },
@@ -38,7 +36,6 @@ const userController = {
     res.render('signin')
   },
   signIn: (req, res) => {
-    console.log('POST SignIn')
     if (req.flash) {
       req.flash('success_messages', 'Sign in successfully.')
     }
