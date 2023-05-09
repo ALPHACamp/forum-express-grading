@@ -3,4 +3,5 @@ const adminController = {
     return res.render('admin/restaurants')
   }
 }
+
 module.exports = adminController
