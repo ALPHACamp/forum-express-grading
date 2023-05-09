@@ -1,3 +1,4 @@
+// controllers/admin-controller.js
 const { Restaurant } = require('../models')
 
 const adminController = {
@@ -61,6 +62,14 @@ const adminController = {
         description
       })
       req.flash('success_messages', 'restaurant was successfully to update')
+      res.redirect('/admin/restaurants')
+    } catch (err) { next(err) }
+  },
+  deleteRestaurant: async (req, res, next) => {
+    try {
+      const restaurant = await Restaurant.findByPk(req.params.id)
+      if (!restaurant) throw new Error("Restaurant didn't exist!")
+      await restaurant.destroy()
       res.redirect('/admin/restaurants')
     } catch (err) { next(err) }
   }
