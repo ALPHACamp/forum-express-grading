@@ -1,5 +1,5 @@
 const { Restaurant } = require('../models/')
-const { localFileHandler } = require('../helpers/file-helpers')
+const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const adminController = {
   getRestaurant: (req, res, next) => {
@@ -33,7 +33,7 @@ const adminController = {
     if (!name) throw new Error('Name can not be empty!')
 
     // 處理file (照片)
-    localFileHandler(req.file)
+    imgurFileHandler(req.file)
       .then(filePath => {
         // 建立餐廳 Record
         Restaurant.create({
@@ -71,7 +71,7 @@ const adminController = {
     // 找餐廳 ＋ 處理file (照片)
     Promise.all([
       Restaurant.findByPk(req.params.id),
-      localFileHandler(req.file)
+      imgurFileHandler(req.file)
     ])
       .then(([restaurant, filePath]) => {
         if (!restaurant) throw new Error('Can not find restaurant to edit!')
