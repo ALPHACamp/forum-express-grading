@@ -28,7 +28,21 @@ const userController = {
       })
       req.flash('success_messages', '成功註冊帳號！') // 並顯示成功訊息
       res.redirect('/signin')
-    } catch (e) { next(e) } // 接住前面拋出的錯誤，呼叫專門做錯誤處理的 middleware
+    } catch (e) {
+      next(e)
+    } // 接住前面拋出的錯誤，呼叫專門做錯誤處理的 middleware
+  },
+  signInPage: (req, res) => {
+    res.render('signin')
+  },
+  signIn: (req, res) => {
+    req.flash('success_messages', '成功登入！')
+    res.redirect('/restaurants')
+  },
+  logout: (req, res) => {
+    req.flash('success_messages', '成功登出！')
+    req.logout()
+    res.redirect('/signin')
   }
 }
 
