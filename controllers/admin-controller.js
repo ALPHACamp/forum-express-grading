@@ -1,4 +1,5 @@
 const { Restaurant } = require('../models/')
+const { localFileHandler } = require('../helpers/file-helpers')
 
 const adminController = {
   getRestaurant: (req, res, next) => {
@@ -8,7 +9,7 @@ const adminController = {
     })
       .then(restaurant => {
         if (!restaurant) throw new Error('Can not find this restaurant!')
-        res.render('restaurant', { restaurant })
+        res.render('admin/restaurant', { restaurant })
       })
       .catch(err => next(err))
   },
@@ -31,14 +32,19 @@ const adminController = {
     // 驗證：沒有填名字
     if (!name) throw new Error('Name can not be empty!')
 
-    // 建立餐廳 Record
-    Restaurant.create({
-      name,
-      tel,
-      address,
-      openingHours,
-      description
-    })
+    // 處理file (照片)
+    localFileHandler(req.file)
+      .then(filePath => {
+        // 建立餐廳 Record
+        Restaurant.create({
+          name,
+          tel,
+          address,
+          openingHours,
+          description,
+          image: filePath || null
+        })
+      })
       .then(() => {
         req.flash('success_messages', `${name} was successfully created!`)
         res.redirect('admin/restaurants')
@@ -62,17 +68,21 @@ const adminController = {
     // 驗證：沒有填名字
     if (!name) throw new Error('Name can not be empty!')
 
-    Restaurant.findByPk(req.params.id)
-      .then(restaurant => {
+    // 找餐廳 ＋ 處理file (照片)
+    Promise.all([
+      Restaurant.findByPk(req.params.id),
+      localFileHandler(req.file)
+    ])
+      .then(([restaurant, filePath]) => {
         if (!restaurant) throw new Error('Can not find restaurant to edit!')
-
         // 修改餐廳 update
         return restaurant.update({
           name,
           tel,
           address,
           openingHours,
-          description
+          description,
+          image: filePath || restaurant.image
         })
       })
       .then(() => {
