@@ -42,7 +42,6 @@ const adminController = {
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
-
         res.render('admin/edit-restaurant', { restaurant })
       })
       .catch(err => next(err))
@@ -50,11 +49,9 @@ const adminController = {
   putRestaurant: (req, res, next) => {
     const { name, tel, address, openingHours, description } = req.body
     if (!name) throw new Error('Restaurant name is required!')
-
     Restaurant.findByPk(req.params.id)
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
-
         return restaurant.update({
           name,
           tel,
@@ -67,6 +64,16 @@ const adminController = {
         req.flash('success_messages', 'restaurant was successfully to update')
         res.redirect('/admin/restaurants')
       })
+      .catch(err => next(err))
+  },
+  deleteRestaurant: (req, res, next) => {
+    return Restaurant.findByPk(req.params.id)
+      .then(restaurant => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+
+        return restaurant.destroy()
+      })
+      .then(() => res.redirect('/admin/restaurants'))
       .catch(err => next(err))
   }
 
