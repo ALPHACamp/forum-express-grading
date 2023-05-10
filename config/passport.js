@@ -44,6 +44,7 @@ module.exports = app => {
   passport.deserializeUser((id, done) => {
     User.findByPk(id)
       .then(user => {
+        user = user.toJSON()
         console.log(user) // for temporary
         done(null, user)
       })
