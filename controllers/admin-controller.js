@@ -13,7 +13,6 @@ const adminController = {
   postRestaurant: (req, res, next) => {
     const { name, tel, address, openingHours, description } = req.body
     if (!name) throw new Error('Restaurant name is required!')
-
     Restaurant.create({
       name,
       tel,
@@ -26,7 +25,19 @@ const adminController = {
         res.redirect('/admin/restaurants')
       })
       .catch(err => next(err))
+  },
+  getRestaurant: (req, res, next) => {
+    Restaurant.findByPk(req.params.id, {
+      raw: true
+    })
+      .then(restaurant => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+
+        res.render('admin/restaurant', { restaurant })
+      })
+      .catch(err => next(err))
   }
+
 }
 
 module.exports = adminController
