@@ -1,4 +1,4 @@
-const { Restaurant } = require('../models/')
+const { Restaurant, User } = require('../models/')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const adminController = {
@@ -23,6 +23,7 @@ const adminController = {
       })
       .catch(err => next(err))
   },
+
   createRestaurant: (req, res) => {
     res.render('admin/create-restaurant')
   },
@@ -104,6 +105,32 @@ const adminController = {
       .then(() => {
         req.flash('success_messages', `${name} successfully deleted!`)
         res.redirect('/admin/restaurants')
+      })
+      .catch(err => next(err))
+  },
+
+  getUser: (req, res, next) => {
+    User.findAll({
+      raw: true
+    })
+      .then(users => {
+        res.render('admin/users', { users })
+      })
+      .catch(err => next(err))
+  },
+
+  patchUserAdmin: (req, res, next) => {
+    User.findByPk(req.params.id)
+      .then(user => {
+        if (!user) throw new Error('Can not find user to patch!')
+
+        return user.update({
+          isAdmin: (!user.isAdmin)
+        })
+      })
+      .then(() => {
+        req.flash('success_messages', '使用者權限變更成功')
+        res.redirect('/admin/users')
       })
       .catch(err => next(err))
   }
