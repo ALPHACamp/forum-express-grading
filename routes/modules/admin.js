@@ -13,10 +13,14 @@ router.put('/restaurants/:id', upload.single('image'), adminController.putRestau
 router.get('/restaurants/:id', adminController.getRestaurant)
 // 刪除餐廳功能
 router.delete('/restaurants/:id', adminController.deleteRestaurant)
+// 修改管理員權限
+router.patch('/users/:id', adminController.patchUser)
 // 新增餐廳功能
 router.post('/restaurants', upload.single('image'), adminController.postRestaurant)
 // 瀏覽全部頁面
 router.get('/restaurants', adminController.getRestaurants)
+// 瀏覽全部使用者
+router.get('/users', adminController.getUsers)
 // 無法匹配路由皆會丟到這
 router.use('/', (req, res) => res.redirect('/admin/restaurants'))
 
