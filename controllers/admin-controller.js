@@ -33,6 +33,15 @@ const adminController = {
         if (!restaurant) throw new Error('Restaurant does not exist.')
         res.render('admin/restaurant', { restaurant })
       }).catch(e => next(e))
+  },
+  editRestaurant: (req, res, next) => {
+    Restaurant.findByPk(req.params.id, { raw: true })
+      .then(restaurant => {
+        // 先檢查餐廳是否存在, 不存在則拋出錯誤訊息
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        // 存在的話顯示edit page
+        res.render('admin/edit-restaurant', { restaurant })
+      }).catch(e => next(e))
   }
 }
 

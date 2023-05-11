@@ -45,7 +45,6 @@ module.exports = app => {
     User.findByPk(id)
       .then(user => {
         user = user.toJSON()
-        console.log(user) // for temporary
         done(null, user)
       })
       .catch(e => done(e, null))
