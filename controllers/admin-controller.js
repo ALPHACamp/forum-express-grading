@@ -114,8 +114,6 @@ const adminController = {
       raw: true
     })
       .then(users => {
-        console.log(users)
-        console.log(res.render.callCount)
         res.render('admin/users', { users })
       })
       .catch(err => next(err))
