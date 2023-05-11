@@ -1,10 +1,10 @@
-const { Restaurant } = require('../models/')
+const { Restaurant, User } = require('../models/')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const adminController = {
   getRestaurant: (req, res, next) => {
     const id = req.params.id
-    Restaurant.findByPk(id, {
+    return Restaurant.findByPk(id, {
       raw: true
     })
       .then(restaurant => {
@@ -15,7 +15,7 @@ const adminController = {
   },
 
   getRestaurants: (req, res, next) => {
-    Restaurant.findAll({
+    return Restaurant.findAll({
       raw: true
     })
       .then(restaurants => {
@@ -23,6 +23,7 @@ const adminController = {
       })
       .catch(err => next(err))
   },
+
   createRestaurant: (req, res) => {
     res.render('admin/create-restaurant')
   },
@@ -36,7 +37,7 @@ const adminController = {
     imgurFileHandler(req.file)
       .then(filePath => {
         // 建立餐廳 Record
-        Restaurant.create({
+        return Restaurant.create({
           name,
           tel,
           address,
@@ -53,7 +54,7 @@ const adminController = {
   },
 
   editRestaurant: (req, res, next) => {
-    Restaurant.findByPk(req.params.id, {
+    return Restaurant.findByPk(req.params.id, {
       raw: true
     })
       .then(restaurant => {
@@ -69,7 +70,7 @@ const adminController = {
     if (!name) throw new Error('Name can not be empty!')
 
     // 找餐廳 ＋ 處理file (照片)
-    Promise.all([
+    return Promise.all([
       Restaurant.findByPk(req.params.id),
       imgurFileHandler(req.file)
     ])
@@ -95,7 +96,7 @@ const adminController = {
   deleteRestaurant: (req, res, next) => {
     let name = ''
 
-    Restaurant.findByPk(req.params.id)
+    return Restaurant.findByPk(req.params.id)
       .then(restaurant => {
         if (!restaurant) throw new Error('Can not find restaurant to delete!')
         name = restaurant.name
@@ -104,6 +105,40 @@ const adminController = {
       .then(() => {
         req.flash('success_messages', `${name} successfully deleted!`)
         res.redirect('/admin/restaurants')
+      })
+      .catch(err => next(err))
+  },
+
+  getUsers: (req, res, next) => {
+    return User.findAll({
+      raw: true
+    })
+      .then(users => {
+        res.render('admin/users', { users })
+      })
+      .catch(err => next(err))
+  },
+
+  patchUser: (req, res, next) => {
+    return User.findByPk(req.params.id)
+      .then(user => {
+        // 檢查是否有這個 user
+        if (!user) throw new Error('Can not find user to patch!')
+
+        // 檢查是否為 root，是就禁止變更，倒回上一頁
+        if (user.email === 'root@example.com') {
+          req.flash('error_messages', '禁止變更 root 權限')
+          return res.redirect('back')
+        }
+
+        // toggle isAdmin
+        return user.update({
+          isAdmin: (!user.isAdmin)
+        })
+      })
+      .then(() => {
+        req.flash('success_messages', '使用者權限變更成功')
+        res.redirect('/admin/users')
       })
       .catch(err => next(err))
   }
