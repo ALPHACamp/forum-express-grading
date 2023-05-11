@@ -40,9 +40,7 @@ passport.use(
 passport.serializeUser((user, done) => {
   done(null, user)
 })
-passport.deserializeUser(async (id, done) => {
-  let user = await User.findByPk(id)
-  user = user.toJSON()
+passport.deserializeUser((user, done) => {
   done(null, user)
 })
 
