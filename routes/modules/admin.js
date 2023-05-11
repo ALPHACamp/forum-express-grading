@@ -13,7 +13,7 @@ router.get('/restaurants', adminController.getRestaurants)
 router.post('/restaurants', upload.single('image'), adminController.postRestaurant)
 // admin users
 router.get('/users', adminController.getUser)
-router.patch('/users/:id', adminController.patchUserAdmin)
+router.patch('/users/:id', adminController.patchUser)
 // home
 router.get('', (req, res) => res.redirect('/admin/restaurants'))
 

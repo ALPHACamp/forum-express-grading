@@ -119,7 +119,7 @@ const adminController = {
       .catch(err => next(err))
   },
 
-  patchUserAdmin: (req, res, next) => {
+  patchUser: (req, res, next) => {
     User.findByPk(req.params.id)
       .then(user => {
         if (!user) throw new Error('Can not find user to patch!')
