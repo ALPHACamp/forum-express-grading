@@ -1,13 +1,6 @@
-const { Restaurant } = require('../models')
-
-const adminController = {
-  getRestaurants: (req, res, next) => {
-    Restaurant.findAll({
-      raw: true
-    })
-      .then(restaurants => res.render('admin/restaurants', { restaurants }))
-      .catch(err => next(err))
+const restaurantController = {
+  getRestaurants: (req, res) => {
+    return res.render('restaurants')
   }
 }
-
-module.exports = adminController
+module.exports = restaurantController
