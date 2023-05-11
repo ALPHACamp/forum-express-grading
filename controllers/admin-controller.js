@@ -42,6 +42,22 @@ const adminController = {
         // 存在的話顯示edit page
         res.render('admin/edit-restaurant', { restaurant })
       }).catch(e => next(e))
+  },
+  putRestaurant: (req, res, next) => {
+    const { name, tel, address, openingHours, description } = req.body
+    if (!name) throw new Error('Restaurant name is required!')
+    // 此處不加raw, 才可以使用sequelize instance物件的update function
+    Restaurant.findByPk(req.params.id)
+      .then(restaurant => { // restaurant是sequelize instance物件
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        // 加上return減少巢狀的層數
+        // 也可以使用Restaurant.update 但要加上 id
+        return restaurant.update({ name, tel, address, openingHours, description })
+      }).then(() => {
+        req.flash('success_messages', 'restaurant was successfully updated')
+        res.redirect('/admin/restaurants')
+      })
+      .catch(e => next(e))
   }
 }
 
