@@ -3,10 +3,11 @@ const router = express.Router()
 const restaurantController = require('../controllers/restaurant-controller')
 const userController = require('../controllers/user-controller')
 const { generalErrorHandler } = require('../middleware/error-handler')
-const { authenticated } = require('../middleware/auth')
+const { authenticated, authenticatedAdmin } = require('../middleware/auth')
 const admin = require('./modules/admin')
 const passport = require('passport')
-router.use('/admin', admin)
+
+router.use('/admin', authenticatedAdmin, admin)
 
 // router順序非常重要，條件越複雜的越要往上放，讓程式先判斷
 // register
