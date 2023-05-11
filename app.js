@@ -6,6 +6,7 @@ const usePassport = require('./config/passport')
 const handlebars = require('express-handlebars')
 const { getUser } = require('./helpers/auth-helpers')
 const handlebarsHelpers = require('./helpers/handlebars-helpers')
+const methodOverride = require('method-override')
 const app = express()
 const port = process.env.PORT || 3000
 const SESSION_SECRET = 'secret'
@@ -23,11 +24,16 @@ app.use(
     saveUninitialized: false
   })
 )
+// set body-parser
 app.use(express.urlencoded({ extended: true }))
 
 // set passport
 usePassport(app)
+
+// set middlewares
 app.use(flash())
+app.use(methodOverride('_method'))
+
 app.use((req, res, next) => {
   // 設定 locals 使前端樣板可存取變數
   res.locals.success_messages = req.flash('success_messages')
