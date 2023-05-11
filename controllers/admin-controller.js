@@ -122,7 +122,11 @@ const adminController = {
   patchUser: (req, res, next) => {
     User.findByPk(req.params.id)
       .then(user => {
+        // 檢查是否有這個 user
         if (!user) throw new Error('Can not find user to patch!')
+
+        // 檢查是否為 root
+        if (user.name === 'root') throw new Error('禁止變更 root 權限')
 
         return user.update({
           isAdmin: (!user.isAdmin)
