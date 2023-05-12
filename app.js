@@ -1,3 +1,4 @@
+const path = require('path') // node.js原生module
 const express = require('express')
 const routes = require('./routes')
 const flash = require('connect-flash')
@@ -33,6 +34,8 @@ usePassport(app)
 // set middlewares
 app.use(flash())
 app.use(methodOverride('_method'))
+// 靜態檔案, 透過express.static來指定路徑
+app.use('/upload', express.static(path.join(__dirname, 'upload')))
 
 app.use((req, res, next) => {
   // 設定 locals 使前端樣板可存取變數

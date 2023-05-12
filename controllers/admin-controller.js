@@ -1,4 +1,5 @@
 const { Restaurant } = require('../models')
+const { localFileHandler } = require('../helpers/file-helpers')
 
 const adminController = {
   getRestaurants: (req, res, next) => {
@@ -15,17 +16,24 @@ const adminController = {
     const { name, tel, address, openingHours, description } = req.body
     // 若name是空值就會終止程式碼，並在畫面顯示錯誤提示
     if (!name) throw new Error('Restaurant name is required!')
-    // create a new Restaurant instance and save it into db
-    Restaurant.create({
-      name,
-      tel,
-      address,
-      openingHours,
-      description
-    }).then(() => {
-      req.flash('success_messages', 'restaurant was successfully created')
-      res.redirect('/admin/restaurants')
-    }).catch(e => next(e))
+    const { file } = req // 把檔案取出來,同 const file = req.file
+    localFileHandler(file) // 此為promise物件
+      .then(filePath => {
+      // create a new Restaurant instance and save it into db
+        Restaurant.create({
+          name,
+          tel,
+          address,
+          openingHours,
+          description,
+          image: filePath || null
+        })
+      })
+      .then(() => {
+        req.flash('success_messages', 'restaurant was successfully created')
+        res.redirect('/admin/restaurants')
+      })
+      .catch(e => next(e))
   },
   getRestaurant: (req, res, next) => {
     Restaurant.findByPk(req.params.id, { raw: true })
@@ -46,22 +54,32 @@ const adminController = {
   putRestaurant: (req, res, next) => {
     const { name, tel, address, openingHours, description } = req.body
     if (!name) throw new Error('Restaurant name is required!')
+    const { file } = req
     // 此處不加raw, 才可以使用sequelize instance物件的update function
-    Restaurant.findByPk(req.params.id)
-      .then(restaurant => { // restaurant是sequelize instance物件
+    Promise.all([Restaurant.findByPk(req.params.id), localFileHandler(file)])
+      .then(([restaurant, filePath]) => {
+        // restaurant是sequelize instance物件
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         // 加上return減少巢狀的層數
         // 也可以使用Restaurant.update 但要加上 id
-        return restaurant.update({ name, tel, address, openingHours, description })
-      }).then(() => {
+        return restaurant.update({
+          name,
+          tel,
+          address,
+          openingHours,
+          description,
+          image: filePath || restaurant.image // 如果 使用者有上傳新照片filePath=Truthy，使用者沒有上傳新照片，就沿用原本資料庫內的值
+        })
+      })
+      .then(() => {
         req.flash('success_messages', 'restaurant was successfully updated')
         res.redirect('/admin/restaurants')
       })
       .catch(e => next(e))
   },
-  deleteRestaurant:(req,res,next)=>{
+  deleteRestaurant: (req, res, next) => {
     Restaurant.findByPk(req.params.id)
-      .then(restaurant => { 
+      .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         return restaurant.destroy()
       }).then(() => {
