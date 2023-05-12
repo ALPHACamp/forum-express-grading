@@ -22,6 +22,18 @@ const adminController = {
     } catch (err) {
       next(err)
     }
+  },
+  getRestaurant: async (req, res, next) => {
+    try {
+      const restaurant = await Restaurant.findByPk(req.params.id, {
+        raw: true,
+        nest: true
+      })
+      if (!restaurant) throw new Error("Restaurant didn't exist!")
+      res.render('admin/restaurant', { restaurant })
+    } catch (err) {
+      next(err)
+    }
   }
 }
 
