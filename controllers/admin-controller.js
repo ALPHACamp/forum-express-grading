@@ -102,11 +102,19 @@ const adminController = {
     User.findByPk(req.params.id)
       .then(user => {
         if (!user) throw new Error("User didn't exist!")
-        return user.update({
-          isAdmin: user.isAdmin ? 0 : 1
-        })
+        if (user.name === 'root') {
+          req.flash('error_messages', '禁止變更 root 權限')
+          return res.redirect('back')
+        } else {
+          return user.update({
+            isAdmin: user.isAdmin ? 0 : 1
+          })
+        }
       })
-      .then(() => res.redirect('/admin/users'))
+      .then(() => {
+        req.flash('success_messages', '使用者權限變更成功')
+        res.redirect('/admin/users')
+      })
       .catch(e => next(e))
   }
 }
