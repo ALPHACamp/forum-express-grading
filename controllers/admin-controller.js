@@ -1,5 +1,5 @@
 const { Restaurant } = require('../models')
-const { localFileHandler } = require('../helpers/file-helpers')
+const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const adminController = {
   getRestaurants: (req, res, next) => {
@@ -17,7 +17,7 @@ const adminController = {
     // 若name是空值就會終止程式碼，並在畫面顯示錯誤提示
     if (!name) throw new Error('Restaurant name is required!')
     const { file } = req // 把檔案取出來,同 const file = req.file
-    localFileHandler(file) // 此為promise物件
+    imgurFileHandler(file) // 此為promise物件
       .then(filePath => {
       // create a new Restaurant instance and save it into db
         Restaurant.create({
@@ -56,7 +56,7 @@ const adminController = {
     if (!name) throw new Error('Restaurant name is required!')
     const { file } = req
     // 此處不加raw, 才可以使用sequelize instance物件的update function
-    Promise.all([Restaurant.findByPk(req.params.id), localFileHandler(file)])
+    Promise.all([Restaurant.findByPk(req.params.id), imgurFileHandler(file)])
       .then(([restaurant, filePath]) => {
         // restaurant是sequelize instance物件
         if (!restaurant) throw new Error("Restaurant didn't exist!")

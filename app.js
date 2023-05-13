@@ -1,3 +1,4 @@
+
 const path = require('path') // node.js原生module
 const express = require('express')
 const routes = require('./routes')
@@ -9,6 +10,9 @@ const { getUser } = require('./helpers/auth-helpers')
 const handlebarsHelpers = require('./helpers/handlebars-helpers')
 const methodOverride = require('method-override')
 const app = express()
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
 const port = process.env.PORT || 3000
 const SESSION_SECRET = 'secret'
 
