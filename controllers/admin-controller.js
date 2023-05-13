@@ -1,4 +1,5 @@
 const { Restaurant } = require('../models')
+const { localFieldHandler } = require('../helpers/file-helpers')
 
 const adminController = {
   getRestaurants: async (req, res, next) => {
@@ -13,10 +14,19 @@ const adminController = {
     return res.render('admin/create-restaurant')
   },
   postRestaurant: async (req, res, next) => {
-    const { name } = req.body
+    const { name, tel, address, openingHours, description } = req.body
+    const { file } = req
     try {
       if (!name) throw new Error('Restaurant name is required!')
-      await Restaurant.create(req.body)
+      const filePath = await localFieldHandler(file)
+      await Restaurant.create({
+        name,
+        tel,
+        address,
+        openingHours,
+        description,
+        image: filePath || null // 沒有照片就回傳null
+      })
       req.flash('success_messages', 'restaurant was successfully created')
       return res.redirect('/admin/restaurants')
     } catch (err) {
@@ -49,11 +59,24 @@ const adminController = {
   },
   putRestaurant: async (req, res, next) => {
     const { name, tel, address, openingHours, description } = req.body
+    const { file } = req
     try {
       if (!name) throw new Error('Restaurant name is required!')
-      const restaurant = await Restaurant.findByPk(req.params.id)
+      // const restaurant = await Restaurant.findByPk(req.params.id)
+      // const filePath = await localFieldHandler(file)
+      const [restaurant, filePath] = await Promise.all([
+        Restaurant.findByPk(req.params.id),
+        localFieldHandler(file)
+      ])
       if (!restaurant) throw new Error("Restaurant didn't exist!")
-      await restaurant.update({ name, tel, address, openingHours, description })
+      await restaurant.update({
+        name,
+        tel,
+        address,
+        openingHours,
+        description,
+        image: filePath || restaurant.image
+      })
       req.flash('success_messages', '成功修改!')
       return res.redirect('/admin/restaurants')
     } catch (err) {
