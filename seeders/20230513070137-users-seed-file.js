@@ -8,7 +8,7 @@ module.exports = {
       'Users',
       [
         {
-          email: faker.internet.email(),
+          email: 'root@example.com',
           password: await bcrypt.hash('12345678', 10),
           is_admin: true,
           name: faker.internet.userName(),
@@ -16,7 +16,7 @@ module.exports = {
           updated_at: new Date()
         },
         {
-          email: faker.internet.email(),
+          email: 'user1@example.com',
           password: await bcrypt.hash('12345678', 10),
           is_admin: false,
           name: faker.internet.userName(),
@@ -24,7 +24,7 @@ module.exports = {
           updated_at: new Date()
         },
         {
-          email: faker.internet.email(),
+          email: 'user2@example.com',
           password: await bcrypt.hash('12345678', 10),
           is_admin: false,
           name: faker.internet.userName(),
