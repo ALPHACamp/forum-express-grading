@@ -92,21 +92,29 @@ const adminController = {
       .catch(e => next(e))
   },
   getUsers: (req, res, next) => {
-    User.findAll({
+    return User.findAll({
       raw: true // 把Sequelize包裝過的物件轉換成JS原生物件
     })
       .then(users => res.render('admin/users', { users }))
       .catch(e => next(e))
   },
   patchUser: (req, res, next) => {
-    User.findByPk(req.params.id)
+    return User.findByPk(req.params.id)
       .then(user => {
         if (!user) throw new Error("User didn't exist!")
-        return user.update({
-          isAdmin: user.isAdmin ? 0 : 1
-        })
+        if (user.email === 'root@example.com') {
+          req.flash('error_messages', '禁止變更 root 權限')
+          return res.redirect('back')
+        } else {
+          return user.update({
+            isAdmin: !user.isAdmin
+          })
+        }
       })
-      .then(() => res.redirect('/admin/users'))
+      .then(() => {
+        req.flash('success_messages', '使用者權限變更成功')
+        res.redirect('/admin/users')
+      })
       .catch(e => next(e))
   }
 }
