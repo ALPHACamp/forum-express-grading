@@ -1,4 +1,7 @@
 const fs = require('fs')
+const imgur = require('imgur')
+const { IMGUR_CLIENT_ID } = process.env
+imgur.setClientId(IMGUR_CLIENT_ID)
 
 const localFieldHandler = file => {
   return new Promise((resolve, reject) => {
@@ -12,6 +15,17 @@ const localFieldHandler = file => {
   })
 }
 
+const imgurFieldHandler = file => {
+  return new Promise((resolve, reject) => {
+    if (!file) return resolve(null)
+    return imgur
+      .uploadFile(file.path)
+      .then(img => resolve(img?.link || null))
+      .catch(err => reject(err))
+  })
+}
+
 module.exports = {
-  localFieldHandler
+  localFieldHandler,
+  imgurFieldHandler
 }
