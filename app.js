@@ -2,6 +2,7 @@ const express = require('express')
 const handlebars = require('express-handlebars')
 const session = require('express-session')
 const flash = require('connect-flash')
+const methodOverride = require('method-override')
 
 const passport = require('./config/passport')
 const handlebarsHelpers = require('./helpers/handlebars-helpers')
@@ -16,6 +17,7 @@ app.engine('hbs', handlebars({ extname: '.hbs', helpers: handlebarsHelpers })) /
 app.set('view engine', 'hbs') // 設定使用 Handlebars 做為樣板引擎
 
 app.use(express.urlencoded({ extended: true }))
+app.use(methodOverride('_method'))
 app.use(session({ secret: SESSION_SECRET, resave: false, saveUninitialized: false }))
 app.use(passport.initialize()) // 初始化 Passport
 app.use(passport.session()) // 啟動 session 功能
