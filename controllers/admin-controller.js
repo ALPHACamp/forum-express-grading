@@ -1,4 +1,4 @@
-const { Restaurant } = require('../models')
+const { Restaurant, User } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const adminController = {
@@ -19,7 +19,7 @@ const adminController = {
     const { file } = req // 把檔案取出來,同 const file = req.file
     imgurFileHandler(file) // 此為promise物件
       .then(filePath => {
-      // create a new Restaurant instance and save it into db
+        // create a new Restaurant instance and save it into db
         Restaurant.create({
           name,
           tel,
@@ -40,7 +40,8 @@ const adminController = {
       .then(restaurant => {
         if (!restaurant) throw new Error('Restaurant does not exist.')
         res.render('admin/restaurant', { restaurant })
-      }).catch(e => next(e))
+      })
+      .catch(e => next(e))
   },
   editRestaurant: (req, res, next) => {
     Restaurant.findByPk(req.params.id, { raw: true })
@@ -49,7 +50,8 @@ const adminController = {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         // 存在的話顯示edit page
         res.render('admin/edit-restaurant', { restaurant })
-      }).catch(e => next(e))
+      })
+      .catch(e => next(e))
   },
   putRestaurant: (req, res, next) => {
     const { name, tel, address, openingHours, description } = req.body
@@ -82,9 +84,36 @@ const adminController = {
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         return restaurant.destroy()
-      }).then(() => {
+      })
+      .then(() => {
         req.flash('success_messages', 'restaurant was successfully deleted')
         res.redirect('/admin/restaurants')
+      })
+      .catch(e => next(e))
+  },
+  getUsers: (req, res, next) => {
+    return User.findAll({
+      raw: true // 把Sequelize包裝過的物件轉換成JS原生物件
+    })
+      .then(users => res.render('admin/users', { users }))
+      .catch(e => next(e))
+  },
+  patchUser: (req, res, next) => {
+    return User.findByPk(req.params.id)
+      .then(user => {
+        if (!user) throw new Error("User didn't exist!")
+        if (user.email === 'root@example.com') {
+          req.flash('error_messages', '禁止變更 root 權限')
+          return res.redirect('back')
+        } else {
+          return user.update({
+            isAdmin: !user.isAdmin
+          })
+        }
+      })
+      .then(() => {
+        req.flash('success_messages', '使用者權限變更成功')
+        res.redirect('/admin/users')
       })
       .catch(e => next(e))
   }
