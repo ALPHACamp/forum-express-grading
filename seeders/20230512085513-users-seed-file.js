@@ -9,7 +9,7 @@ module.exports = {
         {
         // 一次新增三筆資料
           email: 'root@example.com',
-          password: await bcrypt.hash('123', 10),
+          password: await bcrypt.hash('12345678', 10),
           is_admin: true,
           name: 'root',
           created_at: new Date(),
@@ -17,7 +17,7 @@ module.exports = {
         },
         {
           email: 'user1@example.com',
-          password: await bcrypt.hash('123', 10),
+          password: await bcrypt.hash('12345678', 10),
           is_admin: false,
           name: 'user1',
           created_at: new Date(),
@@ -25,7 +25,7 @@ module.exports = {
         },
         {
           email: 'user2@example.com',
-          password: await bcrypt.hash('123', 10),
+          password: await bcrypt.hash('12345678', 10),
           is_admin: false,
           name: 'user2',
           created_at: new Date(),
