@@ -5,8 +5,11 @@ const routes = require('./routes')
 const app = express()
 const port = process.env.PORT || 3000
 
+const db = require('./models')
+
 app.set('view engine', 'hbs')
 app.engine('hbs', handlebars({ extname: '.hbs' }))
+app.use(express.urlencoded({ extended: true }))
 app.use(routes)
 
 app.listen(port, () => {
