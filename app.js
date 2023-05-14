@@ -1,6 +1,7 @@
 const express = require('express')
 const handlebars = require('express-handlebars')
 const session = require('express-session')
+const passport = require('./config/passport')
 const flash = require('connect-flash')
 const routes = require('./routes')
 
@@ -16,6 +17,8 @@ app.use(session({
   resave: false,
   saveUninitialized: true
 }))
+app.use(passport.initialize())
+app.use(passport.session())
 app.use(flash())
 app.use((req, res, next) => {
   // res.locals.user = req.user
