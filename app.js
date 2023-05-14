@@ -4,6 +4,7 @@ const routes = require('./routes')
 
 const app = express()
 const port = process.env.PORT || 3000
+// const db = require('./models') 檢查資料庫連線用, npm run dev 沒問題代表連線成功
 
 app.engine('hbs', exphbs({ defaultLayout: 'main', extname: '.hbs' }))
 app.set('view engine', 'hbs')
