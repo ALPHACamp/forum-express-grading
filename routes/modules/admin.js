@@ -24,7 +24,7 @@ router.post(
 router.patch('/users/:id', adminController.patchUser)
 router.get('/users', adminController.getUsers)
 
-// index
+// 設定 fallback route, 如果所有routes都不符合時，通過此路由
 router.use('', (req, res) => res.redirect('/admin/restaurants'))
 
 module.exports = router

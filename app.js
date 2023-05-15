@@ -1,5 +1,7 @@
 
 const path = require('path') // node.js原生module
+
+// require modules
 const express = require('express')
 const routes = require('./routes')
 const flash = require('connect-flash')
@@ -9,6 +11,8 @@ const handlebars = require('express-handlebars')
 const { getUser } = require('./helpers/auth-helpers')
 const handlebarsHelpers = require('./helpers/handlebars-helpers')
 const methodOverride = require('method-override')
+
+// set server
 const app = express()
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config()
