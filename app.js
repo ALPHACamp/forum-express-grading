@@ -1,6 +1,8 @@
 const express = require('express')
 const handlebars = require('express-handlebars')
+
 const session = require('express-session')
+const methodOverride = require('method-override')
 const passport = require('./config/passport')
 const handlebarsHelper = require('./helpers/handlebars-helper')
 const { getUser } = require('./helpers/auth-helpers')
@@ -14,6 +16,7 @@ const SESSION_SECRET = 'secret'
 app.set('view engine', 'hbs')
 app.engine('hbs', handlebars({ extname: '.hbs', helpers: handlebarsHelper }))
 app.use(express.urlencoded({ extended: true }))
+app.use(methodOverride('_method'))
 app.use(session({
   secret: SESSION_SECRET,
   resave: false,
