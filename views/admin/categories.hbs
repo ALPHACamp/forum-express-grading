@@ -1,6 +1,19 @@
 {{>admin-tabs route='categories'}}
 
+
 <div class="d-flex align-items-center pt-3 pb-5 my-3 text-white-50 bg-purple">
+  {{#if category}}
+  <form class="row" action="/admin/categories/{{category.id}}?_method=PUT" method="post">
+    <div class="col-auto">
+      <input class="form-control col-sm-4" type="text" placeholder="name" name="name" value="{{category.name}}">
+    </div>
+    <div class="col-auto">
+      <button type="submit" class="btn btn-warning">Update</button>
+      <a class="btn btn-link link-secondary" href="/admin/categories">or Create New</a>
+    </div>
+  </form>
+  {{else}}
+  <!--create-->
   <form class="row" action="/admin/categories" method="post">
     <div class="col-auto">
       <input class="form-control col-sm-4" type="text" placeholder="category name" name="name">
@@ -9,6 +22,7 @@
       <button type="submit" class="btn btn-success">Create</button>
     </div>
   </form>
+  {{/if}}
 </div>
 
 <table class="table align-middle">
@@ -16,6 +30,7 @@
     <tr>
       <th scope="col">#</th>
       <th scope="col">Category Name</th>
+      <th scope="col">Restaurants</th>
       <th scope="col">#</th>
     </tr>
   </thead>
@@ -24,15 +39,24 @@
     <tr>
       <th scope="row">{{this.id}}</th>
       <td>{{this.name}}</td>
+      <td>{{this.restaurantsAmount}}
       <td>
-        <button type="button" class="btn btn-link">
-          <a class="btn btn-link link-primary" href="/admin/categories/" {{this.id}}>
-            Edit
-          </a>
-        </button>
-        <form action="/admin/categories/{{this.id}}?_method=DELETE" method="POST" style="display: inline">
-          <button type="submit" class="btn btn-link link-danger">Delete</button>
+        <a class="btn btn-link link-primary" href="/admin/categories/{{this.id}}">
+          Edit
+        </a>
+        <form action="/admin/categories/{{this.id}}/restaurants?_method=DELETE" method="POST" style="display: inline">
+          <button type="submit" class="btn btn-link link-danger"
+            onclick="return confirm('這會刪除一共 [{{this.restaurantsAmount}}] 個 [{{this.name}}] 類別的餐廳，你確定嗎?')">
+            Delete Restaurants
+          </button>
         </form>
+        <form action="/admin/categories/{{this.id}}?_method=DELETE" method="POST" style="display: inline">
+          <button type="submit" class="btn btn-link link-danger"
+            onclick="return confirm('這會刪除 [{{this.name}}] 類別跟全部此類型的餐廳，你確定嗎?')">
+            Delete
+          </button>
+        </form>
+
       </td>
     </tr>
     {{/each}}

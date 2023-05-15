@@ -17,6 +17,10 @@ router.post('/restaurants', upload.single('image'), adminController.postRestaura
 router.get('/users', adminController.getUsers)
 router.patch('/users/:id', adminController.patchUser)
 // categories
+router.get('/categories/:id', categoryController.getCategories)
+router.put('/categories/:id', categoryController.putCategory)
+router.delete('/categories/:id/restaurants', categoryController.deleteCategoryRestaurants)
+router.delete('/categories/:id', categoryController.deleteCategory)
 router.get('/categories', categoryController.getCategories)
 router.post('/categories', categoryController.postCategories)
 // home
