@@ -1,11 +1,13 @@
-const { Restaurant, User } = require('../models/')
+const { Restaurant, User, Category } = require('../models/')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const adminController = {
   getRestaurant: (req, res, next) => {
     const id = req.params.id
     return Restaurant.findByPk(id, {
-      raw: true
+      raw: true,
+      nest: true,
+      include: [Category]
     })
       .then(restaurant => {
         if (!restaurant) throw new Error('Can not find this restaurant!')
@@ -16,7 +18,9 @@ const adminController = {
 
   getRestaurants: (req, res, next) => {
     return Restaurant.findAll({
-      raw: true
+      raw: true,
+      include: [Category],
+      nest: true
     })
       .then(restaurants => {
         res.render('admin/restaurants', { restaurants })
