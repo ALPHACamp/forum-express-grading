@@ -3,6 +3,7 @@ const exphbs = require('express-handlebars')
 const session = require('express-session')
 const flash = require('connect-flash')
 const SESSION_SECRET = 'secret'
+const passport = require('./config/passport')
 const routes = require('./routes')
 
 const app = express()
@@ -21,6 +22,9 @@ app.use(session({
   resave: false,
   saveUninitialized: false
 }))
+// passport, 初始化&啟動 session 功能
+app.use(passport.initialize())
+app.use(passport.session())
 // flash
 app.use(flash())
 // flash middleware

@@ -6,6 +6,7 @@ const userController = {
   signUpPage: (req, res) => {
     res.render('signup')
   },
+
   signUp: (req, res, next) => {
     if (req.body.password !== req.body.passwordCheck) throw new Error('Password do not match!')
 
@@ -25,6 +26,21 @@ const userController = {
       })
       // 接住前面拋出的錯誤訊息, 呼叫專門做錯誤處理的 middleware
       .catch(err => next(err))
+  },
+
+  signInPage: (req, res) => {
+    res.render('signin')
+  },
+
+  signIn: (req, res, next) => {
+    req.flash('success_messages', '成功登入！')
+    res.redirect('/restaurants')
+  },
+
+  logout: (req, res) => {
+    req.flash('success_messages', '登出成功！')
+    req.logout()
+    res.redirect('/signin')
   }
 }
 
