@@ -1,3 +1,4 @@
+const path = require('path')
 const express = require('express')
 const handlebars = require('express-handlebars')
 
@@ -25,6 +26,7 @@ app.use(session({
 app.use(passport.initialize())
 app.use(passport.session())
 app.use(flash())
+app.use('/upload', express.static(path.join(__dirname, 'upload')))
 app.use((req, res, next) => {
   res.locals.success_msg = req.flash('success_msg')
   res.locals.error_msg = req.flash('error_msg')
