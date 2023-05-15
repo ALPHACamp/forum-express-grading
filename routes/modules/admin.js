@@ -1,6 +1,8 @@
 const express = require('express')
 const router = express.Router()
 const adminController = require('../../controllers/admin-controller')
+const categoryController = require('../../controllers/category-controller')
+
 const upload = require('../../middleware/multer')
 
 // admin restaurants
@@ -14,6 +16,8 @@ router.post('/restaurants', upload.single('image'), adminController.postRestaura
 // admin users
 router.get('/users', adminController.getUsers)
 router.patch('/users/:id', adminController.patchUser)
+// categories
+router.get('/categories', categoryController.getCategories)
 // home
 router.get('', (req, res) => res.redirect('/admin/restaurants'))
 

@@ -4,7 +4,7 @@ module.exports = {
   currentYear: () => {
     return dayjs().year()
   },
-  isCond: function (a, b, options) {
+  ifCond: function (a, b, options) {
     return a === b ? options.fn(this) : options.inverse(this)
   }
 }
