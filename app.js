@@ -2,6 +2,8 @@ const express = require('express')
 const exphbs = require('express-handlebars')
 const session = require('express-session')
 const flash = require('connect-flash')
+const { getUser } = require('./helper/auth-helpers')
+const handlebarsHelpers = require('./helper/handlebars-helpers')
 const SESSION_SECRET = 'secret'
 const passport = require('./config/passport')
 const routes = require('./routes')
@@ -15,7 +17,7 @@ app.engine('hbs', exphbs({ defaultLayout: 'main', extname: '.hbs' }))
 app.set('view engine', 'hbs')
 
 // body-parsers
-app.use(express.urlencoded({ extended: true }))
+app.use(express.urlencoded({ extended: true, helpers: handlebarsHelpers }))
 // session
 app.use(session({
   secret: SESSION_SECRET,
@@ -31,6 +33,7 @@ app.use(flash())
 app.use((req, res, next) => {
   res.locals.success_messages = req.flash('success_messages')
   res.locals.error_messages = req.flash('error_messages')
+  res.locals.user = getUser(req)
   next()
 })
 // routes
