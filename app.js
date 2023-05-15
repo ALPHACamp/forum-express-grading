@@ -21,7 +21,7 @@ app.use(flash())
 app.use((req, res, next) => {
   res.locals.success_messages = req.flash('success_messages')
   res.locals.error_messages = req.flash('error_messages')
-  res.locals.users = getUser(req)
+  res.locals.user = getUser(req)
   next()
 })
 app.use(routes)
