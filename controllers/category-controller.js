@@ -1,4 +1,4 @@
-const { Category } = require('../models')
+const { Restaurant, Category } = require('../models')
 
 const categoryController = {
   getCategories: async (req, res, next) => {
@@ -43,10 +43,30 @@ const categoryController = {
 
       if (!category) throw new Error("Category doesn't exist!")
 
+      // 1.直接把相關的餐廳刪除，大量刪除(，加 WHERE)
+      // await Restaurant.destroy({ where: { categoryId: req.params.id } })
+
+      // 3.保留餐廳，標示為 未分類
+      // findOrCreate 回傳array [instance, boolean]
+      const uncategorized = await Category.findOrCreate({
+        raw: true,
+        where: { name: '未分類' }
+      })
+
+      // 大量修改，加 WHERE
+      await Restaurant.update(
+        /* set attributes' value */
+        { categoryId: uncategorized[0].id },
+        /* condition for find */
+        { where: { categoryId: req.params.id } }
+      )
+      // 刪除分類
       await category.destroy()
 
       res.redirect('/admin/categories')
-    } catch (err) { next(err) }
+    } catch (err) {
+      next(err)
+    }
   }
 }
 
