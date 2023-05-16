@@ -1,4 +1,4 @@
-const {Category} = require('../models')
+const { Category } = require('../models')
 
 const categoryController = {
   getCategories: (req, res, next) => {
@@ -6,7 +6,13 @@ const categoryController = {
       res.render('admin/categories', { categories })
     })
   },
-  postCategory: (req, res, next) => {},
+  postCategory: (req, res, next) => {
+    const { name } = req.body
+    if (!name) throw new Error('Category name is required!')
+
+    return Category.create({ name }).then(() => res.redirect('/admin/categories'))
+      .catch(e => next(e))
+  },
   putCategory: (req, res, next) => {},
   deleteCategory: (req, res, next) => {}
 }
