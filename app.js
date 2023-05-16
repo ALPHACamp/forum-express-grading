@@ -10,6 +10,10 @@ const SESSION_SECRET = 'secret'
 const passport = require('./config/passport')
 const routes = require('./routes')
 
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
+
 const app = express()
 const port = process.env.PORT || 3000
 // const db = require('./models') 檢查資料庫連線用, npm run dev 沒問題代表連線成功
