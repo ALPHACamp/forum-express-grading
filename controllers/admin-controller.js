@@ -65,14 +65,14 @@ const adminController = {
     ])
       .then(([restaurant, filePath]) => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
-        return Restaurant.update({
+        return restaurant.update({
           name,
           tel,
           address,
           openingHours,
           description,
           image: filePath || restaurant.image
-        }, { where: { id: req.params.id } })
+        })
       })
       .then(() => {
         req.flash('success_message', 'Restaurant was successfully to update!')
