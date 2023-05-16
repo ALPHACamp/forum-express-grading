@@ -21,15 +21,16 @@ app.use(session({ secret: SESSION_SECRET, resave: false, saveUninitialized: fals
 
 app.use(flash())
 
+
+app.use(passport.initialize())
+app.use(passport.session())
+
 app.use((req, res, next) => {
   res.locals.success_messages = req.flash('success_messages')
   res.locals.error_messages = req.flash('error_messages')
   res.locals.user = getUser(req)
   next()
 })
-
-app.use(passport.initialize())
-app.use(passport.session())
 
 app.use(routes)
 
