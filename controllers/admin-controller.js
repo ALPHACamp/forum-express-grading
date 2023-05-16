@@ -38,6 +38,44 @@ const adminController = {
         res.render('admin/restaurant', { restaurant })
       })
       .catch(err => next(err))
+  },
+  editRestaurant: (req, res, next) => {
+    // 先使用 findByPk ，檢查一下有沒有這間餐廳
+    Restaurant.findByPk(req.params.id, {
+      raw: true
+    })
+      .then(restaurant => {
+        // 如果沒有的話，直接拋出錯誤訊息。
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        // 有的話，就前往 admin/edit-restaurant
+        res.render('admin/edit-restaurant', { restaurant })
+      })
+      .catch(err => next(err))
+  },
+  putRestaurant: (req, res, next) => {
+    // 將 req.body 中傳入的資料用解構賦值的方法存起來
+    const { name, tel, address, openingHours, description } = req.body
+    // 檢查必填欄位 name 有資料
+    if (!name) throw new Error('Restaurant name is required!')
+    // 透過 Restaurant.findByPk(req.params.id) 把對應的該筆餐廳資料查出來
+    Restaurant.findByPk(req.params.id)
+    // 編輯情境裡不會加 { raw: true }
+      .then(restaurant => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        // 如果有成功查到，就透過 restaurant.update 來更新資料。
+        return restaurant.update({
+          name,
+          tel,
+          address,
+          openingHours,
+          description
+        })
+      })
+      .then(() => {
+        req.flash('success_messages', 'restaurant was successfully to update')
+        res.redirect('/admin/restaurants')
+      })
+      .catch(err => next(err))
   }
 }
 module.exports = adminController
