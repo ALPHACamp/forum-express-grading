@@ -1,5 +1,5 @@
 const { Restaurant } = require('../models') // 新增這裡 採用解構賦值
-const { localFileHandler } = require('../helpers/file-helper')
+const { imgurFileHandler } = require('../helpers/file-helper')
 
 const adminController = { // 修改這裡
 
@@ -15,7 +15,7 @@ const adminController = { // 修改這裡
     const { name, tel, address, openingHours, description } = req.body
     if (!name) throw new Error('Restaurant name is required')
     const { file } = req
-    localFileHandler(file) // 在file-helper已經協助判斷是否有file傳入
+    imgurFileHandler(file) // 在file-helper已經協助判斷是否有file傳入
       .then(filePath => Restaurant.create({
         name,
         tel,
@@ -56,7 +56,7 @@ const adminController = { // 修改這裡
     const { file } = req
     Promise.all([
       Restaurant.findByPk(req.params.id), // 這裡不加{ raw: true }
-      localFileHandler(file)
+      imgurFileHandler(file)
     ])
       .then(([restaurant, filePath]) => {
         if (!restaurant) throw new Error("Restaurant didn't exist")

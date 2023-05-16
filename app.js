@@ -14,6 +14,10 @@ const app = express()
 const port = process.env.PORT || 3000
 const SESSION_SECRET = 'secret'
 
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
+
 app.set('view engine', 'hbs')
 app.engine('hbs', handlebars({ extname: '.hbs', helpers: handlebarsHelper }))
 app.use(express.urlencoded({ extended: true }))
