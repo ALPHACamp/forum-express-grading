@@ -2,11 +2,11 @@ const bcrypt = require('bcryptjs')
 const db = require('../models')
 const { User } = db
 const userController = {
-  // 負責render註冊頁面
+  // 註冊頁面
   signUpPage: (req, res) => {
     res.render('signup')
   },
-  // 處理註冊行為
+  // 註冊功能
   signUp: (req, res, next) => {
     // 如果兩次輸入的密碼不同，就建立一個Error物件並拋出
     if (req.body.password !== req.body.passwordCheck) throw new Error('Passwords do not match!')
@@ -26,6 +26,21 @@ const userController = {
         res.redirect('/signin')
       })
       .catch(err => next(err)) // 接住前面拋出的錯誤，呼叫專門做錯誤處理的middleware
+  },
+  // 登入頁面
+  signInPage: (req, res) => {
+    res.render('signin')
+  },
+  // 登入功能
+  signIn: (req, res) => {
+    req.flash('success_messages', '登入成功!')
+    res.redirect('/restaurants')
+  },
+  // 登出功能
+  logout: (req, res) => {
+    req.flash('success_messages', '登出成功!')
+    req.logout()
+    res.redirect('/signin')
   }
 }
 
