@@ -88,15 +88,17 @@ const adminController = { // 修改這裡
   },
   getUsers: (req, res, next) => {
     User.findAll({ raw: true })
-      .then(users => res.render('admin/users', { users }))
+      .then(users => {
+        console.log('..................這裡是第一個user名稱' + users[0].name)
+        res.render('admin/users', { users })
+      })
+      // .then(users => res.render('admin/users', { users }))
       .catch(err => next(err))
   },
   patchUser: async (req, res, next) => {
     const id = req.params.id
-    // console.log('..............這是user ID' + id)
     const user = await User.findByPk(id)
     if (!user) throw new Error('Restaurant is required')
-    // console.log('..............這是user isAdmin' + user.isAdmin)
     if (user.email === 'root@example.com') {
       req.flash('error_messages', '禁止變更 root 權限')
       return res.redirect('/admin/users')
