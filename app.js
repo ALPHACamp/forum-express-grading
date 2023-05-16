@@ -1,13 +1,15 @@
-const express = require('express')
-const routes = require('./routes')
+const express = require("express");
+const handlebars = require("express-handlebars");
+const routes = require("./routes");
 
-const app = express()
-const port = process.env.PORT || 3000
-
-app.use(routes)
+const app = express();
+const port = process.env.PORT || 3000;
+app.set("view engine", "hbs");
+app.engine("hbs", handlebars({ extname: ".hbs" }));
+app.use(routes);
 
 app.listen(port, () => {
-  console.info(`Example app listening on port ${port}!`)
-})
+  console.info(`Example app listening on port ${port}!`);
+});
 
-module.exports = app
+module.exports = app;
