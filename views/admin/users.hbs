@@ -1,10 +1,4 @@
-<h1>餐廳後台</h1>
-
-<a href="/admin/restaurants/">Restaurants</a> |
-<a href="/admin/users/">Users</a>
-
-
-<br />
+{{>admin-tabs route='users'}}
 <table class="table align-middle">
     <thead class="thead-dark">
         <tr>
@@ -30,11 +24,11 @@
             </td>
             <td>
                 <form action="/admin/users/{{this.id}}?_method=PATCH" method="POST" style="display: inline;">
-                {{#if this.isAdmin}}
+                    {{#if this.isAdmin}}
                     <button type="submit" class="btn btn-link link-primary">set as user</button>
-                {{else}}
+                    {{else}}
                     <button type="submit" class="btn btn-link link-primary">set as admin</button>
-                {{/if}}
+                    {{/if}}
                 </form>
             </td>
         </tr>

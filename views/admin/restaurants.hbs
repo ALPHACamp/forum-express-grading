@@ -1,7 +1,4 @@
-<h1>餐廳後台</h1>
-
-<a href="/admin/restaurants/">Restaurants</a> |
-<a href="/admin/users/">Users</a>
+{{>admin-tabs route='restaurants'}}
 
 <div class="d-flex mt-4">
     <a href='/admin/restaurants/create'>
@@ -36,7 +33,8 @@
                     </a>
                 </button>
                 <form action="/admin/restaurants/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
-                    <button type="submit" class="btn btn-link link-danger" onclick="return confirm(`確定要刪除 {{ this.name }} 嗎？`)">Delete</button>
+                    <button type="submit" class="btn btn-link link-danger"
+                        onclick="return confirm(`確定要刪除 {{ this.name }} 嗎？`)">Delete</button>
                 </form>
             </td>
         </tr>
