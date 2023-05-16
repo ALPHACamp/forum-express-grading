@@ -110,29 +110,5 @@ const adminController = { // 修改這裡
     }
   }
 
-  // patchUser: (req, res, next) => {
-  //   const id = req.params.id
-  //   return User.findByPk(id)
-  //     .then(user => {
-  //       if (!user) {
-  //         throw new Error('Restaurant is required')
-  //       }
-  //       if (user.email === 'root@example.com') {
-  //         req.flash('error_messages', '禁止變更 root 權限')
-  //         return res.redirect('/admin/users')
-  //       }
-  //       return user
-  //     })
-  //     .then(user => { return user.update({ isAdmin: !user.isAdmin }) })
-  //     .then(() => {
-  //       req.flash('success_messages', '使用者權限變更成功')
-  //       return res.redirect('/admin/users')
-  //     })
-  //     .catch(error => {
-  //       console.log(error)
-  //       next(error)
-  //     })
-  // }
-
 }
 module.exports = adminController
