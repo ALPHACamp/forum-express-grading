@@ -2,6 +2,7 @@ const express = require('express')
 const exphbs = require('express-handlebars')
 const session = require('express-session')
 const flash = require('connect-flash')
+const methodOverride = require('method-override')
 const { getUser } = require('./helper/auth-helpers')
 const handlebarsHelpers = require('./helper/handlebars-helpers')
 const SESSION_SECRET = 'secret'
@@ -27,6 +28,8 @@ app.use(session({
 // passport, 初始化&啟動 session 功能
 app.use(passport.initialize())
 app.use(passport.session())
+// method-override
+app.use(methodOverride('_method'))
 // flash
 app.use(flash())
 // flash middleware
