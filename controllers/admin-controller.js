@@ -76,6 +76,20 @@ const adminController = {
         res.redirect('/admin/restaurants')
       })
       .catch(err => next(err))
+  },
+  deleteRestaurant: (req, res, next) => { 
+    // 先 findByPk ，找找看有沒有這間餐廳。
+    return Restaurant.findByPk(req.params.id)
+    // 刪除的時候也不會加 { raw: true } 參數
+      .then(restaurant => {
+        // 沒找到就拋出錯誤並結束
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        // 有就呼叫 sequelize 提供的 destroy() 方法來刪除這筆資料
+        return restaurant.destroy()
+      })
+      // 呼叫完沒問題的話，就回到後台首頁
+      .then(() => res.redirect('/admin/restaurants'))
+      .catch(err => next(err))
   }
 }
 module.exports = adminController
