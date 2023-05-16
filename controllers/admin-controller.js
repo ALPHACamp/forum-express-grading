@@ -1,4 +1,5 @@
 const { Restaurant } = require('../models') // 新增這裡
+const { User } = require('../models') // 新增這裡
 const { localFileHandler } = require('../helpers/file-helpers')
 
 const adminController = {
@@ -85,6 +86,27 @@ const adminController = {
       })
       .then(() => res.redirect('/admin/restaurants'))
       .catch(err => next(err))
+  },
+  getUsers: (req, res, next) => {
+    User.findAll({
+      raw: true
+    })
+      .then(users => res.render('admin/users', { users }))
+      .catch(err => next(err))
+  },
+  getUser: (req, res, next) => {
+    User.findByPk(req.params.id, {
+      raw: true
+    })
+      .then(user => {
+        if (!user) throw new Error("user didn't exist!")
+        res.render('admin/user', { user })
+      })
+      .catch(err => next(err))
+  },
+  patchUser: (req, res, next) => {
+    // Implement the logic to update user permissions
   }
 }
+
 module.exports = adminController
