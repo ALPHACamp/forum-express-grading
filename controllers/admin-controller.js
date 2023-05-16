@@ -1,4 +1,6 @@
 const { Restaurant } = require('../models')
+const { localFileHandler } = require('../helpers/file-helpers') // 將 file-helper 載進來
+
 const adminController = {
   getRestaurants: (req, res) => {
     return Restaurant.findAll({
@@ -16,13 +18,17 @@ const adminController = {
     const { name, tel, address, openingHours, description } = req.body
     // name 是必填，若發先是空值就會終止程式碼，並在畫面顯示錯誤提示
     if (!name) throw new Error('Restaurant name is required!')
-    Restaurant.create({ // 產生一個新的 Restaurant 物件實例，並存入資料庫
-      name,
-      tel,
-      address,
-      openingHours,
-      description
-    })
+    const { file } = req // 把檔案取出來，也可以寫成 const file = req.file
+    localFileHandler(file) // 把取出的檔案傳給 file-helper 處理後
+      .then(filePath =>
+        Restaurant.create({ // 產生一個新的 Restaurant 物件實例，並存入資料庫
+          name,
+          tel,
+          address,
+          openingHours,
+          description,
+          image: filePath || null
+        }))
       .then(() => {
         req.flash('success_messages', 'restaurant was successfully created') // 在畫面顯示成功提示
         res.redirect('/admin/restaurants') // 新增完成後導回後台首頁
@@ -57,10 +63,14 @@ const adminController = {
     const { name, tel, address, openingHours, description } = req.body
     // 檢查必填欄位 name 有資料
     if (!name) throw new Error('Restaurant name is required!')
+    const { file } = req // 把檔案取出來
+    Promise.all([ // 非同步處理
     // 透過 Restaurant.findByPk(req.params.id) 把對應的該筆餐廳資料查出來
-    Restaurant.findByPk(req.params.id)
-    // 編輯情境裡不會加 { raw: true }
-      .then(restaurant => {
+      Restaurant.findByPk(req.params.id),
+      // 編輯情境裡不會加 { raw: true }
+      localFileHandler(file) // 把檔案傳到 file-helper 處理
+    ])
+      .then(([restaurant, filePath]) => { // 以上兩樣事都做完以後
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         // 如果有成功查到，就透過 restaurant.update 來更新資料。
         return restaurant.update({
@@ -68,7 +78,9 @@ const adminController = {
           tel,
           address,
           openingHours,
-          description
+          description,
+          image: filePath || restaurant.image
+          // 如果 filePath 是 Truthy (使用者有上傳新照片) 就用 filePath，是 Falsy (使用者沒有上傳新照片) 就沿用原本資料庫內的值
         })
       })
       .then(() => {
@@ -77,7 +89,7 @@ const adminController = {
       })
       .catch(err => next(err))
   },
-  deleteRestaurant: (req, res, next) => { 
+  deleteRestaurant: (req, res, next) => {
     // 先 findByPk ，找找看有沒有這間餐廳。
     return Restaurant.findByPk(req.params.id)
     // 刪除的時候也不會加 { raw: true } 參數
