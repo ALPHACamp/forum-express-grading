@@ -10,12 +10,12 @@ passport.use(new LocalStrategy(
     User.findOne({ where: { email } })
       .then(user => {
         if (!user) {
-          return done(null, false, req.flash('error_msg', '帳號或密碼輸入錯誤！'))
+          return done(null, false, req.flash('error_messages', '帳號或密碼輸入錯誤！'))
         }
         bcrypt.compare(password, user.password)
           .then(isMatch => {
             if (!isMatch) {
-              return done(null, false, req.flash('error_msg', '帳號或密碼輸入錯誤！'))
+              return done(null, false, req.flash('error_messages', '帳號或密碼輸入錯誤！'))
             }
             return done(null, user)
           })
@@ -29,7 +29,7 @@ passport.deserializeUser((id, done) => {
   User.findByPk(id)
     .then(user => {
       user = user.toJSON()
-      console.log(user)
+      // console.log(user)
       return done(null, user)
     })
 })
