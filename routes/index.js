@@ -7,19 +7,18 @@ const userController = require('../controllers/user-controller')
 // 引入middleware
 const { authenticated } = require('../middleware/auth')
 const { generalErrorHandler } = require('../middleware/error-handler')
-
+// 後台
 const admin = require('./modules/admin')
 router.use('/admin', admin)
-
+// 註冊
 router.get('/signup', userController.signUpPage)
-
+router.post('/signup', userController.signUp)
+// 登入
 router.get('/signin', userController.signInPage)
 router.post('/signin', passport.authenticate('local', { failureRedirect: '/signin', failureFlash: true }), userController.signIn)
-
-router.post('/signup', userController.signUp)
-
+// 登出
 router.get('/logout', userController.logout)
-
+// 餐廳頁
 router.get('/restaurants', authenticated, restController.getRestaurants)
 
 router.use('/', (req, res) => { res.redirect('/restaurants') })
