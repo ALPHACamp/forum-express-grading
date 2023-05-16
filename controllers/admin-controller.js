@@ -1,4 +1,4 @@
-const { Restaurant } = require('../models') // 新增這裡 採用解構賦值
+const { Restaurant, User } = require('../models') // 新增這裡 採用解構賦值
 const { imgurFileHandler } = require('../helpers/file-helper')
 
 const adminController = { // 修改這裡
@@ -27,7 +27,7 @@ const adminController = { // 修改這裡
       )
 
       .then(() => {
-        req.flash('success_msg', 'Restaurant was successfully created')
+        req.flash('success_messages', 'Restaurant was successfully created')
         res.redirect('/admin/restaurants')
       })
       .catch(err => next(err))
@@ -70,7 +70,7 @@ const adminController = { // 修改這裡
         })
       })
       .then(() => {
-        req.flash('success_msg', 'restaurant was successfully to update')
+        req.flash('success_messages', 'restaurant was successfully to update')
         res.redirect('/admin/restaurants')
       })
       .catch(err => next(err))
@@ -85,7 +85,27 @@ const adminController = { // 修改這裡
         res.redirect('/admin/restaurants')
       })
       .catch(err => next(err))
+  },
+  getUsers: (req, res, next) => {
+    User.findAll({ raw: true })
+      .then(users => res.render('admin/users', { users }))
+      .catch(err => next(err))
+  },
+  patchUser: async (req, res, next) => {
+    const id = req.params.id
+    // console.log('..............這是user ID' + id)
+    const user = await User.findByPk(id)
+    if (!user) throw new Error('Restaurant is required')
+    // console.log('..............這是user isAdmin' + user.isAdmin)
+    if (user.email === 'root@example.com') {
+      req.flash('error_messages', '禁止變更 root 權限')
+      return res.redirect('/admin/users')
+    }
+    await user.update({
+      isAdmin: !user.isAdmin
+    })
+    req.flash('success_messages', '使用者權限變更成功')
+    return res.redirect('/admin/users')
   }
 }
-
 module.exports = adminController
