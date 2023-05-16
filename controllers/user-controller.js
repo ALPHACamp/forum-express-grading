@@ -7,16 +7,25 @@ const userController = {
     res.render('signup')
   },
   // 處理註冊行為
-  signUp: (req, res) => {
-    bcrypt.hash(req.body.password, 10)
-      .then(hash => User.create({
+  signUp: (req, res, next) => {
+    // 如果兩次輸入的密碼不同，就建立一個Error物件並拋出
+    if (req.body.password !== req.body.passwordCheck) throw new Error('Passwords do not match!')
+    // 確認資料裡面沒有一樣的email,若有就 建立一個Error物件並拋出
+    User.findOne({ where: { email: req.body.email } })
+      .then(user => {
+        if (user) throw new Error('Email already exists!')
+        return bcrypt.hash(req.body.password, 10)
+      })
+      .then(hash => User.create({ // 上面錯誤狀況都沒發生，就把使用者的資料寫入資料庫
         name: req.body.name,
         email: req.body.email,
         password: hash
       }))
       .then(() => {
+        req.flash('success_messages', '成功註冊帳號')
         res.redirect('/signin')
       })
+      .catch(err => next(err)) // 接住前面拋出的錯誤，呼叫專門做錯誤處理的middleware
   }
 }
 
