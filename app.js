@@ -7,7 +7,12 @@ const flash = require("connect-flash");
 const session = require("express-session");
 const SESSION_SECRET = "secret";
 const passport = require("./config/passport");
-app.engine("hbs", handlebars.engine({ extname: ".hbs" }));
+const { getUser } = require("./helpers/auth-helpers");
+const handlebarsHelpers = require("./helpers/handlebars-helpers");
+app.engine(
+  "hbs",
+  handlebars.engine({ extname: ".hbs", helpers: handlebarsHelpers })
+);
 app.set("view engine", "hbs");
 app.use(express.urlencoded({ extended: true }));
 app.use(
@@ -19,6 +24,7 @@ app.use(flash());
 app.use((req, res, next) => {
   res.locals.success_messages = req.flash("success_messages");
   res.locals.error_messages = req.flash("error_messages");
+  res.locals.user = getUser(req);
   next();
 });
 app.use(routes);
