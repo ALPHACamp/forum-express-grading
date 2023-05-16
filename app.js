@@ -5,6 +5,7 @@ const flash = require('connect-flash')
 const methodOverride = require('method-override')
 const { getUser } = require('./helper/auth-helpers')
 const handlebarsHelpers = require('./helper/handlebars-helpers')
+const path = require('path')
 const SESSION_SECRET = 'secret'
 const passport = require('./config/passport')
 const routes = require('./routes')
@@ -30,6 +31,8 @@ app.use(passport.initialize())
 app.use(passport.session())
 // method-override
 app.use(methodOverride('_method'))
+// path
+app.use('/upload', express.static(path.join(__dirname, 'upload')))
 // flash
 app.use(flash())
 // flash middleware

@@ -1,4 +1,5 @@
 const { Restaurant } = require('../models')
+const { localFileHandler } = require('../helper/file-helpers')
 
 const adminController = {
   getRestaurants: (req, res) => {
@@ -17,13 +18,16 @@ const adminController = {
 
     if (!name) throw new Error('Restaurant name is required!')
 
-    Restaurant.create({
-      name,
-      tel,
-      address,
-      openingHours,
-      description
-    })
+    const { file } = req // 把檔案從 req 拿出來
+    localFileHandler(file) // 將取出的檔案交給 file-helpers.js 處理
+      .then(filePath => Restaurant.create({ // 再 create 這筆資料
+        name,
+        tel,
+        address,
+        openingHours,
+        description,
+        image: filePath || null
+      }))
       .then(() => {
         req.flash('success_messages', 'restaurant is successfully created!')
         res.redirect('/admin/restaurants')
@@ -52,15 +56,23 @@ const adminController = {
   putRestaurant: (req, res, next) => {
     const { name, tel, address, openingHours, description } = req.body
     if (!name) throw new Error('Restaurant name is required!')
-    Restaurant.findByPk(req.params.id)
-      .then(restaurant => {
-        return restaurant.update({
+
+    const { file } = req
+
+    Promise.all([
+      Restaurant.findByPk(req.params.id),
+      localFileHandler(file)
+    ])
+      .then(([restaurant, filePath]) => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        return Restaurant.update({
           name,
           tel,
           address,
           openingHours,
-          description
-        })
+          description,
+          image: filePath || restaurant.image
+        }, { where: { id: req.params.id } })
       })
       .then(() => {
         req.flash('success_message', 'Restaurant was successfully to update!')

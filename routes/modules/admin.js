@@ -1,14 +1,24 @@
 const express = require('express')
+const upload = require('../../middleware/multer')
 const router = express.Router()
 const adminController = require('../../controllers/admin-controller')
 
+// create
 router.get('/restaurants/create', adminController.createRestaurant)
-router.get('/restaurants/:id', adminController.getRestaurant)
-router.get('/restaurants/:id/edit', adminController.editRestaurant)
-router.put('/restaurants/:id', adminController.putRestaurant)
-router.delete('/restaurants/:id', adminController.deleteRestaurant)
+router.post('/restaurants', upload.single('image'), adminController.postRestaurant)
+
+// read all
 router.get('/restaurants', adminController.getRestaurants)
-router.post('/restaurants', adminController.postRestaurant)
+
+// detail
+router.get('/restaurants/:id', adminController.getRestaurant)
+
+// edit
+router.get('/restaurants/:id/edit', adminController.editRestaurant)
+router.put('/restaurants/:id', upload.single('image'), adminController.putRestaurant)
+
+// delete
+router.delete('/restaurants/:id', adminController.deleteRestaurant)
 
 router.use('/', (req, res) => res.redirect('/admin/restaurants'))
 
