@@ -23,7 +23,7 @@ module.exports = {
         updated_at: new Date(),
         // 考量到雲端的database, 產生資料時id可能會跳號
         category_id:
-          categories[Math.floor(Math.random() * categories.length)].id
+          categories[Math.floor(Math.random() * (categories.length - 1))].id
       }))
     )
   },

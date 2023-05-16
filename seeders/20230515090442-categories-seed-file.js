@@ -10,7 +10,8 @@ module.exports = {
         '墨西哥料理',
         '素食料理',
         '美式料理',
-        '複合式料理'
+        '複合式料理',
+        '未分類'
       ].map(item => {
         return {
           name: item,
