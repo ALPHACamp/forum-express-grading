@@ -1,3 +1,7 @@
+
+const path = require('path') // node.js原生module
+
+// require modules
 const express = require('express')
 const routes = require('./routes')
 const flash = require('connect-flash')
@@ -7,7 +11,12 @@ const handlebars = require('express-handlebars')
 const { getUser } = require('./helpers/auth-helpers')
 const handlebarsHelpers = require('./helpers/handlebars-helpers')
 const methodOverride = require('method-override')
+
+// set server
 const app = express()
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
 const port = process.env.PORT || 3000
 const SESSION_SECRET = 'secret'
 
@@ -33,6 +42,8 @@ usePassport(app)
 // set middlewares
 app.use(flash())
 app.use(methodOverride('_method'))
+// 靜態檔案, 透過express.static來指定路徑
+app.use('/upload', express.static(path.join(__dirname, 'upload')))
 
 app.use((req, res, next) => {
   // 設定 locals 使前端樣板可存取變數

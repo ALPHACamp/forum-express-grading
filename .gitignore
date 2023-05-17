@@ -4,3 +4,5 @@ upload/
 
 .DS_Store
 .env
+
+# mysql://b03dcccff4aebf:d0a484c0@us-cdbr-east-06.cleardb.net/heroku_fefb5e3f3055789?reconnect=true
