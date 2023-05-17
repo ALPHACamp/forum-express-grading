@@ -12,6 +12,7 @@ const adminController = {
     const { name, tel, address, openingHours, description } = req.body
     if (!name) throw new Error('Name is required!')
     const { file } = req
+    console.log(file)
     localFileHelper(file)
       .then(filePath => Restaurant.create({
         name,
