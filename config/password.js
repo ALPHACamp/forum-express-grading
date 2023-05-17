@@ -3,7 +3,7 @@ const LocalStrategy = require('passport-local')
 const bcrypt = require('bcryptjs')
 const db = require('../models')
 const User = db.User
-// set up Passport strategy
+
 passport.use(new LocalStrategy(
   {
     usernameField: 'email',

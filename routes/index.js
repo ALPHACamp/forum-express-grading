@@ -3,6 +3,7 @@ const router = express.Router()
 const passport = require('../config/password')
 const restController = require('../controllers/restaurant-controller')
 const userController = require('../controllers/user-controller')
+const { authenticated } = require('../middleware/auth')
 const { generalErrorHandler } = require('../middleware/error-handler')
 const admin = require('./modules/admin')
 
@@ -19,7 +20,7 @@ router.post('/signin', passport.authenticate('local',
 router.get('/logout', userController.logout)
 router.use('/admin', admin)
 
-router.get('/restaurants', restController.getRestaurants)
+router.get('/restaurants', authenticated, restController.getRestaurants)
 router.use('/', (req, res) => { res.redirect('/restaurants') })
 router.use('/', generalErrorHandler)
 
