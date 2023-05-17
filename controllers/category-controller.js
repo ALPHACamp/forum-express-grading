@@ -42,6 +42,20 @@ const categoryController = {
     } catch (err) {
       next(err)
     }
+  },
+  deleteCategory: async (req, res, next) => {
+    // 取得category
+    const { id } = req.params
+    try {
+      // 有就刪掉
+      const category = await Category.findByPk(id)
+      if (!category) throw new Error('Category Name cannot find')
+      category.destroy()
+      // redirect
+      return res.redirect('/admin/categories')
+    } catch (err) {
+      next(err)
+    }
   }
 }
 
