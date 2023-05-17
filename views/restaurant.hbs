@@ -22,14 +22,31 @@
 <!-- 會去上一頁，依照req header referer，所以要是直接從外部進來會再跑回外部 -->
 <a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
 <a class="btn btn-success ms-2" href="/restaurants/{{restaurant.id}}/dashboard">Dashboard</a>
-<hr>
 
 {{!-- comment --}}
-<form action="/comments" method="post">
-  <div class="form-row my-3">
-    <label class="form-label" for="text">留下評論：</label>
-    <textarea class="form-control" name="text" id="text" rows="3"></textarea>
-  </div>
-  <input type="hidden" name="restaurantId" value="{{restaurant.id}}" />
-  <button class="btn btn-primary" type="submit">留言</button>
-</form>
+<br />
+<br />
+<div class="shadow border border-secondary rounded my-4 p-3">
+  <form action="/comments" method="post">
+    <div class="form-row my-3">
+      <h3 class="mb-3">留下評論：</h3>
+      <textarea class="form-control" name="text" id="text" rows="3"></textarea>
+    </div>
+    <input type="hidden" name="restaurantId" value="{{restaurant.id}}" />
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-primary" type="submit">送出評論</button>
+    </div>
+  </form>
+</div>
+
+<div class="mt-4 p-3">
+  <h4>所有評論：</h4>
+  {{#each restaurant.Comments}}
+  <blockquote class="blockquote mb-0">
+    <h4><a href="/users/{{this.User.id}}">{{this.User.name}}</a></h4>
+    <p>{{this.text}}</p>
+    <footer class="blockquote-footer">{{relativeTimeFromNow this.createdAt}}</footer>
+  </blockquote>
+  <hr />
+  {{/each}}
+</div>

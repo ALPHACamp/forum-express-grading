@@ -1,7 +1,8 @@
-const { Restaurant, Category } = require('../models')
+const { Restaurant, Category, User, Comment } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helpers')
 
 const restaurantController = {
+  // 多筆
   getRestaurants: (req, res, next) => {
     const DEFAULT_LIMIT = 9
 
@@ -46,12 +47,23 @@ const restaurantController = {
       .catch(err => next(err))
   },
 
+  // 單筆
   getRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
-      include: Category,
+      include: [
+        Category,
+        {
+          model: Comment,
+          include: User
+        }
+      ],
+      order: [
+        [Comment, 'id', 'DESC']
+      ],
       nest: true
     })
       .then(restaurant => {
+        if (!restaurant) throw new Error('Restaurant did not exist!')
         return restaurant.increment('viewCounts', { by: 1 })
       })
       .then(restaurant => {
