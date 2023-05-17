@@ -4,8 +4,10 @@ const passport = require('../config/passport') // 引入 Passport，需要他幫
 const admin = require('./modules/admin') // 載入 admin.js
 const restController = require('../controllers/restaurant-controller') // 載入restaurant
 const userController = require('../controllers/user-controller') // 載入user
-const { authenticated } = require('../middleware/auth') // 引入auth.js
+const { authenticated, authenticatedAdmin } = require('../middleware/auth') // 引入auth.js
 const { generalErrorHandler } = require('../middleware/error-handler') // 載入error-handler
+
+router.use('/admin', authenticatedAdmin, admin) // 修改這一行
 
 router.get('/signup', userController.signUpPage)
 router.post('/signup', userController.signUp) // 用post
