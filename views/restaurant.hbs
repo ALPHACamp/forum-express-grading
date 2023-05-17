@@ -1,0 +1,59 @@
+<div class="row">
+  <div class="col-md-12">
+    <h1>{{restaurant.name}}</h1>
+    <p>[{{restaurant.Category.name}}]</p>
+  </div>
+  <div class="col-md-4">
+    <img class="img-responsive center-block" src="{{restaurant.image}}"
+      style="width: 250px; margin-bottom: 25px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+    <br>
+    <div class="well">
+      <ul class="list-unstyled">
+        <li><strong>Opening Hour:</strong> {{restaurant.openingHours}}</li>
+        <li><strong>Tel:</strong> {{restaurant.tel}}</li>
+        <li><strong>Address:</strong> {{restaurant.address}}</li>
+      </ul>
+    </div>
+  </div>
+  <div class="col-md-8">
+    <p style="white-space: break-spaces;">{{restaurant.description}}</p>
+  </div>
+</div>
+<!-- 會去上一頁，依照req header referer，所以要是直接從外部進來會再跑回外部 -->
+<a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
+<a class="btn btn-success ms-2" href="/restaurants/{{restaurant.id}}/dashboard">Dashboard</a>
+
+{{!-- comment --}}
+<br />
+<br />
+<div class="shadow border border-secondary rounded my-4 p-3">
+  <form action="/comments" method="post">
+    <div class="form-row my-3">
+      <h3 class="mb-3">留下評論：</h3>
+      <textarea class="form-control" name="text" id="text" rows="3"></textarea>
+    </div>
+    <input type="hidden" name="restaurantId" value="{{restaurant.id}}" />
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-primary" type="submit">送出評論</button>
+    </div>
+  </form>
+</div>
+<div class="my-4">
+  <h4 class="border-bottom border-2 border-secondary mb-4 text-secondary">所有評論</h4>
+  {{#each restaurant.Comments}}
+  <!--刪除按鈕-->
+  {{#if ../user.isAdmin}}
+  <form action="/comments/{{this.id}}?_method=DELETE" , method="post" class="float-end m-3">
+    <button class="btn btn-outline-danger" type="submit">Delete</button>
+  </form>
+  {{/if}}
+  <!--內文-->
+  <div class="border-bottom border-secondary py-2 mb-3">
+    <blockquote class=" blockquote mb-0">
+      <h4><a href="/users/{{this.User.id}}">{{this.User.name}}</a></h4>
+      <p>{{this.text}}</p>
+      <footer class="blockquote-footer">{{relativeTimeFromNow this.createdAt}}</footer>
+    </blockquote>
+  </div>
+  {{/each}}
+</div>
