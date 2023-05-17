@@ -4,6 +4,7 @@ const routes = require('./routes')
 const db = require('./models')
 const session = require('express-session')
 const flash = require('connect-flash')
+const passport = require('./config/passport')
 
 const app = express()
 const port = process.env.PORT || 3000
@@ -18,6 +19,9 @@ app.set('view engine', 'hbs')
 app.use(express.urlencoded({ extended: true }))
 // session
 app.use(session({ secret: SESSION_SECRET, resave: false, saveUninitialized: false }))
+// passport 皆在session 後
+app.use(passport.initialize()) // 增加這行，初始化 Passport
+app.use(passport.session()) // 增加這行，啟動 session 功能
 // flash
 app.use(flash())
 app.use((req, res, next) => {
