@@ -8,10 +8,6 @@ const routes = require('./routes')
 const app = express()
 const port = process.env.PORT || 3000
 
-// 檢查資料庫連線用
-const db = require('./models')
-
-
 app.engine('hbs', exphbs({ extname: '.hbs' }))
 app.set('view engine', 'hbs')
 app.use(routes)
