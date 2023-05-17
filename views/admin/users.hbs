@@ -1,0 +1,54 @@
+<h1>餐廳後台</h1>
+
+{{!-- tabs --}}
+<ul class="nav">
+  <li class="nav-item">
+    <a class="nav-link" aria-current="page" href="/admin/restaurants">Restaurants</a>
+  </li>
+  <li class="nav-item">
+    <p class="pt-2 nav-link">|</p>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="/admin/users">Users</a>
+  </li>
+</ul>
+<br />
+<br />
+<table class="table align-middle">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Name</th>
+      <th scope="col">Email</th>
+      <th scope="col">Role</th>
+      <th scope="col">#</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each users}}
+    <tr>
+      <th scope="row">{{this.id}}</th>
+      <td>{{this.name}}</td>
+      <td>{{this.email}}</td>
+      <td>
+        {{#if isAdmin}}
+        admin
+        {{else}}
+        user
+        {{/if}}
+      </td>
+      <td>
+        <form action="/admin/users/{{this.id}}?_method=PATCH" method="POST" style="display: inline;">
+          <button type="submit" class="btn btn-link link-primary" onclick="return confirm(`確定要變更嗎？`)">
+            set as
+            {{#if isAdmin}}
+            user
+            {{else}}
+            admin
+            {{/if}}</button>
+        </form>
+      </td>
+    </tr>
+    {{/each}}
+  </tbody>
+</table>
