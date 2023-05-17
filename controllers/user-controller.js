@@ -25,6 +25,18 @@ const userController = {
         res.redirect('/signin')
       })
       .catch(err => next(err)) // 接住前面拋出的錯誤，呼叫專門做錯誤處理的 middleware
+  },
+  signInPage: (req, res) => {
+    res.render('signin')
+  },
+  signIn: (req, res) => {
+    req.flash('success_messages', '成功登入！')
+    res.redirect('/restaurants')
+  },
+  logout: (req, res) => {
+    req.flash('success_messages', '登出成功！')
+    req.logout() // 把 user id 對應的 session 清除掉，對伺服器來說 session 消失就等於是把使用者登出了。
+    res.redirect('/signin')
   }
 }
 
