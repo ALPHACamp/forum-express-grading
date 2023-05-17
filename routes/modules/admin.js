@@ -24,6 +24,12 @@ router.get('/restaurants', adminController.getRestaurants)
 // 管理者新增功能
 router.post('/restaurants', upload.single('image'), adminController.postRestaurant)
 
+// 管理者變更使用者權限
+router.patch('/users/:id', adminController.patchUser)
+
+// 使用者首頁
+router.get('/users', adminController.getUsers)
+
 // 自動導向管理者首頁
 router.get('', (req, res) => res.redirect('/admin/restaurants'))
 
