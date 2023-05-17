@@ -2,9 +2,11 @@ const bcrypt = require('bcryptjs')
 const db = require('../models')
 const { User } = db
 const userController = {
+  // 使用者註冊頁面
   signUpPage: (req, res) => {
     res.render('signup')
   },
+  // 使用者註冊功能
   signUp: async (req, res, next) => {
     try {
       // 若前後密碼不一致
@@ -28,6 +30,27 @@ const userController = {
     } catch (err) {
       next(err)
     }
+  },
+  // 使用者登入頁面
+  signInPage: (req, res) => {
+    res.render('signin')
+  },
+  // 使用者登入功能
+  signIn: (req, res) => {
+    req.flash('success_messages', '成功登入！')
+    // // 判斷是否具備管理者權限：是→後台首頁、否→前台首頁
+    // if (req.user.dataValues.isAdmin) {
+    //   res.redirect('/admin/restaurants')
+    // } else {
+    //   res.redirect('/restaurants')
+    // }
+    res.redirect('/restaurants')
+  },
+  // 使用者登出功能
+  signout: (req, res) => {
+    req.logout()
+    req.flash('success_messages', '登出成功！')
+    res.redirect('/signin')
   }
 }
 

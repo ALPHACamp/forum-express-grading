@@ -6,6 +6,7 @@ const express = require('express')
 const exphbs = require('express-handlebars')
 const flash = require('connect-flash')
 const session = require('express-session')
+const passport = require('./config/passport')
 const routes = require('./routes')
 const app = express()
 const port = process.env.PORT || 3000
@@ -19,6 +20,10 @@ app.use(express.urlencoded({ extended: true }))
 
 // session設定
 app.use(session({ secret: process.env.SESSION_SECRET, resave: false, saveUninitialized: false }))
+
+// passport設定
+app.use(passport.initialize())
+app.use(passport.session())
 
 // flash訊息設定
 app.use(flash())
