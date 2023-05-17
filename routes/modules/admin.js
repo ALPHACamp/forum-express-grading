@@ -14,6 +14,9 @@ router.get('/restaurants/:id', adminController.getRestaurant)
 // 管理者編輯餐廳資料
 router.put('/restaurants/:id', adminController.putRestaurant)
 
+// 管理者刪除餐廳資料
+router.delete('/restaurants/:id', adminController.deleteRestaurant)
+
 // 管理者登入首頁
 router.get('/restaurants', adminController.getRestaurants)
 

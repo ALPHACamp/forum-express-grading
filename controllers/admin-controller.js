@@ -24,7 +24,7 @@ const adminController = {
       // const filePath = await imgurFileHandler(file)
       const newRestaurant = await Restaurant.create({ name, tel, address, openingHours, description }) // , image: filePath || null })
       if (newRestaurant) {
-        req.flash('success_msg', 'Restaurant was successfully created.')
+        req.flash('success_messages', 'restaurant was successfully created')
         res.redirect('/admin/restaurants')
       }
     } catch (e) {
@@ -65,9 +65,21 @@ const adminController = {
       // const filePath = await imgurFileHandler(file)
       const renewRestaurant = await restaurant.update({ name, tel, address, openingHours, description }) // , image: filePath || restaurant.image })
       if (renewRestaurant) {
-        req.flash('success_msg', 'Restaurant was successfully renewed.')
+        req.flash('success_messages', 'restaurant was successfully to update')
         res.redirect('/admin/restaurants')
       }
+    } catch (e) {
+      next(e)
+    }
+  },
+  // 管理員刪除資料
+  deleteRestaurant: async (req, res, next) => {
+    try {
+      const id = req.params.id
+      const restaurant = await Restaurant.findByPk(id)
+      if (!restaurant) throw new Error("Restaurant didn't exist.")
+      const deleteRestaurant = await restaurant.destroy()
+      if (deleteRestaurant) res.redirect('/admin/restaurants')
     } catch (e) {
       next(e)
     }
