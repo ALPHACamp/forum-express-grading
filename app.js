@@ -21,7 +21,6 @@ app.use(session({ secret: SESSION_SECRET, resave: false, saveUninitialized: fals
 
 app.use(flash())
 
-
 app.use(passport.initialize())
 app.use(passport.session())
 
