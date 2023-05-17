@@ -1,4 +1,8 @@
 const fs = require('fs') // 引入 fs 模組
+const imgur = require('imgur')
+const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
+imgur.setClientId(IMGUR_CLIENT_ID)
+
 const localFileHandler = file => {
   // file 是 multer 處理完的檔案，會在 controller 裡面處理。如果檔案不存在，直接結束這個函式，後面不會執行了。
   return new Promise((resolve, reject) => {
@@ -12,6 +16,19 @@ const localFileHandler = file => {
       .catch(err => reject(err))
   })
 }
+// 原本使用 fs 方法的地方，要改成用 imgur 提供的方法。
+const imgurFileHandler = file => {
+  return new Promise((resolve, reject) => {
+    if (!file) return resolve(null)
+    return imgur.uploadFile(file.path)
+      .then(img => {
+        // ?. 是 JavaScript 專門處理物件用來處理物件的一款運算子 (operator)，名稱為 optional chaining。物件取值寫成 object?.key，JavaScript 會先去幫我們檢查符號前面這個 object 值存不存在。存在才往下取值 object.key，不存在就直接回傳 undefined
+        resolve(img?.link || null) // 檢查 img 是否存在
+      })
+      .catch(err => reject(err))
+  })
+}
 module.exports = {
-  localFileHandler
+  localFileHandler,
+  imgurFileHandler
 }

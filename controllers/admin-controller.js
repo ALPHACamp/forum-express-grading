@@ -1,5 +1,6 @@
 const { Restaurant } = require('../models')
-const { localFileHandler } = require('../helpers/file-helpers') // 將 file-helper 載進來
+// const { localFileHandler } = require('../helpers/file-helpers') // 將 file-helper 載進來
+const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const adminController = {
   getRestaurants: (req, res) => {
@@ -19,7 +20,7 @@ const adminController = {
     // name 是必填，若發先是空值就會終止程式碼，並在畫面顯示錯誤提示
     if (!name) throw new Error('Restaurant name is required!')
     const { file } = req // 把檔案取出來，也可以寫成 const file = req.file
-    localFileHandler(file) // 把取出的檔案傳給 file-helper 處理後
+    return imgurFileHandler(file) // 把取出的檔案傳給 file-helper 處理後
       .then(filePath =>
         Restaurant.create({ // 產生一個新的 Restaurant 物件實例，並存入資料庫
           name,
@@ -36,7 +37,7 @@ const adminController = {
       .catch(err => next(err))
   },
   getRestaurant: (req, res, next) => {
-    Restaurant.findByPk(req.params.id, { // Pk 是 primary key 的簡寫，也就是餐廳的 id，去資料庫用 id 找一筆資料
+    return Restaurant.findByPk(req.params.id, { // Pk 是 primary key 的簡寫，也就是餐廳的 id，去資料庫用 id 找一筆資料
       raw: true // 找到以後整理格式再回傳
     })
       .then(restaurant => {
@@ -47,7 +48,7 @@ const adminController = {
   },
   editRestaurant: (req, res, next) => {
     // 先使用 findByPk ，檢查一下有沒有這間餐廳
-    Restaurant.findByPk(req.params.id, {
+    return Restaurant.findByPk(req.params.id, {
       raw: true
     })
       .then(restaurant => {
@@ -64,11 +65,11 @@ const adminController = {
     // 檢查必填欄位 name 有資料
     if (!name) throw new Error('Restaurant name is required!')
     const { file } = req // 把檔案取出來
-    Promise.all([ // 非同步處理
+    return Promise.all([ // 非同步處理
     // 透過 Restaurant.findByPk(req.params.id) 把對應的該筆餐廳資料查出來
       Restaurant.findByPk(req.params.id),
       // 編輯情境裡不會加 { raw: true }
-      localFileHandler(file) // 把檔案傳到 file-helper 處理
+      imgurFileHandler(file) // 把檔案傳到 file-helper 處理
     ])
       .then(([restaurant, filePath]) => { // 以上兩樣事都做完以後
         if (!restaurant) throw new Error("Restaurant didn't exist!")

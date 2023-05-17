@@ -8,6 +8,9 @@ const session = require('express-session')
 const passport = require('./config/passport')
 const handlebarsHelpers = require('./helpers/handlebars-helpers') // 引入 handlebars-helpers
 const { getUser } = require('./helpers/auth-helpers') // 引入自定義的 auth-helpers
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
 
 // 暫時新增這行，引入資料庫，檢查完可刪 const db = require('./models')
 const app = express()
