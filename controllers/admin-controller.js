@@ -30,6 +30,17 @@ const adminController = {
     } catch (e) {
       next(e)
     }
+  },
+  // 管理者瀏覽單筆餐廳資料
+  getRestaurant: async (req, res, next) => {
+    try {
+      const id = req.params.id
+      const restaurant = await Restaurant.findByPk(id, { raw: true, nest: true })
+      if (!restaurant) throw new Error("Restaurant didn't exist.")
+      res.render('admin/restaurant', { restaurant })
+    } catch (e) {
+      next(e)
+    }
   }
 }
 module.exports = adminController
