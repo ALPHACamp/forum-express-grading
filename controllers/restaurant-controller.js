@@ -1,30 +1,46 @@
 const { Restaurant, Category } = require('../models')
+const { getOffset, getPagination } = require('../helpers/pagination-helpers')
 
 const restaurantController = {
-
   getRestaurants: (req, res, next) => {
+    const DEFAULT_LIMIT = 9
+
     const categoryId = Number(req.query.categoryId) || ''
 
+    const page = Number(req.query.page) || 1
+    const limit = Number(req.query.limit) || DEFAULT_LIMIT
+    const offset = getOffset(limit, page)
+
+    // findAndCountAll return an object with { rows, counts}
+    // where 會引響到找到多少符合條件的 records
+    // limit 會引響拿幾筆 records 讓速度更快
+    // offset 會引響從第幾筆 records 開始拿資料
+    // rows 是資料 counts 是符合 where 條件的資料有多少，這跟limit, offset 沒有關係
+    // 例如符合 where 條件的餐廳有20筆，limit是10，回傳結果： rows 10 筆資料，count 是 20 (number)
     return Promise.all([
-      Restaurant.findAll({
+      Restaurant.findAndCountAll({
         include: Category,
         where: {
           ...categoryId ? { categoryId } : {}
         },
+        limit,
+        offset,
         nest: true,
         raw: true
       }),
       Category.findAll({ raw: true })
     ])
       .then(([restaurants, categories]) => {
-        const data = restaurants.map(r => ({
+        const data = restaurants.rows.map(r => ({
           ...r,
           description: r.description.substring(0, 50)
         }))
         return res.render('restaurants', {
           restaurants: data,
           categories,
-          categoryId
+          categoryId,
+          pagination: getPagination(limit, page, restaurants.count),
+          limit
         })
       })
       .catch(err => next(err))
