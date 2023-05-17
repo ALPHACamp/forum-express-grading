@@ -3,12 +3,12 @@ const router = express.Router()
 const restController = require('../controllers/restaurant-controller')
 const userController = require('../controllers/user-controller')
 const admin = require('./modules/admin')
-const { authenticated } = require('../middleware/auth')
+const { authenticated, authenticatedAdmin } = require('../middleware/auth')
 const { generalErrorHandler } = require('../middleware/error-handler')
 const passport = require('../config/passport')
 
 // 管理者首頁
-router.use('/admin', admin)
+router.use('/admin', authenticatedAdmin, admin)
 
 // 使用者註冊頁面
 router.get('/signup', userController.signUpPage)

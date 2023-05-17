@@ -12,7 +12,24 @@ const adminController = {
   },
   // 管理者新增頁面
   createRestaurant: (req, res, next) => {
-    res.render('admin/create-restaurant')
+    return res.render('admin/create-restaurant')
+  },
+  // 管理者新增功能
+  postRestaurant: async (req, res, next) => {
+    try {
+      const { name, tel, address, openingHours, description } = req.body
+      if (!name) throw new Error('Restaurant name is required.')
+
+      // const { file } = req
+      // const filePath = await imgurFileHandler(file)
+      const newRestaurant = await Restaurant.create({ name, tel, address, openingHours, description }) // , image: filePath || null })
+      if (newRestaurant) {
+        req.flash('success_msg', 'Restaurant was successfully created.')
+        res.redirect('/admin/restaurants')
+      }
+    } catch (e) {
+      next(e)
+    }
   }
 }
 module.exports = adminController
