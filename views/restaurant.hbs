@@ -18,9 +18,18 @@
   <div class="col-md-8">
     <p style="white-space: break-spaces;">{{restaurant.description}}</p>
   </div>
-  <hr>
 </div>
 <!-- 會去上一頁，依照req header referer，所以要是直接從外部進來會再跑回外部 -->
 <a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
+<a class="btn btn-success ms-2" href="/restaurants/{{restaurant.id}}/dashboard">Dashboard</a>
+<hr>
 
-<a class="btn btn-primary ms-2" href="/restaurants/{{restaurant.id}}/dashboard">Dashboard</a>
+{{!-- comment --}}
+<form action="/comments" method="post">
+  <div class="form-row my-3">
+    <label class="form-label" for="text">留下評論：</label>
+    <textarea class="form-control" name="text" id="text" rows="3"></textarea>
+  </div>
+  <input type="hidden" name="restaurantId" value="{{restaurant.id}}" />
+  <button class="btn btn-primary" type="submit">留言</button>
+</form>
