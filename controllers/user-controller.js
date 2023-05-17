@@ -8,7 +8,7 @@ const userController = {
   signUp: async (req, res, next) => {
     try {
       // 若前後密碼不一致
-      if (req.body.password !== req.body.passwordCheck) throw new Error("Passwords don't match")
+      if (req.body.password !== req.body.passwordCheck) throw new Error('Passwords do not match!')
       const findUser = await User.findOne({ where: { email: req.body.email } })
       // 若Email已註冊
       if (findUser) {
@@ -22,7 +22,7 @@ const userController = {
         password: passwordHash
       })
       if (createUser) {
-        req.flash('success_msg', 'Succeed in registering.')
+        req.flash('success_messages', '成功註冊帳號！')
         res.redirect('/signin')
       }
     } catch (err) {
