@@ -1,10 +1,10 @@
-const { Restaurant, User } = require('../models')
+const { Restaurant, User, Category } = require('../models')
 const { imgurFieldHandler } = require('../helpers/file-helpers')
 
 const adminController = {
   getRestaurants: async (req, res, next) => {
     try {
-      const restaurants = await Restaurant.findAll({ raw: true, nest: true })
+      const restaurants = await Restaurant.findAll({ raw: true, nest: true, include: [Category] })
       return res.render('admin/restaurants', { restaurants })
     } catch (err) {
       next(err)
@@ -37,7 +37,8 @@ const adminController = {
     try {
       const restaurant = await Restaurant.findByPk(req.params.id, {
         raw: true,
-        nest: true
+        nest: true,
+        include: [Category]
       })
       if (!restaurant) throw new Error("Restaurant didn't exist!")
       res.render('admin/restaurant', { restaurant })
@@ -62,10 +63,7 @@ const adminController = {
     const { file } = req
     try {
       if (!name) throw new Error('Restaurant name is required!')
-      const [restaurant, filePath] = await Promise.all([
-        Restaurant.findByPk(req.params.id),
-        imgurFieldHandler(file)
-      ])
+      const [restaurant, filePath] = await Promise.all([Restaurant.findByPk(req.params.id), imgurFieldHandler(file)])
       if (!restaurant) throw new Error("Restaurant didn't exist!")
       await restaurant.update({
         name,
