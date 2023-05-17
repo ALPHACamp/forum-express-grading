@@ -3,6 +3,7 @@ const router = express.Router()
 const restController = require('../controllers/restaurant-controller')
 const userController = require('../controllers/user-controller')
 const admin = require('./modules/admin')
+const { authenticated } = require('../middleware/auth')
 const { generalErrorHandler } = require('../middleware/error-handler')
 const passport = require('../config/passport')
 
@@ -21,8 +22,11 @@ router.get('/signin', userController.signInPage)
 // 使用者登入
 router.post('/signin', passport.authenticate('local', { failureRedirect: '/signin', failureMessage: true }), userController.signIn)
 
+// 使用者登出
+router.get('/signout', userController.signout)
+
 // 使用者登入後餐廳首頁
-router.get('/restaurants', restController.getRestaurants)
+router.get('/restaurants', authenticated, restController.getRestaurants)
 
 // 自動導向餐廳首頁
 router.use('/', (req, res) => res.redirect('/restaurants'))
