@@ -6,6 +6,7 @@ const express = require('express')
 const exphbs = require('express-handlebars')
 const flash = require('connect-flash')
 const session = require('express-session')
+const methidOverride = require('method-override')
 const passport = require('./config/passport')
 const hbsHelpers = require('./helpers/handlebars-helpers')
 const { getUser } = require('./helpers/auth-helpers')
@@ -29,6 +30,11 @@ app.use(passport.session())
 
 // flash訊息設定
 app.use(flash())
+
+// method-override設定
+app.use(methidOverride('_method'))
+
+// res.locals參數設定
 app.use((req, res, next) => {
   res.locals.success_messages = req.flash('success_messages')
   res.locals.error_messages = req.flash('error_messages')

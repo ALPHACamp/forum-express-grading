@@ -41,6 +41,36 @@ const adminController = {
     } catch (e) {
       next(e)
     }
+  },
+  // 管理者修改頁面
+  editRestaurant: async (req, res, next) => {
+    try {
+      const id = req.params.id
+      const restaurant = await Restaurant.findByPk(id, { raw: true, nest: true })
+      if (!restaurant) throw new Error("Restaurant didn't exist.")
+      res.render('admin/edit-restaurant', { restaurant })
+    } catch (e) {
+      next(e)
+    }
+  },
+  // 管理者修改單筆資料
+  putRestaurant: async (req, res, next) => {
+    try {
+      const { name, tel, address, openingHours, description } = req.body
+      if (!name) throw new Error('Restaurant name is required.')
+      // const { file } = req
+      const id = req.params.id
+      const restaurant = await Restaurant.findByPk(id)
+      if (!restaurant) throw new Error("Restaurant didn't exist.")
+      // const filePath = await imgurFileHandler(file)
+      const renewRestaurant = await restaurant.update({ name, tel, address, openingHours, description }) // , image: filePath || restaurant.image })
+      if (renewRestaurant) {
+        req.flash('success_msg', 'Restaurant was successfully renewed.')
+        res.redirect('/admin/restaurants')
+      }
+    } catch (e) {
+      next(e)
+    }
   }
 }
 module.exports = adminController
