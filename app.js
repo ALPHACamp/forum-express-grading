@@ -2,6 +2,7 @@ if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config()
 }
 
+const path = require('path')
 const express = require('express')
 const exphbs = require('express-handlebars')
 const flash = require('connect-flash')
@@ -33,6 +34,9 @@ app.use(flash())
 
 // method-override設定
 app.use(methidOverride('_method'))
+
+// upload 圖片上傳設定
+app.use('/upload', express.static(path.join(__dirname, 'upload')))
 
 // res.locals參數設定
 app.use((req, res, next) => {

@@ -1,4 +1,5 @@
 const { Restaurant } = require('../models')
+const { localFileHandler } = require('../helpers/file-helpers')
 
 const adminController = {
   // 管理者登入餐廳首頁
@@ -20,9 +21,9 @@ const adminController = {
       const { name, tel, address, openingHours, description } = req.body
       if (!name) throw new Error('Restaurant name is required.')
 
-      // const { file } = req
-      // const filePath = await imgurFileHandler(file)
-      const newRestaurant = await Restaurant.create({ name, tel, address, openingHours, description }) // , image: filePath || null })
+      const { file } = req
+      const filePath = await localFileHandler(file)
+      const newRestaurant = await Restaurant.create({ name, tel, address, openingHours, description, image: filePath || null })
       if (newRestaurant) {
         req.flash('success_messages', 'restaurant was successfully created')
         res.redirect('/admin/restaurants')
@@ -58,12 +59,12 @@ const adminController = {
     try {
       const { name, tel, address, openingHours, description } = req.body
       if (!name) throw new Error('Restaurant name is required.')
-      // const { file } = req
+      const { file } = req
       const id = req.params.id
       const restaurant = await Restaurant.findByPk(id)
       if (!restaurant) throw new Error("Restaurant didn't exist.")
-      // const filePath = await imgurFileHandler(file)
-      const renewRestaurant = await restaurant.update({ name, tel, address, openingHours, description }) // , image: filePath || restaurant.image })
+      const filePath = await localFileHandler(file)
+      const renewRestaurant = await restaurant.update({ name, tel, address, openingHours, description, image: filePath || restaurant.image })
       if (renewRestaurant) {
         req.flash('success_messages', 'restaurant was successfully to update')
         res.redirect('/admin/restaurants')
