@@ -75,12 +75,13 @@ const restaurantController = {
   getDashboard: async (req, res, next) => {
     try {
       const restaurant = await Restaurant.findByPk(req.params.id, {
-        include: [Category],
-        nest: true,
-        raw: true
+        include: [Category, Comment]
       })
 
-      return res.render('dashboard', { restaurant })
+      return res.render('dashboard', {
+        restaurant: restaurant.toJSON(),
+        commentCount: restaurant.Comments.length
+      })
     } catch (err) {
       next(err)
     }
