@@ -3,9 +3,9 @@ const router = express.Router()
 const restController = require('../controllers/restaurant-controller')
 const userController = require('../controllers/user-controller')
 const admin = require('./modules/admin')
+const passport = require('../config/passport')
 const { authenticated, authenticatedAdmin } = require('../middleware/auth')
 const { generalErrorHandler } = require('../middleware/error-handler')
-const passport = require('../config/passport')
 
 // 管理者首頁
 router.use('/admin', authenticatedAdmin, admin)
