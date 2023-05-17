@@ -5,6 +5,7 @@ const session = require('express-session')
 const passport = require('./config/passport')
 const { getUser } = require('./helpers/auth-helpers')
 const handlebarsHelpers = require('./helpers/handlebars-helpers')
+const methodOverride = require('method-override')
 const routes = require('./routes')
 
 const app = express()
@@ -23,6 +24,7 @@ app.use(session({ secret: 'SESSION_SECRET', resave: false, saveUninitialized: fa
 app.use(passport.initialize()) // 初始化Passport
 app.use(passport.session()) // 啟動session功能
 app.use(flash())
+app.use(methodOverride('_method'))
 app.use((req, res, next) => {
   res.locals.success_messages = req.flash('success_messages')
   res.locals.error_messages = req.flash('error_messages')
