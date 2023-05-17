@@ -20,18 +20,25 @@ const categoryController = {
       // 用create
       await Category.create({ name })
       // redirect
-      res.redirect('/admin/categories')
+      return res.redirect('/admin/categories')
     } catch (err) {
       next(err)
     }
   },
   putCategory: async (req, res, next) => {
     // 取得category
+    const { name } = req.body
+    const { id } = req.params
+    if (!name) throw new Error('Category Name is required')
     try {
       // 找出對應的
+      const category = await Category.findByPk(id)
       // 沒有就報錯
+      if (!category) throw new Error('Category Name cannot find')
       // 有就更新
+      await category.update({ name })
       // redirect
+      return res.redirect('/admin/categories')
     } catch (err) {
       next(err)
     }
