@@ -38,15 +38,22 @@
     </div>
   </form>
 </div>
-
-<div class="mt-4 p-3">
-  <h4>所有評論：</h4>
+<div class="my-4">
+  <h4 class="border-bottom border-2 border-secondary mb-4 text-secondary">所有評論</h4>
   {{#each restaurant.Comments}}
-  <blockquote class="blockquote mb-0">
-    <h4><a href="/users/{{this.User.id}}">{{this.User.name}}</a></h4>
-    <p>{{this.text}}</p>
-    <footer class="blockquote-footer">{{relativeTimeFromNow this.createdAt}}</footer>
-  </blockquote>
-  <hr />
+  <!--刪除按鈕-->
+  {{#if ../user.isAdmin}}
+  <form action="/comments/{{this.id}}?_method=DELETE" , method="post" class="float-end m-3">
+    <button class="btn btn-outline-danger" type="submit">Delete</button>
+  </form>
+  {{/if}}
+  <!--內文-->
+  <div class="border-bottom border-secondary py-2 mb-3">
+    <blockquote class=" blockquote mb-0">
+      <h4><a href="/users/{{this.User.id}}">{{this.User.name}}</a></h4>
+      <p>{{this.text}}</p>
+      <footer class="blockquote-footer">{{relativeTimeFromNow this.createdAt}}</footer>
+    </blockquote>
+  </div>
   {{/each}}
 </div>
