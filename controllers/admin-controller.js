@@ -1,5 +1,5 @@
 const { Restaurant } = require('../models')
-const { localFileHandler } = require('../helpers/file-helpers')
+const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const adminController = {
   // 管理者登入餐廳首頁
@@ -22,7 +22,7 @@ const adminController = {
       if (!name) throw new Error('Restaurant name is required.')
 
       const { file } = req
-      const filePath = await localFileHandler(file)
+      const filePath = await imgurFileHandler(file)
       const newRestaurant = await Restaurant.create({ name, tel, address, openingHours, description, image: filePath || null })
       if (newRestaurant) {
         req.flash('success_messages', 'restaurant was successfully created')
@@ -63,7 +63,7 @@ const adminController = {
       const id = req.params.id
       const restaurant = await Restaurant.findByPk(id)
       if (!restaurant) throw new Error("Restaurant didn't exist.")
-      const filePath = await localFileHandler(file)
+      const filePath = await imgurFileHandler(file)
       const renewRestaurant = await restaurant.update({ name, tel, address, openingHours, description, image: filePath || restaurant.image })
       if (renewRestaurant) {
         req.flash('success_messages', 'restaurant was successfully to update')
