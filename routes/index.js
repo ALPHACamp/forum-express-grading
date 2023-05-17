@@ -1,19 +1,9 @@
-if (process.env.NODE_ENV !== 'production') {
-  require('dotenv').config()
-}
-
 const express = require('express')
-const exphbs = require('express-handlebars')
-const routers = require('./routes')
-const app = express()
-const port = process.env.PORT || 3000
+const router = express.Router()
+const restController = require('../controllers/restaurant-controller')
 
-app.engine('hbs', exphbs({ extname: '.hbs' }))
-app.set('view engine', 'hbs')
-app.use('routes')
+router.get('/restaurants', restController.getRestaurants)
 
-app.listen(port, () => {
-  console.info(`Example app listening on port ${port}!`)
-})
+router.use('/', (req, res) => res.redirect('/restaurants'))
 
-module.exports = app
+module.exports = router
