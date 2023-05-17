@@ -77,10 +77,9 @@ const restaurantController = {
       const restaurant = await Restaurant.findByPk(req.params.id, {
         include: [Category, Comment]
       })
-
+      console.log(restaurant.toJSON())
       return res.render('dashboard', {
-        restaurant: restaurant.toJSON(),
-        commentCount: restaurant.Comments.length
+        restaurant: restaurant.toJSON()
       })
     } catch (err) {
       next(err)

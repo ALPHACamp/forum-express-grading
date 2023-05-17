@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs')
 const db = require('../models')
+const { imgurFileHandler } = require('../helpers/file-helpers')
 const { User } = db
 
 const userController = {
@@ -48,10 +49,44 @@ const userController = {
   },
 
   getUser: (req, res, next) => {
-    User.findByPk(req.params.id, { raw: true })
+    return User.findByPk(req.params.id, { raw: true })
       .then(user => {
         if (!user) throw new Error('User did not exist!')
-        return res.render('user', { user })
+        return res.render('users/profile', { user })
+      })
+      .catch(err => next(err))
+  },
+
+  editUser: (req, res, next) => {
+    return User.findByPk(req.params.id, { raw: true })
+      .then(user => {
+        if (!user) throw new Error('User did not exist!')
+        return res.render('users/edit', { user })
+      })
+      .catch(err => next(err))
+  },
+
+  putUser: (req, res, next) => {
+    const { name } = req.body
+    // 驗證名字
+    if (!name) throw new Error('Name can not be empty!')
+
+    // 找User + 上傳照片到imgur (取得url)
+    // 記得要在 router 使用 multer middleware 來取得 req.file
+    return Promise.all([
+      User.findByPk(req.params.id),
+      imgurFileHandler(req.file)
+    ])
+      .then(([user, filePath]) => {
+        if (!user) throw new Error('Can not find user to edit!')
+        return user.update({
+          name,
+          image: filePath || user.image
+        })
+      })
+      .then(() => {
+        req.flash('success_messages', '使用者資料編輯成功')
+        return res.redirect(`/users/${req.user.id}`)
       })
       .catch(err => next(err))
   }
