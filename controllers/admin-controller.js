@@ -24,6 +24,12 @@ const adminController = {
         res.redirect('/admin/restaurants')
       })
       .catch(err => next(err))
+  },
+  showRestaurant: (req, res, next) => {
+    const id = req.params.id
+    Restaurant.findByPk(id, { raw: true })
+      .then(restaurant => res.render('admin/restaurant', { restaurant }))
+      .catch(err => next(err))
   }
 }
 module.exports = adminController
