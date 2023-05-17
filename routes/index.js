@@ -15,7 +15,6 @@ router.post('/signin', passport.authenticate('local', { failureRedirect: '/signi
 router.get('/logout', userController.logout)
 
 router.use('/admin', admin) // 使用admin
-
 router.get('/restaurants', authenticated, restController.getRestaurants)
 
 router.use('/', (req, res) => res.redirect('/restaurants'))
