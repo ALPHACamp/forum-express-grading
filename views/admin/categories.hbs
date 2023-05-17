@@ -1,23 +1,16 @@
 <h1>餐廳後台</h1>
 {{> admin-tabs route='categories'}}
 <br />
-{{!-- {{#if category}}
-  <form action='/admin/categories/{{this.id}}?_method=PUT' method='POST' enctype="multipart/form-data">
-  <input type="text" name="category" id="category" placeholder="Category Name" value="{{category.name}}" required>
-  <button type='submit' class='btn btn-warning'>Update</button>
-</form>
-{{else}} --}}
 <div class="d-flex align-items-center pt-3 pb-5 my-3 text-white-50 bg-purple">
   <form class="row" action="/admin/categories" method="POST">
     <div class="col-auto">
-      <input class="form-control" type="text" placeholder="Category Name" name="name">
+      <input class="form-control" type="text" placeholder="Category Name" name="name" value="{{category.name}}">
     </div>
     <div class="col-auto">
       <button class="btn btn-success" type="submit">Create</button>
     </div>
   </form>
 </div>
-{{!-- {{/if}} --}}
 
 <br />
 <br />
@@ -36,7 +29,7 @@
         <td>{{this.name}}</td>
         <td>
           <button type='button' class='btn btn-link'>
-            <a class='btn btn-link link-primary' href='/admin/categories/{{this.id}}/edit'>
+            <a class='btn btn-link link-primary' href='/admin/categories/{{this.id}}'>
               Edit
             </a>
           </button>
