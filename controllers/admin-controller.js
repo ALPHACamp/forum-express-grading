@@ -38,16 +38,57 @@ const adminController = {
   },
   //* 讀取餐廳詳細
   getRestaurant: (req, res, next) => {
-    //* 去資料庫用 id 找一筆資料
+    // 去資料庫用 id 找一筆資料
     Restaurant.findByPk(req.params.id, {
-      //* 找到以後整理格式再回傳
+      // 找到以後整理格式再回傳
       raw: true
     })
       .then(restaurant => {
-        //*  如果找不到，回傳錯誤訊息，後面不執行
+        //  如果找不到，回傳錯誤訊息，後面不執行
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         res.render('admin/restaurant', { restaurant })
       })
+      .catch(err => next(err))
+  },
+  //* 編輯餐廳資訊
+  editRestaurant: (req, res, next) => {
+    Restaurant.findByPk(req.params.id, {
+      raw: true
+    })
+      .then(restaurant => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        res.render('admin/edit-restaurant', { restaurant })
+      })
+      .catch(err => next(err))
+  },
+  putRestaurant: (req, res, next) => {
+    const { name, tel, address, openingHours, description } = req.body
+    if (!name) throw new Error('Restaurant name is required!')
+    Restaurant.findByPk(req.params.id)
+      .then(restaurant => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        return restaurant.update({
+          name,
+          tel,
+          address,
+          openingHours,
+          description
+        })
+      })
+      .then(() => {
+        req.flash('success_messages', 'restaurant was successfully to update')
+        res.redirect('/admin/restaurants')
+      })
+      .catch(err => next(err))
+  },
+  //* 刪除餐廳
+  deleteRestaurant: (req, res, next) => {
+    return Restaurant.findByPk(req.params.id)
+      .then(restaurant => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        return restaurant.destroy()
+      })
+      .then(() => res.redirect('/admin/restaurants'))
       .catch(err => next(err))
   }
 }
