@@ -1,0 +1,18 @@
+<div class='row row-cols-3 mt-3'>
+  {{#each restaurants}}
+    <div class='col'>
+      <div class='card mb-4 shadow-sm' style='width: 18rem;'>
+        <a href='/restaurants/{{this.id}}'>
+          <img src='{{this.image}}' class='card-img-top img-fluid' alt='restaurant' width='286px' height='180px' style='transition: opacity 0.5s; opacity:0;' onload='this.style.opacity=1;' />
+        </a>
+        <div class='card-body'>
+          <p class='card-text'>
+            <a href='/restaurants/{{this.id}}'>{{this.name}}</a>
+          </p>
+          <span class='badge bg-secondary'>{{this.Category.name}}</span>
+          <p class='card-text text-truncate'>{{this.description}}</p>
+        </div>
+      </div>
+    </div>
+  {{/each}}
+</div>
