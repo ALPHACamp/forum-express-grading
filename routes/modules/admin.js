@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const adminController = require('../../controllers/admin-controller')
+const categoryController = require('../../controllers/category-controller')
 const upload = require('../../middleware/multer')
 
 // 新增餐廳頁面
@@ -21,6 +22,8 @@ router.post('/restaurants', upload.single('image'), adminController.postRestaura
 router.get('/restaurants', adminController.getRestaurants)
 // 瀏覽全部使用者
 router.get('/users', adminController.getUsers)
+// 瀏覽全部餐廳分類
+router.get('/categories', categoryController.getCategories)
 // 無法匹配路由皆會丟到這
 router.use('/', (req, res) => res.redirect('/admin/restaurants'))
 
