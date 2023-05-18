@@ -16,6 +16,10 @@ router.get('/restaurants/:id', adminController.getRestaurant)
 router.delete('/restaurants/:id', adminController.deleteRestaurant)
 // 修改管理員權限
 router.patch('/users/:id', adminController.patchUser)
+// 編輯餐廳種類頁面
+router.get('/categories/:id', categoryController.getCategories)
+// 編輯餐廳種類功能
+router.put('/categories/:id', categoryController.putCategory)
 // 新增餐廳功能
 router.post('/restaurants', upload.single('image'), adminController.postRestaurant)
 // 瀏覽全部頁面
