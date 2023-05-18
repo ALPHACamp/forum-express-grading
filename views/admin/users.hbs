@@ -2,7 +2,7 @@
 <a href='/admin/restaurants/' class="p-2">
   <button type="button" class="btn btn-primary">Restaurants</button>
 </a>
-<a href='/admin/restaurants/users'>
+<a href='/admin/users'>
   <button type="button" class="btn btn-primary">Users</button>
 </a>
 <br />
@@ -25,12 +25,14 @@
       <td>{{this.email}}</td>
       <td>{{#if this.isAdmin}} Admin {{else}} User {{/if}}</td>
       <td>{{#if this.isAdmin}}
-        {{!-- <form action="/restaurants/users/{{this.id}}?_method=PATCH" method="POST">
-        <a href="" value="0">Set as user</a>  
+        <form name="transAdmin-{{this.id}}" action="/admin/users/{{this.id}}?_method=PATCH" method="POST">
+        <a href="javascript:document.forms['transAdmin-{{this.id}}'].submit()">Set as user</a>
+        </form>
         {{else}}
-        <a href="" value="1">Set as admin</a>
+        <form name="transAdmin-{{this.id}}" action="/admin/users/{{this.id}}?_method=PATCH" method="POST">
+        <a href="javascript:document.forms['transAdmin-{{this.id}}'].submit()">Set as admin</a>
+        </form>
         {{/if}}
-        </form> --}}
       </td>
     </tr>
     {{/each}}
