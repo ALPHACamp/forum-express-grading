@@ -16,6 +16,8 @@ router.post('/signup', userController.signUp)
 router.get('/signin', userController.signInPage)
 router.post('/signin', passport.authenticate('local', { failureRedirect: '/signin', failureFlash: true }), userController.signIn)
 router.get('/logout', userController.logout)
+// 瀏覽儀錶板
+router.get('/restaurants/:id/dashboard', authenticated, restController.getDashboard)
 // 瀏覽單一餐廳
 router.get('/restaurants/:id', authenticated, restController.getRestaurant)
 // 瀏覽所有餐廳
