@@ -1,11 +1,19 @@
 const { Restaurant, User, Category } = require('../models')
 const { imgurFieldHandler } = require('../helpers/file-helpers')
+const { getOffset, getPagination } = require('../helpers/pagination-helper')
 
 const adminController = {
   getRestaurants: async (req, res, next) => {
+    const DEFAULT_LIMIT = 20
+    // 取得page、limit
+    const page = Number(req.query.page) || 1
+    const limit = Number(req.query.limit) || DEFAULT_LIMIT
+    // 計算offset
+    const offset = getOffset(limit, page)
     try {
-      const restaurants = await Restaurant.findAll({ raw: true, nest: true, include: [Category] })
-      return res.render('admin/restaurants', { restaurants })
+      // 使用findAndCountAll
+      const restaurants = await Restaurant.findAndCountAll({ raw: true, nest: true, include: Category, limit, offset })
+      return res.render('admin/restaurants', { restaurants: restaurants.rows, pagination: getPagination(limit, page, restaurants.count) })
     } catch (err) {
       next(err)
     }
