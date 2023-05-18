@@ -9,6 +9,8 @@ const SESSION_SECRET = "secret";
 const passport = require("./config/passport");
 const { getUser } = require("./helpers/auth-helpers");
 const handlebarsHelpers = require("./helpers/handlebars-helpers");
+const methodOverride = require("method-override");
+app.use(methodOverride("_method"));
 app.engine(
   "hbs",
   handlebars.engine({ extname: ".hbs", helpers: handlebarsHelpers })
