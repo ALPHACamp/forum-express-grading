@@ -60,6 +60,15 @@ const adminController = {
         res.redirect('/admin/restaurants')
       })
       .catch(err => next(err))
+  },
+  deleteRestaurant: (req, res, next) => {
+    return Restaurant.findByPk(req.params.id) // todo 這邊一樣不用{raw:true}，理由同上
+      .then(restaurant => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        return restaurant.destroy() // !除了delete的用法
+      })
+      .then(() => res.redirect('/admin/restaurants'))
+      .catch(err => next(err))
   }
 }
 module.exports = adminController
