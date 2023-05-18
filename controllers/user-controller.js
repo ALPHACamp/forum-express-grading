@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs')
 const db = require('../models')
-const { User } = db
+const { User, Comment, Restaurant } = db
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const userController = {
@@ -43,7 +43,17 @@ const userController = {
   getUser: async (req, res, next) => {
     try {
       // 反查user 確認user是否存在
-      const user = await User.findByPk(req.params.id)
+      const user = await User.findByPk(
+        req.params.id,
+        {
+          include: [
+            {
+              model: Comment,
+              include: Restaurant
+            }
+          ]
+        }
+      )
       if (!user) throw new Error("User didn't exist!")
       // 檢查user.id / req.user.id
       if (req.user) {
