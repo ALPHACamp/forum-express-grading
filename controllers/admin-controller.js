@@ -1,4 +1,4 @@
-const { Restaurant } = require('../models')
+const { Restaurant, User } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers') // 將 file-helper 載進來
 
 const adminController = {
@@ -83,6 +83,42 @@ const adminController = {
         return restaurant.destroy()
       })
       .then(() => res.redirect('/admin/restaurants'))
+      .catch(err => next(err))
+  },
+  getUsers: (req, res, next) => {
+    User.findAll({
+      raw: true // 讓拿到的資料是最簡單的javascript資料
+    })
+      .then(users => {
+        users.forEach(element => {
+          if (element.isAdmin === 1) {
+            element.isAdmin = 'admin'
+            element.fixAdmin = 'save as user'
+          } else {
+            element.isAdmin = 'user'
+            element.fixAdmin = 'save as admin'
+          }
+        })
+        return users
+      })
+      .then(users => res.render('admin/all-users-authority', { users }))
+      .catch(err => next(err))
+  },
+  putUsers: (req, res, next) => {
+    User.findAll({
+      raw: true // 讓拿到的資料是最簡單的javascript資料
+    })
+      .then(users => {
+        users.forEach(element => {
+          if (element.isAdmin === '1') {
+            element.isAdmin = 'admin'
+          }
+          element.isAdmin = 'user'
+        })
+        console.log(users)
+        return users
+      })
+      .then(users => res.render('admin/all-users-authority', { users }))
       .catch(err => next(err))
   }
 }
