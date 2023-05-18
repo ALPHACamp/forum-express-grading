@@ -21,6 +21,16 @@
   <hr />
 </div>
 
+<h3 class='mb-3'>所有評論：</h3>
+{{#each restaurant.Comments}}
+  <blockquote class='blockquote'>
+    <h4><a href='/user/{{this.User.id}}'>{{this.User.name}}</a></h4>
+    <p>{{this.text}}</p>
+    <footer class='blockquote-footer'>{{relativeTimeFromNow this.createdAt}}</footer>
+  </blockquote>
+  <hr />
+{{/each}}
+
 <form action='/comments' method='POST'>
   <div class='form-row mb-3'>
     <label class='form-label' for='text'>留下評論：</label>
@@ -28,6 +38,6 @@
   </div>
   <input type='hidden' name='restaurantId' value='{{restaurant.id}}' />
   <button type='submit' class='btn btn-primary'>Submit</button>
+  {{! 回到上一頁 }}
   <a class='btn btn-outline-secondary' href='javascript:history.back()'>Back</a>
 </form>
-{{! 回到上一頁 }}

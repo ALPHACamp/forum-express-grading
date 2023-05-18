@@ -4,8 +4,8 @@ const commentController = {
   postComment: async (req, res, next) => {
     const { text, restaurantId } = req.body
     const userId = req.user.id
-    if (!text) throw new Error('Comment is required')
     try {
+      if (!text) throw new Error('Comment is required')
       const [restaurant, user] = await Promise.all([Restaurant.findByPk(restaurantId), User.findByPk(userId)])
       if (!restaurant) throw new Error('restaurant did not exist')
       if (!user) throw new Error('user did not exist')
