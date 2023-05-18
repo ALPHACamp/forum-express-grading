@@ -83,7 +83,7 @@ describe('# R01', () => {
       // 製作假資料
       // 本 context 會用這筆資料進行測試
         this.UserMock = createModelMock(
-          'User', 
+          'User',
           [{
             id: 1,
             email: 'root@example.com',
@@ -91,7 +91,7 @@ describe('# R01', () => {
             isAdmin: true, // 是管理者
           }]
         )
-        
+
         // 將 adminController 中的 User db 取代成 User mock db
         this.adminController = createControllerProxy('../controllers/admin-controller', { User: this.UserMock })
       })
@@ -185,7 +185,7 @@ describe('# R01', () => {
         // patchUser 執行完畢，應呼叫 res.redirect 並重新導向 /admin/users
         res.redirect.calledWith('/admin/users').should.be.true
 
-        // patchUser 執行完畢後，假資料中 id:2 使用者的應該要是 isAdmin：false
+        // patchUser 執行完畢後，假資料中 id:2 使用者的應該要是 isAdmin：true
         // 將假資料撈出，比對確認有成功修改到
         const user = await this.UserMock.findOne({ where: { id: 2 } })
         user.isAdmin.should.equal(false)
@@ -193,3 +193,4 @@ describe('# R01', () => {
     })
   })
 })
+
