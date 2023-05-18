@@ -16,12 +16,13 @@ module.exports = (sequelize, DataTypes) => {
   User.init({
     name: DataTypes.STRING,
     email: DataTypes.STRING,
-    password: DataTypes.STRING
+    password: DataTypes.STRING,
+    isAdmin: DataTypes.BOOLEAN //* 新加入，這行跟underscored有連動
   }, {
     sequelize,
     modelName: 'User',
-    tableName: 'Users', // todo新增
-    underscored: true
+    tableName: 'Users',
+    underscored: true // todo  新增
   })
   return User
 }
