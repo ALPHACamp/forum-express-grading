@@ -47,6 +47,7 @@
         <p class="card-text text-truncate">{{this.description}}</p>
         <div class="d-flex">
           <!--目前在餐廳迴圈裡面，使用 this.isFavorited 跟 isFavorite 是一樣的 -->
+          <!--favorite-->
           {{#if this.isFavorited}}
           <form action="/favorite/{{this.id}}?_method=DELETE" method="post">
             <button class="btn btn-danger m-1" type="submit">移除最愛</button>
@@ -54,6 +55,16 @@
           {{else}}
           <form action="/favorite/{{this.id}}" method="post">
             <button class="btn btn-primary m-1" type="submit">加到最愛</button>
+          </form>
+          {{/if}}
+          <!--like-->
+          {{#if this.isLiked}}
+          <form action="/like/{{this.id}}?_method=DELETE" method="post">
+            <button class="btn btn-danger m-1" type="submit">Unlike</button>
+          </form>
+          {{else}}
+          <form action="/like/{{this.id}}" method="post">
+            <button class="btn btn-primary m-1" type="submit">Like</button>
           </form>
           {{/if}}
         </div>
