@@ -1,0 +1,33 @@
+{{>restaurant-tabs rout='topUsers'}}
+
+<h1>美食達人</h1>
+<hr />
+<div class="row" style="text-align: center;">
+  {{#each users}}
+  <div class="col-3">
+    <!--image-->
+    <a href="/users/{{this.id}}">
+      {{#if this.image}}
+      <img src="{{this.image}}" width="140px" height="140px" alt="image"
+        style="transition: : opacity: 0.5s; opacity: 0;" onload="this.style.opacity=1">
+      {{else}}
+      <img src="https://i.pravatar.cc/140?img={{this.id}}" width="140px" height="140px" alt="image">
+      {{/if}}
+    </a>
+    <h2>{{this.name}}</h2>
+    <span class="bg-secondary tf-2 badge">追蹤人數：{{this.followerCount}}</span>
+    <!-- follow button -->
+    <p>
+      {{#if this.isFollowed}}
+    <form action="/following/{{this.id}}?_method=DELETE" method="post">
+      <button class="btn btn-danger" type="submit">取消追蹤</button>
+    </form>
+    {{else}}
+    <form action="/following/{{this.id}}" method="post">
+      <button class="btn btn-primary" type="submit">追蹤</button>
+    </form>
+    {{/if}}
+    </p>
+  </div>
+  {{/each}}
+</div>

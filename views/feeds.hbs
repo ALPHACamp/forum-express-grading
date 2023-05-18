@@ -1,0 +1,68 @@
+{{>restaurant-tabs route='feeds'}}
+
+<h1>最新動態</h1>
+<hr />
+<div class="row mt-5">
+  <!-- new restaurants-->
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-header">最新餐廳
+        <span class="text-secondary">[{{restaurants.length}}]</span>
+      </div>
+      <div class="card-body">
+        {{#each restaurants}}
+        <div>
+          <h4>
+            <a class="link-primary" href="/restaurants/{{this.id}}">{{this.name}}</a>
+            <a class="link-success" href="/restaurants?categoryId={{this.Category.id}}">
+              <small class="fs-6">[{{this.Category.name}}]</small>
+            </a>
+          </h4>
+          <div class="row d-flex align-items-start my-2">
+            <div class="col-4">
+              <a href="/restaurants/{{this.id}}">
+                <img class="img-fluid rounded mt-2" src="{{this.image}}" alt="restaurant image">
+              </a>
+            </div>
+            <div class="col">
+              <p class="mt-0" style="white-space: break-space;">{{this.description}}</p>
+            </div>
+          </div>
+          {{relativeTimeFromNow this.createdAt}}
+          <hr>
+        </div>
+        {{/each}}
+      </div>
+    </div>
+  </div>
+  <!-- new comments -->
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-header">最新評論
+        <span class="text-secondary">[{{comments.length}}]</span>
+      </div>
+      <div class="card-body">
+        {{#each comments}}
+        <div>
+          <h4>
+            <a class="link-primary" href="/restaurants/{{this.Restaurant.id}}">{{this.Restaurant.name}}</a>
+          </h4>
+          <p class="my-4" style="white-space: break-space;">{{this.text}}</p>
+          <div class="row">
+            <div class="col-2">
+              <a href="/users/{{this.User.id}}">
+                <img class="img-fluid rounded" src="{{this.User.image}}" alt="user image">
+              </a>
+            </div>
+            <div class="col d-flex flex-column align-items-start">
+              <a class="link-secondary" href="/users/{{this.User.id}}">{{this.User.name}}</a>
+              <small>{{relativeTimeFromNow this.createdAt}}</small>
+            </div>
+          </div>
+          <hr>
+        </div>
+        {{/each}}
+      </div>
+    </div>
+  </div>
+</div>

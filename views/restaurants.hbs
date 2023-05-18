@@ -1,0 +1,107 @@
+{{>restaurant-tabs route='index'}}
+
+<!--category-->
+<ul class="nav nav-pills mb-4">
+  <li class="nav-item">
+    <a class="nav-link {{#ifCond '' categoryId}} active {{/ifCond}}" href="?categoryId=">全部</a>
+  </li>
+  {{#each categories}}
+  <li class="nav-item">
+    <!--注意這邊是 ../limit 因為 limit 是在外層 -->
+    <a class="nav-link {{#ifCond this.id ../categoryId}} active {{/ifCond}}"
+      href="?categoryId={{this.id}}&limit={{../limit}}">{{this.name}}</a>
+  </li>
+  {{/each}}
+</ul>
+
+<!--limit selector-->
+<div class="d-flex justify-content-end">
+  <span class="col-form-label">每頁顯示：</span>
+  <div class="row mx-2">
+    <select class="form-select col-md-2" aria-label="limit selector"
+      onchange="window.location = `?categoryId={{categoryId}}&limit=${this.value}` ">
+      <option value="6" {{#ifCond limit 6}} selected {{/ifCond}}>6</option>
+      <option value="9" {{#ifCond limit 9}} selected {{/ifCond}}>9</option>
+      <option value="12" {{#ifCond limit 12}} selected {{/ifCond}}>12</option>
+    </select>
+  </div>
+</div>
+
+
+<!--restaurants-->
+<div class="row mt-3">
+  {{#each restaurants}}
+  <div class="col-md-4">
+    <div class="card mb-4 shadow-sm">
+      <a href="/restaurants/{{this.id}}">
+        <img class="card-img-top img-fluid" src="{{this.image}}" alt="Card image cap" width="286px" height="180px"
+          style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+      </a>
+      <div class="card-body">
+        <p class="card-text">
+          <a href="/restaurants/{{this.id}}">
+            <p class="h4">{{this.name}}</p>
+          </a>
+        </p>
+        <span class="badge bg-secondary">{{this.Category.name}}</span>
+        <p class="card-text text-truncate">{{this.description}}</p>
+        <div class="d-flex">
+          <!--目前在餐廳迴圈裡面，使用 this.isFavorited 跟 isFavorite 是一樣的 -->
+          <!--favorite-->
+          {{#if this.isFavorited}}
+          <form action="/favorite/{{this.id}}?_method=DELETE" method="post">
+            <button class="btn btn-danger m-1" type="submit">移除最愛</button>
+          </form>
+          {{else}}
+          <form action="/favorite/{{this.id}}" method="post">
+            <button class="btn btn-primary m-1" type="submit">加到最愛</button>
+          </form>
+          {{/if}}
+          <!--like-->
+          {{#if this.isLiked}}
+          <form action="/like/{{this.id}}?_method=DELETE" method="post">
+            <button class="btn btn-danger m-1" type="submit">Unlike</button>
+          </form>
+          {{else}}
+          <form action="/like/{{this.id}}" method="post">
+            <button class="btn btn-primary m-1" type="submit">Like</button>
+          </form>
+          {{/if}}
+        </div>
+      </div>
+    </div>
+  </div>
+  {{/each}}
+</div>
+
+<!--pagination-->
+<div class="d-flex justify-content-center">
+  <nav class="mt-3" aria-label="page navigation">
+    <ul class="pagination">
+      <!--prev-->
+      <li class="page-item {{#ifCond pagination.currentPage 1}} disabled {{/ifCond}}">
+        <a class="page-link" href="/restaurants?page={{pagination.prev}}&categoryId={{categoryId}}"
+          aria-label="Previous">
+          <span aria-hidden="true">&laquo;</span>
+        </a>
+      </li>
+      {{#each pagination.pages}}
+      {{#ifCond this ../pagination.currentPage}}
+      <li class="page-item active">
+        <a class="page-link" href="#">{{this}}</a>
+      </li>
+      {{else}}
+      <li class="page-item">
+        <a class="page-link" href="/restaurants?page={{this}}&categoryId={{categoryId}}">{{this}}</a>
+      </li>
+      {{/ifCond}}
+      {{/each}}
+      <!--next-->
+      <li class="page-item {{#ifCond pagination.currentPage pagination.totalPage}} disabled {{/ifCond}}">
+        <a class="page-link" href="/restaurants?page={{pagination.next}}&categoryId={{categoryId}}" aria-label="Next">
+          <span aria-hidden="true">&raquo;</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+</div>
