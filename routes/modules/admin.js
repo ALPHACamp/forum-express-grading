@@ -20,6 +20,8 @@ router.patch('/users/:id', adminController.patchUser)
 router.get('/categories/:id', categoryController.getCategories)
 // 編輯餐廳種類功能
 router.put('/categories/:id', categoryController.putCategory)
+// 刪除餐廳種類功能
+router.delete('/categories/:id', categoryController.deleteCategory)
 // 新增餐廳功能
 router.post('/restaurants', upload.single('image'), adminController.postRestaurant)
 // 瀏覽全部頁面
