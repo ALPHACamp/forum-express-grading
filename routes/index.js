@@ -3,7 +3,7 @@ const router = express.Router()
 const passport = require('../config/passport') // 引入 Passport，需要他幫忙做驗證
 const restController = require('../controllers/restaurant-controller')
 const userController = require('../controllers/user-controller')
-const { authenticated } = require('../middleware/auth')  // 引入 auth.js
+const { authenticated } = require('../middleware/auth') // 引入 auth.js
 const { generalErrorHandler } = require('../middleware/error-handler')
 const admin = require('./modules/admin')
 
