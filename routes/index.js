@@ -19,6 +19,7 @@ router.post('/comments', authenticated, commentController.postComment)
 router.get('/restaurants/:id', authenticated, restaurantController.getRestaurant)
 router.get('/restaurants/:id/dashboard', authenticated, restaurantController.getDashboard)
 router.get('/restaurants', authenticated, restController.getRestaurants)
+router.delete('/comments/:id', authenticated, commentController.deleteComment)
 router.use('/', (req, res) => res.redirect('/restaurants'))
 router.use('/', generalErrorHandler)
 module.exports = router
