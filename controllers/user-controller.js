@@ -7,7 +7,7 @@ const userController = {
     res.render('signup')
   },
   // signUp 負責實際處理註冊的頁面
-  signUp: (req, res, next) => { // 修改這裡
+  signUp: (req, res, next) => {
     // 如果兩次輸入的密碼不同，就建立一個 Error 物件並拋出
     if (req.body.password !== req.body.passwordCheck) throw new Error('Passwords do not match!')
 
