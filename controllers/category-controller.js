@@ -5,8 +5,7 @@ const categoryController = {
     // 確認有無category，沒有為null
     const { id } = req.params
     try {
-      const categories = await Category.findAll({ raw: true })
-      const category = await Category.findByPk(id, { raw: true })
+      const [categories, category] = await Promise.all([Category.findAll({ raw: true }), id ? Category.findByPk(id, { raw: true }) : null])
       return res.render('admin/categories', { categories, category })
     } catch (err) {
       next(err)
