@@ -19,12 +19,29 @@
     <p style="white-space: break-spaces;">{{restaurant.description}}</p>
   </div>
 </div>
-<!-- 會去上一頁，依照req header referer，所以要是直接從外部進來會再跑回外部 -->
-<a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
-<a class="btn btn-success ms-2" href="/restaurants/{{restaurant.id}}/dashboard">Dashboard</a>
+
+
+<!--按鈕-->
+<div class="row col-md-4">
+  <!--back-->
+  <a class="col-2 m-2 btn btn-outline-secondary" href="javascript:history.back()">回去</a>
+  <!--dashboard-->
+  <a class="col-3 my-2 ms-2 btn btn-success" href="/restaurants/{{restaurant.id}}/dashboard">Dashboard</a>
+  <!--favorite-->
+  <div class="col mx-0 my-2">
+    {{#if isFavorited}}
+    <form action="/favorite/{{restaurant.id}}?_method=DELETE" method="post">
+      <button class="btn btn-danger" type="submit">移除最愛</button>
+    </form>
+    {{else}}
+    <form action="/favorite/{{restaurant.id}}" method="post">
+      <button class="btn btn-primary" type="submit">加到最愛</button>
+    </form>
+    {{/if}}
+  </div>
+</div>
 
 {{!-- comment --}}
-<br />
 <br />
 <div class="shadow border border-secondary rounded my-4 p-3">
   <form action="/comments" method="post">

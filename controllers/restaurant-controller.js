@@ -32,9 +32,14 @@ const restaurantController = {
       Category.findAll({ raw: true })
     ])
       .then(([restaurants, categories]) => {
+        // 取出使用者的最愛清單 (從 passport中取出)
+        const favoritedRestaurants = req.user.FavoritedRestaurants
+
+        // 處理每一筆餐廳資料
         const data = restaurants.rows.map(r => ({
           ...r,
-          description: r.description.substring(0, 50)
+          description: r.description.substring(0, 50),
+          isFavorited: favoritedRestaurants.some(fr => fr.id === r.id)
         }))
         return res.render('restaurants', {
           restaurants: data,
@@ -52,10 +57,8 @@ const restaurantController = {
     return Restaurant.findByPk(req.params.id, {
       include: [
         Category,
-        {
-          model: Comment,
-          include: User
-        }
+        { model: Comment, include: User },
+        { model: User, as: 'FavoritedUser' }
       ],
       order: [
         [Comment, 'id', 'DESC']
@@ -67,7 +70,12 @@ const restaurantController = {
         return restaurant.increment('viewCounts', { by: 1 })
       })
       .then(restaurant => {
-        return res.render('restaurant', { restaurant: restaurant.toJSON() })
+        const isFavorited = restaurant.FavoritedUser.some(f => f.id === req.user.id)
+
+        return res.render('restaurant', {
+          restaurant: restaurant.toJSON(),
+          isFavorited
+        })
       })
       .catch(err => next(err))
   },
