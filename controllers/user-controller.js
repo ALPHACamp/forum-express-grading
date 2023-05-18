@@ -1,7 +1,6 @@
 const bcrypt = require('bcryptjs')
-const db = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
-const { User } = db
+const { Restaurant, User, Comment } = require('../models')
 
 const userController = {
 
@@ -48,15 +47,27 @@ const userController = {
     res.redirect('/signin')
   },
 
+  // Profile
   getUser: (req, res, next) => {
-    return User.findByPk(req.params.id, { raw: true })
+    return User.findByPk(req.params.id, {
+      include: {
+        model: Comment,
+        include: Restaurant
+      },
+      order: [
+        [Comment, 'id', 'DESC']
+      ],
+      nest: true
+    })
       .then(user => {
         if (!user) throw new Error('User did not exist!')
-        return res.render('users/profile', { user })
+        return res.render('users/profile', { user: user.toJSON() })
+        // 使用 多層查詢不能使用 raw:true, 需要在最後使用 user.toJSON()
       })
       .catch(err => next(err))
   },
 
+  // Edit Profile
   editUser: (req, res, next) => {
     return User.findByPk(req.params.id, { raw: true })
       .then(user => {
