@@ -2,14 +2,14 @@ const express = require('express')
 const router = express.Router()
 const passport = require('../config/passport')
 const admin = require('./modules/admin')
-const { authenticated } = require('../middleware/auth')
+const { authenticated, authenticatedAdmin } = require('../middleware/auth')
 //* 新增，載入 controller
 const restController = require('../controllers/restaurant-controller')
 const userController = require('../controllers/user-controller')
 //* 錯誤處理
 const { generalErrorHandler } = require('../middleware/error-handler')
 //* 後台路由
-router.use('/admin', admin)
+router.use('/admin', authenticatedAdmin, admin)
 //* 使用者路由
 router.get('/signup', userController.signUpPage)
 router.post('/signup', userController.signUp)
