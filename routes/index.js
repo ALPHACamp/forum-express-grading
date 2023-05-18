@@ -1,11 +1,11 @@
 const express = require('express')
 const router = express.Router()
 const passport = require('../config/passport')
+const admin = require('./modules/admin')
 const restController = require('../controllers/restaurant-controller')
 const userController = require('../controllers/user-controller')
 const { authenticated, authenticatedAdmin } = require('../middleware/auth')
 const { generalErrorHandler } = require('../middleware/error-handler')
-const admin = require('./modules/admin')
 
 // 注意順序
 router.use('/admin', authenticatedAdmin, admin)
