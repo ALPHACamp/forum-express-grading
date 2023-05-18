@@ -1,8 +1,15 @@
+{{> messages }}
 <h1>餐廳後台</h1>
-<a href='/admin/restaurants/create'>
+<nav class="nav">
+  <a class="nav-link active" aria-current="page" href="/admin/restaurants">Restaurants</a>
+  <p class="nav-link"> | </p>
+  <a class="nav-link" href="/admin/users">Users</a>
+</nav>
+
+
+<a class="d-block mb-0" href='/admin/restaurants/create'>
   <button type="button" class="btn btn-primary">New Restaurant</button>
 </a>
-<br />
 <br />
 <table class="table align-middle">
   <thead class="thead-dark">
