@@ -1,0 +1,48 @@
+<h1>餐廳後台</h1>
+
+<ul class="nav nav-pills">
+  <li class="nav-item">
+    <a class="nav-link" href="/admin/restaurants">Restaurants</a>
+  </li>
+  <p class="mt-2" href="#">|</p>
+  <li class="nav-item">
+    <a class="nav-link" href="/admin/users">Users</a>
+  </li>
+</ul>
+<br />
+<br />
+<table class="table">
+  <thead>
+    <tr class="table-dark">
+      <th scope="col">#</th>
+      <th scope="col">Name</th>
+      <th scope="col">Email</th>
+      <th scope="col">Role</th>
+      <th scope="col">#</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each users}}
+    <tr>
+      <th scope="row" class="align-middle">{{this.id}}</th>
+      <td class="align-middle">{{this.name}}</td>
+      <td class="align-middle">{{this.email}}</td>
+      {{#if this.isAdmin}}
+      <td class="align-middle">admin</td>
+      <td class="align-middle">
+        <form action="/admin/users/{{this.id}}?_method=PATCH" method="POST" enctype="multipart/form-data">
+          <button type="submit" class="btn btn-link text-decoration-none ">set as user</button>
+        </form>
+      </td>
+      {{else}}
+      <td class="align-middle">user</td>
+      <td class="align-middle">
+        <form action="/admin/users/{{this.id}}?_method=PATCH" method="POST" enctype="multipart/form-data">
+          <button type="submit" class="btn btn-link text-decoration-none">set as admin</button>
+        </form>
+      </td>
+      {{/if}}
+    </tr>
+    {{/each}}
+  </tbody>
+</table>
