@@ -26,7 +26,7 @@ const adminController = {
       const newRestaurant = await Restaurant.create({ name, tel, address, openingHours, description, image: filePath || null })
       if (newRestaurant) {
         req.flash('success_messages', 'restaurant was successfully created')
-        res.redirect('/admin/restaurants')
+        return res.redirect('/admin/restaurants')
       }
     } catch (e) {
       next(e)
@@ -38,7 +38,7 @@ const adminController = {
       const id = req.params.id
       const restaurant = await Restaurant.findByPk(id, { raw: true, nest: true })
       if (!restaurant) throw new Error("Restaurant didn't exist.")
-      res.render('admin/restaurant', { restaurant })
+      return res.render('admin/restaurant', { restaurant })
     } catch (e) {
       next(e)
     }
@@ -49,7 +49,7 @@ const adminController = {
       const id = req.params.id
       const restaurant = await Restaurant.findByPk(id, { raw: true, nest: true })
       if (!restaurant) throw new Error("Restaurant didn't exist.")
-      res.render('admin/edit-restaurant', { restaurant })
+      return res.render('admin/edit-restaurant', { restaurant })
     } catch (e) {
       next(e)
     }
@@ -67,7 +67,7 @@ const adminController = {
       const renewRestaurant = await restaurant.update({ name, tel, address, openingHours, description, image: filePath || restaurant.image })
       if (renewRestaurant) {
         req.flash('success_messages', 'restaurant was successfully to update')
-        res.redirect('/admin/restaurants')
+        return res.redirect('/admin/restaurants')
       }
     } catch (e) {
       next(e)
@@ -89,7 +89,7 @@ const adminController = {
   getUsers: async (req, res, next) => {
     try {
       const users = await User.findAll({ raw: true, nest: true })
-      if (users) res.render('admin/users', { users })
+      if (users) return res.render('admin/users', { users })
     } catch (e) {
       next(e)
     }
@@ -108,7 +108,7 @@ const adminController = {
       }
       await findUser.update({ isAdmin: !findUser.isAdmin })
       req.flash('success_messages', '使用者權限變更成功')
-      res.redirect('/admin/users')
+      return res.redirect('/admin/users')
     } catch (e) {
       next(e)
     }

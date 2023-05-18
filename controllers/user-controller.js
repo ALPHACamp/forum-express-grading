@@ -4,7 +4,7 @@ const { User } = db
 const userController = {
   // 使用者註冊頁面
   signUpPage: (req, res) => {
-    res.render('signup')
+    return res.render('signup')
   },
   // 使用者註冊功能
   signUp: async (req, res, next) => {
@@ -25,7 +25,7 @@ const userController = {
       })
       if (createUser) {
         req.flash('success_messages', '成功註冊帳號！')
-        res.redirect('/signin')
+        return res.redirect('/signin')
       }
     } catch (err) {
       next(err)
@@ -33,7 +33,7 @@ const userController = {
   },
   // 使用者登入頁面
   signInPage: (req, res) => {
-    res.render('signin')
+    return res.render('signin')
   },
   // 使用者登入功能
   signIn: (req, res) => {
@@ -44,13 +44,13 @@ const userController = {
     // } else {
     //   res.redirect('/restaurants')
     // }
-    res.redirect('/restaurants')
+    return res.redirect('/restaurants')
   },
   // 使用者登出功能
   signout: (req, res) => {
     req.logout()
     req.flash('success_messages', '登出成功！')
-    res.redirect('/signin')
+    return res.redirect('/signin')
   }
 }
 
