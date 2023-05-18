@@ -1,5 +1,7 @@
-const getUser = req => req.user || null
-const ensureAuthenticated = req => {
+const getUser = (req) => {
+  return req.user || null
+}
+const ensureAuthenticated = (req) => {
   return req.isAuthenticated()
 }
 module.exports = {
