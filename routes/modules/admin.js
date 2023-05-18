@@ -8,6 +8,8 @@ router.get('/restaurants/:id/edit', adminController.editRestaurant)
 router.get('/restaurants/:id', adminController.getRestaurant)
 router.put('/restaurants/:id', upload.single('image'), adminController.putRestaurant) // 修改後台編輯餐廳的路由
 router.delete('/restaurants/:id', adminController.deleteRestaurant)
+router.patch('/users/:id', adminController.patchUser)
+router.get('/users', adminController.getUsers)
 router.get('/restaurants', adminController.getRestaurants)
 router.post('/restaurants', upload.single('image'), adminController.postRestaurant) // 修改後台新增餐廳的路由
 
