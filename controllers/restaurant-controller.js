@@ -1,29 +1,39 @@
 const { Restaurant, Category } = require('../models')
+const { getOffset, getPagination } = require('../helpers/pagination-helper')
 
 const restaurantController = {
   getRestaurants: async (req, res, next) => {
+    const DEFAULT_LIMIT = 9
+    const DEFAULT_DESCRIPTION_MAX = 50
+    // 取得參數: categoryId, page, limit
     const categoryId = Number(req.query.categoryId) || ''
+    const page = Number(req.query.page) || 1
+    const limit = Number(req.query.limit) || DEFAULT_LIMIT
+    // 計算offset
+    const offset = getOffset(limit, page)
     try {
       // 取出restaurants(含category)、categories
       const [restaurants, categories] = await Promise.all([
-        Restaurant.findAll({
+        Restaurant.findAndCountAll({
           raw: true,
           nest: true,
           include: Category,
           // 判斷有無categoryId
           where: {
             ...(categoryId ? { categoryId } : {})
-          }
+          },
+          limit,
+          offset
         }),
         Category.findAll({ raw: true })
       ])
       // 對於description進行處理(substring)
-      const data = restaurants.map(restaurant => ({
+      const data = restaurants.rows.map(restaurant => ({
         ...restaurant,
-        description: restaurant.description.substring(0, 50)
+        description: restaurant.description.substring(0, DEFAULT_DESCRIPTION_MAX)
       }))
       // render
-      return res.render('restaurants', { restaurants: data, categories, categoryId })
+      return res.render('restaurants', { restaurants: data, categories, categoryId, pagination: getPagination(limit, page, restaurants.count) })
     } catch (err) {
       next(err)
     }
