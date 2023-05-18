@@ -1,5 +1,8 @@
-const { Restaurant } = require('../models')
-const { imgurFileHandler } = require('../helpers/file-helpers')
+const { Restaurant, User } = require('../models')
+// 引入User model
+const { FileUpload } = require('../helpers/file-helpers')
+const assert = require('assert')
+// 引入assert model
 const adminController = {
   getRestaurants: (req, res, next) => {
     Restaurant.findAll({
@@ -15,7 +18,7 @@ const adminController = {
     const { name, tel, address, openingHours, description } = req.body
     if (!name) throw new Error('Restaurant name is required!')
     const { file } = req // 把檔案取出來，也可以寫成 const file = req.file
-    imgurFileHandler(file) // 把取出的檔案傳給 file-helper 處理後
+    FileUpload(file) // 把取出的檔案傳給 file-helper 處理後
       .then(filePath => Restaurant.create({ // 再 create 這筆餐廳資料
         name,
         tel,
@@ -31,21 +34,21 @@ const adminController = {
       .catch(err => next(err))
   },
   getRestaurant: (req, res, next) => {
-    Restaurant.findByPk(req.params.id, {
+    return Restaurant.findByPk(req.params.id, {
       raw: true
     })
       .then(restaurant => {
-        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        assert(restaurant, "Restaurant didn't exist!")
         res.render('admin/restaurant', { restaurant })
       })
       .catch(err => next(err))
   },
   editRestaurant: (req, res, next) => {
-    Restaurant.findByPk(req.params.id, {
+    return Restaurant.findByPk(req.params.id, {
       raw: true
     })
       .then(restaurant => {
-        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        assert(restaurant, "Restaurant didn't exist!")
         res.render('admin/edit-restaurant', { restaurant })
       })
       .catch(err => next(err))
@@ -54,12 +57,12 @@ const adminController = {
     const { name, tel, address, openingHours, description } = req.body
     if (!name) throw new Error('Restaurant name is required!')
     const { file } = req // 把檔案取出來
-    Promise.all([ // 非同步處理
+    return Promise.all([ // 非同步處理
       Restaurant.findByPk(req.params.id), // 去資料庫查有沒有這間餐廳
-      imgurFileHandler(file) // 把檔案傳到 file-helper 處理
+      FileUpload(file) // 把檔案傳到 file-helper 處理
     ])
       .then(([restaurant, filePath]) => { // 以上兩樣事都做完以後
-        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        assert(restaurant, "Restaurant didn't exist!")
         return restaurant.update({ // 修改這筆資料
           name,
           tel,
@@ -78,13 +81,38 @@ const adminController = {
   deleteRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id)
       .then(restaurant => {
-        if (!restaurant) throw new Error("Restaurant didn't exist!")
-
+        assert(restaurant, "Restaurant didn't exist!")
         return restaurant.destroy()
       })
       .then(() => res.redirect('/admin/restaurants'))
       .catch(err => next(err))
-  }
+  },
 
+  // 從資料庫中查詢所有使用者的資料，再傳給admin/users
+  getUsers: (req, res, next) => {
+    return User.findAll({
+      raw: true,
+      nest: true
+    })
+      .then(users => res.render('admin/users', { users: users }))
+      .catch(err => next(err))
+  },
+
+  // 處理修改使用者權限的請求
+  patchUser: (req, res, next) => {
+    return User.findByPk(req.params.id)
+      .then(user => {
+        if (user.email === 'root@example.com') {
+          req.flash('error_messages', '禁止變更 root 權限')
+          return res.redirect('back')
+        }
+        return user.update({ isAdmin: !user.isAdmin })
+      })
+      .then(() => {
+        req.flash('success_messages', '使用者權限變更成功')
+        res.redirect('/admin/users')
+      })
+      .catch(err => next(err))
+  }
 }
 module.exports = adminController
