@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const passport = require('../config/passport') 
+const passport = require('../config/passport')
 
 const restController = require('../controllers/restaurant-controller')
 const userController = require('../controllers/user-controller')
