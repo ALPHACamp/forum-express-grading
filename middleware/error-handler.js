@@ -1,3 +1,4 @@
+/* eslint-disable space-before-function-paren */
 module.exports = {
   generalErrorHandler(err, req, res, next) {
     if (err instanceof Error) {
