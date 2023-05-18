@@ -23,9 +23,7 @@ app.set('view engine', 'hbs')
 
 app.use(express.urlencoded({ extended: true }))
 
-app.use(
-  session({ secret: SESSION_SECRET, resave: false, saveUninitialized: false })
-)
+app.use(session({ secret: SESSION_SECRET, resave: false, saveUninitialized: false }))
 
 app.use(flash())
 

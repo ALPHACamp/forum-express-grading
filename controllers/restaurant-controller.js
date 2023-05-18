@@ -21,11 +21,27 @@ const restaurantController = {
     const { id } = req.params
     try {
       // 找出對應restaurant
-      const restaurant = await Restaurant.findByPk(id, { raw: true, nest: true, include: [Category] })
+      const restaurant = await Restaurant.findByPk(id, { nest: true, include: [Category] })
       // 找不到報錯
       if (!restaurant) throw new Error('Restaurant does not exist!')
-      // 找到就render
-      return res.render('restaurant', { restaurant })
+      // 將viewCounts+1
+      await restaurant.increment('viewCounts')
+      // 找到就render，需加toJSON()
+      return res.render('restaurant', { restaurant: restaurant.toJSON() })
+    } catch (err) {
+      next(err)
+    }
+  },
+  getDashboard: async (req, res, next) => {
+    // id取出
+    const { id } = req.params
+    try {
+      // 找出對應restaurant
+      const restaurant = await Restaurant.findByPk(id, { raw: true, nest: true, include: Category })
+      // 沒有就報錯
+      if (!restaurant) throw new Error('Restaurant does not exist!')
+      // 有就render
+      return res.render('dashboard', { restaurant })
     } catch (err) {
       next(err)
     }
