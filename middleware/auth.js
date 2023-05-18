@@ -14,6 +14,7 @@ const authenticatedAdmin = (req, res, next) => {
   } else {
     res.redirect("/signin");
   }
+  res.redirect("/admin/restaurants");
 };
 module.exports = {
   authenticated,
