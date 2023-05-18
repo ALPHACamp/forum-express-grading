@@ -13,6 +13,9 @@ const handlebarsHelpers = require('./helpers/handlebars-helpers')
 const methodOverride = require('method-override')
 const path = require('path')
 
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
 app.use(session({ secret: SESSION_SECRET, resave: false, saveUninitialized: false }))
 app.use(passport.initialize()) // 增加這行，初始化 Passport
 app.use(passport.session()) // 增加這行，啟動 session 功能
