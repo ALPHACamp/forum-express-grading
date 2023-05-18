@@ -7,6 +7,7 @@ const handlebarsHelpers = require('./helpers/handlebars-helpers')
 const session = require('express-session')
 const flash = require('connect-flash')
 const passport = require('./config/passport')
+const methodOverride = require('method-override')
 
 const app = express()
 const port = process.env.PORT || 3000
@@ -24,6 +25,8 @@ app.use(session({ secret: SESSION_SECRET, resave: false, saveUninitialized: fals
 // passport 皆在session 後
 app.use(passport.initialize()) // 增加這行，初始化 Passport
 app.use(passport.session()) // 增加這行，啟動 session 功能
+// method-override
+app.use(methodOverride('_method'))
 // flash
 app.use(flash())
 app.use((req, res, next) => {
