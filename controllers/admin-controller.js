@@ -1,15 +1,28 @@
 const { Restaurant, User, Category } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
+const { getOffset, getPagination } = require('../helpers/pagination-helper')
 
 const adminController = {
-  getRestaurants: (req, res, next) => {
-    Restaurant.findAll({
-      raw: true, // 把Sequelize包裝過的物件轉換成JS原生物件, 或在render後面寫成restaurant.toJSON()
-      nest: true, // 把restaurant['Category.id'] => restaurant.category.id
-      include: [Category]
-    })
-      .then(restaurants => res.render('admin/restaurants', { restaurants }))
-      .catch(e => next(e))
+  getRestaurants: async (req, res, next) => {
+    const DEFAULT_LIMIT = 10
+    const page = Number(req.query.page) || 1
+    const limit = Number(req.query.limit) || DEFAULT_LIMIT
+    const offset = getOffset(limit, page)
+    try {
+      const restaurants = await Restaurant.findAndCountAll({
+        raw: true, // 把Sequelize包裝過的物件轉換成JS原生物件, 或在render後面寫成restaurant.toJSON()
+        nest: true, // 把restaurant['Category.id'] => restaurant.category.id
+        include: [Category],
+        offset,
+        limit
+      })
+      // 使用 findAndCountAll 回傳{count, rows:[{id..}],..}
+      res.render('admin/restaurants',
+        {
+          restaurants: restaurants.rows,
+          pagination: getPagination(limit, page, restaurants.count)
+        })
+    } catch (e) { next(e) }
   },
   // create restaurant page
   createRestaurant: (req, res, next) => {
