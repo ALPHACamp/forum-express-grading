@@ -15,6 +15,20 @@ const restaurantController = {
     } catch (err) {
       next(err)
     }
+  },
+  getRestaurant: async (req, res, next) => {
+    // 取出id值
+    const { id } = req.params
+    try {
+      // 找出對應restaurant
+      const restaurant = await Restaurant.findByPk(id, { raw: true, nest: true, include: [Category] })
+      // 找不到報錯
+      if (!restaurant) throw new Error('Restaurant does not exist!')
+      // 找到就render
+      return res.render('restaurant', { restaurant })
+    } catch (err) {
+      next(err)
+    }
   }
 }
 
