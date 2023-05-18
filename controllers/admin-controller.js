@@ -43,7 +43,7 @@ const adminController = {
   },
   // 瀏覽單一餐廳
   getRestaurant: (req, res, next) => {
-    Restaurant.findByPk(req.params.id, {
+    return Restaurant.findByPk(req.params.id, {
       raw: true,
       nest: true,
       include: [Category]
