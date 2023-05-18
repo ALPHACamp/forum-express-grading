@@ -2,16 +2,28 @@ const { Restaurant, Category } = require('../models')
 
 const restaurantController = {
   getRestaurants: async (req, res, next) => {
+    const categoryId = Number(req.query.categoryId) || ''
     try {
-      // 取出restaurants(含category)
-      const restaurants = await Restaurant.findAll({ raw: true, nest: true, include: [Category] })
+      // 取出restaurants(含category)、categories
+      const [restaurants, categories] = await Promise.all([
+        Restaurant.findAll({
+          raw: true,
+          nest: true,
+          include: Category,
+          // 判斷有無categoryId
+          where: {
+            ...(categoryId ? { categoryId } : {})
+          }
+        }),
+        Category.findAll({ raw: true })
+      ])
       // 對於description進行處理(substring)
       const data = restaurants.map(restaurant => ({
         ...restaurant,
         description: restaurant.description.substring(0, 50)
       }))
       // render
-      return res.render('restaurants', { restaurants: data })
+      return res.render('restaurants', { restaurants: data, categories, categoryId })
     } catch (err) {
       next(err)
     }
@@ -21,7 +33,7 @@ const restaurantController = {
     const { id } = req.params
     try {
       // 找出對應restaurant
-      const restaurant = await Restaurant.findByPk(id, { nest: true, include: [Category] })
+      const restaurant = await Restaurant.findByPk(id, { nest: true, include: Category })
       // 找不到報錯
       if (!restaurant) throw new Error('Restaurant does not exist!')
       // 將viewCounts+1
