@@ -1,0 +1,20 @@
+const { Comment, Restaurant, User } = require('../models')
+
+const commentController = {
+  postComment: async (req, res, next) => {
+    const { text, restaurantId } = req.body
+    const userId = req.user.id
+    if (!text) throw new Error('Comment is required')
+    try {
+      const [restaurant, user] = await Promise.all([Restaurant.findByPk(restaurantId), User.findByPk(userId)])
+      if (!restaurant) throw new Error('restaurant did not exist')
+      if (!user) throw new Error('user did not exist')
+      await Comment.create({ text, restaurantId, userId })
+      return res.redirect(`/restaurants/${restaurantId}`)
+    } catch (err) {
+      next(err)
+    }
+  }
+}
+
+module.exports = commentController
