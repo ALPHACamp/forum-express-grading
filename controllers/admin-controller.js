@@ -113,7 +113,7 @@ const adminController = {
         })
       })
       .then(() => {
-        req.flash('success_messages', '已成功變更權限')
+        req.flash('success_messages', '使用者權限變更成功')
         res.redirect('/admin/users')
       })
       .catch(err => next(err))
