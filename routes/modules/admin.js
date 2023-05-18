@@ -1,11 +1,16 @@
 const express = require('express')
 const router = express.Router()
+const upload = require('../../middleware/multer')
 
 //* 新增，載入 controller
 const adminController = require('../../controllers/admin-controller')
 //* 新增餐廳路由
 router.get('/restaurants/create', adminController.createRestaurant)
-router.post('/restaurants', adminController.postRestaurant)
+router.post(
+  '/restaurants',
+  upload.single('image'),
+  adminController.postRestaurant
+)
 //* 讀取餐廳詳細
 router.get('/restaurants/:id', adminController.getRestaurant)
 //* 讀取全部餐廳
@@ -13,7 +18,11 @@ router.get('/restaurants', adminController.getRestaurants)
 
 //* 編輯餐廳資訊
 router.get('/restaurants/:id/edit', adminController.editRestaurant)
-router.put('/restaurants/:id', adminController.putRestaurant)
+router.put(
+  '/restaurants/:id',
+  upload.single('image'),
+  adminController.putRestaurant
+)
 
 //* 刪除餐廳
 router.delete('/restaurants/:id', adminController.deleteRestaurant)

@@ -1,5 +1,6 @@
 const db = require('../models')
 const { Restaurant } = db
+const { localFileHandler } = require('../helpers/file-helpers')
 const adminController = {
   //* 讀取全部
   getRestaurants: (req, res) => {
@@ -20,14 +21,19 @@ const adminController = {
     const { name, tel, address, openingHours, description } = req.body
     //* name 是必填，若發先是空值就會終止程式碼，並在畫面顯示錯誤提示
     if (!name) throw new Error('Restaurant name is required!')
-    Restaurant.create({
-      //* 產生一個新的 Restaurant 物件實例，並存入資料庫
-      name,
-      tel,
-      address,
-      openingHours,
-      description
-    })
+    const { file } = req
+    localFileHandler(file)
+      .then(filePath =>
+        Restaurant.create({
+          //* 產生一個新的 Restaurant 物件實例，並存入資料庫
+          name,
+          tel,
+          address,
+          openingHours,
+          description,
+          image: filePath || null
+        })
+      )
       .then(() => {
         //* 在畫面顯示成功提示
         req.flash('success_messages', 'restaurant was successfully created')
@@ -64,7 +70,8 @@ const adminController = {
   putRestaurant: (req, res, next) => {
     const { name, tel, address, openingHours, description } = req.body
     if (!name) throw new Error('Restaurant name is required!')
-    Restaurant.findByPk(req.params.id)
+    const { file } = req
+    Promise.all([Restaurant.findByPk(req.params.id), localFileHandler(file)])
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         return restaurant.update({
@@ -72,7 +79,9 @@ const adminController = {
           tel,
           address,
           openingHours,
-          description
+          description,
+          // 有新上傳用新的，沒有就用舊的(舊的可能是NULL)
+          image: filePath || restaurant.image
         })
       })
       .then(() => {
