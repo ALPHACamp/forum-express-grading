@@ -24,6 +24,8 @@ router.get('/restaurants', adminController.getRestaurants)
 router.get('/users', adminController.getUsers)
 // 瀏覽全部餐廳分類
 router.get('/categories', categoryController.getCategories)
+// 新增餐廳分類
+router.post('/categories', categoryController.postCategory)
 // 無法匹配路由皆會丟到這
 router.use('/', (req, res) => res.redirect('/admin/restaurants'))
 
