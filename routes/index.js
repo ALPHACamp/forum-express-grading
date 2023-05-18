@@ -43,8 +43,8 @@ router.delete('/favorite/:restaurantId', authenticated, userController.removeFav
 router.post('/like/:restaurantId', authenticated, userController.addLike)
 router.delete('/like/:restaurantId', authenticated, userController.removeLike)
 
-// router.post('/following/:id', authenticated, userController.addFollow)
-// router.delete('/following/:id', authenticated, userController.removeFollow)
+router.post('/following/:userId', authenticated, userController.addFollowing)
+router.delete('/following/:userId', authenticated, userController.removeFollowing)
 
 router.get('/', (req, res) => res.redirect('/restaurants'))
 // error handler

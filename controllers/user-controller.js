@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs')
 const { imgurFileHandler } = require('../helpers/file-helpers')
-const { Restaurant, User, Comment, Favorite, Like } = require('../models')
+const { Restaurant, User, Comment, Favorite, Like, Followship } = require('../models')
 
 const userController = {
 
@@ -197,15 +197,56 @@ const userController = {
       ]
     })
       .then(users => {
-        users = users.map(user => ({
+        // 整理使用者資料 加入新資訊
+        const result = users.map(user => ({
           ...user.toJSON(),
           followerCount: user.Followers.length,
           isFollowed: req.user.Followings.some(d => d.id === user.id)
-        }))
-        users = users.sort((a, b) => b.followerCount - a.followerCount)
+        })).sort((a, b) => b.followerCount - a.followerCount)
 
-        return res.render('top-users', { users })
+        return res.render('top-users', { users: result })
       })
+      .catch(err => next(err))
+  },
+
+  addFollowing: (req, res, next) => {
+    const { userId } = req.params
+    // 查詢 要追蹤的使用者，與是否已經有在follow他
+    return Promise.all([
+      User.findByPk(userId),
+      Followship.findOne({
+        where: {
+          followerId: req.user.id,
+          followingId: userId
+        }
+      })
+    ])
+      .then(([user, followship]) => {
+        if (!user) throw new Error('User did not exist!')
+        if (followship) throw new Error('You are already following that user!')
+
+        return Followship.create({
+          followerId: req.user.id,
+          followingId: userId
+        })
+      })
+      .then(() => res.redirect('back'))
+      .catch(err => next(err))
+  },
+
+  removeFollowing: (req, res, next) => {
+    return Followship.findOne({
+      where: {
+        followerId: req.user.id,
+        followingId: req.params.userId
+      }
+    })
+      .then(followship => {
+        if (!followship) throw new Error('You are not following that user!')
+
+        return followship.destroy()
+      })
+      .then(() => res.redirect('back'))
       .catch(err => next(err))
   }
 }
