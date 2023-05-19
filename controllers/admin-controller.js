@@ -19,14 +19,16 @@ const adminController = {
     const { file } = req
 
     return imgurFileHandler(file)
-      .then(filePath => Restaurant.create({
-        name,
-        tel,
-        address,
-        openingHours,
-        description,
-        image: filePath || null
-      }))
+      .then(filePath =>
+        Restaurant.create({
+          name,
+          tel,
+          address,
+          openingHours,
+          description,
+          image: filePath || null
+        })
+      )
       .then(() => {
         req.flash('success_messages', 'restaurant was successfully created')
         res.redirect('/admin/restaurants')
@@ -118,7 +120,6 @@ const adminController = {
       })
       .catch(err => next(err))
   }
-
 }
 
 module.exports = adminController
