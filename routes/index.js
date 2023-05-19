@@ -28,6 +28,9 @@ router.get('/signout', userController.signout)
 // 使用者登入後餐廳首頁
 router.get('/restaurants', authenticated, restController.getRestaurants)
 
+// 使用者查看單筆資料的 Dashboard
+router.get('/restaurants/:id/dashboard', restController.getRestaurantDashboard)
+
 // 使用者查看單筆資料
 router.get('/restaurants/:id', restController.getRestaurant)
 

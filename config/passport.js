@@ -12,10 +12,10 @@ passport.use(new LocalStrategy({
   try {
     const findUser = await User.findOne({ where: { email } })
     if (!findUser) {
-      return cb(null, false, req.flash('error_msg', 'Email or password incorrect.'))
+      return cb(null, false, req.flash('error_messages', 'Email or password incorrect.'))
     } else {
       const passwordCompare = await bcrypt.compare(password, findUser.password)
-      if (!passwordCompare) return cb(null, false, req.flash('error_msg', 'Email or password incorrect.'))
+      if (!passwordCompare) return cb(null, false, req.flash('error_messages', 'Email or password incorrect.'))
       return cb(null, findUser)
     }
   } catch (e) {
