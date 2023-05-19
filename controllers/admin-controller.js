@@ -49,7 +49,7 @@ const adminController = {
     const { name, tel, address, openingHours, description } = req.body
     if (!name) throw new Error('Restaurant name is required!')
     Restaurant.findByPk(req.params.id)
-      .then(restaurant => { // 沒有設定 { raw: true }，因為這邊會需要用到 restaurant.update
+      .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         return restaurant.update({
           name,
