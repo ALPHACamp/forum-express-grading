@@ -8,7 +8,7 @@ const adminController = {
       const restaurants = await Restaurant.findAll({
         raw: true, // 資料清洗：將sequelize物件轉為JS原生物件
         nest: true, // 資料清洗：將取出的物件打包便於取用
-        include: [Category] // 取得關聯資料
+        include: Category // 取得關聯資料
       })
       if (restaurants) res.render('admin/restaurants', { restaurants })
     } catch (e) {
