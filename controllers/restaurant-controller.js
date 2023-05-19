@@ -28,15 +28,19 @@ const restaurantController = {
         Category.findAll({ raw: true })
       ])
 
-      const data = restaurants.rows.map(r => {
-        r.description = r.description.substring(0, 50)
-        return r
-      })
+      // const data = restaurants.rows.map(r => {
+      //   r.description = r.description.substring(0, 50)
+      //   return r
+      // })
 
-      // const data2 = restaurants.map(r => ({
-      //   ...r,
-      //   description: r.description.substring(0, 50)
-      // }))
+      // 檢查req.user是否為false 才回傳favorited資料
+      const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
+
+      const data = restaurants.rows.map(r => ({
+        ...r,
+        description: r.description.substring(0, 50),
+        isFavorited: favoritedRestaurantsId.includes(r.id)
+      }))
 
       return res.render('restaurants', {
         restaurants: data,
@@ -53,17 +57,19 @@ const restaurantController = {
       const restaurant = await Restaurant.findByPk(req.params.id, {
         include: [
           Category,
-          {
-            model: Comment,
-            include: User
-          }
+          { model: Comment, include: User },
+          { model: User, as: 'FavoritedUsers' }
         ],
         order: [[Comment, 'id', 'DESC']]
       })
       if (!restaurant) throw new Error("Restaurant didn't exist!")
       const incrementResult = await restaurant.increment('viewCounts')
+      const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id)
 
-      res.render('restaurant', { restaurant: incrementResult.toJSON() })
+      res.render('restaurant', {
+        restaurant: incrementResult.toJSON(),
+        isFavorited
+      })
     } catch (err) { next(err) }
   },
   getDashboard: async (req, res, next) => {

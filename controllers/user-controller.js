@@ -54,12 +54,7 @@ const userController = {
         }
       )
       if (!user) throw new Error("User didn't exist!")
-      // 檢查user.id / req.user.id
-      if (req.user) {
-        if (user.id !== req.user.id) {
-          return res.redirect(`/users/${req.user.id}`)
-        }
-      }
+      
       res.render('users/profile', { user: user.toJSON() })
     } catch (err) { next(err) }
   },
