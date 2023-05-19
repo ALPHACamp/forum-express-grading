@@ -4,7 +4,7 @@
 </div>
 <div class="form-row mb-3">
   <label class="form-label" for="tel">Tel</label>
-  <input class="form-control" type="text" name="tel" id="tel" placeholder="Enter tel" value="{{restaurant.tel}}"> 
+  <input class="form-control" type="tel" name="tel" id="tel" placeholder="Enter tel" value="{{restaurant.tel}}"> 
 </div>
 <div class="form-row mb-3">
   <label class="form-label" for="address">Address</label>
@@ -18,6 +18,16 @@
   <label class="form-label" for="description">Description</label>
   <textarea class="form-control" id="description" name="description" rows="3">{{restaurant.description}}</textarea>
 </div> 
+<div class="form-row mb-3">
+  <label class="form-label" for="image">Image</label>
+  <input class="form-control" type="file" class="form-control-file" id="image" name="image">
+  <p style="font-size: small;color:brown">您原先選取的檔案路徑為：{{restaurant.image}}</p>
+</div>
 <button type="submit" class="btn btn-primary">Submit</button>
+{{!--  補上 back 按鈕 --}}
+<a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
 
 {{!--  ! 新增 description，注意 textarea 的寫法不是用 value --}}
+{{!-- ? back有不同寫法 --}}
+{{!-- * input類型file沒有加上multiple屬性，代表使用者只允許上傳一張照片 --}}
+{{!-- todo input類型file時，<form>需要多一項屬性設定 --}}

@@ -8,6 +8,7 @@ const session = require('express-session')
 const flash = require('connect-flash')
 const passport = require('./config/passport')
 const methodOverride = require('method-override')
+const path = require('path') // todo 給/upload使用
 
 const app = express()
 const port = process.env.PORT || 3000
@@ -27,6 +28,8 @@ app.use(passport.initialize()) // 增加這行，初始化 Passport
 app.use(passport.session()) // 增加這行，啟動 session 功能
 // method-override
 app.use(methodOverride('_method'))
+//! /upload
+app.use('/upload', express.static(path.join(__dirname, 'upload')))
 // flash
 app.use(flash())
 app.use((req, res, next) => {
