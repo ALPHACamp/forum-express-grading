@@ -83,7 +83,7 @@ describe('# R01', () => {
       // 製作假資料
       // 本 context 會用這筆資料進行測試
         this.UserMock = createModelMock(
-          'User',
+          'User', 
           [{
             id: 1,
             email: 'root@example.com',
