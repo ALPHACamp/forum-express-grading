@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs')
-const { User, Comment, Restaurant, Favorite, Like } = require('../models')
+const { User, Comment, Restaurant, Favorite, Like, Followship } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const userController = {
@@ -185,15 +185,56 @@ const userController = {
         include: [{ model: User, as: 'Followers' }]
       })
 
-      const usersMap = users.map(user => ({
+      const result = users.map(user => ({
         // 整理格式
         ...user.toJSON(),
         // 計算追蹤者人數
         followerCount: user.Followers.length,
         // 判斷目前登入使用者是否已追蹤該 user 物件
         isFollowed: req.user.Followings.some(f => f.id === user.id)
-      }))
-      res.render('top-users', { users: usersMap })
+      })).sort((a, b) => b.followerCount - a.followerCount)
+
+      res.render('top-users', { users: result })
+    } catch (err) { next(err) }
+  },
+  addFollowing: async (req, res, next) => {
+    try {
+      const { userId } = req.params
+      // 反查 撈出要被追蹤者的資料 與 追蹤資料
+      const [user, followship] = await Promise.all([
+        User.findByPk(userId),
+        Followship.findOne({
+          where: {
+            followerId: req.user.id, // 目前登入者的id
+            followingId: req.params.userId // 要追蹤的id
+          }
+        })
+      ])
+      // 如果被追蹤的人不存在
+      if (!user) throw new Error("User didn't exist!")
+      // 如果已經追蹤過
+      if (followship) throw new Error('You are already following this user!')
+
+      // 如果沒有追蹤過
+      await Followship.create({
+        followerId: req.user.id,
+        followingId: userId
+      })
+      res.redirect('back')
+    } catch (err) { next(err) }
+  },
+  removeFollowing: async (req, res, next) => {
+    try {
+      //  反查追蹤資料
+      const followship = await Followship.findOne({
+        where: {
+          followerId: req.user.id,
+          followingId: req.params.userId
+        }
+      })
+      if (!followship) throw new Error("You haven't followed this user!")
+      await followship.destroy()
+      res.redirect('back')
     } catch (err) { next(err) }
   }
 }
