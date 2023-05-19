@@ -12,9 +12,9 @@ const adminController = {
   },
   postRestaurant: (req, res, next) => {
     const { name, tel, address, openingHours, description } = req.body // 從 req.body 拿出表單裡的資料
-    if (!name) throw new Error('Restaurant name is required!') // todo name 是必填，若發先是空值就會終止程式碼，並在畫面顯示錯誤提示，這是屬於後端的，前端required可以被devtool弄掉
-    const { file } = req // todo 取出檔案，等於const file = req.file
-    localFileHandler(file) // todo 取出的檔案給helper處理複製一份，得到file路徑
+    if (!name) throw new Error('Restaurant name is required!')
+    const { file } = req
+    localFileHandler(file)
       .then(filePath => Restaurant.create({
         name,
         tel,
@@ -30,9 +30,9 @@ const adminController = {
       .catch(err => next(err))
   },
   getRestaurant: (req, res, next) => {
-    Restaurant.findByPk(req.params.id, { raw: true }) // 找到以後整理格式再回傳
+    Restaurant.findByPk(req.params.id, { raw: true })
       .then(restaurant => {
-        if (!restaurant) throw new Error("Restaurant didn't exist!") //  如果找不到，回傳錯誤訊息，後面不執行
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
         res.render('admin/restaurant', { restaurant })
       })
       .catch(err => next(err))
@@ -40,7 +40,7 @@ const adminController = {
   editRestaurant: (req, res, next) => {
     Restaurant.findByPk(req.params.id, { raw: true })
       .then(restaurant => {
-        if (!restaurant) throw new Error("Restaurant didn't exist!") // ? 要先反查
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
         res.render('admin/edit-restaurant', { restaurant })
       })
       .catch(err => next(err))
@@ -49,9 +49,8 @@ const adminController = {
     const { name, tel, address, openingHours, description } = req.body
     if (!name) throw new Error('Restaurant name is required!')
     const { file } = req
-    // ! 這邊helper跟restaurant.findByPk 都是非同步，合併進行
     Promise.all([
-      Restaurant.findByPk(req.params.id), // todo 這邊不用{raw:true} 因為等等要修改，raw:true會給簡單資料無法改（update)
+      Restaurant.findByPk(req.params.id),
       localFileHandler(file)
     ])
       .then(([restaurant, filePath]) => {
@@ -62,7 +61,7 @@ const adminController = {
           address,
           openingHours,
           description,
-          image: filePath || restaurant.image // 如果 filePath 是 Truthy (使用者有上傳新照片) 就用 filePath，是 Falsy (使用者沒有上傳新照片) 就沿用原本資料庫內的值
+          image: filePath || restaurant.image
         })
       })
       .then(() => {
@@ -72,10 +71,10 @@ const adminController = {
       .catch(err => next(err))
   },
   deleteRestaurant: (req, res, next) => {
-    return Restaurant.findByPk(req.params.id) // todo 這邊一樣不用{raw:true}，理由同上
+    return Restaurant.findByPk(req.params.id)
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
-        return restaurant.destroy() // !除了delete的用法
+        return restaurant.destroy()
       })
       .then(() => res.redirect('/admin/restaurants'))
       .catch(err => next(err))
