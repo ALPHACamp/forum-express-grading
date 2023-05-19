@@ -10,7 +10,9 @@ const passport = require("./config/passport");
 const { getUser } = require("./helpers/auth-helpers");
 const handlebarsHelpers = require("./helpers/handlebars-helpers");
 const methodOverride = require("method-override");
+const path = require("path");
 app.use(methodOverride("_method"));
+app.use("/upload", express.static(path.join(__dirname, "upload")));
 app.engine(
   "hbs",
   handlebars.engine({ extname: ".hbs", helpers: handlebarsHelpers })
