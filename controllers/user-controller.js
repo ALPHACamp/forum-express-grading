@@ -38,7 +38,7 @@ const userController = {
   // 使用者登入功能
   signIn: (req, res) => {
     req.flash('success_messages', '成功登入！')
-    // // 判斷是否具備管理者權限：是→後台首頁、否→前台首頁
+    // 判斷是否具備管理者權限：是→後台首頁、否→前台首頁
     // if (req.user.dataValues.isAdmin) {
     //   res.redirect('/admin/restaurants')
     // } else {

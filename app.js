@@ -13,6 +13,7 @@ const hbsHelpers = require('./helpers/handlebars-helpers')
 const { getUser } = require('./helpers/auth-helpers')
 const routes = require('./routes')
 const app = express()
+const sessionSecret = 'ItIsMySecret'
 const port = process.env.PORT || 3000
 
 // handlebars設定
@@ -23,7 +24,7 @@ app.set('view engine', 'hbs')
 app.use(express.urlencoded({ extended: true }))
 
 // session設定
-app.use(session({ secret: process.env.SESSION_SECRET, resave: false, saveUninitialized: false }))
+app.use(session({ secret: sessionSecret, resave: false, saveUninitialized: false }))
 
 // passport設定
 app.use(passport.initialize())
