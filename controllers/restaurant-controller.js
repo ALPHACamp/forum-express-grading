@@ -44,7 +44,6 @@ const restaurantController = {
     try {
       // 找出對應restaurant
       const restaurant = await Restaurant.findByPk(id, {
-        nest: true,
         include: [Category, { model: Comment, include: User }],
         order: [[{ model: Comment }, 'createdAt', 'DESC']]
       })
@@ -63,11 +62,12 @@ const restaurantController = {
     const { id } = req.params
     try {
       // 找出對應restaurant
-      const restaurant = await Restaurant.findByPk(id, { raw: true, nest: true, include: Category })
+      const restaurant = await Restaurant.findByPk(id, { include: [Category, Comment] })
+      const commentCounts = restaurant.Comments.length
       // 沒有就報錯
       if (!restaurant) throw new Error('Restaurant does not exist!')
       // 有就render
-      return res.render('dashboard', { restaurant })
+      return res.render('dashboard', { restaurant: restaurant.toJSON(), commentCounts })
     } catch (err) {
       next(err)
     }
