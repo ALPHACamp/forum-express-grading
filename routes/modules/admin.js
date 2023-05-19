@@ -28,6 +28,12 @@ router.post('/restaurants', upload.single('image'), adminController.postRestaura
 // 管理者變更使用者權限
 router.patch('/users/:id', adminController.patchUser)
 
+// 編輯分類頁
+router.get('/categories/:id', categoryController.getCategories)
+
+// 修改分類
+router.put('/categories/:id', categoryController.putCategory)
+
 // 分類首頁
 router.get('/categories', categoryController.getCategories)
 
