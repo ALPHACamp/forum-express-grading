@@ -1,0 +1,40 @@
+{{!-- <h1>餐廳後台</h1>
+<a href='/admin/restaurants/' class="p-2">
+  <button type="button" class="btn btn-primary">Restaurants</button>
+</a>
+<a href='/admin/users'>
+  <button type="button" class="btn btn-primary">Users</button>
+</a>
+<br />
+<br />
+<table class="table align-middle">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Name</th>
+      <th scope="col">Email</th>
+      <th scope="col">Role</th>
+      <th scope="col">#</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each users}}
+    <tr>
+      <th scope="row">{{this.id}}</th>
+      <td>{{this.name}}</td>
+      <td>{{this.email}}</td>
+      <td>{{#if this.isAdmin}} Admin {{else}} User {{/if}}</td>
+      <td>{{#if this.isAdmin}}
+        <form name="transAdmin-{{this.id}}" action="/admin/users/{{this.id}}?_method=PATCH" method="POST">
+        <a href="javascript:document.forms['transAdmin-{{this.id}}'].submit()">Set as user</a>
+        </form>
+        {{else}}
+        <form name="transAdmin-{{this.id}}" action="/admin/users/{{this.id}}?_method=PATCH" method="POST">
+        <a href="javascript:document.forms['transAdmin-{{this.id}}'].submit()">Set as admin</a>
+        </form>
+        {{/if}}
+      </td>
+    </tr>
+    {{/each}}
+  </tbody>
+</table> --}}
