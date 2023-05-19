@@ -62,12 +62,14 @@ const restaurantController = {
     const { id } = req.params
     try {
       // 找出對應restaurant
-      const restaurant = await Restaurant.findByPk(id, { include: [Category, Comment] })
-      const commentCounts = restaurant.Comments.length
+      let restaurant = await Restaurant.findByPk(id, { include: [Category, Comment] })
+      // 評論數量，如果restaurant資料沒有comment的資料就回傳0
+      const commentCounts = restaurant.Comments?.length || 0
       // 沒有就報錯
       if (!restaurant) throw new Error('Restaurant does not exist!')
       // 有就render
-      return res.render('dashboard', { restaurant: restaurant.toJSON(), commentCounts })
+      restaurant = restaurant.toJSON()
+      return res.render('dashboard', { restaurant, commentCounts })
     } catch (err) {
       next(err)
     }

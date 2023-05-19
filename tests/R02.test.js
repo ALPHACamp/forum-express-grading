@@ -3,39 +3,47 @@ const request = require('supertest')
 const sinon = require('sinon')
 const should = chai.should()
 
-const { createModelMock, createControllerProxy, mockRequest, mockResponse, mockNext } = require('../helpers/unit-test-helper');
+const { createModelMock, createControllerProxy, mockRequest, mockResponse, mockNext } = require('../helpers/unit-test-helper')
 
 describe('# R02: 餐廳資訊整理：Dashboard', function () {
   context('# [Q1: Dashboard - 1 - controller / view / route]', () => {
     before(async () => {
       // 製作假資料
       // 本 context 會用這筆資料進行測試
-      this.UserMock = createModelMock('User', [{
-        id: 1,
-        email: 'root@example.com',
-        name: 'admin',
-        isAdmin: false,
-      }])
-      this.RestaurantMock = createModelMock('Restaurant', [{
-        id: 1,
-        name: '銷魂麵',
-        viewCounts: 3
-      }])
-      this.CategoryMock = createModelMock('Category', [{
-        id: 1,
-        name: '食物'
-      }])
-      this.CommentMock = createModelMock('Comment', [{
-        id: 1,
-        text: "gogogo"
-      }])
+      this.UserMock = createModelMock('User', [
+        {
+          id: 1,
+          email: 'root@example.com',
+          name: 'admin',
+          isAdmin: false
+        }
+      ])
+      this.RestaurantMock = createModelMock('Restaurant', [
+        {
+          id: 1,
+          name: '銷魂麵',
+          viewCounts: 3
+        }
+      ])
+      this.CategoryMock = createModelMock('Category', [
+        {
+          id: 1,
+          name: '食物'
+        }
+      ])
+      this.CommentMock = createModelMock('Comment', [
+        {
+          id: 1,
+          text: 'gogogo'
+        }
+      ])
 
       // 連向模擬的 tables
-      this.restController = createControllerProxy('../controllers/restaurant-controller', { 
-        User: this.UserMock, 
-        Category: this.CategoryMock, 
+      this.restController = createControllerProxy('../controllers/restaurant-controller', {
+        User: this.UserMock,
+        Category: this.CategoryMock,
         Restaurant: this.RestaurantMock,
-        Comment: this.CommentMock,
+        Comment: this.CommentMock
       })
     })
 
@@ -44,7 +52,7 @@ describe('# R02: 餐廳資訊整理：Dashboard', function () {
       const req = mockRequest({ params: { id: 1 } }) // 帶入 params.id = 1，對 GET /restaurants/1/dashboard 發出請求
       const res = mockResponse()
       const next = mockNext
-      
+
       // 測試 restController.getDashBoard 函式
       await this.restController.getDashboard(req, res, next)
 
