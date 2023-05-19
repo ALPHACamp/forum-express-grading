@@ -17,6 +17,8 @@ router.post('/signup', userController.signUp)
 router.get('/signin', userController.signInPage)
 router.post('/signin', passport.authenticate('local', { failureRedirect: '/signin', failureFlash: true }), userController.signIn)
 router.get('/logout', userController.logout)
+// 刪除評論管理員限定
+router.delete('/comments/:id', authenticatedAdmin, commentController.deleteComment)
 // 新增評論
 router.post('/comments', authenticated, commentController.postComment)
 // 瀏覽儀錶板
