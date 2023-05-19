@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router()
 const upload = require('../../middleware/multer')
 const adminController = require('../../controllers/admin-controller')
+const categoryController = require('../../controllers/category-controller')
 
 // 管理者新增頁面
 router.get('/restaurants/create', adminController.createRestaurant)
@@ -29,6 +30,9 @@ router.patch('/users/:id', adminController.patchUser)
 
 // 使用者首頁
 router.get('/users', adminController.getUsers)
+
+// 分類首頁
+router.get('/categories', categoryController.getCategories)
 
 // 自動導向管理者首頁
 router.get('', (req, res) => res.redirect('/admin/restaurants'))
