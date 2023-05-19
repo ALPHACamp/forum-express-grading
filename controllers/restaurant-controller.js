@@ -34,7 +34,16 @@ const restaruantController = {
   },
   getRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
-      include: [Category, { model: Comment, include: User }], // 拿出關聯的 Category model
+      include: [
+        Category,
+        {
+          model: Comment,
+          include: User,
+          // 排序comment從新到舊, 在多層include情況，separate 和 order要搭配一起用
+          separate: true,
+          order: [['createdAt', 'DESC']]
+        }
+      ], // 拿出關聯的 Category model
       nest: true
     })
       .then(restaurant => {
