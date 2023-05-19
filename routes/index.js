@@ -6,6 +6,7 @@ const { generalErrorHandler } = require('../middleware/error-handler')
 const { authenticated, authenticatedAdmin } = require('../middleware/auth')
 const passport = require('../config/passport')
 const admin = require('./modules/admin')
+const commentController = require('../controllers/comment-controller')
 
 // 後台
 router.use('/admin', authenticatedAdmin, admin)
@@ -16,6 +17,8 @@ router.post('/signup', userController.signUp)
 router.get('/signin', userController.signInPage)
 router.post('/signin', passport.authenticate('local', { failureRedirect: '/signin', failureFlash: true }), userController.signIn)
 router.get('/logout', userController.logout)
+// 新增評論
+router.post('/comments', authenticated, commentController.postComment)
 // 瀏覽儀錶板
 router.get('/restaurants/:id/dashboard', authenticated, restController.getDashboard)
 // 瀏覽單一餐廳
