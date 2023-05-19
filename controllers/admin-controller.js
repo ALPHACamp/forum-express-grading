@@ -1,11 +1,15 @@
-const { Restaurant, User } = require('../models')
+const { Restaurant, User, Category } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const adminController = {
   // 管理者登入餐廳首頁
   getRestaurants: async (req, res, next) => {
     try {
-      const restaurants = await Restaurant.findAll({ raw: true, nest: true }) // 資料清洗
+      const restaurants = await Restaurant.findAll({
+        raw: true, // 資料清洗：將sequelize物件轉為JS原生物件
+        nest: true, // 資料清洗：將取出的物件打包便於取用
+        include: [Category] // 取得關聯資料
+      })
       if (restaurants) res.render('admin/restaurants', { restaurants })
     } catch (e) {
       next(e)
@@ -36,7 +40,11 @@ const adminController = {
   getRestaurant: async (req, res, next) => {
     try {
       const id = req.params.id
-      const restaurant = await Restaurant.findByPk(id, { raw: true, nest: true })
+      const restaurant = await Restaurant.findByPk(id, {
+        raw: true, // 只有單筆資料時這段可省略，
+        nest: true, // 渲染時用 { restaurant: restaurant.toJSON() } 效果相同
+        include: [Category]
+      })
       if (!restaurant) throw new Error("Restaurant didn't exist.")
       res.render('admin/restaurant', { restaurant })
     } catch (e) {
