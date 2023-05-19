@@ -1,11 +1,15 @@
-const { Restaurant, User } = require('../models')
+const { Restaurant, User, Category } = require('../models')
 // const { localFileHandler } = require('../helpers/file-helpers') // 將 file-helper 載進來
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const adminController = {
-  getRestaurants: (req, res) => {
+  getRestaurants: (req, res, next) => {
     return Restaurant.findAll({
-      raw: true
+      raw: true,
+      // nest: true 可以讓從資料庫拿回來的東西整齊一點
+      nest: true,
+      // 想要使用 model 的關聯資料時，需要透過 include 把關聯資料拉進來，關聯資料才會被拿到 findAll 的回傳值裡。
+      include: [Category]
     })
       .then(restaurants => {
         return res.render('admin/restaurants', { restaurants: restaurants })
@@ -38,7 +42,9 @@ const adminController = {
   },
   getRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, { // Pk 是 primary key 的簡寫，也就是餐廳的 id，去資料庫用 id 找一筆資料
-      raw: true // 找到以後整理格式再回傳
+      raw: true, // 找到以後整理格式再回傳
+      nest: true,
+      include: [Category]
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!") //  如果找不到，回傳錯誤訊息，後面不執行
