@@ -8,6 +8,8 @@ const userController = require('../controllers/user-controller')
 const commentController = require('../controllers/comment-controller')
 const admin = require('./modules/admin')
 const { authenticated, adminAuthenticated } = require('../middleware/auth')
+// 上傳圖片
+const upload = require('../middleware/multer')
 
 router.use('/admin', adminAuthenticated, admin)
 
@@ -28,8 +30,13 @@ router.get('/logout', userController.logout)
 router.get('/restaurants/:id/dashboard', authenticated, restController.getDashboard)
 router.get('/restaurants/:id', authenticated, restController.getRestaurant)
 router.get('/restaurants', authenticated, restController.getRestaurants)
+
 router.delete('/comments/:id', adminAuthenticated, commentController.deleteComment)
 router.post('/comments', authenticated, commentController.postComment)
+
+router.get('/users/:id/edit', authenticated, userController.editUser)
+router.put('/users/:id', upload.single('image'), authenticated, userController.putUser)
+router.get('/users/:id', authenticated, userController.getUser)
 
 router.use('/', (req, res) => res.redirect('restaurants'))
 

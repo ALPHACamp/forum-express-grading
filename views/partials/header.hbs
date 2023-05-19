@@ -3,15 +3,7 @@
     <div class='container-fluid'>
       <a class='navbar-brand' href='/'>餐廳評論網</a>
       {{#if user}}
-        <button
-          class='navbar-toggler'
-          type='button'
-          data-bs-toggle='collapse'
-          data-bs-target='#navbarCollapse'
-          aria-controls='navbarCollapse'
-          aria-expanded='false'
-          aria-label='Toggle navigation'
-        >
+        <button class='navbar-toggler' type='button' data-bs-toggle='collapse' data-bs-target='#navbarCollapse' aria-controls='navbarCollapse' aria-expanded='false' aria-label='Toggle navigation'>
           <span class='navbar-toggler-icon'></span>
         </button>
         <div class='collapse navbar-collapse' id='navbarCollapse'>
@@ -25,9 +17,10 @@
               <span class='text-white nav-link'>Hi, {{user.email}}</span>
             </li>
             <li class='nav-item'>
-              <a href='/logout'><button
-                  class='btn btn-outline-success my-sm-0 my-2'
-                >Logout</button></a>
+              <a href='/users/{{user.id}}'><button class='btn btn-outline-info my-sm-0 my-2 me-2'>Profile</button></a>
+            </li>
+            <li class='nav-item'>
+              <a href='/logout'><button class='btn btn-outline-success my-sm-0 my-2'>Logout</button></a>
             </li>
           </ul>
         </div>

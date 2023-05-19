@@ -12,6 +12,7 @@ module.exports = {
           password: await bcrypt.hash('12345678', 10),
           is_admin: true,
           name: faker.internet.userName(),
+          image: `https://robohash.org/set_set1/bgset_bg1/${Math.random()}?size=500x500`,
           created_at: new Date(),
           updated_at: new Date()
         },
@@ -20,6 +21,7 @@ module.exports = {
           password: await bcrypt.hash('12345678', 10),
           is_admin: false,
           name: faker.internet.userName(),
+          image: `https://robohash.org/set_set1/bgset_bg1/${Math.random()}?size=500x500`,
           created_at: new Date(),
           updated_at: new Date()
         },
@@ -28,6 +30,7 @@ module.exports = {
           password: await bcrypt.hash('12345678', 10),
           is_admin: false,
           name: faker.internet.userName(),
+          image: `https://robohash.org/set_set1/bgset_bg1/${Math.random()}?size=500x500`,
           created_at: new Date(),
           updated_at: new Date()
         }
