@@ -15,12 +15,17 @@ const adminController = {
         return res.render('admin/restaurants', { restaurants: restaurants })
       })
   },
-  createRestaurant: (req, res) => {
-    return res.render('admin/create-restaurant')
+  createRestaurant: (req, res, next) => {
+    // 把Category table 裡面的所有資料，傳到 create-restaurant.hbs 裡面，這樣才有全部類別可以選
+    return Category.findAll({
+      raw: true
+    })
+      .then(categories => res.render('admin/create-restaurant', { categories }))
+      .catch(err => next(err))
   },
   postRestaurant: (req, res, next) => {
     // 從 req.body 拿出表單裡的資料
-    const { name, tel, address, openingHours, description } = req.body
+    const { name, tel, address, openingHours, description, categoryId } = req.body
     // name 是必填，若發先是空值就會終止程式碼，並在畫面顯示錯誤提示
     if (!name) throw new Error('Restaurant name is required!')
     const { file } = req // 把檔案取出來，也可以寫成 const file = req.file
@@ -32,7 +37,8 @@ const adminController = {
           address,
           openingHours,
           description,
-          image: filePath || null
+          image: filePath || null,
+          categoryId
         }))
       .then(() => {
         req.flash('success_messages', 'restaurant was successfully created') // 在畫面顯示成功提示
@@ -53,21 +59,23 @@ const adminController = {
       .catch(err => next(err))
   },
   editRestaurant: (req, res, next) => {
-    // 先使用 findByPk ，檢查一下有沒有這間餐廳
-    return Restaurant.findByPk(req.params.id, {
-      raw: true
-    })
-      .then(restaurant => {
+    // 編輯情境時，需要同時去「查詢 Restaurants table」 和「查詢 Categories table」，但這兩件事沒有先後順序，不需要互相等待，因此我們就可以用 Promise.all() 裡面的陣列，把這兩個程序都裝進去。
+    return Promise.all([
+      // 先使用 findByPk ，檢查一下有沒有這間餐廳
+      Restaurant.findByPk(req.params.id, { raw: true }),
+      Category.findAll({ raw: true })
+    ])
+      .then(([restaurant, categories]) => {
         // 如果沒有的話，直接拋出錯誤訊息。
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         // 有的話，就前往 admin/edit-restaurant
-        res.render('admin/edit-restaurant', { restaurant })
+        res.render('admin/edit-restaurant', { restaurant, categories })
       })
       .catch(err => next(err))
   },
   putRestaurant: (req, res, next) => {
     // 將 req.body 中傳入的資料用解構賦值的方法存起來
-    const { name, tel, address, openingHours, description } = req.body
+    const { name, tel, address, openingHours, description, categoryId } = req.body
     // 檢查必填欄位 name 有資料
     if (!name) throw new Error('Restaurant name is required!')
     const { file } = req // 把檔案取出來
@@ -86,8 +94,9 @@ const adminController = {
           address,
           openingHours,
           description,
-          image: filePath || restaurant.image
+          image: filePath || restaurant.image,
           // 如果 filePath 是 Truthy (使用者有上傳新照片) 就用 filePath，是 Falsy (使用者沒有上傳新照片) 就沿用原本資料庫內的值
+          categoryId
         })
       })
       .then(() => {
