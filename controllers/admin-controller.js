@@ -16,18 +16,23 @@ const adminController = {
     }
   },
   // 管理者新增頁面
-  createRestaurant: (req, res, next) => {
-    return res.render('admin/create-restaurant')
+  createRestaurant: async (req, res, next) => {
+    try {
+      const categories = await Category.findAll({ raw: true })
+      return res.render('admin/create-restaurant', { categories })
+    } catch (e) {
+      next(e)
+    }
   },
   // 管理者新增功能
   postRestaurant: async (req, res, next) => {
     try {
-      const { name, tel, address, openingHours, description } = req.body
+      const { name, tel, address, openingHours, description, categoryId } = req.body
       if (!name) throw new Error('Restaurant name is required.')
 
       const { file } = req
       const filePath = await imgurFileHandler(file)
-      const newRestaurant = await Restaurant.create({ name, tel, address, openingHours, description, image: filePath || null })
+      const newRestaurant = await Restaurant.create({ name, tel, address, openingHours, description, image: filePath || null, categoryId })
       if (newRestaurant) {
         req.flash('success_messages', 'restaurant was successfully created')
         res.redirect('/admin/restaurants')
@@ -55,9 +60,10 @@ const adminController = {
   editRestaurant: async (req, res, next) => {
     try {
       const id = req.params.id
-      const restaurant = await Restaurant.findByPk(id, { raw: true, nest: true })
+      const categories = await Category.findAll({ raw: true })
+      const restaurant = await Restaurant.findByPk(id, { raw: true })
       if (!restaurant) throw new Error("Restaurant didn't exist.")
-      res.render('admin/edit-restaurant', { restaurant })
+      res.render('admin/edit-restaurant', { restaurant, categories })
     } catch (e) {
       next(e)
     }
@@ -65,14 +71,14 @@ const adminController = {
   // 管理者修改單筆資料
   putRestaurant: async (req, res, next) => {
     try {
-      const { name, tel, address, openingHours, description } = req.body
+      const { name, tel, address, openingHours, description, categoryId } = req.body
       if (!name) throw new Error('Restaurant name is required.')
       const { file } = req
       const id = req.params.id
       const restaurant = await Restaurant.findByPk(id)
       if (!restaurant) throw new Error("Restaurant didn't exist.")
       const filePath = await imgurFileHandler(file)
-      const renewRestaurant = await restaurant.update({ name, tel, address, openingHours, description, image: filePath || restaurant.image })
+      const renewRestaurant = await restaurant.update({ name, tel, address, openingHours, description, image: filePath || restaurant.image, categoryId })
       if (renewRestaurant) {
         req.flash('success_messages', 'restaurant was successfully to update')
         res.redirect('/admin/restaurants')
