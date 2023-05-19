@@ -29,7 +29,7 @@ router.get('/signout', userController.signout)
 router.get('/restaurants', authenticated, restController.getRestaurants)
 
 // 使用者查看單筆資料的 Dashboard
-router.get('/restaurants/:id/dashboard', restController.getRestaurantDashboard)
+router.get('/restaurants/:id/dashboard', restController.getDashboard)
 
 // 使用者查看單筆資料
 router.get('/restaurants/:id', restController.getRestaurant)

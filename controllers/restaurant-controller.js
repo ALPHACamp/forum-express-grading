@@ -17,19 +17,19 @@ const restaurantController = {
     try {
       const restaurant = await Restaurant.findByPk(id, { raw: true, nest: true, include: Category })
       if (!restaurant) throw new Error("Restaurant didn't exist!")
+      await Restaurant.increment('viewCounts', { where: { id } })
       return res.render('restaurant', { restaurant })
     } catch (e) {
       next(e)
     }
   },
   // 使用者查看單筆餐廳Dashboard
-  getRestaurantDashboard: async (req, res, next) => {
+  getDashboard: async (req, res, next) => {
     const id = req.params.id
     try {
       const restaurant = await Restaurant.findByPk(id, { raw: true, nest: true, include: Category })
       if (!restaurant) throw new Error("Restaurant didn't exist!")
-      const renewRestaurant = await Restaurant.increment('viewCounts', { by: 1, where: { id } })
-      if (renewRestaurant) res.render('restaurant-dashboard', { restaurant })
+      return res.render('dashboard', { restaurant })
     } catch (e) {
       next(e)
     }
