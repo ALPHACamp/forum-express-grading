@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs')
 
-const { User } = require('../models')
+const { User, Comment, Restaurant } = require('../models')
 const { imgurFieldHandler } = require('../helpers/file-helpers')
 
 const userController = {
@@ -53,13 +53,15 @@ const userController = {
     const signInUserId = req.user?.id || id
     try {
       // 找對應user
-      const user = await User.findByPk(id, { raw: true })
+      const user = await User.findByPk(id, { include: { model: Comment, include: Restaurant } })
       // 沒有就報錯
       if (!user) throw new Error('User did not exist!')
+      // count評論數
+      const commentCounts = user.Comments?.length || 0
       // 判斷瀏覽的使用者是否為本人
       const selfUser = signInUserId === Number(id) ? 1 : 0
       // 有就render
-      return res.render('users/profile', { user, selfUser })
+      return res.render('users/profile', { user: user.toJSON(), selfUser, commentCounts })
     } catch (err) {
       next(err)
     }
