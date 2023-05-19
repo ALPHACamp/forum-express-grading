@@ -9,7 +9,7 @@ module.exports = {
         address: faker.address.streetAddress(),
         opening_hours: '08:00',
         // todo 這邊image只能用外部api來弄，restaurant, food位置可改別的類別，譬如cat
-        image: `https://loremflickr.com/320/240/cat/?random=${Math.random() * 100}`,
+        image: `https://loremflickr.com/320/240/restaurant,food/?random=${Math.random() * 100}`,
         // ? lorem 亂碼
         description: faker.lorem.text(),
         created_at: new Date(),
