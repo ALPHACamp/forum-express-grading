@@ -28,11 +28,14 @@ router.post('/restaurants', upload.single('image'), adminController.postRestaura
 // 管理者變更使用者權限
 router.patch('/users/:id', adminController.patchUser)
 
-// 使用者首頁
-router.get('/users', adminController.getUsers)
-
 // 分類首頁
 router.get('/categories', categoryController.getCategories)
+
+// 新增分類
+router.post('/categories', categoryController.postCategory)
+
+// 使用者首頁
+router.get('/users', adminController.getUsers)
 
 // 自動導向管理者首頁
 router.get('', (req, res) => res.redirect('/admin/restaurants'))
