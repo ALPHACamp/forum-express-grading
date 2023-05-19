@@ -1,7 +1,7 @@
 <div class="row m-3">
   <div class="col-md-12">
     <h1>{{restaurant.name}}</h1>
-    <p>[{{restaurant.Category.name}}]</p>
+    <p>【{{restaurant.Category.name}}】</p>
   </div>
   <div class="col-md-5">
     <img class="img-responsive center-block mb-5" src="{{restaurant.image}}"
@@ -19,4 +19,5 @@
   </div>
   <hr>
 </div>
+<a class="btn btn-outline-primary ms-3" href="/restaurants/{{restaurant.id}}/dashboard">Dashboard</a>
 <a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
