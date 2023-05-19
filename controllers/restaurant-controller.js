@@ -1,4 +1,4 @@
-const { Restaurant, Category } = require('../models')
+const { Restaurant, Category, Comment, User } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
 
 const restaruantController = {
@@ -34,11 +34,12 @@ const restaruantController = {
   },
   getRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
-      include: Category, // 拿出關聯的 Category model
+      include: [Category, { model: Comment, include: User }], // 拿出關聯的 Category model
       nest: true
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
+        console.log(restaurant.Comments)
         restaurant.increment('viewCounts')
         return res.render('restaurant', {
           restaurant: restaurant.toJSON()
