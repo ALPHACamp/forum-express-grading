@@ -53,7 +53,7 @@ const userController = {
     const signInUserId = req.user?.id || id
     try {
       // 找對應user
-      const user = await User.findByPk(id, { include: { model: Comment, include: Restaurant } })
+      const user = await User.findByPk(id, { include: { model: Comment, include: Restaurant }, order: [[{ model: Comment }, 'createdAt', 'DESC']] })
       // 沒有就報錯
       if (!user) throw new Error('User did not exist!')
       // 判斷瀏覽的使用者是否為本人
@@ -91,6 +91,10 @@ const userController = {
       // 找對應User
       // 使用imgurFieldHandler
       const [user, filePath] = await Promise.all([User.findByPk(id), imgurFieldHandler(file)])
+      // 沒有就報錯
+      if (!user) throw new Error('User did not exist!')
+      // 如果user跟登入的user不同就報錯
+      if (user.id !== req.user.id) throw new Error('Cannot modify other user profile!')
       // user內容更新，image用||判斷有無更改
       await user.update({
         name,
