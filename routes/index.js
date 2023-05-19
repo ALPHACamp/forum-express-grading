@@ -28,8 +28,8 @@ router.get('/restaurants/:id', authenticated, restaurantController.getRestaurant
 router.get('/restaurants', authenticated, restaurantController.getRestaurants)
 
 // comment
+router.delete('/comments/:id', authenticatedAdmin, commentController.deleteComment)
 router.post('/comments', authenticated, commentController.postComment)
-router.delete('/comments/:id ', authenticated, commentController.deleteComment)
 
 // 設定 fallback route, 如果所有routes都不符合時，通過此路由
 router.get('/', (req, res) => { res.redirect('/restaurants') })
