@@ -7,6 +7,18 @@ const adminController = {
     })
       .then(restaurants => res.render('admin/restaurants', { restaurants }))
       .catch(err => next(err))
+  },
+  createRestaurant: (req, res) => {
+    return res.render('admin/create-restaurant')
+  },
+  postRestaurant: (req, res, next) => {
+    if (!req.body.name) throw new Error('Restaurant name is required!')
+    Restaurant.create({ ...req.body })
+      .then(() => {
+        req.flash('success_messages', 'restaurant was successfully created')
+        res.redirect('/admin/restaurants')
+      })
+      .catch(err => next(err))
   }
 }
 module.exports = adminController
