@@ -3,10 +3,12 @@ const { Restaurant, Category } = require('../models')
 const restaurantController = {
   // 使用者瀏覽前台所有餐廳
   getRestaurants: async (req, res, next) => {
+    const categoryId = Number(req.query.categoryId) || ''
     try {
-      const restaurants = await Restaurant.findAll({ raw: true, nest: true, include: Category })
+      const categories = await Category.findAll({ raw: true, nest: true })
+      const restaurants = await Restaurant.findAll({ raw: true, nest: true, include: Category, where: { ...categoryId ? { categoryId } : {} } })
       const data = restaurants.map(rest => ({ ...rest, description: rest.description.substring(0, 50) }))
-      return res.render('restaurants', { restaurants: data })
+      return res.render('restaurants', { categoryId, categories, restaurants: data })
     } catch (e) {
       next(e)
     }
