@@ -101,11 +101,10 @@ const adminController = {
       .catch(err => next(err))
   },
   //* 瀏覽所有帳號
-  getUsers: (req, res) => {
+  getUsers: (req, res, next) => {
     User.findAll({
       raw: true
     })
-
       .then(users => {
         for (user of users) {
           if (user.isAdmin) {
