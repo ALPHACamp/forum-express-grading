@@ -6,7 +6,7 @@
 </span>
 <br />
 <br />
-<table class="table align-middle">
+<table class="table table-primary table-striped align-middle text-center">
   <thead class="thead-dark">
     <tr>
       <th scope="col">#</th>
@@ -23,7 +23,11 @@
         <td>{{this.name}}</td>
         <td>{{this.email}}</td>
         <td>{{this.isAdmin}}</td>
-        <td><a href='/admin/restaurants'>{{this.fixAdmin}}</a></td>
+        <td>          
+          <form action="/admin/users/{{this.id}}?_method=PATCH" method="POST" style="display: inline;">
+            <button type="submit" class="btn btn-link link-primary">{{this.fixAdmin}}</button>
+          </form>
+        </td>
       </tr>
     {{/each}}
   </tbody>
