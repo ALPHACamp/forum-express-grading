@@ -30,13 +30,13 @@
         <td>{{this.role}}</td>
         {{#if this.isAdmin}}
           <td>
-            <form action="/admin/users/{{this.id}}?_METHOD=PATCH" method="post">
+            <form action="/admin/users/{{this.id}}?_method=PATCH" method="post">
               <button button class="btn-link" type="submit">set as user</button>
             </form>
           </td>
         {{else}}
           <td>
-            <form action="/admin/users/{{this.id}}?_METHOD=PATCH" method="post">
+            <form action="/admin/users/{{this.id}}?_method=PATCH" method="post">
               <button class="btn-link " type="submit">set as admin</button>
             </form>
           </td>

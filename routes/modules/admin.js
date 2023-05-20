@@ -30,7 +30,8 @@ router.delete('/restaurants/:id', adminController.deleteRestaurant)
 //* 所有帳號頁面
 router.get('/users', adminController.getUsers)
 //* 修改使用者權限
-router.patch('/user/:id', adminController.patchUser)
+router.patch('/users/:id', adminController.patchUser)
+//*管理者首頁
 router.use('/', (req, res) => res.redirect('/admin/restaurants'))
 
 module.exports = router
