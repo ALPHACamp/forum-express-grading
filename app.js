@@ -6,7 +6,7 @@ const methodOverride = require('method-override')
 const session = require('express-session')
 const passport = require('./config/passport')
 const handlebarsHelpers = require('./helpers/handlebars-helpers')
-const { getCurrentUser } = require('./helpers/auth-helpers')
+const { getUser } = require('./helpers/auth-helpers')
 const routes = require('./routes')
 
 if (process.env.NODE_ENV !== 'production') {
@@ -30,7 +30,7 @@ app.use('/upload', express.static(path.join(__dirname, 'upload')))
 app.use((req, res, next) => {
   res.locals.success_messages = req.flash('success_messages')
   res.locals.error_messages = req.flash('error_messages')
-  res.locals.curUser = getCurrentUser(req)
+  res.locals.curUser = getUser(req)
   next()
 })
 
