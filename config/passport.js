@@ -32,7 +32,7 @@ passport.serializeUser((user, cb) => {
 passport.deserializeUser((id, cb) => {
   User.findByPk(id).then(user => {
     // console.log(user) // 暫時添加
-    // user = user.toJASON()
+    user = user.toJSON()
     return cb(null, user)
   })
 })
