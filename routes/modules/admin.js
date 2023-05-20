@@ -27,6 +27,10 @@ router.put(
 //* 刪除餐廳
 router.delete('/restaurants/:id', adminController.deleteRestaurant)
 
+//* 所有帳號頁面
+router.get('/users', adminController.getUsers)
+//* 修改使用者權限
+router.patch('/user/:id', adminController.patchUser)
 router.use('/', (req, res) => res.redirect('/admin/restaurants'))
 
 module.exports = router

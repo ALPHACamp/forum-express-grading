@@ -1,5 +1,5 @@
 const db = require('../models')
-const { Restaurant } = db
+const { Restaurant, User } = db
 const { localFileHandler } = require('../helpers/file-helpers')
 const adminController = {
   //* 讀取全部
@@ -99,6 +99,30 @@ const adminController = {
       })
       .then(() => res.redirect('/admin/restaurants'))
       .catch(err => next(err))
+  },
+  //* 瀏覽所有帳號
+  getUsers: (req, res) => {
+    User.findAll({
+      raw: true
+    })
+
+      .then(users => {
+        for (user of users) {
+          if (user.isAdmin) {
+            user.role = 'admin'
+          } else {
+            user.role = 'user'
+          }
+        }
+        res.render('admin/users', { users })
+      })
+
+      .catch(err => next(err))
+  },
+
+  //* 更改權限
+  patchUser: (req, res) => {
+    return true
   }
 }
 
