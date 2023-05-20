@@ -28,11 +28,7 @@ const userController = {
   },
   signIn: (req, res) => {
     req.flash('success_messages', '成功登入！')
-    User.findOne({ where: { email: req.body.email } })
-      .then(user => {
-        if (user.isAdmin) return res.redirect('/admin/restaurants')
-        return res.redirect('/restaurants')
-      })
+    res.redirect('/restaurants')
   },
   logout: (req, res) => {
     req.flash('success_messages', '登出成功！')
