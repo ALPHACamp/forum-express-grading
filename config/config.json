@@ -9,7 +9,7 @@
     "production": {
     "use_env_variable": "CLEARDB_DATABASE_URL"
   },
-  "test": {
+  "travis": {
     "username": "travis",
     "database": "forum",
     "host": "127.0.0.1",
