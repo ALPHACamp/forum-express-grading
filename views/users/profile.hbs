@@ -1,0 +1,31 @@
+<div class="row shadow p-4 mb-4">
+  <div class="col-md-4">
+    <img class="img-responsive center-block" src="{{user.image}}"
+      style="width: 400px; margin-bottom: 25px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+  </div>
+  <div class="col-md-8">
+    <p class="h4 mb-2">{{user.name}}</p>
+    <p class="mb-4">{{user.email}}</p>
+    <!-- only owner can edit -->
+    {{#ifCond currentUser.id user.id}}
+    <a class="btn btn-primary" href="/users/{{user.id}}/edit">Edit</a>
+    {{/ifCond}}
+  </div>
+  <div class="card my-4">
+    <div class="card-header">
+      <h5 class="card-title">{{user.Comments.length}} 已評論餐廳</h5>
+    </div>
+    <div class="card-body">
+      <div class="row row-cols-md-12 g-4 ">
+        {{#each user.Comments}}
+        <div class="col-2">
+          <div class="card">
+            <a href="/restaurants/{{this.Restaurant.id}}">
+              <img class="img-fluid" src="{{this.Restaurant.image}}" alt="restaurant image">
+            </a>
+          </div>
+        </div>
+        {{/each}}
+      </div>
+    </div>
+</div>
