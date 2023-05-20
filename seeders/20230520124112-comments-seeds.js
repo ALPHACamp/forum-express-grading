@@ -5,16 +5,17 @@ module.exports = {
   up: async (queryInterface, Sequelize) => {
     const maxTextLength = 80
     const users = await queryInterface.sequelize.query(
-      'SELECT id FROM USERS;',
+      'SELECT id FROM Users',
       { type: queryInterface.sequelize.QueryTypes.SELECT }
     )
     const restaurants = await queryInterface.sequelize.query(
-      'SELECT id FROM RESTAURANTS;',
+      'SELECT id FROM Restaurants',
       { type: queryInterface.sequelize.QueryTypes.SELECT }
     )
+
     await queryInterface.bulkInsert(
       'Comments',
-      Array.from({ length: 20 }, () => ({
+      Array.from({ length: 40 }, () => ({
         text: faker.lorem.text().slice(0, maxTextLength),
         created_at: new Date(),
         updated_at: new Date(),
