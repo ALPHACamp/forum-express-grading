@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs')
 
-const { User, Comment, Restaurant, Favorite } = require('../models')
+const { User, Comment, Restaurant, Favorite, Like } = require('../models')
 const { imgurFieldHandler } = require('../helpers/file-helpers')
 
 const userController = {
@@ -141,6 +141,52 @@ const userController = {
       })
       if (!favorite) throw new Error('Restaurant has not favorited')
       await favorite.destroy()
+      return res.redirect('back')
+    } catch (err) {
+      next(err)
+    }
+  },
+  addLike: async (req, res, next) => {
+    // 取出restaurantId、userId
+    const { restaurantId } = req.params
+    const userId = req.user.id
+    try {
+      // 找對應restaurant，找不到報錯
+      // 找尋有無like，有就說不能再用
+      const [restaurant, like] = await Promise.all([
+        Restaurant.findByPk(restaurantId),
+        Like.findOne({
+          where: { restaurantId, userId }
+        })
+      ])
+      if (!restaurant) throw new Error('Restaurant did not exist!')
+      if (like) throw new Error('Restaurant has liked!')
+      // Create
+      await Like.create({ restaurantId, userId })
+      // redirect
+      return res.redirect('back')
+    } catch (err) {
+      next(err)
+    }
+  },
+  removeLike: async (req, res, next) => {
+    // 取restaurantId, userId
+    const { restaurantId } = req.params
+    const userId = req.user.id
+    try {
+      // 找對應restaurant，找不到報錯
+      // 找尋有無like，有就說不能再用
+      const [restaurant, like] = await Promise.all([
+        Restaurant.findByPk(restaurantId),
+        Like.findOne({
+          where: { restaurantId, userId }
+        })
+      ])
+      if (!restaurant) throw new Error('Restaurant did not exist!')
+      if (!like) throw new Error('Restaurant has not liked!')
+      // destroy
+      await like.destroy()
+      // redirect
       return res.redirect('back')
     } catch (err) {
       next(err)

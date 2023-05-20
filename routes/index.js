@@ -42,6 +42,9 @@ router.get('/users/:id', authenticated, userController.getUser)
 router.post('/favorite/:restaurantId', authenticated, userController.postFavorite)
 router.delete('/favorite/:restaurantId', authenticated, userController.deleteFavorite)
 
+router.post('/like/:restaurantId', authenticated, userController.addLike)
+router.delete('/like/:restaurantId', authenticated, userController.removeLike)
+
 router.use('/', (req, res) => res.redirect('restaurants'))
 
 router.use('/', generalErrorHandler)
