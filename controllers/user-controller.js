@@ -56,9 +56,11 @@ const userController = {
       })
       .then(user => {
         if (!user) throw new Error("User didn't exist.")
-        const commentRestaurant = user.Comments.map(
-          comment => comment.Restaurant.dataValues
-        )
+        const commentRestaurant = user.Comments
+          ? user.Comments.map(
+            comment => comment.Restaurant.dataValues
+          )
+          : 0
         return res.render('users/profile', {
           user: user.toJSON(),
           commentRestaurant
