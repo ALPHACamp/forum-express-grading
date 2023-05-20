@@ -1,4 +1,4 @@
-const { Restaurant, User, Category } = require('../models')
+const { Restaurant } = require('../models')
 // const { localFileHandler } = require('../helpers/file-helpers') // 將 file-helper 載進來
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
