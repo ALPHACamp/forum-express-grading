@@ -6,6 +6,7 @@ module.exports = {
       "Restaurants",
       Array.from({ length: 50 }, () => ({
         name: faker.name.findName(),
+        tel: faker.phone.phoneNumber(),
         address: faker.address.streetAddress(),
         opening_hours: "08:00",
         image: `https://loremflickr.com/320/240/restaurant,food/?random=${
@@ -17,7 +18,6 @@ module.exports = {
       }))
     );
   },
-
   down: async (queryInterface, Sequelize) => {
     await queryInterface.bulkDelete("Restaurants", {});
   },

@@ -18,5 +18,7 @@ router.post(
   upload.single("image"),
   adminController.postRestaurant
 );
+router.patch("/users/:id", adminController.patchUser);
+router.get("/users", adminController.getUsers);
 router.use("/", (req, res) => res.redirect("/admin/restaurants"));
 module.exports = router;

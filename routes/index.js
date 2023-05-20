@@ -19,6 +19,7 @@ router.post(
   }),
   userController.signIn
 );
+router.get("/logout", userController.logout);
 router.get("/", (req, res) => res.redirect("/restaurants"));
 router.use("/", generalErrorHandler);
 module.exports = router;

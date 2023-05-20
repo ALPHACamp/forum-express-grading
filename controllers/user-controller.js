@@ -35,9 +35,13 @@ const userController = {
     res.redirect("/restaurants");
   },
   logout: (req, res) => {
-    req.flash("success_messages", "登出成功！");
-    req.logout();
-    res.redirect("/signin");
+    req.logout(function (err) {
+      if (err) {
+        return next(err);
+      }
+      req.flash("success_messages", "你已經成功登出。");
+      res.redirect("/signin");
+    });
   },
 };
 module.exports = userController;
