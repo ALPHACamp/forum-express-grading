@@ -1,0 +1,23 @@
+<form action="/users/{{user.id}}?_method=PUT" method="POST" enctype="multipart/form-data">
+  <div class="mb-4 text-center">
+    <h1 class="h3 font-weight-normal mb-3">Edit Profile</h1>
+  </div>
+  <!--name-->
+  <div class="form-row mb-3">
+    <label class="form-label" for="name">Name</label>
+    <input class="form-control" type="text" name="name" id="name" placeholder="Enter name" value="{{user.name}}"
+      required>
+  </div>
+  <!--image-->
+  <div class="form-row mb-3">
+    <label class="form-label" for="image">Image</label>
+    <input class="form-control" type="file" class="form-control-file" id="image" name="image">
+  </div>
+
+  <!--back / submit / reset -->
+  <div class="d-flex justify-content-center">
+    <a class="btn btn-outline-secondary me-auto" href="javascript:history.back()">Back</a>
+    <button type="submit" class="btn btn-primary mx-2 px-5">Submit</button>
+    <button type="reset" class="btn btn-danger mx-2">Reset</button>
+  </div>
+</form>
