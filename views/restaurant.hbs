@@ -19,7 +19,8 @@
 {{!-- Comment --}}
 <h3 class="mb-3">所有評論：</h3>
 {{#each restaurant.Comments}}
- {{#if ../user.isAdmin}}
+{{!-- 這裡的user是因為app.js中有設定locals.user --}}
+ {{#if ../loginUser.isAdmin}} 
     <form action="/comments/{{this.id}}?_method=DELETE" method="POST" class="float-end">
       <button type="submit" class="btn btn-danger">Delete</button>
     </form>
