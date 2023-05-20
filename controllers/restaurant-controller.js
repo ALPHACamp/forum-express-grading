@@ -71,6 +71,32 @@ const restaurantController = {
     } catch (err) {
       next(err)
     }
+  },
+  getFeeds: async (req, res, next) => {
+    const DEFAULT_RESTAURANTS_LIMIT = 4
+    const DEFAULT_COMMENTS_LIMIT = 10
+    try {
+      // 找出前10個餐廳及評論
+      const [restaurants, comments] = await Promise.all([
+        Restaurant.findAll({
+          limit: DEFAULT_RESTAURANTS_LIMIT,
+          order: [['createdAt', 'DESC']],
+          include: Category,
+          raw: true,
+          nest: true
+        }),
+        Comment.findAll({
+          limit: DEFAULT_COMMENTS_LIMIT,
+          order: [['createdAt', 'DESC']],
+          include: [Restaurant, User],
+          raw: true,
+          nest: true
+        })
+      ])
+      return res.render('feeds', { restaurants, comments })
+    } catch (err) {
+      next(err)
+    }
   }
 }
 
