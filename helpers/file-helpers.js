@@ -24,7 +24,6 @@ const imgurFileHandler = file => {
       .catch(err => reject(err))
   })
 }
-
 module.exports = {
   localFileHandler,
   imgurFileHandler
