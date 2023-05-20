@@ -14,8 +14,8 @@ const categoryController = {
   postCategory: async (req, res, next) => {
     // 取出新增的名字
     const { name } = req.body
-    if (!name) throw new Error('Category Name is required')
     try {
+      if (!name) throw new Error('Category Name is required')
       // 用create
       await Category.create({ name })
       // redirect
