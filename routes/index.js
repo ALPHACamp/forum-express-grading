@@ -39,6 +39,9 @@ router.get('/users/:id/edit', authenticated, userController.editUser)
 router.put('/users/:id', upload.single('image'), authenticated, userController.putUser)
 router.get('/users/:id', authenticated, userController.getUser)
 
+router.post('/favorite/:restaurantId', authenticated, userController.postFavorite)
+router.delete('/favorite/:restaurantId', authenticated, userController.deleteFavorite)
+
 router.use('/', (req, res) => res.redirect('restaurants'))
 
 router.use('/', generalErrorHandler)
