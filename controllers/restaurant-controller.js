@@ -11,6 +11,9 @@ const restaurantController = {
     const limit = Number(req.query.limit) || DEFAULT_LIMIT
     // 計算offset
     const offset = getOffset(limit, page)
+    // 取得favorite
+    const favoritedRestaurantsId = req.user?.FavoritedRestaurants.map(fr => fr.id)
+
     try {
       // 取出restaurants(含category)、categories
       const [restaurants, categories] = await Promise.all([
@@ -30,7 +33,8 @@ const restaurantController = {
       // 對於description進行處理(substring)
       const data = restaurants.rows.map(restaurant => ({
         ...restaurant,
-        description: restaurant.description.substring(0, DEFAULT_DESCRIPTION_MAX)
+        description: restaurant.description.substring(0, DEFAULT_DESCRIPTION_MAX),
+        isFavorited: favoritedRestaurantsId.includes(restaurant.id)
       }))
       // render
       return res.render('restaurants', { restaurants: data, categories, categoryId, pagination: getPagination(limit, page, restaurants.count) })
@@ -44,15 +48,19 @@ const restaurantController = {
     try {
       // 找出對應restaurant
       const restaurant = await Restaurant.findByPk(id, {
-        include: [Category, { model: Comment, include: User }],
+        include: [Category, { model: Comment, include: User }, { model: User, as: 'FavoritedUsers' }],
         order: [[{ model: Comment }, 'createdAt', 'DESC']]
       })
       // 找不到報錯
       if (!restaurant) throw new Error('Restaurant does not exist!')
       // 將viewCounts+1
       await restaurant.increment('viewCounts')
+      const isFavorited = restaurant.FavoritedUsers.some(fu => fu.id === req.user.id)
       // 找到就render，需加toJSON()
-      return res.render('restaurant', { restaurant: restaurant.toJSON() })
+      return res.render('restaurant', {
+        restaurant: restaurant.toJSON(),
+        isFavorited
+      })
     } catch (err) {
       next(err)
     }
