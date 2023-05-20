@@ -87,10 +87,26 @@ const adminController = { // 修改這裡
       .catch(err => next(err))
   },
   getUsers: (req, res, next) => {
-    User.findAll({
+    return User.findAll({
       raw: true
     })
       .then(users => res.render('admin/users', { users }))
+      .catch(err => next(err))
+  },
+  patchUser: (req, res, next) => {
+    return User.findByPk(req.params.id)
+      .then(user => {
+        if (user.email === 'root@example.com') {
+          req.flash('error_messages', 'Can not change root admin')
+          return res.redirect('back')
+        }
+        if (user.isAdmin) return user.update({ isAdmin: false })
+        return user.update({ isAdmin: true })
+      })
+      .then(() => {
+        req.flash('success_messages', 'User was successfully update')
+        res.redirect('/admin/users')
+      })
       .catch(err => next(err))
   }
 }
