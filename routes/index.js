@@ -3,6 +3,7 @@ const router = express.Router()
 const passport = require('../config/passport')
 const restController = require('../controllers/restaurant-controller')
 const userController = require('../controllers/user-controller')
+const { authenticated } = require('../middleware/auth')
 const { generalErrorHandler } = require('../middleware/error-handler')
 const admin = require('./modules/admin')
 
@@ -20,7 +21,7 @@ router.post(
   userController.signIn
 ) // 注意是 post
 router.get('/logout', userController.logout)
-router.get('/restaurants', restController.getRestaurants)
+router.get('/restaurants', authenticated, restController.getRestaurants) // 修改這行，新增 authenticated 參數
 
 router.use('/', (req, res) => res.redirect('/restaurants'))
 
