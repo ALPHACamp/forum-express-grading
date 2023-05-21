@@ -48,8 +48,9 @@ const userController = {
         ...r,
         description: r.description.substring(0, 50)
       }))
-      return res.render('port', { restaurants: data })
+      return res.render('restaurants', { restaurants: data })
     })
+      .catch(err => console.log(err))
   }
 }
 module.exports = userController
