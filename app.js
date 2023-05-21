@@ -8,6 +8,9 @@ const path = require('path')
 const passport = require('./config/passport')
 const handlebarsHelpers = require('./helpers/handlebars-helpers')
 const routes = require('./routes')
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
 const { getUser } = require('./helpers/auth-helpers')
 
 const app = express()
