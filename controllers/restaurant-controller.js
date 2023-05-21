@@ -2,24 +2,35 @@
 const { Restaurant, Category } = require('../models')
 
 const restaurantController = {
-  getRestaurants: (req, res) => {
-    // Restaurant.findAll 從 Restaurant model 裡取出資料
-    return Restaurant.findAll({
-      // 運用 include 一併拿出關聯的 Category model
-      include: Category,
-      nest: true,
-      raw: true
-    }).then(restaurants => {
-      const data = restaurants.map(r => ({
-        ...r,
-        // 配合卡片的版型，description用 substring 來處理截為 50 個字
-        description: r.description.substring(0, 50)
-      }))
-      // 把這筆資料傳到restaurants樣板, 以 restaurants 變數來取出餐廳資料
-      return res.render('restaurants', {
-        restaurants: data
+  getRestaurants: (req, res, next) => {
+    // 從網址上拿下來的參數是字串，先轉成 Number 再操作
+    const categoryId = Number(req.query.categoryId) || ''
+    // 因需要撈Restaurant及Category裡的資料，故使用Promise.all
+    return Promise.all([
+      Restaurant.findAll({
+        include: Category,
+        // 新增查詢條件
+        where: {
+          // 檢查 categoryId 是否為空值
+          ...categoryId ? { categoryId } : {}
+        },
+        nest: true,
+        raw: true
+      }),
+      Category.findAll({ raw: true })
+    ])
+      .then(([restaurants, categories]) => {
+        const data = restaurants.map(r => ({
+          ...r,
+          description: r.description.substring(0, 50)
+        }))
+        return res.render('restaurants', {
+          restaurants: data,
+          categories,
+          categoryId
+        })
       })
-    })
+      .catch(err => next(err)) // 補上
   },
   getRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, { // Pk 是 primary key 的簡寫，也就是餐廳的 id，去資料庫用 id 找一筆資料
