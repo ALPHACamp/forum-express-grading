@@ -10,11 +10,11 @@ module.exports = (sequelize, DataTypes) => {
     name: DataTypes.STRING,
     email: DataTypes.STRING,
     password: DataTypes.STRING,
-    isAdmin: DataTypes.BOOLEAN //* 新加入，這行跟underscored有連動
+    isAdmin: DataTypes.BOOLEAN
   }, {
     sequelize,
     modelName: 'User',
-    tableName: 'Users', // todo  新增
+    tableName: 'Users',
     underscored: true
   })
   return User
