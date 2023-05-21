@@ -16,7 +16,10 @@
           <p>{{user.Comments.length}}已評論餐廳</p>
           <br>
           <br>
+
+          {{#ifCond loginUser.id user.id}}
           <a class="btn btn-primary" href="/users/{{user.id}}/edit">Edit</a>
+          {{/ifCond}}
         </div>
       </div>
     </div>

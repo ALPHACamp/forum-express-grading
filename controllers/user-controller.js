@@ -57,10 +57,9 @@ const userController = {
       .then(user => {
         if (!user) throw new Error("User didn't exist.")
         const commentRestaurant = user.Comments
-          ? user.Comments.map(
-            comment => comment.Restaurant.dataValues
-          )
+          ? user.Comments.map(comment => comment.Restaurant.dataValues)
           : 0
+        // 可以直接回傳user.toJSON()再透過user.Comments>取出this.Restaurant.id/image
         return res.render('users/profile', {
           user: user.toJSON(),
           commentRestaurant
