@@ -203,12 +203,61 @@ const userController = {
           ...user.toJSON(), // 整理格式
           followerCount: user.Followers.length, // 計算追蹤者人數
           // 判斷目前登入使用者是否已追蹤該 user 物件
-          isFollowed: req.user.id === user.Followers.id
+          isFollowed: user.Followers.some(f => f.id === req.user.id)
         }))
         .sort((a, b) => b.followerCount - a.followerCount)
       // render
-      console.log(result)
+      console.log(result[0])
+      console.log(req.user.id)
       return res.render('top-users', { users: result })
+    } catch (err) {
+      next(err)
+    }
+  },
+  addFollowing: async (req, res, next) => {
+    // 取出userId、loginUserId
+    const followingId = req.params.userId
+    const followerId = req.user.id
+    try {
+      // 找出對應user及有無follow
+      const [user, following] = await Promise.all([
+        User.findByPk(followingId),
+        Followship.findOne({
+          where: { followingId, followerId }
+        })
+      ])
+      // 找不到user就報錯
+      if (!user) throw new Error('User did not exist!')
+      // 有follow資料報錯
+      if (following) throw new Error('Has followed!')
+      // create
+      await Followship.create({ followingId, followerId })
+      // redirect
+      return res.redirect('back')
+    } catch (err) {
+      next(err)
+    }
+  },
+  removeFollowing: async (req, res, next) => {
+    // 取出userId、loginUserId
+    const followingId = req.params.userId
+    const followerId = req.user.id
+    try {
+      // 找出對應user及有無follow
+      const [user, following] = await Promise.all([
+        User.findByPk(followingId),
+        Followship.findOne({
+          where: { followingId, followerId }
+        })
+      ])
+      // 找不到user就報錯
+      if (!user) throw new Error('User did not exist!')
+      // 有follow資料報錯
+      if (!following) throw new Error('Has not followed!')
+      // 刪除
+      await following.destroy()
+      // redirect
+      return res.redirect('back')
     } catch (err) {
       next(err)
     }
