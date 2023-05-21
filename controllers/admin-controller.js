@@ -23,10 +23,11 @@ const adminController = {
         if (user.email === 'root@example.com') {
           req.flash('error_messages', '禁止變更 root 權限')
           res.redirect('back')
+        } else {
+          user.update({ isAdmin: !(user.dataValues.isAdmin) })
+          req.flash('success_messages', '使用者權限變更成功')
+          res.redirect('/admin/users')
         }
-        user.update({ isAdmin: !(user.dataValues.isAdmin) })
-        req.flash('success_messages', '使用者權限變更成功')
-        res.redirect('/admin/users')
       })
       .catch(err => next(err))
   },
