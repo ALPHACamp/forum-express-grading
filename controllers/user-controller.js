@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs') // 載入 bcrypt
-const { User, Comment, Restaurant } = require('../models')
+const { User, Comment, Restaurant, Favorite } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const userController = {
@@ -45,15 +45,13 @@ const userController = {
     res.redirect('/signin')
   },
   getUser: (req, res, next) => {
-    return User.findByPk(req.params.id,
-      {
-        include:
-        {
-          model: Comment,
-          include: Restaurant
-        },
-        nest: true
-      })
+    return User.findByPk(req.params.id, {
+      include: {
+        model: Comment,
+        include: Restaurant
+      },
+      nest: true
+    })
       .then(user => {
         if (!user) throw new Error("User didn't exist.")
         const commentRestaurant = user.Comments
@@ -91,6 +89,33 @@ const userController = {
         req.flash('success_messages', '使用者資料編輯成功')
         return res.redirect(`/users/${req.params.id}`)
       })
+      .catch(e => next(e))
+  },
+  addFavorite: (req, res, next) => {
+    const { restaurantId } = req.params
+    const userId = req.user.id
+    return Promise.all([
+      Restaurant.findByPk(restaurantId),
+      Favorite.findOne({ where: { userId, restaurantId } })])
+      .then(([restaurant, favorite]) => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        if (favorite) throw new Error('You have favorited this restaurant!')
+        return Favorite.create({ restaurantId, userId })
+      })
+      .then(() => res.redirect('back'))
+      .catch(e => next(e))
+  },
+  removeFavorite: (req, res, next) => {
+    const { restaurantId } = req.params
+    const userId = req.user.id
+
+    return Favorite.findOne({ where: { userId, restaurantId } })
+      .then(favorite => {
+        if (!favorite) { throw new Error("You haven't favorited this restaurant!") }
+
+        return favorite.destroy()
+      })
+      .then(() => res.redirect('back'))
       .catch(e => next(e))
   }
 }

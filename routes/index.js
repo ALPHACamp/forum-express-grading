@@ -39,6 +39,10 @@ router.get('/users/:id/edit', authenticated, userController.editUser)
 router.get('/users/:id', authenticated, userController.getUser)
 router.put('/users/:id', upload.single('image'), authenticated, userController.putUser)
 
+// favorite
+router.post('/favorite/:restaurantId', authenticated, userController.addFavorite)
+router.delete('/favorite/:restaurantId', authenticated, userController.removeFavorite)
+
 // 設定 fallback route, 如果所有routes都不符合時，通過此路由
 router.get('/', (req, res) => { res.redirect('/restaurants') })
 
