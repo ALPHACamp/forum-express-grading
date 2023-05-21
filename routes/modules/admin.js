@@ -18,6 +18,8 @@ router.post(
   upload.single('image'),
   adminController.postRestaurant
 )
+router.get('/users', adminController.getUsers)
+router.patch('/users/:id', adminController.patchUser)
 
 router.use('/', (req, res) => res.redirect('/admin/restaurants'))
 router.get('', (req, res) => res.redirect('/admin/restaurants'))
