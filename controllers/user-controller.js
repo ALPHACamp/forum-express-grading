@@ -36,6 +36,9 @@ const userController = {
     req.flash('success_messages', '登出成功！')
     req.logout()
     res.redirect('/signin')
+  },
+  port: (req, res) => {
+    res.render('port')
   }
 }
 module.exports = userController
