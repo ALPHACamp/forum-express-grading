@@ -18,7 +18,7 @@ const restaurantController = {
           // 檢查 categoryId 是否為空值
           ...categoryId ? { categoryId } : {}
         },
-        limit, 
+        limit,
         offset,
         nest: true,
         raw: true
