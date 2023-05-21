@@ -1,8 +1,5 @@
 const path = require('path')
 const express = require('express')
-if (process.env.NODE_ENV !== 'production') {
-  require('dotenv').config()
-}
 const handlebars = require('express-handlebars')
 const flash = require('connect-flash')
 const session = require('express-session')
@@ -10,6 +7,9 @@ const methodOverride = require('method-override')
 const { getUser } = require('./helpers/auth-helpers')
 const handlebarsHelpers = require('./helpers/handlebars-helpers')
 const routes = require('./routes')
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
 const app = express()
 const port = process.env.PORT || 3000
 const SESSION_SECRET = 'secret'
