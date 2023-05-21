@@ -18,9 +18,12 @@ const restaruantController = {
         include: Category
       })
       const categories = await Category.findAll({ raw: true })
+      const favoritedRestaurantsId =
+          req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
       const data = restaurants.rows.map(r => ({
         ...r,
-        description: r.description.substring(0, 50)
+        description: r.description.substring(0, 50),
+        isFavorited: favoritedRestaurantsId.includes(r.id)
       }))
       res.render('restaurants', {
         restaurants: data,
@@ -42,15 +45,18 @@ const restaruantController = {
           // 排序comment從新到舊, 在多層include情況，separate 和 order要搭配一起用
           separate: true,
           order: [['createdAt', 'DESC']]
-        }
+        },
+        { model: User, as: 'FavoritedUsers' }
       ], // 拿出關聯的 Category model
       nest: true
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
+        const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id)
         restaurant.increment('viewCounts')
         return res.render('restaurant', {
-          restaurant: restaurant.toJSON()
+          restaurant: restaurant.toJSON(),
+          isFavorited
         })
       })
       .catch(err => next(err))
