@@ -37,22 +37,6 @@ const userController = {
     req.flash('success_messages', '登出成功！')
     req.logout()
     res.redirect('/signin')
-  },
-  getPort: (req, res) => {
-    // return Restaurant.findAll({
-    //   include: Category,
-    //   nest: true,
-    //   raw: true
-    // }).then(restaurants => {
-    //   const data = restaurants.map(r => ({
-    //     ...r,
-    //     description: r.description.substring(0, 50)
-    //   }))
-    //   console.log(data)
-    //   return res.render('restaurants', { restaurants: data })
-    // })
-    //   .catch(err => console.log(err))
-    res.render('port')
   }
 }
 module.exports = userController
