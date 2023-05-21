@@ -2,6 +2,7 @@
 const {
   Model
 } = require('sequelize')
+
 module.exports = (sequelize, DataTypes) => {
   class Restaurant extends Model {
     /**
@@ -18,7 +19,8 @@ module.exports = (sequelize, DataTypes) => {
     tel: DataTypes.STRING,
     address: DataTypes.STRING,
     openingHours: DataTypes.STRING,
-    description: DataTypes.TEXT
+    description: DataTypes.TEXT,
+    image: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'Restaurant',
