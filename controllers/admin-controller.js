@@ -1,5 +1,5 @@
 
-const { Restaurant } = require('../models')
+const { Restaurant, User } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const adminController = {
@@ -85,6 +85,36 @@ const adminController = {
         return restaurant.destroy()
       })
       .then(() => res.redirect('/admin/restaurants'))
+      .catch(err => next(err))
+  },
+  getUsers: (req, res, next) => {
+    User.findAll({
+      raw: true
+    })
+      .then(users => res.render('admin/users', { users })
+      )
+      .catch(err => next(err))
+  },
+  patchUser: (req, res, next) => {
+    let isAdmin = Number(req.body.isAdmin)
+    // 將isAdmin true fals互換
+    if (isAdmin) {
+      isAdmin = 0
+    } else {
+      isAdmin = 1
+    }
+    User.findByPk(req.params.id)
+      .then(user => {
+        if (!user) throw new Error("User didn't exist!")
+        if (user.email === 'root@example.com') throw new Error('Superuser always be admin')
+        return user.update({
+          isAdmin
+        })
+      })
+      .then(() => {
+        req.flash('success_message', 'users was successfully to update')
+        res.redirect('/admin/users')
+      })
       .catch(err => next(err))
   }
 }
