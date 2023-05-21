@@ -2,6 +2,7 @@ node_modules/
 temp/
 upload/
 heroku/
+notes/
 
 .DS_Store
 .env
