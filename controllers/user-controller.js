@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs') // 載入 bcrypt
 const db = require('../models')
-const { User } = db
+const { Restaurant, User, Comment } = db
 const { imgurFileHandler } = require('../helpers/file-helpers')
 const userController = {
   // signUpPage 負責render註冊的頁面
@@ -41,8 +41,23 @@ const userController = {
     req.logout()
     res.redirect('/signin')
   },
-  getUser: (req, res) => {
-    res.render('users')
+  getUser: (req, res, next) => {
+    return Promise.all([
+      User.findByPk(req.params.id, { raw: true }),
+      Comment.findAll({
+        raw: true,
+        nest: true,
+        where: {
+          userId: req.params.id
+        },
+        include: [Restaurant]
+      })
+    ])
+      .then(([user, comments]) => {
+        if (!user) throw new Error("User didn't exist!")
+        res.render('users/profile', { user, comments })
+      })
+      .catch(err => next(err))
   },
   editUser: (req, res, next) => {
     return User.findByPk(req.params.id, {
@@ -50,7 +65,7 @@ const userController = {
     })
       .then(user => {
         if (!user) throw new Error("User didn't exist!")
-        res.render('edit', { user })
+        res.render('users/edit', { user })
       })
       .catch(err => next(err))
   },
@@ -66,6 +81,7 @@ const userController = {
     ])
       .then(([user, filePath]) => { // 以上兩樣事都做完以後
         if (!user) throw new Error("User didn't exist!")
+        if (user.id !== Number(req.params.id)) throw new Error('The profile only edit by yourself')
         // 如果有成功查到，就透過 user.update 來更新資料。
         return user.update({
           name,
@@ -74,8 +90,8 @@ const userController = {
         })
       })
       .then(() => {
-        req.flash('success_messages', 'user was successfully to update')
-        res.redirect('/users/:id')
+        req.flash('success_messages', '使用者資料編輯成功')
+        res.redirect(`/users/${req.user.id}`)
       })
       .catch(err => next(err))
   }
