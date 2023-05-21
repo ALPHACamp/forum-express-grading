@@ -1,5 +1,6 @@
 <ul class="nav nav-pills">
   <li class="nav-item">
+    {{!-- "全部"裡填入空字串，裡面包的this.id無法取得categoryId的資料所以要加../ --}}
     <a class="nav-link {{#ifCond '' categoryId}}active{{/ifCond}}" href="?categoryId=">全部</a>
   </li>
   {{#each categories}}
