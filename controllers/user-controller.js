@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs')
 
-const { User, Comment, Restaurant, Favorite, Like } = require('../models')
+const { User, Comment, Restaurant, Favorite, Like, Followship } = require('../models')
 const { imgurFieldHandler } = require('../helpers/file-helpers')
 
 const userController = {
@@ -188,6 +188,27 @@ const userController = {
       await like.destroy()
       // redirect
       return res.redirect('back')
+    } catch (err) {
+      next(err)
+    }
+  },
+  getTopUsers: async (req, res, next) => {
+    try {
+      // 取得User資料包含followers
+      const users = await User.findAll({ include: { model: User, as: 'Followers' } })
+      // 陣列加入follower數量及是否被當前user followed
+      // 依follower數量排序
+      const result = users
+        .map(user => ({
+          ...user.toJSON(), // 整理格式
+          followerCount: user.Followers.length, // 計算追蹤者人數
+          // 判斷目前登入使用者是否已追蹤該 user 物件
+          isFollowed: req.user.id === user.Followers.id
+        }))
+        .sort((a, b) => b.followerCount - a.followerCount)
+      // render
+      console.log(result)
+      return res.render('top-users', { users: result })
     } catch (err) {
       next(err)
     }
