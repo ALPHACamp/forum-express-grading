@@ -1,4 +1,4 @@
-const { Restaurant, User } = require('../models')
+const { Restaurant, User, Category } = require('../models')
 const { imgurFileHandler } = require('../helper/file-helpers')
 const handlebars = require('handlebars')
 handlebars.registerHelper('addOne', function (value) {
@@ -6,8 +6,8 @@ handlebars.registerHelper('addOne', function (value) {
 })
 
 const adminController = {
-  getRestaurants: (req, res) => {
-    return Restaurant.findAll({ raw: true })
+  getRestaurants: (req, res, next) => {
+    return Restaurant.findAll({ raw: true, nest: true, include: [Category] })
       .then(restaurants => {
         return res.render('admin/restaurants', { restaurants })
       })
@@ -40,7 +40,7 @@ const adminController = {
   },
 
   getRestaurant: (req, res, next) => {
-    Restaurant.findByPk(req.params.id, { raw: true })
+    Restaurant.findByPk(req.params.id, { raw: true, nest: true, include: [Category] })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         return res.render('admin/restaurant', { restaurant })
