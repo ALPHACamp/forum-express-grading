@@ -21,7 +21,7 @@ const restaurantController = {
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
-        restaurant.increment('view_counts')
+        restaurant.increment('viewCounts')
         return res.render('restaurant', { restaurant: restaurant.toJSON() })
       })
       .catch(err => next(err))
