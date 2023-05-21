@@ -10,9 +10,7 @@ const { generalErrorHandler } = require('../middleware/error-handler')
 
 router.use('/admin', authenticatedAdmin, admin)
 
-router.get('/about', function (req, res) {
-  res.send('About this wiki')
-})
+router.get('/port', userController.getPort)
 
 router.get('/signup', userController.signUpPage)
 router.post('/signup', userController.signUp)
@@ -28,7 +26,5 @@ router.get('/restaurants', authenticated, restController.getRestaurants)
 
 router.use('/', (req, res) => res.redirect('/restaurants'))
 router.use('/', generalErrorHandler)
-
-// router.get('/port')
 
 module.exports = router

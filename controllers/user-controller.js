@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs')
 const db = require('../models')
 const { User } = db
+const { Restaurant, Category } = require('../models')
 const userController = {
   signUpPage: (req, res) => {
     res.render('signup')
@@ -37,8 +38,18 @@ const userController = {
     req.logout()
     res.redirect('/signin')
   },
-  port: (req, res) => {
-    res.render('port')
+  getPort: (req, res) => {
+    return Restaurant.findAll({
+      include: Category,
+      nest: true,
+      raw: true
+    }).then(restaurants => {
+      const data = restaurants.map(r => ({
+        ...r,
+        description: r.description.substring(0, 50)
+      }))
+      return res.render('port', { restaurants: data })
+    })
   }
 }
 module.exports = userController
