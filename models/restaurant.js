@@ -4,13 +4,8 @@ const {
 } = require('sequelize')
 module.exports = (sequelize, DataTypes) => {
   class Restaurant extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
     static associate (models) {
-      Restaurant.belongsTo(models.Category, { foreginKey: 'CategoryId' })
+      Restaurant.belongsTo(models.Category, { foreginKey: 'categoryId' })
     }
   };
   Restaurant.init({

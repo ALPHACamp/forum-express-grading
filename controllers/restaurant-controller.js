@@ -3,7 +3,8 @@ const restaurantController = {
   getRestaurants: (req, res) => {
     return Restaurant.findAll({
       include: Category,
-      nest: true
+      nest: true,
+      raw: true
     }).then(restaurants => {
       const data = restaurants.map(r => ({
         ...r,
