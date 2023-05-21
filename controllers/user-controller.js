@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs')
 const db = require('../models')
 const { User } = db
-const { Restaurant, Category } = require('../models')
+// const { Restaurant, Category } = require('../models')
 const userController = {
   signUpPage: (req, res) => {
     res.render('signup')
