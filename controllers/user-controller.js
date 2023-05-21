@@ -2,6 +2,7 @@ const bcrypt = require('bcryptjs') // 載入 bcrypt
 const db = require('../models')
 const { User } = db
 const userController = {
+  // 註冊
   signUpPage: (req, res) => {
     res.render('signup')
   },
@@ -25,6 +26,20 @@ const userController = {
         res.redirect('/signin')
       })
       .catch(err => next(err)) // 接住前面拋出的錯誤，next呼叫專門做錯誤處理的 middleware
+  },
+  // 登入
+  signInPage: (req, res) => {
+    res.render('signin')
+  },
+  signIn: (req, res) => {
+    req.flash('success_messages', '成功登入！')
+    res.redirect('/restaurants')
+  },
+  // 登出
+  logout: (req, res) => {
+    req.flash('success_messages', '登出成功！')
+    req.logout() // 把 user id 對應的 session 清除掉
+    res.redirect('/signin')
   }
 }
 module.exports = userController
