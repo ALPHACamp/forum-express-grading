@@ -10,7 +10,7 @@ const { generalErrorHandler } = require('../middleware/error-handler')
 
 router.use('/admin', authenticatedAdmin, admin)
 
-router.get('/port', userController.getPort)
+// router.get('/port', userController.getPort)
 
 router.get('/signup', userController.signUpPage)
 router.post('/signup', userController.signUp)
