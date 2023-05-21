@@ -2,6 +2,7 @@ const express = require('express')
 const upload = require('../../middleware/multer')
 const router = express.Router()
 const adminController = require('../../controllers/admin-controller')
+const categoryController = require('../../controllers/category-controller')
 
 // create
 router.get('/restaurants/create', adminController.createRestaurant)
@@ -19,6 +20,9 @@ router.put('/restaurants/:id', upload.single('image'), adminController.putRestau
 
 // delete
 router.delete('/restaurants/:id', adminController.deleteRestaurant)
+
+// category
+router.get('/categories', categoryController.getCategories)
 
 // user admin setting
 router.get('/users', adminController.getUsers)
