@@ -120,6 +120,13 @@ const adminController = { // 修改這裡
         res.redirect('/admin/users')
       })
       .catch(err => next(err))
+  },
+  getCategories: (req, res, next) => {
+    Category.findAll({
+      raw: true
+    })
+      .then(categories => res.render('admin/categories', { categories }))
+      .catch(err => next(err))
   }
 }
 
