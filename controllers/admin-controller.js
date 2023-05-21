@@ -108,16 +108,16 @@ const adminController = {
     return User.findByPk(req.params.id)
       .then(user => {
         if (!user) throw new Error("User didn't exist!") // 沒有資料就拋錯
-        if (user.dataValues.email === 'root@example.com') { // 若email = root@example.com則提示錯誤
+        if (user.email === 'root@example.com') { // 若email = root@example.com則提示錯誤
           req.flash('error_messages', '禁止變更 root 權限')
           return res.redirect('back')
         }
         user.update({ // 只要email不是root@example.com, 就admin和user身分對換
-          isAdmin: !(user.dataValues.isAdmin)
+          isAdmin: !user.isAdmin
         })
-        return req.flash('success_messages', '使用者權限變更成功')
+        req.flash('success_messages', '使用者權限變更成功')
+        return res.redirect('/admin/users')
       })
-      .then(() => res.redirect('/admin/users'))
       .catch(err => next(err))
   }
 }
