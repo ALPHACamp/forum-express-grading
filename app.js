@@ -19,11 +19,11 @@ const port = process.env.PORT || 3000
 // const db = require('./models') 檢查資料庫連線用, npm run dev 沒問題代表連線成功
 
 // view template
-app.engine('hbs', exphbs({ defaultLayout: 'main', extname: '.hbs' }))
+app.engine('hbs', exphbs({ defaultLayout: 'main', extname: '.hbs', helpers: handlebarsHelpers }))
 app.set('view engine', 'hbs')
 
 // body-parsers
-app.use(express.urlencoded({ extended: true, helpers: handlebarsHelpers }))
+app.use(express.urlencoded({ extended: true }))
 // session
 app.use(session({
   secret: SESSION_SECRET,
