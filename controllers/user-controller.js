@@ -48,6 +48,7 @@ const userController = {
         ...r,
         description: r.description.substring(0, 50)
       }))
+      console.log(data)
       return res.render('restaurants', { restaurants: data })
     })
       .catch(err => console.log(err))
