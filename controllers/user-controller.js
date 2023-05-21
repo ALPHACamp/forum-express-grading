@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs') // 載入 bcrypt
 const db = require('../models')
 const { User } = db
+const { imgurFileHandler } = require('../helpers/file-helpers')
 const userController = {
   // signUpPage 負責render註冊的頁面
   signUpPage: (req, res) => {
@@ -50,6 +51,31 @@ const userController = {
       .then(user => {
         if (!user) throw new Error("User didn't exist!")
         res.render('edit', { user })
+      })
+      .catch(err => next(err))
+  },
+  putUser: (req, res, next) => {
+    const { name } = req.body
+    if (!name) throw new Error('User name is required!')
+    const { file } = req
+    return Promise.all([
+      // 透過findByPk(req.params.id) 把對應的User資料查出來
+      User.findByPk(req.params.id),
+      // 編輯情境裡不會加 { raw: true }
+      imgurFileHandler(file) // 把檔案傳到 file-helper 處理
+    ])
+      .then(([user, filePath]) => { // 以上兩樣事都做完以後
+        if (!user) throw new Error("User didn't exist!")
+        // 如果有成功查到，就透過 user.update 來更新資料。
+        return user.update({
+          name,
+          image: filePath || user.image
+          // 如果 filePath 是 Truthy (使用者有上傳新照片) 就用 filePath，是 Falsy (使用者沒有上傳新照片) 就沿用原本資料庫內的值
+        })
+      })
+      .then(() => {
+        req.flash('success_messages', 'user was successfully to update')
+        res.redirect('/users/:id')
       })
       .catch(err => next(err))
   }
