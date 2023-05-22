@@ -10,6 +10,7 @@ router.get('/restaurants/:id', adminController.getRestaurant)
 router.delete('/restaurants/:id', adminController.deleteRestaurant)
 router.patch('/users/:id', adminController.patchUser)
 router.get('/users', adminController.getUsers)
+router.get('/categories', adminController.getCategories)
 router.get('/restaurants', adminController.getRestaurants)
 router.post('/restaurants', upload.single('image'), adminController.postRestaurant) // 新增餐廳
 router.use('/', (req, res) => res.redirect('/admin/restaurants'))
