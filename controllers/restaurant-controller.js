@@ -36,7 +36,7 @@ const restaurantController = {
     try {
       const restaurant = await Restaurant.findByPk(id, { raw: true, nest: true, include: Category })
       if (!restaurant) throw new Error("Restaurant didn't exist!")
-      await Restaurant.increment('viewCounts', { where: { id } })
+      await Restaurant.increment('view_counts', { where: { id } })
       return res.render('restaurant', { restaurant })
     } catch (e) {
       next(e)
