@@ -26,7 +26,7 @@
 </div>
 {{#if isFavorited }}
 <form action="/favorite/{{restaurant.id}}?_method=DELETE" method="POST" style="display: contents;">
-  <button type="submit" class="btn btn-danger" onclick="return confirm(`確定要移除 {{ this.name }} 嗎？`)">移除最愛</button>
+  <button type="submit" class="btn btn-danger" onclick="return confirm(`確定要移除 {{ restaurant.name }} 嗎？`)">移除最愛</button>
 </form>
 {{else}}
 <form action="/favorite/{{restaurant.id}}" method="POST" style="display: contents;">
@@ -36,7 +36,7 @@
 
 {{#if isLiked }}
 <form action="/like/{{restaurant.id}}?_method=DELETE" method="POST" style="display: contents;">
-  <button type="submit" class="btn btn-danger" onclick="return confirm(`確定要取消 {{ this.name }}的Like 嗎？`)">UnLike</button>
+  <button type="submit" class="btn btn-danger" onclick="return confirm(`確定要取消 {{ restaurant.name }}的Like 嗎？`)">UnLike</button>
 </form>
 {{else}}
 <form action="/like/{{restaurant.id}}" method="POST" style="display: contents;">
