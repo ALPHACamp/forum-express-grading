@@ -13,6 +13,8 @@ router.get('/restaurants', adminController.getRestaurants)
 router.post('/restaurants', upload.single('image'), adminController.postRestaurant)
 // admin users
 router.get('/users', adminController.getUsers)
+router.get('/categories/:id', categoryController.getCategories)
+router.put('/categories/:id', categoryController.putCategory)
 router.patch('/users/:id', adminController.patchUser)
 router.get('/categories', categoryController.getCategories)
 router.post('/categories', categoryController.postCategory)
