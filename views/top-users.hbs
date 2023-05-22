@@ -6,9 +6,9 @@
     <div class="col-3">
       <a href="/users/{{this.id}}">
         {{#if this.image}}
-          <img src="{{this.image}}" width="140px" height="140px" style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;" />
+          <img src="{{this.image}}" width="140px" height="140px" style="transition: opacity 0.5s; opacity:0; object-fit: cover;" onload="this.style.opacity=1;" />
         {{else}}
-          <img src="https://fakeimg.pl/140/" width="140px" height="140px" />
+          <img src="https://fakeimg.pl/140/" width="140px" height="140px" style="object-fit: cover;"/>
         {{/if}}
       </a>
       <h2>{{this.name}}</h2>
