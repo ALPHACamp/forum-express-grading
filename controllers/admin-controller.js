@@ -31,6 +31,48 @@ const adminController = {
         res.redirect('/admin/restaurants') // 新增完成後導回後台首頁
       })
       .catch(err => next(err))
+  },
+
+  // 餐廳詳情頁面
+  getRestaurant: (req, res, next) => {
+    Restaurant.findByPk(req.params.id, { // MySQL 語法 findByPK 找資料id(主鍵)，req.params.id 抓網址:id
+      raw: true // 找到以後整理格式再回傳
+    })
+      .then(restaurant => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!") //  如果找不到，回傳錯誤訊息，後面不執行
+        res.render('admin/restaurant', { restaurant })
+      })
+      .catch(err => next(err))
+  },
+  // 修改餐廳詳情頁面
+  editRestaurant: (req, res, next) => {
+    Restaurant.findByPk(req.params.id, { raw: true })
+      .then(restaurant => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        res.render('admin/edit-restaurant', { restaurant }) // hbs內的 restaurant 帶入 restaurant
+      })
+      .catch(err => next(err))
+  },
+  // 修改餐廳請求
+  putRestaurant: (req, res, next) => {
+    const { name, tel, address, openingHours, description } = req.body
+    if (!name) throw new Error('Restaurant name is required!')
+    Restaurant.findByPk(req.params.id) // 不用 raw 因為會需要用到 restaurant.update，如果加上參數就會把 sequelize 提供的這個方法過濾掉，會無法使用
+      .then(restaurant => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        return restaurant.update({ // sequelize 編輯資料語法
+          name,
+          tel,
+          address,
+          openingHours,
+          description
+        })
+      })
+      .then(() => {
+        req.flash('success_messages', 'restaurant was successfully to update')
+        res.redirect('/admin/restaurants')
+      })
+      .catch(err => next(err))
   }
 }
 module.exports = adminController
