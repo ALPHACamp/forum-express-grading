@@ -83,7 +83,6 @@ const adminController = {
   getUsers: async (req, res, next) => {
     try {
       const users = await User.findAll({ raw: true, nest: true })
-      console.log(users)
       users.forEach(user => {
         if (user.isAdmin === 1) {
           user.role = 'admin'
