@@ -116,14 +116,17 @@ const restaurantController = {
     const userId = req.user?.id || null
     try {
       // 找收藏數最多的10家餐廳
+      // const restaurants = await Restaurant.findAll({
+      //   attributes: {
+      //     // 使用sub query
+      //     include: [[Sequelize.literal('(SELECT COUNT(*) FROM favorites WHERE favorites.restaurant_id = Restaurant.id)'), 'favoritedCount']]
+      //   },
+      //   include: [{ model: User, as: 'FavoritedUsers' }],
+      //   limit: 10,
+      //   order: [[Sequelize.literal('favoritedCount'), 'DESC']]
+      // })
       const restaurants = await Restaurant.findAll({
-        attributes: {
-          // 使用sub query
-          include: [[Sequelize.literal('(SELECT COUNT(*) FROM favorites WHERE favorites.restaurant_id = Restaurant.id)'), 'favoritedCount']]
-        },
-        include: [{ model: User, as: 'FavoritedUsers' }],
-        limit: 10,
-        order: [[Sequelize.literal('favoritedCount'), 'DESC']]
+        include: [{ model: User, as: 'FavoritedUsers' }]
       })
       const result = restaurants
         .map(r => ({
@@ -134,6 +137,8 @@ const restaurantController = {
         }))
         // 因為測試檔不會自動排序
         .sort((a, b) => b.favoritedCount - a.favoritedCount)
+        // 排完後取前10個
+        .slice(0, 10)
       // render
       return res.render('top-restaurants', { restaurants: result })
     } catch (err) {
