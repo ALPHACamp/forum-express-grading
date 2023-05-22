@@ -145,7 +145,7 @@ const userController = {
         restaurantId
       }
     })
-      .then((like) => {
+      .then(like => {
         if (!like) throw new Error('You did not liked this restaurant')
         like.destroy()
       })
