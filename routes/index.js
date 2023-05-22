@@ -20,6 +20,7 @@ router.post(
   userController.signIn
 ) // 注意是 post
 router.get('/logout', userController.logout)
+router.get('/restaurants/:id', authenticated, restController.getRestaurant)
 router.get('/restaurants', authenticated, restController.getRestaurants) // 修改這行，新增 authenticated 參數
 
 router.use('/', (req, res) => res.redirect('/restaurants'))
