@@ -15,7 +15,7 @@ const localFileHandler = file => { // file 是 multer 處理完的檔案
   })
 }
 
-const imgurFileHandler = file => {
+const FileUpload = file => {
   return new Promise((resolve, reject) => {
     if (!file) return resolve(null)
     return imgur.uploadFile(file.path)
@@ -27,5 +27,5 @@ const imgurFileHandler = file => {
 }
 module.exports = {
   localFileHandler,
-  imgurFileHandler
+  FileUpload
 }

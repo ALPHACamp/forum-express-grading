@@ -9,6 +9,10 @@ router.put('/restaurants/:id', upload.single('image'), adminController.putRestau
 router.delete('/restaurants/:id', adminController.deleteRestaurant)
 router.get('/restaurants', adminController.getRestaurants)
 router.post('/restaurants', upload.single('image'), adminController.postRestaurant)
+// 處裡更新使用者權限的request
+router.patch('/users/:id', adminController.patchUser)
+// 處理獲取使用者名單的request
+router.get('/users', adminController.getUsers)
 
 router.get('/', (req, res) => res.redirect('/admin/restaurants'))
 module.exports = router
