@@ -7,6 +7,7 @@ const { authenticated, authenticatedAdmin } = require('../middleware/auth')
 const passport = require('../config/passport')
 const admin = require('./modules/admin')
 const commentController = require('../controllers/comment-controller')
+const upload = require('../middleware/multer')
 
 // 後台
 router.use('/admin', authenticatedAdmin, admin)
@@ -21,6 +22,12 @@ router.get('/logout', userController.logout)
 router.delete('/comments/:id', authenticatedAdmin, commentController.deleteComment)
 // 新增評論
 router.post('/comments', authenticated, commentController.postComment)
+// 瀏覽使用者編輯頁面
+router.get('/users/:id/edit', authenticated, userController.editUser)
+// 編輯使用者個人頁面功能
+router.put('/users/:id', authenticated, upload.single('image'), userController.putUser)
+// 瀏覽使用者個人頁面
+router.get('/users/:id', authenticated, userController.getUser)
 // 瀏覽儀錶板
 router.get('/restaurants/:id/dashboard', authenticated, restController.getDashboard)
 // 瀏覽單一餐廳
