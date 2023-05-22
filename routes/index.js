@@ -31,6 +31,9 @@ router.get('/', (req, res) => res.redirect('/restaurants'))
 // restaurant detail
 router.get('/restaurants/:id', authenticated, restController.getRestaurant)
 
+// restaurant dashboard
+router.get('/restaurants/:id/dashboard', authenticated, restController.getDashboard)
+
 router.use('/', generalErrorHandler)
 
 module.exports = router

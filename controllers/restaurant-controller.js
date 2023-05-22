@@ -29,6 +29,10 @@ const restaurantController = {
         return res.render('restaurant', { restaurant })
       })
       .catch(err => next(err))
+  },
+
+  getDashboard: (req, res, next) => {
+
   }
 }
 
