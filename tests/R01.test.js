@@ -4,6 +4,7 @@ const sinon = require('sinon')
 const should = chai.should()
 
 const app = require('../app')
+
 const { createModelMock, createControllerProxy, mockRequest, mockResponse, mockNext } = require('../helpers/unit-test-helper')
 
 describe('# R01', () => {
@@ -61,7 +62,6 @@ describe('# R01', () => {
       // 修改 adminController 中的資料庫連線設定，由連向真實的資料庫 -> 改為連向模擬的 User table
       this.adminController = createControllerProxy('../controllers/admin-controller', { User: this.UserMock })
     })
-
     // 開始測試
     context('# [顯示使用者清單]', () => {
       it(' GET /admin/users ', async () => {
@@ -102,7 +102,6 @@ describe('# R01', () => {
         const req = mockRequest({ params: { id: 1 } }) // 帶入 params.id = 1，對 PATCH /admin/users/1 發出請求
         const res = mockResponse()
         const next = mockNext
-
         // 測試作業指定的 adminController.patchUser 函式
         await this.adminController.patchUser(req, res, next)
 
@@ -139,7 +138,6 @@ describe('# R01', () => {
 
         // 測試作業指定的 adminController.patchUser 函式
         await this.adminController.patchUser(req, res, next)
-
         // patchUser 正確執行的話，應呼叫 req.flash
         // req.flash 的參數應與下列字串一致
         req.flash.calledWith('success_messages', '使用者權限變更成功').should.be.true
@@ -177,7 +175,6 @@ describe('# R01', () => {
 
         // 測試作業指定的 adminController.patchUser 函式
         await this.adminController.patchUser(req, res, next)
-
         // patchUser 正確執行的話，應呼叫 req.flash
         // req.flash 的參數應與下列字串一致
         req.flash.calledWith('success_messages', '使用者權限變更成功').should.be.true
