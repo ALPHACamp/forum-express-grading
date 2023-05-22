@@ -1,9 +1,13 @@
-const { Restaurant, User } = require('../models')
+const { Restaurant, User, Category } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 const adminController = {
   getRestaurants: (req, res, next) => {
     Restaurant.findAll({
-      raw: true
+      // raw:從原生物件轉為一般的data，但也捨去了後續使用update的機會
+      raw: true,
+      // nest:將關連到的資料作處理，可以直接透過restaurant.Category.name之類的方式拿到值
+      nest: true,
+      include: [Category]
     })
       .then(restaurants => res.render('admin/restaurants', { restaurants }))
       .catch(err => next(err))
@@ -32,10 +36,15 @@ const adminController = {
   },
   getRestaurant: (req, res, next) => {
     Restaurant.findByPk(req.params.id, {
-      raw: true
+      // 在只有單筆資料的情境下，有另一種整理的方法是用 .toJSON 方法
+      // 把下面raw, nest註解掉
+      raw: true,
+      nest: true,
+      include: [Category]
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
+        // 在回傳restaurant後寫入 :restaurant.toJSON()
         res.render('admin/restaurant', { restaurant })
       })
       .catch(err => next(err))
