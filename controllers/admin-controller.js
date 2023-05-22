@@ -1,10 +1,14 @@
-const { Restaurant, User } = require('../models') // 新增這裡 採用解構賦值
+const { Restaurant, User, Category } = require('../models') // 新增這裡 採用解構賦值
 const { imgurFileHandler } = require('../helpers/file-helper')
 
 const adminController = { // 修改這裡
 
   getRestaurants: (req, res, next) => {
-    Restaurant.findAll({ raw: true })
+    Restaurant.findAll({
+      raw: true,
+      nest: true,
+      include: [Category]
+    })
       .then(restaurants => res.render('admin/restaurants', { restaurants }))
       .catch(err => next(err))
   },
@@ -34,7 +38,11 @@ const adminController = { // 修改這裡
   },
   getRestaurant: (req, res, next) => {
     const id = req.params.id
-    Restaurant.findByPk(id, { raw: true })
+    Restaurant.findByPk(id, {
+      raw: true,
+      nest: true,
+      include: [Category]
+    })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist")
         res.render('admin/restaurant', { restaurant })
