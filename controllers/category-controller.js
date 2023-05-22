@@ -16,7 +16,6 @@ const categoryController = {
 
   postCategory: (req, res, next) => {
     const { name } = req.body
-
     if (!name) throw new Error('Category name is required')
 
     return Category.create({ name })
@@ -32,6 +31,17 @@ const categoryController = {
     return Category.findByPk(id)
       .then(category => {
         return category.update({ name })
+      })
+      .then(() => res.redirect('/admin/categories'))
+      .catch(err => next(err))
+  },
+
+  deleteCategory: (req, res, next) => {
+    const id = req.params.id
+    return Category.findByPk(id)
+      .then(category => {
+        if (!category) throw new Error('Category is not exist')
+        return category.destroy()
       })
       .then(() => res.redirect('/admin/categories'))
       .catch(err => next(err))

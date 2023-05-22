@@ -31,6 +31,9 @@ router.post('/categories', categoryController.postCategory)
 router.get('/categories/:id', categoryController.getCategories)
 router.put('/categories/:id', categoryController.putCategory)
 
+// category delet
+router.delete('/categories/:id', categoryController.deleteCategory)
+
 // user admin setting
 router.get('/users', adminController.getUsers)
 router.patch('/users/:id', adminController.patchUser)
