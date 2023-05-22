@@ -26,9 +26,13 @@ const restaurantController = {
       Category.findAll({ raw: true })
     ])
       .then(([restaurants, categories]) => {
+        // 目的是要取出使用者的收藏清單，然後 map 成 id 清單
+        const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
         const data = restaurants.rows.map(r => ({
           ...r,
-          description: r.description.substring(0, 50)
+          description: r.description.substring(0, 50),
+          //  includes 方法進行比對，最後會回傳布林值
+          isFavorited: favoritedRestaurantsId.includes(r.id)
         }))
         return res.render('restaurants', {
           restaurants: data,
@@ -43,7 +47,8 @@ const restaurantController = {
     return Restaurant.findByPk(req.params.id, { // Pk 是 primary key 的簡寫，也就是餐廳的 id，去資料庫用 id 找一筆資料
       include: [
         Category,
-        { model: Comment, include: User }
+        { model: Comment, include: User },
+        { model: User, as: 'FavoritedUsers' }
       ]
     })
       .then(restaurant => {
@@ -52,8 +57,11 @@ const restaurantController = {
         return restaurant
       })
       .then(restaurant => {
+        // 使用 some 的好處是只要帶迭代過程中找到一個符合條件的項目後，就會立刻回傳 true，後面的項目不會繼續執行。
+        const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id)
         res.render('restaurant', {
-          restaurant: restaurant.toJSON()
+          restaurant: restaurant.toJSON(),
+          isFavorited
         })
       })
       .catch(err => next(err))

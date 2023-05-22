@@ -19,12 +19,23 @@
   </div>
   <hr>
 </div>
-</div>
 <div class="col-md-3 mb-2">
   <a href="/restaurants/{{restaurant.id}}/dashboard">
     <button class="btn btn-primary" type="button">Dashboard</button>
   </a>
 </div>
+{{#if isFavorited }}
+<form action="/favorite/{{restaurant.id}}?_method=DELETE" method="POST" style="display: contents;">
+  <button type="submit" class="btn btn-danger" onclick="return confirm(`確定要移除 {{ this.name }} 嗎？`)">移除最愛</button>
+</form>
+{{else}}
+<form action="/favorite/{{restaurant.id}}" method="POST" style="display: contents;">
+  <button type="submit" class="btn btn-primary">加到最愛</button>
+</form>
+{{/if}}
+</div>
+
+
 {{!-- Comment --}}
 <h3 class="mb-3">所有評論：</h3>
 {{#each restaurant.Comments}}
