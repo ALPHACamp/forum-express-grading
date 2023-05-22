@@ -7,7 +7,7 @@ const userController = {
   },
   signUp: (req, res, next) => {
     if (req.body.password !== req.body.passwordCheck) throw new Error('Password do not match!')
-    User.findOne({ where: { email: req.body.email } })
+    return User.findOne({ where: { email: req.body.email } })
       .then(user => {
         if (user) throw new Error('Email already exists!')
         return bcrypt.hash(req.body.password, 10) // return 給下面的.then用
@@ -31,12 +31,11 @@ const userController = {
     res.redirect('/restaurants')
   },
   logout: (req, res) => {
-    console.log('ha')
     req.flash('success_messages', '你已成功登出')
     req.logout(err => {
-      if (err) console.log(err)
+      if (err) console.error(err)
     })
-    res.redirect('/signin')
+    return res.redirect('/signin')
   }
 }
 module.exports = userController
