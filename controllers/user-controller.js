@@ -72,6 +72,8 @@ const userController = {
       const user = await User.findByPk(id, { raw: true })
       // 沒有就報錯
       if (!user) throw new Error('User did not exist!')
+      // 如果user跟登入的user不同就報錯
+      if (user.id !== req.user.id) throw new Error('Cannot modify other user profile!')
       // 有就render
       return res.render('users/edit', { user })
     } catch (err) {
