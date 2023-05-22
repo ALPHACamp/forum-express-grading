@@ -1,4 +1,5 @@
 const { Restaurant, Category } = require('../models')
+
 const restaurantController = {
   getRestaurants: (req, res) => {
     return Restaurant.findAll({
@@ -19,14 +20,29 @@ const restaurantController = {
   getRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
       include: Category,
+      nest: true
+    })
+      .then(restaurant => {
+        if (!restaurant) throw new Error("Restaurant doesn't exist!")
+        return restaurant.increment('viewCounts', { by: 1 })
+      })
+      .then(restaurant => {
+        res.render('restaurant', {
+          restaurant: restaurant.toJSON()
+        })
+      })
+      .catch(err => next(err))
+  },
+
+  getDashboard: (req, res, next) => {
+    return Restaurant.findByPk(req.params.id, {
+      include: [Category],
       nest: true,
       raw: true
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
-        res.render('restaurant', {
-          restaurant
-        })
+        res.render('dashboard', { restaurant })
       })
       .catch(err => next(err))
   }
