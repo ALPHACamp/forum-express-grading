@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router()
 const restController = require('../controllers/restaurant-controller')
 const userController = require('../controllers/user-controller')
+const commentController = require('../controllers/comment-controller')
 const admin = require('./modules/admin')
 const passport = require('../config/passport')
 const { authenticated, authenticatedAdmin } = require('../middleware/auth')
@@ -33,6 +34,9 @@ router.get('/restaurants/:id/dashboard', restController.getDashboard)
 
 // 使用者查看單筆資料
 router.get('/restaurants/:id', restController.getRestaurant)
+
+// 使用者新增評論
+router.post('/comments', authenticated, commentController.postComment)
 
 // 自動導向餐廳首頁
 router.use('/', (req, res) => res.redirect('/restaurants'))

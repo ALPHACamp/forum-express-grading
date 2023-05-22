@@ -1,3 +1,4 @@
+{{!-- Restaurant --}}
 <div class="row m-3">
   <div class="col-md-12">
     <h1>{{restaurant.name}}</h1>
@@ -19,5 +20,14 @@
   </div>
   <hr>
 </div>
-<a class="btn btn-outline-primary ms-3" href="/restaurants/{{restaurant.id}}/dashboard">Dashboard</a>
-<a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
+<a class="btn btn-outline-primary mb-5" href="/restaurants/{{restaurant.id}}/dashboard">Dashboard</a>
+{{!-- Comment --}}
+<form action="/comments" method="POST">
+  <div class="form-row">
+    <label class="form-label" for="text">留下評論：</label>
+    <textarea class="form-control" id="text" name="text" rows="3"></textarea>
+  </div>
+  <input type="hidden" name="restaurantId" value="{{restaurant.id}}" />
+  <button type="submit" class="btn btn-primary m-3">Submit</button>
+  <a class="btn btn-outline-secondary" href="/restaurants">Back</a>
+</form>
