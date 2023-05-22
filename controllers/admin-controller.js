@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 const { Restaurant, User, Category } = require('../models')
+=======
+const { Restaurant, User } = require('../models')
+>>>>>>> R01
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const adminController = {
@@ -102,7 +106,12 @@ const adminController = {
     return User.findAll({
       raw: true
     })
+<<<<<<< HEAD
       .then(users => res.render('admin/users', { users }))
+=======
+      .then(users => res.render('admin/users', { users })
+      )
+>>>>>>> R01
       .catch(err => next(err))
   },
   patchUser: (req, res, next) => {
