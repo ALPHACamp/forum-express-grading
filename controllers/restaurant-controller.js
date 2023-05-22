@@ -1,17 +1,28 @@
 const { Restaurant, Category } = require('../models')
 const restaurantController = {
   getRestaurants: (req, res) => {
-    Restaurant.findAll({
-      include: Category,
-      nest: true,
-      raw: true
-    })
-      .then(restaurants => {
+    const categoryId = Number(req.query.categoryId) || ''
+    const where = {}
+    if (categoryId) where.categoryId = categoryId
+    Promise.all([
+      Restaurant.findAll({
+        include: Category,
+        // where, // 來源: Sequelize的find({where:{categoryId}})
+        where: {
+          ...categoryId ? { categoryId } : {}
+          // 展開運算子順序較低，先進行 categoryId 之三元運算子再展開categoryId結果
+        },
+        nest: true,
+        raw: true
+      }),
+      Category.findAll({ raw: true })
+    ])
+      .then(([restaurants, categories]) => {
         const data = restaurants.map(r => ({
           ...r,
           description: r.description.substring(0, 50)
         }))
-        return res.render('restaurants', { restaurants: data })
+        return res.render('restaurants', { restaurants: data, categories, categoryId })
       })
   },
   getRestaurant: (req, res, next) => {
