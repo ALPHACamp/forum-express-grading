@@ -1,4 +1,5 @@
 const { Restaurant, Category, Comment, User } = require('../models')
+const Sequelize = require('sequelize')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
 
 const restaurantController = {
@@ -53,7 +54,6 @@ const restaurantController = {
         include: [Category, { model: Comment, include: User }, { model: User, as: 'FavoritedUsers' }, { model: User, as: 'LikedUsers' }],
         order: [[{ model: Comment }, 'createdAt', 'DESC']]
       })
-      console.log(restaurant.toJSON())
       // 找不到報錯
       if (!restaurant) throw new Error('Restaurant does not exist!')
       // 將viewCounts+1
@@ -107,6 +107,35 @@ const restaurantController = {
         })
       ])
       return res.render('feeds', { restaurants, comments })
+    } catch (err) {
+      next(err)
+    }
+  },
+  getTopRestaurants: async (req, res, next) => {
+    // 取得登入的userId，如果沒有就為null
+    const userId = req.user?.id || null
+    try {
+      // 找收藏數最多的10家餐廳
+      const restaurants = await Restaurant.findAll({
+        attributes: {
+          // 使用sub query
+          include: [[Sequelize.literal('(SELECT COUNT(*) FROM favorites WHERE favorites.restaurant_id = Restaurant.id)'), 'favoritedCount']]
+        },
+        include: [{ model: User, as: 'FavoritedUsers' }],
+        limit: 10,
+        order: [[Sequelize.literal('favoritedCount'), 'DESC']]
+      })
+      const result = restaurants
+        .map(r => ({
+          ...r.toJSON(),
+          // 因為測試檔並沒有favoritedCount
+          favoritedCount: r.favoritedCount || r.FavoritedUsers.length,
+          isFavorited: r.FavoritedUsers.some(fu => fu.id === userId)
+        }))
+        // 因為測試檔不會自動排序
+        .sort((a, b) => b.favoritedCount - a.favoritedCount)
+      // render
+      return res.render('top-restaurants', { restaurants: result })
     } catch (err) {
       next(err)
     }

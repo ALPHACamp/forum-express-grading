@@ -28,6 +28,7 @@ router.post(
 router.get('/logout', userController.logout)
 
 router.get('/restaurants/feeds', authenticated, restController.getFeeds)
+router.get('/restaurants/top', authenticated, restController.getTopRestaurants)
 router.get('/restaurants/:id/dashboard', authenticated, restController.getDashboard)
 router.get('/restaurants/:id', authenticated, restController.getRestaurant)
 router.get('/restaurants', authenticated, restController.getRestaurants)
@@ -40,8 +41,8 @@ router.get('/users/:id/edit', authenticated, userController.editUser)
 router.put('/users/:id', upload.single('image'), authenticated, userController.putUser)
 router.get('/users/:id', authenticated, userController.getUser)
 
-router.post('/favorite/:restaurantId', authenticated, userController.postFavorite)
-router.delete('/favorite/:restaurantId', authenticated, userController.deleteFavorite)
+router.post('/favorite/:restaurantId', authenticated, userController.addFavorite)
+router.delete('/favorite/:restaurantId', authenticated, userController.removeFavorite)
 
 router.post('/like/:restaurantId', authenticated, userController.addLike)
 router.delete('/like/:restaurantId', authenticated, userController.removeLike)

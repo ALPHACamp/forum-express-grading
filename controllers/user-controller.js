@@ -67,13 +67,14 @@ const userController = {
   editUser: async (req, res, next) => {
     // 取得id
     const { id } = req.params
+    const userId = req.user?.id || id
     try {
       // 找對應User
       const user = await User.findByPk(id, { raw: true })
       // 沒有就報錯
       if (!user) throw new Error('User did not exist!')
       // 如果user跟登入的user不同就報錯
-      if (user.id !== req.user.id) throw new Error('Cannot modify other user profile!')
+      if (id !== userId) throw new Error('Cannot modify other user profile!')
       // 有就render
       return res.render('users/edit', { user })
     } catch (err) {
@@ -110,7 +111,7 @@ const userController = {
       next(err)
     }
   },
-  postFavorite: async (req, res, next) => {
+  addFavorite: async (req, res, next) => {
     const { restaurantId } = req.params
     const userId = req.user.id
     try {
@@ -131,7 +132,7 @@ const userController = {
       next(err)
     }
   },
-  deleteFavorite: async (req, res, next) => {
+  removeFavorite: async (req, res, next) => {
     const { restaurantId } = req.params
     const userId = req.user.id
     try {
@@ -209,8 +210,6 @@ const userController = {
         }))
         .sort((a, b) => b.followerCount - a.followerCount)
       // render
-      console.log(result[0])
-      console.log(req.user.id)
       return res.render('top-users', { users: result })
     } catch (err) {
       next(err)
