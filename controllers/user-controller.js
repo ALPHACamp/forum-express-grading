@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs')
-const db = require('../models')
-const { User } = db
+// todo 調整
+const { User } = require('../models')
 const userController = {
   signUpPage: (req, res) => {
     res.render('signup')
