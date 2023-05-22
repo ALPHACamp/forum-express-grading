@@ -1,5 +1,5 @@
 const { Restaurant, Category, Comment, User } = require('../models')
-const Sequelize = require('sequelize')
+// const Sequelize = require('sequelize')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
 
 const restaurantController = {
