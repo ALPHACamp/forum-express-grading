@@ -21,15 +21,12 @@ router.post(
 )
 router.get('/users', adminController.getUsers)
 router.patch('/users/:id', adminController.patchUser)
-<<<<<<< HEAD
 
 router.get('/categories/:id', categoryController.getCategories)
 router.put('/categories/:id', categoryController.putCategory)
 router.delete('/categories/:id', categoryController.deleteCategory)
 router.get('/categories', categoryController.getCategories)
 router.post('/categories', categoryController.postCategory)
-=======
->>>>>>> R01
 
 router.use('/', (req, res) => res.redirect('/admin/restaurants'))
 router.get('', (req, res) => res.redirect('/admin/restaurants'))
