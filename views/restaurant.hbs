@@ -33,6 +33,16 @@
   <button type="submit" class="btn btn-primary">加到最愛</button>
 </form>
 {{/if}}
+
+{{#if isLiked }}
+<form action="/like/{{restaurant.id}}?_method=DELETE" method="POST" style="display: contents;">
+  <button type="submit" class="btn btn-danger" onclick="return confirm(`確定要取消 {{ this.name }}的Like 嗎？`)">UnLike</button>
+</form>
+{{else}}
+<form action="/like/{{restaurant.id}}" method="POST" style="display: contents;">
+  <button type="submit" class="btn btn-primary">Like</button>
+</form>
+{{/if}}
 </div>
 
 
