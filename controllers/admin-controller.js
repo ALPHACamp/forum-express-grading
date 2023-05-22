@@ -1,4 +1,5 @@
 const { Restaurant } = require('../models') // 帶入database
+const { localFileHandler } = require('../helpers/file-helpers')
 
 const adminController = {
   // 所有餐廳頁面
@@ -17,13 +18,16 @@ const adminController = {
   postRestaurant: (req, res, next) => {
     const { name, tel, address, openingHours, description } = req.body // 從 req.body 拿出表單裡的資料
     if (!name) throw new Error('Restaurant name is required!') // name 是必填，若發先是空值就會終止程式碼，並在畫面顯示錯誤提示
-    Restaurant.create({ // 產生一個新的 Restaurant 物件實例，並存入資料庫
-      name,
-      tel,
-      address,
-      openingHours,
-      description
-    })
+    const { file } = req // 把檔案取出來，也可以寫成 const file = req.file
+    localFileHandler(file) // 把取出的檔案傳給 file-helper 處理後
+      .then(filePath => Restaurant.create({ // 再 create 這筆餐廳資料
+        name,
+        tel,
+        address,
+        openingHours,
+        description,
+        image: filePath || null // 如果有就新增不然就null
+      }))
       .then(() => {
         req.flash('success_messages', 'restaurant was successfully created') // 在畫面顯示成功提示
         res.redirect('/admin/restaurants') // 新增完成後導回後台首頁
@@ -54,15 +58,20 @@ const adminController = {
   putRestaurant: (req, res, next) => {
     const { name, tel, address, openingHours, description } = req.body
     if (!name) throw new Error('Restaurant name is required!')
-    Restaurant.findByPk(req.params.id) // 不用 raw 因為會需要用到 restaurant.update，如果加上參數就會把 sequelize 提供的這個方法過濾掉，會無法使用
-      .then(restaurant => {
+    const { file } = req // 把檔案取出來
+    Promise.all([ // 非同步處理
+      Restaurant.findByPk(req.params.id), // 去資料庫查有沒有這間餐廳，不用 raw 因為會需要用到 restaurant.update，如果加上參數就會把 sequelize 提供的這個方法過濾掉，會無法使用
+      localFileHandler(file) // 把檔案傳到 file-helper 處理
+    ])
+      .then(([restaurant, filePath]) => { // 以上兩樣事都做完以後
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         return restaurant.update({ // sequelize 編輯資料語法
           name,
           tel,
           address,
           openingHours,
-          description
+          description,
+          image: filePath || restaurant.image // 如果 filePath 是 Truthy (使用者有上傳新照片) 就用 filePath，是 Falsy (使用者沒有上傳新照片) 就沿用原本資料庫內的值 
         })
       })
       .then(() => {
