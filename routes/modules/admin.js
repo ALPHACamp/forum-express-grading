@@ -24,6 +24,9 @@ router.delete('/restaurants/:id', adminController.deleteRestaurant)
 // category
 router.get('/categories', categoryController.getCategories)
 
+// create category
+router.post('/categories', categoryController.postCategory)
+
 // user admin setting
 router.get('/users', adminController.getUsers)
 router.patch('/users/:id', adminController.patchUser)

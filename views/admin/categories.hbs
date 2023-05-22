@@ -1,4 +1,14 @@
 {{>admin-tab route='categories'}}
+
+<form action="/admin/categories" method="post" class="row mb-3">
+  <div class="col-auto">
+    <input type="text" class="form-control" name="name" id="name" placeholder="Category Name">
+  </div>
+  <div class="col-auto ms-2">
+    <button type="submit" class="btn btn-success">Create</button>
+  </div>
+</form>
+
 <table class="table align-middle">
   <thead class="thead-dark">
     <tr>
