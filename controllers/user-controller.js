@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs') // 載入 bcrypt
-const { User, Comment, Restaurant, Favorite } = require('../models')
+const { User, Comment, Restaurant, Favorite, Like } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const userController = {
@@ -96,7 +96,8 @@ const userController = {
     const userId = req.user.id
     return Promise.all([
       Restaurant.findByPk(restaurantId),
-      Favorite.findOne({ where: { userId, restaurantId } })])
+      Favorite.findOne({ where: { userId, restaurantId } })
+    ])
       .then(([restaurant, favorite]) => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         if (favorite) throw new Error('You have favorited this restaurant!')
@@ -111,9 +112,41 @@ const userController = {
 
     return Favorite.findOne({ where: { userId, restaurantId } })
       .then(favorite => {
-        if (!favorite) { throw new Error("You haven't favorited this restaurant!") }
+        if (!favorite) {
+          throw new Error("You haven't favorited this restaurant!")
+        }
 
         return favorite.destroy()
+      })
+      .then(() => res.redirect('back'))
+      .catch(e => next(e))
+  },
+  addLike: (req, res, next) => {
+    const { restaurantId } = req.params
+    const userId = req.user.id
+    return Promise.all([
+      Restaurant.findByPk(restaurantId),
+      Like.findOne({ where: { userId, restaurantId } })
+    ])
+      .then(([restaurant, like]) => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        if (like) throw new Error('You have liked this restaurant!')
+        return Like.create({ restaurantId, userId })
+      })
+      .then(() => res.redirect('back'))
+      .catch(e => next(e))
+  },
+  removeLike: (req, res, next) => {
+    const { restaurantId } = req.params
+    const userId = req.user.id
+
+    return Like.findOne({ where: { userId, restaurantId } })
+      .then(like => {
+        if (!like) {
+          throw new Error("You haven't liked this restaurant!")
+        }
+
+        return like.destroy()
       })
       .then(() => res.redirect('back'))
       .catch(e => next(e))

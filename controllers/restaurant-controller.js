@@ -19,11 +19,14 @@ const restaruantController = {
       })
       const categories = await Category.findAll({ raw: true })
       const favoritedRestaurantsId =
-          req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
+        req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
+      const likedRestaurantsId =
+          req.user && req.user.LikedRestaurants.map(lr => lr.id)
       const data = restaurants.rows.map(r => ({
         ...r,
         description: r.description.substring(0, 50),
-        isFavorited: favoritedRestaurantsId.includes(r.id)
+        isFavorited: favoritedRestaurantsId.includes(r.id),
+        isLiked: likedRestaurantsId.includes(r.id)
       }))
       res.render('restaurants', {
         restaurants: data,
@@ -46,17 +49,24 @@ const restaruantController = {
           separate: true,
           order: [['createdAt', 'DESC']]
         },
-        { model: User, as: 'FavoritedUsers' }
+        { model: User, as: 'FavoritedUsers' },
+        { model: User, as: 'LikedUsers' }
       ], // 拿出關聯的 Category model
       nest: true
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
-        const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id)
+        const isFavorited = restaurant.FavoritedUsers.some(
+          f => f.id === req.user.id
+        )
+        const isLiked = restaurant.LikedUsers.some(
+          l => l.id === req.user.id
+        )
         restaurant.increment('viewCounts')
         return res.render('restaurant', {
           restaurant: restaurant.toJSON(),
-          isFavorited
+          isFavorited,
+          isLiked
         })
       })
       .catch(err => next(err))
@@ -69,7 +79,9 @@ const restaruantController = {
       })
       if (!restaurant) throw new Error("Restaurant didn't exist!")
       res.render('dashboard', { restaurant: restaurant.toJSON() })
-    } catch (e) { next(e) }
+    } catch (e) {
+      next(e)
+    }
   },
   getFeeds: (req, res, next) => {
     return Promise.all([
