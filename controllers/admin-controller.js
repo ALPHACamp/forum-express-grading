@@ -1,7 +1,6 @@
 const { Restaurant } = require('../models') // 帶入database
 
 const adminController = {
-
   // 所有餐廳頁面
   getRestaurants: (req, res) => {
     return Restaurant.findAll({ // 抓取所有 Restaurant 資料
@@ -11,7 +10,6 @@ const adminController = {
         return res.render('admin/restaurants', { restaurants: restaurants })
       })
   },
-
   // 新增餐廳頁面
   createRestaurant: (req, res) => {
     return res.render('admin/create-restaurant')
@@ -32,7 +30,6 @@ const adminController = {
       })
       .catch(err => next(err))
   },
-
   // 餐廳詳情頁面
   getRestaurant: (req, res, next) => {
     Restaurant.findByPk(req.params.id, { // MySQL 語法 findByPK 找資料id(主鍵)，req.params.id 抓網址:id
@@ -72,6 +69,16 @@ const adminController = {
         req.flash('success_messages', 'restaurant was successfully to update')
         res.redirect('/admin/restaurants')
       })
+      .catch(err => next(err))
+  },
+  // 刪除資料
+  deleteRestaurant: (req, res, next) => {
+    return Restaurant.findByPk(req.params.id) // 不用raw使用destroy()功能
+      .then(restaurant => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        return restaurant.destroy() // sequelize 刪除資料功能
+      })
+      .then(() => res.redirect('/admin/restaurants'))
       .catch(err => next(err))
   }
 }
