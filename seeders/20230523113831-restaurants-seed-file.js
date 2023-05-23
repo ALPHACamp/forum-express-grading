@@ -2,6 +2,11 @@
 const faker = require('faker')
 module.exports = {
   up: async (queryInterface, Sequelize) => {
+    // todo 新增以下三行，先去查詢現在 Categories table的 id 有哪些
+    const categories = await queryInterface.sequelize.query(
+      'SELECT id FROM Categories;',
+      { type: queryInterface.sequelize.QueryTypes.SELECT }
+    )
     await queryInterface.bulkInsert('Restaurants',
       Array.from({ length: 50 }, () => ({
         name: faker.name.findName(),
@@ -12,7 +17,8 @@ module.exports = {
         // ? lorem 亂碼
         description: faker.lorem.text(),
         created_at: new Date(),
-        updated_at: new Date()
+        updated_at: new Date(),
+        category_id: categories[Math.floor(Math.random() * categories.length)].id // todo 讓查詢到的 Categories table的 id 亂數分配避免遠端錯誤
       }))
     )
   },
