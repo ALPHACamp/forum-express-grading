@@ -25,6 +25,9 @@ router.post('/comments', authenticated, commentController.postComment)
 // 使用者收藏或刪除收藏餐廳
 router.post('/favorite/:restaurantId', authenticated, userController.addFavorite)
 router.delete('/favorite/:restaurantId', authenticated, userController.removeFavorite)
+// 使用者like或unlike餐廳
+router.post('/like/:restaurantId', authenticated, userController.addLike)
+router.delete('/like/:restaurantId', authenticated, userController.removeLike)
 // 瀏覽使用者編輯頁面
 router.get('/users/:id/edit', authenticated, userController.editUser)
 // 編輯使用者個人頁面功能
