@@ -1,6 +1,20 @@
 <div class="row mt-3">
+  {{!-- categories nav--}}
+  <ul class="nav nav-pills">
+    <li class="nav-item">
+      <a class="nav-link {{#ifCond '' categoryId}}active{{/ifCond}}" href="?categoryId=">全部</a>
+    </li>
+    {{#each categories}}
+    <li class="nav-item">
+      <a class="nav-link {{#ifCond this.id ../categoryId}}active{{/ifCond}}"
+        href="?categoryId={{this.id}}">{{this.name}}</a>
+    </li>
+    {{/each}}
+  </ul>
+
+  {{!-- data-panel --}}
   {{#each restaurants}}
-  <div class="col-md-4">
+  <div class="col-md-4 mt-4">
     <div class="card mb-4 shadow-sm">
       <a href="/restaurants/{{this.id}}">
         <img class="card-img-top img-fluid" src="{{this.image}}" alt="Card image cap" width="286px" height="180px"
