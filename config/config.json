@@ -3,7 +3,7 @@
     "username": "root",
     "password": "password",
     "database": "forum",
-    "host": "0.0.0.0",
+    "host": "127.0.0.1",
     "dialect": "mysql"
   },
   "production": {
@@ -12,7 +12,7 @@
   "travis": {
     "username": "travis",
     "database": "forum",
-    "host": "0.0.0.0",
+    "host": "127.0.0.1",
     "dialect": "mysql",
     "logging": false
   }

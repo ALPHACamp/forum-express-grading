@@ -14,4 +14,19 @@
       </div>
     </div>
   </div>
+<<<<<<< HEAD
+=======
+</div>
+<div class="card">
+  <div class="card-header">
+    {{comments.length}} 間已評論餐廳
+  </div>
+  <div class="card-body">
+    {{#each comments}}
+    <a href="/restaurants/{{this.Restaurant.id}}">
+      <img src="{{this.Restaurant.image}}" alt="restaurant" style="max-width: 40px;" class="mt-2">
+    </a>
+    {{/each}}
+  </div>
+>>>>>>> R03
 </div>
