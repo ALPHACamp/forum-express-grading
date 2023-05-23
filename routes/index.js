@@ -38,6 +38,9 @@ router.get('/restaurants/:id/dashboard', authenticated, restController.getDashbo
 // comment create
 router.post('/comments', authenticated, commentController.postComment)
 
+// comment delete
+router.delete('/comments/:id', authenticated, commentController.deleteComment)
+
 router.use('/', generalErrorHandler)
 
 module.exports = router
