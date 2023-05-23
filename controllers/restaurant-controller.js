@@ -74,7 +74,7 @@ const restaruantController = {
   getDashboard: async (req, res, next) => {
     try {
       const restaurant = await Restaurant.findByPk(req.params.id, {
-        include: [Category, Comment],
+        include: [Category, Comment, { model: User, as: 'FavoritedUsers' }],
         nest: true
       })
       if (!restaurant) throw new Error("Restaurant didn't exist!")
