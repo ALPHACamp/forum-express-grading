@@ -1,4 +1,10 @@
 {{>admin-tabs route='categories'}}
+
+<form action="/admin/categories/create" method="POST">
+  <input type="text" name="name" class="col-auto">
+  <button type="sbumit" class="btn btn-success">Create</button>
+</form>
+
 <table class="table align-middle">
   <thead class="thead-dark">
     <tr>
@@ -7,6 +13,8 @@
       <th scope="col">#</th>
     </tr>
   </thead>
+  
+
   <tbody>
     {{#each categories}}
       <tr>
