@@ -37,8 +37,8 @@ const userController = {
   },
   // 登出
   logout: (req, res) => {
-    req.flash('success_messages', '登出成功！')
     req.logout() // 把 user id 對應的 session 清除掉
+    req.flash('success_messages', '登出成功！')
     res.redirect('/signin')
   }
 }
