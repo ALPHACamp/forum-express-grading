@@ -1,7 +1,7 @@
-'use strict';
+'use strict'
 const {
   Model
-} = require('sequelize');
+} = require('sequelize')
 module.exports = (sequelize, DataTypes) => {
   class Favorite extends Model {
     /**
@@ -14,12 +14,13 @@ module.exports = (sequelize, DataTypes) => {
     }
   };
   Favorite.init({
-    user_id: DataTypes.INTEGER,
-    restaurant_id: DataTypes.INTEGER
+    userId: DataTypes.INTEGER,
+    restaurantId: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'Favorite',
-    underscored: true,
-  });
-  return Favorite;
-};
+    tableName: 'Favorites',
+    underscored: true
+  })
+  return Favorite
+}
