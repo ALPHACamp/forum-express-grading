@@ -22,6 +22,10 @@ router.put(
 
 //* 刪除餐廳
 router.delete('/restaurants/:id', adminController.deleteRestaurant);
+//* 所有帳號頁面
+router.get('/users', adminController.getUsers);
+//* 修改使用者權限
+router.patch('/users/:id', adminController.patchUser);
 
 //* 瀏覽全部餐廳
 router.get('/restaurants', adminController.getRestaurants);
