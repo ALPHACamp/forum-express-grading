@@ -1,14 +1,17 @@
 const bcrypt = require('bcryptjs') // 載入 bcrypt
 const db = require('../models')
-const { User } = db
+const { User, Comment, Restaurant } = db
 const { imgurFileHandler } = require('../helpers/file-helpers')
+
 const userController = {
   signUpPage: (req, res) => {
     res.render('signup')
   },
   signUp: (req, res, next) => {
     // 如果兩次輸入的密碼不同，就建立一個 Error 物件並拋出
-    if (req.body.password !== req.body.passwordCheck) { throw new Error('Passwords do not match!') }
+    if (req.body.password !== req.body.passwordCheck) {
+      throw new Error('Passwords do not match!')
+    }
 
     // 確認資料裡面沒有一樣的 email，若有，就建立一個 Error 物件並拋出
     User.findOne({ where: { email: req.body.email } })
@@ -45,7 +48,14 @@ const userController = {
   getUser: async (req, res, next) => {
     try {
       // 反查user 確認user是否存在
-      const user = await User.findByPk(req.params.id)
+      const user = await User.findByPk(req.params.id, {
+        include: [
+          {
+            model: Comment,
+            include: Restaurant
+          }
+        ]
+      })
       if (!user) throw new Error("User didn't exist!")
       // 檢查user.id / req.user.id
       if (req.user) {
@@ -54,7 +64,9 @@ const userController = {
         }
       }
       res.render('users/profile', { user: user.toJSON() })
-    } catch (err) { next(err) }
+    } catch (err) {
+      next(err)
+    }
   },
   editUser: async (req, res, next) => {
     try {
@@ -67,7 +79,9 @@ const userController = {
         }
       }
       res.render('users/edit', { user: user.toJSON() })
-    } catch (err) { next(err) }
+    } catch (err) {
+      next(err)
+    }
   },
   putUser: async (req, res, next) => {
     try {
@@ -75,12 +89,13 @@ const userController = {
       if (!name) throw new Error('User name is required!')
       const { file } = req
 
-      const [user, filePath] = await Promise.all([User.findByPk(req.params.id),
+      const [user, filePath] = await Promise.all([
+        User.findByPk(req.params.id),
         imgurFileHandler(file)
       ])
 
       if (!user) throw new Error("User didn't exist!")
-      if (user.id !== req.user.id) throw new Error("User can't modify others profile")
+      if (user.id !== req.user.id) { throw new Error("User can't modify others profile") }
       await user.update({
         name,
         image: filePath || user.image
@@ -88,7 +103,9 @@ const userController = {
       req.flash('success_messages', '使用者資料編輯成功')
 
       res.redirect(`/users/${user.id}`)
-    } catch (err) { next(err) }
+    } catch (err) {
+      next(err)
+    }
   }
 }
 module.exports = userController
