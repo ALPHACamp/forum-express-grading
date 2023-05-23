@@ -119,7 +119,7 @@ const restaurantController = {
       const restaurants = await Restaurant.findAll({
         attributes: {
           // 使用sub query
-          include: [[Sequelize.literal('(SELECT COUNT(*) FROM Favorites WHERE favorites.restaurant_id = Restaurant.id)'), 'favoritedCount']]
+          include: [[Sequelize.literal('(SELECT COUNT(*) FROM Favorites WHERE Favorites.restaurant_id = Restaurant.id)'), 'favoritedCount']]
         },
         include: [{ model: User, as: 'FavoritedUsers' }],
         limit: 10,
