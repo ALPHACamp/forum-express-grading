@@ -30,6 +30,7 @@ app.use((req, res, next) => {
   res.locals.user = getUser(req)
   next()
 })
+
 app.use(routes)
 
 app.listen(port, () => {
