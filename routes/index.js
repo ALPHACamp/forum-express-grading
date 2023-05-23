@@ -16,6 +16,8 @@ router.post('/signup', userController.signUp)
 // 登入
 router.get('/signin', userController.signInPage)
 router.post('/signin', passport.authenticate('local', { failureRedirect: '/signin', failureFlash: true }), userController.signIn) // 收到post先用passport認證，認證失敗帶回/signin並傳送失敗flash message，認證成功帶入passport的序列化/反序列化程序
+// 登出
+router.get('/logout', userController.logout)
 // 主頁
 router.get('/restaurants', authenticated, restController.getRestaurants)
 router.use('/', (req, res) => res.redirect('/restaurants'))
