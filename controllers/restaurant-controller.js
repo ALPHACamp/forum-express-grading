@@ -33,7 +33,7 @@ const restaurantController = {
       .catch(err => next(err))
   },
 
-  getDashboard: async (req, res, next) => {
+  getDashboard: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
       include: Category,
       nest: true,
