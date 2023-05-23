@@ -1,9 +1,11 @@
 {{> admin-restaurant-tabs}}
 <br />
 <br />
-<div>
-  <a class="btn btn-primary" href="/admin/restaurants/create">New Category</a>
-</div>
+<form action="/admin/categories" method="post">
+  <input type="text" name="name" id="name">
+  <button class="btn btn-outline-secondary" type="submit">Category New</button>
+</form>
+
 <br />
 <table class="table align-middle">
   <thead class="thead-dark">
