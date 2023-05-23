@@ -16,6 +16,7 @@ router.post('/signup', userController.signUp) // 注意使用post
 router.get('/signin', userController.signInPage)
 router.post('/signin', passport.authenticate('local', { failureRedirect: '/signin', failureFlash: true }), userController.signIn) // 注意是 post
 router.get('/logout', userController.logout)
+router.get('/users/top', authenticated, userController.getTopUsers)// 注意順序
 router.get('/users/:id/edit', authenticated, userController.editUser)
 router.get('/users/:id', authenticated, userController.getUser)
 router.put('/users/:id', upload.single('image'), userController.putUser)
@@ -29,7 +30,7 @@ router.post('/favorite/:restaurantId', authenticated, userController.addFavorite
 router.delete('/favorite/:restaurantId', authenticated, userController.removeFavorite)
 router.post('/like/:restaurantId', authenticated, userController.addLike)
 router.delete('/like/:restaurantId', authenticated, userController.removeLike)
-router.use('/', (req, res) => res.redirect('/restaurants'))
+router.get('/', (req, res) => res.redirect('/restaurants'))
 router.use('/', generalErrorHandler)
 
 module.exports = router
