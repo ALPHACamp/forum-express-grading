@@ -5,6 +5,7 @@ const passport = require('../config/passport')
 const router = express.Router()
 const restController = require('../controllers/restaurant-controller')
 const userController = require('../controllers/user-controller')
+const commentController = require('../controllers/comment-controller')
 const admin = require('./modules/admin')
 
 // admin
@@ -33,6 +34,9 @@ router.get('/restaurants/:id', authenticated, restController.getRestaurant)
 
 // restaurant dashboard
 router.get('/restaurants/:id/dashboard', authenticated, restController.getDashboard)
+
+// comment create
+router.post('/comments', authenticated, commentController.postComment)
 
 router.use('/', generalErrorHandler)
 
