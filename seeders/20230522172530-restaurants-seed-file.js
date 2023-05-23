@@ -16,6 +16,7 @@ module.exports = {
         image: `https://loremflickr.com/320/240/restaurant,food/?random=${Math.random() * 100}`,
         description: faker.lorem.text(),
         category_id: categories[Math.floor(Math.random() * categories.length)].id,
+        view_counts: 0,
         created_at: new Date(),
         updated_at: new Date()
       }))
