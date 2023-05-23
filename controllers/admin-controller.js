@@ -1,9 +1,15 @@
-const { Restaurant, User } = require('../models')
+const { Restaurant, User, Category } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const adminController = {
   getRestaurants: (req, res, next) => {
-    Restaurant.findAll({ raw: true })
+    Restaurant.findAll({
+      raw: true,
+      nest: true, // todo 新增讓引入的category資料乾淨
+      // todo 以上兩個在findByPk 可以在顯示時帶入.JSON e.q. res.render('admin/restaurants', { restaurant: restaurant.toJSON() }) 通常用在update之後，因為用了raw跟nest無法改但又要顯示乾淨資料時可用.toJSON()
+      // todo 不過findAll（）不適用，且include不能省
+      include: [Category] // todo 使用關聯資訊帶入資訊要用include，才拿得到
+    })
       .then(restaurants => res.render('admin/restaurants', { restaurants }))
       .catch(err => next(err))
   },
@@ -30,10 +36,14 @@ const adminController = {
       .catch(err => next(err))
   },
   getRestaurant: (req, res, next) => {
-    Restaurant.findByPk(req.params.id, { raw: true })
+    Restaurant.findByPk(req.params.id, {
+      // raw: true,
+      // nest: true, 嘗試.toJSON() 方法
+      include: [Category]
+    })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
-        res.render('admin/restaurant', { restaurant })
+        res.render('admin/restaurant', { restaurant: restaurant.toJSON() })
       })
       .catch(err => next(err))
   },
