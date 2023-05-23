@@ -1,9 +1,4 @@
-<h1>餐廳後台</h1>
-<span>
-    <a href='/admin/restaurants'>Restaurant</a>
-    <span> | </span>
-    <a href='/admin/users'>Users</a>
-</span>
+{{> admin-tab}}
 <br />
 <br />
 <table class="table table-primary table-striped align-middle text-center">
@@ -19,7 +14,7 @@
   <tbody>
     {{#each users}}
       <tr>
-        <th scope="row">{{this.id}}</th>
+        <th scope="row">{{inc @index}}</th>
         <td>{{this.name}}</td>
         <td>{{this.email}}</td>
         <td>{{this.isAdmin}}</td>
