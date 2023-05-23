@@ -65,13 +65,30 @@ const userController = {
       next(e)
     }
   },
-  // 編輯使用者個人資料
+  // 編輯使用者個人資料頁面
   editUser: async (req, res, next) => {
     const { id } = req.params
     try {
       const user = await User.findByPk(id)
       if (!user) throw new Error("User didn't exist!")
       return res.render('edit-user', { user })
+    } catch (e) {
+      next(e)
+    }
+  },
+  // 修改使用者資料
+  putUser: async (req, res, next) => {
+    const { id } = req.params
+    const { name, file } = req.body
+    try {
+      const user = await User.findByPk(id)
+      if (!user) throw new Error("User didn't exist.")
+      const filePath = await imgurFileHandler(file)
+      const renewUser = await User.update({ ...user, name, image: filePath || user.image })
+      if (renewUser) {
+        req.flash('success_messages', 'user was successfully to update')
+        return res.redirect(`/users/${id}`)
+      }
     } catch (e) {
       next(e)
     }
