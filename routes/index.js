@@ -26,20 +26,23 @@ router.post('/signin', passport.authenticate('local', { failureRedirect: '/signi
 // 使用者登出
 router.get('/signout', userController.signout)
 
-// 使用者登入後餐廳首頁
-router.get('/restaurants', authenticated, restController.getRestaurants)
-
 // 使用者查看單筆資料的 Dashboard
 router.get('/restaurants/:id/dashboard', restController.getDashboard)
 
 // 使用者查看單筆資料
 router.get('/restaurants/:id', restController.getRestaurant)
 
+// 使用者登入後餐廳首頁
+router.get('/restaurants', authenticated, restController.getRestaurants)
+
+// 刪除評論
+router.delete('/comments/:id', authenticatedAdmin, commentController.deleteComment)
+
 // 使用者新增評論
 router.post('/comments', authenticated, commentController.postComment)
 
-// 自動導向餐廳首頁
-router.use('/', (req, res) => res.redirect('/restaurants'))
+// 當所有路由都不符合時自動導向餐廳首頁
+router.use('', (req, res) => res.redirect('/restaurants'))
 
 // 錯誤訊息處理
 router.use('/', generalErrorHandler)

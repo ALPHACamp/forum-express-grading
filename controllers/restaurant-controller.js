@@ -32,24 +32,25 @@ const restaurantController = {
   },
   // 使用者瀏覽單筆餐廳資料
   getRestaurant: async (req, res, next) => {
-    const id = req.params.id
+    const { id } = req.params
+    const { user } = req
     try {
       const restaurant = await Restaurant.findByPk(id, {
-        raw: true,
-        nest: true,
+        // raw: true,
+        // nest: true,
         include: [Category, { model: Comment, include: User }]
       })
       if (!restaurant) throw new Error("Restaurant didn't exist!")
-      console.log(restaurant)
       await Restaurant.increment('view_counts', { where: { id } })
-      return res.render('restaurant', { restaurant })
+      console.log(user)
+      return res.render('restaurant', { restaurant: restaurant.toJSON() })
     } catch (e) {
       next(e)
     }
   },
   // 使用者查看單筆餐廳Dashboard
   getDashboard: async (req, res, next) => {
-    const id = req.params.id
+    const { id } = req.params
     try {
       const restaurant = await Restaurant.findByPk(id, { raw: true, nest: true, include: Category })
       if (!restaurant) throw new Error("Restaurant didn't exist!")
