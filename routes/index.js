@@ -28,6 +28,8 @@ router.get('/users/:id/edit', authenticated, userController.editUser)
 router.put('/users/:id', authenticated, upload.single('image'), userController.putUser)
 // 瀏覽使用者個人頁面
 router.get('/users/:id', authenticated, userController.getUser)
+// 瀏覽最新動態
+router.get('/restaurants/feeds', authenticated, restController.getFeeds)
 // 瀏覽儀錶板
 router.get('/restaurants/:id/dashboard', authenticated, restController.getDashboard)
 // 瀏覽單一餐廳
