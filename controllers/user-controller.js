@@ -163,7 +163,7 @@ const userController = {
             // 追蹤人數
             followerCount: user.Followers.length,
             // 目前登入帳號是否有追蹤此user
-            isFollowed: req.user.Followings.some(f => f.id === user.id)
+            isFollowed: req.user && req.user.Followings.some(f => f.id === user.id)
           }))
           .sort((a, b) => b.followerCount - a.followerCount)
         // sort會以字典順序來排, 要比較[a,b], a=b 回傳0 排序不動, a>b 回傳負值 a在b前， a<b 回傳正值 b在a前

@@ -24,7 +24,8 @@ router.post('/signin', passport.authenticate('local', { failureRedirect: '/signi
 // logout
 router.get('/logout', userController.logout)
 
-// show index
+// restaurants
+router.get('/restaurants/top', restaurantController.getTopRestaurants)
 router.get('/restaurants/feeds', authenticated, restaurantController.getFeeds)
 router.get('/restaurants/:id/dashboard', authenticated, restaurantController.getDashboard)
 router.get('/restaurants/:id', authenticated, restaurantController.getRestaurant)
