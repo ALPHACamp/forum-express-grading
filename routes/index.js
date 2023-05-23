@@ -28,6 +28,9 @@ router.delete('/favorite/:restaurantId', authenticated, userController.removeFav
 // 使用者like或unlike餐廳
 router.post('/like/:restaurantId', authenticated, userController.addLike)
 router.delete('/like/:restaurantId', authenticated, userController.removeLike)
+// 使用者追蹤或取消追蹤
+router.post('/following/:userId', authenticated, userController.addFollowing)
+router.delete('/following/:userId', authenticated, userController.removeFollowing)
 // 美食達人頁面
 router.get('/users/top', authenticated, userController.getTopUsers)
 // 瀏覽使用者編輯頁面
