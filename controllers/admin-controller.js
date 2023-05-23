@@ -1,11 +1,13 @@
 // const { localFileHandler } = require('../helpers/file-helpers')
 const { imgurFileHandler } = require('../helpers/file-helpers')
-const { User, Restaurant } = require('../models')
+const { Restaurant, User, Category } = require('../models')
 
 const adminController = {
   getRestaurants: (req, res, next) => {
     Restaurant.findAll({
-      raw: true
+      raw: true,
+      nest: true, // @Add
+      include: [Category] // @Add
     })
       .then(restaurants => res.render('admin/restaurants', { restaurants }))
       .catch(err => next(err))
@@ -40,7 +42,9 @@ const adminController = {
   getRestaurant: (req, res, next) => {
     Restaurant.findByPk(req.params.id, {
       // 去資料庫用 id 找一筆資料
-      raw: true // 找到以後整理格式再回傳
+      raw: true, // 找到以後整理格式再回傳
+      nest: true, // @Add
+      include: [Category] // @Add
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!") //  如果找不到，回傳錯誤訊息，後面不執行
