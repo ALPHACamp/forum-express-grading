@@ -74,6 +74,36 @@ const userController = {
       })
       .then(() => res.redirect('back'))
       .catch(err => next(err))
+  },
+  getUser: (req, res, next) => {
+    const userId = req.user.id
+    return User.findByPk(userId, { raw: true })
+      .then(user => {
+        if (!user) throw new Error("This user didn't exist.")
+        return res.render('users/profile', { user })
+      })
+      .catch(err => next(err))
+  },
+  editUser: (req, res, next) => {
+    const userId = req.user.id
+    return User.findByPk(userId, { raw: true })
+      .then(user => {
+        if (!user) throw new Error("This user didn't exist.")
+        return res.render('users/edit', { user })
+      })
+      .catch(err => next(err))
+  },
+  putUser: (req, res, next) => {
+    const userId = req.user.id
+    // const {}
+    // Promise.all([])
+    return User.findByPk(userId)
+      .then(user => {
+        if (!user) throw new Error("This user didn't exist.")
+        req.flash('success_messages', '使用者資料編輯成功')
+        return res.render('users/edit')
+      })
+      .catch(err => next(err))
   }
 }
 

@@ -22,6 +22,9 @@ router.post('/signin', passport.authenticate('local', {
 }), userController.signIn)
 
 router.get('/logout', userController.logout)
+router.get('/users/:id/edit', userController.editUser)
+router.get('/users/:id', userController.getUser)
+router.post('/users/:id', userController.putUser)
 
 router.get('/restaurants/feeds', authenticated, restController.getFeeds)
 router.get('/restaurants/:id/dashboard', authenticated, restController.getDashboard)

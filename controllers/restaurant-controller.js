@@ -98,6 +98,3 @@ const restaurantController = {
   }
 }
 module.exports = restaurantController
-
-// const jane = await User.create({ name: "Jane", age: 100 });
-// const incrementResult = await jane.increment('age', { by: 2 });
