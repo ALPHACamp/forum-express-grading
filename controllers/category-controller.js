@@ -11,7 +11,7 @@ const categoryController = {
       .catch(err => next(err))
   },
   postCategory: (req, res, next) => {
-    Category.create({
+    return Category.create({
       name: req.body.name
     })
       .then(() => res.redirect('/admin/categories'))
@@ -26,6 +26,14 @@ const categoryController = {
         return category.update({ name })
       })
       .then(() => res.redirect('/admin/categories'))
+      .catch(err => next(err))
+  },
+  deletCategory: (req, res, next) => {
+    return Category.destroy({ where: { id: req.params.id } })
+      .then(category => {
+        if (!category) throw new Error('沒這項')
+        res.redirect('/admin/categories')
+      })
       .catch(err => next(err))
   }
 }
