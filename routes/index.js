@@ -41,6 +41,9 @@ router.delete('/comments/:id', authenticatedAdmin, commentController.deleteComme
 // 使用者新增評論
 router.post('/comments', authenticated, commentController.postComment)
 
+// 瀏覽使用者頁面
+router.get('/users/:id', authenticated, userController.getUser)
+
 // 當所有路由都不符合時自動導向餐廳首頁
 router.use('', (req, res) => res.redirect('/restaurants'))
 

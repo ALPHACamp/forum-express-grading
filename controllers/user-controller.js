@@ -51,6 +51,17 @@ const userController = {
     req.logout()
     req.flash('success_messages', '登出成功！')
     res.redirect('/signin')
+  },
+  // 使用者個人頁面
+  getUser: async (req, res, next) => {
+    const { id } = req.params
+    try {
+      const user = await User.findByPk(id)
+      if (!user) throw new Error("User didn't exist!")
+      return res.render('user', { user })
+    } catch (e) {
+      next(e)
+    }
   }
 }
 
