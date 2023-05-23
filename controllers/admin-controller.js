@@ -1,5 +1,5 @@
 const { Restaurant } = require('../models');
-const { localFileHandler } = require('../helpers/file-helpers');
+const { imgurFileHandler } = require('../helpers/file-helpers');
 const adminController = {
   //* 瀏覽全部餐廳
   getRestaurants: (req, res, next) => {
@@ -19,7 +19,7 @@ const adminController = {
     const { name, tel, address, openingHours, description } = req.body; // 從 req.body 拿出表單裡的資料
     if (!name) throw new Error('Restaurant name is required!'); // name 是必填，若發先是空值就會終止程式碼，並在畫面顯示錯誤提示
     const { file } = req;
-    localFileHandler(file)
+    imgurFileHandler(file)
       .then(filePath => {
         Restaurant.create({
           //產生一個新的 Restaurant 物件實例，並存入資料庫
@@ -67,7 +67,7 @@ const adminController = {
     Promise.all([
       // 非同步處理
       Restaurant.findByPk(req.params.id), // 去資料庫查有沒有這間餐廳
-      localFileHandler(file) // 把檔案傳到 file-helper 處理
+      imgurFileHandler(file) // 把檔案傳到 file-helper 處理
     ])
       .then(([restaurant, filePath]) => {
         // 以上兩樣事都做完以後
