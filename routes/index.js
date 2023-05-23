@@ -28,6 +28,8 @@ router.delete('/favorite/:restaurantId', authenticated, userController.removeFav
 // 使用者like或unlike餐廳
 router.post('/like/:restaurantId', authenticated, userController.addLike)
 router.delete('/like/:restaurantId', authenticated, userController.removeLike)
+// 美食達人頁面
+router.get('/users/top', authenticated, userController.getTopUsers)
 // 瀏覽使用者編輯頁面
 router.get('/users/:id/edit', authenticated, userController.editUser)
 // 編輯使用者個人頁面功能
