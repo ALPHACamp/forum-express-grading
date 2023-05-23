@@ -1,6 +1,6 @@
 <div class="container">
   <div class="row">
-    <div class="col-sm-4">
+    <div class="col-lg-4">
       {{#if user.image }}
       <img class="img-responsive center-block" src="{{ user.image }}"
         style="width: 250px; margin-bottom: 25px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
@@ -8,7 +8,7 @@
       <p class="text-center">profile image</p>
       {{/if}}
     </div>
-    <div class="col-sm-8">
+    <div class="col-md-8">
       <h1>{{ user.name }}</h1>
       <p>{{ user.email }}</p>
 
@@ -17,7 +17,25 @@
           edit
         </button>
       </a>
-
     </div>
+  </div>
+  <hr>
+  <div class="container">
+    {{#ifCond comments.count 0}}
+    <h5>尚未有評論</h5>
+    {{else}}
+    <h5>{{comments.count}}已評論餐廳</h5>
+    <div class="row">
+      {{#each comments.rows}}
+      <div class="col-1 m-1">
+        <a href="/restaurants/{{ this.Restaurant.id }}">
+          <div style="background-image: url('{{ this.Restaurant.image }}');background-position: center; background-size: cover;
+                background-repeat: no-repeat; height: 50px">
+          </div>
+        </a>
+      </div>
+      {{/each}}
+    </div>
+    {{/ifCond}}
   </div>
 </div>
