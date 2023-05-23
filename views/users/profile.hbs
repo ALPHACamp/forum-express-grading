@@ -1,0 +1,14 @@
+<div class="row shadow p-4 mb-4">
+  <div class="col-md-4">
+    <img class="img-responsive center-block" src="{{user.image}}"
+      style="max-width: 100%; margin-bottom: 25px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+  </div>
+  <div class="col-md-8">
+    <p class="h4 mb-2">{{user.name}}</p>
+    <p class="mb-4">{{user.email}}</p>
+    <!-- edit function only for owner -->
+    {{#ifCond user.id user.id}}
+    <a class="btn btn-primary" href="/users/{{user.id}}/edit">Edit</a>
+    {{/ifCond}}
+  </div>
+</div>
