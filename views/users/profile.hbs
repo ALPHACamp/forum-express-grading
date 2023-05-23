@@ -1,0 +1,34 @@
+{{!-- Profile --}}
+<div class="card container" >
+  <div class="row g-0">
+    <div class="col-md-4">
+      <img src="{{user.image}}" class="img-fluid rounded-start" alt="avatar">
+    </div>
+    <div class="col-md-8">
+      <div class="card-body">
+        <h5 class="card-title">{{user.name}}</h5>
+        <p class="card-text">{{user.email}}</p>
+        <p class="card-text">{{comments.length}} 間已評論餐廳</p>
+        <br>
+        <a href="/users/{{user.id}}/edit">
+          <button class="btn btn-primary" type="button">Edit</button>
+        </a>
+        <br>
+        <a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
+      </div>
+    </div>
+  </div>
+</div>
+{{!-- 評論餐廳區 --}}
+<div class="card mb-3 container">
+  <div class="card-header">
+    {{comments.length}} 間已評論餐廳
+  </div>
+  <div class="card-body">
+    {{#each comments}}
+      <a href="/restaurants/{{this.Restaurant.id}}">
+        <img class="card-img-top " src="{{this.Restaurant.image}}" alt="commentrestaurant" style="max-width: 100px;" onload="this.style.opacity=1;">
+      </a>
+      {{/each}}
+  </div>
+</div>

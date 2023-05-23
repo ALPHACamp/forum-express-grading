@@ -17,6 +17,7 @@ if (config.use_env_variable) {
 }
 
 // 動態引入其他 models
+// fs(file system)為Node.js內建的檔案管理模組，可尋找在model底下以.js為結尾的檔案
 fs
   .readdirSync(__dirname)
   .filter(file => {
@@ -35,7 +36,9 @@ Object.keys(db).forEach(modelName => {
 })
 
 // 匯出需要的物件
+// db.sequelize代表連線資料庫的instance，內有屬性如queryTnterface config等
 db.sequelize = sequelize
+// db.Sequelize可存到Sequelize這個class，內有屬性如DataType Model等
 db.Sequelize = Sequelize
 
 module.exports = db
