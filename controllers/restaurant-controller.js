@@ -109,48 +109,31 @@ const restaruantController = {
       .catch(err => next(err))
   },
   getTopRestaurants: (req, res, next) => {
+    // const maxLength = 150
+    // 目前註解掉的部分會使test fail
     return Restaurant.findAll({
-      include: [Category, { model: User, as: 'FavoritedUsers' }]
+      include: [
+        { model: User, as: 'FavoritedUsers' }
+        // ,{ model: User, as: 'LikedUsers' }
+      ]
     })
       .then(restaurants => {
-        const results = restaurants
-          .map(res => ({
-            ...res.toJSON(),
-            favoritedCount: res.FavoritedUsers.length,
+        restaurants = restaurants
+          .map(rest => ({
+            ...rest.toJSON(),
+            // description: rest.description.substring(0, maxLength) + '...',
+            favoritedCount: rest.FavoritedUsers.length,
             isFavorited:
-                req.user &&
-                req.user.FavoritedRestaurants.some(fr => fr.id === res.id)
+              req.user &&
+              req.user.FavoritedRestaurants.some(f => f.id === rest.id)
+            // ,isLiked: req.user && req.user.LikedRestaurants.some(l => l.id === rest.id)
           }))
+          // .filter(r => r.favoritedCount > 0) // 只顯示收藏數>0的餐廳
           .sort((a, b) => b.favoritedCount - a.favoritedCount)
           .slice(0, 10)
-        res.render('top-restaurants', { restaurants: results })
+        res.render('top-restaurants', { restaurants })
       })
       .catch(err => next(err))
-    // const maxLength = 150
-    // // 目前註解掉的部分會使test fail
-    // return Restaurant.findAll({
-    //   include: [
-    //     { model: User, as: 'FavoritedUsers' }
-    //     // ,{ model: User, as: 'LikedUsers' }
-    //   ]
-    // })
-    //   .then(restaurants => {
-    //     restaurants = restaurants
-    //       .map(rest => ({
-    //         ...rest.toJSON(),
-    //         description: rest.description.substring(0, maxLength) + '...',
-    //         favoritedCount: rest.FavoritedUsers.length,
-    //         isFavorited:
-    //           req.user &&
-    //           req.user.FavoritedRestaurants.some(f => f.id === rest.id)
-    //         // ,isLiked: req.user && req.user.LikedRestaurants.some(l => l.id === rest.id)
-    //       }))
-    //       .filter(r => r.favoritedCount > 0) // 只顯示收藏數>0的餐廳
-    //       .sort((a, b) => b.favoritedCount - a.favoritedCount)
-    //       .slice(0, 10)
-    //     res.render('top-restaurants', { restaurants })
-    //   })
-    //   .catch(err => next(err))
   }
 
 }
