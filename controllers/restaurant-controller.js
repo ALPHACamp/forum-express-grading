@@ -1,4 +1,4 @@
-const { Restaurant, Category } = require('../models')
+const { Restaurant, Category, Comment, User } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
 const restaurantController = {
   getRestaurants: (req, res, next) => {
@@ -36,10 +36,14 @@ const restaurantController = {
   },
   getRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
-      include: Category, // 拿出關聯的 Category model
+      include: [
+        Category, // 拿出關聯的 Category model
+        { model: Comment, include: User } // 拿出關聯的 Comment model 以及 Comment model 關聯的 User model
+      ],
       nest: true
     })
       .then(async restaurant => {
+        console.log(restaurant)
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         // 每次瀏覽都讓瀏覽數+1
         await restaurant.increment('viewCounts', { by: 1 })
