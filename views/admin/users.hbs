@@ -10,7 +10,6 @@
   <li class="nav-item">
     <a class="nav-link" href="/admin/users">Users</a>
   </li>
-  
 </ul>
 
 <table class="table">
@@ -24,12 +23,18 @@
     </tr>
   </thead>
   <tbody>
+    {{#each users}}
     <tr>
       <th scope="row">1</th>
-      <td>Mark</td>
-      <td>Otto</td>
-      <td>@mdo</td>
-      <td type="button" class="btn-link">Link</td>
+      <td>{{this.name}}</td>
+      <td>{{this.email}}</td>
+      <td>{{#if this.isAdmin}}admin{{else}}user{{/if}}</td>
+      <td >
+        <form action="/admin/users/{{this.id}}/?_method=PATCH" method="POST">
+          <button type="submit" class="btn-link btn py-0">{{#if this.isAdmin}}set as user{{else}}set as admin{{/if}}</button>
+        </form>
+      </td>
     </tr>
+    {{/each}}
   </tbody>
 </table>
