@@ -27,9 +27,13 @@ const restaurantController = {
       .then(([restaurants, categories]) => {
         // console.log(restaurants)
         // console.log('----------------------------------------')
+        const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
+        // 因為 req.user 有可能是空的所以先檢查
         const data = restaurants.rows.map(r => ({
           ...r,
-          description: r.description.substring(0, 50)
+          description: r.description.substring(0, 50),
+          // isFavorited: req.user.FavoritedRestaurants.map(fr => fr.id).include(r.id)
+          isFavorited: favoritedRestaurantsId.includes(r.id)
         }))
         return res.render('restaurants', {
           restaurants: data,
@@ -43,16 +47,23 @@ const restaurantController = {
     return Restaurant.findByPk(req.params.id, {
       include: [
         Category,
-        { model: Comment, include: User }
+        { model: Comment, include: User },
+        { model: User, as: 'FavoritedUsers' } 
       ]
       // nest: true,
       // raw: true
     })
       .then(restaurant => {
+        // const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id) //.....太複雜
+        const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id)
         if (!restaurant) throw new Error("Restaurant didn't exist")
         // console.log('--------------here---------------' + restaurant.Comments.text)
         // res.render('restaurant', { restaurant })
-        res.render('restaurant', { restaurant: restaurant.toJSON() })
+        res.render('restaurant', {
+          restaurant: restaurant.toJSON(),
+          // isFavorited: favoritedRestaurantsId.includes(r.id) //... 太複雜
+          isFavorited
+        })
       })
       .catch(err => next(err))
   },
