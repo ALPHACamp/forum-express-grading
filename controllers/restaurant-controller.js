@@ -48,16 +48,15 @@ const restaurantController = {
       include: [
         Category,
         { model: Comment, include: User },
-        { model: User, as: 'FavoritedUsers' } 
+        { model: User, as: 'FavoritedUsers' }
       ]
-      // nest: true,
-      // raw: true
+      // nest: true, //... 有bug會取消一對多關係
+      // raw: true //... 整理格式
     })
       .then(restaurant => {
         // const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id) //.....太複雜
         const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id)
         if (!restaurant) throw new Error("Restaurant didn't exist")
-        // console.log('--------------here---------------' + restaurant.Comments.text)
         // res.render('restaurant', { restaurant })
         res.render('restaurant', {
           restaurant: restaurant.toJSON(),
@@ -86,6 +85,19 @@ const restaurantController = {
     ])
       .then(([restaurants, comments]) => res.render('feeds', { restaurants, comments }))
       .catch(err => next(err))
+  },
+  getDashboard: (req, res, next) => {
+    return Restaurant.findByPk(req.params.id, {
+      include: [Category]
+    })
+      .then(restaurant => {
+        return restaurant.increment('viewCounts', { by: 1 })
+      })
+      .then(restaurant => res.render('dashboard', { restaurant: restaurant.toJSON() }))
+      .catch(err => next(err))
   }
 }
 module.exports = restaurantController
+
+// const jane = await User.create({ name: "Jane", age: 100 });
+// const incrementResult = await jane.increment('age', { by: 2 });
