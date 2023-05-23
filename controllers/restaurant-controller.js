@@ -1,5 +1,5 @@
 const { Restaurant, Category, Comment, User } = require('../models')
-// const Sequelize = require('sequelize')
+const Sequelize = require('sequelize')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
 
 const restaurantController = {
@@ -116,18 +116,18 @@ const restaurantController = {
     const userId = req.user?.id || null
     try {
       // 找收藏數最多的10家餐廳
-      // const restaurants = await Restaurant.findAll({
-      //   attributes: {
-      //     // 使用sub query
-      //     include: [[Sequelize.literal('(SELECT COUNT(*) FROM favorites WHERE favorites.restaurant_id = Restaurant.id)'), 'favoritedCount']]
-      //   },
-      //   include: [{ model: User, as: 'FavoritedUsers' }],
-      //   limit: 10,
-      //   order: [[Sequelize.literal('favoritedCount'), 'DESC']]
-      // })
       const restaurants = await Restaurant.findAll({
-        include: [{ model: User, as: 'FavoritedUsers' }]
+        attributes: {
+          // 使用sub query
+          include: [[Sequelize.literal('(SELECT COUNT(*) FROM Favorites WHERE favorites.restaurant_id = Restaurant.id)'), 'favoritedCount']]
+        },
+        include: [{ model: User, as: 'FavoritedUsers' }],
+        limit: 10,
+        order: [[Sequelize.literal('favoritedCount'), 'DESC']]
       })
+      // const restaurants = await Restaurant.findAll({
+      //   include: [{ model: User, as: 'FavoritedUsers' }]
+      // })
       const result = restaurants
         .map(r => ({
           ...r.toJSON(),
