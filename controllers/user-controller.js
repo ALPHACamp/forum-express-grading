@@ -1,6 +1,6 @@
 const db = require('../models')
 const bcrypt = require('bcryptjs')
-const { User } = db
+const { User, Favorite, Restaurant } = db
 
 const userController = {
   signUpPage: (req, res) => {
@@ -35,6 +35,45 @@ const userController = {
     req.flash('success_messages', '成功登出')
     req.logout()
     res.redirect('/signin')
+  },
+  addFavorite: (req, res, next) => {
+    const { restaurantId } = req.params
+    const userId = req.user.id
+    Promise.all([
+      Restaurant.findByPk(restaurantId),
+      Favorite.findOne({
+        where: {
+          userId,
+          restaurantId
+        }
+      })
+    ])
+      .then(([restaurant, favorite]) => {
+        if (!restaurant) throw new Error("This restaurant didn't exist.")
+        if (favorite) throw new Error('This restaurant is already in your favorite list.')
+        return Favorite.create({
+          userId,
+          restaurantId
+        })
+      })
+      .then(() => res.redirect('back'))
+      .catch(err => next(err))
+  },
+  removeFavorite: (req, res, next) => {
+    const userId = req.user.id
+    const restaurantId = req.params.restaurantId
+    return Favorite.findOne({
+      where: {
+        userId,
+        restaurantId
+      }
+    })
+      .then(favorite => {
+        if (!favorite) throw new Error("This restaurant isn't in your favorite list.")
+        return favorite.destroy()
+      })
+      .then(() => res.redirect('back'))
+      .catch(err => next(err))
   }
 }
 
