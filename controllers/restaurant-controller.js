@@ -1,4 +1,4 @@
-const { Restaurant, Category } = require('../models')
+const { Restaurant, Category, Comment, User } = require('../models')
 const { getOffset, getPagination } = require('../helper/pagination-helper')
 
 const restaurantController = {
@@ -39,11 +39,14 @@ const restaurantController = {
 
   getRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
-      include: Category,
+      include: [Category, {
+        model: Comment, include: User
+      }],
       nest: true
     })
       .then(restaurant => {
         if (!restaurant) throw new Error('Restaurant is not exist!')
+        // console.log(restaurant.Comments[0].dataValues)
         return restaurant.increment('viewCounts', { by: 1 })
       })
       .then(restaurant => {
