@@ -1,7 +1,11 @@
-'use strict';
-const faker = require('faker');
+'use strict'
+const faker = require('faker')
 module.exports = {
   up: async (queryInterface, Sequelize) => {
+    const categories = await queryInterface.sequelize.query(
+      'SELECT id FROM Categories;',
+      { type: queryInterface.sequelize.QueryTypes.SELECT }
+    )
     await queryInterface.bulkInsert(
       'Restaurants',
       Array.from({ length: 50 }, () => ({
@@ -14,11 +18,14 @@ module.exports = {
         }`,
         description: faker.lorem.text(),
         created_at: new Date(),
-        updated_at: new Date()
+        updated_at: new Date(),
+        //* 先取得分類數量再來隨機，而不是訂死
+        category_id:
+          categories[Math.floor(Math.random() * categories.length)].id
       }))
-    );
+    )
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.bulkDelete('Restaurants', {});
+    await queryInterface.bulkDelete('Restaurants', {})
   }
-};
+}
