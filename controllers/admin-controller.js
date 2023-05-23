@@ -74,7 +74,7 @@ const adminController = {
       const { name, tel, address, openingHours, description, categoryId } = req.body
       if (!name) throw new Error('Restaurant name is required.')
       const { file } = req
-      const id = req.params.id
+      const { id } = req.params
       const restaurant = await Restaurant.findByPk(id)
       if (!restaurant) throw new Error("Restaurant didn't exist.")
       const filePath = await imgurFileHandler(file)

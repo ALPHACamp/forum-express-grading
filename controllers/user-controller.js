@@ -1,6 +1,8 @@
 const bcrypt = require('bcryptjs')
 const db = require('../models')
 const { User } = db
+const { imgurFileHandler } = require('../helpers/file-helpers')
+
 const userController = {
   // 使用者註冊頁面
   signUpPage: (req, res) => {
@@ -51,6 +53,52 @@ const userController = {
     req.logout()
     req.flash('success_messages', '登出成功！')
     res.redirect('/signin')
+  },
+  // 使用者個人頁面
+  getUser: async (req, res, next) => {
+    const { id } = req.params // string
+    const userId = req.user?.id || id // number
+    try {
+      const user = await User.findByPk(id, { raw: true, nest: true })
+      if (!user) throw new Error("User didn't exist!")
+      return res.render('users/profile', { user, userId })
+    } catch (e) {
+      next(e)
+    }
+  },
+  // 編輯使用者個人資料頁面
+  editUser: async (req, res, next) => {
+    const { id } = req.params // string
+    const userId = req.user?.id || id // number
+    if (Number(id) !== userId) {
+      req.flash('error_messages', "Not allow to edit other's profile")
+      return res.redirect(`/users/${id}`)
+    }
+    try {
+      const user = await User.findByPk(id, { raw: true, nest: true })
+      if (!user) throw new Error("User didn't exist!")
+      return res.render('users/edit', { user })
+    } catch (e) {
+      next(e)
+    }
+  },
+  // 修改使用者資料
+  putUser: async (req, res, next) => {
+    const { id } = req.params
+    const { name } = req.body
+    if (!name) throw new Error('Name is required!')
+    const { file } = req
+    try {
+      const user = await User.findByPk(id)
+      if (!user) throw new Error("User didn't exist.")
+
+      const filePath = await imgurFileHandler(file)
+      await user.update({ ...user, name, image: filePath || user.image })
+      req.flash('success_messages', '使用者資料編輯成功')
+      return res.redirect(`/users/${id}`)
+    } catch (e) {
+      next(e)
+    }
   }
 }
 
