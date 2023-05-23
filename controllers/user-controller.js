@@ -1,6 +1,8 @@
 const bcrypt = require('bcryptjs')
 const db = require('../models')
 const { User } = db
+const { imgurFileHandler } = require('../helpers/file-helpers')
+
 const userController = {
   // 使用者註冊頁面
   signUpPage: (req, res) => {
@@ -59,6 +61,17 @@ const userController = {
       const user = await User.findByPk(id)
       if (!user) throw new Error("User didn't exist!")
       return res.render('user', { user })
+    } catch (e) {
+      next(e)
+    }
+  },
+  // 編輯使用者個人資料
+  editUser: async (req, res, next) => {
+    const { id } = req.params
+    try {
+      const user = await User.findByPk(id)
+      if (!user) throw new Error("User didn't exist!")
+      return res.render('edit-user', { user })
     } catch (e) {
       next(e)
     }

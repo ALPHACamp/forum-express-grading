@@ -41,6 +41,9 @@ router.delete('/comments/:id', authenticatedAdmin, commentController.deleteComme
 // 使用者新增評論
 router.post('/comments', authenticated, commentController.postComment)
 
+// 使用者編輯資訊
+router.get('/users/:id/edit', userController.editUser)
+
 // 瀏覽使用者頁面
 router.get('/users/:id', authenticated, userController.getUser)
 
