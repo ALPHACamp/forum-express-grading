@@ -21,19 +21,17 @@
 {{!-- comment panel --}}
 <div class="card" style="max-width: 800px; margin: auto;">
   <div class="card-header">
-    {{#if restaurants}}
-    已評論了 {{this.count}} 家餐廳
+    {{#if user.Comments}}
+    已評論了 {{user.Comments.length}} 家餐廳
     {{else}}
     尚未評論過任何餐廳
     {{/if}}
   </div>
   <div class="card-body">
-    {{#if restaurants}}
-    {{#each restaurants}}
-    <a href="/restaurants/{{this.id}}">
-      <img src="{{this.image}}" alt="restaurant-img">
+    {{#each user.Comments}}
+    <a href="/restaurants/{{this.Restaurant.id}}">
+      <img src="{{this.Restaurant.image}}" alt="restaurant-img">
     </a>
     {{/each}}
-    {{/if}}
   </div>
 </div>
