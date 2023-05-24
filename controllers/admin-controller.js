@@ -1,4 +1,4 @@
-const { Restaurant, User, Category, User } = require('../models') // 新增這裡 採用解構賦值
+const { Restaurant, User, Category } = require('../models') // 新增這裡 採用解構賦值
 const { imgurFileHandler } = require('../helpers/file-helper')
 
 const adminController = { // 修改這裡
