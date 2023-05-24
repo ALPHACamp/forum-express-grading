@@ -32,6 +32,10 @@ router.get('/restaurants', authenticated, restController.getRestaurants)
 router.delete('/comments/:id', authenticatedAdmin, commentController.deleteComment)
 router.post('/comments', authenticated, commentController.postComment)
 
+// 收藏
+router.post('/favorite/:restaurantId', authenticated, userController.addFavorite)
+router.delete('/favorite/:restaurantId', authenticated, userController.removeFavorite)
+
 // 個人頁面
 router.get('/users/:id/edit', authenticated, userController.editUser)
 router.get('/users/:id', authenticated, userController.getUser)
