@@ -7,6 +7,8 @@ const restController = require('../controllers/restaurant-controller')
 const userController = require('../controllers/user-controller')
 const commentController = require('../controllers/comment-controller')
 
+const upload = require('../middleware/multer')
+
 const { authenticated, authenticatedAdmin } = require('../middleware/auth')
 const { generalErrorHandler } = require('../middleware/error-handler')
 
@@ -28,6 +30,11 @@ router.get('/restaurants', authenticated, restController.getRestaurants)
 // 留言
 router.delete('/comments/:id', authenticatedAdmin, commentController.deleteComment)
 router.post('/comments', authenticated, commentController.postComment)
+
+// 個人頁面
+router.get('/users/:id/edit', authenticated, userController.editUser)
+router.get('/users/:id', authenticated, userController.getUser)
+router.put('/users/:id', upload.single('image'), authenticated, userController.putUser)
 
 // 底層路由
 router.use('/', (req, res) => res.redirect('/restaurants'))
