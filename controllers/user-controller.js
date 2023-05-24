@@ -46,7 +46,12 @@ const userController = {
         if (!user) throw new Error("User didn't exist!")
 
         user = user.toJSON()
-//判斷新功能
+        user.commentedRestaurants = user.Comments && user.Comments.reduce((accumulator, c) => {
+          if (!accumulator.some(r => r.id === c.restaurantId)) {
+            accumulator.push(c.Restaurant)
+          }
+          return accumulator
+        }, [])
         res.render('users/profile', {
           user
         })
