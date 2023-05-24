@@ -1,23 +1,15 @@
-<h1>餐廳後台</h1>
+{{> admin-tabs route='restaurants'}}
 
-<ul class="nav nav-tabs">
-  <li class="nav-item">
-    <a href='/admin/restaurants' class="btn-link nav-link active"> Restaurants </a>
-  </li>
-  <li class="nav-item">
-    <a href='/admin/users' class="btn-link nav-link"> Users </a>
-  </li>
-  <a href='/admin/restaurants/create' style="margin-left: auto;">
-    <button type="button" class="btn btn-secondary">New Restaurant</button>
-  </a>
-</ul>
+<a href='/admin/restaurants/create' style="margin-bottom: 0.5rem;" class="btn btn-secondary">
+  New Restaurant
+</a>
 <br />
-{{!-- <br /> --}}
 <table class="table align-middle">
   <thead class="thead-dark">
-    <tr style="background-color: black;">
+    <tr>
       <th scope="col" style="color: white;">#</th>
       <th scope="col" style="color: white;">Name</th>
+      <th scope="col" style="color: white;">Category</th>
       <th scope="col" style="color: white;">Administration Options</th>
     </tr>
   </thead>
@@ -26,6 +18,7 @@
     <tr>
       <th scope="row">{{this.id}}</th>
       <td>{{this.name}}</td>
+      <td>{{this.Category.name}}</td>
       <td>
         <button type="button" class="btn btn-link">
           <a class="btn btn-link link-primary" href="/admin/restaurants/{{this.id}}">

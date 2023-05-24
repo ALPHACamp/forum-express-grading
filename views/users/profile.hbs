@@ -1,0 +1,12 @@
+<h2>profile</h2>
+<div class="col-md-4">
+  {{!-- <img class="img-responsive center-block mb-5" src="{{user.image}}"
+    style="width: 250px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;"> --}}
+  <div class="well">
+    <ul class="list-unstyled">
+      <li><strong>Name:</strong> {{user.name}}</li>
+      <li><strong>Email:</strong> {{user.email}}</li>
+      <a class="btn btn-primary" href="/users/{{user.id}}/edit">edit</a>
+    </ul>
+  </div>
+</div>

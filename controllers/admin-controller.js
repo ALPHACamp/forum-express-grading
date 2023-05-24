@@ -1,18 +1,24 @@
-const { Restaurant, User } = require('../models') // 新增這裡 採用解構賦值
+const { Restaurant, User, Category, User } = require('../models') // 新增這裡 採用解構賦值
 const { imgurFileHandler } = require('../helpers/file-helper')
 
 const adminController = { // 修改這裡
 
   getRestaurants: (req, res, next) => {
-    Restaurant.findAll({ raw: true })
+    Restaurant.findAll({
+      raw: true,
+      nest: true,
+      include: [Category]
+    })
       .then(restaurants => res.render('admin/restaurants', { restaurants }))
       .catch(err => next(err))
   },
-  createRestaurant: (req, res) => {
-    res.render('admin/create-restaurant')
+  createRestaurant: (req, res, next) => {
+    Category.findAll({ raw: true })
+      .then(categories => res.render('admin/create-restaurant', { categories }))
+      .catch(err => next(err))
   },
   postRestaurant: (req, res, next) => {
-    const { name, tel, address, openingHours, description } = req.body
+    const { name, tel, address, openingHours, description, categoryId } = req.body
     if (!name) throw new Error('Restaurant name is required')
     const { file } = req
     imgurFileHandler(file) // 在file-helper已經協助判斷是否有file傳入
@@ -22,7 +28,8 @@ const adminController = { // 修改這裡
         address,
         openingHours,
         description,
-        image: filePath || null
+        image: filePath || null,
+        categoryId
       })
       )
 
@@ -34,7 +41,11 @@ const adminController = { // 修改這裡
   },
   getRestaurant: (req, res, next) => {
     const id = req.params.id
-    Restaurant.findByPk(id, { raw: true })
+    Restaurant.findByPk(id, {
+      raw: true,
+      nest: true,
+      include: [Category]
+    })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist")
         res.render('admin/restaurant', { restaurant })
@@ -42,15 +53,18 @@ const adminController = { // 修改這裡
       .catch(err => next(err))
   },
   editRestaurant: (req, res, next) => {
-    Restaurant.findByPk(req.params.id, { raw: true })
-      .then(restaurant => {
+    Promise.all([
+      Restaurant.findByPk(req.params.id, { raw: true }),
+      Category.findAll({ raw: true })
+    ])
+      .then(([restaurant, categories]) => {
         if (!restaurant) throw new Error("Restaurant didn't exist")
-        res.render('admin/edit-restaurant', { restaurant })
+        res.render('admin/edit-restaurant', { restaurant, categories })
       })
       .catch(err => next(err))
   },
   putRestaurant: (req, res, next) => {
-    const { name, tel, address, openingHours, description } = req.body
+    const { name, tel, address, openingHours, description, categoryId } = req.body
     if (!name) throw new Error('Restaurant is required')
 
     const { file } = req
@@ -66,7 +80,8 @@ const adminController = { // 修改這裡
           address,
           openingHours,
           description,
-          image: filePath || restaurant.image
+          image: filePath || restaurant.image,
+          categoryId
         })
       })
       .then(() => {
