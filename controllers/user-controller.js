@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs')// 載入bcrypt
 const db = require('../models')
-const { User } = db
+const { User, Restaurant, Comment } = db
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const userController = {
@@ -41,7 +41,11 @@ const userController = {
     const loginUseruId = req.user ? Number(req.user.id) : ''
     return Promise.all([
       User.findByPk(req.params.id, {
-        raw: true
+        include: [
+          { model: Comment, include: Restaurant }
+        ],
+        nest: true
+
       }),
       User.findByPk(loginUseruId, {
         raw: true
@@ -49,8 +53,9 @@ const userController = {
 
     ])
       .then(([user, loginUser]) => {
+        const commentTimes = req.user ? user.Comments.length ? user.Comments.length : 0 : ''
         if (!user) throw new Error("User didn't exist!")
-        res.render('users/profile', { user, loginUser })
+        res.render('users/profile', { user: user.toJSON(), loginUser, commentTimes })
       })
       .catch(err => next(err))
   },
@@ -70,7 +75,6 @@ const userController = {
       .catch(err => next(err))
   },
   putUser: (req, res, next) => {
-    console.log(req.body)
     const { name } = req.body
     if (!name) throw new Error('User name is required!')
     const { file } = req
