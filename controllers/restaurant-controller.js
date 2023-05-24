@@ -28,12 +28,12 @@ const restaurantController = {
     }), Category.findAll({ raw: true })
     ])
       .then(([restaurants, categories]) => {
-        const data = restaurants.map(r => ({
+        const data = restaurants.rows.map(r => ({
           ...r,
           description: r.description.substring(0, 50)
         }))
         return res.render('restaurants', {
-          restaurants: data, categories, categoryId
+          restaurants: data, categories, categoryId, pagination: getPagination(limit, page, restaurants.count)
         })
       })
   },
