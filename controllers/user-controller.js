@@ -98,10 +98,8 @@ const userController = {
   putUser: (req, res, next) => {
     const userId = req.params.id
     const { name } = req.body
-    console.log('-----------------here2-------------------' + req.body)
     return User.findByPk(userId)
       .then(user => {
-        console.log('-----------------here-------------------' + name)
         if (!user) throw new Error("This user didn't exist.")
         return user.update({ name })
       })
