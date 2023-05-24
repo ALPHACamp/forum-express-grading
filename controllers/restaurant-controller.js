@@ -19,13 +19,25 @@ const restaurantColler = {
   getRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
       include: Category,
-      nest: true,
-      raw: true
+      nest: true
     })
       .then(restaurant => {
         if (!restaurant) throw new Error('沒這間')
-        res.render('restaurant', { restaurant })
+        return restaurant.increment('viewCounts')
       })
+      .then(restaurant => res.render('restaurant', { restaurant: restaurant.toJSON() }))
+  },
+  getDashboard: (req, res, next) => {
+    return Restaurant.findByPk(req.params.id, {
+      include: Category,
+      raw: true,
+      nest: true
+    })
+      .then(restaurant => {
+        if (!restaurant) throw new Error('沒這間')
+        return res.render('dashboard', { restaurant })
+      })
+      .catch(err => next(err))
   }
 }
 
