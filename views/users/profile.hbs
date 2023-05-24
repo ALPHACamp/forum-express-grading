@@ -1,0 +1,55 @@
+{{!-- profile --}}
+<div class="card mb-3" style="max-width: 800px; margin: auto;">
+  <div class="row g-0">
+    <div class="col-md-6">
+      <img src="{{ user.image }}" class="" alt="user imge"
+        style="width: 100%; height: 100%; max-width: 400px; max-height: 400px; transition: opacity 0.5s; opacity:0; object-fit:cover;"
+        onload="this.style.opacity=1;">
+    </div>
+    <div class="col-md-6 ps-1 pt-2">
+      <div class="card-body">
+        <h4 class="card-title">{{ user.name }}</h4>
+        <p class="card-text">{{ user.email }}</p>
+        <br>
+        <a class="btn btn-outline-primary" href="/users/{{user.id}}/edit">Edit</a>
+        {{!-- {{#if selfUser }}
+        <a class="btn btn-success" href="/users/{{ user.id }}/edit">Edit</a>
+        {{/if}} --}}
+      </div>
+    </div>
+  </div>
+</div>
+
+{{!-- comment panel --}}
+<div class="card" style="max-width: 800px; margin: auto;">
+  <div class="card-header">
+    {{#if user.Comments}}
+    {{user.Comments.length}}家已評論的餐廳
+    {{else}}
+    尚未評論過任何餐廳
+    {{/if}}
+  </div>
+  <div class="card-body">
+    {{#each user.Comments}}
+    <a href="/restaurants/{{this.Restaurant.id}}"><img src="{{this.Restaurant.image}}"
+        style="width:50px;height:50px;"></a>
+    {{/each}}
+  </div>
+</div>
+
+{{!-- <div class="card" style="max-width: 800px; margin: auto;">
+  <div class="card-header">
+    {{#if user.Comments}}
+    已評論了 {{user.Comments.length}} 家餐廳
+    {{else}}
+    尚未評論過任何餐廳
+    {{/if}}
+  </div>
+  <div class="card-body">
+    {{#each user.Comments}}
+    <a href="/restaurants/{{this.Restaurant.id}}">
+      <img src="{{this.Restaurant.image}}" alt="restaurant-img">
+    </a>
+    {{/each}}
+  </div>
+</div> --}}
