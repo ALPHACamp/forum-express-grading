@@ -31,7 +31,7 @@ router.post('/categories', categoryController.postCategory)
 router.get('/categories/:id', categoryController.getCategories)
 router.put('/categories/:id', categoryController.putCategory)
 
-// category delet
+// category delete
 router.delete('/categories/:id', categoryController.deleteCategory)
 
 // user admin setting

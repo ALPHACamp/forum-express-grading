@@ -1,0 +1,16 @@
+<div class="card mb-3" style="max-width: 800px; margin: auto;">
+  <div class="row g-0">
+    <div class="col-md-8">
+      <img src="{{ user.image }}" class="img-fluid rounded-start" alt="..."
+        style="width: 300px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+      <p>我是照片區</p>
+    </div>
+    <div class="col-md-4">
+      <div class="card-body">
+        <h4 class="card-title">{{ user.name }}</h4>
+        <p class="card-text">{{ user.email }}</p>
+        <a class="btn btn-success" href="/users/:id/edit">Edit</a>
+      </div>
+    </div>
+  </div>
+</div>

@@ -41,6 +41,13 @@ router.post('/comments', authenticated, commentController.postComment)
 // comment delete
 router.delete('/comments/:id', authenticated, commentController.deleteComment)
 
+// user profile
+router.get('/users/:id', authenticated, userController.getUser)
+
+// user profile edit
+router.get('/users/id/edit', authenticated, userController.editUser)
+router.put('/users/:id', authenticated, userController.putUser)
+
 router.use('/', generalErrorHandler)
 
 module.exports = router
