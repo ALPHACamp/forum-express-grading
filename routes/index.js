@@ -39,6 +39,8 @@ router.get('/users/:id/edit', authenticated, userController.editUser)
 router.put('/users/:id', authenticated, upload.single('image'), userController.putUser)
 // 瀏覽使用者個人頁面
 router.get('/users/:id', authenticated, userController.getUser)
+// top-10人氣餐廳
+router.get('/restaurants/top', authenticated, restController.getTopRestaurants)
 // 瀏覽最新動態
 router.get('/restaurants/feeds', authenticated, restController.getFeeds)
 // 瀏覽儀錶板
