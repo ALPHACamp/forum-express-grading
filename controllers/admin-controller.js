@@ -1,4 +1,4 @@
-const { Restaurant } = require('../models') // 新增這裡
+const { Restaurant, User } = require('../models') // 新增這裡
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const adminController = { // 修改這裡
@@ -84,6 +84,28 @@ const adminController = { // 修改這裡
       })
       .then(() => res.redirect('/admin/restaurants'))
       .catch(err => next(err))
+  },
+  getUsers: (req, res, next) => {
+    return User.findAll({ raw: true })
+      .then(users => res.render('admin/users', { users }))
+      .catch(err => next(err))
+  },
+  patchUser: (req, res, next) => {
+    return User.findByPk(req.params.id)
+      .then(user => {
+        if (!user) throw new Error("Restaurant didn't exist!")
+        if (user.email === 'root@example.com') {
+          req.flash('error_messages', '禁止變更 root 權限')
+          return res.redirect('back')
+        }
+        if (user.isAdmin) return user.update({ isAdmin: false })
+        if (!user.isAdmin) return user.update({ isAdmin: true })
+      })
+      .then(() => {
+        req.flash('success_messages', '使用者權限變更成功')
+        return res.redirect('/admin/users')
+      }
+      ).catch(err => next(err))
   }
 
 }
