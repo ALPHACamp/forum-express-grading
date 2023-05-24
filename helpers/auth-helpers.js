@@ -2,8 +2,8 @@ const getUser = req => {
   return req.user || null
 }
 
-const ensureAuththenticated = req => {
+const ensureAuthenticated = req => {
   return req.isAuthenticated()
 }
 
-module.exports = { getUser, ensureAuththenticated }
+module.exports = { getUser, ensureAuthenticated }

@@ -3,17 +3,19 @@
   </div>
   {{!-- 大頭照 --}}
   <div class="col-md-6 mt-3">
-    <img class="img-responsive center-block mb-5" src="{{user.dataValues.image}}"
+    <img class="img-responsive center-block mb-5" src="{{user.image}}"
       style="width: 250px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
   </div>
   {{!-- 姓名與編輯按鈕 --}}
   <div class="col-md-6 mt-3">
-    <h1><strong>{{user.dataValues.name}}</strong></h1>
-    <h2>{{user.dataValues.email}}</h2>
+    <h1><strong>{{user.name}}</strong></h1>
+    <h2>{{user.email}}</h2>
+    {{#ifCond  userId user.id}}
     <button type="button" class="btn mt-5">
-      <a class="btn btn-primary" href="/users/{{user.dataValues.id}}/edit">
+      <a class="btn btn-primary" href="/users/{{user.id}}/edit">
         edit
       </a>
     </button>
+    {{/ifCond}}
   </div>
 </div>
