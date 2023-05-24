@@ -26,11 +26,10 @@ const adminController = {
   },
   // 管理者新增功能
   postRestaurant: async (req, res, next) => {
+    const { name, tel, address, openingHours, description, categoryId } = req.body
+    if (!name) throw new Error('Restaurant name is required.')
+    const { file } = req
     try {
-      const { name, tel, address, openingHours, description, categoryId } = req.body
-      if (!name) throw new Error('Restaurant name is required.')
-
-      const { file } = req
       const filePath = await imgurFileHandler(file)
       const newRestaurant = await Restaurant.create({ name, tel, address, openingHours, description, image: filePath || null, categoryId })
       if (newRestaurant) {
@@ -43,8 +42,8 @@ const adminController = {
   },
   // 管理者瀏覽單筆餐廳資料
   getRestaurant: async (req, res, next) => {
+    const { id } = req.params
     try {
-      const id = req.params.id
       const restaurant = await Restaurant.findByPk(id, {
         raw: true, // 只有單筆資料時這段可省略，
         nest: true, // 渲染時用 { restaurant: restaurant.toJSON() } 效果相同
@@ -58,8 +57,8 @@ const adminController = {
   },
   // 管理者修改頁面
   editRestaurant: async (req, res, next) => {
+    const { id } = req.params
     try {
-      const id = req.params.id
       const categories = await Category.findAll({ raw: true })
       const restaurant = await Restaurant.findByPk(id, { raw: true })
       if (!restaurant) throw new Error("Restaurant didn't exist.")
@@ -70,11 +69,11 @@ const adminController = {
   },
   // 管理者修改單筆資料
   putRestaurant: async (req, res, next) => {
+    const { name, tel, address, openingHours, description, categoryId } = req.body
+    if (!name) throw new Error('Restaurant name is required.')
+    const { id } = req.params
+    const { file } = req
     try {
-      const { name, tel, address, openingHours, description, categoryId } = req.body
-      if (!name) throw new Error('Restaurant name is required.')
-      const { file } = req
-      const { id } = req.params
       const restaurant = await Restaurant.findByPk(id)
       if (!restaurant) throw new Error("Restaurant didn't exist.")
       const filePath = await imgurFileHandler(file)
@@ -89,8 +88,8 @@ const adminController = {
   },
   // 管理員刪除資料
   deleteRestaurant: async (req, res, next) => {
+    const { id } = req.params
     try {
-      const id = req.params.id
       const restaurant = await Restaurant.findByPk(id)
       if (!restaurant) throw new Error("Restaurant didn't exist.")
       const deleteRestaurant = await restaurant.destroy()
@@ -110,8 +109,8 @@ const adminController = {
   },
   // 管理者變更使用者權限
   patchUser: async (req, res, next) => {
+    const { id } = req.params
     try {
-      const id = req.params.id
       const findUser = await User.findByPk(id)
       // 若找不到使用者
       if (!findUser) throw new Error("User didn't exist.")

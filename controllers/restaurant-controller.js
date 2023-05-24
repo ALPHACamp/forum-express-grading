@@ -8,8 +8,8 @@ const restaurantController = {
     const categoryId = Number(req.query.categoryId) || ''
     const page = Number(req.query.page) || 1
     const limit = Number(req.query.limit) || DEFAULT_LIMIT
+    const offset = getOffset(limit, page)
     try {
-      const offset = getOffset(limit, page)
       const categories = await Category.findAll({ raw: true, nest: true })
       const restaurants = await Restaurant.findAndCountAll({
         raw: true,
@@ -33,7 +33,6 @@ const restaurantController = {
   // 使用者瀏覽單筆餐廳資料
   getRestaurant: async (req, res, next) => {
     const { id } = req.params
-    const { user } = req
     try {
       const restaurant = await Restaurant.findByPk(id, {
         // raw: true,
@@ -42,7 +41,6 @@ const restaurantController = {
       })
       if (!restaurant) throw new Error("Restaurant didn't exist!")
       await Restaurant.increment('view_counts', { where: { id } })
-      console.log(user)
       return res.render('restaurant', { restaurant: restaurant.toJSON() })
     } catch (e) {
       next(e)
@@ -52,9 +50,11 @@ const restaurantController = {
   getDashboard: async (req, res, next) => {
     const { id } = req.params
     try {
-      const restaurant = await Restaurant.findByPk(id, { raw: true, nest: true, include: Category })
+      const restaurant = await Restaurant.findByPk(id, { include: [Category, { model: Comment }] })
       if (!restaurant) throw new Error("Restaurant didn't exist!")
-      return res.render('dashboard', { restaurant })
+      const totalComments = restaurant.Comments?.length || 0
+      // console.log(totalComments)
+      return res.render('dashboard', { restaurant: restaurant.toJSON(), totalComments })
     } catch (e) {
       next(e)
     }

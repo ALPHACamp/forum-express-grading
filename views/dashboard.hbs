@@ -7,8 +7,17 @@
   <div class="col-md-5">
     <div class="well">
       <ul class="list-unstyled">
-        <li><strong>瀏覽次數：</strong> {{restaurant.viewCounts}}</li>
-        <li><strong>評論數：</strong> {{restaurant.Comments.length}}</li>
+        <li><strong>瀏覽次數：{{restaurant.viewCounts}}</strong> </li>
+        <li>
+          <strong>
+            評論數：
+            {{#ifCond totalComments 0 }}
+            0
+            {{else}}
+            {{ totalComments }}
+            {{/ifCond}}
+          </strong>
+        </li>
         <li><strong>收藏數：</strong> -</li>
       </ul>
     </div>
