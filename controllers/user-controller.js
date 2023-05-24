@@ -69,20 +69,19 @@ const userController = {
     if (!name) throw new Error('User name is required!')
 
     const { file } = req // 把檔案取出來，也可以寫成 const file = req.file
-    Promise.all([
+    return Promise.all([
       User.findByPk(req.params.id),
       imgurFileHandler(file)]) // 把取出的檔案傳給 file-helper 處理後
       .then(([user, filePath]) => {
-        console.log(user)
         if (!user) throw new Error("User didn't exist!")
-        return user.update({
+        user.update({
           name,
           image: filePath || user.image
         })
+        req.flash('success_messages', '使用者資料編輯成功')
       })
-      .then((user) => {
-        req.flash('success_messages', 'user was successfully to update')
-        res.redirect(`/users/${user.id}`)
+      .then(() => {
+        res.redirect(`/users/${req.params.id}`)
       })
       .catch(err => next(err))
   }
