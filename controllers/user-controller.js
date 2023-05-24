@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs') // 載入 bcrypt
-const db = require('../models')
-const { User } = db
+const { User } = require('../models')
+const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const userController = {
   signUpPage: (req, res) => {
@@ -37,6 +37,54 @@ const userController = {
     req.flash('success_messages', '登出成功！')
     req.logout() // 把 user id 對應的 session 清除掉，對伺服器來說 session 消失就等於是把使用者登出了。
     res.redirect('/signin')
+  },
+  getUser: (req, res, next) => {
+    return User.findByPk((req.params.id), {
+      nest: true,
+      raw: true
+    })
+      .then(user => {
+        if (!user) throw new Error("User didn't exist!")
+        res.render('users/profile', {
+          user
+        })
+      })
+      .catch(err => next(err))
+  },
+  editUser: (req, res, next) => {
+    return User.findByPk((req.params.id), {
+      nest: true,
+      raw: true
+    })
+      .then(user => {
+        if (!user) throw new Error("User didn't exist!")
+        res.render('users/edit', {
+          user
+        })
+      })
+      .catch(err => next(err))
+  },
+  putUser: (req, res, next) => {
+    const { name } = req.body
+    if (!name) throw new Error('User name is required!')
+
+    const { file } = req // 把檔案取出來，也可以寫成 const file = req.file
+    Promise.all([
+      User.findByPk(req.params.id),
+      imgurFileHandler(file)]) // 把取出的檔案傳給 file-helper 處理後
+      .then(([user, filePath]) => {
+        console.log(user)
+        if (!user) throw new Error("User didn't exist!")
+        return user.update({
+          name,
+          image: filePath || user.image
+        })
+      })
+      .then((user) => {
+        req.flash('success_messages', 'user was successfully to update')
+        res.redirect(`/users/${user.id}`)
+      })
+      .catch(err => next(err))
   }
 }
 
