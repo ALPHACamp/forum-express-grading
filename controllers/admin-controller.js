@@ -1,8 +1,6 @@
 const { Restaurant, User, Category } = require("../models");
 const { imgurFileHandler } = require("../helpers/file-helpers");
 const adminController = {
-  // 修改這裡
-
   getRestaurants: (req, res, next) => {
     Restaurant.findAll({
       raw: true,
