@@ -1,9 +1,5 @@
 const bcrypt = require('bcryptjs')
-<<<<<<< HEAD
-const { User } = require('../models')
-=======
 const { User, Comment, Restaurant } = require('../models')
->>>>>>> R03
 const { imgurFileHandler } = require('../helper/file-helpers')
 
 const userController = {
@@ -49,16 +45,6 @@ const userController = {
 
   getUser: (req, res, next) => {
     const { id } = req.params
-<<<<<<< HEAD
-    const signInUserId = req.user?.id || id
-
-    return User.findByPk(id, { raw: true })
-      .then(user => {
-        if (!user) throw new Error("User didn't exist!")
-        // req.params 中的 id, 型別是 string, 需要轉成 number 才能判斷 true/false
-        const selfUser = signInUserId === Number(id) ? 1 : 0
-        return res.render('users/profile', { user, selfUser })
-=======
     return User.findByPk(id, {
       include: [
         {
@@ -77,7 +63,6 @@ const userController = {
           }
         }
         res.render('users/profile', { user: user.toJSON() })
->>>>>>> R03
       })
       .catch(err => next(err))
   },
