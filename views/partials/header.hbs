@@ -1,0 +1,41 @@
+<header>
+  <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark px-4">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="/">餐廳評論網</a>
+      {{#if user}}
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
+        aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarCollapse">
+        <ul class="navbar-nav ms-auto mb-2 mb-md-0">
+          {{#if loginUser}}
+            {{#if loginUser.isAdmin}}
+              <li class="nav-item">
+                <a href="/admin" class="nav-link">Admin 後台</a>
+              </li>
+            {{/if}}
+          {{else}}
+            {{#if user.isAdmin}}
+              <li class="nav-item">
+                <a href="/admin" class="nav-link">Admin 後台</a>
+              </li>
+            {{/if}}
+          {{/if}}
+          <li class="nav-item d-inline-flex align-items-center">
+            <span class="text-white nav-link">Hi,{{#if loginUser}}{{loginUser.email}}{{else}}{{ user.email
+              }}{{/if}}</span>
+          </li>
+          <li class="nav-item">
+            <a href="/users/{{#if loginUser}}{{loginUser.id}}{{else}}{{ user.id }}{{/if}}"><button
+                class="btn my-sm-0 my-2 me-2" style="text-decoration: none; color: white">Profile</button></a>
+          </li>
+          <li class="nav-item">
+            <a href="/logout"><button class="btn btn-outline-success my-sm-0 my-2">Logout</button></a>
+          </li>
+        </ul>
+      </div>
+      {{/if}}
+    </div>
+  </nav>
+</header>
