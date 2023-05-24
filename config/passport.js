@@ -30,7 +30,6 @@ passport.serializeUser((user, cb) => {
 passport.deserializeUser((id, cb) => {
   User.findByPk(id).then(user => {
     user = user.toJSON()// 把user轉換成json，叫好取用
-    console.log(user) // 暫時添加
     return cb(null, user)
   })
 })
