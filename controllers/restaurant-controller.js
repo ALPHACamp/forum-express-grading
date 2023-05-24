@@ -1,6 +1,6 @@
 const { Restaurant, Category, Comment, User } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
-const restaurantController = {
+const restController = {
   getRestaurants: (req, res) => {
     const DEFAULT_LIMIT = 9
     const categoryId = Number(req.query.categoryId) || ''
@@ -25,15 +25,14 @@ const restaurantController = {
       Category.findAll({ raw: true })
     ])
       .then(([restaurants, categories]) => {
-        // console.log(restaurants)
-        // console.log('----------------------------------------')
         const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
         // 因為 req.user 有可能是空的所以先檢查
+        const likedRestaurantsId = req.user && req.user.LikedRestaurants.map(lr => lr.id)
         const data = restaurants.rows.map(r => ({
           ...r,
           description: r.description.substring(0, 50),
-          // isFavorited: req.user.FavoritedRestaurants.map(fr => fr.id).include(r.id)
-          isFavorited: favoritedRestaurantsId.includes(r.id)
+          isFavorited: favoritedRestaurantsId.includes(r.id),
+          isLike: likedRestaurantsId.includes(r.id)
         }))
         return res.render('restaurants', {
           restaurants: data,
@@ -48,20 +47,27 @@ const restaurantController = {
       include: [
         Category,
         { model: Comment, include: User },
-        { model: User, as: 'FavoritedUsers' }
+        { model: User, as: 'FavoritedUsers' },
+        { model: User, as: 'LikedUsers' }
       ]
       // nest: true, //... 有bug會取消一對多關係
       // raw: true //... 整理格式
     })
       .then(restaurant => {
+        if (!restaurant) throw new Error("Restaurant didn't exist")
+        return restaurant.increment('viewCounts', { by: 1 })
+      })
+      .then(restaurant => {
         // const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id) //.....太複雜
         const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id)
-        if (!restaurant) throw new Error("Restaurant didn't exist")
+        const isLike = restaurant.LikedUsers.some(f => f.id === req.user.id)
+
         // res.render('restaurant', { restaurant })
         res.render('restaurant', {
           restaurant: restaurant.toJSON(),
           // isFavorited: favoritedRestaurantsId.includes(r.id) //... 太複雜
-          isFavorited
+          isFavorited,
+          isLike
         })
       })
       .catch(err => next(err))
@@ -86,15 +92,20 @@ const restaurantController = {
       .then(([restaurants, comments]) => res.render('feeds', { restaurants, comments }))
       .catch(err => next(err))
   },
-  getDashboard: (req, res, next) => {
-    return Restaurant.findByPk(req.params.id, {
-      include: [Category]
-    })
-      .then(restaurant => {
-        return restaurant.increment('viewCounts', { by: 1 })
+  getDashboard: async (req, res, next) => {
+    // getDashBoard 正確執行的話，應呼叫 res.render
+    // res.render 的第 1 個參數要是 'dashboard'
+    // res.render 的第 2 個參數要包含 restaurant，其 name 屬性的值應是 '銷魂麵'
+    // res.render 的第 2 個參數要包含 restaurant，其 viewCounts 值應該是 3
+    try {
+      const restaurant = await Restaurant.findByPk(req.params.id, {
+        include: [Category]
       })
-      .then(restaurant => res.render('dashboard', { restaurant: restaurant.toJSON() }))
-      .catch(err => next(err))
+      if (!restaurant) throw new Error("Restaurant didn't exist")
+      res.render('dashboard', { restaurant: restaurant.toJSON() })
+    } catch (error) {
+      next(error)
+    }
   }
 }
-module.exports = restaurantController
+module.exports = restController

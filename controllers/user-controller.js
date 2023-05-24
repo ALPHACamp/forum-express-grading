@@ -1,6 +1,6 @@
 const db = require('../models')
 const bcrypt = require('bcryptjs')
-const { User, Favorite, Restaurant } = db
+const { User, Favorite, Restaurant, Like } = db
 
 const userController = {
   signUpPage: (req, res) => {
@@ -76,7 +76,8 @@ const userController = {
       .catch(err => next(err))
   },
   getUser: (req, res, next) => {
-    const userId = req.user.id
+    // const userId = req.user.id
+    const userId = req.params.id
     return User.findByPk(userId, { raw: true })
       .then(user => {
         if (!user) throw new Error("This user didn't exist.")
@@ -85,7 +86,8 @@ const userController = {
       .catch(err => next(err))
   },
   editUser: (req, res, next) => {
-    const userId = req.user.id
+    // const userId = req.user.id
+    const userId = req.params.id
     return User.findByPk(userId, { raw: true })
       .then(user => {
         if (!user) throw new Error("This user didn't exist.")
@@ -94,15 +96,57 @@ const userController = {
       .catch(err => next(err))
   },
   putUser: (req, res, next) => {
-    const userId = req.user.id
-    // const {}
-    // Promise.all([])
+    const userId = req.params.id
+    const { name } = req.body
+    console.log('-----------------here2-------------------' + req.body)
     return User.findByPk(userId)
       .then(user => {
+        console.log('-----------------here-------------------' + name)
         if (!user) throw new Error("This user didn't exist.")
-        req.flash('success_messages', '使用者資料編輯成功')
-        return res.render('users/edit')
+        return user.update({ name })
       })
+      .then(() => {
+        req.flash('success_messages', '使用者資料編輯成功')
+        return res.redirect(`/users/${userId}`)
+      })
+      .catch(err => next(err))
+  },
+  addLike: (req, res, next) => {
+    const { restaurantId } = req.params
+    const userId = req.user.id
+    return Promise.all([
+      Restaurant.findByPk(restaurantId),
+      Like.findOne({
+        where: {
+          userId,
+          restaurantId
+        }
+      })
+    ])
+      .then(([restaurant, like]) => {
+        if (!restaurant) throw new Error("This restaurant didn't exist.")
+        if (like) throw new Error('This restaurant is already in your favorite list.')
+        return Like.create({
+          userId,
+          restaurantId
+        })
+      })
+      .then(() => res.redirect('back'))
+      .catch(err => next(err))
+  },
+  removeLike: (req, res, next) => {
+    const { restaurantId } = req.params
+    const userId = req.user.id
+    return Promise.all([
+      Restaurant.findByPk(restaurantId),
+      Like.findOne({ where: { userId, restaurantId } })
+    ])
+      .then(([restaurant, like]) => {
+        if (!restaurant) throw new Error("This restaurant didn't exist.")
+        if (!like) throw new Error("This restaurant isn't in your favorite list.")
+        return like.destroy()
+      })
+      .then(() => res.redirect('back'))
       .catch(err => next(err))
   }
 }
