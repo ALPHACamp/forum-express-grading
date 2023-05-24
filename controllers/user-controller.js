@@ -45,32 +45,26 @@ const userController = {
 
   getUser: (req, res, next) => {
     const { id } = req.params
-    const signInUserId = req.user?.id || id
-
     return User.findByPk(id, {
-      include: [Comment, { model: Restaurant }],
-      nest: true
+      include: [
+        {
+          model: Comment,
+          include: Restaurant
+        }
+      ]
     })
       .then(user => {
-        if (!user) throw new Error("User didn't exist!")
+        if (!user) {
+          throw new Error("User didn't exist!")
+        }
         if (req.user) {
-          if (user.id === req.user.id) {
-            return res.redirect(`/users/${req.user.id}`)
+          if (user.id !== req.user.id) {
+            return res.redirect('/users/' + id)
           }
         }
-        const selfUser = signInUserId === Number(id) ? 1 : 0
-        res.render('users/profile', { user: user.toJSON(), selfUser })
+        res.render('users/profile', { user: user.toJSON() })
       })
       .catch(err => next(err))
-
-    // return User.findByPk(id, { raw: true })
-    //   .then(user => {
-    //     if (!user) throw new Error("User didn't exist!")
-    //     // req.params 中的 id, 型別是 string, 需要轉成 number 才能判斷 true/false
-    //     const selfUser = signInUserId === Number(id) ? 1 : 0
-    //     return res.render('users/profile', { user, selfUser })
-    //   })
-    //   .catch(err => next(err))
   },
 
   editUser: (req, res, next) => {
