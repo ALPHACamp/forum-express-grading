@@ -67,13 +67,13 @@ const userController = {
   putUser: (req, res, next) => {
     const { name } = req.body
     const { file } = req
-    if (!name) throw new Error('Name is required!')
     return Promise.all([ // 非同步處理
       User.findByPk(req.user.id), // 去資料庫查有沒有這個使用者
       imgurFileHandler(file) // 把檔案傳到 file-helper 處理
     ])
       .then(([user, filePath]) => { // 以上兩樣事都做完以後
         if (!user) throw new Error("User didn't exist!")
+        if (user.id !== Number(req.params.id)) throw new Error('Edit self profile only!')
         return user.update({ // 修改這筆資料
           name,
           image: filePath || user.image // 如果 filePath 是 Truthy (使用者有上傳新照片) 就用 filePath，是 Falsy (使用者沒有上傳新照片) 就沿用原本資料庫內的值
