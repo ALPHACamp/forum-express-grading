@@ -14,8 +14,13 @@
     </div>
   </div>
   <div class="col-md-8">
-    {{!-- <p><strong>Description</strong></p> --}}
     <p style="white-space: break-spaces;">{{restaurant.description}}</p>
+    <button type="button" class="btn btn-link">
+      <a class="btn btn-primary btn-link link-light" href="/restaurants/{{restaurant.id}}/dashboard">
+        Dashboard
+      </a>
+    </button>
+    <br>
   </div>
   <hr>
 </div>
