@@ -1,49 +1,5 @@
 {{> admin-tabs route='users'}}
 
-<br />
-<table class="table align-middle">
-  <thead class="thead-dark">
-    <tr style="background-color: black;">
-      <th scope="col" style="color: white;">#</th>
-      <th scope="col" style="color: white;">Name</th>
-      <th scope="col" style="color: white;">Email</th>
-      <th scope="col" style="color: white;">Role</th>
-      <th scope="col" style="color: white;">#</th>
-    </tr>
-  </thead>
-  <tbody>
-    {{#each users}}
-    <tr>
-      <th scope="row">{{this.id}}</th>
-      <td>{{this.name}}</td>
-      <td>{{this.email}}</td>
-      <td>{{#if this.isAdmin}}admin{{else}}user{{/if}}</td>
-      <td>
-        <form action="/admin/users/{{this.id}}?_method=PATCH" method="post">
-          <button type="submit" class="btn-link" style="border: none; background:none; text-decoration: none"
-            onclick="return confirm(`確定要變更{{name}}權限嗎?`)">
-            {{#if this.isAdmin}}set as user{{else}}set as admin{{/if}}
-          </button>
-          {{!-- btn-secondary btn-sm --}}
-        </form>
-      </td>
-    </tr>
-    {{/each}}
-  </tbody>
-</table>
-<h1>餐廳後台</h1>
-<ul class="nav nav-tabs">
-  <li class="nav-item">
-    <a href='/admin/restaurants' class="nav-link active btn-link"> Restaurants </a>
-  </li>
-  <li class="nav-item">
-    <a href='/admin/users' class="nav-link btn-link"> Users </a>
-  </li>
-  <a href='#' style="margin-left: auto;">
-    <button type="button" class="btn btn-secondary">New User</button>
-  </a>
-</ul>
-<br />
 <table class="table align-middle">
   <thead class="thead-dark">
     <tr style="background-color: black;">
