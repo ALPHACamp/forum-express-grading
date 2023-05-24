@@ -74,6 +74,7 @@ const userController = {
         res.render('users/edit', {
           user
         })
+        console.log('reder done')
       })
       .catch(err => next(err))
   },
