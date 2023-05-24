@@ -16,10 +16,11 @@ router.get('/signin', userController.signInPage)
 router.post('/signin', passport.authenticate('local', { failureRedirect: '/signin', failureFlash: true }), userController.signIn) // 注意是 post
 router.get('/logout', userController.logout)
 
-router.get('/restaurants', authenticated, restController.getRestaurants)
 router.get('/restaurants/:id', restController.getRestaurant)
+router.get('/restaurants/:id/dashboard', restController.getDashboard)
+router.get('/restaurants', authenticated, restController.getRestaurants)
 
 router.use('/', (req, res) => res.redirect('/restaurants'))
-router.use('/', generalErrorHandler) // 加入這行
+router.use('/', generalErrorHandler)
 
 module.exports = router
