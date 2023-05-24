@@ -1,6 +1,5 @@
 const bcrypt = require('bcryptjs')
-const db = require('../models')
-const { User } = db
+const { User } = require('../models')
 const { imgurFileHandler } = require('../helper/file-helpers')
 
 const userController = {
@@ -51,6 +50,7 @@ const userController = {
     return User.findByPk(id, { raw: true })
       .then(user => {
         if (!user) throw new Error("User didn't exist!")
+        // req.params 中的 id, 型別是 string, 需要轉成 number 才能判斷 true/false
         const selfUser = signInUserId === Number(id) ? 1 : 0
         return res.render('users/profile', { user, selfUser })
       })
@@ -72,22 +72,23 @@ const userController = {
     const { name } = req.body
     const { file } = req
 
-    Promise.all([
+    return Promise.all([
       User.findByPk(id),
       imgurFileHandler(file)
     ])
       .then(([user, filePath]) => {
-        if (!user) throw new Error("User did't exist!")
+        if (!user) throw new Error("User didn't exist!")
         return user.update({
           name,
           image: filePath || user.image
         })
-          .then(user => {
+          .then(() => {
             req.flash('success_messages', '使用者資料編輯成功')
-            res.redirect(`/users/${user.id}`)
+            res.redirect('/users/' + id)
           })
           .catch(err => next(err))
       })
+      .catch(err => next(err))
   }
 }
 
