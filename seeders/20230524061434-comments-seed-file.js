@@ -18,7 +18,7 @@ module.exports = {
         created_at: new Date(),
         updated_at: new Date(),
         user_id: users[Math.floor(Math.random() * users.length)].id,
-        restaurant_id: restaurants[Math.floor(Math.random() * users.length)].id
+        restaurant_id: restaurants[Math.floor(Math.random() * restaurants.length)].id
       }))
     )
   },

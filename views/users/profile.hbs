@@ -1,7 +1,4 @@
 <div class="row mb-5">
-  <div class="col-md-12">
-    <h1>{{restaurant.name}}</h1>
-  </div>
   <div class="col-md-4">
     <img class="img-responsive center-block mb-5" src="{{user.image}}"
       style="width: 250px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
@@ -11,21 +8,28 @@
       <ul class="list-unstyled">
         <li><strong>{{user.name}}</strong></li>
         <li>{{user.email}}</li>
-        <li>{{commnetRestuarantCounts}}</li>
+        <li>{{comments.count}}已評論餐廳</li>
       </ul>
 
     </div>
+    {{#ifCond accountUser.id user.id}}
     <a class="btn btn-primary" href="/users/{{user.id}}/edit" role="button">edit</a>
+    {{/ifCond}}
   </div>
   <hr>
 </div>
 <div class="col">
   <div class="card">
     <div class="card-header">
-      {{commnetRestuarantCounts}}已評論餐廳
+      {{comments.count}}已評論餐廳
     </div>
     <div class="card-body">
-
+      {{#each comments.rows}}
+      <a href="/restaurants/{{this.Restaurant.id}}">
+        <img class="img-responsive center-block mb-5" src="{{this.Restaurant.image}}"
+        style="width: 100px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+        </a>
+      {{/each}}
     </div>
   </div>
 </div>
