@@ -12,6 +12,10 @@ const SESSION_SECRET = 'secret'
 const passport = require('./config/passport')
 const methodOverride = require('method-override')
 
+if (process.env.NODE_ENV !== "production") {
+  require("dotenv").config();
+}
+
 // 註冊 Handlebars 樣板引擎，並指定副檔名為 .hbs
 app.engine('hbs', handlebars({ extname: '.hbs', helpers: handlebarsHelpers }))
 // 設定使用 Handlebars 做為樣板引擎

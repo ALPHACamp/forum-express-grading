@@ -1,6 +1,5 @@
-const db = require('../models')
-const Restaurant = db.Restaurant
-const { localFileHandler } = require('../helpers/file-helpers')
+const { Restaurant, User, Category } = require("../models")
+const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const adminController = {
   getRestaurants: (req, res, next) => {
@@ -15,8 +14,8 @@ const adminController = {
     const { name, tel, address, openingHours, description } = req.body // 從 req.body 拿出表單裡的資料
     if (!name) throw new Error('Restaurant name is required!') // name 是必填，若發先是空值就會終止程式碼，並在畫面顯示錯誤提示
     const { file } = req
-    localFileHandler(file) // 把取出的檔案傳給 file-helper 處理後
-      .then(filePath =>
+    return imgurFileHandler(file) // 把取出的檔案傳給 file-helper 處理後
+      .then((filePath) =>
         Restaurant.create({
           // 再 create 這筆餐廳資料
           name,
@@ -24,13 +23,14 @@ const adminController = {
           address,
           openingHours,
           description,
-          image: filePath || null
-        }))
+          image: filePath || null,
+        })
+      )
       .then(() => {
-        req.flash('success_messages', 'restaurant was successfully created') // 在畫面顯示成功提示
-        res.redirect('/admin/restaurants') // 新增完成後導回後台首頁
+        req.flash("success_messages", "restaurant was successfully created"); // 在畫面顯示成功提示
+        res.redirect("/admin/restaurants"); // 新增完成後導回後台首頁
       })
-      .catch(err => next(err))
+      .catch((err) => next(err));
   },
   getRestaurant: (req, res, next) => {
     Restaurant.findByPk(req.params.id, {
@@ -59,9 +59,9 @@ const adminController = {
     if (!name) throw new Error('Restaurant name is required!')
     const { file } = req
     // 將兩個promise 的物件包在陣列裡，傳入下一個then裡
-    Promise.all([
+    return Promise.all([
       Restaurant.findByPk(req.params.id),
-      localFileHandler(file)
+      imgurFileHandler(file)
     ])
       .then(([restaurant, filePath]) => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
