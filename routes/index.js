@@ -3,11 +3,13 @@ const router = express.Router()
 const passport = require('../config/passport')
 const admin = require('./modules/admin')
 
+const commentController = require('../controllers/​​comment-controller')
 const restaurantController = require('../controllers/restaurant-controller')
 const userController = require('../controllers/user-controller')
 const { authenticated, authenticatedAdmin } = require('../middleware/auth')
 const { generalErrorHandler } = require('../middleware/error-handler')
 
+router.post('/comments', authenticated, commentController.postComment)
 router.get('/restaurants/:id/dashboard', authenticated, restaurantController.getDashboard)
 router.use('/admin', authenticatedAdmin, admin)
 router.get('/signup', userController.signUpPage)
