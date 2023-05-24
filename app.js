@@ -1,13 +1,16 @@
 const path = require('path')
 const express = require('express')
 const handlebars = require('express-handlebars')
-const session = require('express-session')
 const flash = require('connect-flash')
 const methodOverride = require('method-override')
+const session = require('express-session')
 const passport = require('./config/passport')
 const handlebarsHelpers = require('./helpers/handlebars-helpers')
+
 const { getUser } = require('./helpers/auth-helpers')
+
 const routes = require('./routes')
+
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config()
 }

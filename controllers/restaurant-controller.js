@@ -37,7 +37,9 @@ const restaurantController = {
   },
   getRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
-      include: [Category, { model: Comment, include: User }] // 加入 order: [[ 'updateAtDESC']] 可調整留言順序
+      include: [Category, {
+        model: Comment, include: User
+      }]
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
