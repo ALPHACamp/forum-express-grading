@@ -29,10 +29,11 @@ passport.serializeUser((user, cb) => {
 passport.deserializeUser((id, cb) => {
   return User.findByPk(id, {
     include: [
-      { model: Restaurant, as: 'FavoritedRestaurants' }
+      { model: Restaurant, as: 'FavoritedRestaurants' }, // 指名model要的關係
+      { model: Restaurant, as: 'LikedRestaurants' }
     ]
   })
-    .then(user => cb(null, user.toJSON()))
+    .then(user => cb(null, user.toJSON()))// 將資料打包列印出來
     .catch(err => cb(err))
 })
 module.exports = passport
