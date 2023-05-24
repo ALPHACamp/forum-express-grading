@@ -1,8 +1,9 @@
 const { Category } = require('../models')
+
 const categoryController = {
   // 瀏覽全分類
   getCategories: async (req, res, next) => {
-    const id = req.params.id
+    const { id } = req.params
     try {
       if (id) {
         const category = await Category.findByPk(id, { raw: true })

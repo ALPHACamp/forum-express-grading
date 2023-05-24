@@ -1,6 +1,5 @@
 const bcrypt = require('bcryptjs')
-const db = require('../models')
-const { User } = db
+const { User, Comment, Restaurant } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const userController = {
@@ -10,14 +9,12 @@ const userController = {
   },
   // 使用者註冊功能
   signUp: async (req, res, next) => {
+    // 若前後密碼不一致
+    if (req.body.password !== req.body.passwordCheck) throw new Error('Passwords do not match!')
     try {
-      // 若前後密碼不一致
-      if (req.body.password !== req.body.passwordCheck) throw new Error('Passwords do not match!')
       const findUser = await User.findOne({ where: { email: req.body.email } })
       // 若Email已註冊
-      if (findUser) {
-        throw new Error('Email already exists!')
-      }
+      if (findUser) throw new Error('Email already exists!')
 
       const passwordHash = await bcrypt.hash(req.body.password, 12)
       const createUser = await User.create({
@@ -59,9 +56,18 @@ const userController = {
     const { id } = req.params // string
     const userId = req.user?.id || id // number
     try {
-      const user = await User.findByPk(id, { raw: true, nest: true })
+      const user = await User.findByPk(id, {
+        raw: true,
+        nest: true
+      })
       if (!user) throw new Error("User didn't exist!")
-      return res.render('users/profile', { user, userId })
+      const comments = await Comment.findAndCountAll({
+        raw: true,
+        nest: true,
+        where: { userId: id },
+        include: Restaurant
+      })
+      return res.render('users/profile', { user, userId, comments })
     } catch (e) {
       next(e)
     }
@@ -85,17 +91,22 @@ const userController = {
   // 修改使用者資料
   putUser: async (req, res, next) => {
     const { id } = req.params
+    const userId = req.user?.id || id
+    if (Number(id) !== userId) {
+      req.flash('error_messages', "Not allow to edit other's profile")
+      return res.redirect(`/users/${id}`)
+    }
     const { name } = req.body
-    if (!name) throw new Error('Name is required!')
+    if (!name) throw new Error('User name is required!')
     const { file } = req
     try {
-      const user = await User.findByPk(id)
+      const [user, filePath] = await Promise.all([User.findByPk(id), imgurFileHandler(file)])
       if (!user) throw new Error("User didn't exist.")
 
-      const filePath = await imgurFileHandler(file)
-      await user.update({ ...user, name, image: filePath || user.image })
+      await user.update({ name, image: filePath || user.image })
       req.flash('success_messages', '使用者資料編輯成功')
-      return res.redirect(`/users/${id}`)
+
+      return res.redirect(`/users/${user.id}`)
     } catch (e) {
       next(e)
     }
