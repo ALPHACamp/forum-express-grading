@@ -1,0 +1,41 @@
+<div class="card mb-3">
+  <div class="row g-0">
+    <div class="col-md-4">
+      <img src="{{user.image}}" class="img-fluid rounded-start" alt="user can't get">
+    </div>
+    <div class="col-md-8">
+      <div class="card-body">
+        <h5 class="card-title">{{user.name}}</h5>
+        <p class="card-text">{{user.email}}</p>
+        {{#if user.Comments.length}}
+        <p class="card-text">{{user.Comments.length}}已評論餐廳</p>
+        {{else}}
+        <p class="card-text">未有任何評論</p>
+        {{/if}}
+        {{#if signInUserId}}
+        <a href='/users/{{user.id}}/edit'>
+          <button type="button" class="btn btn-primary">Edit</button>
+        </a>
+        {{/if}}
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  {{#if user.Comments.length}}
+  <div class="card-header">{{user.Comments.length}}已評論餐廳</div>
+  {{else}}
+  <div class="card-header">未有任何評論</div>
+  {{/if}}
+  <div class="card-body d-flex flex-wrap">
+    {{#each user.Comments}}
+    <div class="mx-2" width="80px">
+      <a href='/restaurants/{{this.Restaurant.id}}'>
+        <img src="{{this.Restaurant.image}}" class='card-img-top img-fluid me-2 mb-2' alt='restaurant'
+          style='width: 80px'/>
+      </a>
+    </div>
+    {{/each}}
+  </div>
+</div>
