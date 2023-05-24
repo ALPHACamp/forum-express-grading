@@ -3,6 +3,7 @@ const { generalErrorHandler } = require('../middleware/error-handler')
 const { authenticated, authenticatedAdmin } = require('../middleware/auth')
 const passport = require('../config/passport')
 const router = express.Router()
+const upload = require('../../middleware/multer')
 const restController = require('../controllers/restaurant-controller')
 const userController = require('../controllers/user-controller')
 const commentController = require('../controllers/comment-controller')
@@ -46,7 +47,7 @@ router.get('/users/:id', authenticated, userController.getUser)
 
 // user profile edit
 router.get('/users/id/edit', authenticated, userController.editUser)
-router.put('/users/:id', authenticated, userController.putUser)
+router.put('/users/:id', authenticated, upload.single('image'), userController.putUser)
 
 router.use('/', generalErrorHandler)
 
