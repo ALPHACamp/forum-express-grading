@@ -27,6 +27,9 @@ router.post('/signin', passport.authenticate('local', {
 // logout
 router.get('/logout', userController.logout)
 
+// TopUser
+router.get('/users/top', authenticated, userController.getTopUsers)
+
 // profile
 router.get('/users/:id/edit', userController.editUser)
 router.get('/users/:id', userController.getUser)
