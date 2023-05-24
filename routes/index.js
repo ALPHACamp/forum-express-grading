@@ -27,8 +27,16 @@ router.post(
   }),
   userController.signIn
 )
+//* 瀏覽全部餐廳
 router.get('/restaurants', authenticated, restController.getRestaurants)
+//* 瀏覽單一餐廳
 router.get('/restaurants/:id', authenticated, restController.getRestaurant)
+//* 瀏覽單一餐廳數據
+router.get(
+  '/restaurants/:id/dashboard',
+  authenticated,
+  restController.getDashboard
+)
 
 router.use('/', (req, res) => res.redirect('/restaurants'))
 router.use('/', generalErrorHandler)
