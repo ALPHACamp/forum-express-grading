@@ -43,7 +43,6 @@ const restaurantController = {
       nest: true
     })
       .then(async restaurant => {
-        console.log(restaurant)
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         // 每次瀏覽都讓瀏覽數+1
         await restaurant.increment('viewCounts', { by: 1 })
