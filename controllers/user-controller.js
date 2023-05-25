@@ -177,7 +177,7 @@ const userController = {
     })
       .then(like => {
         if (!like) throw new Error("You haven't like this restaurant!")
-        return Like.destroy()
+        return like.destroy()
           .then(() => res.redirect('back'))
           .catch(err => next(err))
       })
