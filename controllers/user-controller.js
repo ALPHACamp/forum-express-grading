@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs')
-const db = require('../models')
-const { User } = db
+const { User } = require('../models')
+const { localFileHandler } = require('../helpers/file-helpers')
 const userController = {
   // 註冊頁面
   signUpPage: (req, res) => {
@@ -41,6 +41,42 @@ const userController = {
     req.flash('success_messages', '登出成功!')
     req.logout()
     res.redirect('/signin')
+  },
+  getUser: async (req, res, next) => {
+    try {
+      const user = await User.findByPk(req.params.id, { raw: true })
+      if (!user) throw new Error("User didn't exist!")
+      if (req.user) {
+        if (user.id !== req.user.id) {
+          return res.redirect(`/users/${req.user.id}`)
+        }
+      }
+      res.render('users/profile', { user })
+    } catch (err) { next(err) }
+  },
+  editUser: async (req, res, next) => {
+    try {
+      const user = await User.findByPk(req.params.id, { raw: true })
+      if (!user) throw new Error("User didn't exist!")
+      if (req.user) {
+        if (user.id !== req.user.id) throw new Error("User can't modify others profile")
+      }
+      res.render('users/edit', { user })
+    } catch (err) { next(err) }
+  },
+  putUser: async (req, res, next) => {
+    try {
+      const { name } = req.body
+      if (!name) throw new Error('User name is required!')
+      const { file } = req
+      const user = await User.findByPk(req.params.id)
+      if (!user) throw new Error("User didn't exist!")
+      const filePath = await localFileHandler(file)
+      if (user.id !== req.user.id) { throw new Error("User can't modify others profile") }
+      await user.update({ name, image: filePath || user.image })
+      req.flash('success_messages', '使用者資料編輯成功')
+      res.redirect(`/users/${user.id}`)
+    } catch (err) { next(err) }
   }
 }
 

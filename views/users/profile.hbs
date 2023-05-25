@@ -1,0 +1,14 @@
+<div class="container" style="display: flex;">
+  <div style="flex: 1;">
+    <img class="img-responsive center-block" src="{{user.image}}"
+      style="width: 250px; margin-bottom: 25px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+  </div>
+  <div style="flex: 1; padding-left: 20px;">
+    <h1>{{user.name}} </h1>
+    <h1>{{user.email}} </h1>
+    {{#if user.isAdmin}}
+    <h1>管理者</h1>
+    {{/if}}
+    <a href="/users/{{user.id}}/edit"><button class="btn btn-primary">Edit</button></a>
+  </div>
+</div>

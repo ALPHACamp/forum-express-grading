@@ -2,6 +2,7 @@ const fs = require('fs') // 引入fs模組，此為node.js原生模組
 const imgur = require('imgur')
 const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
 imgur.setClientId(IMGUR_CLIENT_ID)
+
 const localFileHandler = file => { // file是multer處理完的檔案
   return new Promise((resolve, reject) => {
     if (!file) return resolve(null)
