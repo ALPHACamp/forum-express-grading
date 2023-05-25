@@ -23,9 +23,11 @@ const restaurantController = {
       Category.findAll({ raw: true })
     ])
       .then(([restaurants, categories]) => {
+        const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id) // user 的 FavoritedRestaurants(陣列)查找
         const data = restaurants.rows.map(r => ({ // findAndCountAll 獲得的餐廳陣列存在 restaurants.rows
           ...r,
-          description: r.description.substring(0, 50)
+          description: r.description.substring(0, 50),
+          isFavorited: favoritedRestaurantsId.includes(r.id)
         }))
         return res.render('restaurants', {
           restaurants: data,
@@ -39,9 +41,11 @@ const restaurantController = {
 
   getRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
-      include: [Category, {
-        model: Comment, include: User
-      }],
+      include: [
+        Category,
+        { model: Comment, include: User },
+        { model: User, as: 'FavoritedUsers' }
+      ],
       nest: true
     })
       .then(restaurant => {
@@ -50,7 +54,13 @@ const restaurantController = {
         return restaurant.increment('viewCounts', { by: 1 })
       })
       .then(restaurant => {
-        return res.render('restaurant', { restaurant: restaurant.toJSON() })
+        const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id)
+        // some() 同樣是跑迭代, 但只要找到一個符合的條件就會立刻回傳 true
+        // 意思是, 這家餐廳有100人收藏, 但跑到第二個就找到和 使用者相同的 id, 就會立刻顯示 true
+        return res.render('restaurant', {
+          restaurant: restaurant.toJSON(),
+          isFavorited
+        })
       })
       .catch(err => next(err))
   },
