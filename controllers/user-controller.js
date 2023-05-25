@@ -160,8 +160,6 @@ const userController = {
           userId: req.user.id,
           restaurantId
         })
-          .then(() => res.redirect('back'))
-          .catch(err => next(err))
       })
       .then(() => res.redirect('back'))
       .catch(err => next(err))
@@ -178,8 +176,6 @@ const userController = {
       .then(like => {
         if (!like) throw new Error("You haven't like this restaurant!")
         return like.destroy()
-          .then(() => res.redirect('back'))
-          .catch(err => next(err))
       })
       .then(() => res.redirect('back'))
       .catch(err => next(err))
