@@ -57,6 +57,30 @@ const restaurantController = {
         res.render('dashboard', { restaurant })
       })
       .catch(err => next(err))
+  },
+  getFeeds: (req, res, next) => {
+    return Promise.all([
+      // Restaurant model資料
+      Restaurant.findAll({
+        limit: 5,
+        order: [['createdAt', 'DESC']], // 排序名稱,條件
+        include: [Category],
+        raw: true,
+        nest: true
+      }),
+      // Comment model資料
+      Comment.findAll({
+        limit: 10,
+        order: [['createdAt', 'DESC']], // 排序名稱,條件
+        include: [User, Restaurant],
+        raw: true,
+        nest: true
+      })
+    ])
+      .then(([restaurants, comments]) => {
+        res.render('feeds', { restaurants, comments })
+      })
+      .catch(err => next(err))
   }
 }
 module.exports = restaurantController
