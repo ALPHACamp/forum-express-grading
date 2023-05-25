@@ -10,6 +10,7 @@ const { authenticated, authenticatedAdmin } = require('../middleware/auth')
 const { generalErrorHandler } = require('../middleware/error-handler')
 
 router.post('/comments', authenticated, commentController.postComment)
+router.delete('/comments/:id', authenticatedAdmin, commentController.deleteComment)
 router.get('/restaurants/:id/dashboard', authenticated, restaurantController.getDashboard)
 router.use('/admin', authenticatedAdmin, admin)
 router.get('/signup', userController.signUpPage)
