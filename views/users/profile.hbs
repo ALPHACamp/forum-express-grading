@@ -14,4 +14,18 @@
     <a class="btn btn-primary" href="/users/{{user.id}}/edit">Edit Profile</a>
     </button>
   </div>
+  <div>
+    <div class="card">
+      <div class="card-header">
+        {{#if haveComment}}{{comments.length}}個評論過的餐廳{{else}}還沒評論過任何餐廳呢!{{/if}}
+      </div>
+      <div class="card-body">
+        {{#each comments}}
+        <a href="/restaurants/{{this.Restaurant.id}}">
+        <img src="{{this.Restaurant.image}}" alt="image" style="width:5%">
+        </a>
+        {{/each}}
+      </div>
+    </div>
+  </div>
 </div>
