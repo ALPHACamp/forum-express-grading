@@ -45,6 +45,10 @@ router.post('/comments', authenticated, commentController.postComment)
 // comment delete
 router.delete('/comments/:id', authenticated, commentController.deleteComment)
 
+// favorite create & delete
+router.post('/favorite/:restaurantId', authenticated, userController.addFavorite)
+router.delete('/favorite/:restaurantId', authenticated, userController.removeFavorite)
+
 // user profile
 router.get('/users/:id', authenticated, userController.getUser)
 
