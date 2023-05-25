@@ -48,13 +48,10 @@ const userController = {
       })
     ])
       .then(([user, comments]) => {
-        console.log(comments.rows.Restaurant)
         res.render('users/profile', {
           user,
           comments
         })
-        // console.log('------------')
-        // console.log(`COMMENTS ->${comments}`)
       })
       .catch(err => next(err))
   },
