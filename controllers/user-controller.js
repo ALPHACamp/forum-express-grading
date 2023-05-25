@@ -37,7 +37,7 @@ const userController = {
     res.redirect('/signin')
   },
   getUser: (req, res, next) => {
-    const directUser = req.user.id
+    // const directUser = req.user.id
     return Promise.all([
       User.findByPk(req.params.id, {
         raw: true
@@ -52,14 +52,14 @@ const userController = {
       .then(([user, comments]) => {
         if (!user) throw new Error('User not exists')
         const haveComment = !!comments.length
-        res.render('users/profile', { user, comments, haveComment, directUser })
+        res.render('users/profile', { user, comments, haveComment })
       })
       .catch(err => next(err))
   },
   editUser: (req, res, next) => {
-    const directUser = req.user.id
-    const selectUser = req.params.id
-    if (directUser !== selectUser) res.redirect('/users/' + selectUser)
+    // const directUser = req.user.id
+    // const selectUser = req.params.id
+    // if (directUser !== selectUser) res.redirect('/users/' + selectUser)
     return User.findByPk(req.params.id, {
       raw: true
     })
