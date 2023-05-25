@@ -44,13 +44,15 @@ const userController = {
     },
     getUser: (req, res, next) => {
         const id = req.params.id
-        return Promise.all([User.findByPk(id, { raw: true }),
-        Comment.findAll({
-            include: [Restaurant],
-            raw: true,
-            nest: true,
-            where: { userId: req.params.id }
-        })])
+        return Promise.all(
+            [User.findByPk(id, { raw: true }),
+            Comment.findAll({
+                include: [Restaurant],
+                raw: true,
+                nest: true,
+                where: { userId: req.params.id }
+            })]
+        )
             .then(([user, comments]) => {
                 if (!user) throw new Error("User didn't exist!")
                 return res.render('users/profile', { user, comments })
