@@ -1,4 +1,4 @@
-const { Restaurant, Category } = require('../models')
+const { Restaurant, Category, Comment, User } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
 
 const restaurantColler = {
@@ -22,7 +22,6 @@ const restaurantColler = {
       Category.findAll({ raw: true }) // 為了render category-Nav
     ])
       .then(([restaurants, categories]) => {
-        console.log(restaurants)
         const data = restaurants.rows.map(r => ({
           ...r,
           description: r.description.substring(0, 50)
@@ -38,7 +37,10 @@ const restaurantColler = {
   },
   getRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
-      include: Category,
+      include: [
+        Category,
+        { model: Comment, include: User, order: [['createdAt', 'DESC']] }
+      ],
       nest: true
     })
       .then(restaurant => {
