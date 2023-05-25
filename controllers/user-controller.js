@@ -1,6 +1,4 @@
 const bcrypt = require('bcryptjs')// 載入bcrypt
-// const db = require('../models')
-// const { User, Restaurant, Comment } = db
 const { User, Restaurant, Comment, Favorite } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
