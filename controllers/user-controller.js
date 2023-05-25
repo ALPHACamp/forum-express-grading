@@ -84,8 +84,8 @@ const userController = {
       })
       .then(user => {
         req.flash('success_messages', '使用者資料編輯成功')
-        res.redirect('/users/1')
-        // res.redirect(`/user/${user.id}`)
+        // res.redirect('/users/1')
+        res.redirect(`/user/${user.id}`)
       })
       .catch(err => next(err))
   }
