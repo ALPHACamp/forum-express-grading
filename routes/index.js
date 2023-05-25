@@ -1,6 +1,7 @@
 const express = require('express')
 const passport = require('../config/passport')
 const router = express.Router()
+const upload = require('../middleware/multer')
 // 引入controller
 const restController = require('../controllers/restaurant-controller')
 const userController = require('../controllers/user-controller')
@@ -25,6 +26,9 @@ router.get('/restaurants/:id', authenticated, restController.getRestaurant)
 router.get('/restaurants', authenticated, restController.getRestaurants)
 router.delete('/comments/:id', authenticatedAdmin, commentController.deleteComment)
 router.post('/comments', authenticated, commentController.postComment)
+router.get('/users/:id/edit', authenticated, userController.editUser)
+router.put('/users/:id', authenticated, upload.single('image'), userController.putUser)
+router.get('/users/:id', authenticated, userController.getUser)
 router.use('/', (req, res) => { res.redirect('/restaurants') })
 router.use('/', generalErrorHandler)
 
