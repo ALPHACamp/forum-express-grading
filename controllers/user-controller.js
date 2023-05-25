@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs')
 const db = require('../models')
 const { User } = db
+const { imgurFileHandler } = require('../helpers/file-helpers')
 const userController = {
   signUpPage: (req, res) => {
     res.render('signup')
@@ -41,7 +42,43 @@ const userController = {
     return User.findByPk(req.params.id, {
       raw: true
     })
-      .then(user => res.send(user))
+      .then(user => {
+        if (!user) throw new Error('沒這人')
+        const accountId = req.user.id
+        const profileId = Number(req.params.id)
+        console.log(accountId, profileId)
+        res.render('user', { user, accountId, profileId })
+      })
+  },
+  editUser: (req, res, next) => {
+    return User.findByPk(req.params.id, {
+      raw: true
+    })
+      .then(user => {
+        if (!user) throw new Error('沒這人')
+        res.render('user-edit', { user })
+      })
+      .catch(err => next(err))
+  },
+  putUser: (req, res, next) => {
+    if (req.user.id !== Number(req.params.id)) throw new Error('不要改別人的')
+    const { name } = req.body
+    const { file } = req
+    if (!name) throw new Error('name要填')
+    return Promise.all([
+      imgurFileHandler(file),
+      User.findByPk(req.user.id)
+    ])
+      .then(([filePath, user]) => {
+        if (!user) throw new Error('見鬼了')
+        user.update({
+          name,
+          image: filePath || user.image
+        })
+      })
+      .then(() => res.redirect(`/users/${req.user.id}`))
+      .catch(err => next(err))
   }
 }
+
 module.exports = userController
