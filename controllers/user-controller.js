@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs')
-const { User } = require('../models')
+const { User, Comment, Restaurant } = require('../models')
 const { localFileHandler } = require('../helpers/file-helpers')
 const userController = {
   // 註冊頁面
@@ -44,14 +44,16 @@ const userController = {
   },
   getUser: async (req, res, next) => {
     try {
-      const user = await User.findByPk(req.params.id, { raw: true })
+      const user = await User.findByPk(req.params.id, { include: [{ model: Comment, include: Restaurant }], nest: true })
+      // const restaurant = await Restaurant.findByPk(user.Comment)
+      // console.log(user.Restaurant)
       if (!user) throw new Error("User didn't exist!")
       if (req.user) {
         if (user.id !== req.user.id) {
           return res.redirect(`/users/${req.user.id}`)
         }
       }
-      res.render('users/profile', { user })
+      res.render('users/profile', { user: user.toJSON() })
     } catch (err) { next(err) }
   },
   editUser: async (req, res, next) => {

@@ -1,14 +1,35 @@
-<div class="container" style="display: flex;">
+<div class="container mb-5" style="display: flex;">
   <div style="flex: 1;">
     <img class="img-responsive center-block" src="{{user.image}}"
       style="width: 250px; margin-bottom: 25px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
   </div>
   <div style="flex: 1; padding-left: 20px;">
-    <h1>{{user.name}} </h1>
-    <h1>{{user.email}} </h1>
     {{#if user.isAdmin}}
-    <h1>管理者</h1>
+    <h2>管理者</h2>
+    {{else}}
+    <h2>使用者</h2>
     {{/if}}
+    <h5>{{user.name}}</h5>
+    <h5>{{user.email}}</h5>
     <a href="/users/{{user.id}}/edit"><button class="btn btn-primary">Edit</button></a>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card">
+    <div class="card-header">
+      {{#if user.Comments}}
+      已評論數量:{{user.Comments.length}}
+      {{else}}
+      目前沒有評論
+      {{/if}}
+    </div>
+    <div class="restaurants-container" style="display:flex; flex-wrap:wrap;">
+      {{#each user.Comments}}
+        <a href="/restaurants/{{this.Restaurant.id}}"><img src="{{this.Restaurant.image}}" class="card-img-top m-1" alt="餐廳" style="width: 100px; height:100px;">
+        </a>
+      {{/each}}
+    </div>
+    
   </div>
 </div>
