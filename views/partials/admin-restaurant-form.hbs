@@ -6,8 +6,9 @@
   <label class="form-label" for="categoryId">Category</label>
   <select class="form-control" id="categoryId" name="categoryId">
     {{#each categories}}
-      <option value="{{this.id}}">{{this.name}}</option>
-    {{/each}}
+      <option value="{{this.id}}"{{#ifCond this.id ../restaurant.categoryId}}selected {{/ifCond}}>{{this.name}}</option>
+    {{/each}} 
+    {{!-- 巢狀的 block helper 裡呼叫 restaurant 變數，需要留意執行語境 (context) 的問題，這裡要運用 Handlebars 的路徑語法回到上一層語境 --}}
   </select>
 </div>
 <div class="form-row mb-3">
