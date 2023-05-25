@@ -10,9 +10,11 @@
     <img class="img-responsive center-block mb-5" src="{{user.image}}"
       style="width: 250px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
     </div>
+    {{#ifCond user.id directUser}}
     <button class="btn btn-link">
     <a class="btn btn-primary" href="/users/{{user.id}}/edit">Edit Profile</a>
     </button>
+    {{/ifCond}}
   </div>
   <div>
     <div class="card">
