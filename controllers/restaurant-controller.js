@@ -106,6 +106,23 @@ const restController = {
     } catch (error) {
       next(error)
     }
+  },
+  getTopRestaurants: (req, res, next) => {
+    return Restaurant.findAll({
+      include: { model: User, as: 'FavoritedUsers' }
+    })
+      .then(restaurants => {
+        const result = restaurants.map(restaurant => ({
+          ...restaurant.toJSON(),
+          favoritedCount: restaurant.FavoritedUsers.length,
+          isFavorited: req.user && req.user.FavoritedRestaurants.some(res => res.id === restaurant.id)
+          // 因為 req.user 有可能是空的所以先檢查
+        }))
+        result.sort((a, b) => b.favoritedCount - a.favoritedCount)
+        const top10 = result.slice(0, 10)
+        return res.render('top-restaurants', { restaurants: top10 })
+      })
+      .catch(err => next(err))
   }
 }
 module.exports = restController

@@ -39,7 +39,7 @@ const userController = {
   addFavorite: (req, res, next) => {
     const { restaurantId } = req.params
     const userId = req.user.id
-    Promise.all([
+    return Promise.all([
       Restaurant.findByPk(restaurantId),
       Favorite.findOne({
         where: {
@@ -159,6 +159,7 @@ const userController = {
           isFollowed: req.user.Followings.some(f => f.id === user.id)
         }))
         users = users.sort((a, b) => b.followerCount - a.followerCount)
+        console.log(result)
         res.render('top-users', { users: result })
       })
       .catch(err => next(err))
