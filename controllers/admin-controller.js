@@ -1,12 +1,13 @@
-const { Restaurant } = require('../models') // 帶入database
-const { User } = require('../models') // 帶入database
+const { Restaurant, User, Category } = require('../models') // 帶入database
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const adminController = {
   // 所有餐廳頁面
   getRestaurants: (req, res) => {
     return Restaurant.findAll({ // 抓取所有 Restaurant 資料
-      raw: true // 簡化資料，類.lean()
+      raw: true, // 簡化資料，類.lean()
+      nest: true, // 把 categoryId: 5 'Category.name: OOO' 資料調整成 this.Category.name 資料
+      include: [Category] // 帶入關聯資料
     })
       .then(restaurants => {
         return res.render('admin/restaurants', { restaurants: restaurants })
@@ -38,7 +39,9 @@ const adminController = {
   // 餐廳詳情頁面
   getRestaurant: (req, res, next) => {
     Restaurant.findByPk(req.params.id, { // MySQL 語法 findByPK 找資料id(主鍵)，req.params.id 抓網址:id
-      raw: true // 找到以後整理格式再回傳
+      raw: true, // 找到以後整理格式再回傳
+      nest: true, // 把 categoryId: 5 'Category.name: OOO' 資料調整成 this.Category.name 資料
+      include: [Category] // 帶入關聯資料
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!") //  如果找不到，回傳錯誤訊息，後面不執行
