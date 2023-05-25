@@ -31,11 +31,7 @@ router.get(
 );
 router.get("/restaurants/:id", authenticated, restController.getRestaurant);
 router.get("/restaurants", authenticated, restController.getRestaurants);
-router.delete(
-  "/comments/:id",
-  authenticatedAdmin,
-  commentController.deleteComment
-);
+
 //users
 router.get("/users/:id/edit", authenticated, userController.editUser);
 router.get("/users/:id", authenticated, userController.getUser);
@@ -45,8 +41,26 @@ router.put(
   upload.single("image"),
   userController.putUser
 );
-
+//comments
+router.delete(
+  "/comments/:id",
+  authenticatedAdmin,
+  commentController.deleteComment
+);
 router.post("/comments", authenticated, commentController.postComment);
+
+//Favorite
+router.post(
+  "/favorite/:restaurantId",
+  authenticated,
+  userController.addFavorite
+);
+router.delete(
+  "/favorite/:restaurantId",
+  authenticated,
+  userController.removeFavorite
+);
+
 router.get("/", (req, res) => res.redirect("/restaurants"));
 router.use("/", generalErrorHandler);
 module.exports = router;
