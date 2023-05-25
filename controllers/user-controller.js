@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs')
 const db = require('../models')
-const { User } = db
+const { User, Comment, Restaurant } = db
 const { FileUpload } = require('../helpers/file-helpers')
 const userController = {
   signUpPage: (req, res) => {
@@ -38,7 +38,15 @@ const userController = {
   },
   getUser: async (req, res, next) => {
     try {
-      const user = await User.findByPk(req.params.id)
+      const user = await User.findByPk(req.params.id, {
+        include: [
+          {
+            model: Comment,
+            include: Restaurant
+          }
+        ]
+      })
+
       if (!user) throw new Error("User didn't exist!")
       if (req.user) {
         if (user.id !== req.user.id) {
@@ -48,6 +56,7 @@ const userController = {
       res.render('users/profile', { user: user.toJSON() })
     } catch (err) { next(err) }
   },
+
   editUser: async (req, res, next) => {
     try {
       const user = await User.findByPk(req.params.id)
@@ -60,6 +69,7 @@ const userController = {
       res.render('users/edit', { user: user.toJSON() })
     } catch (err) { next(err) }
   },
+
   putUser: async (req, res, next) => {
     try {
       const { name } = req.body
