@@ -1,10 +1,25 @@
-<div class="card" style="width: 18rem;">
-  <img src="{{ user.image }}" class="card-img-top" alt="...">
-  <div class="card-body">
-    <h5 class="card-title m-4">{{ user.name }}</h5>
-    {{!-- {{#ifCond accountId profileId }}
-    <a href="/users/{{ user.id }}/edit" class="btn btn-primary">Edit</a>
-    {{/ifCond }} --}}
-    <a href="/users/{{ user.id }}/edit" class="btn btn-primary">Edit</a>
+<div class="card row d-flex flex-row h-90">
+  <div class="col-4 profile-photo">
+    <img src="{{ user.image }}" class="card-img-top" alt="...">
+  </div>
+  <div class="col-8 profile-info">
+    <h4 class="card-title m-4">{{ user.name }}</h4>
+    <h5 class="card-title m-4">{{ user.email }}</h5>
+    <h5 class="card-title m-4"> {{comments.count}} 已評論餐廳</h5>
+    <a href="/users/{{ user.id }}/edit" class="btn btn-primary m-4">Edit</a>
+  </div>
+</div>
+<div class="card row h-90 mt-3">
+  <div class="comment-counts">
+    <p class="bg-body-secondary"> {{comments.count}} 已評論餐廳 </p>
+  </div>
+  <div class="row d-flex flex-row ">
+    {{#each comments.rows}}
+      <div class="col-1">
+        <a href="/restaurants/{{this.restaurantId}}">
+          <img src="{{this.Restaurant.image}}" alt="" class="img-fluid">
+        </a>
+      </div>
+    {{/each}}
   </div>
 </div>
