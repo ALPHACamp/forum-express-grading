@@ -1,78 +1,78 @@
-const { Restaurant } = require("../models");
-const { localFileHandler } = require("../helpers/file-helpers");
-const { imgurFileHandler } = require("../helpers/file-helpers");
+const { Restaurant } = require('../models')
+const { localFileHandler } = require('../helpers/file-helpers')
+const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const adminController = {
   getRestaurants: (req, res, next) => {
     Restaurant.findAll({
-      raw: true,
+      raw: true
     })
-      .then((restaurants) => res.render("admin/restaurants", { restaurants }))
-      .catch((err) => next(err));
+      .then(restaurants => res.render('admin/restaurants', { restaurants }))
+      .catch(err => next(err))
   },
 
   createRestaurant: (req, res) => {
-    return res.render("admin/create-restaurant");
+    return res.render('admin/create-restaurant')
   },
 
   postRestaurant: (req, res, next) => {
-    const { name, tel, address, openingHours, description } = req.body;
-    if (!name) throw Error("Restaurant name is required!");
-    const { file } = req; // const file = req.file
+    const { name, tel, address, openingHours, description } = req.body
+    if (!name) throw Error('Restaurant name is required!')
+    const { file } = req // const file = req.file
     imgurFileHandler(file)
-      .then((filePath) =>
+      .then(filePath =>
         Restaurant.create({
           name,
           tel,
           address,
           openingHours,
           description,
-          Image: filePath || null,
+          Image: filePath || null
         })
       )
       .then(() => {
-        req.flash("success_messages", "restaurant was successfully created");
-        res.redirect("/admin/restaurants");
+        req.flash('success_messages', 'restaurant was successfully created')
+        res.redirect('/admin/restaurants')
       })
-      .catch((err) => next(err));
+      .catch(err => next(err))
   },
 
   getRestaurant: (req, res, next) => {
     Restaurant.findByPk(req.params.id, {
       // 去資料庫用 id 找一筆資料
-      raw: true, // 找到以後整理格式再回傳
+      raw: true // 找到以後整理格式再回傳
     })
-      .then((restaurant) => {
-        if (!restaurant) throw new Error("Restaurant didn't exist!"); //  如果找不到，回傳錯誤訊息，後面不執行
-        res.render("admin/restaurant", { restaurant });
+      .then(restaurant => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!") //  如果找不到，回傳錯誤訊息，後面不執行
+        res.render('admin/restaurant', { restaurant })
       })
-      .catch((err) => next(err));
+      .catch(err => next(err))
   },
 
   editRestaurant: (req, res, next) => {
     // 新增這段
     Restaurant.findByPk(req.params.id, {
-      raw: true,
+      raw: true
     })
-      .then((restaurant) => {
-        if (!restaurant) throw new Error("Restaurant didn't exist!");
-        res.render("admin/edit-restaurant", { restaurant });
+      .then(restaurant => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        res.render('admin/edit-restaurant', { restaurant })
       })
-      .catch((err) => next(err));
+      .catch(err => next(err))
   },
 
   putRestaurant: (req, res, next) => {
-    const { name, tel, address, openingHours, description } = req.body;
-    if (!name) throw new Error("Restaurant name is required!");
-    const { file } = req; // 把檔案取出來
+    const { name, tel, address, openingHours, description } = req.body
+    if (!name) throw new Error('Restaurant name is required!')
+    const { file } = req // 把檔案取出來
     Promise.all([
       // 非同步處理
       Restaurant.findByPk(req.params.id), // 去資料庫查有沒有這間餐廳
-      imgurFileHandler(file), // 把檔案傳到 file-helper 處理
+      imgurFileHandler(file) // 把檔案傳到 file-helper 處理
     ])
       .then(([restaurant, filePath]) => {
         // 以上兩樣事都做完以後
-        if (!restaurant) throw new Error("Restaurant didn't exist!");
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
         return restaurant.update({
           // 修改這筆資料
           name,
@@ -80,25 +80,25 @@ const adminController = {
           address,
           openingHours,
           description,
-          image: filePath || restaurant.image, // 如果 filePath 是 Truthy (使用者有上傳新照片) 就用 filePath，是 Falsy (使用者沒有上傳新照片) 就沿用原本資料庫內的值
-        });
+          image: filePath || restaurant.image // 如果 filePath 是 Truthy (使用者有上傳新照片) 就用 filePath，是 Falsy (使用者沒有上傳新照片) 就沿用原本資料庫內的值
+        })
       })
       .then(() => {
-        req.flash("success_messages", "restaurant was successfully to update");
-        res.redirect("/admin/restaurants");
+        req.flash('success_messages', 'restaurant was successfully to update')
+        res.redirect('/admin/restaurants')
       })
-      .catch((err) => next(err));
+      .catch(err => next(err))
   },
 
   deleteRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id)
-      .then((restaurant) => {
-        if (!restaurant) throw new Error("Restaurant didn't exist!");
-        return restaurant.destroy();
+      .then(restaurant => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        return restaurant.destroy()
       })
-      .then(() => res.redirect("/admin/restaurants"))
-      .catch((err) => next(err));
-  },
-};
+      .then(() => res.redirect('/admin/restaurants'))
+      .catch(err => next(err))
+  }
+}
 
-module.exports = adminController;
+module.exports = adminController
