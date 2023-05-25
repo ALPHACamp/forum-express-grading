@@ -31,11 +31,15 @@ router.get('/restaurants/feeds', authenticated, restController.getFeeds)
 router.get('/restaurants/:id/dashboard', restController.getDashboard)
 router.get('/restaurants/:id', restController.getRestaurant)
 
+// 管理員(限定)刪除評論
+router.delete('/comments/:id', authenticatedAdmin, commentController.deleteComment)
+
 // 使用者新增評論
 router.post('/comments', authenticated, commentController.postComment)
 
-// 管理員(限定)刪除評論
-router.delete('/comments/:id', authenticatedAdmin, commentController.deleteComment)
+// 使用者收藏餐廳
+router.post('/favorite/:restaurantId', authenticated, userController.addFavorite)
+router.delete('/favorite/:restaurantId', authenticated, userController.removeFavorite)
 
 // 使用者編輯個人資訊
 router.get('/users/:id/edit', authenticated, userController.editUser)
