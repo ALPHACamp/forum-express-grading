@@ -24,6 +24,9 @@ router.get('/signout', userController.signout)
 // 使用者登入後餐廳首頁
 router.get('/restaurants', authenticated, restController.getRestaurants)
 
+// 使用者瀏覽最新動態(/feed也符合/:id的路由，因此置於前)
+router.get('/restaurants/feeds', authenticated, restController.getFeeds)
+
 // 使用者查看單筆資料
 router.get('/restaurants/:id/dashboard', restController.getDashboard)
 router.get('/restaurants/:id', restController.getRestaurant)
