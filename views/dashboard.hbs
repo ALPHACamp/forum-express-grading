@@ -1,1 +1,15 @@
-<p> DASHBOARD</p>
+<div class="row mb-5">
+  <div class="col-md-12">
+    <h1>{{restaurant.name}}</h1>
+    <p>[{{restaurant.Category.name}}]</p>
+  </div>
+  <div class="well">
+    <ul class="list-unstyled">
+      <li>瀏覽次數:{{restaurant.count}}</li>
+      <li>評論數:-</li>
+      <li>收藏數:-</li>
+    </ul>
+  </div>
+</div>
+
+<a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
