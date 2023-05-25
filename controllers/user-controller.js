@@ -52,7 +52,7 @@ const userController = {
         console.log(comments)
         if (!user) throw new Error('User not exists')
         const haveComment = !!comments.length
-        return res.render('users/profile', { user, comments, haveComment })
+        res.render('users/profile', { user, comments, haveComment })
       })
       .catch(err => next(err))
   },
@@ -84,8 +84,7 @@ const userController = {
       })
       .then(user => {
         req.flash('success_messages', '使用者資料編輯成功')
-        // res.redirect('/users/1')
-        res.redirect(`/user/${user.id}`)
+        res.redirect('/users/' + req.params.id)
       })
       .catch(err => next(err))
   }
