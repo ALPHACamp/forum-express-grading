@@ -1,4 +1,3 @@
-// const { ensureAuthenticated, getUser } = require('../helpers/auth-helpers')
 const helpers = require('../helpers/auth-helpers.js')
 const authenticated = (req, res, next) => {
   // if (req.isAuthenticated)
