@@ -1,8 +1,7 @@
 const passport = require('passport')
 const LocalStrategy = require('passport-local')
 const bcrypt = require('bcryptjs')
-const db = require('../models')
-const User = db.User
+const { User, Restaurant } = require('../models')
 // set up Passport strategy
 passport.use(new LocalStrategy(
   // customize user field
@@ -28,9 +27,24 @@ passport.serializeUser((user, cb) => {
   cb(null, user.id)
 })
 passport.deserializeUser((id, cb) => {
-  User.findByPk(id).then(user => {
-    user = user.toJSON()
-    return cb(null, user)
+  // 迭代1 為了要使用passport的反序化來查詢mysql資料
+  // cb就是callback
+  // 查詢完後再把裝入favorite關聯的user cb回瀏覽器上
+  // User.findByPk(id).then(user => {
+  //   user = user.toJSON()
+  //   return cb(null, user)
+  // })
+  return User.findByPk(id, {
+    include: [
+      { model: Restaurant, as: 'FavoritedRestaurants' }
+    ]
   })
+    // 迭代2 簡化程式碼
+    // .then(user => {
+    //   user = user.toJSON()
+    //   return cb(null, user)
+    // })
+    .then(user => cb(null, user.toJSON()))
+    .catch(err => cb(err))
 })
 module.exports = passport

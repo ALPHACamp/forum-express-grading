@@ -16,9 +16,16 @@
   </div>
   <div class="col-md-8">
     <p style="white-space: break-spaces;">{{restaurant.description}}</p>
-    <form action="/restaurants/{{restaurant.id}}/dashboard" method="get">
-      <button class="btn btn-primary" type="submit">Dashboard</button>
+    <a class="btn btn-primary" href="/restaurants/{{restaurant.id}}/dashboard">Dashboard</a>
+    {{#if isFavorited }}
+    <form action="/favorite/{{restaurant.id}}?_method=DELETE" method="POST" style="display: contents;">
+      <button type="submit" class="btn btn-danger">移除最愛</button>
     </form>
+    {{else}}
+    <form action="/favorite/{{restaurant.id}}" method="POST" style="display: contents;">
+      <button type="submit" class="btn btn-primary">加到最愛</button>
+    </form>
+    {{/if}}
   </div>
   <hr>
 </div>
@@ -26,11 +33,11 @@
 {{#each restaurant.Comments}}
 <blockquote class="blockquote mb-0">
   <h4><a href="/users/{{this.User.id}}">{{this.User.name}}</a></h4>
-    {{#if ../user.isAdmin}}
-    <form action="/comments/{{this.id}}?_method=DELETE" method="POST" class="float-end">
-      <button type="submit" class="btn btn-danger">Delete</button>
-    </form>
-    {{/if}}
+  {{#if ../user.isAdmin}}
+  <form action="/comments/{{this.id}}?_method=DELETE" method="POST" class="float-end">
+    <button type="submit" class="btn btn-danger">Delete</button>
+  </form>
+  {{/if}}
   <p>{{this.text}}</p>
   <footer class="blockquote-footer">{{relativeTimeFromNow this.createdAt}}</footer>
 </blockquote>
