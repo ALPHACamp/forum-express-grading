@@ -19,9 +19,9 @@
           <li><strong>{{user.commentedRestaurants.length}}</strong> 已評論餐廳</li>
         </ul>
         <p>
-          {{#ifCond user.id user.id }}{{#if ../user.isAdmin}}
+          {{#ifCond user.id user.id }}
           <a href="/users/{{user.id}}/edit"><button type="submit" class="btn btn-primary">edit</button></a>
-          {{/if}}
+
           {{else}}
           {{#if this.isFollowed }}
         <form action="/following/{{user.id}}?_method=DELETE" method="POST" style="display: contents;">
