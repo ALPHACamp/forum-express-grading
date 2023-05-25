@@ -15,13 +15,25 @@
       <th scope="row">{{ this.id }}</th>
       <td>{{ this.name }}</td>
       <td>{{ this.email }}</td>
-      <td>{{ this.admin }}</td>
       <td>
-        <button type="button" class="btn btn-link">
-          <a class="btn btn-link link-primary" href="/admin/users/{{this.id}}">
-            set as user
-          </a>
-        </button>
+        {{#if this.isAdmin}}
+        admin
+        {{else}}
+        user
+        {{/if}}
+      </td>
+      <td>
+        {{#if this.isAdmin}}
+        <form action="/admin/users{{this._id}}?_method=PATCH" method="POST">
+          <input type="hidden" value="false" name="isAdmin">
+          <button type="submit" class="btn btn-link">set as user</button>
+        </form>
+        {{else}}
+        <form action="/admin/users{{this._id}}?_method=PATCH" method="POST">
+          <input type="hidden" value="true" name="isAdmin">
+          <button type="submit" class="btn btn-link">set as admin</button>
+        </form>
+        {{/if}}
       </td>
     </tr>
     {{/each}}
