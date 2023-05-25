@@ -1,0 +1,17 @@
+<div class="row">
+  <div class="col-md-4">
+    {{#if user.image}}
+    <img class="img-responsive center-block" src="{{ user.image }}" style="width: 300px; margin-bottom: 25px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+    {{else}}
+    <img class="img-responsive center-block" src="https://i.imgur.com/2SbwzTP.jpg" style="width: 300px; margin-bottom: 25px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+    {{/if}}
+  </div>
+  <div class="col-md-8">
+    <h1>{{ user.name }} profile</h1>
+    <br>
+    <h3>{{ user.email }}</h3>
+    <br>
+    <a class="btn btn-primary link-light" href="/users/{{ user.id }}/edit">Edit</a>
+  </div>
+  <hr> 
+</div>

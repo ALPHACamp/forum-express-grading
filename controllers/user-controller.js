@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs') // 載入 bcrypt
-const db = require('../models')
-const { User } = db
+const { User } = require('../models')
+const { imgurFileHandler } = require('../helpers/file-helpers') // 將 file-helper 載進來
+
 const userController = {
   signUpPage: (req, res) => {
     res.render('signup')
@@ -36,6 +37,46 @@ const userController = {
     req.flash('success_messages', '登出成功！')
     req.logout()
     res.redirect('/signin')
+  },
+  getUser: (req, res) => {
+    return User.findByPk(req.params.id, {
+      raw: true, // 讓拿到的資料是最簡單的javascript資料
+      nest: true // 讓拿到的資料是比較簡單的
+    })
+      .then(user => {
+        if (!user) throw new Error("User didn't exist!")
+        res.render('users/profile', { user })
+      })
+  },
+  editUser: (req, res) => {
+    return User.findByPk(req.params.id, {
+      raw: true, // 讓拿到的資料是最簡單的javascript資料
+      nest: true // 讓拿到的資料是比較簡單的. ex:restaurant.category.id
+    })
+      .then(user => {
+        if (!user) throw new Error("User didn't exist!")
+        res.render('users/edit', { user })
+      })
+  },
+  putUser: (req, res, next) => {
+    const { name } = req.body // 從 req.body 拿出表單裡的資料
+    const id = req.params.id
+    if (!name) throw new Error('User name is required!') // name 是必填，若發先是空值就會終止程式碼，並在畫面顯示錯誤提示
+    const { file } = req // 把檔案取出來，也可以寫成 const file = req.file
+    return Promise.all([ // 非同步處理
+      User.findByPk(id), // 去資料庫查有沒有這間餐廳
+      imgurFileHandler(file) // 把檔案傳到 file-helper 處理
+    ])
+      .then(([users, filePath]) => {
+        if (!users) throw new Error("Users didn't exist!")
+        users.update({
+          name,
+          image: filePath || users.image // 如果 filePath 是 Truthy (使用者有上傳新照片) 就用 filePath，是 Falsy (使用者沒有上傳新照片) 就沿用原本資料庫內的值
+        })
+        req.flash('success_messages', '使用者資料編輯成功') // 在畫面顯示成功提示
+        res.redirect(`/users/${id}`)
+      })
+      .catch(err => next(err))
   }
 }
 module.exports = userController
