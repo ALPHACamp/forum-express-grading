@@ -40,8 +40,7 @@ const restaurantColler = {
       include: [
         Category,
         { model: Comment, include: User, order: [['createdAt', 'DESC']] }
-      ],
-      nest: true
+      ]
     })
       .then(restaurant => {
         if (!restaurant) throw new Error('沒這間')
@@ -63,6 +62,28 @@ const restaurantColler = {
       .then(([restaurant, comments]) => {
         if (!restaurant) throw new Error('沒這間')
         return res.render('dashboard', { restaurant, comments })
+      })
+      .catch(err => next(err))
+  },
+  getFeeds: (req, res, next) => {
+    return Promise.all([
+      Restaurant.findAll({
+        limit: 10,
+        order: [['createdAt', 'DESC']], // DESC ASC
+        include: [Category],
+        raw: true,
+        nest: true
+      }),
+      Comment.findAll({
+        limit: 10,
+        order: [['createdAt', 'DESC']],
+        include: [User, Restaurant],
+        raw: true,
+        nest: true
+      })
+    ])
+      .then(([restaurants, comments]) => {
+        res.render('feeds', { restaurants, comments })
       })
       .catch(err => next(err))
   }
