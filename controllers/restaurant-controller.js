@@ -1,4 +1,4 @@
-const { Restaurant, Category } = require('../models')
+const { Restaurant, Category, Comment, User } = require('../models')
 const restaurantController = {
   getRestaurants: (req, res, next) => {
     return Restaurant.findAll({
@@ -18,15 +18,13 @@ const restaurantController = {
   getRestaurant: (req, res, next) => {
     const id = req.params.id
     return Restaurant.findByPk(id, {
-      include: Category,
-      raw: true,
-      nest: true
+      include: [Category, { model: Comment, include: User }]
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         restaurant.viewCounts = restaurant.viewCounts || 0
         restaurant.viewCounts++
-        res.render('restaurant', { restaurant })
+        res.render('restaurant', { restaurant: restaurant.toJSON() })
         return Restaurant.update(
           { viewCounts: restaurant.viewCounts },
           { where: { id: restaurant.id } }
