@@ -58,7 +58,6 @@ const restaurantController = {
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurants didn't exist!")
         restaurant = restaurant.toJSON()
-        // restaurant.commentCounts = restaurant.Comments.length 不知道為何無法通過測試，之後改成去資料庫取評論數
         res.render('dashboard', { restaurant })
       })
       .catch(err => next(err))
