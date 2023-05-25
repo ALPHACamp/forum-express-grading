@@ -16,7 +16,7 @@
           {{user.email}}
         </p>
         <ul class="list-unstyled list-inline">
-          <li><strong>{{user.commentedRestaurants.length}}</strong> 已評論餐廳</li>
+          <li><strong>{{comments.length}}</strong> 間已評論餐廳</li>
         </ul>
         <p>
           {{#ifCond user.id user.id }}
@@ -33,6 +33,33 @@
               {{/if}}
           {{/ifCond}}
         </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-12">
+    <br />
+    <div class="card">
+      <div class="card-header">
+        <strong>{{comments.length}}</strong> 間已評論的餐廳
+      </div>
+      <div class="card-body">
+        {{#each comments}}
+          {{#if this.Restaurant}}
+         <a href="/restaurants/{{this.Restaurant.id}}" class="text-decoration-none">
+            <img src="{{this.Restaurant.image}}" width="60" height="60" class="avatar" style="transition: opacity 0.5s; opacity:0;"
+              onload="this.style.opacity=1;" />
+          </a>
+
+        {{!-- <div class="col">
+          <div class="card">
+            <a href="/restaurants/{{this.Restaurant.id}}"><img src="{{this.Restaurant.image}}" class="img-fluid"></a>
+          </div>
+        </div> --}}
+        {{/if}}
+      {{/each}}
       </div>
     </div>
   </div>

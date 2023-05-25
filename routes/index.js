@@ -23,8 +23,8 @@ router.get('/restaurants/:id', authenticated, restaurantController.getRestaurant
 router.get('/restaurants', authenticated, restaurantController.getRestaurants)
 
 router.get('/users/:id/edit', authenticated, userController.editUser)
-router.get('/users/:id', authenticated, userController.getUser)
 router.put('/users/:id', authenticated, upload.single('image'), userController.putUser)
+router.get('/users/:id', authenticated, userController.getUser)
 
 router.use('/', (req, res) => res.redirect('/restaurants'))
 router.use('/', generalErrorHandler)
