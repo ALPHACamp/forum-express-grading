@@ -1,0 +1,10 @@
+<div class="card" style="width: 18rem;">
+  <img src="{{ user.image }}" class="card-img-top" alt="...">
+  <div class="card-body">
+    <h5 class="card-title m-4">{{ user.name }}</h5>
+    {{!-- {{#ifCond accountId profileId }}
+    <a href="/users/{{ user.id }}/edit" class="btn btn-primary">Edit</a>
+    {{/ifCond }} --}}
+    <a href="/users/{{ user.id }}/edit" class="btn btn-primary">Edit</a>
+  </div>
+</div>
