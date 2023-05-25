@@ -1,0 +1,15 @@
+<form action="/users/{{ user.id }}?_method=PUT" method="POST" enctype="multipart/form-data">
+{{!-- 有用 enctype="multipart/form-data" 才能用temp資料夾 --}}
+  <div class="card" style="width: 18rem;">
+    <div class="form-row mb-3">
+      <label class="form-label" for="image">Image</label>
+      <input class="form-control" type="file" class="form-control-file" id="image" name="image">
+    </div>
+    <div class="form-row mb-3">
+      <label class="form-label" for="name">Name</label>
+      <input class="form-control" type="text" name="name" id="name" placeholder="Enter name" value="{{user.name}}" required>
+    </div>
+      <button type="submit" class="btn btn-primary">Save</button>
+    </div>
+  </div>
+</form>

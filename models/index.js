@@ -35,7 +35,7 @@ Object.keys(db).forEach(modelName => {
 })
 
 // 匯出需要的物件
-db.sequelize = sequelize
-db.Sequelize = Sequelize
+db.sequelize = sequelize // sequelize instance
+db.Sequelize = Sequelize // Sequelize class
 
 module.exports = db
