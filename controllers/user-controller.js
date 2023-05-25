@@ -46,12 +46,14 @@ const userController = {
         if (!user) throw new Error("User didn't exist!")
 
         user = user.toJSON()
-        user.commentedRestaurants = user.Comments && user.Comments.reduce((accumulator, c) => {
-          if (!accumulator.some(r => r.id === c.restaurantId)) {
-            accumulator.push(c.Restaurant)
+
+        user.commentedRestaurants = user.Comments && user.Comments.reduce((acc, c) => {
+          if (!acc.some(r => r.id === c.restaurantId)) {
+            acc.push(c.Restaurant)
           }
-          return accumulator
+          return acc
         }, [])
+
         res.render('users/profile', {
           user
         })
@@ -62,7 +64,7 @@ const userController = {
     return User.findByPk(req.params.id)
       .then(user => {
         if (!user) throw new Error("User didn't exist!")
-
+        if (user.id !== Number(req.params.id)) throw new Error('只能編輯自己的資料!')
         res.render('users/edit', { user: user.toJSON() })
       })
       .catch(err => next(err))
@@ -79,7 +81,6 @@ const userController = {
     ])
       .then(([user, filePath]) => {
         if (!user) throw new Error("User didn't exist!")
-
         return user.update({
           name: req.body.name,
           image: filePath || user.image
