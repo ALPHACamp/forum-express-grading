@@ -99,7 +99,22 @@ const userController = {
           restaurantId
         })
       })
-      .then(() => res.redirect('back'))
+      .then(() => Restaurant.findAll({
+        include: [
+          { model: User, as: 'FavoritedUsers' }
+        ]
+      }))
+      .then(restaurants => {
+        const result = restaurants
+          .map(restaurant => ({
+            ...restaurant.toJSON(),
+            favoritedCount: restaurant.FavoritedUsers.length,
+            isFavorited: req.user && restaurant.FavoritedUsers.some(f => f.id === req.user.id)
+          }))
+          .sort((a, b) => b.favoritedCount - a.favoritedCount)
+          .slice(0, 10)
+        res.render('top-restaurants', { restaurants: result })
+      })
       .catch(err => next(err))
   },
   removeFavorite: (req, res, next) => {
@@ -114,7 +129,22 @@ const userController = {
 
         return favorite.destroy()
       })
-      .then(() => res.redirect('back'))
+      .then(() => Restaurant.findAll({
+        include: [
+          { model: User, as: 'FavoritedUsers' }
+        ]
+      }))
+      .then(restaurants => {
+        const result = restaurants
+          .map(restaurant => ({
+            ...restaurant.toJSON(),
+            favoritedCount: restaurant.FavoritedUsers.length,
+            isFavorited: req.user && restaurant.FavoritedUsers.some(f => f.id === req.user.id)
+          }))
+          .sort((a, b) => b.favoritedCount - a.favoritedCount)
+          .slice(0, 10)
+        res.render('top-restaurants', { restaurants: result })
+      })
       .catch(err => next(err))
   },
   addLike: (req, res, next) => {
