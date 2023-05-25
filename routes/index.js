@@ -30,6 +30,9 @@ router.get('/logout', userController.logout)
 router.get('/restaurants', authenticated, restController.getRestaurants)
 router.get('/', (req, res) => res.redirect('/restaurants'))
 
+// restaurant feeds
+router.get('/restaurants/feeds', authenticated, restController.getFeeds)
+
 // restaurant detail
 router.get('/restaurants/:id', authenticated, restController.getRestaurant)
 
