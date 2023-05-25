@@ -50,14 +50,19 @@ const restaurantColler = {
       .then(restaurant => res.render('restaurant', { restaurant: restaurant.toJSON() }))
   },
   getDashboard: (req, res, next) => {
-    return Restaurant.findByPk(req.params.id, {
-      include: Category,
-      raw: true,
-      nest: true
-    })
-      .then(restaurant => {
+    return Promise.all([
+      Restaurant.findByPk(req.params.id, {
+        include: Category,
+        nest: true,
+        raw: true
+      }),
+      Comment.findAndCountAll({
+        where: { restaurantId: req.params.id }
+      })
+    ])
+      .then(([restaurant, comments]) => {
         if (!restaurant) throw new Error('沒這間')
-        return res.render('dashboard', { restaurant })
+        return res.render('dashboard', { restaurant, comments })
       })
       .catch(err => next(err))
   }
