@@ -18,9 +18,9 @@ router.get('/signin', userController.signInPage)
 router.post('/signin', passport.authenticate('local', { failureRedirect: '/signin', failureFlash: true }), userController.signIn) // 注意是 post
 router.get('/logout', userController.logout)
 
-router.get('/users/:id', userController.getUser)
-router.put('/users/:id', upload.single('image'), userController.putUser)
-router.get('/users/:id/edit', userController.editUser)
+router.get('/users/:id', authenticated, userController.getUser)
+router.put('/users/:id', authenticated, upload.single('image'), userController.putUser)
+router.get('/users/:id/edit', authenticated, userController.editUser)
 
 router.get('/restaurants/:id', authenticated, restController.getRestaurant)
 router.get('/restaurants/:id/dashboard', authenticated, restController.getDashboard)

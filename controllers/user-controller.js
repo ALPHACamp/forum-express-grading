@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs') // 載入 bcrypt
-const { User } = require('../models')
+const { User, Comment, Restaurant } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers') // 將 file-helper 載進來
+const { getUser } = require('../helpers/auth-helpers')
 
 const userController = {
   signUpPage: (req, res) => {
@@ -39,17 +40,46 @@ const userController = {
     res.redirect('/signin')
   },
   getUser: (req, res) => {
-    return User.findByPk(req.params.id, {
-      raw: true, // 讓拿到的資料是最簡單的javascript資料
-      nest: true // 讓拿到的資料是比較簡單的
-    })
-      .then(user => {
+    const loginId = getUser(req).id
+    const id = Number(req.params.id)
+    const where = {}
+    where.userId = id
+    return Promise.all([ // 非同步處理
+      User.findByPk(req.params.id, {
+        raw: true,
+        nest: true
+      }),
+      Comment.findAndCountAll({
+        include: [
+          Restaurant
+        ],
+        where: where,
+        raw: true,
+        nest: true
+      })
+    ])
+      .then(([user, comment]) => {
+        const data = comment.rows.map(r => ({
+          ...r
+        }))
+        const count = comment.count
         if (!user) throw new Error("User didn't exist!")
-        res.render('users/profile', { user })
+        return res.render('users/profile', {
+          user,
+          comment: data,
+          count,
+          loginId
+        })
       })
   },
   editUser: (req, res) => {
-    return User.findByPk(req.params.id, {
+    const loginId = getUser(req).id
+    const id = Number(req.params.id)
+    if (loginId !== id) {
+      req.flash('error_messages', '禁止修改他人資料')
+      return res.redirect('back')
+    }
+    return User.findByPk(id, {
       raw: true, // 讓拿到的資料是最簡單的javascript資料
       nest: true // 讓拿到的資料是比較簡單的. ex:restaurant.category.id
     })
@@ -59,8 +89,12 @@ const userController = {
       })
   },
   putUser: (req, res, next) => {
+    const loginId = getUser(req).id
     const { name } = req.body // 從 req.body 拿出表單裡的資料
-    const id = req.params.id
+    const id = Number(req.params.id)
+    if (loginId !== id) {
+      return req.flash('error_messages', '禁止修改他人資料')
+    }
     if (!name) throw new Error('User name is required!') // name 是必填，若發先是空值就會終止程式碼，並在畫面顯示錯誤提示
     const { file } = req // 把檔案取出來，也可以寫成 const file = req.file
     return Promise.all([ // 非同步處理

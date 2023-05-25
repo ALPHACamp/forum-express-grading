@@ -3,7 +3,7 @@
     {{#if user.image}}
     <img class="img-responsive center-block" src="{{ user.image }}" style="width: 300px; margin-bottom: 25px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
     {{else}}
-    <img class="img-responsive center-block" src="https://i.imgur.com/2SbwzTP.jpg" style="width: 300px; margin-bottom: 25px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+    <img class="img-responsive center-block" src="https://i.imgur.com/Ug1ebjV.png" style="width: 300px; margin-bottom: 25px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
     {{/if}}
   </div>
   <div class="col-md-8">
@@ -11,7 +11,32 @@
     <br>
     <h3>{{ user.email }}</h3>
     <br>
+    <h3>{{ count }} 已評論餐廳</h3>
+    <br>
+    {{#ifCond user.id loginId}}
     <a class="btn btn-primary link-light" href="/users/{{ user.id }}/edit">Edit</a>
+    {{/ifCond}}
+    <br>
   </div>
   <hr> 
+  <div class="row">
+    <div class="container mb-2">
+      <h5>{{ count }} 已評論餐廳</h5>
+    </div>
+    <br>
+    {{#if comment}}
+      {{#each comment}}
+        <div class="col-md-2 mb-2 me-2 justify-content-center">
+          <a href="/restaurants/{{this.Restaurant.id}}">
+            <img class="card-img-top img-fluid" src="{{this.Restaurant.image}}" alt="Card image cap" width="220px" height="80px">
+          </a>
+        </div>
+      {{/each}}
+    {{else}}
+      <br>
+      <div>
+        <h2>趕快去探索一些餐廳吧！！</h2>
+      </div>
+    {{/if}}
+  </div>
 </div>
