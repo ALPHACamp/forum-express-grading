@@ -44,11 +44,11 @@ const userController = {
     })
       .then(user => {
         if (!user) throw new Error('沒這人')
-        const accountId = req.user.id
-        const profileId = Number(req.params.id)
-        console.log(accountId, profileId)
-        res.render('user', { user, accountId, profileId })
+        // const accountId = req.user.id
+        // const profileId = Number(req.params.id)
+        res.render('users/profile', { user })
       })
+      .catch(err => next(err))
   },
   editUser: (req, res, next) => {
     return User.findByPk(req.params.id, {
@@ -56,7 +56,7 @@ const userController = {
     })
       .then(user => {
         if (!user) throw new Error('沒這人')
-        res.render('user-edit', { user })
+        res.render('users/edit', { user })
       })
       .catch(err => next(err))
   },
@@ -71,12 +71,15 @@ const userController = {
     ])
       .then(([filePath, user]) => {
         if (!user) throw new Error('見鬼了')
-        user.update({
+        return user.update({
           name,
           image: filePath || user.image
         })
       })
-      .then(() => res.redirect(`/users/${req.user.id}`))
+      .then(() => {
+        req.flash('success_messages', '使用者資料編輯成功')
+        res.redirect(`/users/${req.user.id}`)
+      })
       .catch(err => next(err))
   }
 }
