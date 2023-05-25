@@ -5,16 +5,13 @@ const adminController = {
   getRestaurants: (req, res, next) => {
     Restaurant.findAll({
       raw: true,
-      nest: true, // todo 新增讓引入的category資料乾淨
-      // todo 以上兩個在findByPk 可以在顯示時帶入.JSON e.q. res.render('admin/restaurants', { restaurant: restaurant.toJSON() }) 通常用在update之後，因為用了raw跟nest無法改但又要顯示乾淨資料時可用.toJSON()
-      // todo 不過findAll（）不適用，且include不能省
-      include: [Category] // todo 使用關聯資訊帶入資訊要用include，才拿得到
+      nest: true,
+      include: [Category]
     })
       .then(restaurants => res.render('admin/restaurants', { restaurants }))
       .catch(err => next(err))
   },
   createRestaurant: (req, res, next) => {
-    // todo 撈出所有資料才有類別可以選
     return Category.findAll({ raw: true })
       .then(categories => res.render('admin/create-restaurant', { categories }))
       .catch(err => next(err))
@@ -56,8 +53,6 @@ const adminController = {
       Restaurant.findByPk(req.params.id, { raw: true }),
       Category.findAll({ raw: true })
     ])
-      // ! bug fixed !
-      // todo 記得Promise.all後面的then括號內要有[]來接值不然會bug
       .then(([restaurant, categories]) => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         res.render('admin/edit-restaurant', { restaurant, categories })

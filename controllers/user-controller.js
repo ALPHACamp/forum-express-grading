@@ -1,5 +1,4 @@
 const bcrypt = require('bcryptjs')
-// todo 調整
 const { User } = require('../models')
 const userController = {
   signUpPage: (req, res) => {

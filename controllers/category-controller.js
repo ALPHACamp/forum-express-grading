@@ -3,7 +3,6 @@ const categoryController = {
   getCategories: (req, res, next) => {
     return Promise.all([
       Category.findAll({ raw: true }),
-      // todo req有沒有回傳id，有回傳代表點的是 edit > 發動 findByPk 不然就 null
       req.params.id ? Category.findByPk(req.params.id, { raw: true }) : null
     ])
       .then(([categories, category]) => {
