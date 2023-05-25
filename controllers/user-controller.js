@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs')
 const { User, Comment, Restaurant } = require('../models')
-const { localFileHandler } = require('../helpers/file-helpers')
+const { localFileHandler, imgurFileHandler } = require('../helpers/file-helpers')
 const userController = {
   // 註冊頁面
   signUpPage: (req, res) => {
@@ -73,7 +73,7 @@ const userController = {
       const { file } = req
       const user = await User.findByPk(req.params.id)
       if (!user) throw new Error("User didn't exist!")
-      const filePath = await localFileHandler(file)
+      const filePath = await imgurFileHandler(file)
       if (user.id !== req.user.id) { throw new Error("User can't modify others profile") }
       await user.update({ name, image: filePath || user.image })
       req.flash('success_messages', '使用者資料編輯成功')
