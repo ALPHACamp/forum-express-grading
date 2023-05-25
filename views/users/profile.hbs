@@ -1,0 +1,23 @@
+<div class="d-flex flex-column">
+  <div class="card mb-3" style="width: 100%;">
+    <div class="row g-0">
+      <div class="col-md-3">
+        <img
+          src="{{user.image}}"
+          class="img-fluid rounded-start"
+          alt="user image"
+          style="width:300px;height:300px; object-fit: cover;"
+        />
+      </div>
+      <div class="col-md-9">
+        <div class="card-body">
+          <h5 class="card-title">{{user.name}}</h5>
+          <p class="card-text">{{user.email}}</p>
+          <br />
+          <br />
+          <a class="btn btn-primary" href="/users/{{user.id}}/edit">Edit</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

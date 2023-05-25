@@ -7,6 +7,8 @@ const { authenticated, authenticatedAdmin } = require("../middleware/auth");
 const { generalErrorHandler } = require("../middleware/error-handler");
 const passport = require("../config/passport");
 const admin = require("./modules/admin");
+const { up } = require("../migrations/20230525052658-add-image-to-users");
+const upload = require("../middleware/multer");
 router.use("/admin", authenticatedAdmin, admin);
 router.get("/signup", userController.signUpPage);
 router.post("/signup", userController.signUp);
@@ -27,6 +29,21 @@ router.get(
 );
 router.get("/restaurants/:id", authenticated, restController.getRestaurant);
 router.get("/restaurants", authenticated, restController.getRestaurants);
+router.delete(
+  "/comments/:id",
+  authenticatedAdmin,
+  commentController.deleteComment
+);
+//users
+router.get("/users/:id/edit", authenticated, userController.editUser);
+router.get("/users/:id", authenticated, userController.getUser);
+router.put(
+  "/users/:id",
+  authenticated,
+  upload.single("image"),
+  userController.putUser
+);
+
 router.post("/comments", authenticated, commentController.postComment);
 router.get("/", (req, res) => res.redirect("/restaurants"));
 router.use("/", generalErrorHandler);
