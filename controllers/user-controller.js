@@ -55,7 +55,7 @@ const userController = {
     ])
       .then(([user, comments]) => {
         if (!user) throw new Error("User didn't exist!")
-        return res.render('users/profile', {
+        res.render('users/profile', {
           user,
           accountUser: req.user,
           comments
