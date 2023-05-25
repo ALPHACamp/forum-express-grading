@@ -1,0 +1,30 @@
+<div class="card mb-3">
+    <div class="row no-gutters">
+        <div class="col-md-4">
+            <img src="{{user.image}}" width="300px" height="300px" alt="photo" style="border-radius: 50%;">
+        </div>
+        <div class="col-md-8">
+            <div class="card-body">
+                <h4 class="card-title">{{user.name}}</h4>
+                <p class="card-text">{{user.email}}</p>
+                <p class="card-text">{{comments.length}}間已評論餐廳</p>
+                <a class="btn btn-primary" href="/users/{{user.id}}/edit">edit</a>
+            </div>
+        </div>
+    </div>
+</div>
+<!--Comment Math -->
+<div class="card mt-3">
+    <div class="card-header">
+        <label class="form-label" for="text"><strong>{{comments.length}} 間已評論餐廳</strong></label>
+    </div>
+
+    <div class="card-body">
+        {{#each comments}}
+        <a href="/restaurants/{{this.Restaurant.id}}">
+            <img src="{{this.Restaurant.image}}" alt="restaurant" style="max-width: 100px;"
+                onload=" this.style.opacity=1;">
+        </a>
+        {{/each}}
+    </div>
+</div>

@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs')
 const db = require('../models')
-const { User } = db
+const { User, Restaurant, Comment } = db
+const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const userController = {
     signUpPage: (req, res) => {
@@ -40,6 +41,50 @@ const userController = {
             req.flash('success_messages', '登出成功！')
             res.redirect('/signin')
         })
+    },
+    getUser: (req, res, next) => {
+        const id = req.params.id
+        return Promise.all([User.findByPk(id, { raw: true }),
+        Comment.findAll({
+            include: [Restaurant],
+            raw: true,
+            nest: true,
+            where: { userId: req.params.id }
+        })])
+            .then(([user, comments]) => {
+                if (!user) throw new Error("User didn't exist!")
+                return res.render('users/profile', { user, comments })
+            })
+            .catch(err => next(err))
+    },
+    editUser: (req, res, next) => {
+        return User.findByPk(req.params.id, { raw: true })
+            .then(user => {
+                if (!user) throw new Error("User didn't exist!")
+                res.render('users/edit', { user })
+            })
+            .catch(err => next(err))
+    },
+    putUser: (req, res, next) => {
+        const id = req.params.id
+        const userId = req.user?.id || id
+        const { name } = req.body
+        if (!name) throw new Error('User name is required!')
+        const { file } = req
+        return Promise.all([
+            User.findByPk(userId),
+            imgurFileHandler(file)
+        ])
+            .then(([user, filePath]) => {
+                if (!user) throw new Error("User didn't exist!")
+                return user.update({
+                    name, image: filePath || user.image
+                })
+            })
+            .then(() => {
+                req.flash('success_messages', '使用者資料編輯成功')
+                res.redirect(`/users/${userId}`)
+            })
     }
 }
 module.exports = userController
