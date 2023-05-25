@@ -31,7 +31,6 @@
       </td>
       <td>
         <form action="/admin/users/{{this.id}}?_method=PATCH" method="POST" style="display: inline;">
-          {{!-- 加入onclick return confirm 彈出視窗功能確認，以加深刪除功能 --}}
           <button type="submit" class="btn btn-link link-primary" style="text-decoration: none;">
             {{#if this.isAdmin}}
             set as user
