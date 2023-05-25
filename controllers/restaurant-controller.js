@@ -1,5 +1,6 @@
 const { Restaurant, Category, Comment, User } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagnation-helper')
+
 const restaurantController = {
   getRestaurants: (req, res, next) => {
     const DEFAULT_LIMIT = 9 // 默認該分頁資料拿取上限
@@ -42,6 +43,7 @@ const restaurantController = {
       ]
     })
       .then(restaurant => { // 此時撈出的資料仍是sequelize的原生格式
+        // console.log(restaurant)
         if (!restaurant) throw new Error("Restaurant didn't exist!") // 如果找不到，回傳錯誤訊息，後面不執行
         restaurant.increment('viewCounts') // 在點進來的時候就增加瀏覽次數
         res.render('restaurant', { restaurant: restaurant.toJSON() }) // 所以也可以用toJSON()去解析，但只有找單筆資料時可以用此方法
