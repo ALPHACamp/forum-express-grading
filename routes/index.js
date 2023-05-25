@@ -41,6 +41,12 @@ router.get(
 
 //* 新增餐廳評論
 router.post('/comments', authenticated, commentController.postComment)
+//* 刪除餐廳評論
+router.delete(
+  '/comments/:id',
+  authenticatedAdmin,
+  commentController.deleteComment
+)
 
 router.use('/', (req, res) => res.redirect('/restaurants'))
 router.use('/', generalErrorHandler)
