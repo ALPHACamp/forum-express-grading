@@ -15,7 +15,7 @@ const restaurantController = {
       })
     })
   },
-  getRestaurant: (req, res) => {
+  getRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
       raw: true,
       nest: true,
@@ -26,6 +26,9 @@ const restaurantController = {
         return res.render('restaurant', { restaurant })
       })
       .catch(err => next(err))
+  },
+  getDashboard: (req, res, next) => {
+    return res.render('dashboard')
   }
 }
 module.exports = restaurantController
