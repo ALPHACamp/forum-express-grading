@@ -36,6 +36,12 @@ const userController = {
       if (err) console.error(err)
     })
     return res.redirect('/signin')
+  },
+  getUser: (req, res, next) => {
+    return User.findByPk(req.params.id, {
+      raw: true
+    })
+      .then(user => res.send(user))
   }
 }
 module.exports = userController
