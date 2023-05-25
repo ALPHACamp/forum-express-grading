@@ -14,11 +14,15 @@ const adminController = {
       })
   },
   // 新增餐廳頁面
-  createRestaurant: (req, res) => {
-    return res.render('admin/create-restaurant')
+  createRestaurant: (req, res, next) => {
+    return Category.findAll({ // 抓取Category資訊
+      raw: true
+    })
+      .then(categories => res.render('admin/create-restaurant', { categories }))
+      .catch(err => next(err))
   },
   postRestaurant: (req, res, next) => {
-    const { name, tel, address, openingHours, description } = req.body // 從 req.body 拿出表單裡的資料
+    const { name, tel, address, openingHours, description, categoryId } = req.body // 從 req.body 拿出表單裡的資料
     if (!name) throw new Error('Restaurant name is required!') // name 是必填，若發先是空值就會終止程式碼，並在畫面顯示錯誤提示
     const { file } = req // 把檔案取出來，也可以寫成 const file = req.file
     imgurFileHandler(file) // 把取出的檔案傳給 file-helper 處理後
@@ -28,7 +32,8 @@ const adminController = {
         address,
         openingHours,
         description,
-        image: filePath || null // 如果有就新增不然就null
+        image: filePath || null, // 如果有就新增不然就null
+        categoryId
       }))
       .then(() => {
         req.flash('success_messages', 'restaurant was successfully created') // 在畫面顯示成功提示
@@ -51,16 +56,19 @@ const adminController = {
   },
   // 修改餐廳詳情頁面
   editRestaurant: (req, res, next) => {
-    Restaurant.findByPk(req.params.id, { raw: true })
-      .then(restaurant => {
-        if (!restaurant) throw new Error("Restaurant didn't exist!")
-        res.render('admin/edit-restaurant', { restaurant }) // hbs內的 restaurant 帶入 restaurant
+    return Promise.all([ // 2項非同步可同步執行，故使用promise
+      Restaurant.findByPk(req.params.id, { raw: true }),
+      Category.findAll({ raw: true })
+    ])
+      .then(([restaurant, categories]) => { // 兩個都執行完成後依序帶入結果
+        if (!restaurant) throw new Error("Restaurant doesn't exist!")
+        res.render('admin/edit-restaurant', { restaurant, categories })
       })
       .catch(err => next(err))
   },
   // 修改餐廳請求
   putRestaurant: (req, res, next) => {
-    const { name, tel, address, openingHours, description } = req.body
+    const { name, tel, address, openingHours, description, categoryId } = req.body
     if (!name) throw new Error('Restaurant name is required!')
     const { file } = req // 把檔案取出來
     Promise.all([ // 非同步處理
@@ -75,7 +83,8 @@ const adminController = {
           address,
           openingHours,
           description,
-          image: filePath || restaurant.image // 如果 filePath 是 Truthy (使用者有上傳新照片) 就用 filePath，是 Falsy (使用者沒有上傳新照片) 就沿用原本資料庫內的值 
+          image: filePath || restaurant.image, // 如果 filePath 是 Truthy (使用者有上傳新照片) 就用 filePath，是 Falsy (使用者沒有上傳新照片) 就沿用原本資料庫內的值 
+          categoryId
         })
       })
       .then(() => {
