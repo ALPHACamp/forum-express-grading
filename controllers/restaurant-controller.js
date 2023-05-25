@@ -1,4 +1,4 @@
-const { Restaurant, Category, Comment, User } = require('../models')
+const { Restaurant, Category, Comment, User, Favorite } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
 const restaurantController = {
   getRestaurants: (req, res, next) => {
@@ -71,11 +71,16 @@ const restaurantController = {
         where: {
           restaurantId: req.params.id
         }
+      }),
+      Favorite.findAll({
+        where: {
+          restaurantId: req.params.id
+        }
       })
     ])
-      .then(([restaurant, comments]) => {
+      .then(([restaurant, comments, favorites]) => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
-        res.render('dashboard', { restaurant, comments })
+        res.render('dashboard', { restaurant, comments, favorites })
       })
       .catch(err => next(err))
   },
@@ -101,6 +106,26 @@ const restaurantController = {
           restaurants,
           comments
         })
+      })
+      .catch(err => next(err))
+  },
+  getTopRestaurants: (req, res, next) => {
+    return Restaurant.findAll({
+      include: [{ model: User, as: 'FavoritedUsers' }]
+    })
+      .then(restaurants => {
+        const result = restaurants // 保留舊資料確保出差錯舊資料不會一起消失
+        // 整理 users 資料，把每個 user 項目都拿出來處理一次，並把新陣列儲存在 users 裡
+          .map(restaurant => ({
+            // 整理格式
+            ...restaurant.toJSON(),
+            // 計算追蹤者人數
+            favoritedCount: restaurant.FavoritedUsers.length,
+            // 判斷目前登入使用者是否已追蹤該 user 物件
+            isFavorited: req.user && req.user.FavoritedRestaurants.some(f => f.id === restaurant.id)
+          }))
+          .sort((a, b) => b.favoritedCount - a.favoritedCount).slice(0, 10)
+        res.render('top-restaurants', { restaurants: result })
       })
       .catch(err => next(err))
   }
