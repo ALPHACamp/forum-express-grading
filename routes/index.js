@@ -11,6 +11,7 @@ const admin = require('./modules/admin')
 //* 載入controller
 const restController = require('../controllers/restaurant-controller')
 const userController = require('../controllers/user-controller')
+const commentController = require('../controllers/​​comment-controller')
 const { generalErrorHandler } = require('../middleware/error-handler')
 //* 後台
 router.use('/admin', authenticatedAdmin, admin)
@@ -37,6 +38,9 @@ router.get(
   authenticated,
   restController.getDashboard
 )
+
+//* 新增餐廳評論
+router.post('/comments', authenticated, commentController.postComment)
 
 router.use('/', (req, res) => res.redirect('/restaurants'))
 router.use('/', generalErrorHandler)
