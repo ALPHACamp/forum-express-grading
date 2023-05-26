@@ -40,7 +40,6 @@ const restaurantController = {
     })
       .then(restaurant => {
         if (!restaurant) throw new Error(`Restaurant didn't exist`)
-        console.log(restaurant)
         restaurant.increment('viewCounts')
         return restaurant
       })
