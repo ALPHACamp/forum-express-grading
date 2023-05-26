@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs')
-const { User, Comment, Restaurant, Favorite, Like } = require('../models')
+const { User, Comment, Restaurant, Favorite, Like, Followship } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const userController = {
@@ -91,7 +91,7 @@ const userController = {
   // 修改使用者資料
   putUser: async (req, res, next) => {
     const { id } = req.params
-    const userId = req.user?.id || id // number
+    const userId = req.user?.id || id
     if (Number(id) !== userId) {
       req.flash('error_messages', "Not allow to edit other's profile")
       return res.redirect(`/users/${id}`)
@@ -173,6 +173,46 @@ const userController = {
         isFollowed: req.user.Followings.some(f => f.id === user.id)
       }))
       return res.render('top-users', { users })
+    } catch (e) {
+      next(e)
+    }
+  },
+  // 使用者追蹤美食達人
+  addFollowing: async (req, res, next) => {
+    const { id } = req.user
+    const { userId } = req.params
+    if (id === Number(userId)) throw new Error("You cann't follow yourself!")
+    try {
+      const user = await User.findByPk(userId)
+      if (!user) throw new Error("User didn't exist!")
+      const follow = await Followship.findOne({
+        where: {
+          followerId: id,
+          followingId: userId
+        }
+      })
+      if (follow) throw new Error('You are already following this user!')
+      await Followship.create({
+        followerId: id,
+        followingId: userId
+      })
+      return res.redirect('back')
+    } catch (e) {
+      next(e)
+    }
+  },
+  // 使用者取消追蹤美食達人
+  removeFollowing: async (req, res, next) => {
+    try {
+      const follow = await Followship.findOne({
+        where: {
+          followerId: req.user.id,
+          followingId: req.params.userId
+        }
+      })
+      if (!follow) throw new Error("You haven't followed this user!")
+      await follow.destroy()
+      return res.redirect('back')
     } catch (e) {
       next(e)
     }

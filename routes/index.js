@@ -53,6 +53,10 @@ router.get('/users/:id/edit', authenticated, userController.editUser)
 router.get('/users/:id', authenticated, userController.getUser)
 router.put('/users/:id', authenticated, upload.single('image'), userController.putUser)
 
+// 使用者追蹤美食達人
+router.post('/following/:userId', authenticated, userController.addFollowing)
+router.delete('/following/:userId', authenticated, userController.removeFollowing)
+
 // 當所有路由都不符合時自動導向餐廳首頁
 router.use('', (req, res) => res.redirect('/restaurants'))
 
