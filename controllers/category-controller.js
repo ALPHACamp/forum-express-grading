@@ -37,7 +37,7 @@ const categoryController = {
         if (!category) throw new Error("Category doesn't exist!")
         return category.destroy()
       })
-      .then(() => res.redirect('admin/categories'))
+      .then(() => res.redirect('/admin/categories'))
       .catch(err => next(err))
   }
 }
