@@ -1,0 +1,6 @@
+<img src="{{ user.image }}" alt="">
+<h2>{{ user.name }}</h2>
+<h3>{{ user.email }}</h3>
+<form action="/users/{{ user.id }}/edit" method="GET">
+  <button type="submit" class="btn btn-primary">edit</button>
+</form>
