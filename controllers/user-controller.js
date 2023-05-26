@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs')
-const { User, Comment, Restaurant } = require('../models')
+const { User, Comment, Restaurant, Favorite } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 const userController = {
   signUpPage: (req, res) => {
@@ -84,6 +84,44 @@ const userController = {
       .then(() => {
         req.flash('success_messages', '使用者資料編輯成功')
         res.redirect(`/users/${req.user.id}`)
+      })
+      .catch(err => next(err))
+  },
+  addFavorite: (req, res, next) => {
+    const { restaurantId } = req.params
+    return Promise.all([
+      // 要先反查是否已經加入了, 已經有就跳出
+      Restaurant.findByPk(restaurantId),
+      Favorite.findOne({
+        where: {
+          userId: req.user.id,
+          restaurantId
+        }
+      })
+    ])
+      .then(([restaurant, favorite]) => {
+        if (!restaurant) throw new Error('沒這間')
+        if (favorite) throw new Error('是要加幾次?')
+        return Favorite.create({
+          userId: req.user.id,
+          restaurantId
+        })
+      })
+      .then(() => res.redirect('back'))
+      .catch(err => next(err))
+  },
+  removeFavorite: (req, res, next) => {
+    return Favorite.findOne({
+      userId: req.user.id,
+      restaurantId: req.params.restaurantId
+    })
+      .then(favorite => {
+        if (!favorite) throw new Error('刪空氣?')
+        return favorite.destroy()
+      })
+      .then(() => {
+        req.flash('success_message', '已移除我的最愛')
+        res.redirect('back')
       })
       .catch(err => next(err))
   }
