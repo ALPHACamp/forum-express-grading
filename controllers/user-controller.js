@@ -3,7 +3,7 @@ const { User, Comment, Restaurant } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const userController = {
-  signUpPage: (req, res, next) => {
+  signUpPage: (req, res) => {
     return res.render('signup')
   },
   signUp: (req, res, next) => {
@@ -56,7 +56,7 @@ const userController = {
           commentRestaurant
         })
       })
-      .catch(e => next(e))
+      .catch(err => next(err))
   },
   editUser: (req, res, next) => {
     return User.findByPk(req.params.id, { raw: true })
@@ -64,7 +64,7 @@ const userController = {
         if (!user) throw new Error("User didn't exist.")
         return res.render('users/edit', { user })
       })
-      .catch(e => next(e))
+      .catch(err => next(err))
   },
   putUser: (req, res, next) => {
     const { name } = req.body
@@ -82,7 +82,7 @@ const userController = {
         req.flash('success_messages', '使用者資料編輯成功')
         return res.redirect(`/users/${req.params.id}`)
       })
-      .catch(e => next(e))
+      .catch(err => next(err))
   }
 }
 
