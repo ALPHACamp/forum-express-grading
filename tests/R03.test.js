@@ -55,7 +55,6 @@ describe('# R03', () => {
         res.render.getCall(0).args[0].should.equal('users/profile')
         res.render.getCall(0).args[1].user.id.should.equal(1)
       })
-
       // 測試完畢，清除資料
       after(async () => {
         // 清除模擬驗證資料
