@@ -11,6 +11,7 @@ router.get('/categories/:id', categoryController.getCategories)
 router.put('/categories/:id', categoryController.putCategory)
 router.patch('/users/:id', adminController.patchUser)
 router.delete('/restaurants/:id', adminController.deleteRestaurant)
+router.delete('/categories/:id', categoryController.deleteCategory)
 router.get('/restaurants', adminController.getRestaurants)// 把關是否為管理者
 router.get('/users', adminController.getUsers)
 router.get('/categories', categoryController.getCategories)
