@@ -36,7 +36,8 @@ passport.deserializeUser((id, cb) => {
   // })
   return User.findByPk(id, {
     include: [
-      { model: Restaurant, as: 'FavoritedRestaurants' }
+      { model: Restaurant, as: 'FavoritedRestaurants' },
+      { model: Restaurant, as: 'LikedRestaurants' }
     ]
   })
     // 迭代2 簡化程式碼
@@ -44,7 +45,9 @@ passport.deserializeUser((id, cb) => {
     //   user = user.toJSON()
     //   return cb(null, user)
     // })
-    .then(user => cb(null, user.toJSON()))
+    .then(user => {
+      cb(null, user.toJSON())
+    })
     .catch(err => cb(err))
 })
 module.exports = passport
