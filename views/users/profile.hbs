@@ -15,6 +15,7 @@
       <div class="col-md-8">
         <h5>{{user.name}}</h5>
         <p>{{user.email}}</p>
+        <p class="card-text">{{comments.length}} 間已評論餐廳</p>
         <a href="/users/{{user.id}}/edit"><button
             class="nav-item btn btn-primary"
           >Edit</button></a>
@@ -25,4 +26,29 @@
       </div>
     </div>
   </div>
+</div>
+
+<div class="row">
+  {{#ifCond comments.length 0}}
+    <h5>尚未有評論</h5>
+  {{else}}
+    <h5>{{comments.length}} 間已評論餐廳</h5>
+    {{#each comments}}
+      <div class="col-md-3">
+        <div class="card mb-4 shadow-sm">
+          <a href="/restaurants/{{this.Restaurant.id}}">
+            <img
+              class="card-img-top img-fluid"
+              src="{{this.Restaurant.image}}"
+              alt="Card image cap"
+              width="286px"
+              height="180px"
+              style="transition: opacity 0.5s; opacity:0;"
+              onload="this.style.opacity=1;"
+            />
+          </a>
+        </div>
+      </div>
+    {{/each}}
+  {{/ifCond}}
 </div>
