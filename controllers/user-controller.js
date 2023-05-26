@@ -3,12 +3,12 @@ const { User, Comment, Restaurant } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const userController = {
-  signUpPage: (req, res) => {
-    res.render('signup')
+  signUpPage: (req, res, next) => {
+    return res.render('signup')
   },
   signUp: (req, res, next) => {
     if (req.body.password !== req.body.passwordCheck) throw new Error('Passwords do not match!')
-    User.findOne({ where: { email: req.body.email } })
+    return User.findOne({ where: { email: req.body.email } })
       .then(user => {
         if (user) throw new Error('Email already exists!')
         return bcrypt.hash(req.body.password, 10)
@@ -20,21 +20,21 @@ const userController = {
       }))
       .then(() => {
         req.flash('success_messages', '成功註冊帳號！')
-        res.redirect('/signin')
+        return res.redirect('/signin')
       })
       .catch(err => next(err))
   },
   signInPage: (req, res) => {
-    res.render('signin')
+    return res.render('signin')
   },
   signIn: (req, res) => {
     req.flash('success_messages', '成功登入！')
-    res.redirect('/restaurants')
+    return res.redirect('/restaurants')
   },
   logout: (req, res) => {
     req.flash('success_messages', '登出成功！')
     req.logout()
-    res.redirect('/signin')
+    return res.redirect('/signin')
   },
   getUser: (req, res, next) => {
     return User.findByPk(req.params.id,
