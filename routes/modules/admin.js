@@ -13,6 +13,7 @@ router.get('/restaurants', adminController.getRestaurants)// 把關是否為管�
 router.get('/users', adminController.getUsers)
 router.get('/categories', categoryController.getCategories)
 router.post('/restaurants', upload.single('image'), adminController.postRestaurant)
+router.post('/categories', categoryController.postCategory)
 router.use('', (req, res) => res.redirect('/admin/restaurants'))
 
 module.exports = router
