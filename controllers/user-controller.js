@@ -166,13 +166,13 @@ const userController = {
   // 使用者瀏覽美食達人
   getTopUsers: async (req, res, next) => {
     try {
-      let users = await User.findAll({ include: [{ model: User, as: 'Followers' }] })
-      users = await users.map(user => ({
+      const users = await User.findAll({ include: [{ model: User, as: 'Followers' }] })
+      const result = await users.map(user => ({
         ...user.toJSON(),
         followerCount: user.Followers.length,
         isFollowed: req.user.Followings.some(f => f.id === user.id)
-      }))
-      return res.render('top-users', { users })
+      })).sort((a, b) => b.followerCount - a.followerCount) // sort結果大於1為DESC、小於1為ASC
+      return res.render('top-users', { users: result })
     } catch (e) {
       next(e)
     }
