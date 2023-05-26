@@ -52,12 +52,6 @@
             <img src="{{this.Restaurant.image}}" width="60" height="60" class="avatar" style="transition: opacity 0.5s; opacity:0;"
               onload="this.style.opacity=1;" />
           </a>
-
-        {{!-- <div class="col">
-          <div class="card">
-            <a href="/restaurants/{{this.Restaurant.id}}"><img src="{{this.Restaurant.image}}" class="img-fluid"></a>
-          </div>
-        </div> --}}
         {{/if}}
       {{/each}}
       </div>
@@ -70,15 +64,17 @@
     <br />
     <div class="card">
       <div class="card-header">
-        <strong>{{user.FavoritedRestaurants.length}}</strong> 收藏的餐廳
+        <strong>{{favorites.length}}</strong> 間已收藏的餐廳
       </div>
       <div class="card-body">
-        {{#each user.FavoritedRestaurants}}
-          <a href="/restaurants/{{this.id}}" class="text-decoration-none">
-            <img src="{{this.image}}" width="60" height="60" class="avatar" style="transition: opacity 0.5s; opacity:0;"
+        {{#each favorites}}
+          {{#if this.Restaurant}}
+         <a href="/restaurants/{{this.Restaurant.id}}" class="text-decoration-none">
+            <img src="{{this.Restaurant.image}}" width="60" height="60" class="avatar" style="transition: opacity 0.5s; opacity:0;"
               onload="this.style.opacity=1;" />
           </a>
-        {{/each}}
+        {{/if}}
+      {{/each}}
       </div>
     </div>
   </div>

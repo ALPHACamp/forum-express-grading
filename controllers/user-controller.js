@@ -38,16 +38,23 @@ const userController = {
   },
   getUser: (req, res, next) => {
     return Promise.all([User.findByPk(req.params.id, { raw: true }),
-      Comment.findAll({
+      Comment.findAll({ // Comment 和 Favorite 都有 restaurantId 和 userId
         where: { userId: req.params.id },
         attributes: ['restaurantId'],
         group: ['restaurantId'],
         include: { model: Restaurant, raw: true },
         raw: true,
         nest: true
-      })]).then(([user, comments]) => {
+      }), Favorite.findAll({
+        where: { userId: req.params.id },
+        attributes: ['restaurantId'],
+        group: ['restaurantId'],
+        include: { model: Restaurant, as: 'FavoritedRestaurants' },
+        raw: true,
+        nest: true
+      })]).then(([user, comments, favorites]) => {
       if (!user) throw new Error("User doesn't exist!")
-      return res.render('users/profile', { user, comments })
+      return res.render('users/profile', { user, comments, favorites })
     }).catch(err => next(err))
   },
   editUser: (req, res, next) => {
