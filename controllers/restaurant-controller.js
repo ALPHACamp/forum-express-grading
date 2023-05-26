@@ -40,12 +40,21 @@ const restaurantColler = {
   getRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
       include: [
-        Category,
-        { model: Comment, include: User, order: [['createdAt', 'DESC']] },
-        { model: User, as: 'FavoritedUsers' }
+        { model: Category, required: true },
+        { model: User, as: 'FavoritedUsers' },
+        {
+          model: Comment,
+          include: [
+            { model: User, required: true }
+          ],
+          order: [['created_at', 'DESC']],
+          required: false,
+          separate: true
+        }
       ]
     })
       .then(restaurant => {
+        console.log(restaurant.toJSON())
         if (!restaurant) throw new Error('沒這間')
         const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id)
         restaurant.increment('viewCounts')
