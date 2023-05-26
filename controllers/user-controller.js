@@ -83,7 +83,7 @@ const userController = {
     const { name, email } = req.body
     const { file } = req
     if (!name) throw new Error('Name is required.')
-    if (!email) throw new Error('Email is required.')
+    // if (!email) throw new Error('Email is required.')
     return Promise.all([
       User.findByPk(req.params.id),
       imgurFileHandler(file)
