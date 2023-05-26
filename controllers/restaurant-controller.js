@@ -12,6 +12,8 @@ const restaurantController = {
 
     // 取得使用者收藏餐廳之id陣列
     const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
+    // 取得使用者喜歡餐廳之id陣列
+    const likedRestaurantsId = req.user && req.user.LikedRestaurants.map(lr => lr.id)
     try {
       const categories = await Category.findAll({ raw: true, nest: true })
       const restaurants = await Restaurant.findAndCountAll({
@@ -26,7 +28,8 @@ const restaurantController = {
       const data = restaurants.rows.map(rest => ({
         ...rest,
         description: rest.description.substring(0, 50),
-        isFavorited: favoritedRestaurantsId.includes(rest.id) // 比對favoritedRestaurantsId中與rest.id符合的項目
+        isFavorited: favoritedRestaurantsId.includes(rest.id), // 比對favoritedRestaurantsId中與rest.id符合的項目
+        isLiked: likedRestaurantsId.includes(rest.id)
       }))
       return res.render('restaurants', {
         categoryId,
@@ -43,18 +46,19 @@ const restaurantController = {
     const { id } = req.params
     try {
       const restaurant = await Restaurant.findByPk(id, {
-        // raw: true,
-        // nest: true,
         include: [
           Category,
           { model: Comment, include: User },
-          { model: User, as: 'FavoritedUsers' }
+          { model: User, as: 'FavoritedUsers' },
+          { model: User, as: 'LikedUsers' }
         ]
       })
       if (!restaurant) throw new Error("Restaurant didn't exist!")
+
       const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id)
+      const isLiked = restaurant.LikedUsers.some(l => l.id === req.user.id)
       await Restaurant.increment('view_counts', { where: { id } })
-      return res.render('restaurant', { restaurant: restaurant.toJSON(), isFavorited })
+      return res.render('restaurant', { restaurant: restaurant.toJSON(), isFavorited, isLiked })
     } catch (e) {
       next(e)
     }

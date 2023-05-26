@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs')
-const { User, Comment, Restaurant, Favorite } = require('../models')
+const { User, Comment, Restaurant, Favorite, Like } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const userController = {
@@ -91,6 +91,11 @@ const userController = {
   // 修改使用者資料
   putUser: async (req, res, next) => {
     const { id } = req.params
+    const userId = req.user?.id || id // number
+    if (Number(id) !== userId) {
+      req.flash('error_messages', "Not allow to edit other's profile")
+      return res.redirect(`/users/${id}`)
+    }
     const { name } = req.body
     if (!name) throw new Error('User name is required!')
     const { file } = req
@@ -127,6 +132,32 @@ const userController = {
       const favorite = await Favorite.findOne({ where: { userId: req.user.id, restaurantId: req.params.restaurantId } })
       if (!favorite) throw new Error("You haven't favorited this restaurant")
       await favorite.destroy()
+      return res.redirect('back')
+    } catch (e) {
+      next(e)
+    }
+  },
+  // 使用者喜歡餐廳
+  addLike: async (req, res, next) => {
+    const { restaurantId } = req.params
+    try {
+      const restaurant = await Restaurant.findByPk(restaurantId)
+      if (!restaurant) throw new Error("Restaurant didn't exist!")
+
+      const like = await Like.findOne({ where: { userId: req.user.id, restaurantId } })
+      if (like) throw new Error('You have liked this restaurant!')
+      await Like.create({ userId: req.user.id, restaurantId })
+      return res.redirect('back')
+    } catch (e) {
+      next(e)
+    }
+  },
+  // 使用者收回喜歡
+  removeLike: async (req, res, next) => {
+    try {
+      const like = await Like.findOne({ where: { userId: req.user.id, restaurantId: req.params.restaurantId } })
+      if (!like) throw new Error("You haven't liked this restaurant")
+      await like.destroy()
       return res.redirect('back')
     } catch (e) {
       next(e)
