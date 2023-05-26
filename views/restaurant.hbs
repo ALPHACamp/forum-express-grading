@@ -16,7 +16,13 @@
   </div>
   <div class="col-md-8">
     <p style="white-space: break-spaces;">{{restaurant.description}}</p>
+    <div class="col-md-3 mb-2">
+      <a href="/restaurants/{{restaurant.id}}/dashboard">
+        <button class="btn btn-primary" type="button">Dashboard</button>
+      </a>
+    </div>
   </div>
   <hr>
+
 </div>
 <a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
