@@ -39,11 +39,15 @@ const restaurantController = {
     })
       .then((restaurant) => {
         if (!restaurant) throw new Error("Restaurant didn't exist!");
+        console.log(res.locals.user.isAdmin);
         return restaurant.increment("viewCounts");
       })
-      .then((restaurant) =>
-        res.render("restaurant", { restaurant: restaurant.toJSON() })
-      )
+      .then((restaurant) => {
+        res.render("restaurant", {
+          restaurant: restaurant.toJSON(),
+          user: res.locals.user,
+        });
+      })
       .catch((err) => next(err));
   },
   getDashboard: (req, res, next) => {

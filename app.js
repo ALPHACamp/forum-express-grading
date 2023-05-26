@@ -15,7 +15,15 @@ app.use(methodOverride("_method"));
 app.use("/upload", express.static(path.join(__dirname, "upload")));
 app.engine(
   "hbs",
-  handlebars.engine({ extname: ".hbs", helpers: handlebarsHelpers })
+  handlebars.engine({
+    defaultLayout: "main",
+    extname: ".hbs",
+    helpers: handlebarsHelpers,
+    runtimeOptions: {
+      allowProtoPropertiesByDefault: true,
+      allowProtoMethodsByDefault: true,
+    },
+  })
 );
 app.set("view engine", "hbs");
 app.use(express.urlencoded({ extended: true }));
