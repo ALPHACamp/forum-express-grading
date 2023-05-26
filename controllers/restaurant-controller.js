@@ -31,17 +31,22 @@ const restaurantController = {
       .catch(err => next(err))
   },
   getDashboard: (req, res, next) => {
-    return Restaurant.findByPk(req.params.id, {
-      include: Category, // 拿出關聯的 Category model
-      nest: true,
-      raw: true
-    })
+    const restaurantId = req.params.id
+    return Restaurant.findByPk(restaurantId)
       .then(restaurant => {
-        console.log(restaurant)
         if (!restaurant) throw new Error("Restaurant didn't exist!")
-        res.render('dashboard', {
-          restaurant
+        return restaurant.increment('viewCounts', { by: 1 })
+      })
+      .then(() => {
+        return Restaurant.findByPk(req.params.id, {
+          include: Category, // 拿出關聯的 Category model
+          nest: true,
+          raw: true
         })
+      })
+      .then(restaurant => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        res.render('dashboard', { restaurant })
       })
       .catch(err => next(err))
   }
