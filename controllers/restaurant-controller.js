@@ -7,9 +7,12 @@ const restaurantController = {
       nest: true
     })
       .then(restaurants => {
+        const favoritedRestaurantsId =
+          req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
         const data = restaurants.map(r => ({
           ...r,
-          description: r.description.substring(0, 50)
+          description: r.description.substring(0, 50),
+          isFavorited: favoritedRestaurantsId.includes(r.id)
         }))
         return res.render('restaurants', { restaurants: data })
       })
