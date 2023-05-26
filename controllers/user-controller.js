@@ -112,8 +112,10 @@ const userController = {
   },
   removeFavorite: (req, res, next) => {
     return Favorite.findOne({
-      userId: req.user.id,
-      restaurantId: req.params.restaurantId
+      where: {
+        userId: req.user.id,
+        restaurantId: req.params.restaurantId
+      }
     })
       .then(favorite => {
         if (!favorite) throw new Error('刪空氣?')

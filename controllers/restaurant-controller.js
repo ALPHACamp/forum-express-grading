@@ -22,9 +22,11 @@ const restaurantColler = {
       Category.findAll({ raw: true }) // 為了render category-Nav
     ])
       .then(([restaurants, categories]) => {
+        const favoratedRestaurantsId = req.user.FavoritedRestaurants.map(fr => fr.id)
         const data = restaurants.rows.map(r => ({
           ...r,
-          description: r.description.substring(0, 50)
+          description: r.description.substring(0, 50),
+          isFavorited: favoratedRestaurantsId.includes(r.id) // 這樣data裡面就有isFavorated這個boolean值
         }))
         return res.render('restaurants', {
           restaurants: data,
@@ -39,14 +41,17 @@ const restaurantColler = {
     return Restaurant.findByPk(req.params.id, {
       include: [
         Category,
-        { model: Comment, include: User, order: [['createdAt', 'DESC']] }
+        { model: Comment, include: User, order: [['createdAt', 'DESC']] },
+        { model: User, as: 'FavoritedUsers' }
       ]
     })
       .then(restaurant => {
         if (!restaurant) throw new Error('沒這間')
-        return restaurant.increment('viewCounts')
+        const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id)
+        restaurant.increment('viewCounts')
+        res.render('restaurant', { restaurant: restaurant.toJSON(), isFavorited })
       })
-      .then(restaurant => res.render('restaurant', { restaurant: restaurant.toJSON() }))
+      .catch(err => next(err))
   },
   getDashboard: (req, res, next) => {
     return Promise.all([
