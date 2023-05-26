@@ -9,8 +9,25 @@
       <div class="col-md-8">
         <p><strong>{{user.name}}</strong></p>
         <p>{{user.email}}</p>
+        <p><strong>{{user.Comments.length}}</strong> 已評論餐廳</p>
         <a class="btn btn-primary" href="/users/{{user.id}}/edit">Edit</a>
       </div>
     </div>
   </div>
 </div>
+  <div class="card">
+    <div class="card-header">
+      {{#if user.Comments}}
+      {{user.Comments.length}}已評論餐廳
+      {{else}}
+      目前沒有評論
+      {{/if}}
+    </div>
+    <div class="card-body">
+      {{#each user.Comments}}
+      <a href="/restaurants/{{this.Restaurant.id}}"><img src="{{this.Restaurant.image}}"
+          style="width:50px;height:50px;"></a>
+      {{/each}}
+    </div>
+  </div>
+  </div>
