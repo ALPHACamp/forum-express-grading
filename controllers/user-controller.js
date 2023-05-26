@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs')
-const db = require('../models')
-const { User } = db
+const { User, Comment, Restaurant } = require('../models')
+const { imgurFileHandler } = require('../helpers/file-helpers')
+
 const userController = {
   signUpPage: (req, res) => {
     res.render('signup')
@@ -34,6 +35,55 @@ const userController = {
     req.flash('success_messages', '登出成功！')
     req.logout()
     res.redirect('/signin')
+  },
+  getUser: (req, res, next) => {
+    return User.findByPk(req.params.id,
+      {
+        include:
+        {
+          model: Comment,
+          include: Restaurant
+        },
+        nest: true
+      })
+      .then(user => {
+        if (!user) throw new Error("User didn't exist.")
+        const commentRestaurant = user.Comments.map(
+          comment => comment.Restaurant.dataValues
+        )
+        return res.render('users/profile', {
+          user: user.toJSON(),
+          commentRestaurant
+        })
+      })
+      .catch(e => next(e))
+  },
+  editUser: (req, res, next) => {
+    return User.findByPk(req.params.id, { raw: true })
+      .then(user => {
+        if (!user) throw new Error("User didn't exist.")
+        return res.render('users/edit', { user })
+      })
+      .catch(e => next(e))
+  },
+  putUser: (req, res, next) => {
+    const { name } = req.body
+    const { file } = req
+    if (!name) throw new Error('Name is required!')
+    return Promise.all([User.findByPk(req.params.id), imgurFileHandler(file)])
+      .then(([user, filePath]) => {
+        if (!user) throw new Error("User didn't exist.")
+        return user.update({
+          name,
+          image: filePath || user.image
+        })
+      })
+      .then(user => {
+        req.flash('success_messages', '使用者資料編輯成功')
+        return res.redirect(`/users/${req.params.id}`)
+      })
+      .catch(e => next(e))
   }
 }
+
 module.exports = userController
