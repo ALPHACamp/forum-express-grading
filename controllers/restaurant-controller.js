@@ -44,7 +44,7 @@ const restaurantController = {
         return restaurant
       })
       .then(restaurant => {
-        console.log(restaurant.Comments[0].dataValues)
+        // console.log(restaurant.Comments[0].dataValues)
         res.render('restaurant', {
           restaurant: restaurant.toJSON()
         })
