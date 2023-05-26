@@ -45,6 +45,9 @@ router.delete('/favorite/:restaurantId', authenticated, userController.removeFav
 router.post('/like/:restaurantId', authenticated, userController.addLike)
 router.delete('/like/:restaurantId', authenticated, userController.removeLike)
 
+// 使用者瀏覽美食達人
+router.get('/users/top', authenticated, userController.getTopUsers)
+
 // 使用者編輯個人資訊
 router.get('/users/:id/edit', authenticated, userController.editUser)
 router.get('/users/:id', authenticated, userController.getUser)
