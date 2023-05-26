@@ -37,6 +37,7 @@ const userController = {
     res.redirect('/signin')
   },
   getUser: (req, res, next) => {
+    // node.js use 18 to 14
     // const directUser = req.user.id
     return Promise.all([
       User.findByPk(req.params.id, {
