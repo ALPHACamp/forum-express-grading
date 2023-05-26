@@ -1,0 +1,13 @@
+<form action="/users/{{user.id}}?_method=PUT" method="POST" enctype="multipart/form-data">
+  <div class="form-row mb-3">
+    <label class="form-label ms-1" for="name" style="font-size: 1.2em;">Name</label>
+    <input class="form-control" type="text" name="name" id="name" placeholder="Enter name" value="{{user.name}}" required>
+  </div>
+  <div class="form-row mb-3">
+    <label class="form-label ms-1" for="image" style="font-size: 1.2em;">Image</label>
+    <input class="form-control" type="file" class="form-control-file" id="image" name="image">
+    <p style="font-size: small;color:brown">您原先選取的檔案路徑為：{{user.image}}</p>
+  </div>
+  <button type="submit" class="btn btn-primary me-3 mt-2">Submit</button>
+  <a class="btn btn-outline-secondary mt-2" href="javascript:history.back()">Back</a>
+</form>
