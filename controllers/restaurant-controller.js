@@ -123,6 +123,5 @@ const restaurantController = {
       })
       .catch(err => next(err))
   }
-
 }
 module.exports = restaurantController
