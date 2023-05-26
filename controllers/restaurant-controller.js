@@ -41,7 +41,6 @@ const restaurantController = {
       include: [Category, { model: Comment, include: User }] // 拿出關聯的 Category model
     })
       .then(restaurant => {
-        console.log(restaurant.Comments[0].dataValues)
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         return restaurant.increment('viewCount')
       })
