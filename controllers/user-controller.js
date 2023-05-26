@@ -40,18 +40,13 @@ const userController = {
     res.redirect('/signin')
   },
   getUser: (req, res, next) => {
-    return Promise.all([
-      User.findByPk(req.params.id, { raw: true }),
-      Comment.findAll({
-        raw: true,
-        nest: true,
-        where: { userId: req.params.id },
-        include: Restaurant
-      })
-    ])
-      .then(([user, comments]) => {
+    return User.findByPk(req.params.id, {
+      include: { model: Comment, include: Restaurant },
+      order: [[Comment, 'id', 'DESC']]
+    })
+      .then(user => {
         if (!user) throw new Error("User doesn't exists!")
-        res.render('users/profile', { user, comments })
+        res.render('users/profile', { user: user.toJSON() })
       })
       .catch(err => next(err))
   },
@@ -69,13 +64,13 @@ const userController = {
     const { name } = req.body
     const { file } = req // 把image檔案取出來
     if (!name) throw new Error('User name is required!')
+    if (req.user.id !== Number(req.params.id)) throw new Error('Edit self profile only!')
     return Promise.all([
       User.findByPk(req.user.id),
       imgurFileHandler(file)
     ])
       .then(([user, filePath]) => {
         if (!user) throw new Error("user didn't exist!")
-        if (user.id !== Number(req.params.id)) throw new Error('Edit self profile only!')
         return user.update({
           name,
           image: filePath || user.image
