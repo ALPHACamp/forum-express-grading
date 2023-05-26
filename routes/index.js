@@ -6,6 +6,7 @@ const admin = require("./modules/admin");
 const userController = require("../controllers/user-controller");
 const { generalErrorHandler } = require("../middleware/error-handler");
 const { authenticated, authenticatedAdmin } = require("../middleware/auth");
+const commentController = require("../controllers/comment-controller");
 router.use("/admin", authenticatedAdmin, admin);
 router.get("/signup", userController.signUpPage);
 router.post("/signup", userController.signUp);
@@ -22,6 +23,12 @@ router.post(
   userController.signIn
 );
 router.get("/logout", userController.logout);
+router.delete(
+  "/comments/:id",
+  authenticatedAdmin,
+  commentController.deleteComment
+);
+router.post("/comments", authenticated, commentController.postComment);
 
 router.get("/", (req, res) => res.redirect("/restaurants"));
 router.use("/", generalErrorHandler);
