@@ -22,10 +22,13 @@ const restaurantController = {
       Category.findAll({ raw: true })
     ])
       .then(([restaurants, categories]) => {
+        // 把passport反序列化的最愛跟喜歡餐廳清單跟要顯示的餐廳清單對照，若清單內有就給true
         const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
+        const likedRestaurantsId = req.user && req.user.LikedRestaurants.map(lr => lr.id)
         const data = restaurants.rows.map(item => {
           item.description = item.description.substring(0, 50)
           item.isFavorited = favoritedRestaurantsId.includes(item.id)
+          item.isLiked = likedRestaurantsId.includes(item.id)
           return item
         })
         const pagination = getPagination(limit, page, restaurants.count)
@@ -38,16 +41,18 @@ const restaurantController = {
       include: [
         Category,
         { model: Comment, include: User },
-        { model: User, as: 'FavoritedUsers' }
+        { model: User, as: 'FavoritedUsers' },
+        { model: User, as: 'LikedUsers' }
       ],
       nest: true
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurants didn't exist!")
         const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id)
+        const isLiked = restaurant.LikedUsers.some(l => l.id === req.user.id)
         return Promise.all([
           restaurant.increment('viewCounts', { by: 1 }),
-          res.render('restaurant', { restaurant: restaurant.toJSON(), isFavorited })
+          res.render('restaurant', { restaurant: restaurant.toJSON(), isFavorited, isLiked })
         ])
       })
       .catch(err => next(err))
