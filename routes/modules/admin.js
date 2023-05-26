@@ -14,6 +14,7 @@ router.patch('/users/:id', adminController.patchUser)// 修改使用者權限
 router.get('/users', adminController.getUsers)// 使用者頁面
 
 router.get('/categories', categoryController.getCategories) // category頁面
+router.post('/categories', categoryController.postCategory) // 新增
 
 router.get('/restaurants', adminController.getRestaurants) // 後台餐廳主頁，進入/restaurants前先驗證是否為adm，是才能帶入adm畫面
 router.post('/restaurants', upload.single('image'), adminController.postRestaurant) // 新增餐廳資訊
