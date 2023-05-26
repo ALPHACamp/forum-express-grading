@@ -21,7 +21,7 @@ const restaurantController = {
         limit,
         offset,
         nest: true, // include整理
-        raw: true //  lean()
+        raw: true // lean()
       }),
       Category.findAll({ raw: true }) // 抓Category資訊
     ])

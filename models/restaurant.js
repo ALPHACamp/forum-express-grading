@@ -12,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       Restaurant.belongsTo(models.Category, { foreignKey: 'categoryId' }) // 設定單方與category關聯，並設定categoryId為外鍵
+      Restaurant.hasMany(models.Comment, { foreignKey: 'restaurantId' }) // 多個Comment FK:restaurantId
     }
   };
   Restaurant.init({
