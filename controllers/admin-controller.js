@@ -99,7 +99,7 @@ const adminController = {
     return User.findAll({
       raw: true
     })
-      .then(users => res.render('/admin/users', { users }))
+      .then(users => res.render('admin/users', { users }))
       .catch(err => next(err))
   },
   patchUser: (req, res, next) => {
