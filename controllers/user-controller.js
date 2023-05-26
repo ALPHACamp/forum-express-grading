@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs')
-const { User, Comment, Restaurant } = require('../models')
+const { User, Comment, Restaurant, Favorite } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 const userController = {
   // 註冊頁面
@@ -79,6 +79,27 @@ const userController = {
       req.flash('success_messages', '使用者資料編輯成功')
       res.redirect(`/users/${user.id}`)
     } catch (err) { next(err) }
+  },
+  addFavorite: (req, res, next) => {
+    const { restaurantId } = req.params
+    const userId = req.user.id
+    return Promise.all([Restaurant.findByPk(restaurantId), Favorite.findOne({ where: { userId, restaurantId } })])
+      .then(([restaurant, favorite]) => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        if (favorite) throw new Error('You have favorited this restaurant!')
+        return Favorite.create({ userId, restaurantId })
+      })
+      .then(() => res.redirect('back'))
+      .catch(err => next(err))
+  },
+  removeFavorite: (req, res, next) => {
+    return Favorite.findOne({ where: { userId: req.user.id, restaurantId: req.params.restaurantId } })
+      .then(favorite => {
+        if (!favorite) throw new Error("You haven't favorited this restaurant")
+        return favorite.destroy()
+      })
+      .then(() => res.redirect('back'))
+      .catch(err => next(err))
   }
 }
 
