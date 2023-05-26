@@ -42,6 +42,7 @@ const restaurantController = {
       })
       .catch(err => next(err))
   },
+  //* 最新資訊
   getFeeds: (req, res, next) => {
     return Promise.all([
       Restaurant.findAll({
