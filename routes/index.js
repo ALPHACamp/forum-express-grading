@@ -4,6 +4,7 @@ const passport = require('../config/passport') // @Add
 
 const restController = require('../controllers/restaurant-controller')
 const userController = require('../controllers/user-controller')
+const commentController = require('../controllers/comment-controller')
 const { generalErrorHandler } = require('../middleware/error-handler')
 const { authenticated, authenticatedAdmin } = require('../middleware/auth') // 引入 auth.js
 
@@ -19,6 +20,8 @@ router.get('/logout', userController.logout)
 router.get('/restaurants', authenticated, restController.getRestaurants)
 router.get('/restaurants/:id', authenticated, restController.getRestaurant)
 router.get('/restaurants/:id/dashboard', authenticated, restController.getDashboard) // @Add
+
+router.post('/comments', authenticated, commentController.postComment)
 
 router.get('/', (req, res) => res.redirect('/restaurants'))
 router.use('/', generalErrorHandler)
