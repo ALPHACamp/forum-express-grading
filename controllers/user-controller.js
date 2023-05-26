@@ -41,10 +41,10 @@ const userController = {
     res.redirect('/restaurants')
   },
   //* 登出
-  logout: (req, res) => {
+  logout: (req, res, next) => {
     req.flash('success_messages', '登出成功！')
     req.logout()
-    res.redirect('/signin')
+    return res.redirect('/signin')
   },
   //* 瀏覽個人頁面
   getUser: (req, res, next) => {

@@ -31,6 +31,7 @@ router.post(
   }),
   userController.signIn
 )
+router.get('/logout', userController.logout)
 //* 瀏覽全部餐廳
 router.get('/restaurants', authenticated, restController.getRestaurants)
 //* 瀏覽單一餐廳
