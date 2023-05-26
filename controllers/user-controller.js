@@ -38,24 +38,39 @@ const userController = {
   },
   getUser: (req, res, next) => {
     return Promise.all([
-      User.findByPk(req.params.id, {
-        raw: true
-      }),
+      User.findByPk(req.params.id, { raw: true }),
       Comment.findAll({
-        include: Restaurant,
-        where: { userId: req.params.id },
         raw: true,
-        nest: true
+        nest: true,
+        where: { userId: req.params.id },
+        include: Restaurant
       })
     ])
       .then(([user, comments]) => {
-        console.log(comments)
-        if (!user) throw new Error('User not exists')
-        const haveComment = !!comments.length
-        res.render('users/profile', { user, comments, haveComment })
+        if (!user) throw new Error("User doesn't exists!")
+        res.render('users/profile', { user, comments })
       })
       .catch(err => next(err))
   },
+  // getUser: (req, res, next) => {
+  //   return Promise.all([
+  //     User.findByPk(req.params.id, {
+  //       raw: true
+  //     }),
+  //     Comment.findAll({
+  //       include: Restaurant,
+  //       where: { userId: req.params.id },
+  //       raw: true,
+  //       nest: true
+  //     })
+  //   ])
+  //     .then(([user, comments]) => {
+  //       if (!user) throw new Error('User not exists')
+  //       const haveComment = !!comments.length //刪這裡
+  //       res.render('users/profile', { user, comments, haveComment })
+  //     })
+  //     .catch(err => next(err))
+  // },
   editUser: (req, res, next) => {
     return User.findByPk(req.params.id, {
       raw: true

@@ -7,25 +7,31 @@
     <p>{{user.email}}</p>
     <label class="form-label">Image</label>
     <div>
-    <img class="img-responsive center-block mb-5" src="{{user.image}}"
-      style="width: 250px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+      <img class="img-responsive center-block mb-5" src="{{user.image}}"
+        style="width: 250px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
     </div>
     <button class="btn btn-link">
-    <a class="btn btn-primary" href="/users/{{user.id}}/edit">Edit Profile</a>
+      <a class="btn btn-primary" href="/users/{{user.id}}/edit">Edit Profile</a>
     </button>
   </div>
   <div>
     <div class="card">
+      {{#ifCond comments.length 0}}
       <div class="card-header">
-        {{#if haveComment}}{{comments.length}}個評論過的餐廳{{else}}還沒評論過任何餐廳呢!{{/if}}
+        還沒評論過任何餐廳呢!
+      </div>
+      {{else}}
+      <div class="card-header">
+        {{comments.length}}個評論過的餐廳
       </div>
       <div class="card-body">
         {{#each comments}}
         <a href="/restaurants/{{this.Restaurant.id}}">
-        <img src="{{this.Restaurant.image}}" alt="image" style="width:5%">
+          <img src="{{this.Restaurant.image}}" alt="image" style="width:5%">
         </a>
         {{/each}}
       </div>
+      {{/ifCond}}
     </div>
   </div>
 </div>
