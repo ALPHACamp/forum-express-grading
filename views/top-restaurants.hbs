@@ -1,34 +1,31 @@
 {{> restaurant-tabs route='topRestaurants'}}
+
 <h1>Top 10 人氣餐廳</h1>
 <hr />
-<div class="row" style="text-align: center;">
+<div class="d-flex flex-column align-items-center">
   {{#each restaurants}}
-  <div class="col-md-4">
-    <div class="card mb-4 shadow-sm">
-      <a href="/restaurants/{{this.id}}">
-        <img class="card-img-top img-fluid" src="{{this.image}}" alt="Card image cap" width="286px" height="180px"
-          style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
-      </a>
-      <div class="card-body">
-        <p class="card-text">
-          <a href="/restaurants/{{this.id}}">
-            {{this.name}}
-          </a>
-        </p>
-        <span class="badge bg-secondary">{{this.Category.name}}</span>
-        <p class="card-text text-truncate">{{this.description}}</p>
-        <span class="bg-secondary badge">收藏人數：{{this.favoritedCount}}</span>
-        
-          {{#if isFavorited}}
-          <form action="/favorite/{{this.id}}?_method=DELETE" method="POST">
-            <button type="submit" class="btn btn-danger m-1">移除最愛</button>
-          </form>
+  <div class="card mb-3 h-100 m-1" style="max-width: 540px;break-inside: avoid;">
+    <div class="row no-gutters">
+      <div class="col-md-4">
+        <a href="/restaurants/{{this.id}}">
+          <img class="card-img img-fluid" src="{{this.image}}" style="transition: opacity 0.5s; opacity:0;"
+            onload="this.style.opacity=1;">
+        </a>
+      </div>
+      <div class="col-md-8">
+        <div class="card-body">
+          <h5 class="card-title"><a class="link-primary" href="/restaurants/{{this.id}}">{{this.name}}</a></h5>
+          <span class="bg-secondary badge bg-secondary">收藏數：{{this.favoritesCount}}</span>
+          <p class="my-4 card-text" style="white-space: break-spaces;">{{this.description}}</p>
+          <a href="/restaurants/{{this.id}}"><button type="button" class="btn btn-primary">Show</button></a>
+          {{#if this.isFavorited }}
+          <form action="/favorite/{{this.id}}?_method=DELETE" method="POST" style="display: contents;"><button
+              type="submit" class="btn btn-danger">移除最愛</button></form>
           {{else}}
-          <form action="/favorite/{{this.id}}" method="POST">
-            <button type="submit" class="btn btn-primary m-1">加到最愛</button>
-          </form>
+          <form action="/favorite/{{this.id}}" method="POST" style="display: contents;"><button type="submit"
+              class="btn btn-primary">加到最愛</button></form>
           {{/if}}
-        
+        </div>
       </div>
     </div>
   </div>
