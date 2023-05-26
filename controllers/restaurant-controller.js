@@ -1,5 +1,6 @@
 const { Restaurant, Category, Comment, User } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
+const restaurant = require('../models/restaurant')
 
 const restaurantController = {
   getRestaurants: (req, res) => {
@@ -35,7 +36,7 @@ const restaurantController = {
         })
       })
   },
-  getRestaurant: (req, res) => {
+  getRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
       include: [
         Category,
@@ -43,9 +44,24 @@ const restaurantController = {
       ]
     }).then(restaurant => {
       if (!restaurant) throw new Error("Restaurant didn't exist!")
-      return res.render('restaurant', {
-        restaurant: restaurant.toJSON()
+      return restaurant.increment('viewCounts')
+    })
+      .then(restaurant => {
+        return res.render('restaurant', {
+          restaurant: restaurant.toJSON()
+        })
       })
+      .catch(err => next(err))
+  },
+  getDashboard: (req, res) => {
+    return Restaurant.findByPk(req.params.id, {
+      include: Category,
+      nest: true,
+      raw: true
+    }).then(restaurant => {
+      if (!restaurant) throw new Error("Restaurant didn't exist!")
+
+      return res.render('dashboard', { restaurant })
     })
   }
 }
