@@ -12,7 +12,13 @@ const restaurantController = {
       const restaurants = await Restaurant.findAndCountAll({ include: Category, nest: true, raw: true, where: { ...categoryId ? { categoryId } : {} }, limit, offset })
       const categories = await Category.findAll({ raw: true })
       const FavoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
-      const data = restaurants.rows.map(r => ({ ...r, description: r.description.substring(0, 50), isFavorited: FavoritedRestaurantsId.includes(r.id) }))
+      const LikedRestaurantsId = req.user && req.user.LikedRestaurants.map(fr => fr.id)
+      const data = restaurants.rows.map(r => ({
+        ...r,
+        description: r.description.substring(0, 50),
+        isFavorited: FavoritedRestaurantsId.includes(r.id),
+        isLiked: LikedRestaurantsId.includes(r.id)
+      }))
       res.render('restaurants', { restaurants: data, categories, categoryId, pagination: getPagination(limit, page, restaurants.count) })
     } catch (err) {
       console.log(err)
@@ -21,11 +27,17 @@ const restaurantController = {
 
   getRestaurant: async (req, res, next) => {
     try {
-      const restaurant = await Restaurant.findByPk(req.params.id, { include: [Category, { model: Comment, include: User }, { model: User, as: 'FavoritedUsers' }] })
+      const restaurant = await Restaurant.findByPk(req.params.id, {
+        include: [
+          Category, { model: Comment, include: User },
+          { model: User, as: 'FavoritedUsers' },
+          { model: User, as: 'LikedUsers' }]
+      })
       if (!restaurant) throw new Error("Restaurant didn't exist!")
       const isFavorited = await restaurant.FavoritedUsers.some(f => f.id === req.user.id)
+      const isLiked = await restaurant.LikedUsers.some(f => f.id === req.user.id)
       await restaurant.increment('view_counts')
-      res.render('restaurant', { restaurant: restaurant.toJSON(), isFavorited })
+      res.render('restaurant', { restaurant: restaurant.toJSON(), isFavorited, isLiked })
     } catch (err) {
       next(err)
     }
