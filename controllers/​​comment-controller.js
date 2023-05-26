@@ -10,6 +10,9 @@ const commentController = {
         if (!restaurant) throw new Error('Restaurant is not exist')
         return Comment.create({ text, userId, restaurantId })
       })
+      .then(() => {
+        res.redirect(`/restaurants/${restaurantId}`)
+      })
       .catch(err => next(err))
   },
   deleteComment: (req, res, next) => {
