@@ -14,16 +14,20 @@ module.exports = (sequelize, DataTypes) => {
       User.hasMany(models.Comment, { foreignKey: 'userId' })
     }
   };
-  User.init({
-    name: DataTypes.STRING,
-    email: DataTypes.STRING,
-    password: DataTypes.STRING,
-    isAdmin: DataTypes.BOOLEAN
-  }, {
-    sequelize,
-    modelName: 'User',
-    tableName: 'Users', // @Add
-    underscored: true
-  })
+  User.init(
+    {
+      name: DataTypes.STRING,
+      email: DataTypes.STRING,
+      password: DataTypes.STRING,
+      isAdmin: DataTypes.BOOLEAN,
+      image: DataTypes.STRING
+    },
+    {
+      sequelize,
+      modelName: 'User',
+      tableName: 'Users', // @Add
+      underscored: true
+    }
+  )
   return User
 }
