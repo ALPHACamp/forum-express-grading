@@ -1,5 +1,5 @@
-'use strict';
-const bcrypt = require('bcryptjs');
+'use strict'
+const bcrypt = require('bcryptjs')
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.bulkInsert(
@@ -12,7 +12,8 @@ module.exports = {
           is_admin: true,
           name: 'root',
           created_at: new Date(),
-          updated_at: new Date()
+          updated_at: new Date(),
+          image: 'https://i.imgur.com/oKxrhIk.jpeg'
         },
         {
           email: 'user1@example.com',
@@ -20,7 +21,8 @@ module.exports = {
           is_admin: false,
           name: 'user1',
           created_at: new Date(),
-          updated_at: new Date()
+          updated_at: new Date(),
+          image: 'https://i.imgur.com/oKxrhIk.jpeg'
         },
         {
           email: 'user2@example.com',
@@ -28,14 +30,15 @@ module.exports = {
           is_admin: false,
           name: 'user2',
           created_at: new Date(),
-          updated_at: new Date()
+          updated_at: new Date(),
+          image: 'https://i.imgur.com/oKxrhIk.jpeg'
         }
       ],
       {}
-    );
+    )
   },
   down: async (queryInterface, Sequelize) => {
     // 清空資料表中所有資料
-    await queryInterface.bulkDelete('Users', {});
+    await queryInterface.bulkDelete('Users', {})
   }
-};
+}

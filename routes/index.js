@@ -7,6 +7,7 @@ const passport = require('../config/passport')
 const { authenticated, authenticatedAdmin } = require('../middleware/auth')
 //* 載入子路由
 const admin = require('./modules/admin')
+const users = require('./modules/users')
 
 //* 載入controller
 const restController = require('../controllers/restaurant-controller')
@@ -15,6 +16,8 @@ const commentController = require('../controllers/​​comment-controller')
 const { generalErrorHandler } = require('../middleware/error-handler')
 //* 後台
 router.use('/admin', authenticatedAdmin, admin)
+//* 使用者
+router.use('/users', authenticated, users)
 
 //* 使用者
 router.get('/signup', userController.signUpPage)

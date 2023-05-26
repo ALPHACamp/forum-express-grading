@@ -16,9 +16,7 @@ const adminController = {
   //*建立新餐廳
   createRestaurant: (req, res, next) => {
     Category.findAll({ raw: true })
-      .then(categories =>
-        res.render('/admin/create-restaurant', { categories })
-      )
+      .then(categories => res.render('admin/create-restaurant', { categories }))
       .catch(err => next(err))
   },
   postRestaurant: (req, res, next) => {
