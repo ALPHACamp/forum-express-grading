@@ -121,7 +121,8 @@ const restaurantController = {
               req.user &&
               req.user.FavoritedRestaurants.some((f) => f.id === rest.id),
           }))
-          .sort((a, b) => b.favoritedCount - a.favoritedCount);
+          .sort((a, b) => b.favoritedCount - a.favoritedCount)
+          .slice(0, 10);
         res.render("top-restaurants", { restaurants: topRestaurants });
       })
       .catch((err) => next(err));
