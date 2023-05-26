@@ -22,8 +22,10 @@ const restaurantController = {
       Category.findAll({ raw: true })
     ])
       .then(([restaurants, categories]) => {
+        const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
         const data = restaurants.rows.map(item => {
           item.description = item.description.substring(0, 50)
+          item.isFavorited = favoritedRestaurantsId.includes(item.id)
           return item
         })
         const pagination = getPagination(limit, page, restaurants.count)
@@ -35,15 +37,17 @@ const restaurantController = {
     return Restaurant.findByPk(req.params.id, {
       include: [
         Category,
-        { model: Comment, include: User }
+        { model: Comment, include: User },
+        { model: User, as: 'FavoritedUsers' }
       ],
       nest: true
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurants didn't exist!")
+        const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id)
         return Promise.all([
           restaurant.increment('viewCounts', { by: 1 }),
-          res.render('restaurant', { restaurant: restaurant.toJSON() })
+          res.render('restaurant', { restaurant: restaurant.toJSON(), isFavorited })
         ])
       })
       .catch(err => next(err))
