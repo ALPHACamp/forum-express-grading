@@ -1,0 +1,41 @@
+
+{{>admin-tabs route='users'}}
+<br />
+<table class="table">
+  <thead class="table-dark">
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Name</th>
+      <th scope="col">Email</th>
+      <th scope="col">Role</th>
+      <th scope="col"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    {{#each users}}
+    <tr>
+      <th scope="row" style="vertical-align:middle">{{this.id}}</th>
+      <td style="vertical-align:middle">{{this.name}}</td>
+      <td style="vertical-align:middle">{{this.email}}</td>
+      <td style="vertical-align:middle">
+        {{#if this.isAdmin}}admin{{else}}user{{/if}}</td>
+      <td>
+        {{#if this.isAdmin}}
+        <form action="/admin/users/{{this.id}}?_method=PATCH" method="POST">
+          <button type="submit" class="btn btn-link" style="text-decoration:none">
+            set as user
+          </button>
+        </form>
+        {{else}}
+        <form action="/admin/users/{{this.id}}?_method=PATCH" method="POST">
+          <button type="submit" class="btn btn-link" style="text-decoration:none">
+            set as admin
+          </button>
+        </form>
+        {{/if}}
+      </td>
+    </tr>
+    {{/each}}
+  </tbody>
+</table>

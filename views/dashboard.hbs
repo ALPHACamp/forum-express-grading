@@ -1,0 +1,26 @@
+<div class="row m-3">
+  <div class="col-md-12">
+    <h1>{{restaurant.name}}</h1>
+    <p>【{{restaurant.Category.name}}】</p>
+  </div>
+  <hr>
+  <div class="col-md-5">
+    <div class="well">
+      <ul class="list-unstyled">
+        <li><strong>瀏覽次數：{{restaurant.viewCounts}}</strong> </li>
+        <li>
+          <strong>
+            評論數：
+            {{#ifCond totalComments 0 }}
+            0
+            {{else}}
+            {{ totalComments }}
+            {{/ifCond}}
+          </strong>
+        </li>
+        <li><strong>收藏數：</strong> -</li>
+      </ul>
+    </div>
+  </div>
+</div>
+<a class="btn btn-outline-secondary ms-3" href="/restaurants/{{restaurant.id}}">回上一頁</a>
