@@ -22,8 +22,9 @@ router.post(
   userController.signIn
 );
 router.get("/logout", userController.logout);
-
+//restaurants
 router.get("/restaurants/feeds", authenticated, restController.getFeeds);
+router.get("/restaurants/top", authenticated, restController.getTopRestaurants);
 router.get(
   "/restaurants/:id/dashboard",
   authenticated,
