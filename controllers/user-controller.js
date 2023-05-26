@@ -49,7 +49,7 @@ const userController = {
         where: { userId: req.params.id },
         attributes: ['restaurantId'],
         group: ['restaurantId'],
-        include: { model: Restaurant, as: 'FavoritedRestaurants' },
+        include: { model: Restaurant, raw: true },
         raw: true,
         nest: true
       })]).then(([user, comments, favorites]) => {
