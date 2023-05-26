@@ -33,18 +33,12 @@ const restaurantController = {
   },
   getDashboard: (req, res, next) => {
     const restaurantId = req.params.id
-    return Restaurant.findByPk(restaurantId)
-      .then(restaurant => {
-        if (!restaurant) throw new Error("Restaurant didn't exist!")
-        return restaurant.increment('viewCounts', { by: 1 })
-      })
-      .then(() => {
-        return Restaurant.findByPk(req.params.id, {
-          include: Category, // 拿出關聯的 Category model
-          nest: true,
-          raw: true
-        })
-      })
+
+    return Restaurant.findByPk(restaurantId, {
+      include: Category, // 拿出關聯的 Category model
+      nest: true,
+      raw: true
+    })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         res.render('dashboard', { restaurant })
