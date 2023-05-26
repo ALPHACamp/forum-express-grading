@@ -11,9 +11,8 @@ const restaurantController = {
       const offset = getOffset(limit, page)
       const restaurants = await Restaurant.findAndCountAll({ include: Category, nest: true, raw: true, where: { ...categoryId ? { categoryId } : {} }, limit, offset })
       const categories = await Category.findAll({ raw: true })
-      const data = restaurants.rows.map(r => ({
-        ...r, description: r.description.substring(0, 50)
-      }))
+      const FavoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
+      const data = restaurants.rows.map(r => ({ ...r, description: r.description.substring(0, 50), isFavorited: FavoritedRestaurantsId.includes(r.id) }))
       res.render('restaurants', { restaurants: data, categories, categoryId, pagination: getPagination(limit, page, restaurants.count) })
     } catch (err) {
       console.log(err)
@@ -22,11 +21,11 @@ const restaurantController = {
 
   getRestaurant: async (req, res, next) => {
     try {
-      const restaurant = await Restaurant.findByPk(req.params.id, { include: [Category, { model: Comment, include: User }] })
+      const restaurant = await Restaurant.findByPk(req.params.id, { include: [Category, { model: Comment, include: User }, { model: User, as: 'FavoritedUsers' }] })
       if (!restaurant) throw new Error("Restaurant didn't exist!")
+      const isFavorited = await restaurant.FavoritedUsers.some(f => f.id === req.user.id)
       await restaurant.increment('view_counts')
-      // console.log(restaurant.Comments[0].dataValues)
-      res.render('restaurant', { restaurant: restaurant.toJSON() })
+      res.render('restaurant', { restaurant: restaurant.toJSON(), isFavorited })
     } catch (err) {
       next(err)
     }
