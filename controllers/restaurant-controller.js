@@ -1,13 +1,13 @@
-const { Restaurant, Category } = require('../models')
-const { getOffset, getPagination } = require("../helpers/getPagination");
+const { Restaurant, Category, Comment, User } = require('../models')
+const { getOffset, getPagination } = require('../helpers/getPagination')
 
 const restaurantController = {
   getRestaurants: (req, res, next) => {
     const DEFAULT_LIMIT = 9
     const categoryId = Number(req.query.categoryId) || ''
-    const page = Number(req.query.page) || 1;
-    const limit = Number(req.query.limit) || DEFAULT_LIMIT;
-    const offset = getOffset(limit, page);
+    const page = Number(req.query.page) || 1
+    const limit = Number(req.query.limit) || DEFAULT_LIMIT
+    const offset = getOffset(limit, page)
 
     return Promise.all([
       Restaurant.findAndCountAll({
@@ -27,20 +27,21 @@ const restaurantController = {
           ...r,
           description: r.description.substring(0, 50) // 覆蓋前面的description
         }))
-        return res.render("restaurants", {
+        return res.render('restaurants', {
           restaurants: data,
           categories,
           categoryId,
           pagination: getPagination(limit, page, restaurants.count)
-        });
+        })
       })
       .catch(err => next(err))
   },
   getRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
-      raw: true,
-      nest: true,
-      include: Category
+      include: [
+        Category,
+        { model: Comment, include: User }
+      ]
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
@@ -52,7 +53,7 @@ const restaurantController = {
           .then(() => restaurant)
       })
       .then(restaurant => {
-        return res.render('restaurant', { restaurant })
+        return res.render('restaurant', { restaurant: restaurant.toJSON() })
       })
       .catch(err => next(err))
   },
