@@ -127,13 +127,11 @@ const adminController = {
           req.flash('error_messages', '禁止變更 root 權限')
           return res.redirect('back')
         } else {
-          if (user.isAdmin) {
-            req.flash('success_messages', '使用者權限變更成功')
-            return user.update({ isAdmin: false })
-          } else {
-            req.flash('success_messages', '使用者權限變更成功')
-            return user.update({ isAdmin: true })
-          }
+          const newAdminStatus = !user.isAdmin
+          return user.update({ isAdmin: newAdminStatus })
+            .then(() => {
+              req.flash('success_messages', '使用者權限變更成功')
+            })
         }
       })
       .then(() => {
