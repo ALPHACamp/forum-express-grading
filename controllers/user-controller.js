@@ -42,7 +42,7 @@ const userController = {
     res.redirect('/signin')
   },
   getUser: (req, res, next) => {
-    return User.findByPk(req.params.id, { raw: true })
+    return User.findByPk(req.params.id)
       .then(user => {
         if (!user) throw new Error("User didn't exist!")
         return res.render('users/profile', { user: user.toJSON() })
@@ -50,7 +50,7 @@ const userController = {
       .catch(err => next(err))
   },
   editUser: (req, res, next) => {
-    return User.findByPk(req.params.id, { raw: true })
+    return User.findByPk(req.params.id)
       .then(user => {
         if (!user) throw new Error("User didn't exist!")
         return res.render('users/edit', { user: user.toJSON() })
