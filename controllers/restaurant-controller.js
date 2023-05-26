@@ -35,7 +35,9 @@ const restaurantController = {
     return Restaurant.findByPk(restaurantId)
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
-        return restaurant.increment('viewCounts', { by: 1 })
+        return restaurant.update({
+          viewCounts: restaurant.viewCounts
+        })
       })
       .then(() => {
         return Restaurant.findByPk(req.params.id, {
