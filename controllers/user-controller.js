@@ -37,8 +37,6 @@ const userController = {
     res.redirect('/signin')
   },
   getUser: (req, res, next) => {
-    // node.js use 18 to 14
-    // const directUser = req.user.id
     return Promise.all([
       User.findByPk(req.params.id, {
         raw: true
@@ -58,9 +56,6 @@ const userController = {
       .catch(err => next(err))
   },
   editUser: (req, res, next) => {
-    // const directUser = req.user.id
-    // const selectUser = req.params.id
-    // if (directUser !== selectUser) res.redirect('/users/' + selectUser)
     return User.findByPk(req.params.id, {
       raw: true
     })
@@ -72,7 +67,7 @@ const userController = {
     const { name, email } = req.body
     const { file } = req
     if (!name) throw new Error('Name is required.')
-    // if (!email) throw new Error('Email is required.')
+    if (!email) throw new Error('Email is required.')
     return Promise.all([
       User.findByPk(req.params.id),
       imgurFileHandler(file)
