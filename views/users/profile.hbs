@@ -1,0 +1,37 @@
+<br />
+<br />
+<div class="row mb-5">
+  <div class="col-md-4" style="display:flex;">
+    <img
+      class="img-responsive center-block mb-5"
+      src="{{user.image}}"
+      style="width: 250px; transition: opacity 0.5s; opacity:0;"
+      onload="this.style.opacity=1;"
+    />
+    <div style="margin-left:50px;">
+      <h3>{{user.name}}</h3>
+      <h4>{{user.email}}</h4>
+      {{#if commented}}
+        <h4>{{commented}} 已評論餐廳</h4>
+      {{else}}
+        <h4>尚未評論過餐廳</h4>
+      {{/if}}
+      <button type="button" class="btn btn-link">
+        <a class="btn btn-link link-primary" href="/users/{{user.id}}/edit">
+          Edit
+        </a>
+      </button>
+    </div>
+  </div>
+  <div>
+  </div>
+  <div style="display:flex;flex-wrap:wrap;">
+    {{#each restaurants}}
+      <a href="/restaurants/{{this.id}}"><img
+          src="{{this.image}}"
+          alt="他應該是ㄍ餐廳圖片ㄅ"
+          height="200"
+        /></a>
+    {{/each}}
+  </div>
+</div>

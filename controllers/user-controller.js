@@ -1,6 +1,8 @@
 const bcrypt = require("bcryptjs"); //載入 bcrypt
 const db = require("../models");
-const { User } = db;
+const { User, Comment, Restaurant } = db;
+const { localFileHandler } = require("../helpers/file-helpers");
+const { restart } = require("nodemon");
 const userController = {
   signUpPage: (req, res) => {
     res.render("signup");
@@ -42,6 +44,52 @@ const userController = {
       req.flash("success_messages", "你已經成功登出。");
       res.redirect("/signin");
     });
+  },
+  getUser: (req, res) => {
+    const userId = req.params.id;
+    return Promise.all([
+      User.findByPk(req.params.id, {
+        raw: true,
+      }),
+      Comment.findAll({
+        where: { userId },
+        include: [Restaurant],
+      }),
+    ])
+      .then(([user, comment]) => {
+        const restaurants = comment.map((comment) => comment.Restaurant);
+        const commented = restaurants.length;
+        return res.render("users/profile", { user, restaurants, commented });
+      })
+      .catch((err) => next(err));
+  },
+  editUser: (req, res) => {
+    return User.findByPk(req.params.id, { raw: true })
+      .then((user) => {
+        return res.render("users/edit", { user });
+      })
+      .catch((err) => next(err));
+  },
+  putUser: (req, res, next) => {
+    const id = 1;
+    const { name } = req.body;
+    const { file } = req; // 把檔案取出來
+    return Promise.all([
+      // 非同步處理
+      User.findByPk(req.params.id), // 去資料庫查有沒有這間餐廳
+      localFileHandler(file), // 把檔案傳到 file-helper 處理
+    ])
+      .then(([user, filePath]) => {
+        return user.update({
+          name,
+          image: filePath || User.image,
+        });
+      })
+      .then(() => {
+        req.flash("success_messages", "使用者資料編輯成功");
+        res.redirect(`/users/${id}`);
+      })
+      .catch((err) => next(err));
   },
 };
 module.exports = userController;
