@@ -1,0 +1,13 @@
+<div class="card w-75 m-auto">
+  <div class="card-body row">
+    <div class="col-md-4">
+      <img src="{{ user.image }}" class="img-responsive center-block img-circle" style="width: 100%; transition: opacity 0.5s; opacity:0;  border-radius: 50%;"
+          onload="this.style.opacity=1;">
+    </div>
+    <div class="col-md-8">
+      <h5 class="card-title">{{ user.name }}</h5>
+      <p class="card-text">{{ user.email }}</p>
+      <a href="/users/{{ user.id }}/edit" class="btn btn-primary">edit</a>
+    </div>
+  </div>
+</div>
