@@ -28,7 +28,6 @@ router.get('/logout', userController.logout)
 
 // restaurant index
 router.get('/restaurants', authenticated, restController.getRestaurants)
-router.get('/', (req, res) => res.redirect('/restaurants'))
 
 // restaurant feeds
 router.get('/restaurants/feeds', authenticated, restController.getFeeds)
@@ -53,6 +52,9 @@ router.delete('/favorite/:restaurantId', authenticated, userController.removeFav
 router.post('/like/:restaurantId', authenticated, userController.addLike)
 router.delete('/like/:restaurantId', authenticated, userController.removeLike)
 
+// user top-users
+router.get('/users/top', authenticated, userController.getTopUsers)
+
 // user profile
 router.get('/users/:id', authenticated, userController.getUser)
 
@@ -60,6 +62,7 @@ router.get('/users/:id', authenticated, userController.getUser)
 router.get('/users/:id/edit', authenticated, userController.editUser)
 router.put('/users/:id', authenticated, upload.single('image'), userController.putUser)
 
+router.get('/', (req, res) => res.redirect('/restaurants'))
 router.use('/', generalErrorHandler)
 
 module.exports = router
