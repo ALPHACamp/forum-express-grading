@@ -7,9 +7,25 @@
       <div class="col-md-8">
         <h3>{{user.name}}</h3>
         <p>{{user.email}}</p>
+        <p class="card-text">{{comments.length}}間已評論餐廳</p>
         <a href="/users/{{user.id}}/edit"><button class="nav-item btn btn-primary">Edit</button></a>
         <a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
       </div>
+    </div>
+  </div>
+
+{{!-- 評論餐廳資訊 --}}
+  <div class="card mt-3">
+    <div class="card-header">
+        <label class="form-label mt-2" for="text"><strong>{{comments.length}} 間已評論餐廳</strong></label>
+    </div>
+    <div class="card-body">
+        {{#each comments}}
+        <a href="/restaurants/{{this.Restaurant.id}}">
+            <img src="{{this.Restaurant.image}}" alt="restaurant" style="max-width: 100px;"
+                onload=" this.style.opacity=1;">
+        </a>
+        {{/each}}
     </div>
   </div>
 </div>
