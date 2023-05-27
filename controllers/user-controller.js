@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs')
-const { User, Comment, Restaurant, Favorite } = require('../models')
+const { User, Comment, Restaurant, Favorite, Like } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 const userController = {
   signUpPage: (req, res) => {
@@ -126,6 +126,39 @@ const userController = {
         res.redirect('back')
       })
       .catch(err => next(err))
+  },
+  addLike: (req, res, next) => {
+    const restaurantId = Number(req.params.restaurantId)
+    const userId = req.user.id
+    return Promise.all([
+      Restaurant.findByPk(restaurantId),
+      Like.findOne({
+        where: { userId, restaurantId }
+      })
+    ])
+      .then(([restaurant, like]) => {
+        if (!restaurant) throw new Error('加空氣?')
+        if (like) throw new Error('要like幾次?')
+        return Like.create({ userId, restaurantId })
+      })
+      .then(() => res.redirect('back'))
+      .catch(err => next(err))
+  },
+  removeLike: (req, res, next) => {
+    const restaurantId = Number(req.params.restaurantId)
+    const userId = req.user.id
+    return Like.findOne({
+      where: {
+        restaurantId,
+        userId
+      }
+    })
+      .then(like => {
+        if (!like) throw new Error('刪空氣?')
+        return like.destroy()
+      })
+      .then(() => res.redirect('back'))
+      .catch(err => (err))
   }
 }
 

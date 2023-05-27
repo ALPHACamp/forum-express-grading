@@ -23,10 +23,12 @@ const restaurantColler = {
     ])
       .then(([restaurants, categories]) => {
         const favoratedRestaurantsId = req.user.FavoritedRestaurants.map(fr => fr.id)
+        const likedRestaurantsId = req.user.LikedRestaurants.map(lr => lr.id)
         const data = restaurants.rows.map(r => ({
           ...r,
           description: r.description.substring(0, 50),
-          isFavorited: favoratedRestaurantsId.includes(r.id) // 這樣data裡面就有isFavorated這個boolean值
+          isFavorited: favoratedRestaurantsId.includes(r.id), // 這樣data裡面就有isFavorated這個boolean值
+          isLiked: likedRestaurantsId.includes(r.id)
         }))
         return res.render('restaurants', {
           restaurants: data,
@@ -42,6 +44,7 @@ const restaurantColler = {
       include: [
         { model: Category, required: true },
         { model: User, as: 'FavoritedUsers' },
+        { model: User, as: 'LikedUsers' },
         {
           model: Comment,
           include: [
@@ -54,11 +57,11 @@ const restaurantColler = {
       ]
     })
       .then(restaurant => {
-        console.log(restaurant.toJSON())
         if (!restaurant) throw new Error('沒這間')
         const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id)
+        const isLiked = restaurant.LikedUsers.some(l => l.id === req.user.id)
         restaurant.increment('viewCounts')
-        res.render('restaurant', { restaurant: restaurant.toJSON(), isFavorited })
+        res.render('restaurant', { restaurant: restaurant.toJSON(), isFavorited, isLiked })
       })
       .catch(err => next(err))
   },
