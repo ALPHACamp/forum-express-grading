@@ -97,6 +97,24 @@ const restaurantController = {
     } catch (e) {
       next(e)
     }
+  },
+  // 使用者瀏覽人氣餐廳
+  getTopRestaurants: async (req, res, next) => {
+    try {
+      const restaurants = await Restaurant.findAll({
+        include: [{ model: User, as: 'FavoritedUsers' }]
+      })
+      const results = restaurants.map(rest => ({
+        ...rest.toJSON(),
+        description: rest.description.substring(0, 10),
+        favoritedCount: rest.FavoritedUsers.length,
+        isFavorited: req.user && req.user.FavoritedRestaurants.some(f => f.id === rest.id)
+      })).sort((a, b) => b.favoritedCount - a.favoritedCount).slice(0, 10)
+      // sort: 結果大於1為DESC、小於1為ASC； slice: 取出0~10前的項目
+      return res.render('top-restaurants', { restaurants: results })
+    } catch (e) {
+      next(e)
+    }
   }
 }
 
