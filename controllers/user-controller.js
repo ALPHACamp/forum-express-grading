@@ -8,11 +8,9 @@ const userController = {
   },
   signUp: (req, res, next) => {
     if (req.body.password !== req.body.passwordCheck) throw new Error('Passwords do not match!')
-
     User.findOne({ where: { email: req.body.email } })
       .then(user => {
         if (user) throw new Error('Email already exists!')
-
         return bcrypt.hash(req.body.password, 10)
       })
       .then(hash => User.create({
@@ -66,32 +64,29 @@ const userController = {
     return User.findByPk(req.params.id)
       .then(user => {
         if (!user) throw new Error("User didn't exist!")
-
+        if (user.id !== Number(req.params.id)) throw new Error('只能編輯自己的資料!')
         res.render('users/edit', { user: user.toJSON() })
       })
       .catch(err => next(err))
   },
   putUser: (req, res, next) => {
-    if (Number(req.params.id) !== Number(req.user.id)) {
-      res.redirect(`/users/${req.params.id}`)
-    }
+    const { name } = req.body
     const { file } = req
-
     return Promise.all([
-      User.findByPk(req.params.id),
+      User.findByPk(req.user.id),
       imgurFileHandler(file)
     ])
       .then(([user, filePath]) => {
         if (!user) throw new Error("User didn't exist!")
-
+        if (user.id !== Number(req.params.id)) throw new Error('Edit self profile only!')
         return user.update({
-          name: req.body.name,
+          name,
           image: filePath || user.image
         })
       })
       .then(() => {
         req.flash('success_messages', '使用者資料編輯成功')
-        res.redirect(`/users/${req.params.id}`)
+        return res.redirect(`/users/${req.user.id}`)
       })
       .catch(err => next(err))
   },
@@ -183,14 +178,13 @@ const userController = {
             isFollowed: req.user.Followings.some(f => f.id === user.id)
           }))
           .sort((a, b) => b.followerCount - a.followerCount)
-
         res.render('top-users', { users: result })
       })
       .catch(err => next(err))
   },
   addFollowing: (req, res, next) => {
     const { userId } = req.params
-    return Promise.all([
+    Promise.all([
       User.findByPk(userId),
       Followship.findOne({
         where: {
@@ -202,7 +196,6 @@ const userController = {
       .then(([user, followship]) => {
         if (!user) throw new Error("User didn't exist!")
         if (followship) throw new Error('You are already following this user!')
-
         return Followship.create({
           followerId: req.user.id,
           followingId: userId
@@ -212,7 +205,7 @@ const userController = {
       .catch(err => next(err))
   },
   removeFollowing: (req, res, next) => {
-    return Followship.findOne({
+    Followship.findOne({
       where: {
         followerId: req.user.id,
         followingId: req.params.userId
@@ -220,7 +213,6 @@ const userController = {
     })
       .then(followship => {
         if (!followship) throw new Error("You haven't followed this user!")
-
         return followship.destroy()
       })
       .then(() => res.redirect('back'))
@@ -228,5 +220,4 @@ const userController = {
   }
 
 }
-
 module.exports = userController
