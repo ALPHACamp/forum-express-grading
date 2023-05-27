@@ -17,8 +17,6 @@ const restaurantController = {
           description: r.description.substring(0, 50),
           isFavorited: favoritedRestaurantsId.includes(r.id),
           isLiked: likedRestaurantsId.includes(r.id)
-          isFavorited: favoritedRestaurantsId.includes(r.id),
-          isLiked: likedRestaurantsId.includes(r.id)
         }))
 
         return res.render('restaurants', { restaurants: data })
