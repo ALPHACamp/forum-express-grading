@@ -22,7 +22,8 @@ const restaurantController = {
       Category.findAll({ raw: true })
     ])
       .then(([restaurants, categories]) => {
-        const data = restaurants.rows.map(r => ({
+        console.log(restaurants)
+        const data = restaurants.rows.map(r => ({ // rows=findAndCountAll會產生的陣列，另外會產生count的整數
           ...r,
           description: r.description.substring(0, 50)
         }))
