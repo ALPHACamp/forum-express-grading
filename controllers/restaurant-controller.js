@@ -129,8 +129,11 @@ const restaurantController = {
         console.log(restaurants)
       })
       .catch(err => next(err))
+      .then(() => {
+        return res.render('top-restaurants')
+      })
+      .catch(err => next(err))
   }
-
 }
 
 module.exports = restaurantController
