@@ -22,9 +22,13 @@ const restaurantController = {
       Category.findAll({ raw: true })
     ])
       .then(([restaurants, categories]) => {
+        const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
+        const likedRestaurantsId = req.user && req.user.LikedRestaurants.map(fr => fr.id)
         const data = restaurants.rows.map(r => ({
           ...r,
-          description: r.description.substring(0, 50)
+          description: r.description.substring(0, 50),
+          isFavorited: favoritedRestaurantsId.includes(r.id),
+          isLiked: likedRestaurantsId.includes(r.id)
         }))
         return res.render('restaurants', {
           restaurants: data,
@@ -39,23 +43,63 @@ const restaurantController = {
     Restaurant.findByPk(req.params.id, { // 去資料庫用 id 找一筆資料
       include: [
         Category,
-        { model: Comment, include: User }
+        { model: Comment, include: User },
+        { model: User, as: 'FavoritedUsers' },
+        { model: User, as: 'LikedUsers' }
       ]
     })
       .then(restaurant => { // 此時撈出的資料仍是sequelize的原生格式
-        // console.log(restaurant)
+        const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id)
+        const isLiked = restaurant.LikedUsers.some(f => f.id === req.user.id)
         if (!restaurant) throw new Error("Restaurant didn't exist!") // 如果找不到，回傳錯誤訊息，後面不執行
         restaurant.increment('viewCounts') // 在點進來的時候就增加瀏覽次數
-        res.render('restaurant', { restaurant: restaurant.toJSON() }) // 所以也可以用toJSON()去解析，但只有找單筆資料時可以用此方法
+        res.render('restaurant', {
+          restaurant: restaurant.toJSON(),
+          isFavorited,
+          isLiked
+        }) // 所以也可以用toJSON()去解析，但只有找單筆資料時可以用此方法
       })
       .catch(err => next(err))
   },
   getDashboard: async (req, res, next) => {
+    const where = {}
+    where.restaurantId = req.params.id
     const restaurant = await Restaurant.findByPk(req.params.id, {
       include: [Category]
     })
+    const comments = await Comment.findAndCountAll({
+      where: where,
+      nest: true,
+      raw: true
+    })
+    const counts = comments.count
     if (!restaurant) throw new Error("Restaurant didn't exist!")
-    res.render('dashboard', { restaurant: restaurant.toJSON() }) // 所以也可以用toJSON()去解析，但只有找單筆資料時可以用此方法
+    res.render('dashboard', { restaurant: restaurant.toJSON(), counts }) // 所以也可以用toJSON()去解析，但只有找單筆資料時可以用此方法
+  },
+  getFeeds: (req, res, next) => {
+    return Promise.all([
+      Restaurant.findAll({
+        limit: 10,
+        order: [['createdAt', 'DESC']],
+        include: [Category],
+        raw: true,
+        nest: true
+      }),
+      Comment.findAll({
+        limit: 10,
+        order: [['createdAt', 'DESC']],
+        include: [User, Restaurant],
+        raw: true,
+        nest: true
+      })
+    ])
+      .then(([restaurants, comments]) => {
+        res.render('feeds', {
+          restaurants,
+          comments
+        })
+      })
+      .catch(err => next(err))
   }
 }
 module.exports = restaurantController
