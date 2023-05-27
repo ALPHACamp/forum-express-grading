@@ -61,15 +61,20 @@ const userController = {
       })
       .catch((err) => next(err));
   },
-  editUser: (req, res) => {
+  editUser: (req, res, next) => {
     return User.findByPk(req.params.id, { raw: true })
       .then((user) => {
-        return res.render("users/edit", { user });
+        if (user.name !== res.locals.user.name) {
+          req.flash("error_messages", "你不能修改其他人的資料!");
+          res.redirect("/restaurants");
+        } else {
+          return res.render("users/edit", { user });
+        }
       })
       .catch((err) => next(err));
   },
   putUser: (req, res, next) => {
-    const id = 1;
+    const id = req.params.id;
     const { name } = req.body;
     const { file } = req; // 把檔案取出來
     return Promise.all([
