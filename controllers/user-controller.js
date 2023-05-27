@@ -47,13 +47,17 @@ const userController = {
     })
       .then(user => {
         if (!user) throw new Error("User didn't exist!")
+
+        const userComments = user.Comments || 0
+
         return res.render('users/profile', {
           user: user.toJSON(),
-          userCommentCount: user.toJSON().Comments.length
+          userCommentCount: userComments.length
         })
       })
       .catch(err => next(err))
   },
+
   editUser: (req, res, next) => {
     return User.findByPk(req.params.id)
       .then(user => {
