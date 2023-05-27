@@ -48,9 +48,11 @@ const userController = {
       })
       .then(user => {
         if (!user) throw new Error("User didn't exist.")
-        const commentRestaurant = user.Comments.map(
-          comment => comment.Restaurant.dataValues
-        )
+        const commentRestaurant = user.Comments
+          ? user.Comments.map(
+            comment => comment ? comment.Restaurant.dataValues : null
+          )
+          : [] // 若comment沒有值得話就給空陣列
         return res.render('users/profile', {
           user: user.toJSON(),
           commentRestaurant
