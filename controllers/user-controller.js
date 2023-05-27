@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs') // 載入 bcrypt
-const db = require('../models')
-const { User } = db
+const { User, Restaurant, Comment } = require('../models')
+const { imgurFileHandler } = require('../helpers/file-helpers')
+
 const userController = {
   // 註冊
   signUpPage: (req, res) => {
@@ -40,6 +41,51 @@ const userController = {
     req.logout() // 把 user id 對應的 session 清除掉
     req.flash('success_messages', '登出成功！')
     res.redirect('/signin')
+  },
+  // Profile page
+  getUser: (req, res, next) => {
+    return User.findByPk(req.params.id, {
+      include: [
+        { model: Comment, include: Restaurant }
+      ]
+    })
+      .then(user => {
+        if (!user) throw new Error('User does not exist.')
+        return res.render('users/profile', { user: user.toJSON() })
+      })
+      .catch(err => next(err)) // 接住前面拋出的錯誤，next呼叫專門做錯誤處理的 middleware
+  },
+  // Profile edit page
+  editUser: (req, res, next) => {
+    return User.findByPk(req.params.id, {
+      raw: true
+    })
+      .then(user => {
+        if (!user) throw new Error('User does not exist.')
+        return res.render('users/edit', { user })
+      })
+      .catch(err => next(err)) // 接住前面拋出的錯誤，next呼叫專門做錯誤處理的 middleware
+  },
+  // put edit
+  putUser: (req, res, next) => {
+    const { name } = req.body
+    const { file } = req
+    return Promise.all([
+      User.findByPk(req.params.id),
+      imgurFileHandler(file)
+    ])
+      .then(([user, filePath]) => {
+        if (!user) throw new Error('User does not exist.')
+        return user.update({ // sequelize 編輯資料語法
+          name,
+          image: filePath || user.image // 如果 filePath 是 Truthy (使用者有上傳新照片) 就用 filePath，是 Falsy (使用者沒有上傳新照片) 就沿用原本資料庫內的值
+        })
+      })
+      .then(() => {
+        req.flash('success_messages', '使用者資料編輯成功')
+        res.redirect(`/users/${req.params.id}`)
+      })
+      .catch(err => next(err)) // 接住前面拋出的錯誤，next呼叫專門做錯誤處理的 middleware
   }
 }
 module.exports = userController
