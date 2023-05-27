@@ -128,8 +128,8 @@ const restaurantController = {
         res.render('top-restaurants', { restaurants })
       })
       .catch(err => {
-        console.error(err) // 在控制台中記錄錯誤
-        return res.render('error', {}) // 渲染一個其他自定義的 Handlebars 檔案，例如 'error'
+        console.error(err)
+        return res.render('top-restaurants', {})
       })
   }
 }
