@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs')
-const { User, Comment, Restaurant, Favorite, Like } = require('../models')
+const { User, Comment, Restaurant, Favorite, Like, Followship } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 const userController = {
   // 註冊頁面
@@ -130,9 +130,34 @@ const userController = {
           ...user.toJSON(), // 整理格式
           followerCount: user.Followers.length, // 計算追蹤者人數
           isFollowed: req.user.Followings.some(f => f.id === user.id)// 判斷目前登入使用者是否已追蹤該 user 物件
-        }))
+        })).sort((a, b) => b.followerCount - a.followerCount) // 按照追人人數多->少排序
+
         res.render('top-users', { users: users })
       })
+      .catch(err => next(err))
+  },
+  addFollowing: (req, res, next) => {
+    const { userId } = req.params
+    const followerId = req.user.id
+    const followingId = req.params.userId
+    Promise.all([User.findByPk(userId), Followship.findOne({ where: { followerId, followingId } })])
+      .then(([user, followship]) => {
+        if (!user) throw new Error("User didn't exist!")
+        if (followship) throw new Error('You are already following this user!')
+        return Followship.create({ followerId, followingId })
+      })
+      .then(() => res.redirect('back'))
+      .catch(err => next(err))
+  },
+  removeFollowing: (req, res, next) => {
+    const followerId = req.user.id
+    const followingId = req.params.userId
+    Followship.findOne({ where: { followerId, followingId } })
+      .then(followship => {
+        if (!followship) throw new Error("You haven't followed this user!")
+        return followship.destroy()
+      })
+      .then(() => res.redirect('back'))
       .catch(err => next(err))
   }
 }
