@@ -1,6 +1,5 @@
 const { Restaurant, Category, Comment, User } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
-const restaurant = require('../models/restaurant')
 
 const restaurantController = {
   getRestaurants: (req, res) => {
