@@ -32,6 +32,9 @@ router.get('/restaurants', authenticated, restController.getRestaurants)
 // restaurant feeds
 router.get('/restaurants/feeds', authenticated, restController.getFeeds)
 
+// restaurant top
+router.get('/restaurants/top', authenticated, restController.getTopRestaurants)
+
 // restaurant detail
 router.get('/restaurants/:id', authenticated, restController.getRestaurant)
 
