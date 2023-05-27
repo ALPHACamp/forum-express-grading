@@ -12,6 +12,16 @@ module.exports = (sequelize, DataTypes) => {
     static associate (models) {
       // define association here
       User.hasMany(models.Comment, { foreignKey: 'userId' }) //  定義與comment的關連
+      User.belongsToMany(models.Restaurant, {
+        through: models.Favorite, // 透過 Favorite 表來建立關聯
+        foreignKey: 'userId', // 對 Favorite 表設定 FK
+        as: 'FavoritedRestaurants' // 幫這個關聯取個名稱
+      })
+      User.belongsToMany(models.Restaurant, {
+        through: models.Like, // 透過 Favorite 表來建立關聯
+        foreignKey: 'userId', // 對 Favorite 表設定 FK
+        as: 'LikedRestaurants' // 幫這個關聯取個名稱
+      })
     }
   };
   User.init({
