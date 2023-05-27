@@ -10,7 +10,7 @@ const session = require('express-session')
 const methidOverride = require('method-override')
 const passport = require('./config/passport')
 const hbsHelpers = require('./helpers/handlebars-helpers')
-const { getUser } = require('./helpers/auth-helpers')
+const helpers = require('helpers/auth-helpers')
 const routes = require('./routes')
 const sessionSecret = 'ItIsMySecret'
 const app = express()
@@ -43,7 +43,7 @@ app.use('/upload', express.static(path.join(__dirname, 'upload')))
 app.use((req, res, next) => {
   res.locals.success_messages = req.flash('success_messages')
   res.locals.error_messages = req.flash('error_messages')
-  res.locals.loginUser = getUser(req)
+  res.locals.loginUser = helpers.getUser(req)
   next()
 })
 
