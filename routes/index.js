@@ -5,6 +5,7 @@ const router = express.Router()
 // 新增，載入 controller
 const restController = require('../controllers/restaurant-controller')
 const userController = require('../controllers/user-controller')
+const { authenticated } = require('../middleware/auth')
 const { generalErrorHandler } = require('../middleware/error-handler')
 const passport = require('../config/passport')
 const admin = require('./modules/admin')
@@ -27,7 +28,9 @@ router.post(
   }),
   userController.signIn
 )
-router.get('/restaurants', restController.getRestaurants)
+router.get('/logout', userController.logout)
+router.get('/restaurants', authenticated, restController.getRestaurants)
 router.get('/', (req, res) => res.redirect('/restaurants'))
 router.use('/', generalErrorHandler)
+
 module.exports = router

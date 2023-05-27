@@ -15,7 +15,8 @@ module.exports = (sequelize, DataTypes) => {
     {
       name: DataTypes.STRING,
       email: DataTypes.STRING,
-      password: DataTypes.STRING
+      password: DataTypes.STRING, // 補逗點
+      isAdmin: DataTypes.BOOLEAN
     },
     {
       sequelize,
