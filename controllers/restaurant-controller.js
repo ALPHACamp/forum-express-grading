@@ -108,7 +108,7 @@ const restaurantController = {
         ...rest.toJSON(),
         description: rest.description.substring(0, 10),
         favoritedCount: rest.FavoritedUsers.length,
-        isFavorited: req.user.FavoritedRestaurants.some(f => f.id === rest.id)
+        isFavorited: req.user && req.user.FavoritedRestaurants.some(f => f.id === rest.id)
       })).sort((a, b) => b.favoritedCount - a.favoritedCount).slice(0, 10)
       // sort: 結果大於1為DESC、小於1為ASC； slice: 取出0~10前的項目
       return res.render('top-restaurants', { restaurants: results })
