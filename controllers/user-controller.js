@@ -160,6 +160,23 @@ const userController = {
       })
       .then(() => res.redirect('back'))
       .catch(err => next(err))
+  },
+  getTopUsers: (req, res, next) => {
+    // 拿到所有使用者，跟他們的所有追蹤者(數)，跟登入本人的追蹤對象清單
+    return User.findAll({
+      include: [
+        { model: User, as: 'Followers' }
+      ]
+    })
+      .then(users => {
+        users = users.map(user => ({
+          ...user.toJSON(),
+          followCount: user.Followers.length,
+          isFollowed: req.user.Followings.some(f => f.id === user.id)
+        }))
+        res.render('top-users', { users })
+      })
+      .catch(err => next(err))
   }
 }
 module.exports = userController
