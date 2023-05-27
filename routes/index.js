@@ -26,9 +26,6 @@ router.post('/signin', passport.authenticate('local', {
 // user logout
 router.get('/logout', userController.logout)
 
-// restaurant index
-router.get('/restaurants', authenticated, restController.getRestaurants)
-
 // restaurant top
 router.get('/restaurants/top', authenticated, restController.getTopRestaurants)
 
@@ -40,6 +37,9 @@ router.get('/restaurants/:id', authenticated, restController.getRestaurant)
 
 // restaurant dashboard
 router.get('/restaurants/:id/dashboard', authenticated, restController.getDashboard)
+
+// restaurant index
+router.get('/restaurants', authenticated, restController.getRestaurants)
 
 // comment create
 router.post('/comments', authenticated, commentController.postComment)
