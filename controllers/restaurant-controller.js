@@ -110,40 +110,18 @@ const restaurantController = {
   },
 
   getTopRestaurants: (req, res, next) => {
-    const DEFAUT_LIMIT = 9
-    const categoryId = Number(req.query.categoryId) || ''
-    const page = Number(req.query.page) || 1
-    const limit = Number(req.query.limit) || DEFAUT_LIMIT
-    const offset = getOffset(limit, page)
-
-    return Promise.all([
-      Restaurant.findAndCountAll({
-        include: Category,
-        where: {
-          ...categoryId ? { categoryId } : {}
-        },
-        limit,
-        offset,
-        nest: true,
-        raw: true
-      }),
-      Category.findAll({ raw: true })
-    ])
-      .then(([restaurants, categories]) => {
-        const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id) // user 的 FavoritedRestaurants(陣列)查找
-        const likedRestaurantsId = req.user && req.user.LikedRestaurants.map(lr => lr.id) // user 的 LikedRestaurants(陣列)查找
-        const data = restaurants.rows.map(r => ({ // findAndCountAll 獲得的餐廳陣列存在 restaurants.rows
-          ...r,
-          description: r.description.substring(0, 50),
-          isFavorited: favoritedRestaurantsId.includes(r.id),
-          isLiked: likedRestaurantsId.includes(r.id)
+    return Restaurant.findAll({
+      include: [Category, { model: User, as: 'FavoritedUsers' }]
+    })
+      .then(restaurants => {
+        const data = restaurants.map(r => ({
+          ...r.toJSON(),
+          favoritedCount: r.FavoritedUsers.length,
+          isFavorited: req.user && req.user.FavoritedRestaurants.some(fr => fr.id === r.id)
         }))
-        return res.render('top-restaurants', {
-          restaurants: data,
-          categories,
-          categoryId,
-          pagination: getPagination(limit, page, restaurants.count) // findAndCountAll 才能獲得 restaurants.count 搜到的資料總數
-        })
+          .sort((a, b) => b.favoritedCount - a.favoritedCount)
+          .slice(0, 10)
+        return res.render('top-restaurants', { restaurants: data })
       })
       .catch(err => next(err))
   }

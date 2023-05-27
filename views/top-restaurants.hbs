@@ -1,5 +1,5 @@
 {{> restaurant-tabs route='topRestaurants'}}
-<h1>人氣餐廳</h1>
+<h1>Top 10 人氣餐廳</h1>
 <hr />
 <div style="width: 50%; margin:auto;">
   {{#each restaurants}}
@@ -17,11 +17,15 @@
       </div>
 
       <div class="col-md-8">
-        <h4>{{this.name}}</h4>
-        <span class="bg-secondary badge">收藏數：{{this.favoritedCount}}</span>
+        <h4>{{this.name}}
+          <a class="link-success" href="/restaurants?categoryId={{this.Category.id}}">
+            <small class="fs-6">[{{this.Category.name}}]</small>
+          </a>
+        </h4>
+        <span class="bg-secondary badge mb-1">收藏數：{{this.favoritedCount}}</span>
         <p class="card-text text-truncate">{{this.description}}</p>
         <a href="/restaurants/{{this.id}}" class="btn btn-primary d-inline">Show</a>
-        {{#if isFavorited}}
+        {{#if this.isFavorited}}
         <form action="/favorite/{{this.id}}?_method=DELETE" method="POST" class="d-inline">
           <button type="submit" class="btn btn-danger m-1">移除最愛</button>
         </form>
@@ -32,6 +36,7 @@
         {{/if}}
       </div>
     </div>
+    <span class="">created {{relativeTimeFromNow this.createdAt}}</span>
   </div>
   {{/each}}
 </div>

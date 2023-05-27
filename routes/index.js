@@ -29,11 +29,11 @@ router.get('/logout', userController.logout)
 // restaurant index
 router.get('/restaurants', authenticated, restController.getRestaurants)
 
-// restaurant feeds
-router.get('/restaurants/feeds', authenticated, restController.getFeeds)
-
 // restaurant top
 router.get('/restaurants/top', authenticated, restController.getTopRestaurants)
+
+// restaurant feeds
+router.get('/restaurants/feeds', authenticated, restController.getFeeds)
 
 // restaurant detail
 router.get('/restaurants/:id', authenticated, restController.getRestaurant)
@@ -70,6 +70,8 @@ router.get('/users/:id/edit', authenticated, userController.editUser)
 router.put('/users/:id', authenticated, upload.single('image'), userController.putUser)
 
 router.get('/', (req, res) => res.redirect('/restaurants'))
+
+// error
 router.use('/', generalErrorHandler)
 
 module.exports = router
