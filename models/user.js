@@ -22,16 +22,16 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'userId',
         as: 'LikedRestaurants'
       })
-      // 誰追我
-      User.belongsToMany(User, {
+      // 誰追這User
+      User.belongsToMany(models.User, {
         through: models.Followship,
-        foreignKey: 'userId',
+        foreignKey: 'followingId',
         as: 'Followers'
       })
-      // 我在追誰
-      User.belongsToMany(User, {
+      // 這User在追誰
+      User.belongsToMany(models.User, {
         through: models.Followship,
-        foreignKey: 'userId',
+        foreignKey: 'followerId',
         as: 'Followings'
       })
     }
