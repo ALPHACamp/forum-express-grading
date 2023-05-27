@@ -1,4 +1,4 @@
-const { Restaurant, Category } = require('../models')
+const { Restaurant, Category, Comment, User } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper') // 引入分頁helper
 
 const restaurantController = {
@@ -22,7 +22,6 @@ const restaurantController = {
       Category.findAll({ raw: true })
     ])
       .then(([restaurants, categories]) => {
-        console.log(restaurants)
         const data = restaurants.rows.map(r => ({ // rows=findAndCountAll會產生的陣列，另外會產生count的整數
           ...r,
           description: r.description.substring(0, 50)
@@ -38,15 +37,16 @@ const restaurantController = {
   },
   getRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
-      nest: true,
-      include: [Category]
+      include: [Category, { model: Comment, include: User }]
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         restaurant.increment('viewCounts', { by: 1 })
         return restaurant
       })
-      .then(restaurant => res.render('restaurant', { restaurant: restaurant.toJSON() }))
+      .then(restaurant => {
+        res.render('restaurant', { restaurant: restaurant.toJSON() })
+      })
       .catch(err => next(err))
   },
   getDashboard: (req, res, next) => {
