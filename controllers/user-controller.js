@@ -1,8 +1,6 @@
 const bcrypt = require("bcryptjs"); //載入 bcrypt
-const db = require("../models");
-const { User, Comment, Restaurant } = db;
+const { User, Restaurant, Comment, Favorite } = require("../models");
 const { localFileHandler } = require("../helpers/file-helpers");
-const { restart } = require("nodemon");
 const userController = {
   signUpPage: (req, res) => {
     res.render("signup");
@@ -63,15 +61,20 @@ const userController = {
       })
       .catch((err) => next(err));
   },
-  editUser: (req, res) => {
+  editUser: (req, res, next) => {
     return User.findByPk(req.params.id, { raw: true })
       .then((user) => {
-        return res.render("users/edit", { user });
+        if (user.name !== res.locals.user.name) {
+          req.flash("error_messages", "你不能修改其他人的資料!");
+          res.redirect("/restaurants");
+        } else {
+          return res.render("users/edit", { user });
+        }
       })
       .catch((err) => next(err));
   },
   putUser: (req, res, next) => {
-    const id = 1;
+    const id = req.params.id;
     const { name } = req.body;
     const { file } = req; // 把檔案取出來
     return Promise.all([
@@ -89,6 +92,44 @@ const userController = {
         req.flash("success_messages", "使用者資料編輯成功");
         res.redirect(`/users/${id}`);
       })
+      .catch((err) => next(err));
+  },
+  addFavorite: (req, res, next) => {
+    const { restaurantId } = req.params;
+    return Promise.all([
+      Restaurant.findByPk(restaurantId),
+      Favorite.findOne({
+        where: {
+          userId: req.user.id,
+          restaurantId,
+        },
+      }),
+    ])
+      .then(([restaurant, favorite]) => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!");
+        if (favorite) throw new Error("You have favorited this restaurant!");
+
+        return Favorite.create({
+          userId: req.user.id,
+          restaurantId,
+        });
+      })
+      .then(() => res.redirect("back"))
+      .catch((err) => next(err));
+  },
+  removeFavorite: (req, res, next) => {
+    return Favorite.findOne({
+      where: {
+        userId: req.user.id,
+        restaurantId: req.params.restaurantId,
+      },
+    })
+      .then((favorite) => {
+        if (!favorite) throw new Error("You haven't favorited this restaurant");
+
+        return favorite.destroy();
+      })
+      .then(() => res.redirect("back"))
       .catch((err) => next(err));
   },
 };

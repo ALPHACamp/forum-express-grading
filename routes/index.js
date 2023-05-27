@@ -12,6 +12,7 @@ router.use("/admin", authenticatedAdmin, admin);
 router.get("/signup", userController.signUpPage);
 router.post("/signup", userController.signUp);
 router.get("/restaurants/:id/dashboard", restController.getDashboard);
+router.get("/restaurants/feeds", authenticated, restController.getFeeds);
 router.get("/restaurants/:id", authenticated, restController.getRestaurant);
 router.get("/restaurants", authenticated, restController.getRestaurants);
 router.get("/signin", userController.signInPage);
@@ -30,6 +31,16 @@ router.delete(
   commentController.deleteComment
 );
 router.post("/comments", authenticated, commentController.postComment);
+router.post(
+  "/favorite/:restaurantId",
+  authenticated,
+  userController.addFavorite
+);
+router.delete(
+  "/favorite/:restaurantId",
+  authenticated,
+  userController.removeFavorite
+);
 router.get("/users/:id/edit", authenticated, userController.editUser);
 router.get("/users/:id", authenticated, userController.getUser);
 router.put("/users/:id", upload.single("image"), userController.putUser);
