@@ -37,10 +37,25 @@ const restaurantController = {
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
+        restaurant.increment('viewCounts') // 每進來一次就 increment viewCounts 這欄位
         const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id)
         res.render('restaurant', {
           restaurant: restaurant.toJSON(),
           isFavorited
+        })
+      })
+      .catch(err => next(err))
+  },
+  getDashboard: (req, res, next) => {
+    return Restaurant.findByPk(req.params.id, {
+      include: Category,
+      nest: true,
+      raw: true
+    })
+      .then(restaurant => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        res.render('dashboard', {
+          restaurant
         })
       })
       .catch(err => next(err))
