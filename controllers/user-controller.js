@@ -126,33 +126,39 @@ const userController = {
       .then(() => res.redirect('back'))
       .catch(err => next(err))
   },
-  //* 管理Like
+  //* like/unlike
   addLike: (req, res, next) => {
-    const restaurantId = req.params.id
-    const userId = req.user.id
-    Promise.all([
+    const { restaurantId } = req.params
+    return Promise.all([
       Restaurant.findByPk(restaurantId),
-      Like.findOne({ where: { restaurantId, userId } })
-        .then(([restaurant, like]) => {
-          if (!restaurant) throw new Error("Restaurant didn't exist!")
-          if (like) throw new Error('You have liked this restaurant!')
-          Like.create({ userId, restaurantId })
-        })
-        .then(() => res.redirect('back'))
-        .catch(err => next(err))
+      Like.findOne({
+        where: {
+          userId: req.user.id,
+          restaurantId
+        }
+      })
     ])
+      .then(([restaurant, like]) => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        if (like) throw new Error('You have liked this restaurant!')
+
+        return Like.create({
+          userId: req.user.id,
+          restaurantId
+        })
+      })
+      .then(() => res.redirect('back'))
+      .catch(err => next(err))
   },
   removeLike: (req, res, next) => {
-    const restaurantId = req.params.id
-    const userId = req.user.id
     return Like.findOne({
       where: {
-        userId,
-        restaurantId
+        userId: req.user.id,
+        restaurantId: req.params.restaurantId
       }
     })
       .then(like => {
-        if (!like) throw new Error("You haven't like this restaurant")
+        if (!like) throw new Error("You haven't liked this restaurant")
 
         return like.destroy()
       })
