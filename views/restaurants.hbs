@@ -37,6 +37,17 @@
                 </form>
             {{/if}}
           </div>
+          <div class="d-flex">
+            {{#if isLiked}}
+            <form action="/like/{{this.id}}?_method=DELETE" method="POST">
+              <button type="submit" class="btn btn-danger m-1">移除喜歡</button>
+            </form>
+            {{else}}
+            <form action="/like/{{this.id}}" method="POST">
+              <button type="submit" class="btn btn-primary m-1">喜歡</button>
+            </form>
+            {{/if}}
+          </div>
         </div>
       </div>
     </div>

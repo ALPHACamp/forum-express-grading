@@ -26,13 +26,19 @@ passport.use(new LocalStrategy(
 passport.serializeUser((user, cb) => {
   cb(null, user.id)
 })
+
 passport.deserializeUser((id, cb) => {
-  User.findByPk(id, {
-    include: [{ model: Restaurant, as: 'FavoritedRestaurants' }]
-  }).then(user => {
-    user = user.toJSON()
-    // console.log(user)
-    return cb(null, user)
+  return User.findByPk(id, {
+    include: [
+      { model: Restaurant, as: 'FavoritedRestaurants' },
+      { model: Restaurant, as: 'LikedRestaurants' }
+    ]
   })
+    .then(user => {
+      user = user.toJSON()
+      // console.log(user)
+      return cb(null, user)
+    })
 })
+
 module.exports = passport
