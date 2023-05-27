@@ -67,7 +67,7 @@ const userController = {
       .catch(err => next(err))
   },
 
-  editUser: (req, res, next) => {
+  editUser: async (req, res, next) => {
     const { id } = req.params
     return User.findByPk(id, { raw: true })
       .then(user => {
