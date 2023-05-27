@@ -9,11 +9,18 @@ const restaurantController = {
       .then(restaurants => {
         const favoritedRestaurantsId =
           req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
+        const likedRestaurantsId =
+          req.user && req.user.LikedRestaurants.map(l => l.id)
+
         const data = restaurants.map(r => ({
           ...r,
           description: r.description.substring(0, 50),
-          isFavorited: favoritedRestaurantsId.includes(r.id)
+          isFavorited: favoritedRestaurantsId.includes(r.id),
+          isLiked: likedRestaurantsId.includes(r.id)
+          isFavorited: favoritedRestaurantsId.includes(r.id),
+          isLiked: likedRestaurantsId.includes(r.id)
         }))
+
         return res.render('restaurants', { restaurants: data })
       })
       .catch(err => next(err))
@@ -27,9 +34,18 @@ const restaurantController = {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         return restaurant.increment('viewCounts')
       })
-      .then(restaurant =>
-        res.render('restaurant', { restaurant: restaurant.toJSON() })
-      )
+      .then(restaurant => {
+        const favoritedRestaurantsId =
+          req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
+        const likedRestaurantsId =
+          req.user && req.user.LikedRestaurants.map(l => l.id)
+        const data = {
+          ...restaurant.toJSON(),
+          isFavorited: favoritedRestaurantsId.includes(restaurant.id),
+          isLiked: likedRestaurantsId.includes(restaurant.id)
+        }
+        res.render('restaurant', { restaurant: data })
+      })
       .catch(err => next(err))
   },
   getDashboard: (req, res, next) => {
