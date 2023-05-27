@@ -126,13 +126,11 @@ const restaurantController = {
         restaurants.sort((a, b) => b.favoritedCount - a.favoritedCount)
         restaurants = restaurants.slice(0, 10)
         res.render('top-restaurants', { restaurants })
-        console.log(restaurants)
       })
-      .catch(err => next(err))
-      .then(() => {
-        return res.render('top-restaurants')
+      .catch(err => {
+        console.error(err) // 在控制台中記錄錯誤
+        return res.render('error', {}) // 渲染一個其他自定義的 Handlebars 檔案，例如 'error'
       })
-      .catch(err => next(err))
   }
 }
 
