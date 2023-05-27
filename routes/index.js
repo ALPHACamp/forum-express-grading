@@ -31,5 +31,3 @@ router.get('/restaurants', restController.getRestaurants)
 router.get('/', (req, res) => res.redirect('/restaurants'))
 router.use('/', generalErrorHandler)
 module.exports = router
-
-module.exports = router
