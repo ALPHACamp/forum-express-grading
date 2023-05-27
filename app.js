@@ -8,6 +8,7 @@ const port = process.env.PORT || 3000
 // const db = require('./models')
 // 註冊 Handlebars 樣板引擎，並指定副檔名為 .hbs
 app.engine('hbs', handlebars({ extname: '.hbs' }))
+app.use(express.urlencoded({ extended: true }))
 // 設定使用 Handlebars 做為樣板引擎
 app.set('view engine', 'hbs')
 app.use(routes)
