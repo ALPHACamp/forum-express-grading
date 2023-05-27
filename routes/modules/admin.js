@@ -20,6 +20,7 @@ router.delete('/categories/:id', categoryController.deleteCategory)
 
 router.patch('/users/:id', adminController.patchUser)
 router.get('/users', adminController.getUsers)
+
 router.get('/restaurants',
   adminController.getRestaurants)
 
