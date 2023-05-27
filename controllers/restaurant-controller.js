@@ -1,4 +1,4 @@
-const { Restaurant, Category } = require('../models') // 帶入資料庫
+const { Restaurant, Category, Comment, User } = require('../models') // 帶入資料庫
 // 載入 pagination-helper
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
 
@@ -42,7 +42,10 @@ const restaurantController = {
   // 詳情頁
   getRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
-      include: Category // 拿出關聯的 Category model
+      include: [ // 拿出關聯的 Category model,多項目用陣列[]
+        Category,
+        { model: Comment, include: User } // 拿出關聯的model:Comment再拿出Comment關聯的User
+      ]
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
