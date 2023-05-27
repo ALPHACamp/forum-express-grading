@@ -2,14 +2,14 @@ const { Restaurant, User, Category } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const adminController = {
-  getRestaurants: (req, res) => {
+  getRestaurants: (req, res, next) => {
     return Restaurant.findAll({
       raw: true,
       nest: true,
       include: [Category]
-    }).then(restaurants => {
-      return res.render('admin/restaurants', { restaurants: restaurants })
     })
+      .then(restaurants => res.render('admin/restaurants', { restaurants }))
+      .catch(err => next(err))
   },
   createRestaurant: (req, res, next) => {
     return Category.findAll({
@@ -21,7 +21,9 @@ const adminController = {
   postRestaurant: (req, res, next) => {
     const { name, tel, address, openingHours, description, categoryId } = req.body
     if (!name) throw new Error('Restaurant name is required!')
+
     const { file } = req
+
     return imgurFileHandler(file)
       .then(filePath => Restaurant.create({
         name,
@@ -46,6 +48,7 @@ const adminController = {
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
+
         res.render('admin/restaurant', { restaurant })
       })
       .catch(err => next(err))
@@ -56,7 +59,8 @@ const adminController = {
       Category.findAll({ raw: true })
     ])
       .then(([restaurant, categories]) => {
-        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        if (!restaurant) throw new Error("Restaurant doesn't exist!")
+
         res.render('admin/edit-restaurant', { restaurant, categories })
       })
       .catch(err => next(err))
@@ -64,7 +68,9 @@ const adminController = {
   putRestaurant: (req, res, next) => {
     const { name, tel, address, openingHours, description, categoryId } = req.body
     if (!name) throw new Error('Restaurant name is required!')
+
     const { file } = req
+
     return Promise.all([
       Restaurant.findByPk(req.params.id),
       imgurFileHandler(file)
@@ -92,6 +98,7 @@ const adminController = {
     return Restaurant.findByPk(req.params.id)
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
+
         return restaurant.destroy()
       })
       .then(() => res.redirect('/admin/restaurants'))
@@ -102,7 +109,7 @@ const adminController = {
       raw: true,
       nest: true
     })
-      .then(users => res.render('admin/users', { users: users }))
+      .then(users => res.render('admin/users', { users }))
       .catch(err => next(err))
   },
   patchUser: (req, res, next) => {
@@ -113,6 +120,7 @@ const adminController = {
           req.flash('error_messages', '禁止變更 root 權限')
           return res.redirect('back')
         }
+
         return user.update({ isAdmin: !user.isAdmin })
       })
       .then(() => {
@@ -121,5 +129,7 @@ const adminController = {
       })
       .catch(err => next(err))
   }
+
 }
+
 module.exports = adminController
