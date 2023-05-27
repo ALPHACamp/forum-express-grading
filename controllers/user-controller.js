@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs')
 const db = require('../models')
-const { User } = db
+const { User, Restaurant, Comment } = db
 const { imgurFileHandler } = require('../helpers/file-helpers')
 const userController = {
   signUpPage: (req, res) => {
@@ -40,15 +40,19 @@ const userController = {
   },
   getUser: (req, res, next) => {
     const userId = req.params.id
-    return User.findByPk(userId, { raw: true })
+
+    return User.findByPk(userId, {
+      include: { model: Comment, include: Restaurant }
+    })
       .then(user => {
         if (!user) throw new Error("User didn't exit!")
-        return res.render('users/profile', { user })
+        return res.render('users/profile', { user: user.toJSON() })
       })
       .catch(err => next(err))
   },
   editUser: (req, res, next) => {
     const userId = req.params.id
+
     return User.findByPk(userId, { raw: true })
       .then(user => {
         if (!user) throw new Error("User didn't exit!")
@@ -59,6 +63,12 @@ const userController = {
   putUser: (req, res, next) => {
     const { name } = req.body
     const { file } = req
+    console.log('ente putUser')
+    // 避免使用者更改req.params.id更改他人資料
+    if (Number(req.params.id) !== Number(req.user.id)) {
+      res.redirect(`/users/${req.user.id}`)
+    }
+
     return Promise.all([
       User.findByPk(req.params.id),
       imgurFileHandler(file)

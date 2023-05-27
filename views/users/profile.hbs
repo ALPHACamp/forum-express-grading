@@ -1,13 +1,41 @@
 <div class="card w-75 m-auto">
   <div class="card-body row">
     <div class="col-md-4">
-      <img src="{{ user.image }}" class="img-responsive center-block img-circle" style="width: 100%; transition: opacity 0.5s; opacity:0;  border-radius: 50%;"
-          onload="this.style.opacity=1;">
+      <img src="{{ user.image }}" class="img-responsive center-block img-circle"
+        style="width: 100%; transition: opacity 0.5s; opacity:0;  border-radius: 50%;" onload="this.style.opacity=1;">
     </div>
     <div class="col-md-8">
       <h5 class="card-title">{{ user.name }}</h5>
       <p class="card-text">{{ user.email }}</p>
+      <p class="card-text">
+        {{#if user.Comments.length}}
+        {{ user.Comments.length }}已評論過的餐廳
+        {{else}}
+        尚未評論過的餐廳
+        {{/if}}
+      </p>
       <a href="/users/{{ user.id }}/edit" class="btn btn-primary">edit</a>
     </div>
+  </div>
+</div>
+
+<div class="card w-75 m-auto mt-5">
+  <div class="card-header">
+    {{#if user.Comments.length}}
+    {{ user.Comments.length }}已評論過的餐廳
+    {{else}}
+    尚未評論過的餐廳
+    {{/if}}
+
+  </div>
+  <div class="card-body row">
+    {{#each user.Comments}}
+    <div class="col mt-3">
+      <a href="/restaurants/{{this.Restaurant.id}}">
+        <img src="{{ this.Restaurant.image }}" class="img-responsive center-block img-circle"
+          style="height: 100px; width: 100px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+      </a>
+    </div>
+    {{/each}}
   </div>
 </div>
