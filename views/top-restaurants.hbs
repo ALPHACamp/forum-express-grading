@@ -15,7 +15,7 @@
       <div class="col-md-8">
         <div class="card-body">
           <h5 class="card-title"><a class="link-primary" href="/restaurants/{{this.id}}">{{this.name}}</a></h5>
-          <span class="bg-secondary badge bg-secondary">收藏數：{{this.favoritesCount}}</span>
+          <span class="bg-secondary badge bg-secondary">收藏數：{{this.favoritedCount}}</span>
           <p class="my-4 card-text" style="white-space: break-spaces;">{{this.description}}</p>
           <a href="/restaurants/{{this.id}}"><button type="button" class="btn btn-primary">Show</button></a>
           {{#if this.isFavorited }}
