@@ -52,7 +52,7 @@ const restaurantController = {
       })
       .catch(err => next(err))
   },
-  getDashboard: (req, res) => {
+  getDashboard: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
       include: Category,
       nest: true,
@@ -62,6 +62,32 @@ const restaurantController = {
 
       return res.render('dashboard', { restaurant })
     })
+      .catch(err => next(err))
+  },
+  getFeeds: (req, res, next) => {
+    return Promise.all([
+      Restaurant.findAll({
+        limit: 10,
+        include: [Category],
+        order: [['createdAt', 'DESC']],
+        raw: true,
+        nest: true
+      }),
+      Comment.findAll({
+        limit: 10,
+        include: [User, Restaurant],
+        order: [['createdAt', 'DESC']],
+        raw: true,
+        nest: true
+      })
+    ])
+      .then(([restaurants, comments]) => {
+        res.render('feeds', {
+          restaurants,
+          comments
+        })
+      })
+      .catch(err => next(err))
   }
 }
 
