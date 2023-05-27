@@ -102,6 +102,31 @@ const restaurantController = {
         })
       })
       .catch(err => next(err))
+  },
+  getTopRestaurants: (req, res, next) => {
+    // 我要拿到 前十名餐廳
+    // 所以要先拿到全部餐廳
+    // 拿到全部餐廳再去關聯favorite X
+    // 再直接拿favorite
+    // 從favorite 中再得到每間餐廳的追蹤人數
+    // 計算完後再排降序
+    return Restaurant.findAll({
+      include: [
+        { model: User, as: 'FavoritedUsers' }]
+    })
+      .then(restaurants => {
+        const result = restaurants
+          .map(restaurant => ({
+            ...restaurant.toJSON(),
+            description: restaurant.description.substring(0, 50),
+            favoritedCount: restaurant.FavoritedUsers.length,
+            isFavorited: req.user && req.user.FavoritedRestaurants.some(f => f.id === restaurant.id)
+          }))
+          .sort((a, b) => b.favoritedCount - a.favoritedCount)
+          .slice(0, 10)
+        return res.render('top-restaurants', { restaurants: result })
+      })
+      .catch(err => next(err))
   }
 }
 module.exports = restaurantController
