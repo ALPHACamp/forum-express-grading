@@ -32,7 +32,7 @@ const adminController = {
         categoryId
       }))
       .then(() => {
-        req.flash('succress_messages', 'restaurant was successfully created')
+        req.flash('success_messages', 'restaurant was successfully created')
         res.redirect('/admin/restaurants')
       })
       .catch(err => next(err))
