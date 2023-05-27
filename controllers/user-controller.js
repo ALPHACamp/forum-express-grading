@@ -1,27 +1,27 @@
 const bcrypt = require('bcryptjs')
+const { imgurFileHandler } = require('../helpers/file-helpers')
 const db = require('../models')
 const { User } = db
+
 const userController = {
   signUpPage: (req, res) => {
     res.render('signup')
   },
-  signUp: (req, res, next) => { // 修改這裡
-    // 如果兩次輸入的密碼不同，就建立一個 Error 物件並拋出
+  signUp: (req, res, next) => {
     if (req.body.password !== req.body.passwordCheck) throw new Error('Passwords do not match!')
 
-    // 確認資料裡面沒有一樣的 email，若有，就建立一個 Error 物件並拋出
     User.findOne({ where: { email: req.body.email } })
       .then(user => {
         if (user) throw new Error('Email already exists!')
-        return bcrypt.hash(req.body.password, 10) // 前面加 return
+        return bcrypt.hash(req.body.password, 10)
       })
-      .then(hash => User.create({ // 上面錯誤狀況都沒發生，就把使用者的資料寫入資料庫
+      .then(hash => User.create({
         name: req.body.name,
         email: req.body.email,
         password: hash
       }))
       .then(() => {
-        req.flash('success_messages', '成功註冊帳號！') // 並顯示成功訊息
+        req.flash('success_messages', '成功註冊帳號！')
         res.redirect('/signin')
       })
       .catch(err => next(err))
@@ -37,6 +37,45 @@ const userController = {
     req.flash('success_messages', '登出成功！')
     req.logout()
     res.redirect('/signin')
+  },
+  getUser: (req, res, next) => {
+    console.log(req.params.id)
+    return User.findByPk(req.params.id)
+      .then(user => {
+        console.log(user.toJSON())
+        res.render('users/profile', {
+          user: user.toJSON()
+        }
+        )
+      })
+  },
+  editUser: (req, res, next) => {
+    return User.findByPk(req.params.id)
+      .then(user => {
+        console.log(user.toJSON())
+        res.render('users/edit', {
+          user: user.toJSON()
+        }
+        )
+      })
+  },
+  putUser: (req, res, next) => {
+    const { name } = req.body
+    if (!name) throw new Error('User name is required!')
+    const { file } = req
+    return Promise.all([User.findByPk(req.params.id), imgurFileHandler(file)])
+      .then(([user, filePath]) => {
+        if (!user) throw new Error("User doesn't exists!")
+        return user.update({
+          name,
+          image: filePath || user.image
+        })
+      })
+      .then(user => {
+        req.flash('success_messages', '使用者資料編輯成功')
+        res.redirect(`/users/${req.params.id}`)
+      })
+      .catch(err => next(err))
   }
 }
 module.exports = userController
