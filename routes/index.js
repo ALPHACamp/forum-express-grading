@@ -21,15 +21,18 @@ router.get('/signin', userController.signInPage)
 router.post('/signin', passport.authenticate('local', { failureRedirect: '/signin', failureMessage: true }), userController.signIn)
 router.get('/signout', userController.signout)
 
-// 使用者登入後餐廳首頁
-router.get('/restaurants', authenticated, restController.getRestaurants)
-
 // 使用者瀏覽最新動態(/feed也符合/:id的路由，因此置於前)
 router.get('/restaurants/feeds', authenticated, restController.getFeeds)
+
+// 使用者瀏覽人氣餐廳(同上備註)
+router.get('/restaurants/top', authenticated, restController.getTopRestaurants)
 
 // 使用者查看單筆資料
 router.get('/restaurants/:id/dashboard', restController.getDashboard)
 router.get('/restaurants/:id', restController.getRestaurant)
+
+// 使用者登入後餐廳首頁
+router.get('/restaurants', authenticated, restController.getRestaurants)
 
 // 管理員(限定)刪除評論
 router.delete('/comments/:id', authenticatedAdmin, commentController.deleteComment)
