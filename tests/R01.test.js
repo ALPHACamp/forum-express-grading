@@ -53,7 +53,8 @@ describe('# R01', () => {
         id: 1,
         email: 'root@example.com',
         name: 'admin',
-        isAdmin: false,
+        password: '12345678',
+        isAdmin: true,
       }])
 
       // 修改 adminController 中的資料庫連線設定，由連向真實的資料庫 -> 改為連向模擬的 User table
