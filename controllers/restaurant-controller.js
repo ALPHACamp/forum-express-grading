@@ -70,7 +70,9 @@ const restaurantController = {
   },
   getDashboard: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
-      include: [Category, Comment],
+      include: [Category, Comment, {
+        model: User, as: 'FavoritedUsers'
+      }],
       nest: true
     })
       .then(restaurant => {
@@ -101,6 +103,30 @@ const restaurantController = {
           restaurants,
           comments
         })
+      })
+      .catch(err => next(err))
+  },
+  getTopRestaurants: (req, res, next) => {
+    // 從資料庫中取出FavoritedUsers
+    return Restaurant.findAll({
+      include: [
+        { model: User, as: 'FavoritedUsers' }
+      ]
+    })
+      .then(restaurants => {
+        restaurants = restaurants
+          .map(rest => ({
+            ...rest.toJSON(),
+            description: rest.description.substring(0, 200) + '...',
+            favoritedCount: rest.FavoritedUsers.length,
+            isFavorited:
+              req.user &&
+              req.user.FavoritedRestaurants.some(f => f.id === rest.id)
+          }))
+          .filter(r => r.favoritedCount > 0)// 只顯示追蹤數大於0的餐廳
+          .sort((a, b) => b.favoritedCount - a.favoritedCount)// 排序大到小
+          .slice(0, 10)// 取前10
+        res.render('top-restaurants', { restaurants })
       })
       .catch(err => next(err))
   }
