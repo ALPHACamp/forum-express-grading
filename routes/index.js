@@ -36,6 +36,9 @@ router.delete('/like/:restaurantId', authenticated, userController.removeLike)
 router.get('/users/:id/edit', authenticated, userController.editUser) // edit page
 router.get('/users/:id', authenticated, userController.getUser) // users page
 router.put('/users/:id', authenticated, upload.single('image'), userController.putUser) // put edit
+// follow
+router.post('/following/:userId', authenticated, userController.addFollowing)
+router.delete('/following/:userId', authenticated, userController.removeFollowing)
 
 router.use('/', (req, res) => res.redirect('/restaurants'))
 
