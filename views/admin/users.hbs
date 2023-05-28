@@ -1,0 +1,37 @@
+{{>admin-header}}
+<br />
+<br />
+<table class='table align-middle'>
+  <thead class='thead-dark'>
+    <tr>
+      <th scope='col'>#</th>
+      <th scope='col'>Name</th>
+      <th scope='col'>email</th>
+      <th scope='col'>Role</th>
+      <th scope='col'>Change Role</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each users}}
+      <tr>
+        <th scope='row'>{{this.id}}</th>
+        <td>{{this.name}}</td>
+        <td>{{this.email}}</td>
+        {{#if this.isAdmin}}
+            <td>admin</td>
+        {{else}}
+            <td>user</td>
+        {{/if}}
+        <td>
+            <form action="/admin/users/{{this.id}}?_method=PATCH" method="POST" style="display: inline;">
+            {{#if this.isAdmin}}
+            <button type="submit" class="btn btn-link link-danger">Switch to User</button>
+            {{else}}
+            <button type="submit" class="btn btn-link link-danger">Switch to Admin</button>
+            {{/if}}
+            </form>
+        </td>
+      </tr>
+    {{/each}}
+  </tbody>
+</table>

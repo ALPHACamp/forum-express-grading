@@ -23,5 +23,9 @@ router.post(
   upload.single('image'),
   adminController.postRestaurant
 )
+// 抓取使用者List
+router.get('/users', adminController.getUsers)
+// 修改使用者權限
+router.patch('/users/:id', adminController.patchUser)
 router.use('/', (req, res) => res.redirect('/admin/restaurants'))
 module.exports = router
