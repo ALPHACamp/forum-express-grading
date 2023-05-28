@@ -3,6 +3,7 @@ const db = require('../models')
 const { User } = db
 const { Restaurant, Comment } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
+
 const userController = {
   signUpPage: (req, res) => {
     res.render('signup')
