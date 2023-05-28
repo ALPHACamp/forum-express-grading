@@ -31,7 +31,6 @@ router.get('/users/:id/edit', authenticated, userController.editUser)
 router.get('/users/:id', authenticated, userController.getUser)
 router.put('/users/:id', upload.single('image'), userController.putUser)
 
-
 router.use('/', (req, res) => { res.redirect('/restaurants') })
 router.use('/', generalErrorHandler)
 module.exports = router
