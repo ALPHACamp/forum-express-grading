@@ -1,0 +1,9 @@
+{{!-- enctype="multipart/form-data" 上傳圖片功能 --}}
+<form action="/admin/restaurants" method="POST" enctype="multipart/form-data">
+  <div class="mb-4 text-center">
+    <h1 class="h3 font-weight-normal mb-3">Create Restaurant</h1>
+  </div>
+  {{!-- 中間段落刪去，移至 partial --}}
+  {{!-- 使用partial語法 {{> 檔案名稱 }} 抓取partials資料 --}}
+  {{> admin-restaurant-form}}
+</form>
