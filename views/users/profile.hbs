@@ -1,32 +1,105 @@
-<div class="container-md">
-  <div class="card mb-5">
-    <div class="card-body row">
-      <div class="col-md-4">
-        <img class="img-responsive center-block img-circle" src="{{user.image}}"
-          style="width: 250px; margin-bottom: 25px; transition: opacity 0.5s; opacity:0;"
-          onload="this.style.opacity=1;">
+<div class='row mb-5'>
+  <div class='col-md-4'>
+    <img
+      class='img-responsive center-block'
+      src='{{user.image}}'
+      style='width: 250px; margin-bottom: 25px; transition: opacity 0.5s; opacity:0;'
+      onload='this.style.opacity=1;'
+    />
+  </div>
+  <div class='col-md-8 mb-1'>
+    <h1>{{user.name}}</h1>
+    <p>{{user.email}}</p>
+    <p>{{user.Comments.length}} 已評論餐廳</p>
+    <p>{{user.favoritedCount}} 收藏的餐廳</p>
+    <p>{{user.followingsCount}} followings(追蹤者)</p>
+    <p>{{user.followersCount}} followers(追隨者)</p>
+    {{#if selfUser}}
+      <a class='btn btn-primary' href='/users/{{user.id}}/edit'>Edit</a>
+    {{/if}}
+    <a class='btn btn-outline-secondary' href='javascript:history.back()'>Back</a>
+  </div>
+   <hr />
+</div>
+<div class='row'>
+  <div class='col-md-4'>
+    {{! 追蹤者 }}
+    <div class='card mb-2'>
+      <div class='card-header'>
+        <p>{{user.followingsCount}}following(追蹤者)</p>
       </div>
-      <div class="col-md-8">
-        <p><strong>{{user.name}}</strong></p>
-        <p>{{user.email}}</p>
-        <br>
-        <a class="btn btn-outline-primary" href="/users/{{user.id}}/edit">Edit</a>
+      <div class='card-body'>
+        {{#each user.Followings}}
+          <a href='/users/{{this.id}}'>
+            <img
+              src='{{this.image}}'
+              class='card-img-top img-fluid me-2 mb-2'
+              alt='restaurant'
+              style='width: 60px; transition: opacity 0.5s; opacity:0;'
+              onload='this.style.opacity=1;'
+            />
+          </a>
+        {{/each}}
+      </div>
+    </div>
+    {{! 追隨者 }}
+    <div class='card'>
+      <div class='card-header'>
+        <p>{{user.followersCount}}followers(追隨者)</p>
+      </div>
+      <div class='card-body'>
+        {{#each user.Followers}}
+          <a href='/users/{{this.id}}'>
+            <img
+              src='{{this.image}}'
+              class='card-img-top img-fluid me-2 mb-2'
+              alt='restaurant'
+              style='width: 60px; transition: opacity 0.5s; opacity:0;'
+              onload='this.style.opacity=1;'
+            />
+          </a>
+        {{/each}}
       </div>
     </div>
   </div>
-  <div class="card">
-    <div class="card-header">
-      {{#if user.Comments}}
-      {{user.Comments.length}}已評論餐廳
-      {{else}}
-      目前沒有評論
-      {{/if}}
+  <div class='col-md-8'>
+    {{! 評論的餐廳 }}
+    <div class='card mb-2'>
+      <div class='card-header'>
+        <p>{{user.Comments.length}}間已評論餐廳</p>
+      </div>
+      <div class='card-body'>
+        {{#each user.Comments}}
+          <a href='/restaurants/{{this.restaurantId}}'>
+            <img
+              src='{{this.Restaurant.image}}'
+              class='card-img-top img-fluid me-2 mb-2'
+              alt='restaurant'
+              style='width: 100px; transition: opacity 0.5s; opacity:0;'
+              onload='this.style.opacity=1;'
+            />
+          </a>
+        {{/each}}
+      </div>
     </div>
-    <div class="card-body">
-      {{#each user.Comments}}
-      <a href="/restaurants/{{this.Restaurant.id}}"><img src="{{this.Restaurant.image}}"
-          style="width:50px;height:50px;"></a>
-      {{/each}}
+    {{! 收藏的餐廳 }}
+    <div class='card'>
+      <div class='card-header'>
+        <p>{{user.favoritedCount}}收藏的餐廳</p>
+      </div>
+      <div class='card-body'>
+        {{#each user.FavoritedRestaurants}}
+          <a href='/restaurants/{{this.id}}'>
+            <img
+              src='{{this.image}}'
+              class='card-img-top img-fluid me-2 mb-2'
+              alt='restaurant'
+              style='width: 100px; transition: opacity 0.5s; opacity:0;'
+              onload='this.style.opacity=1;'
+            />
+          </a>
+        {{/each}}
+      </div>
     </div>
   </div>
 </div>

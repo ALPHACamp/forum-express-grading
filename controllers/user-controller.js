@@ -50,12 +50,14 @@ const userController = {
       // 反查user 確認user是否存在
       const user = await User.findByPk(req.params.id, {
         include: [
-          {
-            model: Comment,
-            include: Restaurant
-          }
-        ]
+          { model: Comment, include: Restaurant },
+          { model: Restaurant, as: 'FavoritedRestaurants' },
+          { model: User, as: 'Followings' },
+          { model: User, as: 'Followers' }
+        ],
+        order: [[{ model: Comment }, 'createdAt', 'DESC']]
       })
+      // 沒有就報錯
       if (!user) throw new Error("User didn't exist!")
       // 檢查user.id / req.user.id
       if (req.user) {
@@ -78,7 +80,26 @@ const userController = {
           return res.redirect(`/users/${req.user.id}/edit`)
         }
       }
-      res.render('users/edit', { user: user.toJSON() })
+      // 過濾掉評論中的同個餐廳
+      const userCommentsUnique = user.Comments.filter((c, i, arr) => {
+        return (
+          i ===
+          arr.findIndex(c2 => {
+            return c.Restaurant.id === c2.Restaurant.id
+          })
+        )
+      }).map(c => ({
+        ...c.toJSON()
+      }))
+      // 更新評論餐廳、收藏餐廳數、跟隨者數量、追蹤者數量
+      const result = {
+        ...user.toJSON(),
+        Comments: userCommentsUnique,
+        favoritedCount: user.FavoritedRestaurants.length,
+        followingsCount: user.Followings.length,
+        followersCount: user.Followers.length
+      }
+      return res.render('users/profile', { user: result })
     } catch (err) {
       next(err)
     }
