@@ -1,4 +1,4 @@
-'use strict'
+'use strict' // 代表啟用javascript嚴格模式
 
 const fs = require('fs')
 const path = require('path')
