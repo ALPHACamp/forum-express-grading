@@ -10,7 +10,6 @@ const restaurantController = {
     const page = Number(req.query.page) || 1 // 把 2 取出來，如果 query string 沒有攜帶特定數字的話就預設為 1
     const limit = Number(req.query.limit) || DEFAULT_LIMIT // 可以讓使用者選擇「每頁顯示 N 筆」的功能
     const offset = getOffset(limit, page) // sequelize 查詢資料庫時多帶入 limit 和 offset 兩個參數
-
     return Promise.all([
       Restaurant.findAndCountAll({ // 尋找+計算總數並用.rows抓數量
         include: Category, // 帶入關聯
@@ -25,10 +24,12 @@ const restaurantController = {
       }),
       Category.findAll({ raw: true }) // 抓Category資訊
     ])
-      .then(([restaurants, categories]) => {
+      .then(([restaurants, categories]) => { // Promise.all 依序帶入變數
+        const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id) // 定義該user內所有FavoritedRestaurants.id(因passport反序列化內已經將該user的FavoritedRestaurants帶入user資料內傳出來)
         const data = restaurants.rows.map(r => ({
-          ...r, // 把 r 展開倒入 data 以便做資料修改
-          description: r.description.substring(0, 50) // 修改description，擷取 0-50 的文字內容
+          ...r, // 把 r 展開倒入 data 以便做以下資料修改
+          description: r.description.substring(0, 50), // 修改description，擷取 0-50 的文字內容
+          isFavorited: favoritedRestaurantsId.includes(r.id) // 新增isFavorited內容，比對資料內是否含有該Restaurant.id，並帶入boolean值
         }))
         return res.render('restaurants', {
           restaurants: data,
@@ -44,7 +45,8 @@ const restaurantController = {
     return Restaurant.findByPk(req.params.id, {
       include: [ // 拿出關聯的 Category model,多項目用陣列[]
         Category,
-        { model: Comment, include: User } // 拿出關聯的model:Comment再拿出Comment關聯的User
+        { model: Comment, include: User }, // 拿出關聯的model:Comment再拿出Comment關聯的User
+        { model: User, as: 'FavoritedUsers' } // 拿出關聯User內的關聯FavoritedUsers資料
       ]
     })
       .then(restaurant => {
@@ -52,9 +54,11 @@ const restaurantController = {
         return restaurant.increment('viewCounts')
       })
       .then(restaurant => {
+        const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id) // 用js的some陣列功能有1個符合就回傳ture沒有就傳false，意味著找到有就會停止節省效能，放入restaurant.FavoritedUsers內restaurant.id與req.user.id比對
         // 將瀏覽次數更新後的餐廳資料傳遞給模板引擎進行渲染
         res.render('restaurant', {
-          restaurant: restaurant.toJSON()
+          restaurant: restaurant.toJSON(),
+          isFavorited
         })
       })
       .catch(err => next(err))

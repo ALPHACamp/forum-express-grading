@@ -1,8 +1,9 @@
 const passport = require('passport')
 const LocalStrategy = require('passport-local')
 const bcrypt = require('bcryptjs')
-const db = require('../models')
-const User = db.User
+// const db = require('../models')
+// const User = db.User 改成以下解構方式取得資訊
+const { User, Restaurant } = require('../models')
 // set up Passport strategy
 passport.use(new LocalStrategy( // 選擇使用passport策略，使用LocalStrategy策略LocalStrategy( 設定客製化選項, 登入認證程序 )
   // customize user field
@@ -29,10 +30,17 @@ passport.use(new LocalStrategy( // 選擇使用passport策略，使用LocalStrat
 passport.serializeUser((user, cb) => {
   cb(null, user.id)
 })
-passport.deserializeUser((id, cb) => {
-  User.findByPk(id).then(user => {
-    user = user.toJSON() // 轉為較單純的資訊而非sequelize的功能物件
-    return cb(null, user)
+passport.deserializeUser((id, cb) => { // user id 反序列化去database抓以下資料
+  return User.findByPk(id, { // 抓user id
+    include: [ // 包含以下資訊一起抓取
+      { model: Restaurant, as: 'FavoritedRestaurants' } // Restaurant關聯的FavoritedRestaurants多對多關係
+    ]
   })
+    // .then(user => {
+    //   user = user.toJSON()
+    //   return cb(null, user) 以下優化
+    .then(user => cb(null, user.toJSON()))
+    .catch(err => cb(err))
 })
+
 module.exports = passport
