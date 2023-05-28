@@ -46,8 +46,12 @@ const userController = {
     res.redirect('/signin')
   },
   getUser: async (req, res, next) => {
+    // 取得id
+    const { id } = req.params
+    // 如果沒有req.user就回傳id，使其一定會一樣
+    const signInUserId = req.user?.id || id
     try {
-      // 反查user 確認user是否存在
+      // 確認user是否存在
       const user = await User.findByPk(req.params.id, {
         include: [
           { model: Comment, include: Restaurant },
@@ -60,26 +64,13 @@ const userController = {
       // 沒有就報錯
       if (!user) throw new Error("User didn't exist!")
       // 檢查user.id / req.user.id
-      if (req.user) {
-        if (user.id !== req.user.id) {
-          return res.redirect(`/users/${req.user.id}`)
-        }
-      }
-      res.render('users/profile', { user: user.toJSON() })
-    } catch (err) {
-      next(err)
-    }
-  },
-  editUser: async (req, res, next) => {
-    try {
-      const user = await User.findByPk(req.params.id)
-      if (!user) throw new Error("User didn't exist!")
-      // 檢查user.id / req.user.id
-      if (req.user) {
-        if (user.id !== req.user.id) {
-          return res.redirect(`/users/${req.user.id}/edit`)
-        }
-      }
+      // if (req.user) {
+      //   if (user.id !== req.user.id) {
+      //     return res.redirect(`/users/${req.user.id}`)
+      //   }
+      // }
+      // 判斷瀏覽的使用者是否為本人
+      const selfUser = signInUserId === Number(id) ? 1 : 0
       // 過濾掉評論中的同個餐廳
       const userCommentsUnique = user.Comments.filter((c, i, arr) => {
         return (
@@ -99,7 +90,24 @@ const userController = {
         followingsCount: user.Followings.length,
         followersCount: user.Followers.length
       }
-      return res.render('users/profile', { user: result })
+      // res.render('users/profile', { user: user.toJSON() })
+      return res.render('users/profile', { user: result, selfUser })
+    } catch (err) {
+      next(err)
+    }
+  },
+  editUser: async (req, res, next) => {
+    // 取得id
+    const { id } = req.params
+    const userId = req.user?.id || id
+    try {
+      // 找對應User
+      const user = await User.findByPk(id, { raw: true })
+      // 沒有就報錯
+      if (!user) throw new Error('User did not exist!')
+      // 如果user跟登入的user不同就報錯
+      if (user.id !== userId) { throw new Error('Cannot modify other user profile!') }
+      return res.render('users/edit', { user })
     } catch (err) {
       next(err)
     }
