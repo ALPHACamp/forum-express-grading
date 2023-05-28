@@ -1,0 +1,32 @@
+<div class="card mb-3">
+  <div class="row g-0">
+    <div class="col-md-4">
+      <img src="{{user.image}}" class="img-fluid rounded-start" alt="...">
+    </div>
+    <div class="col-md-8">
+      <div class="card-body">
+        <h5 class="card-title">{{user.name}}</h5>
+        <p class="card-text">{{user.email}}</p>
+        <p class="card-text"><small class="text-body-secondary">最近更新：{{relativeTimeFromNow
+            user.updatedAt}}</small>
+        <p class="card-text">{{comments.length}} 間已評論餐廳</p>
+        <p class="card-text">
+          最近更新：{{relativeTimeFromNow user.updatedAt}}
+        </p>
+        <a class="btn btn-primary" href="/users/{{user.id}}/edit">edit</a>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="card">
+  <div class="card-header">
+    {{comments.length}} 間已評論餐廳
+  </div>
+  <div class="card-body">
+    {{#each comments}}
+    <a href="/restaurants/{{this.Restaurant.id}}">
+      <img src="{{this.Restaurant.image}}" alt="restaurant" style="max-width: 40px;" class="mt-2">
+    </a>
+    {{/each}}
+  </div>
+</div>
