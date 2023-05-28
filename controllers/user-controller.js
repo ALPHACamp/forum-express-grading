@@ -43,10 +43,12 @@ const userController = {
 
   getUser: (req, res, next) => {
     return User.findByPk(req.params.id, {
-      include: {
-        model: Comment,
-        include: Restaurant
-      },
+      include: [
+        { model: Comment, include: Restaurant },
+        { model: User, as: 'Followers' },
+        { model: User, as: 'Followings' },
+        { model: Restaurant, as: 'FavoritedRestaurants' }
+      ],
       order: [
         [Comment, 'id', 'DESC']
       ],
@@ -54,7 +56,16 @@ const userController = {
     })
       .then(user => {
         if (!user) throw new Error("User doesn't exist!")
-        return res.render('users/profile', { user: user.toJSON() })
+        user = user.toJSON()
+        const CommentedRestaurants = []
+
+        user.Comments.forEach(comment => {
+          if (!CommentedRestaurants.some(r => r.id === comment.Restaurant.id)) {
+            CommentedRestaurants.push(comment.Restaurant)
+          }
+        })
+        user.CommentedRestaurants = CommentedRestaurants
+        return res.render('users/profile', { user })
       })
       .catch(err => next(err))
   },

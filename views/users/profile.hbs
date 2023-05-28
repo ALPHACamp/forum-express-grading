@@ -1,3 +1,4 @@
+<!-- Up side -->
 <div class="row shadow p-4 mb-4">
   <div class="col-md-4">
     <img class="img-responsive center-block" src="{{user.image}}"
@@ -6,29 +7,102 @@
   <div class="col-md-8">
     <p class="h1 mb-2">{{user.name}}</p>
     <p class="h4 mb-4">{{user.email}}</p>
-    <p class="mb-4">{{user.Comments.length}} 已評論餐廳</p>
+    <p class="m-0 fs-4"><span class="text-primary">{{user.CommentedRestaurants.length}}</span> 已評論餐廳</p>
+    <p class="m-0 fs-4"><span class="text-primary">{{user.FavoritedRestaurants.length}}</span> 收藏的餐廳</p>
+    <p class="m-0 fs-4"><span class="text-primary">{{user.Followings.length}}</span> followings &#40;追蹤者&#41;</p>
+    <p class="m-0 fs-4"><span class="text-primary">{{user.Followers.length}}</span> followers &#40;追隨者&#41;</p>
     <!-- edit function only for owner -->
-    {{#ifCond user.id user.id}}
-    <a class="btn btn-primary" href="/users/{{user.id}}/edit">Edit</a>
+    {{#ifCond currentUser.id user.id}}
+    <a class="btn btn-primary mt-2" href="/users/{{user.id}}/edit">Edit</a>
     {{/ifCond}}
   </div>
 </div>
-<!--comments-->
-<div class="card my-4">
-  <div class="card-header">
-    <h5 class="card-title">{{user.Comments.length}} 已評論餐廳</h5>
-  </div>
-  <div class="card-body">
-    <div class="row row-cols-md-12 g-4 ">
-      {{#each user.Comments}}
-      <div class="col-2">
-        <div class="card">
-          <a href="/restaurants/{{this.Restaurant.id}}">
-            <img class="img-fluid" src="{{this.Restaurant.image}}" alt="restaurant image">
-          </a>
+
+<!-- Down side -->
+<div class="row">
+
+  <!--Left side: followings / followers-->
+  <div class="col-5 ps-0">
+    <!--Followings-->
+    <div class="card my-4">
+      <div class="card-header">
+        <h5 class="card-title">{{user.Followings.length}} followings (追蹤者)</h5>
+      </div>
+      <div class="card-body">
+        <div class="row row-cols-md-12 g-4 ">
+          {{#each user.Followings}}
+          <div class="col-2">
+            <div class="card">
+              <a href="/users/{{this.id}}">
+                <img class="img-fluid" src="{{this.image}}" alt="user image">
+              </a>
+            </div>
+          </div>
+          {{/each}}
         </div>
       </div>
-      {{/each}}
+    </div>
+    <!--Followers-->
+    <div class="card my-4">
+      <div class="card-header">
+        <h5 class="card-title">{{user.Followers.length}} followers (追隨者)</h5>
+      </div>
+      <div class="card-body">
+        <div class="row row-cols-md-12 g-4 ">
+          {{#each user.Followers}}
+          <div class="col-2">
+            <div class="card">
+              <a href="/users/{{this.id}}">
+                <img class="img-fluid" src="{{this.image}}" alt="user image">
+              </a>
+            </div>
+          </div>
+          {{/each}}
+        </div>
+      </div>
     </div>
   </div>
+
+  <!--Right side: comments / favorited restaurants -->
+  <div class="col-7 pe-0">
+    <!--comments-->
+    <div class="card my-4">
+      <div class="card-header">
+        <h5 class="card-title">{{user.CommentedRestaurants.length}} 已評論餐廳</h5>
+      </div>
+      <div class="card-body">
+        <div class="row row-cols-md-12 g-4 ">
+          {{#each user.CommentedRestaurants}}
+          <div class="col-2">
+            <div class="card">
+              <a href="/restaurants/{{this.id}}">
+                <img class="img-fluid" src="{{this.image}}" alt="restaurant image">
+              </a>
+            </div>
+          </div>
+          {{/each}}
+        </div>
+      </div>
+    </div>
+    <!--FavoritedRestaurants-->
+    <div class="card my-4">
+      <div class="card-header">
+        <h5 class="card-title">{{user.FavoritedRestaurants.length}} 收藏的餐廳</h5>
+      </div>
+      <div class="card-body">
+        <div class="row row-cols-md-12 g-4 ">
+          {{#each user.FavoritedRestaurants}}
+          <div class="col-2">
+            <div class="card">
+              <a href="/restaurants/{{this.id}}">
+                <img class="img-fluid" src="{{this.image}}" alt="restaurant image">
+              </a>
+            </div>
+          </div>
+          {{/each}}
+        </div>
+      </div>
+    </div>
+  </div>
+
 </div>
