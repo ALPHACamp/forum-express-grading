@@ -1,4 +1,4 @@
-const { Restaurant, Category, User } = require('../models')
+const { Restaurant, Category, Comment, User } = require('../models')
 const restaurantController = {
   getRestaurants: (req, res, next) => {
     const categoryId = Number(req.query.categoryId) || ''
@@ -32,6 +32,7 @@ const restaurantController = {
     return Restaurant.findByPk(req.params.id, {
       include: [
         Category,
+        { model: Comment, include: User },
         { model: User, as: 'FavoritedUsers' }
       ]
     })
