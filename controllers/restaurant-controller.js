@@ -13,7 +13,7 @@ const restaurantController = {
       Restaurant.findAndCountAll({
         include: Category,
         where: {
-          ...categoryId ? { categoryId } : {}
+          ...(categoryId ? { categoryId } : {})
         },
         raw: true,
         nest: true,
@@ -23,7 +23,8 @@ const restaurantController = {
       Category.findAll({ raw: true })
     ])
       .then(([restaurants, categories]) => {
-        const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
+        const favoritedRestaurantsId =
+          req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
         const likedRestaurantsId =
           req.user && req.user.LikedRestaurants.map(fr => fr.id)
 
@@ -104,6 +105,24 @@ const restaurantController = {
     ])
       .then(([restaurants, comments]) => {
         return res.render('feeds', { restaurants, comments })
+      })
+      .catch(err => next(err))
+  },
+  getTopRestaurants: (req, res, next) => {
+    return Restaurant.findAll({
+      include: [{ model: User, as: 'FavoritedUsers' }]
+    })
+      .then(restaurants => {
+        restaurants = restaurants
+          .map(restaurant => ({
+            ...restaurant.toJSON(),
+            favoritedCount: restaurant.FavoritedUsers.length,
+            isFavorited:
+              req.user &&
+              req.user.FavoritedRestaurants.some(f => f.id === restaurant.id)
+          }))
+          .sort((a, b) => b.favoritedCount - a.favoritedCount)
+        return res.render('top-restaurants', { restaurants })
       })
       .catch(err => next(err))
   }
