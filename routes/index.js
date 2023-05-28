@@ -41,6 +41,8 @@ router.delete(
   authenticated,
   userController.removeFavorite
 );
+router.post("/like/:restaurantId", authenticated, userController.addLike);
+router.delete("/like/:restaurantId", authenticated, userController.removeLike);
 router.get("/users/:id/edit", authenticated, userController.editUser);
 router.get("/users/:id", authenticated, userController.getUser);
 router.put("/users/:id", upload.single("image"), userController.putUser);
