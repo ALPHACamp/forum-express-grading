@@ -8,9 +8,19 @@
       <ul class="list-unstyled">
         <li><strong>{{user.name}}</strong></li>
         <li>{{user.email}}</li>
+        <li>{{user.Comments.length}} 已評論餐廳</li>
       </ul>
       <a class="btn btn-primary mb-3" href="/users/{{user.id}}/edit">edit</a>
     </div>
   </div>
   <hr>
+  <div class="col-md-12 card">
+    <h6 class="card-header">{{user.Comments.length}} 已評論餐廳</h6>
+    <div class="card-body">
+      {{#each user.Comments}}
+      <a href="/restaurants/{{this.Restaurant.id}}"><img class="img-responsive center-block mb-5" src="{{this.Restaurant.image}}"
+        style="width: 70px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+      {{/each}}
+    </div>
+  </div>
 </div>
