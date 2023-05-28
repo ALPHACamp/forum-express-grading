@@ -64,12 +64,7 @@ const userController = {
   editUser: (req, res, next) => {
     return User.findByPk(req.params.id, { raw: true })
       .then((user) => {
-        if (user.name !== res.locals.user.name) {
-          req.flash("error_messages", "你不能修改其他人的資料!");
-          res.redirect("/restaurants");
-        } else {
-          return res.render("users/edit", { user });
-        }
+        return res.render("users/edit", { user });
       })
       .catch((err) => next(err));
   },
