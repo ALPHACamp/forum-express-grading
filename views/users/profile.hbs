@@ -1,0 +1,14 @@
+<div class="container d-flex justify-content-center">
+  <div class="card" style="width: 50rem;">
+    <div class="d-flex align-items-center">
+      <div>
+        <img src="{{#if image}}{{user.image}}{{else}}https://cdn-icons-png.flaticon.com/512/5234/5234205.png{{/if}}" alt="" style="max-width: 10rem;">
+      </div>
+      <div class="card-body">
+        <h5 class="card-title">{{user.name}}</h5>
+        <p class="card-text">{{user.email}}</p>
+        <a href="/users/{{user.id}}/edit" class="card-link btn btn-primary">edit</a>
+      </div>
+    </div>
+  </div>
+</div>
