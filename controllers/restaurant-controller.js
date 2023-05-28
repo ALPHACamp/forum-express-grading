@@ -22,11 +22,13 @@ const restaurantController = {
       Category.findAll({ raw: true })
     ])
       .then(([restaurants, categories]) => {
-        const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id) 
+        const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
+        const LikedRestaurantsId = req.user && req.user.LikedRestaurants.map(li => li.id)
         const data = restaurants.rows.map(r => ({ // rows=findAndCountAll會產生的陣列，另外會產生count的整數
           ...r,
           description: r.description.substring(0, 50),
-          isFavorited: favoritedRestaurantsId.includes(r.id) // req.user && req.user.FavoritedRestaurants取出使用者的收藏清單，再以mapmap 成 id 清單用 Array 的 includes 方法進行比對，最後會回傳布林值。
+          isFavorited: favoritedRestaurantsId.includes(r.id), // req.user && req.user.FavoritedRestaurants取出使用者的收藏清單，再以mapmap 成 id 清單用 Array 的 includes 方法進行比對，最後會回傳布林值。
+          isLiked: LikedRestaurantsId.includes(r.id)
         }))
         return res.render('restaurants', {
           restaurants: data,
@@ -39,7 +41,7 @@ const restaurantController = {
   },
   getRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
-      include: [Category, { model: Comment, include: User }, { model: User, as: 'FavoritedUsers' }]
+      include: [Category, { model: Comment, include: User }, { model: User, as: 'FavoritedUsers' }, { model: User, as: 'LikedUsers' }]
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
@@ -48,8 +50,10 @@ const restaurantController = {
       })
       .then(restaurant => {
         const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id)
+        const isLiked = restaurant.LikedUsers.some(l => l.id === req.user.id)
 
-        res.render('restaurant', { restaurant: restaurant.toJSON(),isFavorited })
+
+        res.render('restaurant', { restaurant: restaurant.toJSON(), isFavorited , isLiked })
       })
       .catch(err => next(err))
   },
