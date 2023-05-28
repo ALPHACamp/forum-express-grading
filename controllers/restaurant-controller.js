@@ -1,4 +1,4 @@
-const { Restaurant, Category, Comment, User } = require('../models')
+const { Restaurant, Category, Comment, User, Favorite } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
 const restaurantController = {
   getRestaurants: (req, res, next) => {
@@ -88,10 +88,33 @@ const restaurantController = {
         include: [User, Restaurant],
         raw: true,
         nest: true
+      }),
+      // 收藏餐廳
+      Favorite.findAll({
+        where: {
+          restaurantId: req.params.id
+        }
       })
     ])
-      .then(([restaurants, comments]) => {
-        res.render('feeds', { restaurants, comments })
+      .then(([restaurants, comments, favorites]) => {
+        res.render('feeds', { restaurants, comments, favorites })
+      })
+      .catch(err => next(err))
+  },
+  getTopRestaurants: (req, res, next) => {
+    return Restaurant.findAll({
+      include: [{ model: User, as: 'FavoritedUsers' }]
+    })
+      .then(restaurants => {
+        const result = restaurants
+          .map(restaurant => ({
+            ...restaurant.toJSON(),
+            favoritedCount: restaurant.FavoritedUsers.length,
+            isFavorited: req.user && req.user.FavoritedRestaurants.some(f => f.id === restaurant.id)
+          }))
+          .sort((a, b) => b.favoritedCount - a.favoritedCount)
+          .slice(0, 10)
+        res.render('top-restaurants', { restaurants: result })
       })
       .catch(err => next(err))
   }
