@@ -34,7 +34,9 @@ passport.deserializeUser((id, cb) => { // user id 反序列化去database抓以�
   return User.findByPk(id, { // 抓user id
     include: [ // 包含以下資訊一起抓取
       { model: Restaurant, as: 'FavoritedRestaurants' }, // Restaurant關聯的FavoritedRestaurants多對多關係
-      { model: Restaurant, as: 'LikedRestaurants' }
+      { model: Restaurant, as: 'LikedRestaurants' },
+      { model: User, as: 'Followers' },
+      { model: User, as: 'Followings' }
     ]
   })
     // .then(user => {

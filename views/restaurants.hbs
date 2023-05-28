@@ -33,8 +33,8 @@
             </p>
             <span class="badge bg-secondary">{{this.Category.name}}</span>
             <p class="card-text text-truncate">{{this.description}}</p>
-            {{!-- favorite --}}
             <div class="d-flex">
+              {{!-- favorite --}}
               {{#if isFavorited}}
               <form action="/favorite/{{this.id}}?_method=DELETE" method="POST">
                 <button type="submit" class="btn btn-danger m-1">移除最愛</button>
