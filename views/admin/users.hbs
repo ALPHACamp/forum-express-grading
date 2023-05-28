@@ -1,34 +1,39 @@
-{{> admin-header}}
-<table class="table align-middle" style="height: 200px">
-  <thead class="thead-dark bg-dark align-middle" style="color: white;height: 60px;">
+{{>admin-tabs route='users'}}
+<br />
+<br />
+<table class="table align-middle">
+  <thead class="thead-dark">
     <tr>
       <th scope="col">#</th>
       <th scope="col">Name</th>
-      <th scope="col">Email</th>
+      <th scope="col">email</th>
       <th scope="col">Role</th>
-      <th scope="col">#</th>
+      <th scope="col">Change Role</th>
     </tr>
   </thead>
   <tbody>
     {{#each users}}
     <tr>
+      <!--#-->
       <th scope="row">{{this.id}}</th>
+      <!--Name-->
       <td>{{this.name}}</td>
+      <!--Email-->
       <td>{{this.email}}</td>
+      <!--Role-->
       {{#if this.isAdmin}}
-        <td>admin</td>
+      <td>admin</td>
       {{else}}
-        <td>user</td>
+      <td>user</td>
       {{/if}}
+      <!--Change Role-->
       <td>
-        <form action="/admin/users/{{this.id}}?_method=PATCH" method="post" style="display:inline">
-          <button class="btn btn-link" type="submit" onclick="this.form.submit()">
-            {{#if this.isAdmin}}
-            set as user
-            {{else}}
-            set as admin
-            {{/if}}
-          </button>
+        <form action="/admin/users/{{this.id}}?_method=PATCH" method="POST" style="display: inline;">
+          {{#if this.isAdmin}}
+          <button type="submit" class="btn btn-link link-danger">Set as User</button>
+          {{else}}
+          <button type="submit" class="btn btn-link link-danger">Set as Admin</button>
+          {{/if}}
         </form>
       </td>
     </tr>

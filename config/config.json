@@ -1,10 +1,11 @@
 {
   "development": {
     "username": "root",
-    "password": "password",
-    "database": "forum",
+    "password": "",
+    "database": "forum_a_add",
     "host": "127.0.0.1",
-    "dialect": "mysql"
+    "dialect": "mysql",
+    "logging": false
   },
   "production": {
     "use_env_variable": "CLEARDB_DATABASE_URL"
