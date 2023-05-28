@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs') // 載入 bcrypt
-const { User, Restaurant, Comment } = require('../models')
+const { User, Restaurant, Comment, Favorite } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const userController = {
@@ -86,6 +86,46 @@ const userController = {
         res.redirect(`/users/${req.params.id}`)
       })
       .catch(err => next(err)) // 接住前面拋出的錯誤，next呼叫專門做錯誤處理的 middleware
+  },
+  // Favorite 新增
+  addFavorite: (req, res, next) => {
+    const { restaurantId } = req.params // 網址抓取
+    return Promise.all([
+      Restaurant.findByPk(restaurantId),
+      Favorite.findOne({ // 抓特定條件data
+        where: { // 帶入條件
+          userId: req.user.id, // 當前user id
+          restaurantId // 當前restaurant id
+        }
+      })
+    ])
+      .then(([restaurant, favorite]) => { // Promise.all依序傳入變數
+        if (!restaurant) throw new Error("Restaurant didn't exist!") // 防呆
+        if (favorite) throw new Error('You have favorited this restaurant!') // 防重複加入
+
+        return Favorite.create({ // Favorite建立資料
+          userId: req.user.id,
+          restaurantId
+        })
+      })
+      .then(() => res.redirect('back')) // 導回上一頁
+      .catch(err => next(err))
+  },
+  // Favorite 刪除
+  removeFavorite: (req, res, next) => {
+    return Favorite.findOne({
+      where: {
+        userId: req.user.id,
+        restaurantId: req.params.restaurantId
+      }
+    })
+      .then(favorite => {
+        if (!favorite) throw new Error("You haven't favorited this restaurant") // 防止刪除無效目標
+
+        return favorite.destroy() // 從資料庫刪除資料
+      })
+      .then(() => res.redirect('back'))
+      .catch(err => next(err))
   }
 }
 module.exports = userController

@@ -19,17 +19,17 @@ router.post('/signup', userController.signUp)
 router.get('/signin', userController.signInPage) // 登入
 router.post('/signin', passport.authenticate('local', { failureRedirect: '/signin', failureFlash: true }), userController.signIn) // 收到post先用passport認證，認證失敗帶回/signin並傳送失敗flash message，認證成功帶入passport的序列化/反序列化程序
 router.get('/logout', userController.logout) // 登出
-
 // 主頁
 router.get('/restaurants/feeds', authenticated, restController.getFeeds) // feed頁面
 router.get('/restaurants/:id/dashboard', authenticated, restController.getDashboard) // 詳細頁面儀錶板
 router.get('/restaurants/:id', authenticated, restController.getRestaurant) // 詳細頁面
 router.get('/restaurants', authenticated, restController.getRestaurants) // 所有餐廳頁面
-
 // comment
 router.delete('/comments/:id', authenticatedAdmin, commentController.deleteComment) // 刪除評論
 router.post('/comments', authenticated, commentController.postComment) // 評論
-
+// favorite
+router.post('/favorite/:restaurantId', authenticated, userController.addFavorite)
+router.delete('/favorite/:restaurantId', authenticated, userController.removeFavorite)
 // users
 router.get('/users/:id/edit', authenticated, userController.editUser) // edit page
 router.get('/users/:id', authenticated, userController.getUser) // users page
