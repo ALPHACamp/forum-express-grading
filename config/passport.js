@@ -38,5 +38,3 @@ passport.deserializeUser((id, cb) => {
     .catch(err => cb(err))
 })
 module.exports = passport
-
-module.exports = passport
