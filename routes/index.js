@@ -21,6 +21,7 @@ router.post('/signin', passport.authenticate('local', { failureRedirect: '/signi
 router.get('/logout', userController.logout) // 登出
 
 // 主頁
+router.get('/restaurants/feeds', authenticated, restController.getFeeds) // feed頁面
 router.get('/restaurants/:id/dashboard', authenticated, restController.getDashboard) // 詳細頁面儀錶板
 router.get('/restaurants/:id', authenticated, restController.getRestaurant) // 詳細頁面
 router.get('/restaurants', authenticated, restController.getRestaurants) // 所有餐廳頁面

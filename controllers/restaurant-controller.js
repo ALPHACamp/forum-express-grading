@@ -70,6 +70,32 @@ const restaurantController = {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         res.render('dashboard', { restaurant })
       })
+  },
+  // feeds page
+  getFeeds: (req, res, next) => {
+    return Promise.all([ // 抓兩筆以上非同步資料
+      Restaurant.findAll({ // 抓資料時加入sequelize功能
+        limit: 10, // 指定數量
+        order: [['createdAt', 'DESC']], // 排序以createdAt DESC遞減排序
+        include: [Category], // 含分類關聯
+        raw: true,
+        nest: true
+      }),
+      Comment.findAll({
+        limit: 10,
+        order: [['createdAt', 'DESC']],
+        include: [User, Restaurant],
+        raw: true,
+        nest: true
+      })
+    ])
+      .then(([restaurants, comments]) => { // 依序將資料帶入變數
+        res.render('feeds', {
+          restaurants,
+          comments
+        })
+      })
+      .catch(err => next(err))
   }
 }
 module.exports = restaurantController
