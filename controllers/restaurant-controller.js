@@ -23,6 +23,7 @@ const restaurantController = {
     ])
       .then(([restaurants, categories]) => {
         const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
+        // console.log(favoritedRestaurantsId)
         const likedRestaurantsId = req.user && req.user.LikedRestaurants.map(fr => fr.id)
         const data = restaurants.rows.map(r => ({
           ...r,
@@ -98,6 +99,36 @@ const restaurantController = {
           restaurants,
           comments
         })
+      })
+      .catch(err => next(err))
+  },
+  getTopRestaurants: (req, res, next) => {
+    return Restaurant.findAll({
+      include: [
+        Category,
+        { model: User, as: 'FavoritedUsers' }
+      ]
+      // Favorite.count({ // 想嘗試用favorite去找出這些關連
+      //   attributes: ['restaurantId'],
+      //   group: 'restaurantId',
+      //   raw: true
+      // })
+    })
+      .then(restaurants => {
+        const newData = []
+        const data = restaurants
+          .map(r => ({
+            ...r.toJSON(), // 整理格式
+            description: r.description.substring(0, 50), // description縮到50字
+            favoritedCount: r.FavoritedUsers.length, // 餐廳被user給favorite的數量
+            isFavorited: req.user && req.user.FavoritedRestaurants.some(f => f.id === r.id) // 該user喜歡的餐廳
+            // isFavorited: favoritedRestaurantsId.includes(r.id) // 該user喜歡的餐廳
+          }))
+          .sort((a, b) => b.favoritedCount - a.favoritedCount) // 按數字反序排列
+        for (let i = 0; i < 10; i++) { // 放10個
+          newData.push(data[i])
+        }
+        res.render('top-restaurants', { restaurants: newData })
       })
       .catch(err => next(err))
   }
