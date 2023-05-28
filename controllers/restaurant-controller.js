@@ -26,10 +26,12 @@ const restaurantController = {
     ])
       .then(([restaurants, categories]) => { // Promise.all 依序帶入變數
         const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id) // 定義該user內所有FavoritedRestaurants.id(因passport反序列化內已經將該user的FavoritedRestaurants帶入user資料內傳出來)
+        const likedRestaurantsId = req.user && req.user.LikedRestaurants.map(Lr => Lr.id)
         const data = restaurants.rows.map(r => ({
           ...r, // 把 r 展開倒入 data 以便做以下資料修改
           description: r.description.substring(0, 50), // 修改description，擷取 0-50 的文字內容
-          isFavorited: favoritedRestaurantsId.includes(r.id) // 新增isFavorited內容，比對資料內是否含有該Restaurant.id，並帶入boolean值
+          isFavorited: favoritedRestaurantsId.includes(r.id), // 新增isFavorited內容，比對資料內是否含有該Restaurant.id，並帶入boolean值
+          isLiked: likedRestaurantsId.includes(r.id)
         }))
         return res.render('restaurants', {
           restaurants: data,
@@ -46,7 +48,8 @@ const restaurantController = {
       include: [ // 拿出關聯的 Category model,多項目用陣列[]
         Category,
         { model: Comment, include: User }, // 拿出關聯的model:Comment再拿出Comment關聯的User
-        { model: User, as: 'FavoritedUsers' } // 拿出關聯User內的關聯FavoritedUsers資料
+        { model: User, as: 'FavoritedUsers' }, // 拿出關聯User內的關聯FavoritedUsers資料
+        { model: User, as: 'LikedUsers' }
       ]
     })
       .then(restaurant => {
@@ -55,10 +58,12 @@ const restaurantController = {
       })
       .then(restaurant => {
         const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id) // 用js的some陣列功能有1個符合就回傳ture沒有就傳false，意味著找到有就會停止節省效能，放入restaurant.FavoritedUsers內restaurant.id與req.user.id比對
+        const isLiked = restaurant.LikedUsers.some(f => f.id === req.user.id)
         // 將瀏覽次數更新後的餐廳資料傳遞給模板引擎進行渲染
         res.render('restaurant', {
           restaurant: restaurant.toJSON(),
-          isFavorited
+          isFavorited,
+          isLiked
         })
       })
       .catch(err => next(err))

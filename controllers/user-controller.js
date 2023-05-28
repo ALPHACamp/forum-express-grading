@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs') // 載入 bcrypt
-const { User, Restaurant, Comment, Favorite } = require('../models')
+const { User, Restaurant, Comment, Favorite, Like } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const userController = {
@@ -114,6 +114,46 @@ const userController = {
   // Favorite 刪除
   removeFavorite: (req, res, next) => {
     return Favorite.findOne({
+      where: {
+        userId: req.user.id,
+        restaurantId: req.params.restaurantId
+      }
+    })
+      .then(favorite => {
+        if (!favorite) throw new Error("You haven't favorited this restaurant") // 防止刪除無效目標
+
+        return favorite.destroy() // 從資料庫刪除資料
+      })
+      .then(() => res.redirect('back'))
+      .catch(err => next(err))
+  },
+  // Like 新增
+  addLike: (req, res, next) => {
+    const { restaurantId } = req.params // 網址抓取
+    return Promise.all([
+      Restaurant.findByPk(restaurantId),
+      Like.findOne({ // 抓特定條件data
+        where: { // 帶入條件
+          userId: req.user.id, // 當前user id
+          restaurantId // 當前restaurant id
+        }
+      })
+    ])
+      .then(([restaurant, favorite]) => { // Promise.all依序傳入變數
+        if (!restaurant) throw new Error("Restaurant didn't exist!") // 防呆
+        if (favorite) throw new Error('You have favorited this restaurant!') // 防重複加入
+
+        return Like.create({ // Like建立資料
+          userId: req.user.id,
+          restaurantId
+        })
+      })
+      .then(() => res.redirect('back')) // 導回上一頁
+      .catch(err => next(err))
+  },
+  // Like 刪除
+  removeLike: (req, res, next) => {
+    return Like.findOne({
       where: {
         userId: req.user.id,
         restaurantId: req.params.restaurantId
