@@ -17,7 +17,8 @@ router.post('/signup', userController.signUp)
 router.get('/signin', userController.signInPage) // 登入
 router.post('/signin', passport.authenticate('local', { failureRedirect: '/signin', failureFlash: true }), userController.signIn) // 收到post先用passport認證，認證失敗帶回/signin並傳送失敗flash message，認證成功帶入passport的序列化/反序列化程序
 router.get('/logout', userController.logout) // 登出
-router.get('/users/top', authenticated, userController.getTopUsers) // 美食達人頁面
+router.get('/users/top', authenticated, userController.getTopUsers) // topUser
+router.get('/restaurants/top', authenticated, restController.getTopRestaurants) // topRestaurant
 // 主頁
 router.get('/restaurants/feeds', authenticated, restController.getFeeds) // feed頁面
 router.get('/restaurants/:id/dashboard', authenticated, restController.getDashboard) // 詳細頁面儀錶板
