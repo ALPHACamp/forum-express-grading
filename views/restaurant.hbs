@@ -23,7 +23,7 @@
 {{!-- Comment --}}
 <h3 class="mb-3">所有評論：</h3>
 {{#each restaurant.Comments}}
-{{#if ../user.isAdmin}}
+{{#if ../loginUser.isAdmin}}
 <form action="/comments/{{this.id}}?_method=DELETE" method="POST" class="float-end" onclick="return confirm('確定刪除這筆評論嗎？')">
   <button type="submit" class="btn btn-danger">Delete</button>
 </form>

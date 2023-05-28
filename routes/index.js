@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const passport = require('../config/passport') // 引入 Passport，需要他幫忙做驗證
+const upload = require('../middleware/multer')
 const restController = require('../controllers/restaurant-controller')
 const userController = require('../controllers/user-controller')
 const commentController = require('../controllers/comment-controller')
@@ -21,6 +22,10 @@ router.get('/restaurants', authenticated, restController.getRestaurants)
 
 router.delete('/comments/:id', authenticatedAdmin, commentController.deleteComment)
 router.post('/comments', authenticated, commentController.postComment)
+
+router.get('/users/:id/edit', authenticated, userController.editUser)
+router.get('/users/:id', authenticated, userController.getUser)
+router.put('/users/:id', authenticated, upload.single('image'), userController.putUser)
 
 router.get('/logout', userController.logout)
 
