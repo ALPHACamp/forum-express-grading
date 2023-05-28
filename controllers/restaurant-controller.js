@@ -103,6 +103,24 @@ const restaurantColler = {
         res.render('feeds', { restaurants, comments })
       })
       .catch(err => next(err))
+  },
+  getTopRestaurants: (req, res, next) => {
+    return Restaurant.findAll({
+      include: [{ model: User, as: 'FavoritedUsers' }],
+      // raw: true,
+      // nest: true, 格式會不樣. FavoritedUsers 這個會是 { } 而不是 [ ]
+      limit: 10
+    })
+      .then(restaurants => {
+        restaurants = restaurants.map(r => ({
+          ...r.toJSON(),
+          favoritedCount: r.FavoritedUsers.length,
+          isFavorited: req.user.FavoritedRestaurants.some(f => f.id === r.id)
+          // description: r.description.substring(0, 40)
+        }))
+        restaurants.sort((a, b) => b.favoritedCount - a.favoritedCount)
+        res.render('top-restaurants', { restaurants })
+      })
   }
 }
 
