@@ -1,4 +1,5 @@
 'use strict'
+
 const {
   Model
 } = require('sequelize')
@@ -17,6 +18,11 @@ module.exports = (sequelize, DataTypes) => {
         through: models.Favorite,
         foreignKey: 'restaurantId',
         as: 'FavoritedUsers'
+      })
+      Restaurant.belongsToMany(models.User, {
+        through: models.Like,
+        foreignKey: 'restaurantId',
+        as: 'LikedUsers'
       })
     }
   };
