@@ -34,6 +34,8 @@ router.post(
 router.get('/logout', userController.logout)
 //* 最新動態
 router.get('/restaurants/feeds', authenticated, restController.getFeeds)
+//* 瀏覽TOP餐廳
+router.get('/restaurants/top', authenticated, restController.getTopRestaurants)
 //* 瀏覽全部餐廳
 router.get('/restaurants', authenticated, restController.getRestaurants)
 //* 瀏覽單一餐廳
