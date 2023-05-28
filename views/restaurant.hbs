@@ -21,7 +21,7 @@
 <a href='/restaurants/{{restaurant.id}}/dashboard'>
   <button type="button" class="btn btn-primary">Dashboard</button>
 </a>
-
+<div class="d-flex m-3">
       {{#if isFavorited }}
       <form action="/favorite/{{restaurant.id}}?_method=DELETE" method="POST" style="display: contents;">
         <button type="submit" class="btn btn-danger">移除最愛</button>
@@ -31,19 +31,18 @@
         <button type="submit" class="btn btn-primary">加到最愛</button>
       </form>
       {{/if}}
-
-       {{#if isLiked}}
-        <form action="/favorite/{{this.id}}?_method=DELETE" method="POST">
-        <button type="submit" class="btn btn-danger m-1">Unlike</button>
-        </form>
-       {{else}}
-        <form action="/favorite/{{this.id}}" method="POST">
-        <button type="submit" class="btn btn-primary m-1">Like</button>
-        </form>
-        {{/if}}      
+      {{#if isLiked}}
+      <form action="/like/{{restaurant.id}}?_method=DELETE" method="POST" style="display: contents;">
+        <button type="submit" class="btn btn-danger">UNLIKE</button>
+      </form>
+      {{else}}
+      <form action="/like/{{restaurant.id}}" method="POST" style="display: contents;">
+        <button type="submit" class="btn btn-primary">LIKE</button>
+      </form>
+      {{/if}}
+</div>
         </div>
 {{!-- Comment --}}
-<h3 class="mb-3">所有評論：</h3>
 <h3 class="mb-3">所有評論：</h3>
 {{#each restaurant.Comments}}
   {{#if ../user.isAdmin}}

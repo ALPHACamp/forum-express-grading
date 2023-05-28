@@ -99,7 +99,7 @@ const userController = {
     ])
       .then(([restaurant, favorite]) => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
-        if (favorite) throw new Error('You have liked this restaurant!')
+        if (favorite) throw new Error('You have favorited this restaurant!')
 
         return Favorite.create({
           userId: req.user.id,
@@ -117,7 +117,7 @@ const userController = {
       }
     })
       .then(favorite => {
-        if (!favorite) throw new Error("You haven't liked this restaurant")
+        if (!favorite) throw new Error("You haven't favorited this restaurant")
 
         return favorite.destroy()
       })
@@ -135,11 +135,11 @@ const userController = {
         } // 此關聯是否早已存在?
       })
     ])
-      .then(([restaurant, favorite]) => {
+      .then(([restaurant, like]) => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
-        if (favorite) throw new Error('You have favorited this restaurant!')
+        if (like) throw new Error('You have liked this restaurant!')
 
-        return Favorite.create({
+        return Like.create({
           userId: req.user.id,
           restaurantId
         })
@@ -148,7 +148,7 @@ const userController = {
       .catch(err => next(err))
   },
   removeLike: (req, res, next) => {
-    return Favorite.findOne({
+    return Like.findOne({
       where: {
         userId: req.user.id,
         restaurantId: req.params.restaurantId

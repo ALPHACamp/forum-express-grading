@@ -23,12 +23,12 @@ const restaurantController = {
     ])
       .then(([restaurants, categories]) => {
         const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
-        const LikedRestaurantsId = req.user && req.user.LikedRestaurants.map(li => li.id)
-        const data = restaurants.rows.map(r => ({ // rows=findAndCountAll會產生的陣列，另外會產生count的整數
+        const likedRestaurantsId = req.user && req.user.LikedRestaurants.map(li => li.id)
+        const data = restaurants.rows.map(r => ({
           ...r,
           description: r.description.substring(0, 50),
           isFavorited: favoritedRestaurantsId.includes(r.id), // req.user && req.user.FavoritedRestaurants取出使用者的收藏清單，再以mapmap 成 id 清單用 Array 的 includes 方法進行比對，最後會回傳布林值。
-          isLiked: LikedRestaurantsId.includes(r.id)
+          isLiked: likedRestaurantsId.includes(r.id)
         }))
         return res.render('restaurants', {
           restaurants: data,
@@ -52,8 +52,7 @@ const restaurantController = {
         const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id)
         const isLiked = restaurant.LikedUsers.some(l => l.id === req.user.id)
 
-
-        res.render('restaurant', { restaurant: restaurant.toJSON(), isFavorited , isLiked })
+        return res.render('restaurant', { restaurant: restaurant.toJSON(), isFavorited, isLiked })
       })
       .catch(err => next(err))
   },
