@@ -1,0 +1,43 @@
+'use strict'
+const {
+  Model
+} = require('sequelize')
+module.exports = (sequelize, DataTypes) => {
+  class Restaurant extends Model {
+    /**
+     * Helper method for defining associations.
+     * This method is not a part of Sequelize lifecycle.
+     * The `models/index` file will call this method automatically.
+     */
+    static associate (models) {
+      // define association here
+      Restaurant.belongsTo(models.Category, { foreignKey: 'categoryId' })
+      Restaurant.hasMany(models.Comment, { foreignKey: 'restaurantId' })
+      Restaurant.belongsToMany(models.User, {
+        through: models.Favorite, // 透過Favorite 表來建立關聯
+        foreignKey: 'restaurantId', // 對Favorite表設定FK
+        as: 'FavoritedUsers' // 關聯名稱
+      })
+      Restaurant.belongsToMany(models.User, {
+        through: models.Like, // 透過Like 表來建立關聯
+        foreignKey: 'restaurantId', // 對Like表設定FK
+        as: 'LikedUsers' // 關聯名稱
+      })
+    }
+  };
+  Restaurant.init({
+    name: DataTypes.STRING,
+    tel: DataTypes.STRING,
+    address: DataTypes.STRING,
+    openingHours: DataTypes.STRING,
+    description: DataTypes.TEXT,
+    image: DataTypes.STRING,
+    view_counts: DataTypes.INTEGER
+  }, {
+    sequelize,
+    modelName: 'Restaurant',
+    tableName: 'Restaurants',
+    underscored: true
+  })
+  return Restaurant
+}
