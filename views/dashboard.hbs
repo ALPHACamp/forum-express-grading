@@ -1,14 +1,18 @@
-<ul class="nav nav-tabs mb-4">
-  <li class="nav-item">
-    <a class="nav-link {{#ifCond route 'index'}}active{{/ifCond}}" href="/restaurants">首頁</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link {{#ifCond route 'feeds'}}active{{/ifCond}}" href="/restaurants/feeds">最新動態</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link {{#ifCond route 'topUsers'}}active{{/ifCond}}" href="/users/top">美食達人</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link {{#ifCond route 'topRestaurants'}}active{{/ifCond}}" href="/restaurants/top">Top 10 人氣餐廳</a>
-  </li>
-</ul>
+<div class='row mb-5'>
+  <div class='col-md-12'>
+    <h1>{{restaurant.name}}</h1>
+    <p>[ {{restaurant.Category.name}} ]</p>
+  </div>
+  <div class='col-md-12'>
+    <div class='well'>
+      <ul>
+        <li>瀏覽次數：{{restaurant.viewCount}}</li>
+        <li>評論數：{{restaurant.Comments.length}} </li>
+        <li>收藏數：{{restaurant.FavoritedUsers.length}} </li>
+      </ul>
+    </div>
+  </div>
+  <hr />
+</div>
+{{! 回到上一頁 }}
+<a class='btn btn-outline-secondary' href='javascript:history.back()'>回上一頁</a>

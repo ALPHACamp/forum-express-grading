@@ -1,4 +1,4 @@
-const { Restaurant, Category, Comment, User, Favorite } = require('../models')
+const { Restaurant, Category, Comment, User } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helpers')
 const restaurantController = {
   getRestaurants: (req, res, next) => {
@@ -67,29 +67,17 @@ const restaurantController = {
       })
       .catch(err => next(err))
   },
-  getDashboard: (req, res, next) => {
-    return Promise.all([
-      Restaurant.findByPk(req.params.id, {
-        include: Category,
-        nest: true,
-        raw: true
-      }),
-      Comment.findAll({
-        where: {
-          restaurantId: req.params.id
-        }
-      }),
-      Favorite.findAll({
-        where: {
-          restaurantId: req.params.id
-        }
+  getDashboard: async (req, res, next) => {
+    try {
+      const restaurant = await Restaurant.findByPk(req.params.id, {
+        include: [Category, Comment, { model: User, as: 'FavoritedUsers' }],
+        nest: true
       })
-    ])
-      .then(([restaurant, comments, favorites]) => {
-        if (!restaurant) throw new Error("Restaurant didn't exist!")
-        res.render('dashboard', { restaurant, comments, favorites })
-      })
-      .catch(err => next(err))
+      if (!restaurant) throw new Error("Restaurant didn't exist!")
+      res.render('dashboard', { restaurant: restaurant.toJSON() })
+    } catch (e) {
+      next(e)
+    }
   },
   getFeeds: (req, res, next) => {
     return Promise.all([

@@ -9,7 +9,7 @@
       <div class="card-body">
         <h5 class="card-title">{{user.name}}</h5>
         <p class="card-text">{{user.email}}</p>
-        <p class="card-text">{{comments.length}} 間已評論餐廳</p>
+        <p class="card-text">{{user.Comments.length}} 間已評論餐廳</p>
         <p class="card-text">{{user.FavoritedRestaurants.length}} 收藏的餐廳</p>
         <p class="card-text">{{user.Followings.length}} followings (追蹤者)</p>
         <p class="card-text">{{user.Followers.length}} followers (追隨者)</p>
@@ -18,7 +18,6 @@
     </div>
   </div>
 </div>
-
 <div class="row g-3">
   <div class="col-4">
     <div class="card">
@@ -30,7 +29,7 @@
           {{#each user.Followings}}
           <div class="col-2">
             <div class="card">
-              <a href="/restaurants/{{this.id}}"><img src="{{this.image}}" class="img-fluid"></a>
+              <a href="/users/{{this.id}}"><img src="{{this.image}}" class="img-fluid"></a>
             </div>
           </div>
           {{/each}}
@@ -46,15 +45,15 @@
       <div class="card-body">
         <div class="row row-cols-md-12 g-1">
           {{#each comments}}
-            <div class="col-1">
-              <div class="card">
-                <a href="/restaurants/{{this.Restaurant.id}}"><img src="{{this.Restaurant.image}}" class="img-fluid"></a>
-              </div>
+          <div class="col-1">
+            <div class="card">
+              <a href="/restaurants/{{this.Restaurant.id}}"><img src="{{this.Restaurant.image}}" class="img-fluid"></a>
             </div>
+          </div>
           {{/each}}
         </div>
       </div>
-    </div>  
+    </div>
   </div>
   <div class="col-4">
     <div class="card">
@@ -66,7 +65,7 @@
           {{#each user.Followers}}
           <div class="col-2">
             <div class="card">
-              <a href="/restaurants/{{this.id}}"><img src="{{this.image}}" class="img-fluid"></a>
+              <a href="/users/{{this.id}}"><img src="{{this.image}}" class="img-fluid"></a>
             </div>
           </div>
           {{/each}}

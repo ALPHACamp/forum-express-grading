@@ -45,30 +45,34 @@ const userController = {
     req.logout()
     res.redirect('/signin')
   },
-  getUser: (req, res, next) => {
-    return Promise.all([
-      User.findByPk(req.params.id, {
-        include: [
-          { model: Restaurant, as: 'FavoritedRestaurants' },
-          { model: User, as: 'Followings' },
-          { model: User, as: 'Followers' }
-        ]
-      }),
-      Comment.findAll({
-        where: { userId: req.params.id },
-        attributes: ['restaurantId'],
-        group: ['restaurantId'],
-        include: [Restaurant],
-        raw: true,
-        nest: true
-      })
-    ])
-      .then(([user, comments]) => {
-        if (!user) throw new Error("User doesn't exist!")
-        user = user.get({ plain: true })
-        return res.render('users/profile', { user, comments })
-      })
-      .catch(err => next(err))
+  getUser: async (req, res, next) => {
+    try {
+      const [user, comments] = await Promise.all([
+        User.findByPk(req.params.id, {
+          include: [
+            {
+              model: Restaurant,
+              as: 'FavoritedRestaurants',
+              attributes: ['id', 'image']
+            },
+            { model: User, as: 'Followers', attributes: ['id', 'image'] },
+            { model: User, as: 'Followings', attributes: ['id', 'image'] }
+          ]
+        }),
+        Comment.findAll({
+          where: { userId: req.params.id },
+          attributes: ['restaurantId'],
+          group: ['restaurantId'],
+          include: [Restaurant],
+          nest: true,
+          raw: true
+        })
+      ])
+      if (!user) throw new Error("User didn't exist!")
+      res.render('users/profile', { user: user.toJSON(), comments })
+    } catch (err) {
+      next(err)
+    }
   },
   editUser: async (req, res, next) => {
     // 取得id
