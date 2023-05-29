@@ -45,28 +45,30 @@ const userController = {
     req.logout()
     res.redirect('/signin')
   },
-  getUser: async (req, res, next) => {
-    try {
-      // 反查user 確認user是否存在
-      const user = await User.findByPk(req.params.id, {
+  getUser: (req, res, next) => {
+    return Promise.all([
+      User.findByPk(req.params.id, {
         include: [
-          {
-            model: Comment,
-            include: Restaurant
-          }
+          { model: Restaurant, as: 'FavoritedRestaurants' },
+          { model: User, as: 'Followings' },
+          { model: User, as: 'Followers' }
         ]
+      }),
+      Comment.findAll({
+        where: { userId: req.params.id },
+        attributes: ['restaurantId'],
+        group: ['restaurantId'],
+        include: [Restaurant],
+        raw: true,
+        nest: true
       })
-      if (!user) throw new Error("User didn't exist!")
-      // 檢查user.id / req.user.id
-      if (req.user) {
-        if (user.id !== req.user.id) {
-          return res.redirect(`/users/${req.user.id}`)
-        }
-      }
-      res.render('users/profile', { user: user.toJSON() })
-    } catch (err) {
-      next(err)
-    }
+    ])
+      .then(([user, comments]) => {
+        if (!user) throw new Error("User doesn't exist!")
+        user = user.get({ plain: true })
+        return res.render('users/profile', { user, comments })
+      })
+      .catch(err => next(err))
   },
   editUser: async (req, res, next) => {
     try {
