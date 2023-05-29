@@ -23,10 +23,10 @@ passport.use(new LocalStrategy(
   }
 ))
 // serialize and deserialize user
-passport.serializeUser((user, cb) => {
-  cb(null, user.id)
+passport.serializeUser((user, done) => {
+  done(null, user.id)
 })
-passport.deserializeUser((id, cb) => {
+passport.deserializeUser((id, done) => {
   return User.findByPk(id, {
     include: [
       { model: Restaurant, as: 'FavoritedRestaurants' },
@@ -35,7 +35,7 @@ passport.deserializeUser((id, cb) => {
       { model: User, as: 'Followings' }
     ]
   })
-    .then(user => cb(null, user.toJSON()))
-    .catch(err => cb(err))
+    .then(user => done(null, user.toJSON()))
+    .catch(err => done(err))
 })
 module.exports = passport

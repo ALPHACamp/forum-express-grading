@@ -4,7 +4,7 @@ const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const userController = {
   signUpPage: (req, res) => {
-    res.render('signup')
+    return res.render('signup')
   },
   signUp: (req, res, next) => {
     if (req.body.password !== req.body.passwordCheck) throw new Error('Passwords do not match!')
@@ -42,30 +42,29 @@ const userController = {
   },
 
   getUser: (req, res, next) => {
-    return User.findByPk(req.params.id, {
-      include: [
-        { model: Comment, include: Restaurant },
-        { model: User, as: 'Followers' },
-        { model: User, as: 'Followings' },
-        { model: Restaurant, as: 'FavoritedRestaurants' }
-      ],
-      order: [
-        [Comment, 'id', 'DESC']
-      ],
-      nest: true
-    })
-      .then(user => {
+    return Promise.all([
+      User.findByPk(req.params.id, {
+        include: [
+          { model: Restaurant, as: 'FavoritedRestaurants' },
+          { model: User, as: 'Followings' },
+          { model: User, as: 'Followers' }
+        ]
+      }),
+      Comment.findAll({
+        where: { userId: req.params.id },
+        attributes: ['restaurantId'],
+        group: ['restaurantId'],
+        include: [Restaurant],
+        raw: true,
+        nest: true
+      })
+    ])
+      .then(([user, comments]) => {
         if (!user) throw new Error("User doesn't exist!")
-        user = user.toJSON()
-        const CommentedRestaurants = []
-
-        user.Comments.forEach(comment => {
-          if (!CommentedRestaurants.some(r => r.id === comment.Restaurant.id)) {
-            CommentedRestaurants.push(comment.Restaurant)
-          }
-        })
-        user.CommentedRestaurants = CommentedRestaurants
-        return res.render('users/profile', { user })
+        user = user.get({ plain: true })
+        console.log(user)
+        console.log(comments)
+        return res.render('users/profile', { user, comments })
       })
       .catch(err => next(err))
   },
@@ -190,7 +189,7 @@ const userController = {
           .map(user => ({
             ...user.toJSON(),
             followerCount: user.Followers.length,
-            isFollowed: req.user.Followings.some(f => f.id === user.id)
+            isFollowed: req.user && req.user.Followings.some(f => f.id === user.id)
           }))
           .sort((a, b) => b.followerCount - a.followerCount)
         res.render('top-users', { users: result })
@@ -205,7 +204,7 @@ const userController = {
       Followship.findOne({
         where: {
           followerId: req.user.id,
-          followingId: req.params.userId
+          followingId: userId
         }
       })
     ])
@@ -222,7 +221,7 @@ const userController = {
   },
 
   removeFollowing: (req, res, next) => {
-    Followship.findOne({
+    return Followship.findOne({
       where: {
         followerId: req.user.id,
         followingId: req.params.userId

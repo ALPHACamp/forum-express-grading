@@ -7,7 +7,7 @@
   <div class="col-md-8">
     <p class="h1 mb-2">{{user.name}}</p>
     <p class="h4 mb-4">{{user.email}}</p>
-    <p class="m-0 fs-4"><span class="text-primary">{{user.CommentedRestaurants.length}}</span> 已評論餐廳</p>
+    <p class="m-0 fs-4"><span class="text-primary">{{comments.length}}</span> 已評論餐廳</p>
     <p class="m-0 fs-4"><span class="text-primary">{{user.FavoritedRestaurants.length}}</span> 收藏的餐廳</p>
     <p class="m-0 fs-4"><span class="text-primary">{{user.Followings.length}}</span> followings &#40;追蹤者&#41;</p>
     <p class="m-0 fs-4"><span class="text-primary">{{user.Followers.length}}</span> followers &#40;追隨者&#41;</p>
@@ -68,15 +68,15 @@
     <!--comments-->
     <div class="card my-4">
       <div class="card-header">
-        <h5 class="card-title">{{user.CommentedRestaurants.length}} 已評論餐廳</h5>
+        <h5 class="card-title">{{comments.length}} 已評論餐廳</h5>
       </div>
       <div class="card-body">
         <div class="row row-cols-md-12 g-4 ">
-          {{#each user.CommentedRestaurants}}
+          {{#each comments}}
           <div class="col-2">
             <div class="card">
-              <a href="/restaurants/{{this.id}}">
-                <img class="img-fluid" src="{{this.image}}" alt="restaurant image">
+              <a href="/restaurants/{{this.Restaurant.id}}">
+                <img class="img-fluid" src="{{this.Restaurant.image}}" alt="restaurant image">
               </a>
             </div>
           </div>
