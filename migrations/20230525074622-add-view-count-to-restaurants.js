@@ -1,15 +1,15 @@
 'use strict'
 
-/** @type {import('sequelize-cli').Migration} */
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.addColumn('Restaurants', 'view_counts', {
+    await queryInterface.addColumn('Restaurants', 'view-counts', {
       type: Sequelize.INTEGER,
-      defaultValue: 0
+      defaultValue: 0,
+      allowNull: false
     })
   },
 
-  async down (queryInterface, Sequelize) {
-    await queryInterface.removeColumn('Restaurants', 'view_counts')
+  down: async (queryInterface, Sequelize) => {
+    await queryInterface.removeColumn('Restaurants', 'view-counts')
   }
 }
