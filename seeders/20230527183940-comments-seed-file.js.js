@@ -10,13 +10,11 @@ module.exports = {
       'SELECT id FROM Restaurants;',
       { type: queryInterface.sequelize.QueryTypes.SELECT }
     )
-    await queryInterface.bulkInsert(
-      'Comments',
-      Array.from({ length: 50 }, () => ({
+    await queryInterface.bulkInsert('Comments',
+      Array.from({ length: 100 }, () => ({
         text: faker.lorem.sentence(),
         user_id: users[Math.floor(Math.random() * users.length)].id,
-        restaurant_id:
-          restaurants[Math.floor(Math.random() * restaurants.length)].id,
+        restaurant_id: restaurants[Math.floor(Math.random() * restaurants.length)].id,
         created_at: new Date(),
         updated_at: new Date()
       }))
