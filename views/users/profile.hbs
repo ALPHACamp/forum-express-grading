@@ -15,7 +15,7 @@
       <div class="col-md-8">
         <h5>{{user.name}}</h5>
         <p>{{user.email}}</p>
-        <p class="card-text">{{comments.length}} 間已評論餐廳</p>
+        <p class="card-text">{{user.Comments.length}} 間已評論餐廳</p>
         <a href="/users/{{user.id}}/edit"><buttonclass="nav-item btn btn-primary">Edit</button></a>
       </div>
     </div>
@@ -23,11 +23,11 @@
 </div>
 
 <div class="row">
-  {{#ifCond comments.length 0}}
+  {{#ifCond user.Comments.length 0}}
     <h5>尚未有評論</h5>
   {{else}}
-    <h5>{{comments.length}} 間已評論餐廳</h5>
-    {{#each comments}}
+    <h5>{{user.Comments.length}} 間已評論餐廳</h5>
+    {{#each user.Comments}}
       <div class="col-md-3">
         <div class="card mb-4 shadow-sm">
           <a href="/restaurants/{{this.Restaurant.id}}">
