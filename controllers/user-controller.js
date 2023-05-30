@@ -72,7 +72,7 @@ const userController = {
       // 判斷瀏覽的使用者是否為本人
       const selfUser = signInUserId === Number(id) ? 1 : 0
       // 過濾掉評論中的同個餐廳
-      const userCommentsUnique = user.Comments.filter((c, i, arr) => {
+      const userCommentsUnique = user.Comments?.filter((c, i, arr) => {
         return (
           i ===
           arr.findIndex(c2 => {
@@ -86,9 +86,9 @@ const userController = {
       const result = {
         ...user.toJSON(),
         Comments: userCommentsUnique,
-        favoritedCount: user.FavoritedRestaurants.length,
-        followingsCount: user.Followings.length,
-        followersCount: user.Followers.length
+        favoritedCount: user.FavoritedRestaurants?.length,
+        followingsCount: user.Followings?.length,
+        followersCount: user.Followers?.length
       }
       // res.render('users/profile', { user: user.toJSON() })
       return res.render('users/profile', { user: result, selfUser })
