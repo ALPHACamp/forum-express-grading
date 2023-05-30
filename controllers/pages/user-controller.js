@@ -1,4 +1,4 @@
-const { User, Restaurant, Comment, Favorite, Followship } = require('../models')
+const { User, Restaurant, Comment, Favorite, Followship } = require('../../models')
 const bcrypt = require('bcryptjs')
 const userController = {
   signUpPage: (req, res) => {
@@ -82,7 +82,7 @@ const userController = {
     })
       .then(users => {
         // 整理 users 資料，把每個 user 項目都拿出來處理一次，並把新陣列儲存在 users 裡
-        users = users.map(user => ({
+        const result = users.map(user => ({
           // 整理格式
           ...user.toJSON(),
           // 計算追蹤者人數
@@ -91,7 +91,7 @@ const userController = {
           isFollowed: req.user.Followings.some(f => f.id === user.id)
         }))
         users = users.sort((a, b) => b.followerCount - a.followerCount)
-        res.render('top-users', { users: users })
+        res.render('top-users', { users: result })
       })
       .catch(err => next(err))
   },

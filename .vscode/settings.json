@@ -1,5 +1,7 @@
 {
   "editor.fontSize": 20,
   "workbench.colorTheme": "Atom One Dark",
-  "workbench.iconTheme": "material-icon-theme"
+  "workbench.iconTheme": "material-icon-theme",
+  "editor.guides.bracketPairsHorizontal": "active",
+  "editor.guides.bracketPairs": true
 }
