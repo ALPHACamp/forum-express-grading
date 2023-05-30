@@ -7,7 +7,7 @@ const session = require('express-session')
 const passport = require('./config/passport')
 const handlebarsHelpers = require('./helpers/handlebars-helpers')
 const { getUser } = require('./helpers/auth-helpers')
-const { pages } = require('./routes')
+const { pages, apis } = require('./routes')
 const { parseArgs } = require('util')
 const app = express()
 const port = process.env.PORT || 3000
@@ -27,6 +27,7 @@ app.use((req, res, next) => {
   res.locals.user = req.user
   next()
 })
+app.use('/api', apis)
 app.use(pages)
 app.listen(port, () => {
   console.info(`Example app listening on port ${port}!`)
