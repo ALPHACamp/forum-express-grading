@@ -24,13 +24,11 @@
       </td>
       <td>
         {{#if this.isAdmin}}
-        <form action="/admin/users{{this._id}}?_method=PATCH" method="POST">
-          <input type="hidden" value="false" name="isAdmin">
+        <form action="/admin/users/{{this.id}}?_method=PATCH" method="POST">
           <button type="submit" class="btn btn-link">set as user</button>
         </form>
         {{else}}
-        <form action="/admin/users{{this._id}}?_method=PATCH" method="POST">
-          <input type="hidden" value="true" name="isAdmin">
+        <form action="/admin/users/{{this.id}}?_method=PATCH" method="POST">
           <button type="submit" class="btn btn-link">set as admin</button>
         </form>
         {{/if}}
