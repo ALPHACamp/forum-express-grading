@@ -1,8 +1,12 @@
 <h1>餐廳後台</h1>
-<nav class="nav mb-3">
-  <div class="d-flex align-items-center">
-    <a href="/admin/restaurants" class="nav-link px-1">Restaurants</a>
-    <span>|</span>
-    <a href="/admin/users" class="nav-link px-1">Users</a>
-  </div>
-</nav>
+<ul class="nav nav-tabs my-4">
+  <li class="nav-item">
+    <a class="nav-link {{#ifCond route 'restaurants'}}active{{/ifCond}}" href="/admin/restaurants">Restaurants</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link {{#ifCond route 'users'}}active{{/ifCond}}" href="/admin/users">Users</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link {{#ifCond route 'categories'}}active{{/ifCond}}" href="/admin/categories">Categories</a>
+  </li>
+</ul>

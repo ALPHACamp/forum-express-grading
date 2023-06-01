@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router()
 const upload = require('../../middleware/multer')
 const adminController = require('../../controllers/admin-controller')
+const categoryController = require('../../controllers/category-controller')
 
 router.get('/restaurants/create', adminController.createRestaurant)
 router.get('/restaurants/:id/edit', adminController.editRestaurant)
@@ -13,6 +14,7 @@ router.get('/restaurants', adminController.getRestaurants)
 router.get('/users', adminController.getUsers)
 // patchUser
 router.patch('/users/:id', adminController.patchUser)
+router.get('/categories', categoryController.getCategories)
 router.post('/restaurants', upload.single('image'), adminController.postRestaurant)
 router.get('/', (req, res) => res.redirect('/admin/restaurants'))
 
