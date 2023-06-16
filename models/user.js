@@ -15,13 +15,13 @@ module.exports = (sequelize, DataTypes) => {
     {
       name: DataTypes.STRING,
       email: DataTypes.STRING,
-      password: DataTypes.STRING
+      password: DataTypes.STRING,
+      isAdmin: DataTypes.BOOLEAN // 加入這行
     },
     {
       sequelize,
       modelName: 'User',
       tableName: 'Users', // 新增這裡
-
       underscored: true
     }
   )
