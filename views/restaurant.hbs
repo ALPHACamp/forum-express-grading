@@ -20,4 +20,13 @@
   </div>
   <hr>
 </div>
-<a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
+{{!-- Comment --}}
+<form action="/comments" method="POST">
+  <div class="form-row mb-3">
+    <label for="text" class="form-label">留下評論：</label>
+    <textarea name="text" id="text" rows="3" class="form-control"></textarea>
+  </div>
+  <input type="hidden" name="restaurantId" value="{{restaurant.id}}">
+  <button class="btn btn-primary" type="submit">Submit</button>
+  <a href="javascript:history.back()" class="btn btn-outline-secondary">Back</a>
+</form>
