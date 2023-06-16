@@ -8,6 +8,7 @@ router.get('/restaurants/:id/edit', adminController.editRestaurant) // 新增這
 
 router.get('/restaurants/:id', adminController.getRestaurant)
 router.put('/restaurants/:id', adminController.putRestaurant)
+router.delete('/restaurants/:id', adminController.deleteRestaurant) // 新增這一行
 
 router.get('/restaurants', authenticatedAdmin, adminController.getRestaurants)
 router.post('/restaurants', adminController.postRestaurant)
