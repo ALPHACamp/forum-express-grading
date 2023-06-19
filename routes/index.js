@@ -9,7 +9,6 @@ const { generalErrorHandler } = require('../middleware/error-handler') // 加入
 const passport = require('../config/passport')
 
 router.use('/admin', admin)
-
 router.get('/signup', userController.signUpPage)
 router.post('/signup', userController.signUp) // 注意用 post
 router.get('/signin', userController.signInPage)
