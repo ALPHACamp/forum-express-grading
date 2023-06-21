@@ -7,8 +7,8 @@ const passport = require('./config/passport')
 const app = express()
 const port = process.env.PORT || 3000
 const SESSION_SECRET = 'secret' // 新增這行
-const { getUser } = require('./helpers/auth-helpers') // 增加這行，引入自定義的 auth-helpers
-const handlebarsHelpers = require('./helpers/handlebars-helpers') // 引入 handlebars-helpers
+const { getUser } = require('./helpers/auth-helpers')
+const { handlebarsHelpers } = require('./helpers/handlebars-helpers') // 引入 handlebars-helpers
 const methodOverride = require('method-override') // 引入套件 method-override
 const path = require('path') // 引入 path 套件
 
@@ -28,7 +28,6 @@ app.use((req, res, next) => {
   res.locals.success_messages = req.flash('success_messages') // 設定 success_msg 訊息
   res.locals.error_messages = req.flash('error_messages') // 設定 warning_msg 訊息
   res.locals.user = getUser(req) // 增加這行
-
   next()
 })
 app.use(routes)
