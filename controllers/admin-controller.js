@@ -1,9 +1,7 @@
-const { Restaurant } = require('../models') // 新增這裡
+const { Restaurant, User } = require('../models') // 新增這裡
 const { localFileHandler } = require('../helpers/file-helpers') // 將 file-helper 載進來
 
 const adminController = {
-  // 修改這裡
-
   getRestaurants: (req, res, next) => {
     Restaurant.findAll({
       raw: true
@@ -91,13 +89,21 @@ const adminController = {
       .catch(err => next(err))
   },
   deleteRestaurant: (req, res, next) => {
-    // 新增以下
     return Restaurant.findByPk(req.params.id)
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         return restaurant.destroy()
       })
       .then(() => res.redirect('/admin/restaurants'))
+      .catch(err => next(err))
+  },
+  getUsers: (req, res, next) => {
+    User.findAll({
+      raw: true
+    })
+
+      .then(users => res.render('admin/users', { users }))
+
       .catch(err => next(err))
   }
 }
