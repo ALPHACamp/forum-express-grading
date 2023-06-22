@@ -31,6 +31,7 @@ passport.serializeUser((user, cb) => {
 // 「反序列化」就是透過 user id，把整個 user 物件實例拿出來
 passport.deserializeUser((id, cb) => {
   User.findByPk(id).then(user => {
+    user = user.toJSON()
     return cb(null, user)
   })
 })
