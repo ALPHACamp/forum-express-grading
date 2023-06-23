@@ -97,7 +97,7 @@ const adminController = {
       .then(user => {
         if (!user) throw new Error("User didn't exist!")
         if (user.name === 'root') throw new Error('禁止變更 root 權限')
-        return user.update({
+        return user.update({ // 除root外，點選此連結將調整user/admin狀態
           isAdmin: !user.isAdmin
         })
       })

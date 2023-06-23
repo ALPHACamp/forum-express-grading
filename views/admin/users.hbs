@@ -34,11 +34,13 @@
       </td>
       <td>
         <form action="/admin/users/{{this.id}}?_method=PATCH" method="POST" style="display: inline;">
-          {{#if this.isAdmin}}
-          <button type="submit" class="btn btn-link">set as user</button>
-          {{else}}
-          <button type="submit" class="btn btn-link">set as admin</button>
-          {{/if}}
+          <button type="submit" class="btn btn-link">
+            {{#if this.isAdmin}}
+            set as user
+            {{else}}
+            set as admin
+            {{/if}}
+          </button>
         </form>
       </td>
 
