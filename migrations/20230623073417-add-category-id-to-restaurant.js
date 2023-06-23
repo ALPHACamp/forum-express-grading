@@ -4,7 +4,7 @@ module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.addColumn('Restaurants', 'category_id', {
       type: Sequelize.INTEGER,
-      allowNull: true, // 暫時改為true，後續須改為false
+      allowNull: false,
       references: {
         model: 'Categories',
         key: 'id'
