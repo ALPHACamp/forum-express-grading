@@ -1,9 +1,11 @@
-const { Restaurant, User } = require('../models') // 新增這裡
+const { Restaurant, User, Category } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 const adminController = {
   getRestaurants: (req, res, next) => {
     return Restaurant.findAll({
-      raw: true // 把 Sequelize的一大包物件轉換成格式較單純JS 原生物件
+      raw: true, // 把 Sequelize的一大包物件轉換成格式較單純JS 原生物件
+      nest: true, // 從資料庫拿回來的資料可以比較整齊
+      include: [Category] // 想要使用 model 的關聯資料時，需要透過 include 把關聯資料拉進來，關聯資料才會被拿到 findAll 的回傳值裡
     })
       .then(restaurants => res.render('admin/restaurants', { restaurants }))
       .catch(err => next(err))
@@ -33,7 +35,9 @@ const adminController = {
   },
   getRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
-      raw: true // 把從資料庫傳來的資料轉換成 JS 原生物件
+      raw: true, // 把從資料庫傳來的資料轉換成 JS 原生物件
+      nest: true, // 增加這裡
+      include: [Category] // 增加這裡
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!") // 如果找不到，回傳錯誤訊息，後面不執行
