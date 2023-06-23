@@ -10,11 +10,15 @@ const adminController = {
       .then(restaurants => res.render('admin/restaurants', { restaurants }))
       .catch(err => next(err))
   },
-  createRestaurant: (req, res) => {
-    return res.render('admin/create-restaurant')
+  createRestaurant: (req, res, next) => {
+    return Category.findAll({
+      raw: true
+    })
+      .then(categories => res.render('admin/create-restaurant', { categories }))
+      .catch(err => next(err))
   },
   postRestaurant: (req, res, next) => {
-    const { name, tel, address, openingHours, description } = req.body
+    const { name, tel, address, openingHours, description, categoryId } = req.body
     if (!name) throw new Error('Restaurant name is required!')
     const { file } = req // 把檔案取出來，也可寫 const file = req.file
     return imgurFileHandler(file) // 把取出的檔案傳給 file-helper 處理後
@@ -25,7 +29,8 @@ const adminController = {
           address,
           openingHours,
           description,
-          image: filePath || null // 如果 filePath 的值為檔案路徑字串 (使用者有上傳檔案，就會被判斷為 Truthy)，就將 image 的值設為檔案路徑；如果 filePath 的值是空的 (也就是沒有上傳檔案，因此沒有檔案路徑，會被判斷為 Falsy)，那麼就將 image 的值設為 null
+          image: filePath || null, // 如果 filePath 的值為檔案路徑字串 (使用者有上傳檔案，就會被判斷為 Truthy)，就將 image 的值設為檔案路徑；如果 filePath 的值是空的 (也就是沒有上傳檔案，因此沒有檔案路徑，會被判斷為 Falsy)，那麼就將 image 的值設為 null
+          categoryId
         }))
       .then(() => {
         req.flash('success_messages', 'restaurant was successfully created')
@@ -36,8 +41,8 @@ const adminController = {
   getRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
       raw: true, // 把從資料庫傳來的資料轉換成 JS 原生物件
-      nest: true, // 增加這裡
-      include: [Category] // 增加這裡
+      nest: true, // 從資料庫拿回來的資料可以比較整齊
+      include: [Category] // 想要使用 model 的關聯資料時，需要透過 include 把關聯資料拉進來，關聯資料才會被拿到回傳值裡
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!") // 如果找不到，回傳錯誤訊息，後面不執行
@@ -46,17 +51,18 @@ const adminController = {
       .catch(err => next(err))
   },
   editRestaurant: (req, res, next) => {
-    return Restaurant.findByPk(req.params.id, {
-      raw: true
-    })
-      .then(restaurant => {
+    return Promise.all([
+      Restaurant.findByPk(req.params.id, { raw: true }),
+      Category.findAll({ raw: true })
+    ]) // 需要同時去「查詢 Restaurants table」 和「查詢 Categories table」，但這兩件事沒有先後順序，不需要互相等待，因此我們就可以用 Promise.all() 裡面的陣列，把這兩個程序都裝進去。查詢都回來以後，才會進入後面的 .then 把資料傳給樣板。
+      .then(([restaurant, categories]) => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
-        res.render('admin/edit-restaurant', { restaurant })
+        res.render('admin/edit-restaurant', { restaurant, categories })
       })
       .catch(err => next(err))
   },
   putRestaurant: (req, res, next) => {
-    const { name, tel, address, openingHours, description } = req.body
+    const { name, tel, address, openingHours, description, categoryId } = req.body
     if (!name) throw new Error('Restaurant name is required!')
     const { file } = req // 把檔案取出來
     Promise.all([ // 非同步處理
@@ -71,7 +77,8 @@ const adminController = {
           address,
           openingHours,
           description,
-          image: filePath || restaurant.image // 如果 filePath 是 Truthy (使用者有上傳新照片) 就用 filePath，是 Falsy (使用者沒有上傳新照片) 就沿用原本資料庫內的值
+          image: filePath || restaurant.image, // 如果 filePath 是 Truthy (使用者有上傳新照片) 就用 filePath，是 Falsy (使用者沒有上傳新照片) 就沿用原本資料庫內的值
+          categoryId
         })
       })
       .then(() => {
