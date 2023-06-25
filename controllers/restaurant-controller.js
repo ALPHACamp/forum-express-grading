@@ -42,7 +42,6 @@ const restaurantController = {
       nest: true // 移除raw: true，因資料尚需處理，還不能轉換成JS格式
     })
       .then(restaurant => {
-        console.log(restaurant.Comments[0])
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         return restaurant.increment('viewCounts')
       })
