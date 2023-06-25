@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate (models) {
       Restaurant.belongsTo(models.Category, { foreignKey: 'categoryId' }) // 增加這行
+      Restaurant.hasMany(models.Comment, { foreignKey: 'restaurantId' }) // 新增這行
     }
   };
   Restaurant.init({
