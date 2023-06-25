@@ -4,7 +4,7 @@ const passport = require('../config/passport')
 const admin = require('./modules/admin')
 const restController = require('../controllers/restaurant-controller')
 const userController = require('../controllers/user-controller')
-const commentController = require('../controllers/comment-controller')
+const commentController = require('../controllers/​​comment-controller')
 const { authenticated, authenticatedAdmin } = require('../middleware/auth')
 const { generalErrorHandler } = require('../middleware/error-handler')
 
