@@ -56,12 +56,13 @@ const userController = {
       })
       .catch(err => next(err))
   },
-  putUser: (req, res, next) => {
+  putUser: (req, res, next) => { // 只能改登入者資訊
     const { name } = req.body
     if (!name) throw new Error('User name is required!')
+    if (req.user.id !== Number(req.params.id)) throw new Error('User can only edit him or her own profile!')
     const { file } = req // 把檔案取出來
     return Promise.all([
-      User.findByPk(req.params.id),
+      User.findByPk(req.user.id),
       imgurFileHandler(file) // 把檔案傳到 file-helper 處理
     ])
       .then(([user, filePath]) => { // 以上兩樣事都做完以後
@@ -73,7 +74,7 @@ const userController = {
       })
       .then(() => {
         req.flash('success_messages', '使用者資料編輯成功')
-        res.redirect(`/users/${req.params.id}`)
+        res.redirect(`/users/${req.user.id}`)
       })
       .catch(err => next(err))
   }
