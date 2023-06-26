@@ -39,14 +39,14 @@ const userController = {
     res.redirect('/signin')
   },
   getUser: (req, res, next) => {
-    return User.findByPk(req.user.id, { raw: true })// 只能看登入者資訊
+    return User.findByPk(req.params.id, { raw: true })
       .then(user => {
         res.render('users/profile', { user })
       })
       .catch(err => next(err))
   },
   editUser: (req, res, next) => {
-    return User.findByPk(req.user.id, { raw: true })// 只能看登入者資訊
+    return User.findByPk(req.params.id, { raw: true })
       .then(user => {
         if (!user) throw new Error("User didn't exist!")
         res.render('users/edit', { user })
@@ -56,6 +56,7 @@ const userController = {
   putUser: (req, res, next) => { // 只能改登入者資訊
     const { name } = req.body
     if (!name) throw new Error('User name is required!')
+    if (req.user.id !== Number(req.params.id)) throw new Error('User can only edit him or her own profile!')
     const { file } = req // 把檔案取出來
     return Promise.all([
       User.findByPk(req.user.id),
