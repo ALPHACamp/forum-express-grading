@@ -1,8 +1,10 @@
 <div class="row mb-2">
+
   <div class="col-md-4">
     <img class="img-responsive center-block mb-3" src="{{user.image}}"
       style="width: 250px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
   </div>
+
   <div class="col-md-8">
     <ul class="list-unstyled">
       <li>
@@ -10,6 +12,8 @@
       </li>
       <p></p>
       <li>{{user.email}}</li>
+      <p></p>
+      <li>{{user.Comments.length}} 已評論餐廳</li>
     </ul>
     <button type="button" class="btn btn-primary">
       <a class="btn btn-primary" href="/users/{{user.id}}/edit">
@@ -17,4 +21,18 @@
       </a>
     </button>
   </div>
+  <div class="card-header">
+    {{user.Comments.length}} 已評論餐廳
+  </div>
+  {{#each user.Comments}}
+  <div class="col-md-2 mt-4">
+    <div class="card mb-4 shadow-sm">
+      <a href="/restaurants/{{this.Restaurant.id}}">
+        <img class="card-img-top img-fluid" src="{{this.Restaurant.image}}" width="286px" height="180px"
+          style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+        <h6>{{this.Restaurant.name}}</h6>
+      </a>
+    </div>
+  </div>
+  {{/each}}
 </div>
