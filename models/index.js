@@ -8,7 +8,7 @@ const env = process.env.NODE_ENV || 'development'
 const config = require(path.resolve(__dirname, '../config/config.json'))[env]
 const db = {}
 
-// 資料庫連線
+// 與資料庫連線
 let sequelize
 if (config.use_env_variable) {
   sequelize = new Sequelize(process.env[config.use_env_variable], config)
@@ -27,7 +27,7 @@ fs
     db[model.name] = model
   })
 
-// 設定 Models 之間的關聯
+  // 設定 Models 之間的關聯
 Object.keys(db).forEach(modelName => {
   if (db[modelName].associate) {
     db[modelName].associate(db)
