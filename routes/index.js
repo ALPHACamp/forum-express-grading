@@ -1,10 +1,14 @@
 const express = require('express')
 const router = express.Router()
-const restController = require('../controller/restaurant-controller')
 const admin = require('./modules/admin')
+const restController = require('../controller/restaurant-controller')
+const userController = require('../controller/user-controller')
 
 router.use('/admin', admin)
+
+router.get('/signup', userController.signUpPage)
+router.post('/signup', userController.signUp)
 router.get('/restaurants', restController.getRestaurants)
-router.use('/', (req, res) => res.redirect('/restaurants'))
+router.get('/', (req, res) => res.redirect('/restaurants'))
 
 module.exports = router
