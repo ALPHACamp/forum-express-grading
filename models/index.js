@@ -27,7 +27,7 @@ fs
     db[model.name] = model
   })
 
-  // 設定 Models 之間的關聯
+// 設定 Models 之間的關聯
 Object.keys(db).forEach(modelName => {
   if (db[modelName].associate) {
     db[modelName].associate(db)
