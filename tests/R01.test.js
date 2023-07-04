@@ -5,7 +5,7 @@ const should = chai.should()
 
 const app = require('../app')
 const { createModelMock, createControllerProxy, mockRequest, mockResponse, mockNext } = require('../helpers/unit-test-helper');
-
+  
 describe('# R01', () => {
   describe('登入測試: POST /signin', function(){
     // 以下測試會發出請求，測試資料庫內是否有作業指定的使用者資料
@@ -116,7 +116,7 @@ describe('# R01', () => {
 
     context('# [修改使用者權限] for user (user -> admin)', () => {
       before(() => {
-        // 製作假資料
+        // 製作假資料 
         // 本 context 會用這筆資料進行測試
         this.UserMock = createModelMock(
           'User',
