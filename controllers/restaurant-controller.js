@@ -28,6 +28,21 @@ const restaurantController = {
         })
       })
       .catch(err => next(err))
+  },
+  // 新增一個新的 function 叫做  getDashboard
+  getDashboard: (req, res, next) => {
+    return Restaurant.findByPk(req.params.id, {
+      // 去資料庫用 id 找一筆資料
+      include: Category,
+      nest: true
+    })
+      .then(restaurant => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        res.render('dashboard', {
+          restaurant: restaurant.toJSON() // 把關聯資料轉成 JSON
+        })
+      })
+      .catch(err => next(err))
   }
 }
 module.exports = restaurantController
