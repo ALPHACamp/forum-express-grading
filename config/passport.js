@@ -31,7 +31,10 @@ passport.serializeUser((user, cb) => {
 passport.deserializeUser((id, cb) => {
   User.findByPk(id, {
     // 加入這個設定以後，使用 req.user 時，就會一併取得收藏餐廳的資料了
-    include: [{ model: Restaurant, as: 'FavoritedRestaurants' }, { model: Restaurant, as: 'LikedRestaurants' }]
+    include: [{ model: Restaurant, as: 'FavoritedRestaurants' },
+      { model: Restaurant, as: 'LikedRestaurants' },
+      { model: User, as: 'Followers' },
+      { model: User, as: 'Followings' }]
   })
     .then(user => { cb(null, user.toJSON()) })
     .catch(err => cb(err))
