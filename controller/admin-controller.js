@@ -19,7 +19,7 @@ const adminController = {
     if (!name) throw new Error('Restaurant name us required')
     const { file } = req // 把檔案取出來，也可以寫成 const file = req.file
     localFileHandler(file)
-      .then(filePath => {
+      .then(filePath => { // localFileHandler用promise寫所以filePath為路徑
         Restaurant.create({
           name,
           tel,
