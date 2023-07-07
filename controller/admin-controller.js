@@ -1,6 +1,7 @@
 // const db = require('../models')
 // const Restaurant = db.Restaurant
 const { Restaurant } = require('../models')
+const { User } = require('../models')
 const { localFileHandler } = require('../helpers/file-helpers')
 
 const adminController = {
@@ -87,6 +88,34 @@ const adminController = {
         return restaurant.destroy()
       })
       .then(() => res.redirect('/admin/restaurants'))
+      .catch(err => next(err))
+  },
+  getUsers: (req, res, next) => {
+    User.findAll({
+      raw: true
+    })
+      .then(user => res.render('admin/users', { user }))
+      .catch(err => next(err))
+  },
+  patchUser: (req, res, next) => {
+    return User.findByPk(req.params.id)
+      .then(user => {
+        if (!user) throw new Error("users didn't exist!")
+        if (user.email === 'root@example.com') {
+          throw req.flash('error_messages', '想造反啊!')
+        } else if (user.isAdmin) {
+          req.flash('success_messages', '使用者權限變更成功!')
+          return user.update({
+            isAdmin: false
+          })
+        } else {
+          req.flash('success_messages', '使用者權限變更成功!')
+          return user.update({
+            isAdmin: true
+          })
+        }
+      })
+      .then(() => res.redirect('/admin/users'))
       .catch(err => next(err))
   }
 }

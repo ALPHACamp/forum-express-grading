@@ -9,6 +9,7 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarCollapse">
         <ul class="navbar-nav ms-auto mb-2 mb-md-0">
+          <!--FIXME:使用者權限管理無法顯上"Admin 後台"、"Hi, {{ user.email }}"-->
           {{#if user.isAdmin}}
           <li class="nav-item">
             <a href="/admin" class="nav-link">Admin 後台</a>

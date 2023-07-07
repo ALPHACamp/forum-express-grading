@@ -28,7 +28,7 @@ passport.deserializeUser((id, cb) => {
   User.findByPk(id)
     .then(user => {
       user = user.toJSON()
-      console.log(user) // 暫時添加
+      // console.log(user)  暫時添加
       return cb(null, user)
     })
 })
