@@ -26,10 +26,13 @@ const restaurantController = {
       .then(([restaurants, categories]) => {
         const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id) // 例如[ 19, 13, 11 ]
 
+        const likedRestaurantsId = req.user && req.user.LikedRestaurants.map(lr => lr.id)
+
         const data = restaurants.rows.map(r => ({ // 修改這裡加上.rows
           ...r,
           description: r.description.substring(0, 50),
-          isFavorited: favoritedRestaurantsId.includes(r.id)
+          isFavorited: favoritedRestaurantsId.includes(r.id),
+          isLiked: likedRestaurantsId.includes(r.id)
         }))
 
         return res.render('restaurants', {
@@ -43,7 +46,9 @@ const restaurantController = {
   getRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
       include: [Category, { model: Comment, include: User },
-        { model: User, as: 'FavoritedUsers' }],
+        { model: User, as: 'FavoritedUsers' },
+        { model: User, as: 'LikedUsers' }
+      ],
       nest: true // 移除raw: true，因資料尚需處理，還不能轉換成JS格式
     })
       .then(restaurant => {
@@ -52,8 +57,9 @@ const restaurantController = {
       })
       .then(restaurant => {
         const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id)
+        const isLiked = restaurant.LikedUsers.some(l => l.id === req.user.id)
         // 使用 some 的好處是只要帶迭代過程中找到一個符合條件的項目後，就會立刻回傳 true，後面的項目不會繼續執行。也就是說，假設這家餐廳有 100 個人收藏它，若迴圈執行到第二次就比對成功，發現 FavoritedUsers 的 id，和當前登入者 id 相同的話，後面就不會繼續執行。比起 map 方法無論如何都會從頭到尾把陣列裡的項目執行一次，some 因為加入了判斷條件 f.id === req.user.id，可以有效減少執行次數。
-        res.render('restaurant', { restaurant: restaurant.toJSON(), isFavorited })
+        res.render('restaurant', { restaurant: restaurant.toJSON(), isFavorited, isLiked })
       })
       .catch(err => next(err))
   },
