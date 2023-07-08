@@ -99,7 +99,7 @@ const adminController = {
     User.findAll({
       raw: true
     })
-      .then(user => res.render('admin/users', { user }))
+      .then(users => res.render('admin/users', { users }))
       .catch(err => next(err))
   },
   patchUser: (req, res, next) => {
@@ -107,7 +107,8 @@ const adminController = {
       .then(user => {
         if (!user) throw new Error("users didn't exist!")
         if (user.email === 'root@example.com') {
-          throw req.flash('error_messages', '想造反啊!')
+          req.flash('error_messages', '想造反啊!')
+          return res.redirect('/admin/users')
         } else if (user.isAdmin) {
           req.flash('success_messages', '使用者權限變更成功!')
           return user.update({
