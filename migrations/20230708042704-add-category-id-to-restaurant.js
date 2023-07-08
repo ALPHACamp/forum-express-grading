@@ -6,6 +6,8 @@ module.exports = {
       allowNull: false,
       // migration 生效時需要一併把關聯設定起來
       references: {
+        // model: '要被串接的tableName'
+        // key: '要被串接的attribute'
         model: 'Categories',
         key: 'id'
       }
