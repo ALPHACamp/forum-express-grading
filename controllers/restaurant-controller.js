@@ -1,4 +1,4 @@
-const { Restaurant, Category } = require('../models')
+const { Restaurant, Category, Comment, User } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper') // 加入這行
 const restaurantController = {
   getRestaurants: (req, res, next) => { // 補上 next
@@ -38,7 +38,11 @@ const restaurantController = {
   },
   getRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
-      include: Category, // 拿出關聯的 Category model
+      // 修改以下,當項目變多時，需要改成用陣列
+      include: [
+        Category, // 拿出關聯的 Category model
+        { model: Comment, include: User }
+      ],
       nest: true // 移除raw: true，因資料尚需處理，還不能轉換成JS格式
     })
       .then(restaurant => {
