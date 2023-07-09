@@ -42,15 +42,16 @@ const restaurantController = {
       include: [
         Category, // 拿出關聯的 Category model
         { model: Comment, include: User }
-      ],
-      nest: true // 移除raw: true，因資料尚需處理，還不能轉換成JS格式
+      ]
+      // 1.移除raw: true， nest: true，因查到的資料後面還要用sql的function
+      // 2.移除raw: true， nest: true，因comment會破壞一對多的關係
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         return restaurant.increment('viewCounts')
       })
       .then(restaurant => {
-        res.render('restaurant', { restaurant: restaurant.toJSON() })
+        res.render('restaurant', { restaurant: restaurant.toJSON() }) // 讓回去的資料變成JSON的格式
       })
       .catch(err => next(err))
   },
@@ -59,13 +60,12 @@ const restaurantController = {
     return Restaurant.findByPk(req.params.id, {
       // 去資料庫用 id 找一筆資料
       include: Category,
-      nest: true
+      nest: true,
+      raw: true
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
-        res.render('dashboard', {
-          restaurant: restaurant.toJSON() // 把關聯資料轉成 JSON
-        })
+        res.render('dashboard', { restaurant })
       })
       .catch(err => next(err))
   }

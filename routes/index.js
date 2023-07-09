@@ -17,6 +17,7 @@ router.get('/logout', userController.logout)
 router.get('/restaurants/:id/dashboard', authenticated, restController.getDashboard)
 router.get('/restaurants/:id', authenticated, restController.getRestaurant) // 新增這行
 router.get('/restaurants', authenticated, restController.getRestaurants)
+router.delete('/comments/:id', authenticatedAdmin, commentController.deleteComment)// 加入這行
 router.post('/comments', authenticated, commentController.postComment) // 加入路由設定
 router.get('/', (req, res) => res.redirect('/restaurants'))
 router.use('/', generalErrorHandler)
