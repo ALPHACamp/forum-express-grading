@@ -1,6 +1,6 @@
 node_modules/ 
 temp/
 upload/
-
+/SQL_Script
 .DS_Store
 .env
