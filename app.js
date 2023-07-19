@@ -2,6 +2,7 @@ const express = require('express')
 const routes = require('./routes')
 const exphbs = require('express-handlebars')
 const dotenv = require('dotenv')
+// const db = require('./models') 測試db連線是否成功可以使用此程式碼
 const app = express()
 const port = process.env.PORT || 3000
 
