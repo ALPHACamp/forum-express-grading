@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs')
 const db = require('../models')
+const RegisterError = require('../errors/register-error')
 const { User } = db // 用解構付值把db內的User model拿出來
 const userController = {
   signUpPage: (req, res) => {
@@ -8,8 +9,9 @@ const userController = {
   signUp: async (req, res, next) => {
     try {
       const { name, email, password, passwordCheck } = req.body
+      console.log(email)
       if (password !== passwordCheck) {
-        throw new Error('Passwords do not match!') // throw error時和return一樣會直接停下來
+        throw new RegisterError('Passwords do not match!') // throw error時和return一樣會直接停下來
       }
 
       // 用email註冊帳號 或尋找
@@ -25,8 +27,11 @@ const userController = {
       })
 
       // 如果已存在user就抱錯
-      if (created) {
-        throw new Error('Email already exists!') // throw error時和return一樣會直接停下來
+      // created 指的是是不是剛創的值
+      console.log(`created: ${created}`)
+      if (!created) {
+        console.log('I am here')
+        throw new RegisterError('Email already exists!') // throw error時和return一樣會直接停下來
       }
 
       req.flash('success_messages', '成功註冊帳號！')// 如果成功（上面都跑完）才回傳訊息

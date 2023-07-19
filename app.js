@@ -1,6 +1,7 @@
 const express = require('express')
 const routes = require('./routes')
 const exphbs = require('express-handlebars')
+const session = require('express-session')
 const dotenv = require('dotenv')
 const flash = require('connect-flash')
 // const db = require('./models') 測試db連線是否成功可以使用此程式碼
@@ -20,6 +21,11 @@ app.set('view engine', 'handlebars')
 
 app.use(express.urlencoded({ extended: true }))
 app.use(express.static('public'))
+app.use(session({
+  secret: 'Neuro_Sama_is_SoCute',
+  resave: false,
+  saveUninitialized: true
+}))
 app.use(flash())
 app.use((req, res, next) => {
   res.locals.error_messages = req.flash('error_messages')
