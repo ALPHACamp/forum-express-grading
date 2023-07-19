@@ -1,9 +1,10 @@
 const express = require('express')
 const hbs = require('express-handlebars')
-const flash = require('connect-flash') // 引入套件
-const session = require('express-session') // 引入套件
+const flash = require('connect-flash')
+const session = require('express-session')
+const passport = require('./config/passport')
 const routes = require('./routes')
-const SESSION_SECRET = 'secret' // 新增這行
+const SESSION_SECRET = 'secret'
 
 const app = express()
 const port = process.env.PORT || 3000
@@ -18,6 +19,10 @@ app.use(session({
   resave: false,
   saveUninitialized: false
 }))
+
+app.use(passport.initialize()) // 初始化 Passport
+app.use(passport.session()) // 啟動 session 功能
+
 app.use(flash())
 app.use((req, res, next) => {
   res.locals.success_messages = req.flash('success_messages')

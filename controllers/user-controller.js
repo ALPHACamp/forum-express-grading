@@ -28,6 +28,30 @@ const userController = {
     } catch (error) {
       return next(error)
     }
+  },
+  signInPage: async (req, res, next) => {
+    try {
+      return res.render('signin')
+    } catch (error) {
+      return next(error)
+    }
+  },
+  signIn: async (req, res, next) => {
+    try {
+      req.flash('success_messages', '成功登入！')
+      return res.redirect('/restaurants')
+    } catch (error) {
+      return next(error)
+    }
+  },
+  logout: async (req, res, next) => {
+    try {
+      req.flash('success_messages', '登出成功！')
+      req.logout()
+      return res.redirect('/signin')
+    } catch (error) {
+      return next(error)
+    }
   }
 }
 
