@@ -1,9 +1,10 @@
 const express = require('express')
 const router = express.Router()
-const { authenticatedAdmin } = require('../../middleware/auth')
 const adminController = require('../../controllers/admin-controller')
 
-router.get('/restaurants', authenticatedAdmin, adminController.getRestaurants)
+router.get('/restaurants/create', adminController.createRestaurant)
+router.get('/restaurants', adminController.getRestaurants)
+router.post('/restaurants', adminController.postRestaurant)
 
 router.use('/', async (req, res, next) => {
   try {
