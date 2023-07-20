@@ -4,6 +4,7 @@ const exphbs = require('express-handlebars')
 const session = require('express-session')
 const dotenv = require('dotenv')
 const flash = require('connect-flash')
+const passport = require('./config/passport')
 // const db = require('./models') 測試db連線是否成功可以使用此程式碼
 const app = express()
 const port = process.env.PORT || 3000
@@ -27,6 +28,8 @@ app.use(session({
   saveUninitialized: true
 }))
 app.use(flash())
+app.use(passport.initialize())
+app.use(passport.session())
 app.use((req, res, next) => {
   res.locals.error_messages = req.flash('error_messages')
   res.locals.success_messages = req.flash('success_messages')

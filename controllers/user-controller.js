@@ -39,6 +39,20 @@ const userController = {
     } catch (error) {
       next(error) // middleware如果next內包東西，next會認為提供的東西是error message，會走錯誤路線
     }
+  },
+  signInPage: (req, res) => {
+    res.render('signin')
+  },
+  signIn: (req, res) => {
+    req.flash('success_messages', '成功登入！')
+    res.redirect('/restaurants')
+  },
+  logout: async (req, res, next) => {
+    req.logout(function (err) {
+      if (err) { return next(err) }
+      res.redirect('/')
+    })
   }
+
 }
 module.exports = { userController }

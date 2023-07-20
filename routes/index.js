@@ -1,11 +1,15 @@
 const express = require('express')
 const router = express.Router()
 const admin = require('./modules/admin')
+const passport = require('../config/passport') // 引入 Passport，需要他幫忙做驗證
 // 用：可以重新命名
 const { restaurantController: restController } = require('../controllers/restaurant-controller')
 const { userController } = require('../controllers/user-controller')
 const generalErrorHandler = require('../middlewares/error-handler')
 
+router.get('/signin', userController.signInPage)
+router.post('/signin', passport.authenticate('local', { failureRedirect: '/signin', failureFlash: true }), userController.signIn)
+router.get('/logout', userController.logout)
 router.get('/signup', userController.signUpPage)
 router.post('/signup', userController.signUp)
 router.use('/admin', admin)
