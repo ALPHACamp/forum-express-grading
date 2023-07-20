@@ -5,6 +5,8 @@ const session = require('express-session')
 const dotenv = require('dotenv')
 const flash = require('connect-flash')
 const passport = require('./config/passport')
+const hbsHelper = require('./helper/handlebars-helpers')
+const { getUser } = require('./helper/auth-helpers')
 // const db = require('./models') 測試db連線是否成功可以使用此程式碼
 const app = express()
 const port = process.env.PORT || 3000
@@ -16,7 +18,8 @@ if (process.env.NODE_ENV !== 'production') {
 // 檔名結尾叫做handlebars, 主模板:main
 app.engine('handlebars', exphbs.engine({
   defaultLayout: 'main',
-  extname: '.handlebars'
+  extname: '.handlebars',
+  helpers: hbsHelper
 }))
 app.set('view engine', 'handlebars')
 
@@ -34,6 +37,7 @@ app.use((req, res, next) => {
   res.locals.error_messages = req.flash('error_messages')
   res.locals.success_messages = req.flash('success_messages')
   res.locals.warning_msg = req.flash('warning_msg')
+  res.locals.user = getUser(req)
   next()
 })
 app.use(routes)
