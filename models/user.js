@@ -16,7 +16,8 @@ module.exports = (sequelize, DataTypes) => {
   User.init({
     name: DataTypes.STRING,
     email: DataTypes.STRING,
-    password: DataTypes.STRING
+    password: DataTypes.STRING,
+    isAdmin: DataTypes.BOOLEAN
   }, {
     sequelize, // 把index.js instance 的sequelize物件塞進去
     modelName: 'User',

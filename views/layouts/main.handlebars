@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html class="h-100">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -7,15 +7,18 @@
     <link rel="stylesheet" href="/stylesheets/bootstrap.min.css">
     <title>餐廳評論網</title>
 
-<body>
-    <main role="main">
+<body class="d-flex flex-column h-100 bg-light">
+    {{> header}}
+    <main role="main" class="flex-shrink-0 mt-3">
         <div class="album bg-light pt-5">
-            <div class="container">
+            <div class="container pt-5">
+                {{> message}}
                 {{{body}}}
             </div>
         </div>
     </main>
-    <script src="/javascripts/popper.min.js"></script>
-    <script src="/javascripts/bootstrap.min.js"></script>
+    {{>footer}}
 </body>
+<script src="/javascripts/popper.min.js"></script>
+<script src="/javascripts/bootstrap.min.js"></script>
 </html> 
