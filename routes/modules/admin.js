@@ -11,12 +11,6 @@ router.delete('/restaurants/:id', adminController.deleteRestaurant)
 router.get('/restaurants', adminController.getRestaurants)
 router.post('/restaurants', upload.single('image'), adminController.postRestaurant)
 
-router.use('/', async (req, res, next) => {
-  try {
-    res.redirect('/admin/restaurants')
-  } catch (error) {
-    next(error)
-  }
-})
+router.get('/', (req, res) => res.redirect('/admin/restaurants'))
 
 module.exports = router
