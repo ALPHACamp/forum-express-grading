@@ -1,5 +1,5 @@
 const { Restaurant } = require('../models')
-const { localFileHandler } = require('../helpers/file-helpers')
+const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const adminController = {
   getRestaurants: async (req, res, next) => {
@@ -23,7 +23,7 @@ const adminController = {
       if (!name) throw new Error('Restaurant name is required!')
 
       const { file } = req
-      const promiseData = await Promise.all([localFileHandler(file)])
+      const promiseData = await Promise.all([imgurFileHandler(file)])
       const filePath = promiseData[0]
 
       await Restaurant.create({
@@ -70,7 +70,7 @@ const adminController = {
 
       const promiseData = await Promise.all([
         Restaurant.findByPk(req.params.id),
-        localFileHandler(file)
+        imgurFileHandler(file)
       ])
       const restaurant = promiseData[0]
       const filePath = promiseData[1]
