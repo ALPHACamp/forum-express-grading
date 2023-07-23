@@ -4,6 +4,7 @@ const exphbs = require('express-handlebars')
 const session = require('express-session')
 const dotenv = require('dotenv')
 const flash = require('connect-flash')
+const methodOverride = require('method-override')
 const passport = require('./config/passport')
 const hbsHelper = require('./helper/handlebars-helpers')
 const { getUser } = require('./helper/auth-helpers')
@@ -23,6 +24,7 @@ app.engine('handlebars', exphbs.engine({
 }))
 app.set('view engine', 'handlebars')
 
+app.use(methodOverride('_method'))
 app.use(express.urlencoded({ extended: true }))
 app.use(express.static('public'))
 app.use(session({
