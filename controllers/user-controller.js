@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs')
 const db = require('../models')
-const RegisterError = require('../errors/register-error')
+const { RegisterError } = require('../errors/errors')
 const { User } = db // 用解構付值把db內的User model拿出來
 const userController = {
   signUpPage: (req, res) => {
@@ -37,7 +37,7 @@ const userController = {
       req.flash('success_messages', '成功註冊帳號！')// 如果成功（上面都跑完）才回傳訊息
       res.redirect('/signin')
     } catch (error) {
-      next(error) // middleware如果next內包東西，next會認為提供的東西是error message，會走錯誤路線
+      return next(error) // middleware如果next內包東西，next會認為提供的東西是error message，會走錯誤路線
     }
   },
   signInPage: (req, res) => {
