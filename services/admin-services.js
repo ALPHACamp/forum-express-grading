@@ -1,4 +1,4 @@
-const { Restaurant, Category } = require('../models')
+const { Restaurant, User, Category } = require('../models')
 const { localFileHandler } = require('../helpers/file-helpers')
 const adminServices = {
   getRestaurants: (req, cb) => {
@@ -10,6 +10,34 @@ const adminServices = {
       .then(restaurants => cb(null, { restaurants }))
       .catch(err => cb(err))
   },
+  getUsers: (req, cb) => {
+    User.findAll({
+      raw: true,
+      nest: true
+    })
+      .then(users => cb(null, { users }))
+      .catch(err => cb(err))
+  },
+  // patchUser: (req, cb) => {
+  //   return User.findByPk(req.params.id)
+  //     .then(user => {
+  //       if (user.email === 'root@example.com') {
+  //         req.flash('error_messages', '禁止變更 superuser 權限')
+  //         return res.redirect('back')
+  //       }
+  //       else {
+  //         console.log(user,{
+  //           raw: true,
+  //           nest: true
+  //         })
+  //         return user.update({
+  //           isAdmin: user.isAdmin ? '0' : '1'
+  //         })
+  //       }
+  //     })
+  //     .then(users => cb(null, { users }))
+  //     .catch(err => cb(err))
+  // },
   deleteRestaurant: (req, cb) => {
     return Restaurant.findByPk(req.params.id)
       .then(restaurant => {
@@ -35,6 +63,6 @@ const adminServices = {
       }))
       .then(newRestaurant => cb(null, { restaurant: newRestaurant }))
       .catch(err => cb(err))
-  },
+  }
 }
 module.exports = adminServices
