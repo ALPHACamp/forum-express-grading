@@ -17,7 +17,10 @@ const adminController = {
 
   createRestaurant: async (req, res, next) => {
     try {
-      return res.render('admin/create-restaurant')
+      const categories = Category.findAll({
+        raw: true
+      })
+      return res.render('admin/create-restaurant', { categories })
     } catch (error) {
       return next(error)
     }
@@ -25,7 +28,7 @@ const adminController = {
 
   postRestaurant: async (req, res, next) => {
     try {
-      const { name, tel, address, openingHours, description } = req.body
+      const { name, tel, address, openingHours, description, categoryId } = req.body
       if (!name) throw new Error('Restaurant name is required!')
 
       const { file } = req
@@ -38,7 +41,8 @@ const adminController = {
         address,
         openingHours,
         description,
-        image: filePath || null
+        image: filePath || null,
+        categoryId
       })
 
       req.flash('success_messages', 'restaurant was successfully created')
@@ -67,10 +71,16 @@ const adminController = {
 
   editRestaurant: async (req, res, next) => {
     try {
-      const restaurant = await Restaurant.findByPk(req.params.id, { raw: true })
+      const promiseData = await Promise.all([
+        Restaurant.findByPk(req.params.id, { raw: true }),
+        Category.findAll({ raw: true })
+      ])
+      const restaurant = promiseData[0]
+      const categories = promiseData[1]
+
       if (!restaurant) throw new Error("Restaurant didn't exist!")
 
-      return res.render('admin/edit-restaurant', { restaurant })
+      return res.render('admin/edit-restaurant', { restaurant, categories })
     } catch (error) {
       return next(error)
     }
@@ -78,7 +88,7 @@ const adminController = {
 
   putRestaurant: async (req, res, next) => {
     try {
-      const { name, tel, address, openingHours, description } = req.body
+      const { name, tel, address, openingHours, description, categoryId } = req.body
       if (!name) throw new Error('Restaurant name is required!')
 
       const { file } = req
@@ -98,7 +108,8 @@ const adminController = {
         address,
         openingHours,
         description,
-        image: filePath || restaurant.image
+        image: filePath || restaurant.image,
+        categoryId
       })
 
       req.flash('success_messages', 'restaurant was successfully to update')
