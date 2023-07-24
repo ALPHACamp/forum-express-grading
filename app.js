@@ -7,6 +7,7 @@ const flash = require('connect-flash')
 const methodOverride = require('method-override')
 const passport = require('./config/passport')
 const hbsHelper = require('./helper/handlebars-helpers')
+const path = require('path')
 const { getUser } = require('./helper/auth-helpers')
 // const db = require('./models') 測試db連線是否成功可以使用此程式碼
 const app = express()
@@ -26,7 +27,8 @@ app.set('view engine', 'handlebars')
 
 app.use(methodOverride('_method'))
 app.use(express.urlencoded({ extended: true }))
-app.use(express.static('public'))
+app.use(express.static(path.join(__dirname, 'public')))
+app.use('/upload', express.static(path.join(__dirname, 'upload')))
 app.use(session({
   secret: 'Neuro_Sama_is_SoCute',
   resave: false,
