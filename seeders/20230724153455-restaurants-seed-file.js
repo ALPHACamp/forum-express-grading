@@ -1,5 +1,5 @@
 'use strict'
-const { fakerZH_TW: faker } = require('Faker')
+const { fakerZH_TW: faker } = require('@faker-js/faker')
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
