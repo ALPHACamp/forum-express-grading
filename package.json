@@ -13,6 +13,7 @@
     "url": "git+https://github.com/ALPHACamp/forum-express-grading.git"
   },
   "dependencies": {
+    "@faker-js/faker": "^8.0.2",
     "bcryptjs": "^2.4.3",
     "connect-flash": "^0.1.1",
     "dotenv": "^16.3.1",
@@ -25,11 +26,9 @@
     "passport": "^0.6.0",
     "passport-local": "^1.0.0",
     "sequelize": "^6.32.1",
-    "sequelize-cli": "^6.6.1",
-    "@faker-js/faker": "^8.0.2"
+    "sequelize-cli": "^6.6.1"
   },
   "devDependencies": {
-    "@faker-js/faker": "^8.0.2",
     "chai": "^4.3.7",
     "eslint": "^8.42.0",
     "eslint-config-standard": "^17.1.0",
