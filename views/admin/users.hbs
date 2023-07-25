@@ -39,9 +39,9 @@
         <form action="/admin/users/{{this.id}}?_method=PATCH" method="POST" style="display: inline;">          
           <button type="submit" class="btn btn-link link-primary link-danger" style="text-decoration: none;">
             {{#if this.isAdmin}}
-            set as user
+            admin
             {{else}}
-            set as admin
+            user
             {{/if}}
           </button>
         </form>
