@@ -6,6 +6,7 @@ const userController = {
   signUpPage: (req, res) => {
     res.render('signup')
   },
+
   signUp: (req, res, next) => {
     if (req.body.password !== req.body.passwordCheck) throw new Error('password do not match!')
     User.findOne({ where: { email: req.body.email } })
@@ -22,6 +23,21 @@ const userController = {
         res.redirect('/signin')
       })
       .catch(err => next(err))
+  },
+
+  signInPage: (req, res) => {
+    res.render('signin')
+  },
+  // 這邊的登入驗證在總路由的passport做
+  signIn: (req, res) => {
+    req.flash('success_messages', '成功登入!')
+    res.redirect('/restaurants')
+  },
+
+  logout: (req, res) => {
+    req.flash('success_messages', '登出成功!')
+    req.logout()
+    res.redirect('/signin')
   }
 }
 
