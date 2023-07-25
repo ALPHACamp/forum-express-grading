@@ -6,10 +6,13 @@ const userController = {
   signUpPage: (req, res) => {
     res.render('signup')
   },
-  signUp: (req, res) => {
-    bcrypt
-      .genSalt(10)
-      .then(salt => bcrypt.hash(req.body.password, salt))
+  signUp: (req, res, next) => {
+    if (req.body.password !== req.body.passwordCheck) throw new Error('password do not match!')
+    User.findOne({ where: { email: req.body.email } })
+      .then(user => {
+        if (user) throw new Error('Email is already exists!')
+        return bcrypt.hash(req.body.password, 10)
+      })
       .then(hash => User.create({
         name: req.body.name,
         email: req.body.email,
@@ -18,6 +21,7 @@ const userController = {
       .then(() => {
         res.redirect('/signin')
       })
+      .catch(err => next(err))
   }
 }
 
