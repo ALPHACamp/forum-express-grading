@@ -6,18 +6,14 @@
     "host": "127.0.0.1",
     "dialect": "mysql"
   },
-  "production": {
+  "test": {
     "username": "root",
     "password": null,
-    "database": "database_production",
+    "database": "database_test",
     "host": "127.0.0.1",
     "dialect": "mysql"
   },
-  "travis": {
-    "username": "travis",
-    "database": "forum",
-    "host": "127.0.0.1",
-    "dialect": "mysql",
-    "logging": false
+  "production": {
+    "use_env_variable": "CLEARDB_DATABASE_URL"
   }
 }
