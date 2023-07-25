@@ -28,6 +28,7 @@
     "sequelize-cli": "^6.6.1"
   },
   "devDependencies": {
+    "@faker-js/faker": "^8.0.2",
     "chai": "^4.3.7",
     "eslint": "^8.42.0",
     "eslint-config-standard": "^17.1.0",
