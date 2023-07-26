@@ -4,3 +4,9 @@ upload/
 
 .DS_Store
 .env
+
+# fly.io
+my-mysql
+.dockerignore
+Dockerfile
+fly.toml
