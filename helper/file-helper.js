@@ -31,12 +31,8 @@ const localFileHandler = async file => {
 
 const imgurFileHandler = async file => {
   try {
-    console.log(process.env.IMGUR_CLIENT_ID)
-    console.log(process.env.IMGUR_CLIENT_SECRET)
-    console.log(process.env.IMGUR_Refresh_Token)
     if (!file) return null
     const img = await imgur.uploadFile(file.path)
-    console.log(img)
     return img?.link || null
   } catch (err) {
     return err

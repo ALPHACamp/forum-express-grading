@@ -1,5 +1,8 @@
 node_modules/ 
 temp/*
+/temp/*
+# .gitkeep是空的，temp裡面一定要放一個東西不然temp會push不上去
+!/temp/.gitkeep
 upload/
 /SQL_Script
 .DS_Store
