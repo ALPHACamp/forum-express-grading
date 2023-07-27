@@ -124,6 +124,21 @@ const adminController = {
     } catch (error) {
       return next(error)
     }
+  },
+  // R01 HW
+  getUsers: async (req, res, next) => {
+    try {
+      next()
+    } catch (error) {
+      return next(error)
+    }
+  },
+  patchUser: async (req, res, next) => {
+    try {
+      next()
+    } catch (error) {
+      return next(error)
+    }
   }
 }
 
