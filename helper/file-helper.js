@@ -2,6 +2,13 @@
 // 把它複製到upper裡
 // 然後回傳複製好的/+檔名
 const fs = require('fs')
+// 先申請Imgur Client ID後連線
+// 沒有要callback 先不用放client Secret
+// 使用版本imgur@1.0.2，不要用版本2.0
+
+const imgur = require('imgur')
+const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
+imgur.setClientId(IMGUR_CLIENT_ID)
 
 // 改成async寫法
 const localFileHandler = async file => {
@@ -22,4 +29,18 @@ const localFileHandler = async file => {
   }
 }
 
-module.exports = localFileHandler
+const imgurFileHandler = async file => {
+  try {
+    console.log(process.env.IMGUR_CLIENT_ID)
+    console.log(process.env.IMGUR_CLIENT_SECRET)
+    console.log(process.env.IMGUR_Refresh_Token)
+    if (!file) return null
+    const img = await imgur.uploadFile(file.path)
+    console.log(img)
+    return img?.link || null
+  } catch (err) {
+    return err
+  }
+}
+
+module.exports = { localFileHandler, imgurFileHandler }

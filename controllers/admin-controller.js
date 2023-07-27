@@ -1,6 +1,6 @@
 const { Restaurant } = require('../models')
 const { AdminError } = require('../errors/errors')
-const localFileHandler = require('../helper/file-helper')
+const { imgurFileHandler } = require('../helper/file-helper')
 const adminController = {
   getRestaurants: async (req, res, next) => {
     try {
@@ -27,7 +27,7 @@ const adminController = {
       const { body, file } = req // 取出 req.body req.file
       const { name, tel, address, openingHours, description } = body
       // 把file放進helper裡面，回傳的值放進資料庫裡
-      const filePath = await localFileHandler(file)
+      const filePath = await imgurFileHandler(file)
 
       if (!name) { throw new AdminError('Restaurant name is required!') }
       await Restaurant.create({
@@ -84,10 +84,11 @@ const adminController = {
         throw new AdminError('Restaurant didn\'t exist!')
       }
 
+      // file是使用multer 取出圖片檔
       const { body, file } = req
       // 沒有提供名稱也會抱錯
       const { name, tel, address, openingHours, description } = body
-      const filePath = await localFileHandler(file)
+      const filePath = await imgurFileHandler(file)
       if (!name) { throw new AdminError('Restaurant name is required!') }
 
       restaurant.set({
