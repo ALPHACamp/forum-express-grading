@@ -33,9 +33,42 @@ const adminController = {
     Restaurant.findByPk(req.params.id, {
       raw: true
     })
-      .then((restaurant) => {
+      .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         res.render('admin/restaurant', { restaurant })
+      })
+      .catch(err => next(err))
+  },
+  editRestaurant: (req, res, next) => {
+    Restaurant.findByPk(req.params.id, {
+      raw: true
+    })
+      .then(restaurant => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        // !進入餐廳頁面後，預設顯示的時間若是由資料庫創建的似乎無法正常顯示
+        res.render('admin/edit-restaurant', { restaurant })
+      })
+      .catch(err => next(err))
+  },
+  putRestaurant: (req, res, next) => {
+    const { name, tel, address, openingHours, description } = req.body
+    if (!name) throw new Error('Restaurant name is required!')
+    // 注意這邊將資料取出沒有設定`({raw:true})`，因為後面還需要使用`update`去編輯資料
+    Restaurant.findByPk(req.params.id)
+      .then(restaurant => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+
+        return restaurant.update({
+          name,
+          tel,
+          address,
+          openingHours,
+          description
+        })
+      })
+      .then(() => {
+        req.flash('success_messages', 'restaurant was successfully to update')
+        res.redirect('/admin/restaurants')
       })
       .catch(err => next(err))
   }
