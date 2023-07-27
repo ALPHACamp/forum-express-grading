@@ -8,7 +8,7 @@ class RegisterError extends Error {
 class AdminError extends Error {
   constructor (message) {
     super(message)
-    this.name = 'PostRestaurantError'
+    this.name = 'AdminError'
   }
 }
 module.exports = {
