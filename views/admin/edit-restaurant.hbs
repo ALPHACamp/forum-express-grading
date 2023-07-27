@@ -1,4 +1,5 @@
-<form action="/admin/restaurants/{{restaurant.id}}?_method=PUT" method="POST">
+{{!-- 因為要POST的內容包含圖片(type="input")，故要新增屬性 enctype="multipart/form-data" --}}
+<form action="/admin/restaurants/{{restaurant.id}}?_method=PUT" method="POST" enctype="multipart/form-data">
   <div class="mb-4 text-center">
     <h1 class="h3 font-weight-normal mb-3">Edit Restaurant</h1>
   </div>
