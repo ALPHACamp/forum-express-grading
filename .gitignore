@@ -1,5 +1,5 @@
 node_modules/ 
-temp/
+temp/*
 upload/
 /SQL_Script
 .DS_Store
