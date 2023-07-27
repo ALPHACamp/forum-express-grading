@@ -54,6 +54,7 @@ const adminController = {
     const { name, tel, address, openingHours, description } = req.body
     if (!name) throw new Error('Restaurant name is required!')
     // 注意這邊將資料取出沒有設定`({raw:true})`，因為後面還需要使用`update`去編輯資料
+
     Restaurant.findByPk(req.params.id)
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
@@ -70,6 +71,16 @@ const adminController = {
         req.flash('success_messages', 'restaurant was successfully to update')
         res.redirect('/admin/restaurants')
       })
+      .catch(err => next(err))
+  },
+  deleteRestaurant: (req, res, next) => {
+    Restaurant.findByPk(req.params.id)
+      .then(restaurant => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+
+        return restaurant.destroy()
+      })
+      .then(() => res.redirect('/admin/restaurants'))
       .catch(err => next(err))
   }
 }

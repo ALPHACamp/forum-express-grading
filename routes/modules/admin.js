@@ -10,6 +10,8 @@ router.get('/restaurants/:id/edit', adminController.editRestaurant)
 router.put('/restaurants/:id', adminController.putRestaurant)
 // 瀏覽一筆資料頁面
 router.get('/restaurants/:id', adminController.getRestaurant)
+// 刪除一筆資料
+router.delete('/restaurants/:id', adminController.deleteRestaurant)
 // 新增送出
 router.post('/restaurants', adminController.postRestaurant)
 // 瀏覽全部資料頁面
