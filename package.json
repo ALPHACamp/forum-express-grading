@@ -13,6 +13,7 @@
     "url": "git+https://github.com/ALPHACamp/forum-express-grading.git"
   },
   "dependencies": {
+    "@handlebars/allow-prototype-access": "^1.0.5",
     "bcryptjs": "^2.4.3",
     "connect-flash": "^0.1.1",
     "dayjs": "^1.11.9",

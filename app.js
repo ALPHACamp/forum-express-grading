@@ -5,13 +5,15 @@ const flash = require('connect-flash')
 const passport = require('./config/passport')
 const { getUser } = require('./helpers/auth-helpers')
 const handlebarsHelpers = require('./helpers/handlebars-helpers')
+const Handlebars = require('handlebars')
+const { allowInsecurePrototypeAccess } = require('@handlebars/allow-prototype-access')
 const routes = require('./routes')
 
 const app = express()
 const port = process.env.PORT || 3000
 const SESSION_SECRET = 'secret'
 
-app.engine('hbs', handlebars({ extname: '.hbs', helpers: handlebarsHelpers }))
+app.engine('hbs', handlebars({ extname: '.hbs', helpers: handlebarsHelpers, handlebars: allowInsecurePrototypeAccess(Handlebars) }))
 app.set('view engine', 'hbs')
 app.use(express.urlencoded({ extended: true }))
 app.use(session({
