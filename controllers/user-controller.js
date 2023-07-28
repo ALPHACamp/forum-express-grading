@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs')
 const db = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
-const { User } = db
+const { User, Restaurant, Comment } = db
 
 const userController = {
   signUpPage: async (req, res, next) => {
@@ -61,13 +61,21 @@ const userController = {
 
   getUser: async (req, res, next) => {
     try {
-      const user = await User.findByPk(req.params.id, {
-        raw: true
-      })
+      const promiseData = await Promise.all([
+        User.findByPk(req.params.id, { raw: true }),
+        Comment.findAll({
+          raw: true,
+          nest: true,
+          where: { userId: req.params.id },
+          include: Restaurant
+        })
+      ])
+      const user = promiseData[0]
+      const comments = promiseData[1]
 
       if (!user) throw new Error("User doesn't exists!")
 
-      return res.render('users/profile', { user })
+      return res.render('users/profile', { user, comments })
     } catch (error) {
       return next(error)
     }
