@@ -11,7 +11,6 @@ const adminController = {
   },
   postRestaurant: (req, res, next) => {
     const { name, tel, address, openingHours, description } = req.body
-    console.log('000000000000000000000000000000000000000' + openingHours)
     if (!name) throw new Error('Restaurant name is required!')
     Restaurant.create({
       name,
@@ -23,6 +22,14 @@ const adminController = {
       .then(() => {
         req.flash('success_messages', 'restaurant was successfully created')
         res.redirect('/admin/restaurants')
+      })
+      .catch(err => next(err))
+  },
+  getRestaurant: (req, res, next) => {
+    Restaurant.findByPk(req.params.id, { raw: true })
+      .then(restaurant => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        res.render('admin/restaurant', { restaurant })
       })
       .catch(err => next(err))
   }
