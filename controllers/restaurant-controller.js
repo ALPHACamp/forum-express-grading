@@ -50,7 +50,6 @@ const restaurantController = {
           { model: Comment, include: User }
         ]
       })
-      console.log(restaurant.toJSON())
 
       if (!restaurant) throw new Error("Restaurant didn't exist!")
 
