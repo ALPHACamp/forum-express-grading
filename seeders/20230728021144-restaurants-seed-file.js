@@ -4,6 +4,7 @@ const faker = require('faker')
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.bulkInsert('Restaurants',
+    // Array.from()內第二個參數是mapFn，下方直接簡寫
       Array.from({ length: 50 }, () => ({
         name: faker.name.findName(),
         tel: faker.phone.phoneNumber(),
