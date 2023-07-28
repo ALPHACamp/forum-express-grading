@@ -4,8 +4,12 @@ const router = express.Router()
 const admin = require('./modules/admin')
 
 const restController = require('../controllers/restaurant-controller')
+const userController = require('../controllers/user-controller')
 
 router.use('/admin', admin)
+
+router.get('/signup', userController.singUpPage)
+router.post('/signup', userController.singUp)
 
 router.get('/restaurants', restController.getRestaurants)
 router.get('/', (req, res) => {
