@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs')
-const { User, Restaurant, Comment, Favorite } = require('../models')
+const { User, Restaurant, Comment, Favorite, Like } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const userController = {
@@ -168,6 +168,60 @@ const userController = {
 
       await favorite.destroy()
       req.flash('success_messages', 'You have successfully removed favorite from this restaurant')
+
+      return res.redirect('back')
+    } catch (error) {
+      return next(error)
+    }
+  },
+
+  addLike: async (req, res, next) => {
+    try {
+      const userId = req.user.id
+      const { restaurantId } = req.params
+
+      const [restaurant, like] = await Promise.all([
+        Restaurant.findByPk(restaurantId),
+        Like.findOne({
+          where: {
+            userId,
+            restaurantId
+          }
+        })
+      ])
+
+      if (!restaurant) throw new Error("Restaurant doesn't exist")
+      if (like) throw new Error('You have liked this restaurant!')
+
+      await Like.create({
+        userId,
+        restaurantId
+      })
+      req.flash('success_messages', 'You have successfully added this restaurant to like')
+
+      return res.redirect('back')
+    } catch (error) {
+      return next(error)
+    }
+  },
+
+  removeLike: async (req, res, next) => {
+    try {
+      const userId = req.user.id
+      const { restaurantId } = req.params
+
+      const [restaurant, like] = await Promise.all([
+        Restaurant.findByPk(restaurantId),
+        Like.findOne({
+          where: { userId, restaurantId }
+        })
+      ])
+
+      if (!restaurant) throw new Error("Restaurant doesn't exist")
+      if (!like) throw new Error("You haven't liked this restaurant")
+
+      await like.destroy()
+      req.flash('success_messages', 'You have successfully removed like from this restaurant')
 
       return res.redirect('back')
     } catch (error) {
