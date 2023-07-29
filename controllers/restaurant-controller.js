@@ -12,15 +12,15 @@ const restaurantController = {
       const offset = getOffset(limit, page)
 
       const promiseData = await Promise.all([
-        Restaurant.findAndCountAll({ // 修改這裡
+        Restaurant.findAndCountAll({
           include: Category,
           where: {
             ...categoryId ? { categoryId } : {}
           },
           limit,
           offset,
-          nest: true,
-          raw: true
+          raw: true,
+          nest: true
         }),
         Category.findAll({ raw: true })
       ])
@@ -69,13 +69,42 @@ const restaurantController = {
       const restaurant = await Restaurant.findByPk(req.params.id,
         {
           include: Category,
-          nest: true,
-          raw: true
+          raw: true,
+          nest: true
         })
 
       if (!restaurant) throw new Error("Restaurant didn't exist!")
 
       return res.render('dashboard', { restaurant })
+    } catch (error) {
+      return next(error)
+    }
+  },
+
+  getFeeds: async (req, res, next) => {
+    try {
+      const promiseData = await Promise.all([
+        Restaurant.findAll({
+          limit: 10,
+          order: [['createdAt', 'DESC']],
+          include: [Category],
+          raw: true,
+          nest: true
+        }),
+        Comment.findAll({
+          limit: 10,
+          order: [['createdAt', 'DESC']],
+          include: [User, Restaurant],
+          raw: true,
+          nest: true
+        })
+      ])
+      const restaurants = promiseData[0]
+      const comments = promiseData[1]
+
+      if (!restaurants) throw new Error("Restaurant didn't exist!")
+
+      return res.render('feeds', { restaurants, comments })
     } catch (error) {
       return next(error)
     }

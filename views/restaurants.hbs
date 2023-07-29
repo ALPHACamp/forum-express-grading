@@ -1,3 +1,5 @@
+{{> restaurant-tabs route='index'}}
+
 <ul class="nav nav-pills">
     <li class="nav-item">
         <a href="?categoryId=" class="nav-link {{#ifCond '' categoryId}}active{{/ifCond}}">全部</a>
@@ -54,7 +56,7 @@
         </li>
         {{/ifCond}}
         {{/each}}
-        
+
         <li class="page-item {{#ifCond pagination.currentPage pagination.totalPage}}disabled{{/ifCond}}">
             <a class="page-link" href="/restaurants?page={{pagination.next}}&categoryId={{categoryId}}"
                 aria-label="Next">
