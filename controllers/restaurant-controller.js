@@ -4,9 +4,9 @@ const { getOffset, getPagination } = require('../helpers/pagination-helper')
 const restaurantController = {
   getRestaurants: async (req, res, next) => {
     try {
-      const DEFAULT_LIMIT = 9
       const categoryId = Number(req.query.categoryId) || ''
 
+      const DEFAULT_LIMIT = 9
       const page = Number(req.query.page) || 1
       const limit = Number(req.query.limit) || DEFAULT_LIMIT
       const offset = getOffset(limit, page)
@@ -24,9 +24,11 @@ const restaurantController = {
         }),
         Category.findAll({ raw: true })
       ])
+      const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
       const restaurantData = restaurants.rows.map(restaurant => ({
         ...restaurant,
-        description: restaurant.description.substring(0, 50)
+        description: restaurant.description.substring(0, 50),
+        isFavorited: favoritedRestaurantsId.includes(restaurant.id)
       }))
 
       return res.render('restaurants', {
@@ -45,18 +47,24 @@ const restaurantController = {
       const restaurant = await Restaurant.findByPk(req.params.id, {
         include: [
           Category,
-          { model: Comment, include: User }
+          { model: Comment, include: User },
+          { model: User, as: 'FavoritedUsers' }
         ]
       })
 
       if (!restaurant) throw new Error("Restaurant didn't exist!")
 
-      restaurant.increment('viewCounts', {
+      await restaurant.increment('viewCounts', {
         where: { id: req.params.id },
         by: 1
       })
 
-      return res.render('restaurant', { restaurant: restaurant.toJSON() })
+      const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id)
+
+      return res.render('restaurant', {
+        restaurant: restaurant.toJSON(),
+        isFavorited
+      })
     } catch (error) {
       return next(error)
     }
