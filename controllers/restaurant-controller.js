@@ -11,7 +11,7 @@ const restaurantController = {
       const limit = Number(req.query.limit) || DEFAULT_LIMIT
       const offset = getOffset(limit, page)
 
-      const promiseData = await Promise.all([
+      const [restaurants, categories] = await Promise.all([
         Restaurant.findAndCountAll({
           include: Category,
           where: {
@@ -24,18 +24,16 @@ const restaurantController = {
         }),
         Category.findAll({ raw: true })
       ])
-      const restaurants = await promiseData[0].rows.map(restaurant => ({
+      const restaurantData = restaurants.rows.map(restaurant => ({
         ...restaurant,
         description: restaurant.description.substring(0, 50)
       }))
-      const restaurantsCount = promiseData[0].count
-      const categories = promiseData[1]
 
       return res.render('restaurants', {
-        restaurants,
+        restaurants: restaurantData,
         categories,
         categoryId,
-        pagination: getPagination(limit, page, restaurantsCount)
+        pagination: getPagination(limit, page, restaurantData.count)
       })
     } catch (error) {
       return next(error)
@@ -83,7 +81,7 @@ const restaurantController = {
 
   getFeeds: async (req, res, next) => {
     try {
-      const promiseData = await Promise.all([
+      const [restaurants, comments] = await Promise.all([
         Restaurant.findAll({
           limit: 10,
           order: [['createdAt', 'DESC']],
@@ -99,8 +97,6 @@ const restaurantController = {
           nest: true
         })
       ])
-      const restaurants = promiseData[0]
-      const comments = promiseData[1]
 
       if (!restaurants) throw new Error("Restaurant didn't exist!")
 

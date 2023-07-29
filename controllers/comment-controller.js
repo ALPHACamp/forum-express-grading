@@ -8,12 +8,11 @@ const commentController = {
 
       if (!text) throw new Error('Comment text is required!')
 
-      const promiseData = await Promise.all([
+      const [user, restaurant] = await Promise.all([
         User.findByPk(userId),
         Restaurant.findByPk(restaurantId)
       ])
-      const user = promiseData[0]
-      const restaurant = promiseData[1]
+
       if (!user) throw new Error("User didn't exist!")
       if (!restaurant) throw new Error("Restaurant didn't exist!")
 

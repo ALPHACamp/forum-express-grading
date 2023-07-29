@@ -32,8 +32,7 @@ const adminController = {
       if (!name) throw new Error('Restaurant name is required!')
 
       const { file } = req
-      const promiseData = await Promise.all([imgurFileHandler(file)])
-      const filePath = promiseData[0]
+      const [filePath] = await Promise.all([imgurFileHandler(file)])
 
       await Restaurant.create({
         name,
@@ -71,12 +70,10 @@ const adminController = {
 
   editRestaurant: async (req, res, next) => {
     try {
-      const promiseData = await Promise.all([
+      const [restaurant, categories] = await Promise.all([
         Restaurant.findByPk(req.params.id, { raw: true }),
         Category.findAll({ raw: true })
       ])
-      const restaurant = promiseData[0]
-      const categories = promiseData[1]
 
       if (!restaurant) throw new Error("Restaurant didn't exist!")
 
@@ -93,12 +90,10 @@ const adminController = {
 
       const { file } = req
 
-      const promiseData = await Promise.all([
+      const [restaurant, filePath] = await Promise.all([
         Restaurant.findByPk(req.params.id),
         imgurFileHandler(file)
       ])
-      const restaurant = promiseData[0]
-      const filePath = promiseData[1]
 
       if (!restaurant) throw new Error("Restaurant didn't exist!")
 

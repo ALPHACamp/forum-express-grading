@@ -3,12 +3,10 @@ const { Category } = require('../models')
 const categoryController = {
   getCategories: async (req, res, next) => {
     try {
-      const promiseData = await Promise.all([
+      const [categories, category] = await Promise.all([
         Category.findAll({ raw: true }),
         req.params.id ? Category.findByPk(req.params.id, { raw: true }) : null
       ])
-      const categories = promiseData[0]
-      const category = promiseData[1]
 
       return res.render('admin/categories', { categories, category })
     } catch (error) {
