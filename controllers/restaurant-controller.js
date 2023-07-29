@@ -17,8 +17,8 @@ const restaurantController = {
           where: { // 新增查詢條件
             ...categoryId ? { categoryId } : {} // 檢查 categoryId 是否為空值,... 有列後性，判斷完才會展開
           },
-          limit,
-          offset,
+          limit, // 每頁限制放的資料量
+          offset, // 每次開始計算新的一頁時，先偏移多少資料
           nest: true,
           raw: true
         }),
