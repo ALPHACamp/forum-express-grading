@@ -25,10 +25,12 @@ const restaurantController = {
         Category.findAll({ raw: true })
       ])
       const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
+      const likedRestaurantsId = req.user && req.user.LikedRestaurants.map(lr => lr.id)
       const restaurantData = restaurants.rows.map(restaurant => ({
         ...restaurant,
         description: restaurant.description.substring(0, 50),
-        isFavorited: favoritedRestaurantsId.includes(restaurant.id)
+        isFavorited: favoritedRestaurantsId.includes(restaurant.id),
+        isLiked: likedRestaurantsId.includes(restaurant.id)
       }))
 
       return res.render('restaurants', {
@@ -48,7 +50,8 @@ const restaurantController = {
         include: [
           Category,
           { model: Comment, include: User },
-          { model: User, as: 'FavoritedUsers' }
+          { model: User, as: 'FavoritedUsers' },
+          { model: User, as: 'LikedUsers' }
         ]
       })
 
@@ -60,10 +63,12 @@ const restaurantController = {
       })
 
       const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id)
+      const isLiked = restaurant.LikedUsers.some(l => l.id === req.user.id)
 
       return res.render('restaurant', {
         restaurant: restaurant.toJSON(),
-        isFavorited
+        isFavorited,
+        isLiked
       })
     } catch (error) {
       return next(error)
