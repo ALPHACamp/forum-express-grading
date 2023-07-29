@@ -13,15 +13,16 @@ const userController = {
 
   signUp: async (req, res, next) => {
     try {
-      if (req.body.password !== req.body.passwordCheck) throw new Error('Passwords do not match!')
+      const { name, email, password, passwordCheck } = req.body
+      if (password !== passwordCheck) throw new Error('Passwords do not match!')
 
-      const user = await User.findOne({ where: { email: req.body.email } })
+      const user = await User.findOne({ where: { email } })
       if (user) throw new Error('Email already exists!')
 
-      const hash = await bcrypt.hashSync(req.body.password, 10)
+      const hash = await bcrypt.hashSync(password, 10)
       await User.create({
-        name: req.body.name,
-        email: req.body.email,
+        name: name,
+        email: email,
         password: hash
       })
       req.flash('success_messages', 'register success!')
@@ -60,17 +61,16 @@ const userController = {
 
   getUser: async (req, res, next) => {
     try {
-      const promiseData = await Promise.all([
+      const userId = req.params.id
+      const [user, comments] = await Promise.all([
         User.findByPk(req.params.id, { raw: true }),
         Comment.findAll({
           raw: true,
           nest: true,
-          where: { userId: req.params.id },
+          where: { userId },
           include: Restaurant
         })
       ])
-      const user = promiseData[0]
-      const comments = promiseData[1]
 
       if (!user) throw new Error("User doesn't exists!")
 
@@ -97,15 +97,12 @@ const userController = {
   putUser: async (req, res, next) => {
     try {
       const { name } = req.body
-      const { file } = req
       if (!name) throw new Error('User name is required!')
 
-      const promiseData = await Promise.all([
+      const [user, filePath] = await Promise.all([
         User.findByPk(req.params.id),
-        imgurFileHandler(file)
+        imgurFileHandler(req.file)
       ])
-      const user = promiseData[0]
-      const filePath = promiseData[1]
 
       if (!user) throw new Error("User doesn't exists!")
 
