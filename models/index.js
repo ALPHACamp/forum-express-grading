@@ -34,7 +34,7 @@ Object.keys(db).forEach(modelName => {
   }
 })
 
-// 匯出需要的物件
+// 匯出需要的物件 (大小寫：分別是class/instance)
 db.sequelize = sequelize
 db.Sequelize = Sequelize
 
