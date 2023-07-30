@@ -9,6 +9,9 @@ const handlebars = require('express-handlebars')
 app.engine('hbs', handlebars({ extname: '.hbs' }))
 app.set('view engine', 'hbs')
 
+// setting body-parser
+app.use(express.urlencoded({ extended: true }))
+
 app.use(routes)
 
 app.listen(port, () => {
