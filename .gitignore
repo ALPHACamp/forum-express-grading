@@ -5,3 +5,4 @@ upload/
 .DS_Store
 .env
 .vscode/
+upload/
