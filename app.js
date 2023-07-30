@@ -19,6 +19,11 @@ app.use(session({
   saveUninitialized: false
 }))
 
+// setting passport
+const passport = require('./config/passport')
+app.use(passport.initialize())
+app.use(passport.session())
+
 // setting flash
 const flash = require('connect-flash')
 app.use(flash())
@@ -28,7 +33,6 @@ app.use((req, res, next) => {
   res.locals.success_messages = req.flash('success_messages')
   res.locals.error_messages = req.flash('error_messages')
 
-  console.log(res.locals)
   next()
 })
 
