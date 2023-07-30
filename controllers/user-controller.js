@@ -2,31 +2,32 @@ const bcrypt = require('bcryptjs')
 // const db = require('../models')
 // const User = db.User
 const { User } = require('../models')
+const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const userController = {
   signUpPage: (req, res) => {
     res.render('signup')
   },
-  signUp: (req, res, next) => {
-    if (req.body.password !== req.body.passwordCheck) throw new Error('passwords do not match')
-    // throw拋出Error(Error建構函式建立error物件)由middleware/error-handler接起來
-    User.findOne({ where: { email: req.body.email } })
-      .then(user => {
-        if (user) {
-          throw new Error('Email already exists!')
-        }
-        return bcrypt.hash(req.body.password, 10)
+  signUp: async (req, res, next) => {
+    try {
+      const { name, email, password, passwordCheck } = req.body
+      const user = await User.findOne({ where: { email } })
+      if (user) { throw new Error('Email already exists!') }
+      if (password !== passwordCheck) throw new Error('passwords do not match')
+      const { file } = req
+      const filePath = await imgurFileHandler(file)
+      const passwordSalt = await bcrypt.hash(password, 10)
+      await User.create({
+        name,
+        email,
+        password: passwordSalt,
+        image: filePath || null
       })
-      .then(hash => User.create({
-        name: req.body.name,
-        email: req.body.email,
-        password: hash
-      }))
-      .then(() => {
-        req.flash('success_messages', '成功註冊帳號')
-        res.redirect('/signin')
-      })
-      .catch(err => next(err))
+      req.flash('success_messages', '成功註冊帳號')
+      res.redirect('/signin')
+    } catch (err) {
+      next(err)
+    }
   },
   signInPage: (req, res) => {
     res.render('signin')

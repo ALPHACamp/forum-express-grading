@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 const adminController = require('../../controllers/admin-controller')
 const categoryController = require('../../controllers/category-controller')
-const upload = require('../../middleware/multer')
+const upload = require('../../middleware/multer') // 載入 multer 讓image可以載入臨時資料夾等待上傳
 
 router.patch('/users/:id', adminController.patchUser)
 router.get('/users', adminController.getUsers)
