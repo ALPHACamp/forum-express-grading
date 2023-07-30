@@ -6,7 +6,6 @@ module.exports = {
       type: Sequelize.STRING
     })
   },
-
   down: async (queryInterface, Sequelize) => {
     await queryInterface.removeColumn('Restaurants', 'image')
   }

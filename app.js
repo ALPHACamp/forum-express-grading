@@ -11,6 +11,10 @@ const db = require('./models')
 const { getUser } = require('./helper/auth-helper')
 const handlebarsHelper = require('./helper/handlebars-helper')
 
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
+
 const app = express()
 const port = process.env.PORT || 3000
 const SESSION_SECRET = 'secret'
