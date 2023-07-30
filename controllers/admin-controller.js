@@ -15,24 +15,29 @@ const adminController = {
     return Category.findAll({
       raw: true
     })
-      .then(categories => res.render('admin/create-restaurant', { categories }))
+      .then(categories =>
+        res.render('admin/create-restaurant', { categories })
+      )
       .catch(err => next(err))
   },
   postRestaurant: (req, res, next) => {
-    const { name, tel, address, openingHours, description, categoryId } = req.body
+    const { name, tel, address, openingHours, description, categoryId } =
+      req.body
     if (!name) throw new Error('Restaurant name is required!')
     // name 是必填，若發先是空值就會終止程式碼，並在畫面顯示錯誤提示
     const { file } = req
     imgurFileHandler(file)
-      .then(filePath => Restaurant.create({
-        name,
-        tel,
-        address,
-        openingHours,
-        description,
-        image: filePath || null,
-        categoryId
-      }))
+      .then(filePath =>
+        Restaurant.create({
+          name,
+          tel,
+          address,
+          openingHours,
+          description,
+          image: filePath || null,
+          categoryId
+        })
+      )
       .then(() => {
         req.flash('success_messages', 'restaurant was successfully created') // 在畫面顯示成功提示
         res.redirect('/admin/restaurants')
@@ -40,7 +45,8 @@ const adminController = {
       .catch(err => next(err))
   },
   getRestaurant: (req, res, next) => {
-    Restaurant.findByPk(req.params.id, { // 去資料庫用 id 找一筆資料
+    Restaurant.findByPk(req.params.id, {
+      // 去資料庫用 id 找一筆資料
       raw: true,
       nest: true,
       include: [Category]
@@ -63,7 +69,8 @@ const adminController = {
       .catch(err => next(err))
   },
   putRestaurant: (req, res, next) => {
-    const { name, tel, address, openingHours, description, categoryId } = req.body
+    const { name, tel, address, openingHours, description, categoryId } =
+      req.body
     if (!name) throw new Error('Restaurant name is required!')
     const { file } = req
     Promise.all([Restaurant.findByPk(req.params.id), imgurFileHandler(file)])
@@ -97,10 +104,10 @@ const adminController = {
   getUsers: (req, res, next) => {
     User.findAll({
       raw: true
+      // nest: true
+    }).then(users => {
+      return res.render('admin/users', { users })
     })
-      .then(users => {
-        return res.render('admin/users', { users })
-      })
   }
 }
 module.exports = adminController
