@@ -2,7 +2,7 @@ const express = require('express')
 const app = express()
 const port = process.env.PORT || 3000
 
-const handlebarsHelpers = require('./helpers/handlebars-helpers');
+const handlebarsHelpers = require('./helpers/handlebars-helpers')
 
 // setting view engine
 const handlebars = require('express-handlebars')
