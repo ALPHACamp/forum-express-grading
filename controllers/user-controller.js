@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs')
-const { User, Restaurant, Comment, Favorite, Like } = require('../models')
+const { User, Restaurant, Comment, Favorite, Like, Followship } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const userController = {
@@ -232,12 +232,70 @@ const userController = {
         include: [
           { model: User, as: 'Followers' }]
       })
+
       const usersData = await users.map(user => ({
         ...user.toJSON(),
         followerCount: user.Followers.length,
         isFollowed: req.user.Followings.some(f => f.id === user.id)
       }))
+        .sort((a, b) => b.followerCount - a.followerCount)
+
       return res.render('top-users', { users: usersData })
+    } catch (error) {
+      return next(error)
+    }
+  },
+
+  addFollowing: async (req, res, next) => {
+    try {
+      const { userId } = req.params
+
+      const [user, followship] = await Promise.all([
+        User.findByPk(userId),
+        Followship.findOne({
+          where: {
+            followerId: req.user.id,
+            followingId: req.params.userId
+          }
+        })
+      ])
+
+      if (!user) throw new Error("User doesn't exist")
+      if (followship) throw new Error('You are already following this user!')
+
+      await Followship.create({
+        followerId: req.user.id,
+        followingId: userId
+      })
+      req.flash('success_messages', 'You have successfully followed this user to followship')
+
+      return res.redirect('back')
+    } catch (error) {
+      return next(error)
+    }
+  },
+
+  removeFollowing: async (req, res, next) => {
+    try {
+      const { userId } = req.params
+
+      const [user, followship] = await Promise.all([
+        User.findByPk(userId),
+        Followship.findOne({
+          where: {
+            followerId: req.user.id,
+            followingId: req.params.userId
+          }
+        })
+      ])
+
+      if (!user) throw new Error("User doesn't exist")
+      if (!followship) throw new Error("You haven't followed this user!")
+
+      await followship.destroy()
+      req.flash('success_messages', 'You have successfully removed user from this followship')
+
+      return res.redirect('back')
     } catch (error) {
       return next(error)
     }
