@@ -4,6 +4,10 @@ const routes = require('./routes')
 const app = express()
 const port = process.env.PORT || 3000
 
+// setting view engine
+const handlebars = require('express-handlebars')
+app.engine('hbs', handlebars({ extname: '.hbs' }))
+
 app.use(routes)
 
 app.listen(port, () => {
