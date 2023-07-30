@@ -2,9 +2,11 @@ const express = require('express')
 const app = express()
 const port = process.env.PORT || 3000
 
+const handlebarsHelpers = require('./helpers/handlebars-helpers');
+
 // setting view engine
 const handlebars = require('express-handlebars')
-app.engine('hbs', handlebars({ extname: '.hbs' }))
+app.engine('hbs', handlebars({ extname: '.hbs', helpers: handlebarsHelpers }))
 app.set('view engine', 'hbs')
 
 // setting body-parser
@@ -29,9 +31,11 @@ const flash = require('connect-flash')
 app.use(flash())
 
 // setting local variable
+const { getUser } = require('./helpers/auth-helpers')
 app.use((req, res, next) => {
   res.locals.success_messages = req.flash('success_messages')
   res.locals.error_messages = req.flash('error_messages')
+  res.locals.user = getUser(req)
 
   next()
 })
