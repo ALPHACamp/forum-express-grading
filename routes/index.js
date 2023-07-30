@@ -5,6 +5,9 @@ const router = express.Router()
 const restController = require('../controllers/restaurant-controller')
 const userController = require('../controllers/user-controller')
 
+// 引入錯誤處理
+const { generalErrorHandler } = require('../middleware/error-handler')
+
 // 引入子路由
 const admin = require('./modules/admin')
 
@@ -16,5 +19,8 @@ router.get('/restaurants', restController.getRestaurants) // (頁面)首頁-餐�
 
 // fallback路由，當其他條件都不符合，最終都會通過這一條
 router.use('/', (req, res) => res.redirect('/restaurants'))
+
+// Error handler
+router.use('/', generalErrorHandler)
 
 module.exports = router
