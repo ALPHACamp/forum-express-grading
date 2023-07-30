@@ -1,7 +1,11 @@
 const express = require('express')
 const router = express.Router()
 const upload = require('../../middlewares/multer')
-const { adminController } = require('../../controllers/admin-controller')
+const adminController = require('../../controllers/admin-controller')
+
+/* R01 HW1 */
+router.patch('/users/:id', adminController.patchUser)
+router.get('/users', adminController.getUsers)
 
 router.get('/restaurants/:id/edit', adminController.editRestaurant)
 // upload的名字要和以下input的name 一樣

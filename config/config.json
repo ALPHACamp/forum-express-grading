@@ -1,6 +1,6 @@
 {
   "development": {
-    "username": "tinymurky",
+    "username": "root",
     "password": "password",
     "database": "forum",
     "host": "127.0.0.1",
