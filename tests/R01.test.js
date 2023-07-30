@@ -108,7 +108,6 @@ describe('# R01', () => {
         // patchUser 正確執行的話，應呼叫 req.flash
         // req.flash 的參數應該要與下列字串一致
         req.flash.calledWith('error_messages','禁止變更 root 權限').should.be.true
-
         // patchUser 執行完畢，應呼叫 res.redirect 並重新導向上一頁 
         res.redirect.calledWith('back').should.be.true
       })
@@ -145,11 +144,13 @@ describe('# R01', () => {
         req.flash.calledWith('success_messages','使用者權限變更成功').should.be.true
         // patchUser 執行完畢，應呼叫 res.redirect 並重新導向 /admin/users
         res.redirect.calledWith('/admin/users').should.be.true
-
         // patchUser 執行完畢後，假資料中 id:1 使用者的應該要是 isAdmin：true
         // 將假資料撈出，比對確認有成功修改到
         const user = await this.UserMock.findOne({ where: { id: 1 } })
+
+        console.log('User', user.isAdmin)
         user.isAdmin.should.equal(true)
+
       })
     })
 

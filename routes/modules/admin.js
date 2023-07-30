@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const upload = require('../../middlewares/multer')
-const { adminController } = require('../../controllers/admin-controller')
+const adminController = require('../../controllers/admin-controller')
 
 /* R01 HW1 */
 router.patch('/users/:id', adminController.patchUser)

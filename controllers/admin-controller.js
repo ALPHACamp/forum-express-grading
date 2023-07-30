@@ -1,6 +1,7 @@
-const { Restaurant } = require('../models')
+const { Restaurant, User } = require('../models')
 const { AdminError } = require('../errors/errors')
 const { imgurFileHandler } = require('../helper/file-helper')
+const adminHelper = require('../helper/admin-helper')
 const adminController = {
   getRestaurants: async (req, res, next) => {
     try {
@@ -128,18 +129,31 @@ const adminController = {
   // R01 HW
   getUsers: async (req, res, next) => {
     try {
-      next()
+      const users = await User.findAll({ raw: true })
+      return res.render('admin/users', { users }) // admin前面不要加forward slash
     } catch (error) {
       return next(error)
     }
   },
   patchUser: async (req, res, next) => {
     try {
-      next()
+      const id = parseInt(req.params.id, 10)
+      const targetUser = await User.findByPk(id)
+      const rootBeenRemove = adminHelper.isRootAdminBeenRemove(targetUser, 'root@example.com')
+      if (rootBeenRemove) {
+        req.flash('error_messages', '禁止變更 root 權限') // 不能用throw error的方式，測試黨會抓不到req.flash
+        return res.redirect('back')
+      }
+      // 不要用set + save, 測試黨抓不到
+      await targetUser.update({
+        isAdmin: !targetUser.isAdmin
+      })
+      req.flash('success_messages', '使用者權限變更成功')
+      return res.redirect('/admin/users')
     } catch (error) {
       return next(error)
     }
   }
 }
 
-module.exports = { adminController }
+module.exports = adminController

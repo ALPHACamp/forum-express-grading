@@ -5,7 +5,7 @@ const generalErrorHandler = (err, req, res, next) => {
       req.flash('error_messages', `Register Error: ${err.message}`)
       break
     case AdminError:
-      req.flash('error_messages', `Admin Error: ${err.message}`)
+      req.flash('error_messages', `${err.message}`)
       break
     case Error:
       req.flash('error_messages', `${err.name}: ${err.message}`)
