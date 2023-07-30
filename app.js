@@ -5,7 +5,7 @@ const routes = require('./routes')
 const app = express()
 const port = process.env.PORT || 3000
 
-app.engine('hbs', exphbs.engine({
+app.engine('hbs', exphbs({
   defaultLayout: 'main',
   extname: 'hbs'
 }))
