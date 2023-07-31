@@ -9,6 +9,15 @@ const adminController = {
       .then(restaurants => res.render('admin/restaurants', { restaurants }))
       .catch(err => next(err))
   },
+  // (頁面) 顯示單一餐廳詳細資料
+  getRestaurant: (req, res, next) => {
+    Restaurant.findByPk(req.params.id, { raw: true })
+      .then(restaurant => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        return res.render('admin/restaurant', { restaurant })
+      })
+      .catch(err => next(err))
+  },
   // (頁面) 顯示新增餐廳表單
   createRestaurant: (req, res, next) => {
     return res.render('admin/create-restaurant')
