@@ -48,7 +48,39 @@ const userController = {
         nest: true
       })
       if (!user) { throw new Error("User didn't exist!") }
-      res.render('profile', { user })
+      res.render('users/profile', { user })
+    } catch (err) {
+      next(err)
+    }
+  },
+  editUser: async (req, res, next) => {
+    try {
+      const user = await User.findByPk(req.params.id, {
+        raw: true,
+        nest: true
+      })
+      if (!user) { throw new Error("User didn't exist!") }
+      res.render('users/edit-profile', { user })
+    } catch (err) {
+      next(err)
+    }
+  },
+  putUser: async (req, res, next) => {
+    try {
+      const user = await User.findByPk(req.params.id)
+      if (!user) throw new Error("User didn't exist!")
+      const { name, password, passwordCheck } = req.body
+      if (password !== passwordCheck) throw new Error('passwords do not match')
+      const { file } = req
+      const filePath = await imgurFileHandler(file)
+      const passwordSalt = await bcrypt.hash(password, 10)
+      await user.update({
+        name,
+        password: passwordSalt,
+        image: filePath || user.image
+      })
+      req.flash('success_messages', 'User was successfully to update')
+      res.redirect(`/users/${user.id}`)
     } catch (err) {
       next(err)
     }
