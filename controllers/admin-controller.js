@@ -102,12 +102,35 @@ const adminController = {
       .catch(err => next(err))
   },
   getUsers: (req, res, next) => {
-    User.findAll({
-      raw: true
-      // nest: true
+    return User.findAll({
+      raw: true,
+      nest: true
     }).then(users => {
       return res.render('admin/users', { users })
-    })
+    }).catch(err => next(err))
+  },
+  patchUser: (req, res, next) => {
+    return User.findByPk(req.params.id)
+      .then(user => {
+        if (user.dataValues.email === 'root@example.com') {
+          req.flash('error_messages', '禁止變更 root 權限')
+          return res.redirect('back')
+        }
+        if (user.dataValues.isAdmin) {
+          user.update({
+            isAdmin: !user.isAdmin
+          })
+          req.flash('success_messages', '使用者權限變更成功')
+          return res.redirect('/admin/users')
+        } else {
+          user.update({
+            isAdmin: !user.isAdmin
+          })
+          req.flash('success_messages', '使用者權限變更成功')
+          return res.redirect('/admin/users')
+        }
+      })
+      .catch(err => next(err))
   }
 }
 module.exports = adminController
