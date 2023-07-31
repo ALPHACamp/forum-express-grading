@@ -8,6 +8,7 @@ router.get('/restaurants/create', adminController.createRestaurant) // (頁面)�
 router.get('/restaurants/:id/edit', adminController.editRestaurant) // (頁面)修改餐廳
 router.get('/restaurants/:id', adminController.getRestaurant) // (頁面)瀏覽單一餐廳詳細資料
 router.put('/restaurants/:id', adminController.putRestaurant) // (功能)修改餐廳資料
+router.delete('/restaurants/:id', adminController.deleteRestaurant) // (功能)刪除餐廳
 
 router.get('/restaurants', adminController.getRestaurants) // (頁面)餐廳管理清單
 
