@@ -26,7 +26,7 @@ const adminController = {
     if (!name) throw new Error('Restaurant name is required!')
     // name 是必填，若發先是空值就會終止程式碼，並在畫面顯示錯誤提示
     const { file } = req
-    imgurFileHandler(file)
+    return imgurFileHandler(file)
       .then(filePath =>
         Restaurant.create({
           name,
@@ -73,7 +73,7 @@ const adminController = {
       req.body
     if (!name) throw new Error('Restaurant name is required!')
     const { file } = req
-    Promise.all([Restaurant.findByPk(req.params.id), imgurFileHandler(file)])
+    return Promise.all([Restaurant.findByPk(req.params.id), imgurFileHandler(file)])
       .then(([restaurant, filePath]) => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         return restaurant.update({
