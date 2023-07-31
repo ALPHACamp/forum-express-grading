@@ -66,23 +66,20 @@ const userController = {
   },
   putUser: async (req, res, next) => {
     try {
-      const user = await User.findByPk(req.params.id)
-      if (!user) throw new Error("User didn't exist!")
-      if (req.user.id !== Number(req.params.id)) throw new Error('User can only edit him or her own profile!')
-      const { name, password, passwordCheck } = req.body
+      const { name } = req.body
       if (!name) throw new Error('User name is required!')
-      if (password !== passwordCheck) throw new Error('passwords do not match')
+      if (req.user.id !== Number(req.params.id)) throw new Error('User can only edit him or her own profile!')
       const { file } = req
-      const [filePath, passwordSalt] = await Promise.all([
-        imgurFileHandler(file),
-        bcrypt.hash(password, 10)
+      const [user, filePath] = await Promise.all([
+        User.findByPk(req.user.id),
+        imgurFileHandler(file)
       ])
+      if (!user) throw new Error("User didn't exist!")
       await user.update({
         name,
-        password: passwordSalt,
         image: filePath || user.image
       })
-      req.flash('success_messages', 'User was successfully to update')
+      req.flash('success_messages', '使用者資料編輯成功')
       res.redirect(`/users/${req.user.id}`)
     } catch (err) {
       next(err)
