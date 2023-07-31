@@ -30,6 +30,10 @@ app.use(passport.session())
 const flash = require('connect-flash')
 app.use(flash())
 
+// setting method-override
+const methodOverride = require('method-override')
+app.use(methodOverride('_method'))
+
 // setting local variable
 const { getUser } = require('./helpers/auth-helpers')
 app.use((req, res, next) => {
