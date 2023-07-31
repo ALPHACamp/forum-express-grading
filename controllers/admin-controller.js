@@ -1,4 +1,4 @@
-const { Restaurant, User } = require('../models')
+const { Restaurant, User, Category } = require('../models')
 const { AdminError } = require('../errors/errors')
 const { imgurFileHandler } = require('../helper/file-helper')
 const adminHelper = require('../helper/admin-helper')
@@ -6,16 +6,28 @@ const adminController = {
   getRestaurants: async (req, res, next) => {
     try {
       const restaurants = await Restaurant.findAll({
-        raw: true
+        raw: true,
+        nest: true,
+        include: [Category] // 一起帶入Category的東西
       })
+      /* 不加nest會長這樣
+        Restaurant{
+          'Category.id': 43,
+          'Category.name': '中式料理',
+          'Category.createdAt': 2023-07-31T09:03:17.000Z,
+          'Category.updatedAt': 2023-07-31T09:03:17.000Z
+        }
+
+      */
       return res.render('admin/restaurants', { restaurants }) // admin前面不要加forward slash
     } catch (error) {
       return next(error)
     }
   },
-  createRestaurants: (req, res, next) => {
+  createRestaurants: async (req, res, next) => {
     try {
-      res.render('admin/create-restaurants')
+      const categories = await Category.findAll({ raw: true })
+      res.render('admin/create-restaurants', { categories })
     } catch (error) {
       return next(error)
     }
@@ -26,7 +38,7 @@ const adminController = {
       // file則是從multer讀進來的東西，要丟到file-helper裡
 
       const { body, file } = req // 取出 req.body req.file
-      const { name, tel, address, openingHours, description } = body
+      const { name, tel, address, openingHours, description, categoryId } = body
       // 把file放進helper裡面，回傳的值放進資料庫裡
       const filePath = await imgurFileHandler(file)
 
@@ -37,7 +49,8 @@ const adminController = {
         address,
         openingHours,
         description,
-        image: filePath || null
+        image: filePath || null,
+        categoryId
       })
       req.flash('success_messages', 'restaurant was successfully created') // 在畫面顯示成功提示
       return res.redirect('/admin/restaurants')
@@ -49,12 +62,13 @@ const adminController = {
     try {
       const id = parseInt(req.params.id, 10)
       const restaurant = await Restaurant.findByPk(id, {
-        raw: true // 去掉query的原始值
+        include: [Category]
       })
       if (!restaurant) {
         throw new AdminError('Restaurant didn\'t exist!')
       }
-      return res.render('admin/restaurant', { restaurant })
+      // 使用toJSON取出檔案不會改變restaurant原本sequelize屬性，之後可以做別種操作
+      return res.render('admin/restaurant', { restaurant: restaurant.toJSON() })
     } catch (error) {
       return next(error)
     }
@@ -62,13 +76,16 @@ const adminController = {
   editRestaurant: async (req, res, next) => {
     try {
       const id = parseInt(req.params.id, 10)
-      const restaurant = await Restaurant.findByPk(id, {
-        raw: true // 去掉query的原始值
-      })
+      const [restaurant, categories] = await Promise.all([
+        Restaurant.findByPk(id, {
+          raw: true // 去掉query的原始值
+        }),
+        Category.findAll({ raw: true }) // 取得所有category給表單渲染
+      ])
       if (!restaurant) {
         throw new AdminError('Restaurant didn\'t exist!')
       }
-      return res.render('admin/edit-restaurant', { restaurant })
+      return res.render('admin/edit-restaurant', { restaurant, categories })
     } catch (error) {
       return next(error)
     }
@@ -88,7 +105,7 @@ const adminController = {
       // file是使用multer 取出圖片檔
       const { body, file } = req
       // 沒有提供名稱也會抱錯
-      const { name, tel, address, openingHours, description } = body
+      const { name, tel, address, openingHours, description, categoryId } = body
       const filePath = await imgurFileHandler(file)
       if (!name) { throw new AdminError('Restaurant name is required!') }
 
@@ -98,7 +115,8 @@ const adminController = {
         address,
         openingHours,
         description,
-        image: filePath || restaurant.image // 如果 filePath 是 Truthy (使用者有上傳新照片) 就用 filePath，是 Falsy (使用者沒有上傳新照片) 就沿用原本資料庫內的值
+        image: filePath || restaurant.image, // 如果 filePath 是 Truthy (使用者有上傳新照片) 就用 filePath，是 Falsy (使用者沒有上傳新照片) 就沿用原本資料庫內的值
+        categoryId
       })
       await restaurant.save()
       req.flash('success_messages', 'restaurant was successfully to update')
