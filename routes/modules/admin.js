@@ -3,7 +3,10 @@ const router = express.Router()
 
 const adminController = require('../../controllers/admin-controller')
 
-router.get('/restaurants', adminController.getRestaurants)
+// import middleware
+const { authenticatedAdmin } = require('../../middleware/auth')
+
+router.get('/restaurants', authenticatedAdmin, adminController.getRestaurants)
 
 router.use('/', (req, res) => res.redirect('/admin/restaurants'))
 
