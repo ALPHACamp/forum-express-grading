@@ -34,6 +34,10 @@ app.use(flash())
 const methodOverride = require('method-override')
 app.use(methodOverride('_method'))
 
+// setting static file directory
+const path = require('path')
+app.use('/upload', express.static(path.join(__dirname, 'upload')))
+
 // setting local variable
 const { getUser } = require('./helpers/auth-helpers')
 app.use((req, res, next) => {

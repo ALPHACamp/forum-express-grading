@@ -1,6 +1,8 @@
 
 const { Restaurant } = require('../models')
 
+const { localFileHandler } = require('../helpers/file-helpers')
+
 const adminController = {
 
   // (頁面) 顯示餐廳管理清單
@@ -25,10 +27,18 @@ const adminController = {
   // (功能) 新增餐廳
   postRestaurant: (req, res, next) => {
     const { name, tel, address, openingHours, description } = req.body
-
     if (!name) throw new Error('Restaurant name is required!')
 
-    Restaurant.create({ name, tel, address, openingHours, description })
+    const { file } = req
+    localFileHandler(file) // 把取出的檔案傳給 file-helper 處理
+      .then(filePath => Restaurant.create({
+        name,
+        tel,
+        address,
+        openingHours,
+        description,
+        image: filePath || null // 將檔案路徑存在image中
+      }))
       .then(() => {
         req.flash('success_messages', 'restaurant was successfully created')
         res.redirect('/admin/restaurants')
@@ -47,13 +57,24 @@ const adminController = {
   // (功能) 修改餐廳
   putRestaurant: (req, res, next) => {
     const { name, tel, address, openingHours, description } = req.body
-
     if (!name) throw new Error('Restaurant name is required!')
-    Restaurant.findByPk(req.params.id)
-      .then(restaurant => {
+
+    const { file } = req
+    Promise.all([
+      Restaurant.findByPk(req.params.id),
+      localFileHandler(file)
+    ])
+      .then(([restaurant, filePath]) => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
 
-        return restaurant.update({ name, tel, address, openingHours, description })
+        return restaurant.update({
+          name,
+          tel,
+          address,
+          openingHours,
+          description,
+          image: filePath || restaurant.image
+        })
       })
       .then(() => {
         req.flash('success_messages', 'restaurant was updated successfully')
