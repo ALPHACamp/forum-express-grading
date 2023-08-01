@@ -21,7 +21,7 @@ const imgurFileHandler = file => {
 
     return imgur.uploadFile(file.path)
       .then(img => {
-        resolve(img?.link || null) //等於 resolve((img? img.link || void 0 )|| null) // 檢查 img 是否存在
+        resolve(img?.link || null)
       })
       .catch(err => reject(err))
   })
