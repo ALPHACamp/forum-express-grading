@@ -10,11 +10,11 @@ const userController = {
   signUp: (req, res, next) => {
     const { name, email, password, passwordCheck } = req.body
 
-    if(password !== passwordCheck) throw new Error('Password do not match!')
+    if (password !== passwordCheck) throw new Error('Password do not match!')
 
     User.findOne({ where: { email } })
       .then(user => {
-        if(user) throw new Error('Email already exist!')
+        if (user) throw new Error('Email already exist!')
 
         return bcrypt.hash(password, 10)
       })
