@@ -1,3 +1,4 @@
+const path = require('path') // 引入 path 套件
 const express = require('express')
 const handlebars = require('express-handlebars')
 const flash = require('connect-flash')
@@ -23,6 +24,7 @@ app.use(passport.session()) // 增加這行，啟動 session 功能
 
 app.use(flash()) // 掛載套件
 app.use(methodOverride('_method'))
+app.use('/upload', express.static(path.join(__dirname, 'upload')))
 
 app.use((req, res, next) => {
   res.locals.success_messages = req.flash('success_messages')
