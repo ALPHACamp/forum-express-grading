@@ -1,0 +1,44 @@
+{{>admin-tabs route='users'}}
+<br />
+<table class="table align-middle">
+  <thead class="thead-dark">
+    <tr class="table-dark">
+      <th scope="col">#</th>
+      <th scope="col">Name</th>
+      <th scope="col">Email</th>
+      <th scope="col">Role</th>
+      <th scope="col">#</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each users}}
+    <tr>
+      <th scope="row">{{this.id}}</th>
+      <td>{{this.name}}</td>
+      <td>{{this.email}}</td>
+      <td>
+        {{#if this.isAdmin}}
+        admin
+        {{else}}
+        user
+        {{/if}}
+      </td>
+      <td>
+        {{#if this.isAdmin}}
+        <form action="/admin/users/{{this.id}}?_method=PATCH" method="POST" style="display: inline;">
+          <input type="hidden" name="isAdmin" value="false" />
+          <button type="submit" class="btn btn-link link-primary" onclick="return confirm(`確定要更改 {{ this.name }} 的權限嗎？`)">Set as User</button>
+        </form>
+        {{else}}
+        <form action="/admin/users/{{this.id}}?_method=PATCH" method="POST" style="display: inline;">
+          <input type="hidden" name="isAdmin" value="false" />
+          <button type="submit" class="btn btn-link link-primary" onclick="return confirm(`確定要更改 {{ this.name }} 的權限嗎？`)">Set as Admin</button>
+        </form>
+        {{/if}}
+      </td>
+    </tr>
+    {{/each}}
+  </tbody>
+</table>
+
+
