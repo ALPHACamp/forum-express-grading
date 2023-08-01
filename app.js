@@ -1,5 +1,5 @@
 const express = require('express')
-const handlebars = require('express-handlbars') // 引入 express-handlebars
+const handlebars = require('express-handlebars') // 引入 express-handlebars
 const routes = require('./routes')
 
 const app = express()
