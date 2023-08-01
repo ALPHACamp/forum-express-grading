@@ -1,0 +1,39 @@
+<h1>餐廳後台</h1>
+{{> admin-tabs }}
+
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Name</th>
+      <th scope="col">Email</th>
+      <th scope="col">role</th>
+      <th scope="col">control</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each users}}
+    <tr>
+      <th scope="row">{{this.id}}</th>
+      <td>{{this.name}}</td>
+      <td>{{this.email}}</td>
+      <td>{{#if this.isAdmin}}admin{{else}}user{{/if}}</td>
+      <td>
+        <form action="/admin/users/{{this.id}}?_method=PATCH" method="POST">
+          {{#if this.isAdmin}}
+          <input type="hidden" name="isAdmin" value="false" />
+          <button type="submit" class="btn btn-link" onclick="return confirm(`確定要更改 {{ this.name }} 的權限嗎？`)">
+              set as user
+          </button>
+          {{else}}
+          <input type="hidden" name="isAdmin" value="false" />
+          <button type="submit" class="btn btn-link" onclick="return confirm(`確定要更改 {{ this.name }} 的權限嗎？`)" type="submit">
+              set as admin
+          </button>
+          {{/if}}
+        </form>
+      </td>
+    </tr>
+    {{/each}}
+  </tbody>
+</table>
