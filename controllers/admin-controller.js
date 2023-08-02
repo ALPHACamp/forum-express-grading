@@ -1,6 +1,24 @@
+const { Restaurant } = require('../models')
+
 const adminController = {
-  getRestaurants: (req, res) => {
-    return res.render('admin/restaurants')
+
+  getRestaurants: (req, res, next) => {
+    return Restaurant.findAll({ raw: true })
+      .then(restaurants => res.render('admin/restaurants', { restaurants }))
+      .catch(err => next(err))
+  },
+  createRestaurant: (req, res) => {
+    return res.render('admin/create-restaurant')
+  },
+  postRestaurant: (req, res, next) => {
+    const { name, tel, address, openingHours, description } = req.body
+    if (!name) throw new Error('Resraurant name is required!')
+    return Restaurant.create({ name, tel, address, openingHours, description })
+      .then(() => {
+        req.flash('success_msg', 'Restaurant created successfully.')
+        res.redirect('/admin/restaurants')
+      })
+      .catch(err => next(err))
   }
 }
 
