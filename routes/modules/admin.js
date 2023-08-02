@@ -18,8 +18,9 @@ router.post('/restaurants', upload.single('image'), adminController.postRestaura
 // 瀏覽全部資料頁面
 router.get('/restaurants', adminController.getRestaurants)
 
+router.patch('/users/:id', adminController.patchUser)
 router.get('/users', adminController.getUsers)
-// router.patch('/users/:id', adminController.patchUsers)
+
 
 
 // 注意這邊在教案中是router.use('',(req, res)...)

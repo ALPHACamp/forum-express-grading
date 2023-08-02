@@ -88,10 +88,33 @@ const adminController = {
       .catch(err => next(err))
   },
   getUsers: (req, res, next) => {
-    User.findAll({
+    // 這邊沒加return 測試檔讀不到
+    return User.findAll({
       raw: true
     })
-      .then(users => res.render('admin/users', { users }))
+      .then(users => {
+        console.log(users)
+        res.render('admin/users', { users })
+      })
+      .catch(err => next(err))
+  },
+  patchUser: (req, res, next) => {
+    return User.findByPk(req.params.id)
+      .then(user => {
+        if (!user) throw new Error("User didn't exist")
+        // dataValues: 因sequelize抓取回的資料未經處裡，故使用dataValues抓取內部所需資料
+        if (user.dataValues.email === 'root@example.com') {
+          req.flash('error_messages', '禁止變更 root 權限')
+          return res.redirect('back')
+        }
+        return user.update({
+          isAdmin: !user.isAdmin
+        })
+      })
+      .then(() => {
+        req.flash('success_messages', '使用者權限變更成功')
+        res.redirect('/admin/users')
+      })
       .catch(err => next(err))
   }
 }
