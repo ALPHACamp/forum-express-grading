@@ -89,6 +89,7 @@ const adminController = {
   },
   getUsers: (req, res, next) => {
     // 這邊沒加return 測試檔讀不到
+    // 因為測試檔已經跑到後面，但這邊的非同步還沒執行完
     return User.findAll({
       raw: true
     })
