@@ -13,7 +13,8 @@ module.exports = {
         return {
           name,
           created_at: new Date(),
-          updated_at: new Date()
+          updated_at: new Date(),
+          deleted_at: null
         }
       }), {})
   },

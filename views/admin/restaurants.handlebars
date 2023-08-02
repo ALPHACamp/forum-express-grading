@@ -1,4 +1,4 @@
-{{>admin-header-tag}}
+{{>admin-header-tag route="restaurants"}}
 <a href='/admin/restaurants/create'>
   <button type="button" class="btn btn-primary">New Restaurant</button>
 </a>
@@ -18,7 +18,7 @@
       <tr>
         <th scope="row">{{this.id}}</th>
         <td>{{this.name}}</td>
-        <td>{{this.Category.name}}</td>
+        <td>{{#if this.Category.name}}{{this.Category.name}}{{else}}<span style="color: red;">(未分類)</span>{{/if}}</td>
         <td>
           <button type="button" class="btn btn-link">
             <a class="btn btn-link link-primary" href="/admin/restaurants/{{this.id}}">

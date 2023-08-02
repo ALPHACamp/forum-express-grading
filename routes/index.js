@@ -18,6 +18,8 @@ router.get('/restaurants', authenticated, restController.getRestaurants) // åªæ
 router.use('/', (req, res) => {
   res.redirect('/restaurants')
 })
+
+/* Error handleling, to middleware with err at the begin of argument */
 router.use('/', generalErrorHandler)
 
 module.exports = router

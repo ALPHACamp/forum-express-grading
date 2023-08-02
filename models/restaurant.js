@@ -20,11 +20,13 @@ module.exports = (sequelize, DataTypes) => {
     openingHours: DataTypes.STRING,
     description: DataTypes.TEXT,
     address: DataTypes.STRING,
-    image: DataTypes.STRING
+    image: DataTypes.STRING,
+    deletedAt: DataTypes.DATE
   }, {
     sequelize,
     modelName: 'Restaurant',
     tableName: 'Restaurants', // 自己新增這一行
+    paranoid: true, // 啟動soft delete
     underscored: true
   })
   return Restaurant

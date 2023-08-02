@@ -1,10 +1,13 @@
-const { RegisterError, AdminError } = require('../errors/errors')
+const { RegisterError, AdminError, AdminCategoryError } = require('../errors/errors')
 const generalErrorHandler = (err, req, res, next) => {
   switch (err.constructor) { // 用constructor來區分不同的錯誤
     case RegisterError:// 練習用自創error
       req.flash('error_messages', `Register Error: ${err.message}`)
       break
     case AdminError:
+      req.flash('error_messages', `${err.message}`)
+      break
+    case AdminCategoryError:
       req.flash('error_messages', `${err.message}`)
       break
     case Error:

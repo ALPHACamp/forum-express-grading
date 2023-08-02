@@ -18,7 +18,8 @@ module.exports = {
         created_at: new Date(),
         updated_at: new Date(),
         image: `https://loremflickr.com/320/240/restaurant,food/?random=${Math.floor(Math.random() * 100)}`,
-        category_id: categories[Math.floor(Math.random() * categories.length)].id
+        category_id: categories[Math.floor(Math.random() * categories.length)].id,
+        deleted_at: null
       }
     })
     await queryInterface.bulkInsert('Restaurants', restaurantSeeds, {})

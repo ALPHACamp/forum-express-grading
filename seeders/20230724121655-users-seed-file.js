@@ -11,7 +11,8 @@ const userSeed = [
     password: bcrypt.hashSync('12345678', salt),
     created_at: new Date(), // queryInterface要用snake case
     updated_at: new Date(),
-    is_admin: true
+    is_admin: true,
+    deleted_at: null
   }, {
     id: 2,
     name: 'user1',
@@ -19,7 +20,8 @@ const userSeed = [
     password: bcrypt.hashSync('12345678', salt),
     created_at: new Date(),
     updated_at: new Date(),
-    is_admin: false
+    is_admin: false,
+    deleted_at: null
   }, {
     id: 3,
     name: 'user2',
@@ -27,7 +29,8 @@ const userSeed = [
     password: bcrypt.hashSync('12345678', salt),
     created_at: new Date(),
     updated_at: new Date(),
-    is_admin: false
+    is_admin: false,
+    deleted_at: null
   }]
 
 /** @type {import('sequelize-cli').Migration} */

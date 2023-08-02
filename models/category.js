@@ -15,11 +15,13 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Category.init({
-    name: DataTypes.STRING
+    name: DataTypes.STRING,
+    deletedAt: DataTypes.DATE // for soft delete
   }, {
     sequelize,
     modelName: 'Category',
     tableName: 'Categories',
+    paranoid: true, // 啟動soft delete
     underscored: true
 
   })

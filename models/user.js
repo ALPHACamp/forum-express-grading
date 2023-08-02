@@ -17,11 +17,13 @@ module.exports = (sequelize, DataTypes) => {
     name: DataTypes.STRING,
     email: DataTypes.STRING,
     password: DataTypes.STRING,
-    isAdmin: DataTypes.BOOLEAN
+    isAdmin: DataTypes.BOOLEAN,
+    deletedAt: DataTypes.DATE // for soft delete
   }, {
     sequelize, // 把index.js instance 的sequelize物件塞進去
     modelName: 'User',
     tableName: 'Users', // 手動新增table名稱
+    paranoid: true, // 啟動soft delete
     underscored: true
   })
   return User
