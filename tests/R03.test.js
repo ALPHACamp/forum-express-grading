@@ -2,7 +2,7 @@ const chai = require('chai')
 const sinon = require('sinon')
 const should = chai.should()
 
-const helpers = require('../helpers/auth-helper')
+const helpers = require('../helpers/auth-helpers')
 const { createModelMock, createControllerProxy, mockRequest, mockResponse, mockNext } = require('../helpers/unit-test-helper');
 
 describe('# R03', () => {

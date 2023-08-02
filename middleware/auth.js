@@ -1,6 +1,6 @@
 // 用來驗證登入狀態與是否有Admin身分
 
-const helpers = require('../helpers/auth-helper')
+const helpers = require('../helpers/auth-helpers')
 
 const authenticated = (req, res, next) => {
   // if (req.isAuthenticated)

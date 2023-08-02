@@ -49,7 +49,7 @@ const userController = {
         include: [{ model: Comment, include: Restaurant }]
       })
       if (!user) { throw new Error("User didn't exist!") }
-      res.render('users/profile', { user: user.toJSON(), myUser: req.user.id })
+      res.render('users/profile', { user: user.toJSON()/*, myUser: req.user.id */ })
     } catch (err) {
       next(err)
     }
@@ -58,7 +58,7 @@ const userController = {
     try {
       const user = await User.findByPk(req.params.id, { raw: true })
       if (!user) { throw new Error("User didn't exist!") }
-      if (req.user.id !== Number(req.params.id)) throw new Error('User can only edit him or her own profile!')
+      // if (req.user.id !== Number(req.params.id)) throw new Error('User can only edit him or her own profile!')
       res.render('users/edit', { user })
     } catch (err) {
       next(err)
