@@ -26,10 +26,12 @@ const restaurantController = {
       ])
       // 因為 req.user 有可能是空的，先做檢查所以多加了 req.user &&
       const favoritedRestaurantsId = await req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
+      const likedRestaurantsId = await req.user && req.user.LikedRestaurants.map(lr => lr.id)
       const data = restaurants.rows.map(r => ({
         ...r,
         description: r.description.substring(0, 50),
-        isFavorited: favoritedRestaurantsId.includes(r.id)
+        isFavorited: favoritedRestaurantsId.includes(r.id),
+        isLiked: likedRestaurantsId.includes(r.id)
       }))
       res.render('restaurants', {
         restaurants: data,
@@ -47,7 +49,8 @@ const restaurantController = {
         include: [
           Category,
           { model: Comment, include: User },
-          { model: User, as: 'FavoritedUsers' }
+          { model: User, as: 'FavoritedUsers' },
+          { model: User, as: 'LikedUsers' }
         ],
         order: [
           [Comment, 'createdAt', 'DESC']
@@ -57,9 +60,11 @@ const restaurantController = {
       await restaurant.increment('viewCounts')
       // 用 restaurant 關聯的 FavoritedUsers 裡的 User id 是否與 req.user.id相符
       const isFavorited = await restaurant.FavoritedUsers.some(f => f.id === req.user.id)
+      const isLiked = await restaurant.LikedUsers.some(l => l.id === req.user.id)
       res.render('restaurant', {
         restaurant: restaurant.toJSON(),
-        isFavorited
+        isFavorited,
+        isLiked
       })
     } catch (err) {
       next(err)
