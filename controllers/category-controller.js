@@ -49,7 +49,7 @@ const categoryController = {
   // 刪除category
   deleteCategory: async (req, res, next) => {
     try {
-      const id = parseInt(req.params.id, 10)
+      const id = req.params.id
       const category = await Category.findByPk(id, {
         raw: false
       })

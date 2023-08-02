@@ -14,6 +14,7 @@ router.get('/logout', userController.logout)
 router.get('/signup', userController.signUpPage)
 router.post('/signup', userController.signUp)
 router.use('/admin', authenticatedAdmin, admin)
+router.get('/restaurants/:id', authenticated, restController.getRestaurant)
 router.get('/restaurants', authenticated, restController.getRestaurants) // 只有這行需要加authenticated，剩下的不用
 router.use('/', (req, res) => {
   res.redirect('/restaurants')

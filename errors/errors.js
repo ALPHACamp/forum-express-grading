@@ -19,8 +19,15 @@ class AdminCategoryError extends Error {
   }
 }
 
+class RestaurantError extends Error {
+  constructor (message) {
+    super(message)
+    this.name = 'RestaurantError'
+  }
+}
 module.exports = {
   RegisterError,
   AdminError,
-  AdminCategoryError
+  AdminCategoryError,
+  RestaurantError
 }
