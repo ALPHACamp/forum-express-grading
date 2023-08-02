@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const adminController = require('../../controllers/admin-controllers')
+const adminController = require('../../controllers/admin-controller')
 const upload = require('../../middleware/multer')
 
 // 新增一筆資料頁面
@@ -17,6 +17,10 @@ router.delete('/restaurants/:id', adminController.deleteRestaurant)
 router.post('/restaurants', upload.single('image'), adminController.postRestaurant)
 // 瀏覽全部資料頁面
 router.get('/restaurants', adminController.getRestaurants)
+
+router.get('/users', adminController.getUsers)
+// router.patch('/users/:id', adminController.patchUsers)
+
 
 // 注意這邊在教案中是router.use('',(req, res)...)
 router.use('/', (req, res) => res.redirect('/admin/restaurants'))
