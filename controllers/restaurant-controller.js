@@ -1,6 +1,6 @@
 const { Restaurant, Category } = require('../models')
 const { RestaurantError } = require('../errors/errors')
-const restaurantController = {
+const restController = {
   getRestaurants: async (req, res, next) => {
     try {
       /** 被soft delete的東西長下面這樣 還是會有category
@@ -31,20 +31,36 @@ const restaurantController = {
   getRestaurant: async (req, res, next) => {
     try {
       const id = req.params.id
-      console.log('typeof id :', typeof id)
       const restaurant = await Restaurant.findByPk(id, {
-        raw: true,
         nest: true,
         include: [Category]
       })
       if (!restaurant) {
         throw new RestaurantError('Restaurant did not exist!')
       }
-      return res.render('restaurant', { restaurant })
+
+      await restaurant.increment('viewCounts', { by: 1 })
+      await restaurant.reload() // increment後需要重新reload才會抓到更新後的值
+      return res.render('restaurant', { restaurant: restaurant.toJSON() })
+    } catch (error) {
+      return next(error)
+    }
+  },
+  getDashboard: async (req, res, next) => {
+    try {
+      const id = req.params.id
+      const restaurant = await Restaurant.findByPk(id, {
+        nest: true,
+        include: [Category]
+      })
+      if (!restaurant) {
+        throw new RestaurantError('Restaurant did not exist!')
+      }
+      return res.render('dashboard', { restaurant: restaurant.toJSON() })
     } catch (error) {
       return next(error)
     }
   }
 }
 
-module.exports = { restaurantController }
+module.exports = restController

@@ -34,6 +34,10 @@ module.exports = {
       },
       deleted_at: {
         type: Sequelize.DATE
+      },
+      view_counts: {
+        type: Sequelize.INTEGER.UNSIGNED,
+        defaultValue: 0
       }
     })
   },
