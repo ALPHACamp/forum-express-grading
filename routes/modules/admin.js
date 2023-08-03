@@ -1,7 +1,8 @@
 const express = require('express')
 const router = express.Router()
-const adminController = require('../../controllers/admin-controller')
 const upload = require('../../middleware/multer')
+const adminController = require('../../controllers/admin-controller')
+const categoryController = require('../../controllers/category-controller')
 
 // 新增一筆資料頁面
 router.get('/restaurants/create', adminController.createRestaurant)
@@ -21,6 +22,7 @@ router.get('/restaurants', adminController.getRestaurants)
 router.patch('/users/:id', adminController.patchUser)
 router.get('/users', adminController.getUsers)
 
+router.get('/categories', categoryController.getCategories)
 
 
 // 注意這邊在教案中是router.use('',(req, res)...)
