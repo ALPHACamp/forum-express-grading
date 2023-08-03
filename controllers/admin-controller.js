@@ -1,11 +1,14 @@
-const { Restaurant, User } = require('../models')
+const { Restaurant, User, Category } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helper')
 
 const adminController = {
   getRestaurants: (req, res, next) => {
     Restaurant.findAll({
-      // 將sequelize物件轉換成js原生物件(因為後續不需要再操作這包資料)
-      raw: true
+      // `raw:true`將sequelize物件轉換成js原生物件(因為後續不需要再操作這包資料)
+      raw: true,
+      // `nest:true` 也是將資料結構整齊，主要作用在關聯的Category
+      nest: true,
+      include: [Category]
     })
       .then(restaurants => res.render('admin/restaurants', { restaurants }))
       .catch(err => next(err))
@@ -34,7 +37,9 @@ const adminController = {
   },
   getRestaurant: (req, res, next) => {
     Restaurant.findByPk(req.params.id, {
-      raw: true
+      raw: true,
+      nest: true,
+      include: [Category]
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")

@@ -1,7 +1,7 @@
 <h1>餐廳後台</h1>
 <ul class="nav nav-tabs mt-3">
   <li class="nav-item">
-    <a class="nav-link" aria-current="page" href="#">Restaurants</a>
+    <a class="nav-link active" aria-current="page" href="/admin/restaurants">Restaurants</a>
   </li>
   <li class="nav-item">
     <a class="nav-link" href="/admin/users">Users</a>
@@ -12,11 +12,13 @@
 </a>
 <br />
 <br />
+
 <table class="table align-middle">
   <thead class="thead-dark">
     <tr>
       <th scope="col">#</th>
       <th scope="col">Name</th>
+      <th scope="col">Category</th>
       <th scope="col"></th>
     </tr>
   </thead>
@@ -25,6 +27,7 @@
     <tr>
       <th scope="row">{{this.id}}</th>
       <td>{{this.name}}</td>
+      <td>{{this.Category.name}}</td>
       <td>
         <button type="button" class="btn btn-link">
           <a class="btn btn-link link-primary" href="/admin/restaurants/{{this.id}}">
