@@ -1,0 +1,36 @@
+{{> admin-tables}}
+<a href='/admin/restaurants/create'>
+  <button type="button" class="btn btn-primary">New Restaurant</button>
+</a>
+<br />
+<br />
+<table class="table align-middle">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Name</th>
+      <th scope="col">Email</th>
+      <th scope="col">#</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each users}}
+    <tr>
+      <th scope="row">{{this.id}}</th>
+      <td>{{this.name}}</td>
+      <td>{{this.email}}</td>
+      <td>
+        <form action="/admin/users/{{this.id}}?_method=PATCH" method="post">
+          <button type="submit" class="btn btn-link">
+            {{#if this.isAdmin}}
+            set a user
+            {{else}}
+            set a admin
+            {{/if}}
+          </button>
+        </form>
+      </td>
+    </tr>
+    {{/each }}
+  </tbody>
+</table>
