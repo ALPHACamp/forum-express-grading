@@ -14,10 +14,12 @@ const adminController = {
       .catch(err => next(err))
   },
   createRestaurant: (req, res, next) => {
-    return res.render('admin/create-restaurant')
+    Category.findAll({ raw: true })
+      .then(categories => res.render('admin/create-restaurant', { categories }))
+      .catch(err => next(err))
   },
   postRestaurant: (req, res, next) => {
-    const { name, tel, address, openingHours, description } = req.body
+    const { name, tel, address, openingHours, description, categoryId } = req.body
     if (!name) throw new Error('Restaurant name is required!')
     const { file } = req
     imgurFileHandler(file)
@@ -27,7 +29,8 @@ const adminController = {
         address,
         openingHours,
         description,
-        image: filePath || null
+        image: filePath || null,
+        categoryId
       }))
       .then(() => {
         req.flash('success_messages', 'restaurant was successfully created')
@@ -48,18 +51,17 @@ const adminController = {
       .catch(err => next(err))
   },
   editRestaurant: (req, res, next) => {
-    Restaurant.findByPk(req.params.id, {
-      raw: true
-    })
-      .then(restaurant => {
-        if (!restaurant) throw new Error("Restaurant didn't exist!")
-        // !進入餐廳頁面後，預設顯示的時間若是由資料庫創建的似乎無法正常顯示
-        res.render('admin/edit-restaurant', { restaurant })
+    return Promise.all([Restaurant.findByPk(req.params.id, { raw: true }), Category.findAll({ raw: true })])
+
+      .then(([restaurant, categories]) => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")// !進入餐廳頁面後，預設顯示的時間若是由資料庫創建的似乎無法正常顯示
+
+        res.render('admin/edit-restaurant', { restaurant, categories })
       })
       .catch(err => next(err))
   },
   putRestaurant: (req, res, next) => {
-    const { name, tel, address, openingHours, description } = req.body
+    const { name, tel, address, openingHours, description, categoryId} = req.body
     if (!name) throw new Error('Restaurant name is required!')
     // 注意這邊將資料取出沒有設定`({raw:true})`，因為後面還需要使用`update`去編輯資料
     const { file } = req
@@ -73,7 +75,8 @@ const adminController = {
           address,
           openingHours,
           description,
-          image: filePath || restaurant.image
+          image: filePath || restaurant.image,
+          categoryId
         })
       })
       .then(() => {
