@@ -1,15 +1,4 @@
-<h1>餐廳後台</h1>
-<ul class="nav">
-  <li class="nav-item">
-    <a class="nav-link p-0 pe-2" href="/admin/restaurants">Restaurants</a>
-  </li>
-  <li class="nav-item">
-    |
-  </li>
-  <li class="nav-item">
-    <a class="nav-link p-0 px-2" href="/admin/users">Users</a>
-  </li>
-</ul>
+{{> admin-tabs route='users'}}
 <br />
 <table class="table align-middle">
   <thead class="thead-dark">
@@ -35,7 +24,7 @@
       <td>
         <form action="/admin/users/{{this.id}}?_method=PATCH" method="POST" style="display: inline;">
           <button type="submit" class="btn btn-link" style="text-decoration: none;">
-            set as 
+            set as
             {{#if this.isAdmin}}
             user
             {{else}}
