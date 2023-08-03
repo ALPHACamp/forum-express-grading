@@ -1,4 +1,4 @@
-const { Restaurant, User } = require('../models')
+const { Restaurant, User, Category } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const adminController = {
@@ -29,7 +29,11 @@ const adminController = {
   },
   getRestaurants: async (req, res, next) => {
     try {
-      const restaurants = await Restaurant.findAll({ raw: true })
+      const restaurants = await Restaurant.findAll({
+        raw: true,
+        nest: true,
+        include: [Category]
+      })
       res.render('admin/restaurants', { restaurants })
     } catch (err) {
       next(err)
@@ -63,7 +67,12 @@ const adminController = {
   },
   getRestaurant: async (req, res, next) => {
     try {
-      const restaurant = await Restaurant.findByPk(req.params.id, { raw: true })
+      const restaurant = await Restaurant.findByPk(req.params.id, ({
+        raw: true,
+        nest: true,
+        include: [Category]
+      }))
+
       if (!restaurant) throw new Error("Restaurant didn't exist!")
 
       res.render('admin/restaurant', { restaurant })
