@@ -1,5 +1,5 @@
 const { Restaurant } = require('../models')
-const { localFileHandler } = require('../helpers/file-helpers')
+const { imgurFileHandler } = require('../helpers/file-helpers')
 const adminController = {
   getRestaurants: (req, res, next) => {
     Restaurant.findAll({
@@ -15,7 +15,7 @@ const adminController = {
     const { name, tel, address, openingHours, description } = req.body // 從 req.body 拿出表單裡的資料
     if (!name) throw new Error('Restaurant name is required!')
     const { file } = req // 把檔案取出來，也可以寫成 const file = req.file
-    localFileHandler(file) // 把取出的檔案傳給 file-helper 處理後
+    return imgurFileHandler(file)// 修改這裡
       .then(filePath => Restaurant.create({
         name,
         tel,
@@ -56,7 +56,7 @@ const adminController = {
     const { file } = req // 把檔案取出來
     Promise.all([ // 非同步處理
       Restaurant.findByPk(req.params.id),
-      localFileHandler(file)
+      imgurFileHandler(file)
     ])
       .then(([restaurant, filePath]) => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
