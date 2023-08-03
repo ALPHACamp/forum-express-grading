@@ -23,6 +23,7 @@ router.patch('/users/:id', adminController.patchUser)
 router.get('/users', adminController.getUsers)
 
 router.get('/categories', categoryController.getCategories)
+router.post('/categories', categoryController.postCategory)
 
 
 // 注意這邊在教案中是router.use('',(req, res)...)
