@@ -18,6 +18,8 @@ const { getUser } = require('./helpers/auth-helpers')
 
 const handlebarsHelpers = require('./helpers/handlebars-helpers')
 
+const methodOverride = require('method-override')
+
 // 註冊 Handlebars 樣板引擎，並指定副檔名為 .hbs
 app.engine('hbs', handlebars({ extname: '.hbs', helpers: handlebarsHelpers }))
 // 設定使用 Handlebars 做為樣板引擎
@@ -37,6 +39,8 @@ app.use((req, res, next) => {
   res.locals.user = getUser(req)
   next()
 })
+
+app.use(methodOverride('_method'))
 
 app.use(routes)
 
