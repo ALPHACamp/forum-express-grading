@@ -14,7 +14,8 @@ module.exports = {
         }`,
         description: faker.lorem.text(),
         created_at: new Date(),
-        updated_at: new Date()
+        updated_at: new Date(),
+        category_id: 1
       }))
     )
   },
