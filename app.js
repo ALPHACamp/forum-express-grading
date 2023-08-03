@@ -1,5 +1,6 @@
 const express = require('express')
 const handlebars = require('express-handlebars')
+const { getUser } = require('./helpers/auth-helpers')
 const routes = require('./routes')
 
 const flash = require('connect-flash')
@@ -23,6 +24,7 @@ app.use(flash()) // 掛載套件
 app.use((req, res, next) => {
   res.locals.success_messages = req.flash('success_messages')  // 設定 success_msg 訊息
   res.locals.error_messages = req.flash('error_messages')  // 設定 warning_msg 訊息
+  res.locals.user = getUser(req)
   next()
 })
 
