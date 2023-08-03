@@ -12,6 +12,9 @@ router.delete('/restaurants/:id', adminController.deleteRestaurant) // 刪除一
 router.get('/restaurants', adminController.getRestaurants) // 餐廳首頁
 router.post('/restaurants', upload.single('image'), adminController.postRestaurant) // 新增餐廳
 
+router.get('/users', adminController.getUsers) // 使用者首頁
+router.patch('/users/:id', adminController.patchUser) // 修改使用者權限
+
 router.use('/', (req, res) => res.redirect('/admin/restaurants'))
 
 module.exports = router
