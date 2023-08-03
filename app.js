@@ -19,7 +19,7 @@ const app = express()
 const port = process.env.PORT || 3000
 const SESSION_SECRET = 'secret'
 
-app.engine('hbs', handlebars({ extname: '.hbs', helpers: handlebarsHelper }))
+app.engine('hbs', handlebars({ extname: '.hbs', helpers: handlebarsHelper })) //最後是掛載helper設定
 app.set('view engine', 'hbs')
 app.use(express.urlencoded({ extended: true }))
 
