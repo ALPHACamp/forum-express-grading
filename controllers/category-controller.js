@@ -34,6 +34,20 @@ const categoryController = {
         res.redirect('/admin/categories')
       })
       .catch(err => next(err))
+  },
+  deleteCategory: (req, res, next) => {
+    // TODO: advance DELETE, for relate data,
+    // EX: delete '美式料理', related restaurant's category will be "未分類"
+    return Category.findByPk(req.params.id)
+      .then(category => {
+        if (!category) throw new Error("Category didn't exist.")
+        return category.destroy()
+      })
+      .then(() => {
+        req.flash('success_messages', 'Category deleted successfully.')
+        res.redirect('/admin/categories')
+      })
+      .catch(err => next(err))
   }
 }
 
