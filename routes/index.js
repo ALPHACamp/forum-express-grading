@@ -8,7 +8,7 @@ const passport = require('../config/passport')
 
 const { generalErrorHandler } = require('../middleware/error-handler')
 
-const { authenticated } = require('../middleware/auth') 
+const { authenticated } = require('../middleware/auth')
 
 router.use('/admin', admin)
 
