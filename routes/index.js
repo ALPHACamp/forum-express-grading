@@ -1,5 +1,8 @@
+// modules
 const express = require('express')
 const router = express.Router()
+
+// files
 const passport = require('../config/passport')
 const admin = require('./modules/admin')
 const restController = require('../controllers/restaurant-controller')
@@ -9,6 +12,7 @@ const upload = require('../middleware/multer')
 const { authenticated, authenticatedAdmin } = require('../middleware/auth') // 引入 auth.js
 const { generalErrorHandler } = require('../middleware/error-handler')
 
+// routers
 router.use('/admin', authenticatedAdmin, admin)
 router.get('/users/:id/edit', userController.editUser)
 router.get('/users/:id', userController.getUser)
@@ -27,6 +31,9 @@ router.post('/comments', authenticated, commentController.postComment) // 加入
 // 新增以下兩行
 router.post('/favorite/:restaurantId', authenticated, userController.addFavorite)
 router.delete('/favorite/:restaurantId', authenticated, userController.removeFavorite)
+// 新增以下兩行
+router.post('/like/:restaurantId', authenticated, userController.addLike)
+router.delete('/like/:restaurantId', authenticated, userController.removeLike)
 router.get('/', (req, res) => res.redirect('/restaurants'))
 router.use('/', generalErrorHandler)
 
