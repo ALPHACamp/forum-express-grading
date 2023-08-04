@@ -9,31 +9,26 @@
 <br />
 <br />
 <table class="table align-middle">
-  <thead class="thead-dark">
+  <thead class="thead-dark" style="background-color: black; color:white">
     <tr>
       <th scope="col">#</th>
       <th scope="col">Name</th>
-      <th scope="col"></th>
+      <th scope="col">email</th>
+      <th scope="col">Role</th>
+      <th scope="col">#</th>
     </tr>
   </thead>
   <tbody>
-    {{#each restaurants}}
+    {{#each users}}
       <tr>
         <th scope="row">{{this.id}}</th>
         <td>{{this.name}}</td>
-        <td>
-          <button type="button" class="btn btn-link">
-            <a class="btn btn-link link-primary" href="/admin/restaurants/{{this.id}}">
-              Show
-            </a>
-          </button>
-          <button type="button" class="btn btn-link">
-            <a class="btn btn-link link-primary" href="/admin/restaurants/{{this.id}}/edit">
-              Edit
-            </a>
-          </button>
+        <td>{{this.email}}</td>
+        <td>{{#if this.isAdmin}}admin 
+            {{else}}user{{/if}}</td>
+        <td> 
           <form action="/admin/restaurants/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
-            <button type="submit" class="btn btn-link link-danger" onclick="return confirm(`確定要刪除 {{ this.name }} 嗎？`)">Delete</button>
+            <button type="submit" class="btn btn-link link-primary">{{#if this.isAdmin}}set as user{{else}}set as admin{{/if}}</button>
           </form>
         </td>
       </tr>
