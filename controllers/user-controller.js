@@ -1,7 +1,6 @@
 const bcrypt = require('bcryptjs') // 載入 bcrypt
-const db = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
-const { User, Restaurant, Comment, Favorite, Like } = db
+const { User, Restaurant, Comment, Favorite, Like } = require('../models')
 const userController = {
   // 負責 render 註冊的頁面
   signUpPage: (req, res) => {
