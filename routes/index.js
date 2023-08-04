@@ -21,6 +21,9 @@ router.post('/signin', passport.authenticate('local', { failureRedirect: '/signi
 
 router.get('/logout', userController.logout)
 
+// Top users
+router.get('/users/top', authenticated, userController.getTopUsers)
+
 // User Profile
 router.get('/users/:id/edit', authenticated, userController.editUser)
 router.get('/users/:id', authenticated, userController.getUser)
