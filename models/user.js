@@ -21,12 +21,12 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'userId',
         as: 'LikedRestaurants'
       })
-      User.belongsToMany(User, { // 我被誰追蹤
+      User.belongsToMany(User, { // 追蹤我的人
         through: models.Followship,
         foreignKey: 'followingId',
         as: 'Followers'
       })
-      User.belongsToMany(User, { // 我追蹤誰
+      User.belongsToMany(User, { // 我追蹤的人
         through: models.Followship,
         foreignKey: 'followerId',
         as: 'Followings'
