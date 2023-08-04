@@ -24,13 +24,13 @@ router.get('/logout', userController.logout)
 // Top users
 router.get('/users/top', authenticated, userController.getTopUsers)
 
-// Top restaurants
-router.get('/restaurants/top', authenticated, restController.getTopRestaurants)
-
 // User Profile
 router.get('/users/:id/edit', authenticated, userController.editUser)
 router.get('/users/:id', authenticated, userController.getUser)
 router.put('/users/:id', authenticated, upload.single('image'), userController.putUser)
+
+// Top restaurants
+router.get('/restaurants/top', authenticated, restController.getTopRestaurants)
 
 // Feeds
 router.get('/restaurants/feeds', authenticated, restController.getFeeds)
