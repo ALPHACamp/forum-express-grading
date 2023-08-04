@@ -19,7 +19,7 @@
   </thead>
   <tbody>
     {{#each users}}
-      <tr id="{{this.name}}">
+      <tr data-email="{{this.email}}">
         <th scope="row">{{this.id}}</th>
         <td>{{this.name}}</td>
         <td>{{this.email}}</td>
@@ -36,8 +36,9 @@
 
 <script>
 
-  // 如果是root，就把action移除
-  const rootAction = document.querySelector('tr#root .action-patch')
-  rootAction.parentNode.removeChild(rootAction)
+  // 如果是root，就把action隱藏
+  const rootAction = document.querySelector('tr[data-email="root@example.com"] .action-patch')
+  rootAction.style.visibility='hidden'
+  // rootAction.parentNode.removeChild(rootAction)
 
 </script>
