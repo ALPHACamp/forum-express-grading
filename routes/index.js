@@ -1,4 +1,5 @@
 const express = require('express')
+const upload = require('../middleware/multer')
 const router = express.Router()
 const passport = require('../config/passport')
 
@@ -16,7 +17,7 @@ const admin = require('./modules/admin')
 // admin routes
 router.use('/admin', authenticatedAdmin, admin)
 
-// user routes
+// user sign/login/logout routes
 router.get('/signup', userController.signUpPage)
 router.post('/signup', userController.signUp)
 router.get('/signin', userController.signInPage)
@@ -25,6 +26,11 @@ router.post('/signin', passport.authenticate('local', {
   failureFlash: true
 }), userController.signIn)
 router.get('/logout', userController.logout)
+
+// user profile
+router.get('/users/:id/edit', authenticated, userController.editUser)
+router.get('/users/:id', authenticated, userController.getUser)
+router.put('/users/:id', authenticated, upload.single('image'), userController.putUser)
 
 // restaurants routes
 router.get('/restaurants/:id/dashboard', authenticated, restaurantController.getDashboard)
