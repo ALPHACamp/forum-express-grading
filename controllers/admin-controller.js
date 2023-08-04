@@ -85,24 +85,21 @@ const adminController = { // 修改這裡
       .catch(err => next(err))
   },
   getUsers: (req, res, next) => {
-    User.findAll({
+    return User.findAll({
       raw: true
     })
       .then(users => res.render('admin/users', { users }))
       .catch(err => next(err))
   },
   patchUser: (req, res, next) => {
-    User.findByPk(req.params.id, {
-      raw: true
-    })
+    User.findByPk(req.params.id)
       .then(user => {
         if (!user) throw new Error('找不到使用者')
-        if (user.email === 'root@example.com') throw new Error('禁止變更 root 權限')
-        const newIsAdminValue = !user.isAdmin // 取反來切換 isAdmin 的值
-        return User.update(
-          { isAdmin: newIsAdminValue }, // 要更新的資料
-          { where: { id: req.params.id } } // 更新的條件
-        )
+        if (user.email === 'root@example.com') {
+          req.flash('error_messages', '禁止變更 root 權限')
+          return res.redirect('back')
+        }
+        return User.update({ isAdmin: !user.isAdmin })
       })
       .then(() => {
         req.flash('success_messages', '使用者權限變更成功')
