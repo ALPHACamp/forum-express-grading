@@ -117,8 +117,8 @@ const restaurantController = {
     })
       .then(restaurants => {
         restaurants = restaurants.map(r => ({
-          ...r.dataValues,
-          description: r.dataValues.description.substring(0, 50),
+          ...r.toJSON(),
+          description: r.description.substring(0, 50),
           favoritedCount: r.FavoritedUsers.length,
           isFavorited: req.user && req.user.FavoritedRestaurants.map(d => d.id).includes(r.id)
         }))
