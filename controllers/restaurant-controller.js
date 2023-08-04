@@ -1,4 +1,4 @@
-const { Restaurant, Category } = require('../models')
+const { Restaurant, Category, User, Comment } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
 
 const restaurantController = {
@@ -43,7 +43,10 @@ const restaurantController = {
     return Restaurant.findByPk(req.params.id, {
       // raw: true, // 為向下傳遞結果並使用 increment 方法，拿掉資料格式整理
       // nest: true,
-      include: [Category]
+      include: [
+        Category,
+        { model: Comment, include: [User] }
+      ]
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist")

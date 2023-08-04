@@ -25,6 +25,9 @@ const commentController = {
         return res.redirect(`/restaurant/${restaurantId}`)
       })
       .catch(err => next(err))
+  },
+  getComments: (req, res, next) => {
+
   }
 }
 

@@ -34,6 +34,7 @@ router.get('/', (req, res) => res.redirect('/restaurants'))
 
 // comment routes
 router.post('/comments', authenticated, commentController.postComment)
+router.get('/comments', authenticated, commentController.getComments)
 
 // error handler
 router.use('/', generalErrorHandler)
