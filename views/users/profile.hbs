@@ -9,9 +9,7 @@
             <div class="col-md-8">
                 <p class="card-text">{{user.email}}</p>
                 <p class="card-text">{{comments.length}} 間已評論餐廳</p>
-                {{#ifCond user.id reqUserId}}
                 <a href="/users/{{user.id}}/edit"><button class="nav-item btn btn-primary">Edit</button></a>
-                {{/ifCond}}
                 <a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
             </div>
         </div>

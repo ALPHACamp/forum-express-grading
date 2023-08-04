@@ -73,7 +73,7 @@ const userController = {
 
       if (!user) throw new Error("User doesn't exists!")
 
-      return res.render('users/profile', { user, comments, reqUserId: req.user.id })
+      return res.render('users/profile', { user, comments })
     } catch (error) {
       return next(error)
     }
@@ -81,11 +81,6 @@ const userController = {
 
   editUser: async (req, res, next) => {
     try {
-      if (Number(req.user.id) !== Number(req.params.id)) {
-        req.flash('error_messages', 'Edit self profile only!')
-        return res.redirect(`/users/${req.user.id}`)
-      }
-
       const user = await User.findByPk(req.params.id, {
         raw: true
       })
