@@ -1,13 +1,21 @@
 const { Restaurant, User, Category } = require('../models')
 const { AdminError } = require('../errors/errors')
 const { imgurFileHandler } = require('../helper/file-helper')
+const { getOffset, getPagination } = require('../helper/pagination-helper')
 const adminHelper = require('../helper/admin-helper')
 const adminController = {
   getRestaurants: async (req, res, next) => {
+    const DEFAULT_LIMIT = 10
+    const DEFAULT_FIRST_PAGE = 1
     try {
-      const restaurants = await Restaurant.findAll({
+      const page = parseInt(req.query.page) || DEFAULT_FIRST_PAGE
+      const limit = parseInt(req.query.limit) || DEFAULT_LIMIT // 預留以後可以自己設定一頁要呈現多少餐廳
+      const offset = getOffset(limit, page)
+      const restaurants = await Restaurant.findAndCountAll({
         raw: true,
         nest: true,
+        limit,
+        offset,
         include: [Category] // 一起帶入Category的東西
       })
       /* 不加nest會長這樣
@@ -19,7 +27,11 @@ const adminController = {
         }
 
       */
-      return res.render('admin/restaurants', { restaurants }) // admin前面不要加forward slash
+      return res.render('admin/restaurants', {
+        route: req.path, // get which route i'm in
+        restaurants: restaurants.rows,
+        pagination: getPagination(limit, page, restaurants.count)
+      }) // admin前面不要加forward slash
     } catch (error) {
       return next(error)
     }
