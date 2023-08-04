@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'User',
-    tableName: 'Users', // 新增這裡
+    tableName: 'Users',
     underscored: true
   })
   return User
