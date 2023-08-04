@@ -23,6 +23,18 @@ const userController = {
         res.redirect('/signin')
       })
       .catch(err => next(err)) // 接住前面拋出的錯誤，呼叫專門做錯誤處理的 middleware
+  },
+  signInpPage: (req, res) => {
+    res.render('signin')
+  },
+  signIn: (req, res) => {
+    req.flash('success_messages', '成功登入。')
+    res.redirect('/restaurants')
+  },
+  logout: (req, res) => {
+    req.flash('success_messages', '成功登出。')
+    req.log()
+    res.redirect('/sign')
   }
 }
 module.exports = userController
