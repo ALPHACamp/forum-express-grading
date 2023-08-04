@@ -22,3 +22,16 @@
     </div>
 </div>
 <hr>
+<div class="row">
+    <h5>{{comments.length}} 間已評論的餐廳</h5>
+
+    {{#each comments}}
+    <div class="col-md-3" style="width: 180px; height:180px">
+        <div class="card mb-4 shadow-sm">
+            <a href="/restaurants/{{this.Restaurant.id}}">
+                <img class="card-img-top img-fluid" src="{{this.Restaurant.image}}" alt="Card image cap">
+            </a>
+        </div>
+    </div>
+    {{/each}}
+</div>

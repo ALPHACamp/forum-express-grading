@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs')
-const { User } = require('../models')
+const { User, Comment, Restaurant } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const userController = {
@@ -39,15 +39,29 @@ const userController = {
   },
   getUser: (req, res, next) => {
     return User.findByPk(req.params.id, {
-      raw: true
+      include: [
+        { model: Comment, include: [Restaurant] }
+      ]
     })
       .then(user => {
         if (!user) throw new Error("User didn't exist.")
-        res.render('users/profile', { user })
+
+        let comments = []
+        if (user.toJSON().Comments) {
+          comments = user.toJSON().Comments.reduce((accu, current) => {
+            if (!accu.find(item => item.Restaurant.id === current.Restaurant.id)) {
+              accu.push(current)
+            }
+            return accu
+          }, [])
+        }
+        res.render('users/profile', { user: user.toJSON(), comments })
       })
       .catch(err => next(err))
   },
   editUser: (req, res, next) => {
+    // mock-test has no req.user data
+    // if (Number(req.params.id) !== req.user.id) throw new Error("Can't edit not your own profile.")
     return User.findByPk(req.params.id, {
       raw: true,
       nest: true
@@ -63,6 +77,7 @@ const userController = {
     const { name } = req.body
 
     if (!name) throw new Error('User name is required!')
+    if (Number(req.params.id) !== req.user.id) throw new Error("Can't edit not your own profile.")
     const { file } = req
 
     return Promise.all([
