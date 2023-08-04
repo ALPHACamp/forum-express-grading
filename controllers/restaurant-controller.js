@@ -24,10 +24,12 @@ const restaurantController = {
     ])
       .then(([restaurants, categories]) => {
         const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id) // 新增這一行
+        const likedRestaurantsId = req.user && req.user.LikedRestaurants.map(lk => lk.id) // 新增這一行
         const data = restaurants.rows.map(r => ({ // 修改這裡，加上 .rows
           ...r,
           description: r.description.substring(0, 50),
-          isFavorited: favoritedRestaurantsId.includes(r.id) // 修改這一行
+          isFavorited: favoritedRestaurantsId.includes(r.id), // 修改這一行
+          isLiked: likedRestaurantsId.includes(r.id) // 修改這一行
         }))
         return res.render('restaurants', {
           restaurants: data,
@@ -44,7 +46,8 @@ const restaurantController = {
       include: [
         Category, // 拿出關聯的 Category model
         { model: Comment, include: User },
-        { model: User, as: 'FavoritedUsers' } // 新增這行
+        { model: User, as: 'FavoritedUsers' }, // 新增這行
+        { model: User, as: 'LikedUsers' } // 新增這行
       ]
       // 1.移除raw: true， nest: true，因查到的資料後面還要用sql的function
       // 2.移除raw: true， nest: true，因comment會破壞一對多的關係
@@ -55,9 +58,11 @@ const restaurantController = {
       })
       .then(restaurant => {
         const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id) // 新增這一行
+        const isLiked = restaurant.LikedUsers.some(l => l.id === req.user.id) // 新增這一行
         res.render('restaurant', {
           restaurant: restaurant.toJSON(),
-          isFavorited // 新增這一行
+          isFavorited, // 新增這一行
+          isLiked // 新增這一行
         }) // 讓回去的資料變成JSON的格式
       })
       .catch(err => next(err))
