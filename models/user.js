@@ -24,18 +24,31 @@ module.exports = (sequelize, DataTypes) => {
         as: 'LikedRestaurants'
       })
     }
-  };
-  User.init({
-    name: DataTypes.STRING,
-    email: DataTypes.STRING,
-    password: DataTypes.STRING,
-    isAdmin: DataTypes.BOOLEAN,
-    image: DataTypes.STRING
-  }, {
-    sequelize,
-    modelName: 'User',
-    tableName: 'Users',
-    underscored: true
+  }
+  // 新增以下 User 的追蹤者
+  User.belongsToMany(User, {
+    through: models.Followship,
+    foreignKey: 'followingId',
+    as: 'Followers'
   })
-  return User
+  // 新增以下 User 追蹤哪些User
+  User.belongsToMany(User, {
+    through: models.Followship,
+    foreignKey: 'followerId',
+    as: 'Followings'
+  })
+}
+User.init({
+  name: DataTypes.STRING,
+  email: DataTypes.STRING,
+  password: DataTypes.STRING,
+  isAdmin: DataTypes.BOOLEAN,
+  image: DataTypes.STRING
+}, {
+  sequelize,
+  modelName: 'User',
+  tableName: 'Users',
+  underscored: true
+})
+return User
 }
