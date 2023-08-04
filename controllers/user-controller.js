@@ -61,7 +61,7 @@ const userController = {
 
   getUser: async (req, res, next) => {
     try {
-      const promiseData = await Promise.all([
+      const [user, comments] = await Promise.all([
         User.findByPk(req.params.id, { raw: true }),
         Comment.findAll({
           raw: true,
@@ -70,12 +70,10 @@ const userController = {
           include: Restaurant
         })
       ])
-      const user = promiseData[0]
-      const comments = promiseData[1]
 
       if (!user) throw new Error("User doesn't exists!")
 
-      return res.render('users/profile', { user, comments })
+      return res.render('users/profile', { user, comments, reqUserId: req.user.id })
     } catch (error) {
       return next(error)
     }
@@ -83,6 +81,11 @@ const userController = {
 
   editUser: async (req, res, next) => {
     try {
+      if (Number(req.user.id) !== Number(req.params.id)) {
+        req.flash('error_messages', 'Edit self profile only!')
+        return res.redirect(`/users/${req.user.id}`)
+      }
+
       const user = await User.findByPk(req.params.id, {
         raw: true
       })
@@ -101,14 +104,13 @@ const userController = {
       const { file } = req
       if (!name) throw new Error('User name is required!')
 
-      const promiseData = await Promise.all([
-        User.findByPk(req.params.id),
+      const [user, filePath] = await Promise.all([
+        User.findByPk(req.user.id),
         imgurFileHandler(file)
       ])
-      const user = promiseData[0]
-      const filePath = promiseData[1]
 
       if (!user) throw new Error("User doesn't exists!")
+      if (Number(req.user.id) !== Number(req.params.id)) throw new Error('Edit self profile only!')
 
       await user.update({
         name,
