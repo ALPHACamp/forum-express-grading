@@ -25,7 +25,7 @@
 .gitattributes    text
 .gitconfig        text
 *.lock            text -diff
-package.json      text eol=lf
+package.json      text eol=crlf
 package-lock.json text -diff
 yarn.lock         text -diff
 *.yaml            text
