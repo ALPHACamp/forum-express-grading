@@ -5,6 +5,7 @@ const passport = require('../config/passport')
 // import controllers
 const restaurantController = require('../controllers/restaurant-controller')
 const userController = require('../controllers/user-controller')
+const commentController = require('../controllers/comment-controller')
 
 // import middleware
 const { authenticated, authenticatedAdmin } = require('../middleware/auth')
@@ -12,8 +13,10 @@ const { generalErrorHandler } = require('../middleware/error-handler')
 
 const admin = require('./modules/admin')
 
+// admin routes
 router.use('/admin', authenticatedAdmin, admin)
 
+// user routes
 router.get('/signup', userController.signUpPage)
 router.post('/signup', userController.signUp)
 router.get('/signin', userController.signInPage)
@@ -23,10 +26,14 @@ router.post('/signin', passport.authenticate('local', {
 }), userController.signIn)
 router.get('/logout', userController.logout)
 
+// restaurants routes
 router.get('/restaurants/:id/dashboard', authenticated, restaurantController.getDashboard)
 router.get('/restaurants/:id', authenticated, restaurantController.getRestaurant)
 router.get('/restaurants', authenticated, restaurantController.getRestaurants)
 router.get('/', (req, res) => res.redirect('/restaurants'))
+
+// comment routes
+router.post('/comments', authenticated, commentController.postComment)
 
 // error handler
 router.use('/', generalErrorHandler)
