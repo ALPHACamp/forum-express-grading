@@ -1,4 +1,4 @@
-const { Restaurant } = require('../models')
+const { Restaurant, User } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const adminController = { // 修改這裡
@@ -82,6 +82,32 @@ const adminController = { // 修改這裡
         return restaurant.destroy()
       })
       .then(() => res.redirect('/admin/restaurants'))
+      .catch(err => next(err))
+  },
+  getUsers: (req, res, next) => {
+    User.findAll({
+      raw: true
+    })
+      .then(users => res.render('admin/users', { users }))
+      .catch(err => next(err))
+  },
+  patchUser: (req, res, next) => {
+    User.findByPk(req.params.id, {
+      raw: true
+    })
+      .then(user => {
+        if (!user) throw new Error('找不到使用者')
+        if (user.email === 'root@example.com') throw new Error('不能更改root的權限')
+        const newIsAdminValue = !user.isAdmin // 取反來切換 isAdmin 的值
+        return User.update(
+          { isAdmin: newIsAdminValue }, // 要更新的資料
+          { where: { id: req.params.id } } // 更新的條件
+        )
+      })
+      .then(() => {
+        req.flash('success_messages', '使用者權限更新成功！')
+        res.redirect('/admin/users')
+      })
       .catch(err => next(err))
   }
 }
