@@ -33,8 +33,8 @@ router.get('/restaurants', authenticated, restaurantController.getRestaurants)
 router.get('/', (req, res) => res.redirect('/restaurants'))
 
 // comment routes
+router.delete('/comments/:id', authenticatedAdmin, commentController.deleteComment)
 router.post('/comments', authenticated, commentController.postComment)
-router.get('/comments', authenticated, commentController.getComments)
 
 // error handler
 router.use('/', generalErrorHandler)
