@@ -23,10 +23,22 @@ const userController = {
         password: hash
       }))
       .then(() => {
-        req.flash('success_message', 'You account is created successfully')
+        req.flash('success_messages', 'Your account is created successfully')
         res.redirect('/signin')
       })
       .catch(err => next(err))
+  },
+  signInPage: (req, res) => {
+    res.render('signin')
+  },
+  signIn: (req, res) => {
+    req.flash('success_messages', 'Log in successfully!')
+    res.redirect('/restaurants')
+  },
+  logout: (req, res) => {
+    req.logout()
+    req.flash('success_messages', 'Log out successfully')
+    res.redirect('/signin')
   }
 }
 module.exports = userController
