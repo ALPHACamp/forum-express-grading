@@ -82,9 +82,8 @@ const adminController = {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         return restaurant.destroy()
       })
-      .then(() => res.redirect('/admin/restaurants')
-        .catch(err => next(err))
-      )
+      .then(() => res.redirect('/admin/restaurants'))
+      .catch(err => next(err))
   }
 }
 
