@@ -13,16 +13,20 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
   };
-  Restaurant.init({
-    name: DataTypes.STRING,
-    tel: DataTypes.STRING,
-    address: DataTypes.STRING,
-    openingHours: DataTypes.STRING,
-    description: DataTypes.TEXT
-  }, {
-    sequelize,
-    modelName: 'Restaurant',
-    underscored: true,
-  });
+  Restaurant.init(
+    {
+      name: DataTypes.STRING,
+      tel: DataTypes.STRING,
+      address: DataTypes.STRING,
+      openingHours: DataTypes.STRING,
+      description: DataTypes.TEXT,
+      image: DataTypes.STRING, // 新增這一行
+    },
+    {
+      sequelize,
+      modelName: "Restaurant",
+      underscored: true,
+    }
+  );
   return Restaurant;
 };
