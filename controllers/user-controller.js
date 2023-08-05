@@ -1,4 +1,5 @@
 const bcrypt = require('bcryptjs')
+const { getUser } = require('../helpers/auth-helpers')
 const { User, Comment, Restaurant } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
@@ -60,8 +61,8 @@ const userController = {
       .catch(err => next(err))
   },
   editUser: (req, res, next) => {
-    // mock-test has no req.user data
-    // if (Number(req.params.id) !== req.user.id) throw new Error("Can't edit not your own profile.")
+    req.user = getUser(req)
+    if (Number(req.params.id) !== req.user.id) throw new Error("Can't edit not your own profile.")
     return User.findByPk(req.params.id, {
       raw: true,
       nest: true
@@ -75,7 +76,7 @@ const userController = {
   },
   putUser: (req, res, next) => {
     const { name } = req.body
-
+    req.user = getUser(req)
     if (!name) throw new Error('User name is required!')
     if (Number(req.params.id) !== req.user.id) throw new Error("Can't edit not your own profile.")
     const { file } = req
