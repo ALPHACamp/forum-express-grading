@@ -2,7 +2,7 @@ const bcrypt = require('bcryptjs')
 const db = require('../models')
 const { User } = db
 const userController = {
-  signUpPage: (req, res, next) => {
+  signUpPage: async (req, res, next) => {
     try { res.render('signup') } catch (err) { next(err) }
   },
   signUp: async (req, res, next) => {
