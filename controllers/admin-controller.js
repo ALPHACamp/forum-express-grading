@@ -3,12 +3,23 @@ const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const adminController = {
   getRestaurants: (req, res, next) => {
-    Restaurant.findAll({
-      raw: true,
-      nest: true,
-      include: [Category]
-    })
-      .then(restaurants => res.render('admin/restaurants', { restaurants }))
+    const categoryId = Number(req.query.categoryId) || ''
+    return Promise.all([
+      Restaurant.findAll({
+        raw: true,
+        nest: true,
+        include: [Category],
+        where: {
+          ...categoryId ? { categoryId } : {}
+        }
+      }),
+      Category.findAll({ raw: true })
+    ])
+      .then(([restaurants, categories]) => res.render('admin/restaurants', {
+        restaurants,
+        categories,
+        categoryId
+      }))
       .catch(err => next(err))
   },
   createRestaurant: (req, res) => {
