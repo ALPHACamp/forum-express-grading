@@ -14,6 +14,6 @@ router.post('/restaurants', upload.single('image'), adminController.postRestaura
 router.put('/users/:id', adminController.patchUser)
 router.get('/users', adminController.getUsers)
 
-router.get('', (req, res) => res.redirect('/admin/restaurants'))
+router.get('/', (req, res) => res.redirect('/admin/restaurants'))
 
 module.exports = router
