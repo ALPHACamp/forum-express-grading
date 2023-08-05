@@ -1,5 +1,5 @@
 const restaurantController = {
-  getRestaurant: (req, res) => {
+  getRestaurants: (req, res) => {
     res.render('restaurants')
   }
 }
