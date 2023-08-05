@@ -22,17 +22,20 @@ const adminController = {
   },
   // (頁面) 顯示新增餐廳表單
   createRestaurant: (req, res, next) => {
-    return res.render('admin/create-restaurant')
+    return Category.findAll({ raw: true })
+      .then(categories => res.render('admin/create-restaurant', { categories }))
+      .catch(err => next(err))
   },
   // (功能) 新增餐廳
   postRestaurant: (req, res, next) => {
-    const { name, tel, address, openingHours, description } = req.body
+    const { name, categoryId, tel, address, openingHours, description } = req.body
     if (!name) throw new Error('Restaurant name is required!')
 
     const { file } = req
-    imgurFileHandler(file) // 把取出的檔案傳給 file-helper 處理
+    return imgurFileHandler(file) // 把取出的檔案傳給 file-helper 處理
       .then(filePath => Restaurant.create({
         name,
+        categoryId,
         tel,
         address,
         openingHours,
@@ -47,20 +50,23 @@ const adminController = {
   },
   // (頁面) 顯示修改餐廳表單
   editRestaurant: (req, res, next) => {
-    Restaurant.findByPk(req.params.id, { raw: true })
-      .then(restaurant => {
+    return Promise.all([
+      Restaurant.findByPk(req.params.id, { raw: true }),
+      Category.findAll({ raw: true })
+    ])
+      .then(([restaurant, categories]) => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
-        res.render('admin/edit-restaurant', { restaurant })
+        res.render('admin/edit-restaurant', { restaurant, categories })
       })
       .catch(err => next(err))
   },
   // (功能) 修改餐廳
   putRestaurant: (req, res, next) => {
-    const { name, tel, address, openingHours, description } = req.body
+    const { name, categoryId, tel, address, openingHours, description } = req.body
     if (!name) throw new Error('Restaurant name is required!')
 
     const { file } = req
-    Promise.all([
+    return Promise.all([
       Restaurant.findByPk(req.params.id),
       imgurFileHandler(file)
     ])
@@ -69,6 +75,7 @@ const adminController = {
 
         return restaurant.update({
           name,
+          categoryId,
           tel,
           address,
           openingHours,
