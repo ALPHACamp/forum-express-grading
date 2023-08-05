@@ -16,11 +16,7 @@ const SESSION_SECRET = 'secret'
 
 app.engine('hbs', handlebars({
   extname: '.hbs',
-  helpers: handlebarsHelpers,
-  runtimeOptions: {
-    allowProtoPropertiesByDefault: true,
-    allowProtoMethodsByDefault: true
-  }
+  helpers: handlebarsHelpers
 }))
 app.set('view engine', 'hbs')
 
