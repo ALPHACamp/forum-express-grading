@@ -1,0 +1,45 @@
+<h1>餐廳後台</h1>
+
+<ul class="nav">
+    <li class="nav-item">
+        <a class="nav-link" aria-current="page" href="/admin/restaurants">Restaurants</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link disabled" href="#">Users</a>
+    </li>
+</ul>
+
+<br />
+<br />
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Name</th>
+            <th scope="col">Email</th>
+            <th scope="col">Role</th>
+            <th scope="col">Switching Roles</th>
+        </tr>
+    </thead>
+    {{#each users}}
+    <tbody>
+        <tr>
+            <th scope="row">{{this.id}}</th>
+            <td>{{this.name}}</td>
+            <td>{{this.email}}</td>
+            <td>{{#if isAdmin}}Admin{{else}}User{{/if}}</td>
+            <td>
+                <form action="/admin/users/:{{this.id}}?_method=PUT" method="POST" style="display: inline;">
+                    <button type="submit" class="btn btn-link link-danger"
+                        onclick="return confirm(`確定要轉換 {{ this.name }} 嗎？`)">
+                        {{#if isAdmin}}Switch to User{{else}}Switch to Admin{{/if}}
+                    </button>
+                </form>
+            </td>
+
+        </tr>
+    </tbody>
+    {{/each}}
+</table>
+</tbody>
+</table>

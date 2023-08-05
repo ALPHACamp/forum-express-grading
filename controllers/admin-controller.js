@@ -1,4 +1,4 @@
-const { Restaurant } = require('../models')
+const { Restaurant, User } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const restaurantController = {
@@ -83,6 +83,11 @@ const restaurantController = {
         res.redirect('/admin/restaurants')
       })
       .catch(err => next(err))
+  },
+  getUsers: (req, res) => {
+    User.findAll({ raw: true })
+      .then(users => res.render('admin/users', { users }))
+      .catch(err => console.log(err))
   }
 }
 module.exports = restaurantController
