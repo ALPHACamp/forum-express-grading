@@ -1,0 +1,44 @@
+
+{{> admin-nav}}
+
+<a href='/admin/users/create'>
+  <button type="button" class="btn btn-primary">New User</button>
+</a>
+<br />
+<br />
+
+<table class="table align-middle">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Name</th>
+      <th scope="col">Email</th>
+      <th scope="col">Role</th>
+      <th scope="col">Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each users}}
+      <tr data-email="{{this.email}}">
+        <th scope="row">{{this.id}}</th>
+        <td>{{this.name}}</td>
+        <td>{{this.email}}</td>
+        <td>{{#if this.isAdmin}}admin{{else}}user{{/if}}</td>
+        <td>
+          <form class="action-patch" action="/admin/users/{{this.id}}?_method=PATCH" method="POST" style="display: inline;">
+            <button type="submit" class="btn btn-link link-info">{{#if this.isAdmin}}set as user{{else}}set as admin{{/if}}</button>
+          </form>
+        </td>
+      </tr>
+    {{/each}}
+  </tbody>
+</table>
+
+<script>
+
+  // 如果是root，就把action隱藏
+  const rootAction = document.querySelector('tr[data-email="root@example.com"] .action-patch')
+  rootAction.style.visibility='hidden'
+  // rootAction.parentNode.removeChild(rootAction)
+
+</script>

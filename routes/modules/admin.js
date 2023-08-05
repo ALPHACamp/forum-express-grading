@@ -16,6 +16,9 @@ router.get('/restaurants', adminController.getRestaurants) // (頁面)餐廳管�
 
 router.post('/restaurants', upload.single('image'), adminController.postRestaurant) // (功能)新增餐廳
 
+router.get('/users', adminController.getUsers) // (頁面)使用者管理清單
+router.patch('/users/:id', adminController.patchUser) // (功能)更新使用者權限
+
 // fallback路由，當其他條件都不符合，最終都會通過這一條
 router.use('/', (req, res) => res.redirect('/admin/restaurants'))
 
