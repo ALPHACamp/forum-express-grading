@@ -39,24 +39,32 @@ const userController = {
     res.redirect('/signin')
   },
   getUser: (req, res, next) => {
+    req.user = getUser(req)
     return User.findByPk(req.params.id, {
       include: [
         { model: Comment, include: [Restaurant] }
       ]
     })
-      .then(user => {
-        if (!user) throw new Error("User didn't exist.")
+      .then(viewUser => {
+        if (!viewUser) throw new Error("User didn't exist.")
 
         let comments = []
-        if (user.toJSON().Comments) {
-          comments = user.toJSON().Comments.reduce((accu, current) => {
+        if (viewUser.toJSON().Comments) {
+          comments = viewUser.toJSON().Comments.reduce((accu, current) => {
             if (!accu.find(item => item.Restaurant.id === current.Restaurant.id)) {
               accu.push(current)
             }
             return accu
           }, [])
         }
-        res.render('users/profile', { user: user.toJSON(), comments })
+
+        const user = req.user
+        console.log('currentUser typeof: ', typeof (user.id))
+        console.log('currentUser: ', user.id)
+        console.log('user.id typeof: ', typeof (viewUser.id))
+        console.log('user.id: ', viewUser.id)
+
+        res.render('users/profile', { viewUser: viewUser.toJSON(), comments, user })
       })
       .catch(err => next(err))
   },
