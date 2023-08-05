@@ -12,7 +12,8 @@ const userSeed = [
     created_at: new Date(), // queryInterface要用snake case
     updated_at: new Date(),
     is_admin: true,
-    deleted_at: null
+    deleted_at: null,
+    image: 'https://loremflickr.com/300/300/girl/?lock=2'
   }, {
     id: 2,
     name: 'user1',
@@ -21,7 +22,8 @@ const userSeed = [
     created_at: new Date(),
     updated_at: new Date(),
     is_admin: false,
-    deleted_at: null
+    deleted_at: null,
+    image: 'https://loremflickr.com/300/300/girl/?lock=4'
   }, {
     id: 3,
     name: 'user2',
@@ -30,7 +32,8 @@ const userSeed = [
     created_at: new Date(),
     updated_at: new Date(),
     is_admin: false,
-    deleted_at: null
+    deleted_at: null,
+    image: 'https://loremflickr.com/300/300/girl/?lock=7'
   }]
 
 /** @type {import('sequelize-cli').Migration} */

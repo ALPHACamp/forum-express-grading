@@ -1,0 +1,16 @@
+<div class="container rounded mb-5 p-3" style="box-shadow: 1px 1px 5px 2px #eee">
+    <div class="row">
+        <div class="col-3">
+            <img class="rounded-circle" style="aspect-ratio: 1 / 1; object-fit: cover; height:300px; width:300px;" 
+                src="{{user.image}}" alt="The Icon of {{user.name}}">
+        </div>
+        <div class="col-9">
+            <h1 class="user-name">{{user.name}}</h1>
+            <p>{{user.email}}</p>
+            {{#ifCond user.id loginUser.id}}
+            {{!-- 要一樣id才會顯示edit --}}
+                <a href="/users/{{user.id}}/edit" class="btn btn-primary">edit</a>
+            {{/ifCond}}
+        </div>
+    </div>
+</div>

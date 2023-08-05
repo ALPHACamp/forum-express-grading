@@ -1,8 +1,8 @@
 const { Restaurant, User, Category } = require('../models')
 const { AdminError } = require('../errors/errors')
-const { imgurFileHandler } = require('../helper/file-helper')
-const { getOffset, getPagination } = require('../helper/pagination-helper')
-const adminHelper = require('../helper/admin-helper')
+const { imgurFileHandler } = require('../helpers/file-helper')
+const { getOffset, getPagination } = require('../helpers/pagination-helper')
+const adminHelper = require('../helpers/admin-helper')
 const adminController = {
   getRestaurants: async (req, res, next) => {
     const DEFAULT_LIMIT = 10

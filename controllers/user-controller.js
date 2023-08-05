@@ -1,7 +1,9 @@
 const bcrypt = require('bcryptjs')
 const db = require('../models')
-const { RegisterError } = require('../errors/errors')
+const { RegisterError, UserCRUDError } = require('../errors/errors')
 const { User } = db // 用解構付值把db內的User model拿出來
+const { imgurFileHandler } = require('../helpers/file-helper')
+
 const userController = {
   signUpPage: (req, res) => {
     res.render('signup')
@@ -52,6 +54,55 @@ const userController = {
       if (err) { return next(err) }
       res.redirect('/signin')
     })
+  },
+  getUser: async (req, res, next) => {
+    // 需要讓每個人都可以看到別的用戶
+    // 但是只能更改自己帳戶
+    try {
+      const { id } = req.params
+      const targetUser = await User.findByPk(id)
+      if (!targetUser) throw new UserCRUDError('User did not exist!')
+
+      return res.render('users/profile', {
+        user: targetUser.toJSON(),
+        loginUser: req.user // 如果user和loginUser不一樣就不顯示edit
+      })
+    } catch (error) {
+      return next(error)
+    }
+  },
+
+  editUser: async (req, res, next) => {
+    try {
+      const id = parseInt(req.params.id) // 型態檢查在 user-helper的blockEditFromOtherUser
+      const user = await User.findByPk(id)
+      if (!user) throw new UserCRUDError('User did not exist!')
+      return res.render('users/edit', { user: user.toJSON() })
+    } catch (error) {
+      return next(error)
+    }
+  },
+
+  putUser: async (req, res, next) => {
+    try {
+      const id = parseInt(req.params.id) // 型態檢查在 user-helper的blockEditFromOtherUser
+      const user = await User.findByPk(id)
+      if (!user) throw new UserCRUDError('User did not exist!')
+
+      const { body, file } = req
+      const { name } = body
+      if (!name) throw new UserCRUDError('User need a name!')
+
+      const filePath = await imgurFileHandler(file)
+      await user.update({
+        name,
+        image: filePath || null
+      })
+      req.flash('success_messages', '使用者資料編輯成功')
+      return res.redirect(`/users/${user.id}`)
+    } catch (error) {
+      return next(error)
+    }
   }
 
 }

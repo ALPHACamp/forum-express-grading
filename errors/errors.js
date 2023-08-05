@@ -5,6 +5,13 @@ class RegisterError extends Error {
   }
 }
 
+class UserCRUDError extends Error {
+  constructor (message) {
+    super(message)
+    this.name = 'UserCRUDError'
+  }
+}
+
 class AdminError extends Error {
   constructor (message) {
     super(message)
@@ -35,6 +42,7 @@ class CommentError extends Error {
 
 module.exports = {
   RegisterError,
+  UserCRUDError,
   AdminError,
   AdminCategoryError,
   RestaurantError,

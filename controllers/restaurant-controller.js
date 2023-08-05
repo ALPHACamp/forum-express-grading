@@ -1,6 +1,6 @@
 const { Restaurant, Category, User, Comment } = require('../models')
 const { RestaurantError } = require('../errors/errors')
-const { getOffset, getPagination } = require('../helper/pagination-helper')
+const { getOffset, getPagination } = require('../helpers/pagination-helper')
 
 const restController = {
   getRestaurants: async (req, res, next) => {
