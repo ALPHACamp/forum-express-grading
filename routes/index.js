@@ -4,7 +4,8 @@ const admin = require('./modules/admin')
 const passport = require('../config/passport') // 引入 Passport，需要他幫忙做驗證
 // 用：可以重新命名
 const restController = require('../controllers/restaurant-controller')
-const { userController } = require('../controllers/user-controller')
+const userController = require('../controllers/user-controller')
+const commentController = require('../controllers/comment-controller')
 const generalErrorHandler = require('../middlewares/error-handler')
 const { authenticated, authenticatedAdmin } = require('../middlewares/auth')
 
@@ -18,6 +19,11 @@ router.use('/admin', authenticatedAdmin, admin)
 router.get('/restaurants/:id/dashboard', authenticated, restController.getDashboard)
 router.get('/restaurants/:id', authenticated, restController.getRestaurant)
 router.get('/restaurants', authenticated, restController.getRestaurants) // 只有這行需要加authenticated，剩下的不用
+
+/* comment */
+router.delete('/comments/:id', authenticated, commentController.deleteComment)
+router.post('/comments', authenticated, commentController.postComment)
+
 router.use('/', (req, res) => {
   res.redirect('/restaurants')
 })

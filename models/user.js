@@ -11,12 +11,14 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate (models) {
       // define association here
+      User.hasMany(models.Comment, { foreignKey: 'userId' })
     }
   }
   User.init({
     name: DataTypes.STRING,
     email: DataTypes.STRING,
     password: DataTypes.STRING,
+    image: DataTypes.STRING,
     isAdmin: DataTypes.BOOLEAN,
     deletedAt: DataTypes.DATE // for soft delete
   }, {

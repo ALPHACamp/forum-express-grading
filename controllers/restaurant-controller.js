@@ -1,4 +1,4 @@
-const { Restaurant, Category } = require('../models')
+const { Restaurant, Category, User, Comment } = require('../models')
 const { RestaurantError } = require('../errors/errors')
 const { getOffset, getPagination } = require('../helper/pagination-helper')
 
@@ -65,14 +65,22 @@ const restController = {
       const id = req.params.id
       const restaurant = await Restaurant.findByPk(id, {
         nest: true,
-        include: [Category]
+        include: [
+          Category,
+          {
+            model: Comment,
+            include: User
+          }
+        ],
+        order: [
+          [{ model: Comment }, 'createdAt', 'DESC']
+        ]
       })
       if (!restaurant) {
         throw new RestaurantError('Restaurant did not exist!')
       }
 
       await restaurant.increment('viewCounts', { by: 1 })
-      await restaurant.reload() // increment後需要重新reload才會抓到更新後的值
       return res.render('restaurant', { restaurant: restaurant.toJSON() })
     } catch (error) {
       return next(error)
@@ -81,14 +89,18 @@ const restController = {
   getDashboard: async (req, res, next) => {
     try {
       const id = req.params.id
-      const restaurant = await Restaurant.findByPk(id, {
+      const [restaurant, commentAmount] = await Promise.all([Restaurant.findByPk(id, {
         nest: true,
         include: [Category]
+      }),
+      Comment.count({
+        where: { restaurantId: id }
       })
+      ])
       if (!restaurant) {
         throw new RestaurantError('Restaurant did not exist!')
       }
-      return res.render('dashboard', { restaurant: restaurant.toJSON() })
+      return res.render('dashboard', { restaurant: restaurant.toJSON(), commentAmount })
     } catch (error) {
       return next(error)
     }

@@ -13,10 +13,9 @@ module.exports = {
         }
       }
     )
-    await queryInterface.createTable('users', { id: Sequelize.INTEGER })
   },
 
   async down (queryInterface, Sequelize) {
-    queryInterface.removeColumn('Restaurants', 'category_Id')
+    await queryInterface.removeColumn('Restaurants', 'category_Id')
   }
 }
