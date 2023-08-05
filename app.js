@@ -2,6 +2,10 @@ const path = require('path')
 const express = require('express')
 const exphbs = require('express-handlebars')
 const routes = require('./routes')
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
+
 const flash = require('connect-flash')
 const methodOverride = require('method-override')
 const session = require('express-session')
