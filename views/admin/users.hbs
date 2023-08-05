@@ -3,3 +3,38 @@
   <a class="nav-link" href="/admin/restaurants">Restaurants</a>
   <a class="nav-link active" aria-current="page" href="#">Users</a>
 </nav>
+<table class="table">
+  <thead>
+    <tr class="table-dark">
+      <th scope="col">#</th>
+      <th scope="col">Name</th>
+      <th scope="col">Email</th>
+      <th scope="col">Role</th>
+      <th scope="col">#</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each users}}
+    <tr>
+      <th scope="row">{{this.id}}</th>
+      <td>{{this.name}}</td>
+      <td>{{this.email}}</td>
+      {{#if this.isAdmin}}
+      <td>admin</td>
+      <form action="/admin/users/{{this.id}}?_method=PATCH" method="POST">
+        <td>
+          <button type="submit" class="btn btn-link text-decoration-none">set as user</button>
+        </td>
+      </form>
+      {{else}}
+      <td>user</td>
+      <form action="/admin/users/{{this.id}}?_method=PATCH" method="POST">
+        <td>
+          <button type="submit" class="btn btn-link text-decoration-none">set as admin</button>
+        </td>
+      </form>
+      {{/if}}
+    </tr>
+    {{/each}}
+  </tbody>
+</table>
