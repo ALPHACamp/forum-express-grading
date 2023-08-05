@@ -1,33 +1,32 @@
 const express = require('express')
 const router = express.Router()
-const passport = require("../config/passport");
-const admin = require('./modules/admin') //新增這行，載入 admin.js
+const passport = require('../config/passport')
+const admin = require('./modules/admin') // 新增這行，載入 admin.js
 
-const restController = require("../controllers/restaurant-controller");
+const restController = require('../controllers/restaurant-controller')
 
-const userController = require("../controllers/user-controller");
-const { authenticated, authenticatedAdmin } = require("../middleware/auth");
+const userController = require('../controllers/user-controller')
+const { authenticated, authenticatedAdmin } = require('../middleware/auth')
 
-
-const { generalErrorHandler } = require("../middleware/error-handler");
-router.use("/admin", authenticatedAdmin, admin);
+const { generalErrorHandler } = require('../middleware/error-handler')
+router.use('/admin', authenticatedAdmin, admin)
 router.get('/signup', userController.signUpPage)
-router.post('/signup', userController.signUp) //注意用 post
-router.get("/signin", userController.signInPage);
+router.post('/signup', userController.signUp) // 注意用 post
+router.get('/signin', userController.signInPage)
 router.post(
-  "/signin",
-  passport.authenticate("local", {
-    failureRedirect: "/signin",
-    failureFlash: true,
+  '/signin',
+  passport.authenticate('local', {
+    failureRedirect: '/signin',
+    failureFlash: true
   }),
   userController.signIn
-);
+)
 
-router.get("/logout", userController.logout);
+router.get('/logout', userController.logout)
 
-router.get("/restaurants", authenticated, restController.getRestaurants);
+router.get('/restaurants', authenticated, restController.getRestaurants)
 
-router.use("/", (req, res) => res.redirect("/restaurants"));
-router.use("/", generalErrorHandler);
+router.use('/', (req, res) => res.redirect('/restaurants'))
+router.use('/', generalErrorHandler)
 
 module.exports = router

@@ -1,12 +1,12 @@
-"use strict";
+'use strict'
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.addColumn("Users", "is_admin", {
+    await queryInterface.addColumn('Users', 'is_admin', {
       type: Sequelize.BOOLEAN,
-      defaultValue: false,
-    });
+      defaultValue: false
+    })
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.removeColumn("Users", "is_admin");
-  },
-};
+    await queryInterface.removeColumn('Users', 'is_admin')
+  }
+}
