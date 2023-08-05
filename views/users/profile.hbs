@@ -1,0 +1,50 @@
+<div class="card mb-3">
+  <div class="row no-gutters">
+
+  {{!-- image --}}
+  <div class="col-md-4">
+    {{#if user.image}}
+      <img class="img-responsive center-block mb-3" src="{{user.image}}"
+      style="width: 250px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+    {{else}}
+      <img src="https://via.placeholder.com/300" style="width: 250px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;" />
+    {{/if}}
+  </div>
+
+  {{!-- info --}}
+  <div class="col-md-8">
+    <div class="card-body">
+      <h5 class="card-title"><strong>{{user.name}}</strong></h5>
+      <p class="card-text">{{user.email}}</p>
+      
+      {{!-- comment counts --}}
+      <ul class="list-unstyled list-inline">
+        <li>已評論 <strong>{{user.Comments.length}}</strong> 間餐廳</li>
+      </ul>
+      <br />
+      <button type="button" class="btn btn-primary">
+        <a class="btn btn-primary" href="/users/{{user.id}}/edit">Edit</a>
+      </button>
+    </div>
+  </div>
+
+{{!-- Commented restaurants --}}
+<div class="row">
+  {{#ifCond user.Comments.length 0}}
+    <h5>尚未有評論</h5>
+  {{else}}
+    <h5>{{user.Comments.length}} 間已評論的餐廳</h5>
+
+    {{#each user.Comments}}
+      <div class="col-md-3">
+        <div class="card mb-4 shadow-sm">
+          <a href="/restaurants/{{this.Restaurant.id}}">
+              <img class="card-img-top img-fluid" src="{{this.Restaurant.image}}" alt="Card image cap" width="286px"
+              height="180px" style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+          </a>
+        </div>
+      </div>
+    {{/each}}
+  {{/ifCond}}
+</div>
+  
