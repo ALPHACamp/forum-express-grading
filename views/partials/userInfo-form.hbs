@@ -1,0 +1,23 @@
+<div class="form-row mb-3">
+  <label class="form-label" for="name">Name</label>
+  <input type="text" id="name" name="name" class="form-control" placeholder="Name" value="{{user.name}}" required autofocus>
+</div>
+<div class="form-row mb-3">
+  <label class="form-label" for="image">Image</label>
+  <input class="form-control" type="file" class="form-control-file" id="image" name="image">
+</div>
+<div class="form-row mb-3">
+  <label class="form-label" for="email">Email : {{user.email}}</label>
+  <input type="{{#if user}}hidden{{else}}text{{/if}}" id="email" name="email" class="form-control" placeholder="Email" value="{{user.email}}" required>
+</div>
+<div class="form-row mb-3">
+  <label class="form-label" for="password">Password</label>
+  <input type="password" id="password" name="password" class="form-control" placeholder="Password" required>
+</div>
+<div class="form-row mb-3">
+  <label class="form-label" for="passwordCheck">Password Check</label>
+  <input type="password" id="passwordCheck" name="passwordCheck" class="form-control" placeholder="Password Check"
+    required>
+</div>
+<button type="submit" class="btn btn-primary">Submit</button>
+<a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
