@@ -2,8 +2,8 @@ const bcrypt = require('bcryptjs')
 const db = require('../models')
 const { User } = db
 const userController = {
-  signUpPage: (req, res) => {
-    res.render('signup')
+  signUpPage: (req, res, next) => {
+    try { res.render('signup') } catch (err) { next(err) }
   },
   signUp: async (req, res, next) => {
     try {
@@ -17,21 +17,23 @@ const userController = {
 
       req.flash('success_msg', '成功註冊帳號！')
       res.redirect('/signin')
-    } catch (err) {
-      next(err)
-    }
+    } catch (err) { next(err) }
   },
-  signInPage: (req, res) => {
-    res.render('signin')
+  signInPage: async (req, res, next) => {
+    try { res.render('signin') } catch (err) { next(err) }
   },
-  signIn: (req, res) => {
-    req.flash('success_messages', '成功登入！')
-    res.redirect('/restaurants')
+  signIn: async (req, res, next) => {
+    try {
+      req.flash('success_messages', '成功登入！')
+      res.redirect('/restaurants')
+    } catch (err) { next(err) }
   },
-  logout: (req, res) => {
-    req.flash('success_messages', '登出成功！')
-    req.logout()
-    res.redirect('/signin')
+  logout: async (req, res, next) => {
+    try {
+      req.flash('success_messages', '登出成功！')
+      req.logout()
+      res.redirect('/signin')
+    } catch (err) { next(err) }
   }
 }
 
