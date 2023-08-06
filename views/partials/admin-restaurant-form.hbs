@@ -6,11 +6,7 @@
          name="name"
          id="name"
          placeholder="Enter name"
-         value="{{restaurant.name}}"
-         //
-         新增
-         value
-         required>
+         value="{{restaurant.name}}">
 </div>
 <div class="form-row mb-3">
   <label class="form-label"
@@ -20,7 +16,7 @@
          name="tel"
          id="tel"
          placeholder="Enter tel"
-         value="{{restaurant.tel}}"> // 新增 value
+         value="{{restaurant.tel}}">
 </div>
 <div class="form-row mb-3">
   <label class="form-label"
@@ -30,7 +26,7 @@
          name="address"
          id="address"
          placeholder="Enter address"
-         value="{{restaurant.address}}"> // 新增 value
+         value="{{restaurant.address}}">
 </div>
 <div class="form-row mb-3">
   <label class="form-label"
@@ -40,7 +36,7 @@
          name="openingHours"
          id="openingHours"
          placeholder="Enter opening hours"
-         value="{{restaurant.openingHours}}"> // 新增 value
+         value="{{restaurant.openingHours}}">
 </div>
 <div class="form-row mb-3">
   <label class="form-label"
@@ -49,6 +45,17 @@
             id="description"
             name="description"
             rows="3">{{restaurant.description}}</textarea>
-</div> // 新增 description，注意 textarea 的寫法不是用 value
-<button type="submit"
-        class="btn btn-primary">Submit</button>
+  <div class="form-row mb-3">
+    <label class="form-label"
+           for="image">Image</label>
+    <input class="form-control"
+           type="file"
+           class="form-control-file"
+           id="image"
+           name="image">
+  </div>
+  <button type="submit"
+          class="btn btn-primary">Submit</button>
+  <a class="btn btn-outline-secondary"
+     href="javascript:history.back()">Back</a>
+</div>
