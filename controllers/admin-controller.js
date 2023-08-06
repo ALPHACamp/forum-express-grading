@@ -1,4 +1,6 @@
 const { Restaurant } = require('../models')
+const { localFileHandler } = require('../helpers/file-helpers')
+
 const adminController = {
   getRestaurants: (req, res) => {
     return Restaurant.findAll({ raw: true }).then(restaurants => {
@@ -13,18 +15,22 @@ const adminController = {
     const { name, tel, address, openingHours, description } = req.body
     // name 是必填，若發先是空值就會終止程式碼，並在畫面顯示錯誤提示
     if (!name) throw new Error('Restaurant name is required!')
-    // 產生一個新的 Restaurant 物件實例，並存入資料庫
-    Restaurant.create({
-      name,
-      tel,
-      address,
-      openingHours,
-      description
-    })
+
+    // 把檔案取出來，也可以寫成 const file = req.file
+    const { file } = req
+    // 把取出的檔案傳給 file-helper 處理後
+    localFileHandler(file)
+      // 再 create 這筆餐廳資料
+      .then(filePath => Restaurant.create({
+        name,
+        tel,
+        address,
+        openingHours,
+        description,
+        image: filePath || null
+      }))
       .then(() => {
-        // 在畫面顯示成功提示
         req.flash('success_messages', 'restaurant was successfully created')
-        // 新增完成後導回後台首頁
         res.redirect('/admin/restaurants')
       })
       .catch(err => next(err))
@@ -54,15 +60,24 @@ const adminController = {
   putRestaurant: (req, res, next) => {
     const { name, tel, address, openingHours, description } = req.body
     if (!name) throw new Error('Restaurant name is required!')
-    Restaurant.findByPk(req.params.id)
-      .then(restaurant => {
+    const { file } = req // 把檔案取出來
+    Promise.all([ // 非同步處理
+      // 去資料庫查有沒有這間餐廳
+      Restaurant.findByPk(req.params.id),
+      localFileHandler(file) // 把檔案傳到 file-helper 處理
+    ])
+      // 以上兩樣事都做完以後
+      .then(([restaurant, filePath]) => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
+
+        // 修改這筆資料
         return restaurant.update({
           name,
           tel,
           address,
           openingHours,
-          description
+          description,
+          image: filePath || restaurant.image // 如果 filePath 是 Truthy (使用者有上傳新照片) 就用 filePath，是 Falsy (使用者沒有上傳新照片) 就沿用原本資料庫內的值
         })
       })
       .then(() => {
