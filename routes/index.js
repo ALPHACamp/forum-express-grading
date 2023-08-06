@@ -7,9 +7,7 @@ const { authenticated, authenticatedAdmin } = require('../middleware/auth')
 const { generalErrorHandler } = require('../middleware/error-handler')
 const passport = require('../config/passport')
 const admin = require('./modules/admin')
-router.get('/', (req, res) => {
-  res.send('Hello World!')
-})
+
 router.use('/admin', authenticatedAdmin, admin)
 router.get('/signup', userController.signUpPage)
 router.post('/signup', userController.signUp)
