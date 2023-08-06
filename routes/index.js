@@ -1,18 +1,18 @@
 const express = require('express')
 const router = express.Router()
 const passport = require('../config/passport')
+const admin = require('./modules/admin')
 
 // 載入 Controllers
 const restController = require('../controllers/restaurant-controller')
 const userController = require('../controllers/user-controller')
 
 // Middleware
-const { authenticated } = require('../middleware/auth')
+const { authenticated, authenticatedAdmin } = require('../middleware/auth')
 const { generalErrorHandler } = require('../middleware/error-handler')
 
 // Admin
-const admin = require('./modules/admin')
-router.use('/admin', admin)
+router.use('/admin', authenticatedAdmin, admin)
 
 // Sign up
 router.get('/signup', userController.signUpPage)
