@@ -30,6 +30,9 @@ router.get('/logout', userController.logout)
 // Top users
 router.get('/users/top', authenticated, userController.getTopUsers)
 
+// Top restaurants
+router.get('/restaurants/top', authenticated, restController.getTopRestaurants)
+
 // User profile
 router.get('/users/:id/edit', authenticated, userController.editUser)
 router.get('/users/:id', authenticated, userController.getUser)
