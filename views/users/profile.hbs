@@ -8,8 +8,32 @@
     <ul class="list-unstyled">
       <li><strong>{{user.name}}</strong></li>
       <li>{{user.email}}</li>      
+      <li><strong>{{user.Comments.length}}</strong> 已評論餐廳</li>
     </ul>
     <a class="btn btn-outline-primary" href="/users/{{user.id}}/edit" role="button">Edit</a>
   </div>
   <hr>
 </div>
+
+
+
+
+<div class="card">
+  <div class="card-header">
+    {{#ifCond user.Comments.length 0}}
+      <h5 class="mb-3">目前沒有評論</h5>
+    </div>
+    {{else}}
+      <h5 class="mb-3"><strong>{{user.Comments.length}}</strong> 已評論餐廳</h5>
+    </div>    
+
+    <div class="card-body">
+    {{#each user.Comments}}
+    <a href="/restaurants/{{this.Restaurant.id}}">
+      <img src="{{this.Restaurant.image}}" alt="Restaurant-image" width="80" height="80">
+    </a>
+    {{/each}}
+    </div>   
+    {{/ifCond}}
+</div>
+
