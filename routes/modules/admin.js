@@ -11,6 +11,8 @@ router.get('/restaurants/:id/edit', adminController.editRestaurant)
 router.get('/restaurants/:id', adminController.getRestaurant)
 // 提交 修改表單
 router.put('/restaurants/:id', adminController.putRestaurant)
+// 刪除資料
+router.delete('/restaurants/:id', adminController.deleteRestaurant)
 // 導向後臺首頁功能 - 瀏覽所有餐廳
 router.get('/restaurants', adminController.getRestaurants)
 // 新增一筆餐廳
