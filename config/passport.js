@@ -8,13 +8,13 @@ const User = db.User
 passport.use(new LocalStrategy(
   // customize user field
   {
-    usernameField: 'mail',
+    usernameField: 'email',
     passwordField: 'password',
     passReqToCallback: true
   },
   // authenticate user
-  (req, mail, password, cb) => {
-    User.findOne({ where: { mail } })
+  (req, email, password, cb) => {
+    User.findOne({ where: { email } })
       .then(user => {
         if (!user) return cb(null, false, req.flash('error_messages', '帳號或密碼輸入錯誤！'))
         bcrypt.compare(password, user.password).then(res => {
