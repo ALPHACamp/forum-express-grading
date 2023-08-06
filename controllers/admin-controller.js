@@ -2,7 +2,7 @@ const { Restaurant } = require('../models')
 
 const adminController = {
   // render all
-  getRestaurants: (req, res) => {
+  getRestaurants: (req, res, next) => {
     Restaurant.findAll({ raw: true })
       .then(restaurants => res.render('admin/restaurants', { restaurants }))
       .catch(err => next(err))
@@ -25,6 +25,16 @@ const adminController = {
       .then(() => {
         req.flash('success_messages', 'restaurant was successfully created') // 在畫面顯示成功提示
         res.redirect('/admin/restaurants') // 新增完成後導回後台首頁
+      })
+      .catch(err => next(err))
+  },
+  // render detail page (R)
+  getRestaurant: (req, res, next) => {
+    // 去資料庫用 id 找一筆資料
+    Restaurant.findByPk(req.params.id, { raw: true })
+      .then(restaurant => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!") //  如果找不到，回傳錯誤訊息，後面不執行
+        res.render('admin/restaurant', { restaurant })
       })
       .catch(err => next(err))
   }
