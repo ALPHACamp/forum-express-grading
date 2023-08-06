@@ -12,11 +12,14 @@ const restaurantController = {
       .then(restaurants => res.render('admin/restaurants', { restaurants }))
       .catch(err => console.log(err))
   },
-  createRestaurant: (req, res) => {
-    return res.render('admin/create-restaurant')
+  createRestaurant: (req, res, next) => {
+    return Category.findAll({ raw: true })
+      .then(categories => {
+        return res.render('admin/create-restaurant', { categories })
+      }).catch(err => { next(err) })
   },
   postRestaurant: (req, res, next) => {
-    const { name, tel, address, openingHours, description } = req.body // 從 req.body 拿出表單裡的資料
+    const { name, tel, address, openingHours, description, categoryId } = req.body // 從 req.body 拿出表單裡的資料
     if (!name) throw new Error('Restaurant name is required!') // name 是必填，若發先是空值就會終止程式碼，並在畫面顯示錯誤提示
 
     const { file } = req
@@ -28,7 +31,8 @@ const restaurantController = {
         address,
         openingHours,
         description,
-        image: filePath || null
+        image: filePath || null,
+        categoryId
       })
     })
       .then(() => {
@@ -49,37 +53,52 @@ const restaurantController = {
       })
       .catch(err => console.log(err))
   },
-  editRestaurant: (req, res) => {
-    return Restaurant.findByPk(req.params.rest_id, { raw: true })
-      .then(restaurant => res.render('admin/edit-restaurant', { restaurant }))
-      .catch(err => console.log(err))
+  editRestaurant: async (req, res) => {
+    try {
+      const [restaurant, categories] = await Promise.all([
+        Restaurant.findByPk(req.params.rest_id, { raw: true }),
+        Category.findAll({ raw: true })
+      ])
+
+      if (!restaurant) throw new Error("Restaurant doesn't exist!")
+      res.render('admin/edit-restaurant', { restaurant, categories })
+    } catch (err) {
+      console.log(err)
+    }
   },
-  putRestaurant: (req, res, next) => {
-    const { name, tel, address, openingHours, description } = req.body
-    if (!name) throw new Error('Restaurant name is required!')
+  putRestaurant: async (req, res, next) => {
+    try {
+      const { name, tel, address, openingHours, description, categoryId } = req.body
+      if (!name) {
+        throw new Error('Restaurant name is required!')
+      }
 
-    const { file } = req
+      const { file } = req
 
-    Promise.all([
-      Restaurant.findByPk(req.params.rest_id),
-      imgurFileHandler(file)
-    ])
-      .then(([restaurant, filePath]) => {
-        if (!restaurant) throw new Error("Restaurant didn't exist!")
-        return restaurant.update({
-          name,
-          tel,
-          address,
-          openingHours,
-          description,
-          image: filePath || restaurant.image
-        })
+      const [restaurant, filePath] = await Promise.all([
+        Restaurant.findByPk(req.params.rest_id),
+        imgurFileHandler(file)
+      ])
+
+      if (!restaurant) {
+        throw new Error("Restaurant didn't exist!")
+      }
+
+      await restaurant.update({
+        name,
+        tel,
+        address,
+        openingHours,
+        description,
+        image: filePath || restaurant.image,
+        categoryId
       })
-      .then(() => {
-        req.flash('success_messages', 'restaurant was successfully to update')
-        res.redirect('/admin/restaurants')
-      })
-      .catch(err => next(err))
+
+      req.flash('success_messages', 'restaurant was successfully to update')
+      res.redirect('/admin/restaurants')
+    } catch (err) {
+      next(err)
+    }
   },
   deleteRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.rest_id)
