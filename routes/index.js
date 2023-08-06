@@ -22,6 +22,7 @@ router.post('/signin', passport.authenticate('local', // (功能)登入
   { failureRedirect: '/signin', failureFlash: true }), userController.signIn)
 router.get('/logout', userController.logout)
 
+router.get('/restaurants/:id', authenticated, restController.getRestaurant) // (頁面)瀏覽單一餐廳資料
 router.get('/restaurants', authenticated, restController.getRestaurants) // (頁面)首頁-餐廳瀏覽
 
 // fallback路由，當其他條件都不符合，最終都會通過這一條
