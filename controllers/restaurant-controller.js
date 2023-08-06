@@ -73,7 +73,7 @@ const restController = {
           }
         ],
         order: [
-          [{ model: Comment }, 'createdAt', 'DESC']
+          [{ model: Comment }, 'createdAt', 'DESC'] // 第1欄位是放置associate的，如果是自己的欄位不用加
         ]
       })
       if (!restaurant) {
@@ -101,6 +101,30 @@ const restController = {
         throw new RestaurantError('Restaurant did not exist!')
       }
       return res.render('dashboard', { restaurant: restaurant.toJSON(), commentAmount })
+    } catch (error) {
+      return next(error)
+    }
+  },
+  getFeeds: async (req, res, next) => {
+    try {
+      // 找出餐廳與評論最近10筆成現在feed
+      const [restaurants, comments] = await Promise.all([
+        Restaurant.findAll({
+          include: [Category],
+          limit: 10,
+          order: [['createdAt', 'DESC']],
+          raw: true,
+          nest: true
+        }),
+        Comment.findAll({
+          include: [User, Restaurant],
+          limit: 10,
+          order: [['createdAt', 'DESC']],
+          raw: true,
+          nest: true
+        })
+      ])
+      return res.render('feeds', { restaurants, comments })
     } catch (error) {
       return next(error)
     }
