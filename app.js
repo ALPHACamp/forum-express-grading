@@ -5,6 +5,10 @@ const flash = require('connect-flash')
 const session = require('express-session')
 const methodOverride = require('method-override')
 
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
+
 const passport = require('./config/passport')
 const handlebarsHelpers = require('./helpers/handlebars-helpers')
 const { getUser } = require('./helpers/auth-helpers')
