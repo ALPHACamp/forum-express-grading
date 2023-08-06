@@ -25,6 +25,9 @@ router.post('/signin', passport.authenticate('local', { failureRedirect: '/signi
 // Log out
 router.get('/logout', userController.logout)
 
+// Dashboard
+router.get('/restaurants/:id/dashboard', authenticated, restController.getDashboard)
+
 router.get('/restaurants/:id', authenticated, restController.getRestaurant)
 
 router.get('/restaurants', authenticated, restController.getRestaurants)
