@@ -2,6 +2,7 @@
 const faker = require('faker')
 module.exports = {
   up: async (queryInterface, Sequelize) => {
+    await new Promise(resolve => { setTimeout(resolve, 5000) })
     const categories = await queryInterface.sequelize.query(
       'SELECT id FROM categories',
       { type: queryInterface.sequelize.QueryTypes.SELECT }
