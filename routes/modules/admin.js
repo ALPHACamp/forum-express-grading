@@ -5,6 +5,7 @@ const router = express.Router()
 const upload = require('../../middleware/multer')
 
 const adminController = require('../../controllers/admin-controller')
+const categoryController = require('../../controllers/category-controller')
 
 router.get('/restaurants/create', adminController.createRestaurant) // (頁面)新增餐廳
 router.get('/restaurants/:id/edit', adminController.editRestaurant) // (頁面)修改餐廳
@@ -18,6 +19,8 @@ router.post('/restaurants', upload.single('image'), adminController.postRestaura
 
 router.get('/users', adminController.getUsers) // (頁面)使用者管理清單
 router.patch('/users/:id', adminController.patchUser) // (功能)更新使用者權限
+
+router.get('/categories', categoryController.getCategories) // (頁面)類別管理清單
 
 // fallback路由，當其他條件都不符合，最終都會通過這一條
 router.use('/', (req, res) => res.redirect('/admin/restaurants'))
