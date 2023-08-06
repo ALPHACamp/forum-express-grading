@@ -4,6 +4,7 @@ const authenticated = (req, res, next) => {
   if (helpers.ensureAuthenticated(req)) {
     return next()
   }
+  console.log('mesg from auth.js:!helpers.ensureAuthenticated')
   res.redirect('/signin')
 }
 const authenticatedAdmin = (req, res, next) => {
