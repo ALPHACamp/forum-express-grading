@@ -11,6 +11,7 @@ const commentController = require('../controllers/​​comment-controller')
 // Middleware
 const { authenticated, authenticatedAdmin } = require('../middleware/auth')
 const { generalErrorHandler } = require('../middleware/error-handler')
+const upload = require('../middleware/multer')
 
 // Admin
 router.use('/admin', authenticatedAdmin, admin)
@@ -25,6 +26,11 @@ router.post('/signin', passport.authenticate('local', { failureRedirect: '/signi
 
 // Log out
 router.get('/logout', userController.logout)
+
+// User profile
+router.get('/users/:id/edit', authenticated, userController.editUser)
+router.get('/users/:id', authenticated, userController.getUser)
+router.put('/users/:id', authenticated, upload.single('image'), userController.putUser)
 
 // Dashboard
 router.get('/restaurants/:id/dashboard', authenticated, restController.getDashboard)
