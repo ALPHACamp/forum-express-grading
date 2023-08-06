@@ -1,3 +1,4 @@
+const path = require('path') 
 const express = require('express')
 const flash = require('connect-flash')
 const methodOverride = require('method-override')
@@ -19,6 +20,7 @@ app.use(passport.initialize()) // 一定要放在 session 後面！！！！！�
 app.use(passport.session())
 app.use(flash())
 app.use(methodOverride('_method'))
+app.use('/upload', express.static(path.join(__dirname, 'upload')))
 app.use((req, res, next) => {
   res.locals.success_messages = req.flash('success_messages') // 設定 success_msg 訊息
   res.locals.error_messages = req.flash('error_messages') // 設定 warning_msg 訊息
