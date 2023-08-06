@@ -58,7 +58,7 @@ const restaurantController = {
   },
   getDashboard: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
-      include: Category,
+      include: [Category, Comment],
       nest: true
     })
       .then(restaurant => {
