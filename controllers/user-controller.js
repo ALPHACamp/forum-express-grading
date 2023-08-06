@@ -1,8 +1,8 @@
 const bcrypt = require('bcryptjs')
-const db = require('../models')
 const { RegisterError, UserCRUDError } = require('../errors/errors')
-const { User } = db // 用解構付值把db內的User model拿出來
+const { User, Comment, Restaurant } = require('../models') // 用解構付值把db內的User model拿出來
 const { imgurFileHandler } = require('../helpers/file-helper')
+const { getCommentedRests } = require('../helpers/user-helper')
 
 const userController = {
   signUpPage: (req, res) => {
@@ -19,7 +19,7 @@ const userController = {
       // 用email註冊帳號 或尋找
       const salt = await bcrypt.genSalt(10)
       const hash = await bcrypt.hash(password, salt)
-      const [user, created] = await User.findOrCreate({
+      const [_user, created] = await User.findOrCreate({
         where: { email },
         defaults: {
           name,
@@ -60,12 +60,24 @@ const userController = {
     // 但是只能更改自己帳戶
     try {
       const { id } = req.params
-      const targetUser = await User.findByPk(id)
+      const targetUser = await User.findByPk(id,
+        {
+          nest: true,
+          include: [{
+            model: Comment,
+            include: Restaurant
+          }]
+        }
+      )
       if (!targetUser) throw new UserCRUDError('User did not exist!')
+
+      /* 找出所有評論過得清單 */
+      const commentedRests = getCommentedRests(targetUser)
 
       return res.render('users/profile', {
         user: targetUser.toJSON(),
-        loginUser: req.user // 如果user和loginUser不一樣就不顯示edit
+        loginUser: req.user, // 如果user和loginUser不一樣就不顯示edit
+        restaurants: commentedRests
       })
     } catch (error) {
       return next(error)
