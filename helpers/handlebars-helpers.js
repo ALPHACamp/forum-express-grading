@@ -4,4 +4,8 @@ const currentYear = () => {
   return dayjs().year()
 }
 
-module.exports = { currentYear }
+const ifCond = function (a, b, options) {
+  return a === b ? options.fn(this) : options.inverse(this)
+}
+
+module.exports = { currentYear, ifCond }
