@@ -1,0 +1,23 @@
+{{!-- 瀏覽餐廳資料: restaurant.hbs 而非 restaurants.hbs --}}
+
+<div class="row">
+  <div class="col-md-12">
+    <h1>{{restaurant.name}}</h1>
+  </div>
+  <div class="col-md-4">
+    <div class="well">
+      <ul class="list-unstyled">
+        <li><strong>Opening Hour:</strong> {{restaurant.openingHours}}</li>
+        <li><strong>Tel:</strong> {{restaurant.tel}}</li>
+        <li><strong>Address:</strong> {{restaurant.address}}</li>
+      </ul>
+    </div>
+  </div>
+  <div class="col-md-8">
+    <p style="white-space: break-spaces;">{{restaurant.description}}</p>
+  </div>
+  <hr>
+</div>
+<a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
+{{!-- history.back() ，這個方法是 JavaScript 裡的 window 物件提供給我們的，等同於你點擊了瀏覽器的上一頁按鈕。你可以把 window.history.back() 貼到 Devtools 的
+Console 裡玩玩看 --}}
