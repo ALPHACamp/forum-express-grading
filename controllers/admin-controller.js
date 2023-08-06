@@ -1,5 +1,5 @@
 const { Restaurant } = require('../models')
-const { localFileHandler } = require('../helpers/file-helpers') // 將 file-helper 載進來
+const { imgurFileHandler } = require('../helpers/file-helpers') // 將 file-helper 載進來
 
 const adminController = {
   getRestaurants: (req, res, next) => {
@@ -20,7 +20,7 @@ const adminController = {
     const { name, tel, address, openingHours, description } = req.body // 從 req.body 拿出表單裡的資料
     if (!name) throw new Error('Restaurant name is required!') // name 是必填，若發先是空值就會終止程式碼，並在畫面顯示錯誤提示
     const { file } = req // 把檔案取出來，也可以寫成 const file = req.file
-    localFileHandler(file) // 把上傳的檔案取出來，file 為 input 的屬性，傳給 file-helper 處理
+    return imgurFileHandler(file) // 把上傳的檔案取出來，file 為 input 的屬性，傳給 file-helper 處理
       .then(filePath => Restaurant.create({ // 再 create 這筆餐廳資料
         name,
         tel,
@@ -61,7 +61,7 @@ const adminController = {
     const { file } = req // 如果有上傳照片，把檔案取出來，file 為 input 設定的屬性
     Promise.all([ // 非同步處理
       Restaurant.findByPk(req.params.id), // 去資料庫查有沒有這間餐廳
-      localFileHandler(file) // 把檔案傳到 file-helper 處理
+      imgurFileHandler(file) // 把檔案傳到 file-helper 處理
     ])
       .then(([restaurant, filePath]) => { // 以上兩樣事都做完以後
         if (!restaurant) throw new Error("Restaurant didn't exist!")
