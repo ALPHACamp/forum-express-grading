@@ -1,5 +1,6 @@
 'use strict'
 
+const path = require('path')
 const express = require('express')
 const handlebars = require('express-handlebars')
 const methodOverride = require('method-override')
@@ -27,6 +28,8 @@ app.use(session({ secret: SESSION_SECRET, resave: false, saveUninitialized: fals
 app.use(passport.initialize())
 app.use(passport.session())
 app.use(flash())
+// 讓 hbs 的 image src 可以讀取到 upload 資料夾中的圖片檔(靜態檔案)
+app.use('/upload', express.static(path.join(__dirname, 'upload')))
 
 app.use((req, res, next) => {
   res.locals.success_messages = req.flash('success_messages')
