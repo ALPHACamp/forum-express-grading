@@ -22,11 +22,19 @@ const restaurantController = {
   // (頁面) 瀏覽單一餐廳資料
   getRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id,
-      { raw: true, nest: true, include: Category })
+      { nest: true, include: Category })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
-        return res.render('restaurant', { restaurant })
+        return restaurant.increment({ viewCounts: 1 })
+          .then(() => res.render('restaurant', { restaurant: restaurant.toJSON() }))
       })
+      .catch(err => next(err))
+  },
+  // (頁面) 顯示單一餐廳的Dashboard
+  getDashboard: (req, res, next) => {
+    return Restaurant.findByPk(req.params.id,
+      { raw: true, nest: true, include: Category })
+      .then(restaurant => res.render('dashboard', { restaurant }))
       .catch(err => next(err))
   }
 }
