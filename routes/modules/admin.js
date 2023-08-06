@@ -21,7 +21,8 @@ router.get('/users', adminController.getUsers) // (頁面)使用者管理清單
 router.patch('/users/:id', adminController.patchUser) // (功能)更新使用者權限
 
 router.get('/categories/:id', categoryController.getCategories) // (頁面)修改分類
-router.put('/categories/:id', categoryController.putCategory) // (功能)修改頁面
+router.put('/categories/:id', categoryController.putCategory) // (功能)修改分類
+router.delete('/categories/:id', categoryController.deleteCategory) // (功能)刪除分類
 
 router.get('/categories', categoryController.getCategories) // (頁面)分類管理清單
 router.post('/categories', categoryController.postCategory) // (功能)新增一筆分類

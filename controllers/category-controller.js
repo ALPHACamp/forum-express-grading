@@ -38,7 +38,13 @@ const categoryController = {
 
   // (功能)刪除一筆分類
   deleteCategory: (req, res, next) => {
-
+    return Category.findByPk(req.params.id)
+      .then(category => {
+        if (!category) throw new Error("Category didn't exist!")
+        return category.destroy()
+      })
+      .then(() => res.redirect('/admin/categories'))
+      .catch(err => next(err))
   }
 }
 
