@@ -8,6 +8,7 @@ router.get('/users', adminController.getUsers)
 router.patch('/users/:id', adminController.patchUser)
 
 router.get('/categories', categoryController.getCategories)
+router.post('/categories', categoryController.postCategory)
 
 router.get('/restaurants/create', adminController.createRestaurant)
 router.get('/restaurants/:id/edit', adminController.editRestaurant)
