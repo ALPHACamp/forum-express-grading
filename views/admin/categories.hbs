@@ -1,11 +1,17 @@
 
 {{> admin-tabs route='categories'}}
 
-<a href='/admin/categories/create'>
-  <button type="button" class="btn btn-primary">New Category</button>
-</a>
-<br />
-<br />
+<div class="d-flex align-items-center pt-3 pb-5 my-3 text-white-50 bg-purple">
+  <form action="/admin/categories" class="row" method="POST">
+    <div class="col-auto">
+      <input type="text" class="form-control" placeholder="Category Name" name="name">
+    </div>
+    <div class="col-auto">
+      <button class="btn btn-success" type="submit">Create</button>
+    </div>
+  </form>
+</div>
+
 <table class="table align-middle">
   <thead class="thead-dark">
     <tr>

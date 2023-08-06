@@ -20,7 +20,8 @@ router.post('/restaurants', upload.single('image'), adminController.postRestaura
 router.get('/users', adminController.getUsers) // (頁面)使用者管理清單
 router.patch('/users/:id', adminController.patchUser) // (功能)更新使用者權限
 
-router.get('/categories', categoryController.getCategories) // (頁面)類別管理清單
+router.get('/categories', categoryController.getCategories) // (頁面)分類管理清單
+router.post('/categories', categoryController.postCategory) // (功能)新增一筆分類
 
 // fallback路由，當其他條件都不符合，最終都會通過這一條
 router.use('/', (req, res) => res.redirect('/admin/restaurants'))
