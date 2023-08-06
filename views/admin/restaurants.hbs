@@ -29,7 +29,14 @@
           </a>
         </button>
         <form action="/admin/restaurants/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
-          <button type="submit" class="btn btn-link link-danger">Delete</button>
+          <button type="submit" class="btn btn-link link-danger"
+            onclick="return confirm(`確定要刪除 {{ this.name }} 嗎？`)">Delete</button>
+          {{!-- 對於 on* 開頭的事件處理器 (event handler) 來說，return false 就能夠取消事件，包括我們這裡使用的 onclick。
+          因此，這裡我們直接使用瀏覽器的 confirm()，這個方法會讓瀏覽器顯示一個彈窗，上面會有 OK 及 Cancel 按鈕 --}}
+          {{!-- 使用者點確定 (OK) → confirm() 回傳 true，表單會被提交
+          使用者點取消 (Cancel) → confirm() 回傳 false。形成 onclick="return false"，表單不會被提交 --}}
+          {{!-- 這裡我們選擇反引號 confirm(`xxx`) 的理由，是因為傳入的值 Gary's restaurant 裡面也有 ' ，導致這個 function 裡面變成有三個 ' ，因此這行 JavaScript
+          就出錯無法執行了。 --}}
         </form>
       </td>
     </tr>

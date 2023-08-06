@@ -49,6 +49,7 @@ const adminController = {
       .catch(err => next(err))
   },
   putRestaurant: (req, res, next) => {
+    // 拿資料、更新資料、閃flash、回restaurants清單
     const { name, tel, address, openingHours, description } = req.body
     if (!name) throw new Error('Restaurant name is required!')
     Restaurant.findByPk(req.params.id)
@@ -67,6 +68,16 @@ const adminController = {
         req.flash('success_messages', 'restaurant was successfully to update')
         res.redirect('/admin/restaurants')
       })
+      .catch(err => next(err))
+  },
+  deleteRestaurant: (req, res, next) => {
+    return Restaurant.findByPk(req.params.id)
+      .then(restaurant => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        return restaurant.destroy()
+        // 刪除的時候也不會加 { raw: true } 參數
+      })
+      .then(() => res.redirect('/admin/restaurants'))
       .catch(err => next(err))
   }
 }
