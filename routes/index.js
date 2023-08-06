@@ -1,8 +1,6 @@
-const express = require('express')
-const router = express.Router()
-
-router.get('/', (req, res) => {
-  res.send('Hello World!')
-})
-
-module.exports = router
+const pages = require('./pages')
+const apis = require('./apis')
+module.exports = {
+  pages,
+  apis
+}
