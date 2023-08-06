@@ -5,8 +5,12 @@ const adminController = require('../../controllers/admin-controller')
 
 // 導向後臺新增頁功能 - 取得新增餐廳的表單
 router.get('/restaurants/create', adminController.createRestaurant)
+// 導向後臺修改頁功能
+router.get('/restaurants/:id/edit', adminController.editRestaurant)
 // 導向後臺詳細頁功能 - 順序重要!!!
-router.get("/restaurants/:id", adminController.getRestaurant);
+router.get('/restaurants/:id', adminController.getRestaurant)
+// 提交 修改表單
+router.put('/restaurants/:id', adminController.putRestaurant)
 // 導向後臺首頁功能 - 瀏覽所有餐廳
 router.get('/restaurants', adminController.getRestaurants)
 // 新增一筆餐廳
