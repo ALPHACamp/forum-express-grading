@@ -1,15 +1,13 @@
-<h1>餐廳後台</h1>
-<a href='/admin/restaurants/create'>
-  <button type="button" class="btn btn-primary">New Restaurant</button>
-</a>
-<br />
-<br />
+{{> admin-database-tables-tabs}}
+
 <table class="table align-middle">
-  <thead class="thead-dark">
+  <thead class="table-dark align-middle">
     <tr>
       <th scope="col">#</th>
       <th scope="col">Name</th>
-      <th scope="col"></th>
+      <th scope="col" class="text-end">
+        <a href='/admin/restaurants/create'><button type="button" class="btn btn-primary">New Restaurant</button></a>
+      </th>
     </tr>
   </thead>
   <tbody>
