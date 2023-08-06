@@ -6,8 +6,10 @@ const adminController = require('../../controllers/admin-controller')
 
 // 路由擺放的順序，應從嚴格到寬鬆
 router.get('/restaurants/create', adminController.createRestaurant)
+router.get('/restaurants/:id/edit', adminController.editRestaurant)
 router.get('/restaurants/:id', adminController.getRestaurant)
 // 假設今天網址是 / admin / restaurants / 3，那:id 就是 3，req.params.id 就會是 3，因此我們可以在 controller 使用 req.params.id 取得動態的 id
+router.put('/restaurants/:id', adminController.putRestaurant)
 router.get('/restaurants', adminController.getRestaurants)
 router.post('/restaurants', adminController.postRestaurant)
 router.use('/', (req, res) => res.redirect('/admin/restaurants'))
