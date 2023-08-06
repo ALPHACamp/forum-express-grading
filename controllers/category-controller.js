@@ -5,8 +5,11 @@ const categoryController = {
 
   // (頁面)瀏覽所有分類
   getCategories: (req, res, next) => {
-    return Category.findAll({ raw: true })
-      .then(categories => res.render('admin/categories', { categories }))
+    return Promise.all([
+      Category.findAll({ raw: true }),
+      req.params.id ? Category.findByPk(req.params.id, { raw: true }) : null
+    ])
+      .then(([categories, category]) => res.render('admin/categories', { categories, category }))
       .catch(err => next(err))
   },
 
@@ -22,7 +25,15 @@ const categoryController = {
 
   // (功能)更新一筆分類
   putCategory: (req, res, next) => {
-
+    const { name } = req.body
+    if (!name) throw new Error('Category name is required!')
+    return Category.findByPk(req.params.id)
+      .then(category => {
+        if (!category) throw new Error("Category doesn't exist!")
+        return category.update({ name })
+      })
+      .then(() => res.redirect('/admin/categories'))
+      .catch(err => next(err))
   },
 
   // (功能)刪除一筆分類
