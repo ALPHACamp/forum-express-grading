@@ -4,12 +4,13 @@ const passport = require('../config/passport')
 
 const restController = require('../controllers/restaurant-controller')
 const userController = require('../controllers/user-controller')
+const adminController = require('../controllers/admin-controller')
 
 const admin = require('./modules/admin')
-const { authenticated } = require('../middleware/auth')
+const { authenticated, authenticatedAdmin } = require('../middleware/auth')
 const { generalErrorHandler } = require('../middleware/error-handler')
 
-router.use('/admin', admin)
+router.use('/admin', authenticatedAdmin, admin)
 
 router.get('/signup', userController.signUpPage)
 router.post('/signup', userController.signUp)
