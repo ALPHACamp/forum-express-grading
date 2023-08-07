@@ -30,6 +30,14 @@ const categoryController = {
       })
       .then(() => res.redirect('/admin/categories'))
       .catch(err => console.log(err))
+  },
+  deleteCategory: (req, res, next) => {
+    return Category.findByPk(req.params.id)
+      .then(category => {
+        if (!category) throw new Error('category not exists ! ')
+        category.destroy()
+      })
+      .then(() => res.redirect('/admin/categories'))
   }
 }
 
