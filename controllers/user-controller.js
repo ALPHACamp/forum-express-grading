@@ -29,9 +29,6 @@ const userController = {
       })
       .catch(err => next(err))
   },
-  signUp: (req, res, next) => {
-    // ...略
-  }, // 新增以下程式碼
   signInPage: (req, res) => {
     res.render('signin')
   },
