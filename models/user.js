@@ -17,13 +17,13 @@ module.exports = (sequelize, DataTypes) => {
     name: DataTypes.STRING,
     email: DataTypes.STRING,
     password: DataTypes.STRING,
-    isAdmin: DataTypes.BOOLEAN,
-    deletedAt: DataTypes.DATE // for soft delete
+    isAdmin: DataTypes.BOOLEAN
+    // deletedAt: DataTypes.DATE // for soft delete
   }, {
     sequelize,
     modelName: 'User',
     tableName: 'Users',
-    paranoid: true, // 啟動soft delete
+    // paranoid: true, // 啟動soft delete
     underscored: true
   })
   return User
