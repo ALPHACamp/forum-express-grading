@@ -1,25 +1,38 @@
 
 const { Restaurant, Category } = require('../models')
+const { getOffset, getPagination } = require('../helpers/pagination-helpers')
 
 const restaurantController = {
   // (頁面) 瀏覽所有餐廳-首頁
   getRestaurants: (req, res, next) => {
+    const DEFAULT_LIMIT = 9
     // 空字串轉數字是0，是falsy，得到categoryId=''
     const categoryId = Number(req.query.categoryId) || ''
+    const page = Number(req.query.page) || 1
+    const limit = Number(req.query.limit) || DEFAULT_LIMIT
 
-    return Promise.all([Restaurant.findAll({
+    const offset = getOffset(limit, page)
+
+    return Promise.all([Restaurant.findAndCountAll({
       where: categoryId ? { categoryId } : {},
-      include: Category,
+      raw: true,
       nest: true,
-      raw: true
+      include: Category,
+      limit,
+      offset
     }), Category.findAll({ raw: true })])
       .then(([restaurants, categories]) => {
         // 把餐廳敘述截至50個字，避免過長時版面亂掉
-        const data = restaurants.map(r => ({
+        const data = restaurants.rows.map(r => ({
           ...r,
           description: r.description.substring(0, 50)
         }))
-        return res.render('restaurants', { restaurants: data, categories, categoryId })
+        return res.render('restaurants', {
+          restaurants: data,
+          categories,
+          categoryId,
+          pagination: getPagination(limit, page, restaurants.count)
+        })
       })
       .catch(err => next(err))
   },
