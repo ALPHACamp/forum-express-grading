@@ -1,3 +1,5 @@
+const path = require('path')
+
 const express = require('express')
 const routes = require('./routes')
 const handlebars = require('express-handlebars')
@@ -24,6 +26,7 @@ app.use(passport.session()) // 增加這行，啟動 session 功能
 
 app.use(flash()) // 掛載套件
 app.use(methodOverride('_method'))
+app.use('/upload', express.static(path.join(__dirname, 'upload')))
 app.use((req, res, next) => {
   res.locals.success_messages = req.flash('success_messages') // 設定 success_msg 訊息
   res.locals.error_messages = req.flash('error_messages')
