@@ -18,8 +18,7 @@ const restaurantController = {
   getRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
       include: Category, // 拿出關聯的 Category model
-      nest: true,
-      raw: true
+      nest: true
     })
       .then(restaurant => {
         console.log(restaurant)
