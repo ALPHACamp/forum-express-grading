@@ -6,6 +6,7 @@ const restController = require('../controllers/restaurnat-controller')
 const userController = require('../controllers/user-controller')
 const { authenticated, authenticatedAdmin } = require('../middleware/auth')
 const { generalErrorHandler } = require('../middleware/error-handler')
+
 const admin = require('./modules/admin')
 
 router.use('/admin', authenticatedAdmin, admin)
