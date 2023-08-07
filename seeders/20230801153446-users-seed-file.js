@@ -7,6 +7,7 @@ module.exports = {
       password: await bcrypt.hash('12345678', 10),
       is_admin: true,
       name: 'root',
+      image: 'https://media.istockphoto.com/id/1344552674/vector/account-icon-profile-icon-vector-illustration.jpg?s=1024x1024&w=is&k=20&c=i_5sF8AFgX_ebEJgr05XbzHaofrB0-ujcmVM2XOHJSA=',
       created_at: new Date(),
       updated_at: new Date()
     }, {
@@ -14,6 +15,7 @@ module.exports = {
       password: await bcrypt.hash('12345678', 10),
       is_admin: false,
       name: 'user1',
+      image: 'https://media.istockphoto.com/id/1344552674/vector/account-icon-profile-icon-vector-illustration.jpg?s=1024x1024&w=is&k=20&c=i_5sF8AFgX_ebEJgr05XbzHaofrB0-ujcmVM2XOHJSA=',
       created_at: new Date(),
       updated_at: new Date()
     }, {
@@ -21,6 +23,7 @@ module.exports = {
       password: await bcrypt.hash('12345678', 10),
       is_admin: false,
       name: 'user2',
+      image: 'https://media.istockphoto.com/id/1344552674/vector/account-icon-profile-icon-vector-illustration.jpg?s=1024x1024&w=is&k=20&c=i_5sF8AFgX_ebEJgr05XbzHaofrB0-ujcmVM2XOHJSA=',
       created_at: new Date(),
       updated_at: new Date()
     }], {})

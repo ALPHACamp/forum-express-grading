@@ -45,7 +45,7 @@
     <label class="form-label" for="text">留下評論：</label>
     <textarea class="form-control" id="text" name="text" rows="3"></textarea>
   </div>
-  <input type="hidden" name="restaurantId" value="{{restaurant.id}}" />
+  <input type="hidden" name="restaurantId" value="{{restaurant.id}}" maxlength="100"/>
   <button type="submit" class="btn btn-primary">Submit</button>
   <a class="btn btn-outline-secondary" href="/">Back</a>
 </form>

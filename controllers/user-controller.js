@@ -18,7 +18,8 @@ const userController = {
       .then(hash => User.create({
         name: req.body.name,
         email: req.body.email,
-        password: hash
+        password: hash,
+        image: 'https://media.istockphoto.com/id/1344552674/vector/account-icon-profile-icon-vector-illustration.jpg?s=1024x1024&w=is&k=20&c=i_5sF8AFgX_ebEJgr05XbzHaofrB0-ujcmVM2XOHJSA='
       }))
       .then(() => {
         req.flash('success_messages', '成功註冊帳號！')
@@ -45,6 +46,19 @@ const userController = {
     })
       .then(user => {
         if (!user) throw new Error("User didn't exist.")
+
+        // const uniqueComments = []
+        // const restaurantIds = new Set()
+
+        // user.Comments.forEach(comment => {
+        //   if (!restaurantIds.has(comment.Restaurant.id)) {
+        //     restaurantIds.add(comment.Restaurant.id)
+        //     uniqueComments.push(comment)
+        //   }
+        // })
+        // user.Comments = uniqueComments
+
+        // console.log(user.Comments)
         res.render('users/profile', { user: user.toJSON() })
       })
       .catch(err => next(err))

@@ -9,7 +9,7 @@
                 <p class="card-text">{{user.email}}</p>
 
                 <p>{{user.Comments.length}} 已評論餐廳</p>
-                
+
                 <a class="btn btn-primary" href="/users/{{user.id}}/edit" role="button">Edit</a>
 
                 <a class="btn btn-outline-secondary" href="/">Back</a>
@@ -21,18 +21,20 @@
 </div>
 
 <div class="card">
-    <div class="card-header mb-5">
+    <div class="card-header">
         {{user.Comments.length}} 已評論餐廳
     </div>
-    <ul class="list-group list-group-flush">
-        <li class="list-group-item d-flex gap-5 flex-wrap justify-content-center">
-            {{#each user.Comments}}
-            <a href="/restaurants/{{this.Restaurant.id}}" class="text-decoration-none">
-                <img class="card-img-top img-fluid" src="{{this.Restaurant.image}}" width="286px" height="180px"
-                    style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
-                <h6>{{this.Restaurant.name}}</h6>
-            </a>
-            {{/each}}
-        </li>
-    </ul>
+    <div class="card-body container">
+        <div class="row d-flex flex-wrap gap-3 justify-content-start">
+        {{#each user.Comments}}
+            <div class="col col-md-auto">
+                <a href="/restaurants/{{this.Restaurant.id}}" class="text-decoration-none">
+                    <img class="" src="{{this.Restaurant.image}}" width="143px" height="90px"
+                        style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+                    <h6>{{this.Restaurant.name}}</h6>
+                </a>
+            </div>
+        {{/each}}
+        </div>
+    </div>
 </div>
