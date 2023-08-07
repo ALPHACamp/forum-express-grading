@@ -40,6 +40,9 @@ const restaurantController = {
       include: [
         Category,
         { model: Comment, include: User }
+      ],
+      order: [
+        [{ model: Comment }, 'createdAt', 'DESC'] // 對Comment的createdAt屬性進行倒序排序
       ]
     })
       .then(restaurant => {
@@ -53,10 +56,17 @@ const restaurantController = {
   },
   getDashboard: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
-      include: Category
+      include: [Category, Comment]
     })
       .then(restaurant => {
         if (!restaurant) throw new Error('Restaurant didn\'t exist!')
+        return Promise.all([
+          restaurant,
+          Comment.count({ where: { restaurantId: restaurant.id } }) // 計算comment的總數量
+        ])
+      })
+      .then(([restaurant, commentCounts]) => {
+        restaurant.commentCounts = commentCounts // 將comment總數量儲存在restaurant物件中
         res.render('dashboard', { restaurant: restaurant.toJSON() })
       })
       .catch(err => next(err))
