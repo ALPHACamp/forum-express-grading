@@ -1,4 +1,6 @@
-<form action="/admin/restaurants/{{restaurant.id}}?_method=PUT" method="POST">
+<form action="/admin/restaurants/{{restaurant.id}}?_method=PUT" method="POST" enctype="multipart/form-data">
+  {{!-- enctype＝ "encoding type" 的缩写 = 用于指示浏览器如何对表单数据进行编码，以便在 HTTP 请求中传输到服务器 --}}
+  {{!-- multipart/form-data = 文件上传 --}}
   <div class="mb-4 text-center">
     <h1 class="h3 font-weight-normal mb-3">Edit Restaurant</h1>
   </div>

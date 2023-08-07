@@ -1,29 +1,32 @@
-const { Restaurant } = require('../models') // 新增這裡
+const { Restaurant } = require('../models')
+const { localFileHandler } = require('../helpers/file-helpers')
 
 const adminController = {
   getRestaurants: (req, res) => {
     return Restaurant.findAll({ raw: true }).then(restaurants => {
       return res.render('admin/restaurants', { restaurants: restaurants })
     })
-  }, // 補逗點
-  // 新增這個
+  },
   createRestaurant: (req, res) => {
     return res.render('admin/create-restaurant')
   },
-  // 新增以下
   postRestaurant: (req, res, next) => {
     const { name, tel, address, openingHours, description } = req.body // 從 req.body 拿出表單裡的資料
     if (!name) throw new Error('Restaurant name is required!') // name 是必填，若發先是空值就會終止程式碼，並在畫面顯示錯誤提示
-    Restaurant.create({ // 產生一個新的 Restaurant 物件實例，並存入資料庫
-      name,
-      tel,
-      address,
-      openingHours,
-      description
-    })
+    const { file } = req // 把檔案取出來，也可以寫成 const file = req.file
+    localFileHandler(file) // 把取出的檔案傳給 file-helper 處理後
+      .then(filePath => Restaurant.create({ // 再 create 這筆餐廳資料，產生一個新的 Restaurant 物件實例，並存入資料庫
+        name,
+        tel,
+        address,
+        openingHours,
+        description,
+        image: filePath || null
+        // image: filePath || null 的意思是：如果 filePath 的值為檔案路徑字串(使用者有上傳檔案，就會被判斷為 Truthy)，就將 image 的值設為檔案路徑；如果 filePath 的值是空的(也就是沒有上傳檔案，因此沒有檔案路徑，會被判斷為 Falsy)，那麼就將 image 的值設為 null
+      }))
       .then(() => {
-        req.flash('success_messages', 'restaurant was successfully created') // 在畫面顯示成功提示
-        res.redirect('/admin/restaurants') // 新增完成後導回後台首頁
+        req.flash('success_messages', 'restaurant was successfully created')
+        res.redirect('/admin/restaurants') // 存完之後，回首頁
       })
       .catch(err => next(err))
   },
@@ -52,16 +55,20 @@ const adminController = {
     // 拿資料、更新資料、閃flash、回restaurants清單
     const { name, tel, address, openingHours, description } = req.body
     if (!name) throw new Error('Restaurant name is required!')
-    Restaurant.findByPk(req.params.id)
-      .then(restaurant => {
+    const { file } = req // 把檔案取出來
+    Promise.all([ // 非同步處理
+      Restaurant.findByPk(req.params.id), // 去資料庫查有沒有這間餐廳
+      localFileHandler(file) // 把檔案傳到 file-helper 處理
+    ])
+      .then(([restaurant, filePath]) => { // 以上兩樣事都做完以後
         if (!restaurant) throw new Error("Restaurant didn't exist!")
-        return restaurant.update({
-          // 沒有設定 { raw: true } 來整理成乾淨的資料，這是因為這邊會需要用到 restaurant.update 這個方法，如果加上參數就會把 sequelize 提供的這個方法過濾掉，會無法使用。因此在編輯情境裡我們是不會加 { raw: true } 的
+        return restaurant.update({ // 修改這筆資料
           name,
           tel,
           address,
           openingHours,
-          description
+          description,
+          image: filePath || restaurant.image // 如果 filePath 是 Truthy (使用者有上傳新照片) 就用 filePath，是 Falsy (使用者沒有上傳新照片) 就沿用原本資料庫內的值
         })
       })
       .then(() => {
@@ -69,6 +76,7 @@ const adminController = {
         res.redirect('/admin/restaurants')
       })
       .catch(err => next(err))
+    // 沒有設定 { raw: true } 來整理成乾淨的資料，這是因為這邊會需要用到 restaurant.update 這個方法，如果加上參數就會把 sequelize 提供的這個方法過濾掉，會無法使用。因此在編輯情境裡我們是不會加 { raw: true } 的
   },
   deleteRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id)
