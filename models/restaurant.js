@@ -11,22 +11,21 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate (models) {
       // define association here
+      Restaurant.belongsTo(models.Category, { foreignKey: 'categoryId' })
     }
   };
-  Restaurant.init(
-    {
-      name: DataTypes.STRING,
-      tel: DataTypes.STRING,
-      address: DataTypes.STRING,
-      openingHours: DataTypes.STRING,
-      description: DataTypes.TEXT,
-      image: DataTypes.STRING // 新增這一行
-    },
-    {
-      sequelize,
-      modelName: 'Restaurant',
-      underscored: true
-    }
-  )
+  }
+  Restaurant.init({
+    name: DataTypes.STRING,
+    tel: DataTypes.STRING,
+    address: DataTypes.STRING,
+    openingHours: DataTypes.STRING,
+    description: DataTypes.TEXT,
+    image: DataTypes.STRING
+  }, {
+    sequelize,
+    modelName: 'Restaurant',
+    underscored: true
+  })
   return Restaurant
 }
