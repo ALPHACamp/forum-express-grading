@@ -1,4 +1,10 @@
 {{>admin-tables route='categories'}}
+
+<form action="/admin/categories" method="post" class="d-flex mt-5 mb-5 w-25">
+  <input type="text" class="form-control me-3" placeholder="Category Name" name="name">
+  <button type="submit" class="btn btn-success">Create</button>
+</form>
+
 <table class="table align-middle">
   <thead class="thead-dark">
     <tr>
