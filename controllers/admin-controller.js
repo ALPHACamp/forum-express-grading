@@ -1,5 +1,5 @@
 const { Restaurant } = require('../models')
-const { localFileHandler } = require('../helpers/file-helpers')
+const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const adminController = {
   // 進入管理者首頁
@@ -23,7 +23,7 @@ const adminController = {
 
     const { file } = req // 等同 const file = req.file
 
-    localFileHandler(file)
+    imgurFileHandler(file)
       .then(filePath => {
         return Restaurant.create({
           name,
@@ -74,7 +74,7 @@ const adminController = {
 
     Promise.all([
       Restaurant.findByPk(req.params.id),
-      localFileHandler(file)
+      imgurFileHandler(file)
     ])
       .then(([restaurant, filePath]) => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
