@@ -1,5 +1,6 @@
 const db = require('../models')
 const Restaurant = db.Restaurant
+const User = db.User
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const adminController = {
@@ -82,6 +83,53 @@ const adminController = {
       })
       .then(() => res.redirect('/admin/restaurants'))
       .catch(err => next(err))
+  },
+  getUsers: (req, res, next) => {
+    return User.findAll({ raw: true, nest: true })
+      .then(users => {
+        return res.render('admin/users', { users })
+      })
+  },
+  // patchUser: (req, res, next) => {
+  //   return User.findOne({ where: { id: req.params.id } })
+  //     .then(user => {
+  //       if (user.toJSON().email === 'root@example.com') {
+  //         req.flash('error_messages', '禁止變更 root 權限')
+  //         return res.redirect('back')
+  //       }
+  //       if (user.toJSON().isAdmin) {
+  //         user.isAdmin = 0
+  //         return user.save()
+  //       } else {
+  //         user.isAdmin = 1
+  //         return user.save()
+  //       }
+  //     })
+  //     .then(() => {
+  //       req.flash('success_messages', '使用者權限變更成功')
+  //       res.redirect('/admin/users')
+  //     })
+  //     .catch(err => next(err))
+  // }
+  patchUser: (req, res, next) => {
+    return User.findByPk(req.params.id)
+      .then(user => {
+        if (user.dataValues.email === 'root@example.com') {
+          req.flash('error_messages', '禁止變更 root 權限')
+          return res.redirect('back')
+        }
+        if (user.dataValues.isAdmin) {
+          return user.update({ isAdmin: false })
+        } else {
+          return user.update({ isAdmin: true })
+        }
+      })
+      .then(() => {
+        req.flash('success_messages', '使用者權限變更成功')
+        res.redirect('/admin/users')
+      })
+      .catch(err => next(err))
   }
+
 }
 module.exports = adminController
