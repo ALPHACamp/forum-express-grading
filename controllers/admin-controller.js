@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 const { Restaurant, User, Category } = require('../models')
+=======
+const { Restaurant, User } = require('../models')
+>>>>>>> db4ffca4ca01dea7a243615ef72c8f7b0b48338c
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const adminController = { // 修改這裡
