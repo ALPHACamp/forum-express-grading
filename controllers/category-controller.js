@@ -1,4 +1,5 @@
 const { Category } = require('../models')
+const category = require('../models/category')
 
 const categoryController = {
   getCategories: (req, res, next) => {
@@ -36,6 +37,16 @@ const categoryController = {
         req.flash('success_messages', '類別更改成功')
         res.redirect('/admin/categories')
       })
+      .catch(err => next(err))
+  },
+  deleteCategory: (req, res, next) => {
+    Category.findByPk(req.params.id)
+      .then(category => {
+        if (!category) throw new Error("Category doesn't exist")
+
+        return category.destroy()
+      })
+      .then(() => res.redirect('/admin/categories'))
       .catch(err => next(err))
   }
 }
