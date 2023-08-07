@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs')
 const db = require('../models')
 const { User } = db
+const { PROFILE_DEFAULT_AVATAR } = require('../helpers/file-helper')
 
 const userController = {
   signUpPage: (req, res) => {
@@ -17,7 +18,8 @@ const userController = {
       .then(hash => User.create({
         name: req.body.name,
         email: req.body.email,
-        password: hash
+        password: hash,
+        image: PROFILE_DEFAULT_AVATAR
       }))
       .then(() => {
         res.redirect('/signin')
@@ -38,6 +40,14 @@ const userController = {
     req.flash('success_messages', '登出成功!')
     req.logout()
     res.redirect('/signin')
+  },
+  getUser: (req, res, next) => {
+    return User.findByPk(req.params.id)
+      .then(user => {
+        if (!user) throw new Error("Profile didn't exist")
+        res.render('users/profile', { user: user.toJSON() })
+      })
+      .catch(err => next(err))
   }
 }
 
