@@ -2,11 +2,15 @@ const { Restaurant, User, Comment } = require('../models')
 const { CommentError } = require('../errors/errors')
 const commentController = {
   postComment: async (req, res, next) => {
+    const MAX_COMMENT_LENGTH = 200
     try {
       const { restaurantId, text } = req.body
       console.log('Type of restaurantId: ', typeof restaurantId)
       const userId = req.user.id
-      if (!text) throw new CommentError('Comment text is required!')
+      if (!text) throw new CommentError('Comment is required!')
+
+      // 如果字串太長資料庫會出現Payload Too Large
+      if (text.length > MAX_COMMENT_LENGTH) throw new CommentError('Comment is too long!')
       // 尋找restaurant與user 確定都存在
       const [restaurant, user] = await Promise.all([
         Restaurant.findByPk(restaurantId),

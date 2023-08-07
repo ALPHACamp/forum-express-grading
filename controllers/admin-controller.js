@@ -3,6 +3,8 @@ const { AdminError } = require('../errors/errors')
 const { imgurFileHandler } = require('../helpers/file-helper')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
 const adminHelper = require('../helpers/admin-helper')
+const MAX_DESCRIPTION_LENGTH = 500
+
 const adminController = {
   getRestaurants: async (req, res, next) => {
     const DEFAULT_LIMIT = 10
@@ -55,6 +57,9 @@ const adminController = {
       const filePath = await imgurFileHandler(file)
 
       if (!name) { throw new AdminError('Restaurant name is required!') }
+
+      // 防止description太長 造成Payload Too Large error
+      if (description && description.length > MAX_DESCRIPTION_LENGTH) { throw new AdminError('Description is too long!') }
       await Restaurant.create({
         name,
         tel,
@@ -118,6 +123,10 @@ const adminController = {
       const { body, file } = req
       // 沒有提供名稱也會抱錯
       const { name, tel, address, openingHours, description, categoryId } = body
+
+      // 防止description太長 造成Payload Too Large error
+      if (description && description.length > MAX_DESCRIPTION_LENGTH) { throw new AdminError('Description is too long!') }
+
       const filePath = await imgurFileHandler(file)
       if (!name) { throw new AdminError('Restaurant name is required!') }
 

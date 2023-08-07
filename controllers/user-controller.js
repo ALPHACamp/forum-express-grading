@@ -19,7 +19,7 @@ const userController = {
       // 用email註冊帳號 或尋找
       const salt = await bcrypt.genSalt(10)
       const hash = await bcrypt.hash(password, salt)
-      const [_user, created] = await User.findOrCreate({
+      const [created] = await User.findOrCreate({ // findOrCreate回傳user 與 count, user模有用到所以不要取出
         where: { email },
         defaults: {
           name,

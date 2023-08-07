@@ -4,7 +4,10 @@ const categoryController = {
   getCategories: async (req, res, next) => {
     try {
       const [categories, category] = await Promise.all([
-        Category.findAll({ raw: true }),
+        Category.findAll({
+          raw: true,
+          order: [['createdAt', 'DESC']]
+        }),
         req.params.id ? Category.findByPk(parseInt(req.params.id), { raw: true }) : null
       ])
       return res.render('admin/categories', { categories, category })
