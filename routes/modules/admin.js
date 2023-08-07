@@ -2,6 +2,8 @@ const express = require('express')
 const router = express.Router()
 
 const adminController = require('../../controllers/admin-controller')
+const categoryController = require('../../controllers/category-controller')
+
 const upload = require('../../middleware/multer')
 
 router.get('/restaurants/create', adminController.createRestaurant) // 新增餐廳頁面
@@ -14,6 +16,8 @@ router.post('/restaurants', upload.single('image'), adminController.postRestaura
 
 router.get('/users', adminController.getUsers) // 使用者首頁
 router.patch('/users/:id', adminController.patchUser) // 修改使用者權限
+
+router.get('/categories', categoryController.getCategories) // 分類首頁
 
 router.use('/', (req, res) => res.redirect('/admin/restaurants'))
 
