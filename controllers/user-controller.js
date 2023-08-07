@@ -1,6 +1,5 @@
 const bcrypt = require('bcryptjs')
-const db = require('../models')
-const { User } = db
+const { Restaurant, Comment, User } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const UserController = {
@@ -38,13 +37,20 @@ const UserController = {
     res.redirect('/signin')
   },
   getUser: (req, res, next) => {
-    return User.findByPk(req.params.id)
-      .then(user => res.render('users/profile', { user: user }))
+    return User.findByPk(req.params.id, { include: [{ model: Comment, include: Restaurant }] })
+      .then(user => {
+        // console.log(user.dataValues.Comments)
+        // console.log(user.dataValues.Comments.length)
+        // console.log(user.dataValues.Comments[0].dataValues.restaurantId)
+        // console.log(user.dataValues.Comments[0].dataValues.Restaurant)
+        // console.log(user.dataValues.Comments[0].dataValues.Restaurant.dataValues.image)
+        res.render('users/profile', { user })
+      })
       .catch(err => next(err))
   },
   editUser: (req, res, next) => {
     return User.findByPk(req.params.id)
-      .then(user => res.render('users/edit', { user: user }))
+      .then(user => res.render('users/edit', { user }))
       .catch(err => next(err))
   },
   putUser: (req, res, next) => {
@@ -69,3 +75,5 @@ const UserController = {
 }
 
 module.exports = UserController
+
+// Comment.findAndCountAll({ where: { restaurantId: {} } })

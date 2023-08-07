@@ -7,5 +7,26 @@
     <a class="btn btn-primary mt-2" href="/users/{{user.dataValues.id}}/edit">edit</a>
   </ul>
 </div>
-
  <hr />
+
+
+{{#ifCond user.dataValues.Comments.length 0}} 
+<p>尚未評論</p>
+{{else}}
+<p>{{user.dataValues.Comments.length}}間已評論過的餐廳</p>
+{{/ifCond}}
+
+
+
+<div class="d-flex flex-wrap bd-highlight mb-3">
+  {{#each user.dataValues.Comments}}
+    <a href="/restaurants/{{this.dataValues.restaurantId}}">
+      <img class="img-responsive center-block me-3" src="{{this.dataValues.Restaurant.dataValues.image}}" style="width: 250px; margin-bottom: 25px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+    </a>
+  {{/each}}
+</div>
+
+
+
+
+  
