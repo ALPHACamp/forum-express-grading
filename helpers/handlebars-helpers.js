@@ -1,11 +1,14 @@
 
 const dayjs = require('dayjs')
-const currentYear = () => {
-  return dayjs().year()
-}
+const relativeTime = require('dayjs/plugin/relativeTime')
+dayjs.extend(relativeTime)
+
+const currentYear = () => dayjs().year()
+
+const relativeTimeFromNow = a => dayjs(a).fromNow()
 
 const ifCond = function (a, b, options) {
   return a === b ? options.fn(this) : options.inverse(this)
 }
 
-module.exports = { currentYear, ifCond }
+module.exports = { currentYear, relativeTimeFromNow, ifCond }
