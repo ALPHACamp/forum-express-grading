@@ -1,9 +1,9 @@
-const { ensureAuthenticated, getUser } = require('../helpers/auth-helpers')
+const helpers = require('../helpers/auth-helpers')
 
 const authenticated = (req, res, next) => {
   // if (req.isAuthenticated)
   // 使用者是否登入
-  if (ensureAuthenticated(req)) {
+  if (helpers.ensureAuthenticated(req)) {
     // 已登入 -> 往下走
     return next()
   }
@@ -14,9 +14,9 @@ const authenticated = (req, res, next) => {
 const authenticatedAdmin = (req, res, next) => {
   // if (req.isAuthenticated)
   // 使用者是否登入
-  if (ensureAuthenticated(req)) {
+  if (helpers.ensureAuthenticated(req)) {
     // 已登入 -> 是否為 admin   // 是 admin -> 往下走
-    if (getUser(req).isAdmin) return next()
+    if (helpers.getUser(req).isAdmin) return next()
     // 不是 admin -> 回首頁
     res.redirect('/')
   } else {
