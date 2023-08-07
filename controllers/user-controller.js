@@ -33,8 +33,8 @@ const userController = {
   },
   logout: (req, res) => {
     req.flash('success_messages', '成功登出。')
-    req.log()
-    res.redirect('/sign')
+    req.logout()
+    res.redirect('/signin')
   }
 }
 module.exports = userController
