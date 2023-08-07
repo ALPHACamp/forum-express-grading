@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      Category.hasMany(models.Restaurant, { foreignKey: "categoryId" });
+      Category.hasMany(models.Restaurant, { foreignKey: "categoryId" }); // 新增這裡
     }
   }
   Category.init(
@@ -18,8 +18,10 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: "Category",
+      tableName: "Categories", // 別忘了這行
       underscored: true,
     }
   );
   return Category;
 };
+v
