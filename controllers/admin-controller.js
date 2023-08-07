@@ -3,7 +3,7 @@ const { imgurFileHandler } = require('../helpers/file-helpers') // 將 file-help
 
 const adminController = {
   getRestaurants: (req, res, next) => {
-    Restaurant.findAll({
+    return Restaurant.findAll({
 
       raw: true
 
@@ -21,14 +21,16 @@ const adminController = {
     if (!name) throw new Error('Restaurant name is required!') // name 是必填，若發先是空值就會終止程式碼，並在畫面顯示錯誤提示
     const { file } = req // 把檔案取出來，也可以寫成 const file = req.file
     return imgurFileHandler(file) // 把上傳的檔案取出來，file 為 input 的屬性，傳給 file-helper 處理
-      .then(filePath => Restaurant.create({ // 再 create 這筆餐廳資料
-        name,
-        tel,
-        address,
-        openingHours,
-        description,
-        image: filePath || null
-      }))
+      .then(filePath => {
+        return Restaurant.create({ // 再 create 這筆餐廳資料
+          name,
+          tel,
+          address,
+          openingHours,
+          description,
+          image: filePath || null
+        })
+      })
       .then(() => {
         req.flash('success_messages', 'restaurant was successfully created')
         res.redirect('/admin/restaurants')
@@ -36,7 +38,7 @@ const adminController = {
       .catch(err => next(err))
   },
   getRestaurant: (req, res, next) => {
-    Restaurant.findByPk(req.params.id, { // 去資料庫用 id 找一筆資料
+    return Restaurant.findByPk(req.params.id, { // 去資料庫用 id 找一筆資料
       raw: true // 找到以後整理格式再回傳
     })
       .then(restaurant => {
@@ -46,7 +48,7 @@ const adminController = {
       .catch(err => next(err))
   },
   editRestaurant: (req, res, next) => {
-    Restaurant.findByPk(req.params.id, {
+    return Restaurant.findByPk(req.params.id, {
       raw: true
     })
       .then(restaurant => {
@@ -99,6 +101,7 @@ const adminController = {
   patchUser: (req, res, next) => {
     return User.findByPk(req.params.id)
       .then(user => {
+        if (!user) throw new Error("User didn't exist!")
         if (user.email === 'root@example.com') {
           req.flash('error_messages', '禁止變更 root 權限')
           return res.redirect('back')

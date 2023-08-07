@@ -11,7 +11,7 @@ const userController = {
     if (req.body.password !== req.body.passwordCheck) throw new Error('Passwords do not match!')
 
     // 確認資料裡面沒有一樣的 email，若有，就建立一個 Error 物件並拋出
-    User.findOne({ where: { email: req.body.email } })
+    return User.findOne({ where: { email: req.body.email } })
       .then(user => {
         if (user) throw new Error('Email already exists!')
         return bcrypt.hash(req.body.password, 10) // 前面加 return

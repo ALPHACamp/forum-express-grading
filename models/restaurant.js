@@ -4,8 +4,13 @@ const {
 } = require('sequelize')
 module.exports = (sequelize, DataTypes) => {
   class Restaurant extends Model {
+    /**
+     * Helper method for defining associations.
+     * This method is not a part of Sequelize lifecycle.
+     * The `models/index` file will call this method automatically.
+     */
     static associate (models) {
-      // define association here
+      Restaurant.belongsTo(models.Category, { foreignKey: 'categoryId' }) // 增加這行
     }
   };
   Restaurant.init({
@@ -18,7 +23,6 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'Restaurant',
-    tableName: 'Restaurants',
     underscored: true
   })
   return Restaurant
