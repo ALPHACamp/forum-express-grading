@@ -15,7 +15,8 @@ const adminController = {
       .catch(err => next(err))
   },
   postRestaurant: (req, res, next) => {
-    const { name, tel, address, openingHours, description, categoryId } = req.body
+    const { name, tel, address, openingHours, description, categoryId } =
+      req.body
     if (!name) throw new Error('Restaurant name is required!')
 
     const { file } = req
@@ -61,7 +62,8 @@ const adminController = {
       .catch(err => next(err))
   },
   putRestaurant: (req, res, next) => {
-    const { name, tel, address, openingHours, description, categoryId } = req.body
+    const { name, tel, address, openingHours, description, categoryId } =
+      req.body
     if (!name) throw new Error('Restaurant name is required!')
     const { file } = req
     Promise.all([Restaurant.findByPk(req.params.id), imgurFileHandler(file)])
@@ -114,6 +116,10 @@ const adminController = {
         res.redirect('/admin/users')
       })
       .catch(err => next(err))
+  },
+  getCategories: (req, res, next) => {
+    Category.findAll({ raw: true })
+      .then(categories => res.render('admin/categories', { categories }))
   }
 }
 module.exports = adminController
