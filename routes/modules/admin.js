@@ -11,7 +11,6 @@ router.delete('/restaurants/:id', adminController.deleteRestaurant)
 router.get('/restaurants/:id', adminController.getRestaurant)
 router.get('/restaurants', adminController.getRestaurants)
 router.post('/restaurants', upload.single('image'), adminController.postRestaurant)
-<<<<<<< HEAD
 
 router.get('/users', adminController.getUsers)
 router.patch('/users/:id', adminController.patchUser)
@@ -22,10 +21,6 @@ router.delete('/categories/:id', categoryController.deleteCategory)
 router.get('/categories', categoryController.getCategories)
 router.post('/categories', categoryController.postCategory)
 
-=======
-router.get('/users', adminController.getUsers)
-router.patch('/users/:id', adminController.patchUser)
->>>>>>> db4ffca4ca01dea7a243615ef72c8f7b0b48338c
 router.use('/', (req, res) => res.redirect('/admin/restaurants'))
 
 module.exports = router
