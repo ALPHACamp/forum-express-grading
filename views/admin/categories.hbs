@@ -1,0 +1,47 @@
+{{>admin-header route='categories'}}
+<div class="d-flex align-items-center pt-2 pb-2 my-3 text-white-50 bg-purple">
+  {{#if category.id}}
+  <form class="row" action="/admin/categories/{{category.id}}?_method=PUT" method="POST">
+  {{else}}
+  <form class="row" action="/admin/categories/all" method="POST">
+  {{/if}}
+    <div class="col-auto">
+      <input class="form-control" type="text" placeholder="Category Name" name="name" value="{{category.name}}">
+    </div>
+    <div class="col-auto">
+      {{#if category.id}}
+      <button class="btn btn-warning me-2" type="submit">Update</button>
+      <a href="/admin/categories/all" style="text-decoration: underline; color: gray;">or Create now</a>
+      {{else}}
+      <button class="btn btn-success" type="submit">Create</button>
+      {{/if}}
+    </div>
+  </form>
+</div>
+<table class="table align-middle">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Name</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each categories}}
+    <tr>
+      <th scope="row">{{this.id}}</th>
+      <td>{{this.name}}</td>
+      <td>
+        <button type="button" class="btn btn-link">
+          <a class="btn btn-link link-primary" href="/admin/categories/{{this.id}}">
+            Edit
+          </a>
+        </button>
+        <form action="/admin/categories/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
+          <button type="submit" class="btn btn-link link-danger"
+            onclick="return confirm(`確定要刪除 {{ this.name }} 嗎？`)">Delete</button>
+        </form>
+      </td>
+    </tr>
+    {{/each}}
+  </tbody>
+</table>
