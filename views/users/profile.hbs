@@ -7,9 +7,34 @@
       <div class="card-body">
         <h2>{{user.name}}</h2>
         <h3>{{user.email}}</h3>
+        {{#ifCond user.id loginUser}}
         <a class="btn btn-primary" href="/users/{{user.id}}/edit">edit</a>
+        {{/ifCond}}
         <a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
       </div>
     </div>
+  </div>
+</div>
+
+<div class="card">
+  {{#ifCond comments.length 0}}
+  <h5 class="card-header">目前沒有評論</h5>
+  {{else}}
+  <h5 class="card-header">{{comments.length}}已評論餐廳</h5>
+  {{/ifCond}}
+  <div class="row">
+    {{#each comments}}
+    <div class="col-md-3">
+      <div class="card-body">
+        <div class="card-img-top shadow-sm">
+          <a href="/restaurants/{{this.Restaurant.id}}">
+            <img class=" img-fluid" src="{{this.Restaurant.image}}" alt="Card image cap" width="286px" height="180px"
+              style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+            {{this.Restaurant.name}}
+          </a>
+        </div>
+      </div>
+    </div>
+    {{/each}}
   </div>
 </div>
