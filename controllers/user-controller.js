@@ -41,6 +41,12 @@ const userController = {
       raw: true
     })
       .then(user => res.render('users/profile', { user }))
+  },
+  editUser: (req, res, next) => {
+    return User.findByPk(req.params.id, {
+      raw: true
+    })
+      .then(user => res.render('users/edit-profile', { user }))
   }
 }
 

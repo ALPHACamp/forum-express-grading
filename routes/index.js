@@ -24,6 +24,7 @@ router.get('/restaurants/:id', authenticated, restController.getRestaurant)
 router.get('/restaurants', authenticated, restController.getRestaurants)
 router.get('/', (req, res) => res.redirect('/restaurants'))
 
+router.get('/users/:id/edit', authenticatedAdmin, userController.editUser)
 router.get('/users/:id', authenticatedAdmin, userController.getUser)
 
 router.delete('/comments/:id', authenticatedAdmin, commentController.deleteComment)
