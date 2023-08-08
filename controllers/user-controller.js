@@ -57,7 +57,7 @@ const UserController = {
         if (!user) throw new Error("User didn't exist!")
         return user.update({
           name,
-          image: filePath || user.dataValues.image
+          image: filePath || user.image
         })
       })
       .then(() => {
@@ -83,7 +83,7 @@ const UserController = {
         if (favorite) throw new Error('You have favorited this restaurant!')
 
         return Favorite.create({
-          userId: req.user.dataValues.id,
+          userId: req.user.id,
           restaurantId
         })
       })
@@ -93,7 +93,7 @@ const UserController = {
   removeFavorite: (req, res, next) => {
     return Favorite.findOne({
       where: {
-        userId: req.user.dataValues.id,
+        userId: req.user.id,
         restaurantId: req.params.restaurantId
       }
     })
