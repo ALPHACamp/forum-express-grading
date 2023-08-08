@@ -1,5 +1,5 @@
-const { restart } = require('nodemon')
 const { Restaurant, Category } = require('../models')
+const restaurant = require('../models/restaurant')
 
 const restaurantController = {
   getRestaurants: (req, res, next) => {
@@ -20,6 +20,18 @@ const restaurantController = {
   },
   getRestaurant: (req, res, next) => {
     Restaurant.findByPk(req.params.id, {
+      include: [Category]
+    })
+      .then(restaurant => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+
+        return restaurant.increment('viewCounts', { by: 1 })
+      })
+      .then(restaurant => res.render('restaurant', { restaurant: restaurant.toJSON() }))
+      .catch(err => next(err))
+  },
+  getDashboard: async (req, res, next) => {
+    return Restaurant.findByPk(req.params.id, {
       include: [Category],
       raw: true,
       nest: true
@@ -27,7 +39,7 @@ const restaurantController = {
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
 
-        res.render('restaurant', { restaurant })
+        res.render('dashboard', { restaurant })
       })
       .catch(err => next(err))
   }
