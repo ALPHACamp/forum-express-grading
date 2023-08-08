@@ -22,6 +22,19 @@ const commentController = {
         return res.redirect(`/restaurants/${restaurantId}`)
       })
       .catch(err => next(err))
+  },
+  // (功能)刪除評論（管理者only)
+  deleteComment: (req, res, next) => {
+    return Comment.findByPk(req.params.id)
+      .then(comment => {
+        if (!comment) throw new Error("Comment didn't exist!")
+        return comment.destroy()
+      })
+      .then(deletedComment => {
+        req.flash('success_messages', '刪除評論成功！')
+        return res.redirect(`/restaurants/${deletedComment.restaurantId}`)
+      })
+      .catch(err => next(err))
   }
 }
 module.exports = commentController

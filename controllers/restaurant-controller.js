@@ -44,7 +44,7 @@ const restaurantController = {
         nest: true
       })
       .then(restaurant => {
-        // console.log(restaurant.Comments[0].dataValues)
+        // console.log(restaurant.Comments[0].dataValues) // 此時還不是plain OBJ，加.dataValues取值
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         return restaurant.increment({ viewCounts: 1 })
           .then(() => res.render('restaurant', { restaurant: restaurant.toJSON() }))
