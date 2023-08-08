@@ -14,8 +14,8 @@ router.delete('/restaurants/:id', adminController.deleteRestaurant) // 刪除一
 router.get('/restaurants', adminController.getRestaurants) // 餐廳首頁
 router.post('/restaurants', upload.single('image'), adminController.postRestaurant) // 新增餐廳
 
-router.get('/users', adminController.getUsers) // 使用者首頁
 router.patch('/users/:id', adminController.patchUser) // 修改使用者權限
+router.get('/users', adminController.getUsers) // 使用者首頁
 
 router.get('/categories/:id', categoryController.getCategories) // 編輯分類頁面
 router.put('/categories/:id', categoryController.putCategory) // 編輯分類
