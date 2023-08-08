@@ -8,15 +8,15 @@ req.params
 */
 
 // 在Sequeize中，已經匯入及配置好所有的模型(Model)和關聯，所以在載入Model的時候不必單獨載入，這是與mongoose不同的地方
-const { Restaurant, User } = require('../models/index')
+const { Restaurant, User, Category } = require('../models/index')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 const adminController = {
 
   getRestaurants: (req, res, next) => {
     return Restaurant.findAll({
-
-      raw: true
-
+      raw: true,
+      nest: true,
+      include: [Category]
     })
 
       .then(restaurants => res.render('admin/restaurants', { restaurants }))
@@ -48,7 +48,9 @@ const adminController = {
   },
   getRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, { // 去資料庫用 id 找一筆資料
-      raw: true // 找到以後整理格式再回傳
+      raw: true, // 找到以後整理格式再回傳
+      nest: true,
+      include: [Category]
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!") //  如果找不到，回傳錯誤訊息，後面不執行
