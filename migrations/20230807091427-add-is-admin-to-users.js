@@ -2,7 +2,7 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.addColumn('users', 'is_admin', {
+    await queryInterface.addColumn('Users', 'is_admin', {
       type: Sequelize.BOOLEAN,
       defaultValue: false
     })
