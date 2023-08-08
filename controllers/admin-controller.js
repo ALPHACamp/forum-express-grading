@@ -4,7 +4,7 @@ const { imgurFileHandler } = require('../helpers/file-helpers')
 const adminController = {
   // 進入管理者首頁(餐廳列表)
   getRestaurants: (req, res, next) => {
-    Restaurant.findAll({
+    return Restaurant.findAll({
       raw: true
     })
       .then(restaurants => res.render('admin/restaurants', { restaurants }))
@@ -54,7 +54,7 @@ const adminController = {
 
     const { file } = req // 等同 const file = req.file
 
-    imgurFileHandler(file)
+    return imgurFileHandler(file)
       .then(filePath => {
         return Restaurant.create({
           name,
@@ -74,7 +74,7 @@ const adminController = {
 
   // 進入一筆餐廳頁面
   getRestaurant: (req, res, next) => {
-    Restaurant.findByPk(req.params.id, {
+    return Restaurant.findByPk(req.params.id, {
       raw: true
     })
       .then(restaurant => {
@@ -86,7 +86,7 @@ const adminController = {
 
   // 進入修改餐廳頁面
   editRestaurant: (req, res, next) => {
-    Restaurant.findByPk(req.params.id, {
+    return Restaurant.findByPk(req.params.id, {
       raw: true
     })
       .then(restaurant => {
@@ -103,7 +103,7 @@ const adminController = {
 
     const { file } = req // 等同 const file = req.file
 
-    Promise.all([
+    return Promise.all([
       Restaurant.findByPk(req.params.id),
       imgurFileHandler(file)
     ])
