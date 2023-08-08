@@ -1,5 +1,4 @@
 const { Category } = require('../models')
-const category = require('../models/category')
 
 const categoryController = {
   getCategories: (req, res, next) => {
