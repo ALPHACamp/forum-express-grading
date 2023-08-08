@@ -59,10 +59,6 @@ const userController = {
         }
 
         const user = req.user
-        console.log('currentUser typeof: ', typeof (user.id))
-        console.log('currentUser: ', user.id)
-        console.log('user.id typeof: ', typeof (viewUser.id))
-        console.log('user.id: ', viewUser.id)
 
         res.render('users/profile', { viewUser: viewUser.toJSON(), comments, user })
       })

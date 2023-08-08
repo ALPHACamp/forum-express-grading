@@ -1,5 +1,6 @@
 const { Restaurant, Category, User, Comment } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
+const { getUser } = require('../helpers/auth-helpers')
 
 const restaurantController = {
   getRestaurants: (req, res, next) => {
@@ -9,6 +10,7 @@ const restaurantController = {
     // 預留 limit 的 query string, 將來可能會有讓 user 選擇每頁顯示幾筆
     const limit = Number(req.query.limit) || DEFAULT_LIMIT
     const offset = getOffset(limit, page)
+    const user = getUser(req)
 
     return Promise.all([
       Restaurant.findAndCountAll({
@@ -24,10 +26,12 @@ const restaurantController = {
       Category.findAll({ raw: true })
     ])
       .then(([restaurants, categories]) => {
+        const favoritedRestaurantsId = user && user.FavoritedRestaurants.map(fr => fr.id)
         const data = restaurants.rows.map(restaurant => (
           {
             ...restaurant,
-            description: restaurant.description.substring(0, 50)
+            description: restaurant.description.substring(0, 50),
+            isFavorited: favoritedRestaurantsId.includes(restaurant.id)
           }
         ))
         return res.render('restaurants', {
@@ -40,19 +44,26 @@ const restaurantController = {
       .catch(err => next(err))
   },
   getRestaurant: (req, res, next) => {
+    const user = getUser(req)
     return Restaurant.findByPk(req.params.id, {
       // raw: true, // 為向下傳遞結果並使用 increment 方法，拿掉資料格式整理
       // nest: true,
       include: [
         Category,
-        { model: Comment, include: [User] }
+        { model: Comment, include: [User] },
+        { model: User, as: 'FavoritedUsers' }
       ]
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist")
+
         return restaurant.increment('viewCounts')
       })
-      .then(incrementResult => res.render('restaurant', { restaurant: incrementResult.toJSON() }))
+      .then(incrementResult => {
+        const isFavorited = incrementResult.FavoritedUsers.some(f => f.id === user.id)
+
+        res.render('restaurant', { restaurant: incrementResult.toJSON(), isFavorited })
+      })
       .catch(err => next(err))
   },
   getDashboard: (req, res, next) => {
