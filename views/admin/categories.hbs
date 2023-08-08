@@ -1,5 +1,16 @@
 {{> admin-tabs route='categories'}}
 
+<div class="py-2 mt-3 mb-5">
+  <form action="/admin/categories" method="POST" class="row">
+    <div class="col-auto">
+      <input type="text" class="form-control" name="name" id="name" placeholder="Category Name">
+    </div>
+    <div class="col-auto">
+      <button type="submit" class="btn btn-success">Create</button>
+    </div>
+  </form>
+</div>
+
 <table class="table align-middle">
   <thead class="thead-dark">
     <tr>

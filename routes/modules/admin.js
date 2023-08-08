@@ -18,6 +18,7 @@ router.get('/users', adminController.getUsers) // 使用者首頁
 router.patch('/users/:id', adminController.patchUser) // 修改使用者權限
 
 router.get('/categories', categoryController.getCategories) // 分類首頁
+router.post('/categories', categoryController.postCategory) // 新增分類
 
 router.use('/', (req, res) => res.redirect('/admin/restaurants'))
 
