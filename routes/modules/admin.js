@@ -17,6 +17,8 @@ router.post('/restaurants', upload.single('image'), adminController.postRestaura
 router.get('/users', adminController.getUsers) // 使用者首頁
 router.patch('/users/:id', adminController.patchUser) // 修改使用者權限
 
+router.get('/categories/:id', categoryController.getCategories) // 編輯分類頁面
+router.put('/categories/:id', categoryController.putCategory) // 編輯分類
 router.get('/categories', categoryController.getCategories) // 分類首頁
 router.post('/categories', categoryController.postCategory) // 新增分類
 
