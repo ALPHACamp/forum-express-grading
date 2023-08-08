@@ -36,9 +36,10 @@ const restaurantController = {
   },
   getRestaurant: async (req, res, next) => {
     return await Restaurant.findByPk(req.params.id, {
-      include: [Category, { model: Comment, include: User }]
+      include: [Category, { model: Comment, include: User, order: [['createdAt', 'DESC']] }]
     })
       .then(restaurant => {
+        console.log('comments', restaurant.Comments)
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         return restaurant.increment('viewCounts', { by: 1 })
       })
@@ -51,14 +52,12 @@ const restaurantController = {
   },
   getDashboard: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
-      include: Category,
-      nest: true,
-      raw: true
+      include: [Category, { model: Comment }]
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         res.render('dashboard', {
-          restaurant
+          restaurant: restaurant.toJSON()
         })
       })
       .catch(err => next(err))
