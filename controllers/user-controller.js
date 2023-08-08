@@ -8,7 +8,7 @@ const userController = {
   signUp: (req, res, next) => {
     if (req.body.password !== req.body.passwordCheck) throw new Error('兩次密碼輸入不同！')
 
-    User.findOne({ where: { email: req.body.email } })
+    return User.findOne({ where: { email: req.body.email } })
       .then(user => {
         if (user) throw new Error('信箱重複！')
         return bcrypt.hash(req.body.password, 10)
