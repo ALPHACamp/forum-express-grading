@@ -2,7 +2,7 @@ const { Restaurant, Category } = require('../models')
 
 const restaurantController = {
   getRestaurants: (req, res, next) => {
-    Restaurant.findAll({
+    return Restaurant.findAll({
       raw: true,
       nest: true,
       include: [Category]
@@ -17,8 +17,7 @@ const restaurantController = {
       .catch(error => next(error))
   },
   getRestaurant: (req, res, next) => {
-    console.log(req.params.id)
-    Restaurant.findByPk(req.params.id, {
+    return Restaurant.findByPk(req.params.id, {
       nest: true,
       include: [Category]
     }).then(restaurant => {
@@ -30,7 +29,7 @@ const restaurantController = {
       .catch(error => next(error))
   },
   getDashboard: (req, res, next) => {
-    Restaurant.findByPk(req.params.id, {
+    return Restaurant.findByPk(req.params.id, {
       nest: true,
       include: [Category]
     })
