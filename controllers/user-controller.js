@@ -113,5 +113,3 @@ const UserController = {
 }
 
 module.exports = UserController
-
-// Comment.findAndCountAll({ where: { restaurantId: {} } })
