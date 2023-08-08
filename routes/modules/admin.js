@@ -19,6 +19,7 @@ router.get('/users', adminController.getUsers) // 使用者首頁
 
 router.get('/categories/:id', categoryController.getCategories) // 編輯分類頁面
 router.put('/categories/:id', categoryController.putCategory) // 編輯分類
+router.delete('/categories/:id', categoryController.deleteCategory) // 刪除分類
 router.get('/categories', categoryController.getCategories) // 分類首頁
 router.post('/categories', categoryController.postCategory) // 新增分類
 
