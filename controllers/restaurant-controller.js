@@ -1,4 +1,4 @@
-const { Restaurant, Category } = require('../models')
+const { Restaurant, Category, Comment, User } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helpers')
 const restaurantController = {
   getRestaurants: (req, res, next) => {
@@ -36,7 +36,7 @@ const restaurantController = {
   },
   getRestaurant: async (req, res, next) => {
     return await Restaurant.findByPk(req.params.id, {
-      include: Category
+      include: [Category, { model: Comment, include: User }]
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
