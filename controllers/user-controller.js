@@ -42,15 +42,21 @@ const userController = {
     req.logout()
     res.redirect('/signin')
   },
-  getUser: (req, res, next) => {
-    return User.findByPk(req.params.id, { include: [{ model: Comment, include: Restaurant }], nest: true })
-      .then(user => {
-        if (!user) throw new Error("The user didn't exsist!")
-        return res.render('users/profile', {
-          user: user.toJSON()
-        })
+  getUser: async (req, res, next) => {
+    try {
+      const user = await User.findByPk(req.params.id, {
+        include: [{ model: Comment, include: Restaurant }],
+        nest: true
       })
-      .catch(err => next(err))
+
+      if (!user) {
+        throw new Error("The user didn't exist!")
+      }
+
+      return res.render('users/profile', {
+        user: user.toJSON()
+      })
+    } catch (err) { next(err) }
   },
   editUser: (req, res, next) => {
     return User.findByPk(req.params.id, { raw: true })
