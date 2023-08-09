@@ -57,7 +57,7 @@ const adminController = {
     const { file } = req // 把檔案取出來
     Promise.all([ // 非同步處理
       Restaurant.findByPk(req.params.id), // 去資料庫查有沒有這間餐廳
-      imgurFileHandler(file) // 把檔案傳到 file-helper 處理 
+      imgurFileHandler(file) // 把檔案傳到 file-helper 處理
     ])
       .then(([restaurant, filePath]) => { // 以上兩樣事都做完以後
         if (!restaurant) throw new Error("Restaurant didn't exist!")
@@ -67,7 +67,7 @@ const adminController = {
           address,
           openingHours,
           description,
-          image: filePath || restaurant.image // 如果 filePath 是 Truthy (使用者有上傳新照片) 就用 filePath，是 Falsy (使用者沒有上傳新照片) 就沿用原本資料庫內的值 
+          image: filePath || restaurant.image // 如果 filePath 是 Truthy (使用者有上傳新照片) 就用 filePath，是 Falsy (使用者沒有上傳新照片) 就沿用原本資料庫內的值
         })
       })
       .then(() => {
