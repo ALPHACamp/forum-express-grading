@@ -49,7 +49,7 @@ const userController = {
     ])
       .then(([user, comments]) => {
         if (!user) throw new Error('User didn\'t exist!')
-        const loginUser = req.user.id
+        const loginUser = user.id
         res.render('users/profile', {
           user,
           loginUser,
