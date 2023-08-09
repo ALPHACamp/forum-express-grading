@@ -2,7 +2,7 @@
 const bcrypt = require('bcryptjs')
 
 const db = require('../models')
-const { User } = db
+const { User, Comment, Restaurant } = db
 
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
@@ -48,10 +48,13 @@ const userController = {
   getUser: (req, res, next) => {
     // 資料已在res.locals.user中，理論上不必再讀或傳
     // 但測試檔未經完整流程，res.locals中可能無資料
-    return User.findByPk(req.params.id, { raw: true })
+    return User.findByPk(req.params.id, {
+      nest: true,
+      include: [{ model: Comment, include: Restaurant }]
+    })
       .then(user => {
         if (!user) throw new Error('user not exist!')
-        return res.render('users/profile', { user })
+        return res.render('users/profile', { user: user.toJSON() })
       })
       .catch(err => next(err))
   },

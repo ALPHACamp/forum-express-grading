@@ -1,5 +1,6 @@
 <div class="container">
-  <div class="row">
+
+  <div class="row mb-5">
     <div class="col-md-4">
       <img class="img-fluid d-block mx-auto" src="{{user.image}}" width="240" height="320" alt="avatar">
     </div>
@@ -7,10 +8,28 @@
       <h1 class="mb-3">{{user.name}}</h1>
 
       <ul class="list-unstyled mb-3">
-        <li><strong>Email:</strong> {{user.email}} </li>
+        <li class="mb-4"><strong>Email:</strong> {{user.email}} </li>
+        <li><strong>{{count user.Comments}}</strong> 已評論餐廳</li>
       </ul>
 
       <a class="btn btn-primary" href="/users/{{user.id}}/edit">Edit</a>
     </div>
   </div>
+
+
+  <div class="card">
+    <div class="card-header">
+      <strong>{{count user.Comments}}</strong> 已評論餐廳
+    </div>
+    <div class="card-body row">
+      {{#each user.Comments}}
+        <div class="col-4 col-md-2">
+          <a href="/restaurants/{{this.Restaurant.id}}">
+            <img class="img-fluid d-block mx-auto" src="{{this.Restaurant.image}}" title="{{this.Restaurant.name}}" alt="{{this.Restaurant.name}}">
+          </a>
+        </div>
+      {{/each}}
+    </div>
+  </div>
+
 </div>
