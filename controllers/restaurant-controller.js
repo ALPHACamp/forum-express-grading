@@ -1,4 +1,4 @@
-const { Restaurant, Category } = require('../models')
+const { Restaurant, Category, Comment, User } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
 
 const restaurantController = {
@@ -37,22 +37,24 @@ const restaurantController = {
       .catch(err => next(err))
   },
   getRestaurant: (req, res, next) => {
-    return Restaurant.findByPk(req.params.id, { include: [Category] })
+    return Restaurant.findByPk(req.params.id, {
+      include: [
+        Category,
+        {
+          model: Comment,
+          include: User
+        }
+      ]
+    })
       .then(restaurant => {
         return restaurant.increment({ viewCounts: 1 })
+        //   .then(rest => { return rest.update({ viewCounts: rest.viewCounts + 1 }) })
       })
       .then(restaurant => {
         const data = restaurant.toJSON()
         return res.render('restaurant', { restaurant: data })
       })
       .catch(err => next(err))
-
-    // return Restaurant.findByPk(req.params.id, { include: Category })
-    //   .then(rest => { return rest.update({ viewCounts: rest.viewCounts + 1 }) })
-    //   .then(rest => {
-    //     rest = rest.toJSON()
-    //     return res.render('restaurant', { restaurant: rest })
-    //   })
   },
   getDashboard: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
