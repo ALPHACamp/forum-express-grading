@@ -6,6 +6,7 @@ module.exports = {
       email: 'root@example.com',
       password: await bcrypt.hash('12345678', 10),
       is_admin: true,
+      is_superuser: true,
       name: 'root',
       created_at: new Date(),
       updated_at: new Date()
@@ -13,6 +14,7 @@ module.exports = {
       email: 'user1@example.com',
       password: await bcrypt.hash('12345678', 10),
       is_admin: false,
+      is_superuser: false,
       name: 'user1',
       created_at: new Date(),
       updated_at: new Date()
@@ -20,12 +22,13 @@ module.exports = {
       email: 'user2@example.com',
       password: await bcrypt.hash('12345678', 10),
       is_admin: false,
+      is_superuser: false,
       name: 'user2',
       created_at: new Date(),
       updated_at: new Date()
     }], {})
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.bulkDelete('Users', {})
+    await queryInterface.removeColumn('users', 'is_superuser')
   }
 }
