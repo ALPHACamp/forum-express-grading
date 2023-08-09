@@ -1,0 +1,10 @@
+<div class="card" style="width: 18rem;">
+  <img src="{{user.avatar}}" class="card-img-top" alt="...">
+  <div class="card-body">
+    <h5 class="card-title">{{user.name}}</h5>
+    <p class="card-text">E-mail: {{user.email}}</p>
+    {{!-- {{#if isUserInFlash}} --}}
+    <a href="/users/{{user.id}}/edit" class="btn btn-primary">edit</a>
+    {{!-- {{/if}} --}}
+  </div>
+</div>
