@@ -1,12 +1,12 @@
 const { Restaurant } = require('../models')
 const { localFileHandler } = require('../helpers/file-helpers')
+const db = require('../models')
+const { User } = db
 
 const adminController = {
   getRestaurants: (req, res, next) => {
     Restaurant.findAll({
-
       raw: true
-
     })
 
       .then(restaurants => res.render('admin/restaurants', { restaurants }))
@@ -86,6 +86,49 @@ const adminController = {
         return restaurant.destroy()
       })
       .then(() => res.redirect('/admin/restaurants'))
+      .catch(err => next(err))
+  },
+  getUsers: (req, res, next) => {
+    return User.findAll({
+      raw: true
+    })
+      .then(users => {
+        const allUsers = []
+        users.forEach(user => {
+          if (user.isAdmin === 1 || user.isAdmin === true) {
+            user.role = 'admin'
+          } else { user.role = 'user' }
+          allUsers.push(user)
+        })
+        return allUsers
+      })
+      .then(allUsers => res.render('admin/users', { users: allUsers }))
+      .catch(err => next(err))
+  },
+  patchUser: (req, res, next) => {
+    return User.findByPk(req.params.id)
+      .then(user => {
+        console.log('user:', user)
+        let newPermission = ''
+        let nextUrl = ''
+        if (user.email === 'root@example.com') {
+          nextUrl = 'back'
+          req.flash('error_messages', '禁止變更 root 權限')
+        } else if (user) {
+          if (user.isAdmin === 1 || user.isAdmin === true) {
+            newPermission = false
+          } else if (user.isAdmin === 0 || user.isAdmin === false) {
+            newPermission = true
+          }
+          nextUrl = '/admin/users'
+          req.flash('success_messages', '使用者權限變更成功')
+        }
+        user.update({
+          isAdmin: newPermission
+        })
+        return nextUrl
+      })
+      .then(nextUrl => res.redirect(nextUrl))
       .catch(err => next(err))
   }
 }
