@@ -39,7 +39,6 @@ const restaurantController = {
       include: [Category, { model: Comment, include: User, order: [['createdAt', 'DESC']] }]
     })
       .then(restaurant => {
-        console.log('comments', restaurant.Comments)
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         return restaurant.increment('viewCounts', { by: 1 })
       })
