@@ -46,20 +46,20 @@ const userController = {
     })
       .then(user => {
         if (!user) throw new Error("User didn't exist.")
-        console.log(user.Comments)
+        // console.log(user.Comments)
 
-        const uniqueComments = []
-        const restaurantIds = new Set()
+        // const uniqueComments = []
+        // const restaurantIds = new Set()
 
-        user.Comments.forEach(comment => {
-          if (!restaurantIds.has(comment.Restaurant.id)) {
-            restaurantIds.add(comment.Restaurant.id)
-            uniqueComments.push(comment)
-          }
-        })
-        user.Comments = uniqueComments
+        // user.Comments.forEach(comment => {
+        //   if (!restaurantIds.has(comment.Restaurant.id)) {
+        //     restaurantIds.add(comment.Restaurant.id)
+        //     uniqueComments.push(comment)
+        //   }
+        // })
+        // user.Comments = uniqueComments
 
-        console.log(user.Comments)
+        // console.log(user.Comments)
         res.render('users/profile', { user: user.toJSON() })
       })
       .catch(err => next(err))
