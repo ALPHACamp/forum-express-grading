@@ -30,7 +30,7 @@
           <span class="badge bg-secondary">{{this.Category.name}}</span>
           <p class="card-text text-truncate">{{this.description}}</p>
 
-        <div class="d-flex">
+        <div class="d-flex" style="display: inline;">
           {{#if isFavorited}}
           <form action="/favorite/{{this.id}}?_method=DELETE" method="POST">
             <button type="submit" class="btn btn-danger m-1">移除最愛</button>
@@ -40,6 +40,25 @@
             <button type="submit" class="btn btn-primary m-1">加到最愛</button>
           </form>
           {{/if}}
+
+          {{#if isLiked}}
+          <form action="/like/{{this.id}}?_method=DELETE" method="POST">
+            <button type="submit" class="btn btn-danger m-1">
+              <span class="material-icons align-middle">
+                heart_broken
+              </span>
+            </button>
+          </form>
+          {{else}}
+          <form action="/like/{{this.id}}" method="POST">
+            <button type="submit" class="btn btn-info m-1">
+              <span class="material-icons align-middle">
+                favorite
+              </span>
+            </button>
+          </form>
+          {{/if}}
+          
         </div>
 
         </div>
