@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 
 // 引入 faker
 const faker = require('faker')
@@ -22,4 +22,4 @@ module.exports = {
   down: async (queryInterface, Sequelize) => {
     await queryInterface.bulkDelete('Restaurants', {})
   }
-};
+}
