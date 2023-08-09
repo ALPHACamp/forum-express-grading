@@ -1,5 +1,7 @@
 const fs = require('fs') // fs為Node.js提供的模組
 const imgur = require('imgur')
+// 預設大頭貼
+const PROFILE_DEFAULT_AVATAR = 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/User-avatar.svg/480px-User-avatar.svg.png'
 const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
 imgur.setClientId(IMGUR_CLIENT_ID)
 
@@ -25,7 +27,7 @@ const imgurFileHandler = file => {
 
     return imgur.uploadFile(file.path)
       .then(img => {
-        resolve(img?.link || null) // 意思等於 resolve(img? img.link || null)
+        resolve(img?.link || null) // 等於 resolve(img? img.link || null)
       })
       .catch(err => reject(err))
   })
@@ -33,5 +35,6 @@ const imgurFileHandler = file => {
 
 module.exports = {
   localFileHandler,
-  imgurFileHandler
+  imgurFileHandler,
+  PROFILE_DEFAULT_AVATAR
 }
