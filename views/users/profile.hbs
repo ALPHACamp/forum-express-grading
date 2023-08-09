@@ -12,3 +12,21 @@
     </div>
   </div>
 </div>
+
+<div class="card">
+  <div class="card-header fw-bold">
+    {{#ifCond comments.length 0}}
+    <div>尚未進行評論</div>
+    {{else}}
+    {{comments.length}} 已評論餐廳
+    {{/ifCond}}
+  </div>
+  <div class="card-body row">
+    {{#each comments}}
+    <a href="/restaurants/{{this.Restaurant.id}}" class="col-md-1">
+      <img class="figure-img img-fluid" src="{{this.Restaurant.image}}" alt="">
+    </a>
+    {{/each }}
+
+  </div>
+</div>

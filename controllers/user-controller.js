@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs')
 const db = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
-const { User } = db
+const { User, Comment, Restaurant } = db
 
 const userController = {
   signUpPage: (req, res) => {
@@ -43,12 +43,20 @@ const userController = {
   getUser: (req, res, next) => {
     const DEFAULT_AVATAR = 'https://i.imgur.com/FUerPDO.png'
     const id = req.params.id
-    return User.findByPk(id)
+    return User.findByPk(id, {
+      include: [
+        Comment, {
+          model: Comment,
+          raw: true,
+          include: Restaurant
+        }
+      ]
+    })
       .then(user => {
         if (!user) throw new Error("user doesn't exist")
         user = user.toJSON()
         user.image = user.image || DEFAULT_AVATAR
-        res.render('users/profile', { user })
+        res.render('users/profile', { user, comments: user.Comments })
       })
       .catch(err => next(err))
   },
