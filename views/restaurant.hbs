@@ -5,7 +5,7 @@
   </div>
   <div class="col-md-4">
     <img class="img-responsive center-block mb-5" src="{{restaurant.image}}"
-      style="width: 250px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+      style="max-width: 100%; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
     <div class="well">
       <ul class="list-unstyled">
         <li><strong>Opening Hour:</strong> {{restaurant.openingHours}}</li>
@@ -14,21 +14,43 @@
       </ul>
     </div>
   </div>
+
   <div class="col-md-8">
     <p style="white-space: break-spaces;">{{restaurant.description}}</p>
-    <a href="/restaurants/{{restaurant.id}}/dashboard" class="btn btn-info">Dashboard</a>
+    <div class="d-flex gap-2 align-items-center">
+      <a href="/restaurants/{{restaurant.id}}/dashboard" class="btn btn-info d-flex align-items-center" style="height: 40px;">Dashboard</a>
 
-    {{#if isFavorited }}
-      <form action="/favorite/{{restaurant.id}}?_method=DELETE" method="POST" style="display: contents;">
-        <button type="submit" class="btn btn-danger">移除最愛</button>
-      </form>
-    {{else}}
-      <form action="/favorite/{{restaurant.id}}" method="POST" style="display: contents;">
-        <button type="submit" class="btn btn-primary">加到最愛</button>
-      </form>
-    {{/if}}
+      {{#if isFavorited }}
+        <form action="/favorite/{{restaurant.id}}?_method=DELETE" method="POST" style="display: contents;">
+          <button type="submit" class="btn btn-danger">移除最愛</button>
+        </form>
+      {{else}}
+        <form action="/favorite/{{restaurant.id}}" method="POST" style="display: contents;">
+          <button type="submit" class="btn btn-primary"  style="height: 40px;">加到最愛</button>
+        </form>
+      {{/if}}
 
+      {{#if isLiked}}
+      <form action="/like/{{restaurant.id}}?_method=DELETE" method="POST">
+        <button type="submit" class="btn btn-danger m-1">
+          <span class="material-icons align-middle">
+            heart_broken
+          </span>
+        </button>
+      </form>
+      {{else}}
+      <form action="/like/{{restaurant.id}}" method="POST">
+        <button type="submit" class="btn btn-info m-1">
+          <span class="material-icons align-middle">
+            favorite
+          </span>
+        </button>
+      </form>
+      {{/if}}
+
+    </div>
   </div>
+
   <hr>
 </div>
 
