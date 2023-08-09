@@ -14,3 +14,54 @@
     </div>
   </div>
 </div>
+
+<div class="container rounded mb-5 p-3" style="box-shadow: 1px 1px 5px 2px #eee">
+  <div class="card">
+    <div class="card-header">
+      {{#if commentCount}}
+        {{commentCount}}
+      {{else}}
+        0
+      {{/if}}已評論過
+    </div>
+    <div class="card-body">
+
+      <div class="row">
+        {{#each restaurants}}
+        <div class="col-sm-3 mb-2">
+          <div class="card" style="max-width: 360px;">
+            <div class="row g-0">
+              <div class="col-md-4">
+                <a href="/restaurants/{{this.id}}">
+                  <img src="{{this.image}}" class="img-fluid rounded-start" alt="rest-image">
+                </a>
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <a href="/restaurants/{{this.id}}">
+                    <h5 class="card-title">{{this.name}}</h5>
+                  </a>
+                  <p class="card-text"><small class="text-muted">{{relativeTimeFromNow this.updateAt}}</small></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>    
+        {{/each}}
+      </div>
+        
+    </div>
+  </div>
+</div>
+
+  
+
+{{!-- <div class="col-sm-3 mb-2">
+  <div class="card">
+    <img src="..." class="card-img-top" alt="...">
+    <div class="card-body">
+      <h5 class="card-title">Card title</h5>
+      <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+    </div>
+  </div>
+</div> --}}
