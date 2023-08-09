@@ -1,0 +1,17 @@
+
+<h3 class="mb-5">修改使用者資料</h3>
+
+<form action="/users/{{user.id}}?_method=PUT" method="POST" enctype="multipart/form-data">
+  <div class="mb-3">
+    <label for="name" class="form-label">Name</label>
+    <input type="text" class="form-control" id="name" name="name" value="{{user.name}}">
+    {{!-- <div class="form-text">若未上傳照片將保留原照片</div> --}}
+  </div>
+
+  <div class="mb-3">
+    <label for="avatar" class="form-label">image</label>
+    <input type="file" class="form-control" id="avatar" name="avatar">
+  </div>
+
+  <button type="submit" class="btn btn-primary">Submit</button>
+</form>
