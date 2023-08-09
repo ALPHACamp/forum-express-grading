@@ -18,6 +18,26 @@ const restaurantController = {
   },
   getRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
+      include: Category
+    })
+      // 原寫法
+      // .then(restaurant => {
+      //   if (!restaurant) throw new Error("Restaurant didn't exist!")
+      //   restaurant.viewCounts += 1
+      //   return restaurant.save()
+      // })
+      .then(restaurant => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+
+        return restaurant.increment('viewCounts')
+      })
+      .then(restaurant => res.render('restaurant', {
+        restaurant: restaurant.toJSON()
+      }))
+      .catch(err => next(err))
+  },
+  getDashboard: (req, res, next) => {
+    return Restaurant.findByPk(req.params.id, {
       include: Category,
       nest: true,
       raw: true
@@ -25,7 +45,7 @@ const restaurantController = {
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
 
-        return res.render('restaurant', { restaurant })
+        return res.render('dashboard', { restaurant })
       })
       .catch(err => next(err))
   }
