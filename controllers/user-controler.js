@@ -31,11 +31,10 @@ const userController = {
     res.redirect('/restaurants')
   },
   logout: (req, res, next) => {
-    req.logout((err) => {
+    req.logout(err => {
       if (err) { return next(err) }
-
-      res.redirect('/')
       req.flash('success_messages', '登出成功！')
+      res.redirect('/signin')
     })
   }
 

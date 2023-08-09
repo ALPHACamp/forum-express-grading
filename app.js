@@ -1,3 +1,4 @@
+const path = require('path')
 const express = require('express')
 const app = express()
 const routes = require('./routes')
@@ -10,7 +11,10 @@ const port = process.env.PORT || 3000
 const passport = require('./config/passport')
 const { getUser } = require('./helpers/auth-helpers')
 const handlebarsHelpers = require('./helpers/handlebars-helpers')
+const methodOverride = require('method-override')
 
+app.use(methodOverride('_method'))
+app.use('/upload', express.static(path.join(__dirname, 'upload')))
 app.use(express.urlencoded({ extended: true }))
 app.use(session({ secret: SESSION_SECRET, resave: false, saveUninitialized: false }))
 app.use(flash())
@@ -22,9 +26,8 @@ app.set('view engine', 'hbs')
 app.use((req, res, next) => {
   res.locals.success_messages = req.flash('success_messages')
   res.locals.error_messages = req.flash('error_messages')
-
   res.locals.user = getUser(req)
-  // console.log(res.locals.user)
+
   next()
 })
 app.use(routes)
