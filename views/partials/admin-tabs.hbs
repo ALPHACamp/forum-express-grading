@@ -1,0 +1,12 @@
+<h1>餐廳後台</h1>
+<ul class="nav nav-tabs my-3">
+  <li class="nav-item">
+    <a class="nav-link text-primary {{#ifCond route 'restaurants'}} active {{/ifCond}}" aria-current="page" href="/admin/restaurants">Restaurants</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link text-primary {{#ifCond route 'users'}} active {{/ifCond}}" aria-current="page" href="/admin/users">Users</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link text-primary {{#ifCond route 'categories'}} active {{/ifCond}}" aria-current="page" href="/admin/categories">Categories</a>
+  </li>
+</ul>
