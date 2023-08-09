@@ -42,7 +42,7 @@ const userController = {
     return User.findByPk(req.params.id, { raw: true })
       .then(user => {
         if (!user) throw new Error("User didn't exist!")
-        res.render('user', { user })
+        res.render('users/profile', { user })
       })
       .catch(err => next(err))
   },
@@ -50,7 +50,7 @@ const userController = {
     return User.findByPk(req.params.id, { raw: true })
       .then(user => {
         if (!user) throw new Error("User didn't exist!")
-        res.render('user-edit', { user })
+        res.render('users/edit', { user })
       })
       .catch(err => next(err))
   },
@@ -69,9 +69,9 @@ const userController = {
           image: filePath || user.image
         })
       })
-      .then(user => {
+      .then(() => {
         req.flash('success_messages', '使用者資料編輯成功')
-        res.redirect(`/users/${user.id}`)
+        res.redirect(`/users/${req.params.id}`)
       })
       .catch(err => next(err))
   }
