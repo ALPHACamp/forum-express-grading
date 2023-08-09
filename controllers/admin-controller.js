@@ -23,7 +23,8 @@ const adminController = {
   },
   // 新增 (C)
   postRestaurant: (req, res, next) => {
-    const { name, tel, address, openingHours, description, categoryId } = req.body // 從 req.body 拿出表單裡的資料
+    const { name, tel, address, openingHours, description } = req.body // 從 req.body 拿出表單裡的資料
+    const CategoryId = req.body.categoryId
     if (!name) throw new Error('Restaurant name is required!') // name 是必填，若發先是空值就會終止程式碼，並在畫面顯示錯誤提示
     const { file } = req // 把檔案取出來，也可以寫成 const file = req.file
     return imgurFileHandler(file) // 把取出的檔案傳給 file-helper 處理後
@@ -34,7 +35,7 @@ const adminController = {
         openingHours,
         description,
         image: filePath || null,
-        categoryId
+        CategoryId
       }))
       .then(() => {
         req.flash('success_messages', 'restaurant was successfully created') // 在畫面顯示成功提示
