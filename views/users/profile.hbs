@@ -1,0 +1,12 @@
+<div class="container">
+  <div class="row shadow-sm p-3">
+    <div class="col-3">
+      <img src="{{ user.image }}" alt="avatar" class="rounded-circle h-100 img-thumbnail">
+    </div>
+    <div class="col">
+      <h3 class="mb-3 fw-bold">{{ user.name }}</h3>
+      <h5 class="mb-3">{{ user.email }}</h5>
+      <a href="/users/{{ user.id }}/edit" class="btn btn-primary">edit</a>
+    </div>
+  </div>
+</div>
