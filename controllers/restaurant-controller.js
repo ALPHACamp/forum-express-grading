@@ -34,20 +34,20 @@ const restaurantController = {
       })
       .catch(err => next(err))
   },
-  getRestaurant: async (req, res, next) => {
-    try {
-      const restaurant = await Restaurant.findByPk(req.params.id, { include: [Category, { model: Comment, include: User, order: [['createdAt', 'DESC']] }] })
-
-      if (!restaurant) { throw new Error("Restaurant didn't exist!") }
-
-      await restaurant.increment('viewCounts', { by: 1 })
-
-      res.render('restaurant', {
-        restaurant: restaurant.toJSON()
+  getRestaurant: (req, res, next) => {
+    return Restaurant.findByPk(req.params.id, {
+      include: [Category, { model: Comment, include: User }]
+    })
+      .then(restaurant => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        return restaurant.increment('viewCounts', { by: 1 })
       })
-    } catch (err) {
-      next(err)
-    }
+      .then(restaurant => {
+        res.render('restaurant', {
+          restaurant: restaurant.toJSON()
+        })
+      })
+      .catch(err => next(err))
   },
   getDashboard: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
