@@ -9,6 +9,7 @@ const { authenticated, authenticatedAdmin } = require('../middleware/auth')
 
 const restController = require('../controllers/restaurant-controller')
 const userController = require('../controllers/user-controller')
+const commentController = require('../controllers/comment-controller')
 
 router.use('/admin', authenticatedAdmin, admin)
 
@@ -27,6 +28,8 @@ router.get('/restaurants', authenticated, restController.getRestaurants)
 router.get('/', (req, res) => {
   res.redirect('/restaurants')
 })
+
+router.post('/comments', authenticated, commentController.postComment)
 
 router.use('/', generalErrorHandler)
 
