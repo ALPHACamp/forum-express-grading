@@ -124,9 +124,12 @@ const userController = {
   },
   addLike: (req, res, next) => {
     const { restaurantId } = req.params
-    return Promise.all([Restaurant.findByPk(restaurantId), Like.findOne({ where: { userId: req.user.id, restaurantId } })])
+    return Promise.all([
+      Restaurant.findByPk(restaurantId),
+      Like.findOne({ where: { userId: req.user.id, restaurantId } })
+    ])
       .then(([restaurant, like]) => {
-        if (!restaurant) throw new Error('Restaurant didn\'t exist!')
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
         if (like) throw new Error('You already liked it!')
         return Like.create({
           userId: req.user.id,
@@ -140,10 +143,24 @@ const userController = {
     const { restaurantId } = req.params
     return Like.findOne({ where: { userId: req.user.id, restaurantId } })
       .then(like => {
-        if (!like) throw new Error('You haven\'t liked this restaurant!')
+        if (!like) throw new Error("You haven't liked this restaurant!")
         return like.destroy()
       })
       .then(() => res.redirect('back'))
+      .catch(err => next(err))
+  },
+  getTopUsers: (req, res, next) => {
+    return User.findAll({
+      include: [{ model: User, as: 'Followers' }]
+    })
+      .then(users => {
+        users = users.map(user => ({
+          ...user.toJSON(),
+          followerCount: user.Followers.length,
+          isFollowed: req.user.Followings.some(f => f.id === user.id)
+        }))
+        res.render('top-users', { users: users })
+      })
       .catch(err => next(err))
   }
 }
