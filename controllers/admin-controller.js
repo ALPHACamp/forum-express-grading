@@ -23,7 +23,7 @@ const adminController = {
       })
       .catch(err => next(err))
   },
-  createRestaurant: (req, res) => {
+  createRestaurant: (req, res, next) => {
     return Category.findAll({
       raw: true
     })
