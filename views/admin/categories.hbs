@@ -1,10 +1,21 @@
 {{> admin-tabs route='categories'}}
+{{#if category}}
+<form action="/admin/categories/{{category.id}}?_method=PUT" method="POST">
+  <div class="input-group mb-3">
+    <input class="form-control" type="text" name="name" id="name" size="30" placeholder="Category name..."
+      value="{{category.name}}" required>
+    <button type="submit" class="btn btn-warning">Update</button>
+    <a class="btn btn-link link-secondary" href="/admin/categories">or Create New</a>
+  </div>
+</form>
+{{else}}
 <form action="/admin/categories" method="POST">
   <div class="input-group mb-3">
     <input class="form-control" type="text" name="name" id="name" size="30" placeholder="Category name..." required>
     <button type="submit" class="btn btn-primary">Create</button>
   </div>
 </form>
+{{/if}}
 <br />
 <br />
 <table class="table align-middle">
