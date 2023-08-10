@@ -56,6 +56,7 @@ const userController = {
 
         const createdDate = user.createdAt.toJSON().split('T')[0]
         const updatedDate = user.updatedAt.toJSON().split('T')[0]
+
         return res.render('users/profile', {
           user,
           createdDate,
