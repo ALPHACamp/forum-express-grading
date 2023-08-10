@@ -3,7 +3,7 @@ const express = require('express')
 const app = express()
 const routes = require('./routes')
 const handlebars = require('express-handlebars')
-const db = require('./models')
+
 const flash = require('connect-flash')
 const session = require('express-session')
 const SESSION_SECRET = 'secret '

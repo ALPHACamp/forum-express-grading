@@ -3,7 +3,7 @@ const bcrypt = require('bcryptjs')
 const { User } = db
 const userController = {
   signUpPage: (req, res, next) => {
-    res.render('signUp')
+    res.render('signup')
   },
   signUp: (req, res, next) => {
     if (req.body.password !== req.body.passwordCheck) throw new Error('Passwords do not match!')
