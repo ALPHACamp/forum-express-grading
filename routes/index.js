@@ -9,7 +9,7 @@ const admin = require('./modules/admin')
 const upload = require('../middleware/multer')
 
 const { generalErrorHandler } = require('../middleware/error-handler')
-const { authenticated, authenticatedAdmin } = require('../middleware/auth')
+const { authenticated, authenticatedAdmin, authenticatedProfile } = require('../middleware/auth')
 
 router.use('/admin', authenticatedAdmin, admin)
 router.get('/signup', userController.signUpPage)
@@ -19,9 +19,9 @@ router.get('/signin', userController.signInPage)
 router.post('/signin', passport.authenticate('local', { failureRedirect: '/signin', failureFlash: true }), userController.signIn)
 router.get('/logout', userController.logout)
 
-router.get('/users/:id/edit', userController.editUser)
-router.put('/users/:id', upload.single('image'), userController.putUser)
-router.get('/users/:id', userController.getUser)
+router.get('/users/:id/edit', authenticatedProfile, userController.editUser)
+router.put('/users/:id', authenticatedProfile, upload.single('image'), userController.putUser)
+router.get('/users/:id', authenticatedProfile, userController.getUser)
 
 router.delete('/comments/:id', authenticated, commentController.deleteComment)
 router.post('/comments', authenticated, commentController.postComment)

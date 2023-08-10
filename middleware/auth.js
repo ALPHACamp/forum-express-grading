@@ -20,7 +20,16 @@ const authenticatedAdmin = (req, res, next) => {
   }
 }
 
+const authenticatedProfile = (req, res, next) => {
+  if (helpers.getUser(req).id !== Number(req.params.id)) {
+    req.flash('error_messages', "Profile didn't exist")
+    return res.redirect(`/users/${helpers.getUser(req).id}`)
+  }
+  next()
+}
+
 module.exports = {
   authenticated,
-  authenticatedAdmin
+  authenticatedAdmin,
+  authenticatedProfile
 }
