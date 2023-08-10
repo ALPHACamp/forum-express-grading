@@ -14,8 +14,9 @@ const admin = require('./modules/admin')
 
 router.use('/admin', authenticatedAdmin, admin)
 
-router.put('/users/:id', upload.single('image'), authenticated, userController.putUser)
+router.get('/users/top', authenticated, userController.getTopUsers)
 router.get('/users/:id/edit', authenticated, userController.editUser)
+router.put('/users/:id', upload.single('image'), authenticated, userController.putUser)
 router.get('/users/:id', authenticated, userController.getUser)
 
 router.delete('/comments/:id', authenticatedAdmin, commentController.deleteComment)
