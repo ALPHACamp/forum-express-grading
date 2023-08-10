@@ -21,7 +21,10 @@ module.exports = (sequelize, DataTypes) => {
     address: DataTypes.STRING,
     openingHours: DataTypes.STRING,
     description: DataTypes.TEXT,
-    image: DataTypes.STRING,
+    image: {
+      type: DataTypes.STRING,
+      defaultValue: `https://loremflickr.com/320/240/restaurant,food/?random=${Math.random() * 100}&lock=${Math.random() * 1000}`
+    },
     viewCounts: {
       type: DataTypes.INTEGER,
       allowNull: false,

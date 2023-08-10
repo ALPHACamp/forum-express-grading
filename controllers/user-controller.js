@@ -88,7 +88,7 @@ const userController = {
       .then(([filePath, user]) => {
         if (!user) throw new Error('user not exist!')
 
-        return user.update({ name, image: filePath })
+        return user.update({ name, image: filePath || user.toJSON().image }) // 如果未提供新圖，保留原圖
       })
       .then(() => {
         req.flash('success_messages', '使用者資料編輯成功')

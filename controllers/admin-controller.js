@@ -40,7 +40,7 @@ const adminController = {
         address,
         openingHours,
         description,
-        image: filePath || null // 將檔案路徑存在image中
+        image: filePath || undefined // 將檔案路徑存在image中
       }))
       .then(() => {
         req.flash('success_messages', 'restaurant was successfully created.')

@@ -21,7 +21,10 @@ module.exports = (sequelize, DataTypes) => {
       unique: true
     },
     password: DataTypes.STRING,
-    image: DataTypes.STRING,
+    image: {
+      type: DataTypes.STRING,
+      defaultValue: `https://loremflickr.com/240/320/person?random=${Math.random() * 100}&lock=${Math.random() * 1000}`
+    },
     isAdmin: DataTypes.BOOLEAN
   }, {
     sequelize,
