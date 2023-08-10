@@ -11,6 +11,7 @@ const handlebarsHelpers = require('./helpers/handlebars-helpers')
 
 const SESSION_SECRET = 'secret'
 
+// setting dotenv
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config()
 }
