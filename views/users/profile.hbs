@@ -13,3 +13,19 @@
       </div>
   </div>
 </div>
+
+<div class="card">
+  <div class="card-header">
+    <h5>{{commentCount}} 已評論餐廳</h5>
+  </div>
+  <div class="d-flex m-2">
+    {{#each comments}}
+    <div class="m-1">
+      <a href="/restaurants/{{this.Restaurant.id}}">
+        <img class="img-responsive center-block mb-5" src="{{this.Restaurant.image}}"
+          style="width: 100px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+      </a>
+    </div>
+    {{/each}}
+  </div>
+</div>

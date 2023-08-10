@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs')
 const db = require('../models')
-const { User } = db
+const { User, Comment, Restaurant } = db
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const userController = {
@@ -40,25 +40,37 @@ const userController = {
     res.redirect('/signin')
   },
   getUser: (req, res, next) => {
-    const userId = req.user.id
-    return User.findByPk(userId, { raw: true })
-      .then(user => {
+    const userId = req.params.id
+    return Promise.all([
+      User.findByPk(userId, { raw: true }),
+      Comment.findAndCountAll({
+        include: Restaurant,
+        where: { user_id: userId },
+        nest: true,
+        raw: true
+      })
+    ])
+      .then(([user, commentResult]) => {
+        const commentCount = commentResult.count
+        const comments = commentResult.rows
         if (!user) throw new Error("User didn't exist!")
-        res.render('users/profile', { user })
+        res.render('users/profile', { user, commentCount, comments })
       })
       .catch(err => next(err))
   },
   editUser: (req, res, next) => {
-    const userId = req.user.id
+    const userId = req.params.id
     return User.findByPk(userId, { raw: true })
       .then(user => {
         if (!user) throw new Error("User didn't exist!")
-        res.render('users/edit-profile', { user })
+        res.render('users/edit', { user })
       })
       .catch(err => next(err))
   },
   putUser: (req, res, next) => {
-    const userId = req.user.id
+    const userId = req.params.id
+    const userAuth = (Number(userId) === req.user.id)
+    if (!userAuth) throw new Error('非使用者本人無法更改資料!')
     const { name } = req.body
     if (!name) throw new Error('User name is required!')
     const { file } = req
