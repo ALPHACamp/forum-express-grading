@@ -1,8 +1,7 @@
 const passport = require('passport')
 const LocalStrategy = require('passport-local')
 const bcrypt = require('bcryptjs')
-const db = require('../models')
-const { User } = db
+const { User, Restaurant } = require('../models')
 
 const localStrategy = new LocalStrategy(
   {
@@ -39,9 +38,13 @@ passport.serializeUser(function (user, done) {
 
 passport.deserializeUser(async function (id, done) {
   try {
-    let user = await User.findByPk(id)
-    user = user.toJSON() // 把user變小包
-    return done(null, user)
+    const user = await User.findByPk(id,
+      {
+        include: { model: Restaurant, as: 'FavoritedRestaurants' }
+        // 取出Favorited餐廳後提供前台渲染favorite按紐
+        // as 需要與User 中的as一樣
+      })
+    return done(null, user.toJSON())
   } catch (error) {
     return done(error, false)
   }

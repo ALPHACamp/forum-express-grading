@@ -40,11 +40,19 @@ class CommentError extends Error {
   }
 }
 
+class FavoriteError extends Error {
+  constructor (message) {
+    super(message)
+    this.name = 'FavoriteError'
+  }
+}
+
 module.exports = {
   RegisterError,
   UserCRUDError,
   AdminError,
   AdminCategoryError,
   RestaurantError,
-  CommentError
+  CommentError,
+  FavoriteError
 }

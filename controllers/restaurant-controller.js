@@ -42,10 +42,14 @@ const restController = {
         Category.findAll({ raw: true })
       ])
 
+      // FavoritedRestaurants 本身是一個array，放此user所有喜歡的餐廳
+      // req.user && 是要先確認確實有登入帳戶，不然後半部可能會出錯
+      const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
       const data = restaurants.rows.map(restaurant => {
         return {
           ...restaurant, // 把restaurant展開後塞進新的object
-          description: restaurant.description.substring(0, DEFAULT_DISCRIPTION_LENGTH)
+          description: restaurant.description.substring(0, DEFAULT_DISCRIPTION_LENGTH),
+          isFavorited: favoritedRestaurantsId.includes(restaurant.id) // 如果restaurant在 id list中回傳true
         }
       })
 
@@ -67,10 +71,8 @@ const restController = {
         nest: true,
         include: [
           Category,
-          {
-            model: Comment,
-            include: User
-          }
+          { model: Comment, include: User },
+          { model: User, as: 'FavoritedUsers' } // 取出喜歡這間餐廳的user，如果登入user在其中，這個restaurant單一頁面就會出現isFavorited
         ],
         order: [
           [{ model: Comment }, 'createdAt', 'DESC'] // 第1欄位是放置associate的，如果是自己的欄位不用加
@@ -81,7 +83,11 @@ const restController = {
       }
 
       await restaurant.increment('viewCounts', { by: 1 })
-      return res.render('restaurant', { restaurant: restaurant.toJSON() })
+      return res.render('restaurant',
+        {
+          restaurant: restaurant.toJSON(),
+          isFavorited: restaurant.FavoritedUsers.some(user => user.id === req.user.id) // some尋找array終至少有一個值符合條件
+        })
     } catch (error) {
       return next(error)
     }
