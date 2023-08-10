@@ -1,6 +1,6 @@
 <div class="d-flex position-relative">
     <img class="img-responsive center-block mb-5" src="{{user.image}}"
-        style="width: 250px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+        style="width: 250px; height: 250px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
     <div class="ms-5">
         <ul class="list-unstyled">
             <li><strong>Name:</strong> {{user.name}}</li>
@@ -12,6 +12,22 @@
         <div class="mt-5 ms-3">
             <a class="btn btn-primary" href='/users/{{user.id}}/edit'>編輯資料</a>
             <a class="btn btn-secondary" href="/">回首頁</a>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <h5 class="card-header">{{user.name}} 有 {{commentCount}} 則評論</h5>
+    <div class="card-body col-12">
+        <div class="row">
+            {{#each comments}}
+            <div class="col-md-3 mb-4" style="max-width: 100%">
+                <a href="/restaurants/{{this.restaurantId}}">
+                    <img class="img-responsive center-block" src="{{this.Restaurant.image}}"
+                        style="width: 100%; height: auto"onload="this.style.opacity=1;">
+                </a>
+            </div>
+            {{/each}}
         </div>
     </div>
 </div>
