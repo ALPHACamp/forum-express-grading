@@ -6,9 +6,9 @@ const restaurantController = {
     const categoryId = Number(req.query.categoryId) || ''
     const DEFAULT_LIMIT = 9
     const page = Number(req.query.page) || 1
-    const limit = Number(req.query.limit) || DEFAULT_LIMIT // limit: 限制查幾筆資料。 req.query.limit 留給未來擴充的空間 
+    const limit = Number(req.query.limit) || DEFAULT_LIMIT // limit: 限制查幾筆資料。 req.query.limit 留給未來擴充的空間
     const offset = getOffset(limit, page) // 偏移量
-// findAndCountAll 取出的資料有row、count屬性
+    // findAndCountAll 取出的資料有row、count屬性
     return Promise.all([Restaurant.findAndCountAll({
       raw: true,
       nest: true,
