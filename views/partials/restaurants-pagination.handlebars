@@ -1,0 +1,27 @@
+{{!-- page是從1開始 --}}
+<nav class="mt-3" aria-label="page navigation">
+  <ul class="pagination">
+    {{!-- 如果是第一頁就不給用往前1頁的功能 --}}
+    <li class="page-item {{#ifCond pagination.currentPage 1}}disabled{{/ifCond}}">
+      <a class="page-link" href="{{route}}?page={{pagination.prev}}&categoryId={{categoryId}}" aria-label="Previous">
+        <span aria-hidden="true">&laquo;</span>
+      </a>
+    </li>
+    {{#each pagination.pages}}
+      {{#ifCond this ../pagination.currentPage}}
+        <li class="page-item active"><a class="page-link" href="#">{{this}}</a></li>
+      {{else}}
+        <li class="page-item">
+          <a class="page-link" href="{{route}}?page={{this}}&categoryId={{../categoryId}}">{{this}}</a>
+        </li>
+      {{/ifCond}}
+    {{/each}}
+
+    {{!-- 如果是最後一頁就不給用往後1頁的功能 --}}
+    <li class="page-item {{#ifCond pagination.currentPage pagination.totalPage}}disabled{{/ifCond}}">
+      <a class="page-link" href="{{route}}?page={{pagination.next}}&categoryId={{categoryId}}" aria-label="Next">
+        <span aria-hidden="true">&raquo;</span>
+      </a>
+    </li>
+  </ul>
+</nav>
