@@ -3,7 +3,7 @@ const { getUser } = require('../helpers/auth-helpers')
 const blockEditFromOtherUser = (req, res, next) => {
   try {
   // 此helper防止user資訊被其他帳號更新
-    const loginUser = getUser()
+    const loginUser = getUser(req)
     const paramId = parseInt(req.params.id)
     if (isNaN(paramId)) throw new UserCRUDError('User Profie ID Parse Error') // 如果parseInt回傳
     if (!loginUser) throw new UserCRUDError('Pleas login')

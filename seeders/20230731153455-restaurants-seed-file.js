@@ -17,7 +17,7 @@ module.exports = {
         address: faker.location.streetAddress(),
         created_at: new Date(),
         updated_at: new Date(),
-        image: `https://loremflickr.com/320/240/restaurant,food/?random=${Math.floor(Math.random() * 100)}`,
+        image: `https://loremflickr.com/320/240/restaurant,food/?lock=${Math.floor(Math.random() * 100)}`,
         category_id: categories[Math.floor(Math.random() * categories.length)].id,
         deleted_at: null
       }

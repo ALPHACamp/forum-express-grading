@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs')
-const { RegisterError, UserCRUDError, FavoriteError } = require('../errors/errors')
-const { User, Comment, Restaurant, Favorite } = require('../models') // 用解構付值把db內的User model拿出來
+const { RegisterError, UserCRUDError, FavoriteError, LikeError } = require('../errors/errors')
+const { User, Comment, Restaurant, Favorite, Like } = require('../models') // 用解構付值把db內的User model拿出來
 const { imgurFileHandler } = require('../helpers/file-helper')
 const { getCommentedRests } = require('../helpers/user-helper')
 
@@ -131,7 +131,7 @@ const userController = {
         })
       ])
       if (!restaurant) throw new FavoriteError("Restaurant didn't exist!")
-      if (favorite) throw new FavoriteError('You have favorited this restaurant!')
+      if (favorite) throw new FavoriteError('You had favorited this restaurant!')
 
       await Favorite.create({
         restaurantId,
@@ -158,6 +158,51 @@ const userController = {
       if (!favorite) throw new FavoriteError("You haven't favorited this restaurant")
 
       await favorite.destroy()
+      return res.redirect('back')
+    } catch (error) {
+      return next(error)
+    }
+  },
+  addLike: async (req, res, next) => {
+    try {
+      const { restaurantId } = req.params
+      const userId = req.user.id
+      const [restaurant, like] = await Promise.all([
+        Restaurant.findByPk(restaurantId),
+        Like.findOne({
+          where: {
+            restaurantId,
+            userId
+          }
+        })
+      ])
+
+      if (!restaurant) throw new LikeError("Restaurant didn't exist!")
+      if (like) throw new LikeError('You had liked this restaurant!')
+
+      await Like.create({
+        restaurantId,
+        userId
+      })
+
+      return res.redirect('back')
+    } catch (error) {
+      return next(error)
+    }
+  },
+  removeLike: async (req, res, next) => {
+    try {
+      const { restaurantId } = req.params
+      const userId = req.user.id
+      const like = await Like.findOne({
+        where: {
+          restaurantId,
+          userId
+        }
+      })
+      console.log(like)
+      if (!like) throw new LikeError("You haven't favorited this restaurant")
+      await like.destroy()
       return res.redirect('back')
     } catch (error) {
       return next(error)

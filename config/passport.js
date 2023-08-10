@@ -40,7 +40,10 @@ passport.deserializeUser(async function (id, done) {
   try {
     const user = await User.findByPk(id,
       {
-        include: { model: Restaurant, as: 'FavoritedRestaurants' }
+        include: [
+          { model: Restaurant, as: 'FavoritedRestaurants' },
+          { model: Restaurant, as: 'LikedRestaurants' }
+        ]
         // 取出Favorited餐廳後提供前台渲染favorite按紐
         // as 需要與User 中的as一樣
       })

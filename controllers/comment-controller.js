@@ -2,7 +2,7 @@ const { Restaurant, User, Comment } = require('../models')
 const { CommentError } = require('../errors/errors')
 const commentController = {
   postComment: async (req, res, next) => {
-    const MAX_COMMENT_LENGTH = 200
+    const MAX_COMMENT_LENGTH = 50
     try {
       const { restaurantId, text } = req.body
       console.log('Type of restaurantId: ', typeof restaurantId)

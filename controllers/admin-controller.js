@@ -3,7 +3,7 @@ const { AdminError } = require('../errors/errors')
 const { imgurFileHandler } = require('../helpers/file-helper')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
 const adminHelper = require('../helpers/admin-helper')
-const MAX_DESCRIPTION_LENGTH = 500
+const MAX_DESCRIPTION_LENGTH = 250
 
 const adminController = {
   getRestaurants: async (req, res, next) => {
