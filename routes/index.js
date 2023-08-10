@@ -5,6 +5,7 @@ const admin = require('./modules/admin.js')
 
 const restController = require('../controllers/restaurant-controller.js')
 const userController = require('../controllers/user-controller.js')
+const commentController = require('../controllers/comment-controller.js')
 
 const { authenticated, authenticatedAdmin } = require('../middleware/auth')
 const { generalErrorHandler } = require('../middleware/error-handler')
@@ -20,6 +21,8 @@ router.get('/logout', userController.logout)
 router.get('/restaurants/:id/dashboard', authenticated, restController.getDashboard)
 router.get('/restaurants/:id', authenticated, restController.getRestaurant)
 router.get('/restaurants', authenticated, restController.getRestaurants)
+
+router.post('/comments', authenticated, commentController.postComment)
 
 router.use('/', (req, res) => res.redirect('/restaurants'))
 
