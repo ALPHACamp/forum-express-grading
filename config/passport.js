@@ -47,7 +47,9 @@ passport.deserializeUser((id, cb) => {
         as: 'FavoritedRestaurants',
         attributes: ['id', 'name']
       },
-      { model: Restaurant, as: 'LikedRestaurants', attributes: ['id', 'name'] }
+      { model: Restaurant, as: 'LikedRestaurants', attributes: ['id', 'name'] },
+      { model: User, as: 'Followers' },
+      { model: User, as: 'Followings' }
     ]
   })
     .then(user => {
