@@ -3,7 +3,7 @@ const { Restaurant, Category } = require('../models')
 const restaurantController = {
   getRestaurants: (req, res) => {
     return Restaurant.findAll({
-      include: Category,
+      include: [Category],
       nest: true,
       raw: true
     })
@@ -16,6 +16,20 @@ const restaurantController = {
 
         return res.render('restaurants', { restaurants: data })
       })
+  },
+
+  getRestaurant: (req, res, next) => {
+    return Restaurant.findByPk(req.params.id, {
+      include: Category,
+      nest: true,
+      raw: true
+    })
+      .then(restaurant => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+
+        res.render('restaurant', { restaurant })
+      })
+      .catch(err => next(err))
   }
 }
 
