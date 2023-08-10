@@ -1,3 +1,4 @@
+
 const express = require('express')
 const router = express.Router()
 
@@ -5,6 +6,12 @@ const adminController = require('../../controllers/admin-controller')
 
 const upload = require('../../middleware/multer')
 
+// 使用者
+router.get('/users', adminController.getUsers)
+
+router.patch('/users/:id', adminController.patchUser)
+
+// 餐廳
 router.get('/restaurants/create', adminController.createRestaurant)
 router.post('/restaurants', upload.single('image'), adminController.postRestaurant)
 
