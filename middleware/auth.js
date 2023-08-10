@@ -1,6 +1,5 @@
 const helpers = require('../helpers/auth-helpers')
 
-
 const authenticated = (req, res, next) => {
 // 使用者是否可以登入?
   if (helpers.ensureAuthenticated(req)) {

@@ -6,7 +6,7 @@ const restaurantController = {
     const categoryId = Number(req.query.categoryId) || ''
     const DEFAULT_LIMIT = 9
     const page = Number(req.query.page) || 1
-    const limit = Number(req.query.limit) || DEFAULT_LIMIT // req.query.limit 留給未來擴充的空間
+    const limit = Number(req.query.limit) || DEFAULT_LIMIT // limit: 限制查幾筆資料。 req.query.limit 留給未來擴充的空間 
     const offset = getOffset(limit, page) // 偏移量
 // findAndCountAll 取出的資料有row、count屬性
     return Promise.all([Restaurant.findAndCountAll({
@@ -50,6 +50,28 @@ const restaurantController = {
       .then(restaurant => {
         if (!restaurant) throw new Error("restaurant didn't exist!")
         res.render('dashboard', { restaurant: restaurant.toJSON() })
+      })
+      .catch(err => next(err))
+  },
+  getFeeds: (req, res, next) => {
+    return Promise.all([
+      Restaurant.findAll({
+        limit: 10,
+        order: [['createdAt', 'Desc']],
+        include: Category,
+        raw: true,
+        nest: true
+      }),
+      Comment.findAll({
+        limit: 10,
+        order: [['createdAt', 'Desc']],
+        include: [Restaurant, User],
+        raw: true,
+        nest: true
+      })
+    ])
+      .then(([restaurants, comments]) => {
+        res.render('feeds', { restaurants, comments })
       })
       .catch(err => next(err))
   }

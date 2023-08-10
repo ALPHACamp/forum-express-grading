@@ -19,6 +19,7 @@ router.get('/signin', userController.signInPage)
 router.post('/signin', passport.authenticate('local', { failureRedirect: '/signin', failureFlash: true }), userController.signIn)
 router.get('/logout', userController.logout)
 
+
 router.get('/users/:id/edit', authenticatedProfile, userController.editUser)
 router.put('/users/:id', authenticatedProfile, upload.single('image'), userController.putUser)
 router.get('/users/:id', authenticatedProfile, userController.getUser)
@@ -26,11 +27,11 @@ router.get('/users/:id', authenticatedProfile, userController.getUser)
 router.delete('/comments/:id', authenticated, commentController.deleteComment)
 router.post('/comments', authenticated, commentController.postComment)
 
+router.get('/restaurants/feeds', authenticated, restController.getFeeds)
 router.get('/restaurants/:id/dashboard', restController.getDashboard)
 router.get('/restaurants/:id', restController.getRestaurant)
-
-
 router.get('/restaurants', authenticated, restController.getRestaurants)
+
 router.use('/', (req, res) => res.redirect('/restaurants'))
 
 router.use('/', generalErrorHandler)

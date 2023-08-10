@@ -1,3 +1,5 @@
+// 這隻檔案的使用在app.js設定的 -> app.engine('hbs', handlebars({ extname: '.hbs', helpers: handlebarsHelper }))
+
 const dayjs = require('dayjs')
 const relativeTime = require('dayjs/plugin/relativeTime')
 
