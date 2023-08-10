@@ -1,6 +1,5 @@
 const bcrypt = require('bcryptjs')
-const db = require('../models')
-const { User } = db
+const { User } = require('../models')
 
 const userController = {
   signUpPage: (req, res) => {
@@ -36,7 +35,25 @@ const userController = {
     req.flash('success_messages', '登出成功！')
     req.logout()
     res.redirect('/signin')
+  },
+  getUser: (req, res, next) => {
+    return User.findByPk(req.params.id, { nest: true, raw: true })
+      .then(user => {
+        if (!user) throw new Error("User didn't exist!")
+
+        const createdDate = user.createdAt.toJSON().split('T')[0]
+        const updatedDate = user.updatedAt.toJSON().split('T')[0]
+        res.render('users/profile', { user, createdDate, updatedDate })
+      })
+      .catch(err => next(err))
+  },
+  putUser: (req, res) => {
+
+  },
+  editUser: (req, res) => {
+
   }
+
 }
 
 module.exports = userController

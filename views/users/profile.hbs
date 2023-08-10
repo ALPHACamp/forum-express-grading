@@ -1,0 +1,16 @@
+<div class="d-flex position-relative">
+    <img class="img-responsive center-block mb-5" src="{{user.image}}"
+        style="width: 250px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+    <div>
+        <ul class="list-unstyled">
+            <li><strong>Name:</strong> {{user.name}}</li>
+            <li><strong>Email:</strong> {{user.email}}</li>
+            <li><strong>Created date:</strong> {{createdDate}}</li>
+            <li><strong>Updated date:</strong> {{updatedDate}}</li>
+            <li><strong>Description:</strong> -</li>
+        </ul>
+        
+    </div>
+</div>
+
+<a class="btn btn-outline-secondary" href="javascript:history.back()">回上一頁</a>
