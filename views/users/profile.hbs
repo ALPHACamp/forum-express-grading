@@ -1,0 +1,18 @@
+<div class="card mb-3 mx-auto">
+  <div class="row g-0">
+    <div class="col-md-4">
+      {{#if user.image}}
+        <img src="{{user.image}}" class="img-fluid rounded-start" width="300px" height="300px" style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+      {{else}}
+        <img src="https://i.imgur.com/lE5mLhb.jpg" class="img-fluid rounded-start" width="300px" height="300px" style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+      {{/if}}
+    </div>
+    <div class="col-md-8">
+      <div class="card-body">
+        <h5 class="card-title">{{user.name}}</h5>
+        <p class="card-text">{{user.email}}</p>
+        <a href="/users/{{user.id}}/edit" class="btn btn-primary">edit</a>
+      </div>
+    </div>
+  </div>
+</div>
