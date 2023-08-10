@@ -14,10 +14,6 @@
     "dialect": "mysql"
   },
   "production": {
-    "username": "travis",
-
-    "database": "forum",
-    "host": "127.0.0.1",
-    "dialect": "mysql"
+    "use_env_variable": "MYSQL_DATABASE_URL" 
   }
 }
