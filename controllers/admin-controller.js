@@ -1,10 +1,11 @@
-const { Restaurant } = require('../models')
-const { User } = require('../models')
+const { Restaurant, User, Category } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 const adminController = {
   getRestaurants: (req, res, next) => {
-    Restaurant.findAll({
-      raw: true
+    return Restaurant.findAll({
+      raw: true,
+      nest: true,
+      include: [Category]
     })
       .then(restaurants => res.render('admin/restaurants', { restaurants }))
       .catch(err => next(err))
@@ -17,7 +18,7 @@ const adminController = {
     // name 是必填，若發現是空值就會終止程式碼，並在畫面顯示錯誤提示
     if (!name) throw new Error('Restaurant name is required!')
     const { file } = req
-    imgurFileHandler(file)
+    return imgurFileHandler(file)
       .then(filePath => Restaurant.create({
         name,
         tel,
@@ -34,8 +35,10 @@ const adminController = {
   },
   getRestaurant: (req, res, next) => {
     // 去資料庫用 id 找一筆資料
-    Restaurant.findByPk(req.params.id, {
-      raw: true
+    return Restaurant.findByPk(req.params.id, {
+      raw: true,
+      nest: true,
+      include: [Category]
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
@@ -44,7 +47,7 @@ const adminController = {
       .catch(err => next(err))
   },
   editRestaurant: (req, res, next) => {
-    Restaurant.findByPk(req.params.id, {
+    return Restaurant.findByPk(req.params.id, {
       raw: true
     })
       .then(restaurant => {
@@ -57,7 +60,7 @@ const adminController = {
     const { name, tel, address, openingHours, description } = req.body
     if (!name) throw new Error('Restaurant name is required!')
     const { file } = req
-    Promise.all([
+    return Promise.all([
       Restaurant.findByPk(req.params.id),
       imgurFileHandler(file)
     ])
