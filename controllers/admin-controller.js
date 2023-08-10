@@ -18,6 +18,14 @@ const adminController = {
         res.redirect('/admin/restaurants')
       })
       .catch(err => next(err))
+  },
+  getRestaurant: (req, res, next) => {
+    const { id } = req.params
+    Restaurant.findByPk(id, { raw: true }).then(restaurant => {
+      if (!restaurant) throw new Error('Restaurant didnt exist!')
+      res.render('admin/restaurant', { restaurant })
+    })
+      .catch(err => next(err))
   }
 }
 
