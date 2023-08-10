@@ -37,8 +37,8 @@ const userController = {
     req.logout()
     res.redirect('/signin')
   },
-  getUser: async (req, res, next) => {
-    await Promise.all([User.findByPk(req.params.id, {
+  getUser: (req, res, next) => {
+    Promise.all([User.findByPk(req.params.id, {
       nest: true,
       raw: true
     }),
@@ -56,7 +56,7 @@ const userController = {
 
         const createdDate = user.createdAt.toJSON().split('T')[0]
         const updatedDate = user.updatedAt.toJSON().split('T')[0]
-        return res.render('users/profile', { user, createdDate, updatedDate, commentCount: comments.count, comments: comments.rows })
+        res.render('users/profile', { user, createdDate, updatedDate, commentCount: comments.count, comments: comments.rows })
       })
       .catch(err => next(err))
   },
