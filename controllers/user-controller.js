@@ -56,13 +56,7 @@ const userController = {
 
         const createdDate = user.createdAt.toJSON().split('T')[0]
         const updatedDate = user.updatedAt.toJSON().split('T')[0]
-        res.render('users/profile', {
-          user,
-          createdDate,
-          updatedDate,
-          commentCount: comments.count,
-          comments: comments.rows
-        })
+        res.render('users/profile', { user, createdDate, updatedDate, commentCount: comments.count, comments: comments.rows })
       })
       .catch(err => next(err))
   },
