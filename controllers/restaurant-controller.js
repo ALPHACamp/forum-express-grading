@@ -2,17 +2,28 @@ const { Restaurant, Category } = require('../models') // 引入資料庫
 
 const restaurantController = {
   getRestaurants: (req, res, next) => {
-    return Restaurant.findAll({
-      include: Category,
-      nest: true,
-      raw: true
-    }).then(restaurants => {
+    const categoryId = Number(req.query.categoryId) || ''
+    // const where = {}
+    // if (categoryId) where.CategoryId = categoryId
+    return Promise.all([
+      Restaurant.findAll({
+        include: Category,
+        where: {
+          ...categoryId ? { CategoryId: categoryId } : {}
+        },
+        nest: true,
+        raw: true
+      }),
+      Category.findAll({ raw: true })
+    ]).then(([restaurants, categories]) => {
       const data = restaurants.map(r => ({
         ...r,
         description: r.description.substring(0, 50)
       }))
       return res.render('restaurants', {
-        restaurants: data
+        restaurants: data,
+        categories,
+        categoryId
       })
     })
   },
