@@ -54,7 +54,7 @@ const userController = {
         const commentCount = commentResult.count
         const comments = commentResult.rows
         if (!user) throw new Error("User didn't exist!")
-        res.render('users/profile', { user, commentCount, comments })
+        return res.render('users/profile', { user, commentCount, comments })
       })
       .catch(err => next(err))
   },
