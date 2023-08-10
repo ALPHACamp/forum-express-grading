@@ -37,8 +37,8 @@ const userController = {
     req.logout()
     res.redirect('/signin')
   },
-  getUser: (req, res, next) => {
-    Promise.all([User.findByPk(req.params.id, {
+  getUser: async (req, res, next) => {
+    await Promise.all([User.findByPk(req.params.id, {
       nest: true,
       raw: true
     }),
