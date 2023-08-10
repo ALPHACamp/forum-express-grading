@@ -31,7 +31,11 @@ router.get('/users/:id', authenticated, userController.getUser) // (頁面)瀏�
 router.get('/users/:id/edit', authenticated, userController.editUser) // (頁面)瀏覽編輯Profile
 router.put('/users/:id', authenticated, upload.single('avatar'), userController.putUser) // (功能)編輯Profile
 
-// 最新消息
+// favorite最愛相關
+router.post('/favorite/:restaurantId', authenticated, userController.addFavorite)
+router.delete('/favorite/:restaurantId', authenticated, userController.removeFavorite)
+
+// feeds最新消息
 router.get('/restaurants/feeds', authenticated, restController.getFeeds)
 
 // restaurant瀏覽相關
