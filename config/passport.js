@@ -29,7 +29,8 @@ passport.deserializeUser((id, cb) => {
     id,
     {
       include: [
-        { model: Restaurant, as: 'FavoritedRestaurants' }
+        { model: Restaurant, as: 'FavoritedRestaurants' },
+        { model: Restaurant, as: 'LikedRestaurants' }
       ]
     }
   )
