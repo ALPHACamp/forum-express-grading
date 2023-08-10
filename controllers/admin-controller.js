@@ -1,4 +1,4 @@
-const { Restaurant, User } = require('../models')
+const { Restaurant, User, Category } = require('../models')
 // 加入 user model
 
 const { imgurFileHandler } = require('../helpers/file-helpers')
@@ -7,7 +7,11 @@ const adminController = {
   // 渲染所有餐廳
   getRestaurants: (req, res, next) => {
     Restaurant.findAll({
-      raw: true // 把 instance 轉成 javascript 物件
+      raw: true,
+      // 把 sequelize 包裝過的物件 instance 轉換成 JS 原生物件, 不再可使用 .save() 等方法，同 toJSON()
+      nest: true,
+      // 把 'Category.name':'素食料理' 變成 Category:{name:'素食料理'}
+      include: [Category] // 關聯資料
     })
       .then(restaurants => res.render('admin/restaurants', { restaurants }))
       .catch(err => next(err))
@@ -33,11 +37,14 @@ const adminController = {
         } else {
           return user.update({ isAdmin: !user.isAdmin })
         }
-      }).then(() => {
+      })
+      .then(() => {
         req.flash('success_messages', '使用者權限變更成功')
         return res.redirect('/admin/users')
       })
-      .catch(err => { return next(err) })
+      .catch(err => {
+        return next(err)
+      })
   },
   // 渲染新增表單
   createRestaurant: (req, res) => {
@@ -70,7 +77,7 @@ const adminController = {
       .catch(err => next(err))
   },
   getRestaurant: (req, res, next) => {
-    Restaurant.findByPk(req.params.id, { raw: true })
+    Restaurant.findByPk(req.params.id, { raw: true, nest: true, include: [Category] })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!") //  如果找不到，回傳錯誤訊息，後面不執行
         res.render('admin/restaurant', { restaurant })
