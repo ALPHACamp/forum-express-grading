@@ -16,10 +16,10 @@
   </div>
   <div class="col-md-8">
     <p style="white-space: break-spaces;">{{restaurant.description}}</p>
+    <a href="/restaurants/{{restaurant.id}}/dashboard" class="btn btn-primary mt-3">Dashboard</a>
   </div>
   <hr>
 </div>
-<a href="/restaurants/{{restaurant.id}}/dashboard" class="btn btn-primary">Dashboard</a>
 {{!-- Comment --}}
 <h3 class="mb-3">所有評論：</h3>
 {{#each restaurant.Comments}}
