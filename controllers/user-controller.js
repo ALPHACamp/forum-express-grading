@@ -54,17 +54,12 @@ const userController = {
   putUser: async (req, res, next) => {
     try {
       const { name } = req.body
-
       if (!name) throw new Error('名稱為必填！')
-
       const { file } = req
-
       const [user, filePath] = await Promise.all([
         User.findByPk(req.params.id),
         imgurFileHandler(file)
       ])
-      console.log(user)
-
       if (!user) throw new Error('找不到使用者！')
 
       await user.update({
@@ -72,7 +67,7 @@ const userController = {
         image: filePath || user.image
       })
 
-      req.flash('success_messages', '成功更新使用者資料！')
+      req.flash('success_messages', '使用者資料編輯成功')
       res.redirect(`/users/${req.params.id}`)
     } catch (err) {
       next(err)
