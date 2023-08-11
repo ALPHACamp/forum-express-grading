@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate (models) {
       Restaurant.belongsTo(models.Category, { foriegnKey: 'categoryId' })
-      Restaurant.hasMany(models.Commet, { foriegnKey: 'restaurantId' })
+      Restaurant.hasMany(models.Comment, { foriegnKey: 'restaurantId' })
     }
   };
   Restaurant.init({
