@@ -20,6 +20,7 @@ router.post('/signup', userController.signUp)
 router.use('/admin', authenticatedAdmin, admin)
 
 /* user */
+router.get('/users/top', authenticated, userController.getTopUsers) // for following界面
 router.get('/users/:id/edit', authenticated, blockEditFromOtherUser, userController.editUser)
 router.get('/users/:id', authenticated, userController.getUser)
 router.put('/users/:id', authenticated, blockEditFromOtherUser, upload.single('image'), userController.putUser)
@@ -37,8 +38,13 @@ router.post('/comments', authenticated, commentController.postComment)
 router.post('/favorite/:restaurantId', authenticated, userController.addFavorite)
 router.delete('/favorite/:restaurantId', authenticated, userController.removeFavorite)
 
+/* like */
 router.post('/like/:restaurantId', authenticated, userController.addLike)
 router.delete('/like/:restaurantId', authenticated, userController.removeLike)
+
+/* follow */
+router.post('/following/:userId', authenticated, userController.addFollowing)
+router.delete('/following/:userId', authenticated, userController.removeFollowing)
 
 router.use('/', (req, res) => {
   res.redirect('/restaurants')

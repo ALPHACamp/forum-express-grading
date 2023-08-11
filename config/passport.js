@@ -42,7 +42,9 @@ passport.deserializeUser(async function (id, done) {
       {
         include: [
           { model: Restaurant, as: 'FavoritedRestaurants' },
-          { model: Restaurant, as: 'LikedRestaurants' }
+          { model: Restaurant, as: 'LikedRestaurants' },
+          { model: User, as: 'Followings' }, // 我在追蹤的人，用在follower頁面
+          { model: User, as: 'Followers' } // 追蹤我的人
         ]
         // 取出Favorited餐廳後提供前台渲染favorite按紐
         // as 需要與User 中的as一樣

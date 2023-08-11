@@ -53,6 +53,13 @@ class LikeError extends Error {
     this.name = 'LikedError'
   }
 }
+
+class FollowError extends Error {
+  constructor (message) {
+    super(message)
+    this.name = 'FollowError'
+  }
+}
 module.exports = {
   RegisterError,
   UserCRUDError,
@@ -61,5 +68,6 @@ module.exports = {
   RestaurantError,
   CommentError,
   FavoriteError,
-  LikeError
+  LikeError,
+  FollowError
 }

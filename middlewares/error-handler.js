@@ -5,7 +5,8 @@ const {
   CommentError,
   UserCRUDError,
   FavoriteError,
-  LikeError
+  LikeError,
+  FollowError
 } = require('../errors/errors')
 
 const generalErrorHandler = (err, req, res, next) => {
@@ -30,6 +31,9 @@ const generalErrorHandler = (err, req, res, next) => {
       break
     case LikeError:
       req.flash('error_messages', `LikeError: ${err.message}`)
+      break
+    case FollowError:
+      req.flash('error_messages', `FollowError: ${err.message}`)
       break
     case Error:
       req.flash('error_messages', `${err.name}: ${err.message}`)

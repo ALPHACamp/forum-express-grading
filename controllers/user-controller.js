@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs')
-const { RegisterError, UserCRUDError, FavoriteError, LikeError } = require('../errors/errors')
-const { User, Comment, Restaurant, Favorite, Like } = require('../models') // 用解構付值把db內的User model拿出來
+const { RegisterError, UserCRUDError, FavoriteError, LikeError, FollowError } = require('../errors/errors')
+const { User, Comment, Restaurant, Favorite, Like, Followship } = require('../models') // 用解構付值把db內的User model拿出來
 const { imgurFileHandler } = require('../helpers/file-helper')
 const { getCommentedRests } = require('../helpers/user-helper')
 
@@ -207,7 +207,70 @@ const userController = {
     } catch (error) {
       return next(error)
     }
+  },
+  // Follower
+  getTopUsers: async (req, res, next) => {
+    try {
+      const users = await User.findAll({
+        include: [
+          { model: User, as: 'Followers' },
+          { model: User, as: 'Followings' }
+        ]
+      })
+      const results = users.map(user => {
+        return {
+          ...user.toJSON(),
+          followerCount: user.Followers.length, // 找出每個使用者有多少人追蹤它
+          isFollowed: req.user.Followings.some(f => f.id === user.id) // 看登入者的追蹤對象裡有沒有各個user
+        }
+      }).sort((a, b) => b.followerCount - a.followerCount)
+      console.log(results)
+      return res.render('top-users', { users: results })
+    } catch (error) {
+      return next(error)
+    }
+  },
+  addFollowing: async (req, res, next) => {
+    try {
+      const followerId = req.user.id // 我追蹤別人
+      const followingId = req.params.userId // 我要追蹤的人
+      const [user, followship] = await Promise.all([
+        User.findByPk(followingId), // 我要follow的人在不在
+        Followship.findOne({
+          where: {
+            followerId,
+            followingId
+          }
+        })
+      ])
+      if (!user) throw new LikeError("User you want to follow didn't exist!")
+      if (followship) throw new LikeError('You have already followed this user!')
+      await Followship.create({
+        followerId,
+        followingId
+      })
+      return res.redirect('back')
+    } catch (error) {
+      return next(error)
+    }
+  },
+  removeFollowing: async (req, res, next) => {
+    try {
+      const followerId = req.user.id // 我追蹤別人
+      const followingId = req.params.userId // 我要追蹤的人
+      const followship = await Followship.findOne({
+        where: {
+          followerId,
+          followingId
+        }
+      })
+      if (!followship) throw new LikeError('You have not followed this user!')
+      await followship.destroy()
+      return res.redirect('back')
+    } catch (error) {
+      return next(error)
+    }
   }
-
 }
+
 module.exports = userController
