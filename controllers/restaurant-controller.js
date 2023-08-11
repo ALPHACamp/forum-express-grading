@@ -1,5 +1,6 @@
 const { Restaurant, Category, Comment, User } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
+// const sequelize = require('sequelize')
 
 const restaurantController = {
   getRestaurants: (req, res) => {
@@ -98,6 +99,58 @@ const restaurantController = {
           restaurants,
           comments
         })
+      })
+      .catch(err => next(err))
+  },
+  // 直接去資料庫做好排序的寫法會過不了測試，因為測試是連到模擬資料庫，無法在撈資料那段以sql調用favorite model
+  // getTopRestaurants: (req, res, next) => {
+  //   return Restaurant.findAll({
+  //     attributes: {
+  //       include: [[
+  //         // 引用原生mySQL語法記得外面要包一層Array，後面放上該屬性的名稱
+  //         sequelize.literal('(SELECT COUNT(*) FROM Favorites WHERE Favorites.restaurant_id = Restaurant.id)'),
+  //         'FavoriteCnt'
+  //       ]]
+  //     },
+  //     limit: 10,
+  //     order: [['FavoriteCnt', 'DESC']]
+  //   })
+  //     .then(restaurants => {
+  //       if (!restaurants) throw new Error("Restaurant didn't exist!")
+  //       const result = restaurants
+  //         .map(r => (
+  //           {
+  //             favoritedCount: r.dataValues.FavoriteCnt,
+  //             ...r.toJSON(),
+  //             description: r.description.substring(0, 50),
+  //             isFavorited:
+  //               req.user &&
+  //               req.user.FavoritedRestaurants.some(fr => fr.id === r.id)
+  //           }
+  //         ))
+  //       res.render('top-restaurants', { restaurants: result })
+  //     })
+  //     .catch(err => next(err))
+  // }
+  getTopRestaurants: (req, res, next) => {
+    return Restaurant.findAll({
+      include: [{ model: User, as: 'FavoritedUsers' }]
+    })
+      .then(restaurants => {
+        if (!restaurants) throw new Error("Restaurant didn't exist!")
+
+        const result = restaurants
+          .map(r => ({
+            ...r.toJSON(),
+            favoritedCount: r.FavoritedUsers.length,
+            isFavorited:
+              req.user &&
+              req.user.FavoritedRestaurants.some(fr => fr.id === r.id)
+          }))
+          .sort((a, b) => b.favoritedCount - a.favoritedCount)
+          .slice(0, 10)
+
+        res.render('top-restaurants', { restaurants: result })
       })
       .catch(err => next(err))
   }
