@@ -1,7 +1,7 @@
 const passport = require('passport')
 const LocalStrategy = require('passport-local')
 const bcrypt = require('bcryptjs')
-const { User, Restaurant, Like } = require('../models')
+const { User, Restaurant } = require('../models')
 
 // new LocalStrategy :第一個參數為客製化選項，第二個參數為登入認證程序
 passport.use(new LocalStrategy(
