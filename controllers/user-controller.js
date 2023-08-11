@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs')
-const db = require('../models')
-const { User } = db
+const { User } = require('../models')
+
 const userController = {
   signUpPage: (req, res) => {
     res.render('signup')
@@ -15,7 +15,7 @@ const userController = {
       })
       .then(hash => User.create({ name: req.body.name, email: req.body.email, password: hash }))
       .then(() => {
-        res.flash('success_msg', '成功註冊帳號！')
+        req.flash('success_msg', '成功註冊帳號！')
         res.redirect('/signin')
       })
       .catch(err => next(err))
@@ -31,6 +31,15 @@ const userController = {
     req.flash('success_messages', '登出成功！')
     req.logout()
     res.redirect('/signin')
+  },
+  getUser: (req, res, next) => {
+    return User.findByPk(req.params.id)
+      .then(user => {
+        if (!user) throw new Error('找不到使用者！')
+
+        return res.render('users/profile', { user: user.toJSON() })
+      })
+      .catch(err => next(err))
   }
 }
 
