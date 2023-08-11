@@ -116,10 +116,10 @@ const adminController = {
   patchUser: (req, res, next) => {
     return User.findByPk(req.params.id)
       .then(user => {
-        console.log('user:', user)
         let newPermission = ''
         let nextUrl = ''
         if (user.email === 'root@example.com') {
+          newPermission = true
           nextUrl = 'back'
           req.flash('error_messages', '禁止變更 root 權限')
         } else if (user) {
