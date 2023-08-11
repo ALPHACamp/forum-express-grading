@@ -33,6 +33,8 @@ router.post(
 )
 // 導向分類頁
 router.get('/categories', categoryController.getCategories)
+// 新增一筆分類
+router.post('/categories', categoryController.postCategory)
 // 其餘重新導回 /restaurants
 router.get('', (req, res) => res.redirect('/admin/restaurants'))
 
