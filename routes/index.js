@@ -10,6 +10,7 @@ const admin = require('./modules/admin')
 
 const { generalErrorHandler } = require('../middleware/error-handler')
 const { authenticated, authenticatedAdmin } = require('../middleware/auth')
+const upload = require('../middleware/multer')
 
 router.use('/admin', authenticatedAdmin, admin)
 
@@ -32,6 +33,12 @@ router.get('/restaurants', authenticated, restController.getRestaurants)
 router.post('/comments', authenticated, commentController.postComment)
 
 router.delete('/comments/:id', authenticatedAdmin, commentController.deleteComment)
+
+router.get('/users/:id/edit', authenticated, userController.editUser)
+
+router.put('/users/:id', authenticated, upload.single('image'), userController.putUser)
+
+router.get('/users/:id', authenticated, userController.getUser)
 
 router.use('/', (req, res) => res.redirect('/restaurants'))
 
