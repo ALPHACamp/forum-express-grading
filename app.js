@@ -28,7 +28,7 @@ app.use(passport.initialize())
 app.use(passport.session())
 
 app.use(flash())
-app.use(methodOverride('_method')) // 這邊的_method對應hbs樣版的?_method變數名稱，可修改
+app.use(methodOverride('_method')) // 這邊的_method對應hbs樣版的 ?_method變數名稱，可修改
 app.use((req, res, next) => {
   res.locals.success_messages = req.flash('success_messages')
   res.locals.error_messages = req.flash('error_messages')

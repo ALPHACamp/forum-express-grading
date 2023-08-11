@@ -21,7 +21,7 @@ router.get('/logout', userController.logout)
 
 router.get('/users/:id/edit', authenticatedProfile, userController.editUser)
 router.put('/users/:id', authenticatedProfile, upload.single('image'), userController.putUser)
-router.get('/users/:id', authenticatedProfile, userController.getUser)
+router.get('/users/:id', userController.getUser)
 
 router.delete('/comments/:id', authenticated, commentController.deleteComment)
 router.post('/comments', authenticated, commentController.postComment)

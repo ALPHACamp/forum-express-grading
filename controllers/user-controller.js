@@ -51,7 +51,8 @@ const userController = {
       .then(([user, comment]) => {
         if (!user) throw new Error("Profile didn't exist")
         const restaurants = comment.rows.map(item => item.Restaurant.toJSON())
-        res.render('users/profile', { user: user.toJSON(), restaurants, commentCount: comment.count })
+        const currentUserId = req.user.id
+        res.render('users/profile', { user: user.toJSON(), restaurants, commentCount: comment.count, currentUserId })
       })
       .catch(err => next(err))
   },
