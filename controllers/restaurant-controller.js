@@ -1,14 +1,23 @@
 const { Restaurant, Category } = require('../models')
+const { getOffset, getPagination } = require('../helpers/pagination-helper')
 
 const restaurantController = {
   getRestaurants: (req, res, next) => {
     const categoryId = Number(req.query.categoryId) || ''
 
+    const DEFAULT_LIMIT = 9
+    // 保留 req.query.limit ，可以新增功能：選擇一頁要顯示幾筆資料
+    const limit = Number(req.query.limit) || DEFAULT_LIMIT
+    const page = Number(req.query.page) || 1
+    const offset = getOffset(limit, page)
+
     return Promise.all([
-      Restaurant.findAll({
+      Restaurant.findAndCountAll({
         where: {
           ...(categoryId ? { categoryId } : {})
         },
+        limit,
+        offset,
         include: Category,
         nest: true,
         raw: true
@@ -16,7 +25,7 @@ const restaurantController = {
       Category.findAll({ raw: true })
     ])
       .then(([restaurants, categories]) => {
-        const data = restaurants.map(r => ({
+        const data = restaurants.rows.map(r => ({
           ...r,
           // 當 key 重複時，後面出現的會取代前面的
           description: r.description.substring(0, 50) // description 擷取前 50 個字元
@@ -25,7 +34,8 @@ const restaurantController = {
         return res.render('restaurants', {
           restaurants: data,
           categories,
-          categoryId
+          categoryId,
+          pagination: getPagination(limit, page, restaurants.count)
         })
       })
       .catch(err => next(err))
