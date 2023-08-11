@@ -22,13 +22,15 @@ const restaurantController = {
       .then(([restaurants, categories]) => {
         // 依passport設定過，可以取出FavoritedRestaurants
         const favoritedRestaurantId = req.user.FavoritedRestaurants.map(fr => fr.id) // 回傳restaurant.id的陣列
+        const likedRestaurantId = req.user.LikedRestaurants.map(lr => lr.id)
         // 將首頁顯示的description截至50個字
         // 展開運算子和物件搭配時，通常是用在想要拷貝物件並做出做局部修改的時候
         const data = restaurants.rows.map(rest => ({
           ...rest,
           // 修改description，若出現重複的key則會以後面的為準
           description: rest.description.substring(0, 50),
-          isFavorited: req.user && favoritedRestaurantId.includes(rest.id) // req.user用來檢查，避免user是空的。 includes回傳布林值
+          isFavorited: req.user && favoritedRestaurantId.includes(rest.id), // req.user用來檢查，避免user是空的。 includes回傳布林值
+          isLiked: req.user && likedRestaurantId.includes(rest.id)
         }))
         return res.render('restaurants', { restaurants: data, categories, categoryId, pagination: getPagination(limit, page, restaurants.count) })
       })
@@ -39,7 +41,8 @@ const restaurantController = {
       include: [
         Category,
         { model: Comment, include: User },
-        { model: User, as: 'FavoritedUsers' }
+        { model: User, as: 'FavoritedUsers' },
+        { model: User, as: 'LikedUsers' }
       ]
     })
       .then(restaurant => {
@@ -49,7 +52,8 @@ const restaurantController = {
       })
       .then(restaurant => {
         const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id) //some 找到一個符合條件的項目後，就會立刻回傳 true
-        res.render('restaurant', { restaurant: restaurant.toJSON(), isFavorited })
+        const isLiked = restaurant.LikedUsers.some(l => l.id === req.user.id)
+        res.render('restaurant', { restaurant: restaurant.toJSON(), isFavorited, isLiked })
       })
       .catch(err => next(err))
   },
