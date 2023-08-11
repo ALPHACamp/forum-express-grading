@@ -66,8 +66,8 @@ const restaurantController = {
   // (頁面) 顯示單一餐廳的Dashboard
   getDashboard: (req, res, next) => {
     return Restaurant.findByPk(req.params.id,
-      { raw: true, nest: true, include: Category })
-      .then(restaurant => res.render('dashboard', { restaurant }))
+      { nest: true, include: [Category, Comment, { model: User, as: 'FavoritedUsers' }] })
+      .then(restaurant => res.render('dashboard', { restaurant: restaurant.toJSON() }))
       .catch(err => next(err))
   },
   // (頁面) 顯示最新消息
