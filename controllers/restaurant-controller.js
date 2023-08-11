@@ -51,7 +51,7 @@ const restaurantController = {
         return restaurant.increment('viewCounts', { by: 1 })
       })
       .then(restaurant => {
-        const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id) //some 找到一個符合條件的項目後，就會立刻回傳 true
+        const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id) // some 找到一個符合條件的項目後，就會立刻回傳 true
         const isLiked = restaurant.LikedUsers.some(l => l.id === req.user.id)
         res.render('restaurant', { restaurant: restaurant.toJSON(), isFavorited, isLiked })
       })
