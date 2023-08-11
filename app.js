@@ -16,7 +16,6 @@ const SESSION_SECRET = 'secret'
 const methodOverride = require('method-override')
 const db = require('./models')
 
-
 app.engine('hbs', handlebars({ extname: '.hbs', helpers: handlebarsHelpers }))
 app.set('view engine', 'hbs')
 app.use(express.urlencoded({ extended: true }))
