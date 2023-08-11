@@ -1,4 +1,4 @@
-const { Restaurant, Category } = require('../models') // 引入資料庫
+const { Restaurant, Category, Comment, User } = require('../models') // 引入資料庫
 const { getOffset, getPagination } = require('../helpers/pagination-helper') // 引入 pagination-helper
 
 const restaurantController = {
@@ -39,7 +39,10 @@ const restaurantController = {
   },
   getRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
-      include: Category
+      include: [
+        Category,
+        { model: Comment, include: User }
+      ]
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
