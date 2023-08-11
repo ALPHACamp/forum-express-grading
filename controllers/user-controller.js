@@ -72,6 +72,7 @@ const userController = {
 
       .then(user => {
         if (!user) throw new Error("User doesn't exist!")
+        if (user.id !== req.user.id) throw new Error("Can't edit other user's data!")
         res.render('users/edit', { user: user })
       })
       .catch(err => next(err))

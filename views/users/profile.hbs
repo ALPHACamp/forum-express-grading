@@ -10,7 +10,9 @@
             <li><strong>Description:</strong> -</li>
         </ul>
         <div class="mt-5 ms-3">
+            {{#ifCond user.id currentUser.id}}
             <a class="btn btn-primary" href='/users/{{user.id}}/edit'>編輯資料</a>
+            {{/ifCond}}
             <a class="btn btn-secondary" href="/">回首頁</a>
         </div>
     </div>
