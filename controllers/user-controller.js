@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs')
 const { User } = require('../models')
+const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const userController = {
   signUpPage: (req, res) => {
@@ -33,13 +34,51 @@ const userController = {
     res.redirect('/signin')
   },
   getUser: (req, res, next) => {
-    return User.findByPk(req.params.id)
+    return User.findByPk(req.params.id, { raw: true })
       .then(user => {
         if (!user) throw new Error('找不到使用者！')
 
-        return res.render('users/profile', { user: user.toJSON() })
+        return res.render('users/profile', { user })
       })
       .catch(err => next(err))
+  },
+  editUser: (req, res, next) => {
+    return User.findByPk(req.params.id, { raw: true })
+      .then(user => {
+        if (!user) throw new Error('找不到使用者！')
+
+        return res.render('users/edit', { user })
+      })
+      .catch(err => next(err))
+  },
+  putUser: async (req, res, next) => {
+    // 驗證使用者身份與資料
+    const userId = req.user.id
+    if (Number(req.params.id) !== userId) {
+      req.flash('error_messages', '無法編輯其他使用者的資料！')
+      return res.redirect(`/users/${userId}`)
+    }
+
+    try {
+      const { name } = req.body
+      if (!name) throw new Error('名稱為必填！')
+      const { file } = req
+      const [user, filePath] = await Promise.all([
+        User.findByPk(req.params.id),
+        imgurFileHandler(file)
+      ])
+      if (!user) throw new Error('找不到使用者！')
+
+      await user.update({
+        name,
+        image: filePath || user.image
+      })
+
+      req.flash('success_messages', '使用者資料編輯成功')
+      res.redirect(`/users/${req.params.id}`)
+    } catch (err) {
+      next(err)
+    }
   }
 }
 
