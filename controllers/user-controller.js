@@ -43,6 +43,12 @@ const userController = {
       .catch(err => next(err))
   },
   editUser: (req, res, next) => {
+    const userId = req.user.id
+    if (Number(req.params.id) !== userId) {
+      req.flash('error_messages', '無法編輯其他使用者的資料！')
+      return res.redirect(`/users/${userId}`)
+    }
+
     return User.findByPk(req.params.id, { raw: true })
       .then(user => {
         if (!user) throw new Error('找不到使用者！')
@@ -52,6 +58,12 @@ const userController = {
       .catch(err => next(err))
   },
   putUser: async (req, res, next) => {
+    const userId = req.user.id
+    if (Number(req.params.id) !== userId) {
+      req.flash('error_messages', '無法編輯其他使用者的資料！')
+      return res.redirect(`/users/${userId}`)
+    }
+
     try {
       const { name } = req.body
       if (!name) throw new Error('名稱為必填！')
