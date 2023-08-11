@@ -39,6 +39,9 @@ router.get('/', (req, res) => {
 router.delete('/comments/:id', authenticated, commentController.deleteComment)
 router.post('/comments', authenticated, commentController.postComment)
 
+router.post('/favorite/:restaurantId', authenticated, userController.addFavorite)
+router.delete('/favorite/:restaurantId', authenticated, userController.removeFavorite)
+
 router.use('/', generalErrorHandler)
 
 module.exports = router
