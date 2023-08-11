@@ -10,11 +10,6 @@ const restaurantController = {
     const limit = Number(req.query.limit) || DEFAULT_LIMIT
     const offset = getOffset(limit, page)
 
-    /*
-    const where = {}
-    if (categoryId) where.categoryId = categoryId
-    */
-
     Promise.all([
       Restaurant.findAndCountAll({
         include: [Category],
@@ -29,9 +24,12 @@ const restaurantController = {
       Category.findAll({ raw: true })
     ])
       .then(([restaurants, categories]) => {
+        const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
+
         const data = restaurants.rows.map(r => ({
           ...r,
-          description: r.description.substring(0, 50)
+          description: r.description.substring(0, 50),
+          isFavorited: favoritedRestaurantsId.includes(r.id)
         }))
 
         res.render('restaurants', {
@@ -47,7 +45,8 @@ const restaurantController = {
     Restaurant.findByPk(req.params.id, {
       include: [
         Category,
-        { model: Comment, include: User }
+        { model: Comment, include: User },
+        { model: User, as: 'FavoritedUsers' }
       ]
     })
       .then(restaurant => {
@@ -55,7 +54,14 @@ const restaurantController = {
 
         return restaurant.increment('viewCounts', { by: 1 })
       })
-      .then(restaurant => res.render('restaurant', { restaurant: restaurant.toJSON() }))
+      .then(restaurant => {
+        const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id)
+
+        res.render('restaurant', {
+          restaurant: restaurant.toJSON(),
+          isFavorited
+        })
+      })
       .catch(err => next(err))
   },
   getDashboard: (req, res, next) => {
