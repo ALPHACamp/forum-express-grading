@@ -96,6 +96,15 @@ const restaurantController = {
         })
       })
       .catch(err => next(err))
+  },
+  getTop: (req, res, next) => {
+    return Restaurant.findAll({
+      limit: 10,
+      raw: true,
+      nest: true
+    })
+      .then(restaurant => res.render('top-restaurants', { restaurant }))
+      .catch(err => next(err))
   }
 }
 module.exports = restaurantController
