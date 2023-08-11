@@ -1,6 +1,7 @@
-const { Restaurant, Category, User, Comment } = require('../models')
+const { Restaurant, Category, User, Comment, Favorite } = require('../models')
 const { RestaurantError } = require('../errors/errors')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
+const restaurant = require('../models/restaurant')
 
 const restController = {
   getRestaurants: async (req, res, next) => {
@@ -99,18 +100,21 @@ const restController = {
   getDashboard: async (req, res, next) => {
     try {
       const id = req.params.id
-      const [restaurant, commentAmount] = await Promise.all([Restaurant.findByPk(id, {
+      const [restaurant, commentCount, favoritedCount] = await Promise.all([Restaurant.findByPk(id, {
         nest: true,
         include: [Category]
       }),
       Comment.count({
+        where: { restaurantId: id }
+      }),
+      Favorite.count({
         where: { restaurantId: id }
       })
       ])
       if (!restaurant) {
         throw new RestaurantError('Restaurant did not exist!')
       }
-      return res.render('dashboard', { restaurant: restaurant.toJSON(), commentAmount })
+      return res.render('dashboard', { restaurant: restaurant.toJSON(), commentCount, favoritedCount })
     } catch (error) {
       return next(error)
     }
@@ -135,6 +139,30 @@ const restController = {
         })
       ])
       return res.render('feeds', { restaurants, comments })
+    } catch (error) {
+      return next(error)
+    }
+  },
+  getTopRestaurants: async (req, res, next) => {
+    const TOP_X_RESTAURANTS = 10
+    try {
+      const restaurants = await Restaurant.findAll({
+        include: [{ model: User, as: 'FavoritedUsers' }]
+      })
+
+      // count每間餐廳有多少人favorited
+      const results = restaurants.map(restaurant => {
+        return {
+          ...restaurant.toJSON(),
+          favoritedCount: restaurant.FavoritedUsers.length, // count 有幾格人favorite這間餐廳
+          isFavorited: req.user && restaurant.FavoritedUsers.some(fu => fu.id === req.user.id)
+          // 看登入者的favorited餐廳裡有沒有各個urestaurants
+          // 另外需要先確定req存在
+        }
+      }).sort((a, b) => b.favoritedCount - a.favoritedCount)
+        .slice(0, TOP_X_RESTAURANTS)
+
+      return res.render('top-restaurants', { restaurants: results })
     } catch (error) {
       return next(error)
     }
