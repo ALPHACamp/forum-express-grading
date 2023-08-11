@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 
 const adminController = require('../../controllers/admin-controller')
-
+const categoryController = require('../../controllers/category-controller')
 const upload = require('../../middleware/multer')
 
 // 導向後臺新增頁功能 - 取得新增餐廳的表單
@@ -23,7 +23,6 @@ router.put(
 )
 // 刪除資料
 router.delete('/restaurants/:id', adminController.deleteRestaurant)
-
 // 導向後臺首頁功能 - 瀏覽所有餐廳
 router.get('/restaurants', adminController.getRestaurants)
 // 新增一筆餐廳
@@ -32,7 +31,8 @@ router.post(
   upload.single('image'),
   adminController.postRestaurant
 )
-
+// 導向分類頁
+router.get('/categories', categoryController.getCategories)
 // 其餘重新導回 /restaurants
 router.get('', (req, res) => res.redirect('/admin/restaurants'))
 
