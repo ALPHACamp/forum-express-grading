@@ -1,4 +1,4 @@
-<div class="row mb-5">
+<div class="row mb-2">
   <div class="col-md-12">
     <h1>{{restaurant.name}}</h1>
     <p>[{{restaurant.Category.name}}]</p>
@@ -16,11 +16,22 @@
   </div>
   <div class="col-md-8">
     <p style="white-space: break-spaces;">{{restaurant.description}}</p>
+    <a class="btn btn-primary me-3" href="/restaurants/{{restaurant.id}}/dashboard">Dashboard</a>
+    {{#if isFavorited }}
+    <form action="/favorite/{{restaurant.id}}?_method=DELETE" method="POST" style="display: contents;">
+      <button type="submit" class="btn btn-danger">移除最愛</button>
+    </form>
+    {{else}}
+    <form action="/favorite/{{restaurant.id}}" method="POST" style="display: contents;">
+      <button type="submit" class="btn btn-primary">加到最愛</button>
+    </form>
+    {{/if}}
   </div>
   <hr>
 </div>
+
 {{!-- Comment --}}
-<h3 class="mb-3">所有評論：</h3>
+<h3 class="">所有評論：</h3>
 {{#each restaurant.Comments}}
 {{#if ../user.isAdmin}}
 <form action="/comments/{{this.id}}?_method=DELETE" method="POST" class="float-end">
