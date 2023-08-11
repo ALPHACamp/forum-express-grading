@@ -23,12 +23,14 @@ const restaurantController = {
     }), Category.findAll({ raw: true })])
       .then(([restaurants, categories]) => {
         const FavoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
+        const LikedRestaurantsId = req.user && req.user.LikedRestaurants.map(li => li.id)
 
         // 把餐廳敘述截至50個字，避免過長時版面亂掉
         const data = restaurants.rows.map(r => ({
           ...r,
           description: r.description.substring(0, 50),
-          isFavorited: FavoritedRestaurantsId.includes(r.id)
+          isFavorited: FavoritedRestaurantsId.includes(r.id),
+          isLiked: LikedRestaurantsId.includes(r.id)
         }))
         return res.render('restaurants', {
           restaurants: data,
@@ -45,16 +47,19 @@ const restaurantController = {
       {
         include: [Category,
           { model: Comment, include: User },
-          { model: User, as: 'FavoritedUsers' }],
+          { model: User, as: 'FavoritedUsers' },
+          { model: User, as: 'LikedUsers' }
+        ],
         nest: true
       })
       .then(restaurant => {
         // console.log(restaurant.Comments[0].dataValues) // 此時還不是plain OBJ，加.dataValues取值
-        const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id)
+        const isFavorited = restaurant.FavoritedUsers.some(fr => fr.id === req.user.id)
+        const isLiked = restaurant.LikedUsers.some(li => li.id === req.user.id)
 
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         return restaurant.increment({ viewCounts: 1 })
-          .then(() => res.render('restaurant', { restaurant: restaurant.toJSON(), isFavorited }))
+          .then(() => res.render('restaurant', { restaurant: restaurant.toJSON(), isFavorited, isLiked }))
       })
       .catch(err => next(err))
   },

@@ -33,7 +33,11 @@ passport.serializeUser((user, cb) => {
 
 passport.deserializeUser((id, cb) => {
   return User.findByPk(id, {
-    include: [{ model: Restaurant, as: 'FavoritedRestaurants' }]
+    // 也可以用include: { all: true, nested: true }
+    include: [
+      { model: Restaurant, as: 'FavoritedRestaurants' },
+      { model: Restaurant, as: 'LikedRestaurants' }
+    ]
   })
     .then(user => cb(null, user.toJSON()))
     .catch(err => cb(err))
