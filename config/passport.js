@@ -1,7 +1,7 @@
 const passport = require('passport')
 const LocalStrategy = require('passport-local')
 const bcrypt = require('bcryptjs')
-const { User, Restaurant } = require('../models')
+const { User, Restaurant, Like } = require('../models')
 
 // new LocalStrategy :第一個參數為客製化選項，第二個參數為登入認證程序
 passport.use(new LocalStrategy(
@@ -31,7 +31,8 @@ passport.serializeUser((user, cb) => {
 passport.deserializeUser((id, cb) => {
   User.findByPk(id, {
     include: [
-      { model: Restaurant, as: 'FavoritedRestaurants' } // as: 對應在model的命名，可以將user印出 檢查取出的物件
+      { model: Restaurant, as: 'FavoritedRestaurants' }, // as: 對應在model的命名，可以將user印出 檢查取出的物件
+      { model: Restaurant, as: 'LikedRestaurants' }
     ]
   })
   // 原本沒有經過轉換的是原始sequelize物件，可以直接用sequelize語法編輯，但這邊不需要那些功能
