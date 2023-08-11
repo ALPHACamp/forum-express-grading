@@ -18,8 +18,7 @@ module.exports = {
         updated_at: new Date(),
         category_id: categories[Math.floor(Math.random() * categories.length)].id,
         view_counts: 0
-      })),
-      { lock: true }
+      }))
     )
   },
   down: async (queryInterface, Sequelize) => {
