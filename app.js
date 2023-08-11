@@ -1,6 +1,9 @@
 const express = require('express')
 const path = require('path')
 const routes = require('./routes')
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
 const handlebars = require('express-handlebars')
 const flash = require('connect-flash')
 const session = require('express-session')
@@ -12,6 +15,7 @@ const port = process.env.PORT || 3000
 const SESSION_SECRET = 'secret'
 const methodOverride = require('method-override')
 const db = require('./models')
+
 
 app.engine('hbs', handlebars({ extname: '.hbs', helpers: handlebarsHelpers }))
 app.set('view engine', 'hbs')
