@@ -3,17 +3,24 @@ const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const restaurantController = {
   getRestaurants: (req, res, next) => {
-    Restaurant.findAll({
-      raw: true,
-      nest: true,
-      include: [Category]
-    })
-      .then(restaurants => {
+    const categoryId = Number(req.query.categoryId) || ''
+    return Promise.all([
+      Restaurant.findAll({
+        raw: true,
+        nest: true,
+        include: [Category],
+        where: { // 新增查詢條件
+          ...categoryId ? { categoryId } : {} // 檢查 categoryId 是否為空值
+        }
+      }),
+      Category.findAll({ raw: true, nest: true })
+    ])
+      .then(([restaurants, categories, categoryId]) => {
         const data = restaurants.map(r => ({
           ...r,
           description: r.description.substring(0, 50)
         }))
-        return res.render('restaurants', { restaurants: data })
+        return res.render('restaurants', { restaurants: data, categories, categoryId })
       })
       .catch(err => next(err))
   },
