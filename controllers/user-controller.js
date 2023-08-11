@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs')
 const { User, Comment, Restaurant, Favorite } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
+const { getUser } = require('../helpers/auth-helpers')
 
 const userController = {
   signUpPage: (req, res) => {
@@ -72,6 +73,7 @@ const userController = {
 
       .then(user => {
         if (!user) throw new Error("User doesn't exist!")
+        req.user = getUser(req)
         if (user.id !== req.user.id) throw new Error("Can't edit other user's data!")
         res.render('users/edit', { user: user })
       })
