@@ -50,7 +50,7 @@ const userController = {
       Comment.findAndCountAll({
         nest: true,
         raw: true,
-        include: [Restaurant, User],
+        include: [Restaurant],
         where: {
           ...userId ? { userId } : {}
         }
