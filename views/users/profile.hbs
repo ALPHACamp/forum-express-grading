@@ -8,7 +8,7 @@
             <h2 class='mb-2'style="font-weight: bold;">{{user.name}}</h2>
             <h3>{{user.email}}</h3>
             <br>
-            {{#if userAuth}}
+            {{#if userAuthed}}
             <a class="btn btn-primary mb-3" href="/users/{{user.id}}/edit">Edit</a>
             {{/if}}
         </div>

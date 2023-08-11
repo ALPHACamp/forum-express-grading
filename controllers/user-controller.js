@@ -43,7 +43,7 @@ const userController = {
   getUser: (req, res, next) => {
     const userId = req.params.id
     const currentUser = getUser(req).id
-    const userAuthed = (userId === currentUser) // 驗證使用者是否是本人
+    const userAuthed = (Number(userId) === currentUser) // 驗證使用者是否是本人
     return Promise.all([
       User.findByPk(userId, { raw: true }),
       Comment.findAndCountAll({
@@ -63,7 +63,7 @@ const userController = {
   editUser: (req, res, next) => {
     const userId = req.params.id
     const currentUser = getUser(req).id
-    const userAuthed = (userId === currentUser)
+    const userAuthed = (Number(userId) === currentUser)
     if (!userAuthed) throw new Error('非使用者本人無法更改資料!')
     return User.findByPk(userId, { raw: true })
       .then(user => {
@@ -75,7 +75,7 @@ const userController = {
   putUser: (req, res, next) => {
     const userId = req.params.id
     const currentUser = getUser(req).id
-    const userAuthed = (userId === currentUser)
+    const userAuthed = (Number(userId) === currentUser)
     if (!userAuthed) throw new Error('非使用者本人無法更改資料!')
     const { name } = req.body
     if (!name) throw new Error('User name is required!')
