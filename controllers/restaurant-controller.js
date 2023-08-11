@@ -1,7 +1,7 @@
 const { Restaurant, Category } = require('../models')
 
 const restaurantController = {
-  getRestaurants: (req, res) => {
+  getRestaurants: (req, res, next) => {
     return Restaurant.findAll({
       include: [Category],
       nest: true,
@@ -16,9 +16,21 @@ const restaurantController = {
 
         return res.render('restaurants', { restaurants: data })
       })
+      .catch(err => next(err))
   },
 
   getRestaurant: (req, res, next) => {
+    return Restaurant.findByPk(req.params.id, { include: Category })
+      .then(async restaurant => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+
+        await restaurant.increment('viewCounts') // 將 viewCounts 加一(預設)
+        res.render('restaurant', { restaurant: restaurant.toJSON() })
+      })
+      .catch(err => next(err))
+  },
+
+  getDashboard: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
       include: Category,
       nest: true,
@@ -27,7 +39,7 @@ const restaurantController = {
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
 
-        res.render('restaurant', { restaurant })
+        res.render('dashboard', { restaurant })
       })
       .catch(err => next(err))
   }
