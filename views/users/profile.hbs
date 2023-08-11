@@ -1,0 +1,14 @@
+<div class="card mb-3">
+  <div class="row g-0">
+    <div class="col-md-4">
+      <img src="{{user.image}}" class="img-fluid rounded-start" alt="{{user.name}}">
+    </div>
+    <div class="col-md-8">
+      <div class="card-body">
+        <h3 class="card-title">{{user.name}}</h3>
+        <p class="card-text">{{user.email}}</p>
+        {{#ifCond user.id reqUser.id}}<a href="/users/{{user.id}}/edit" class="btn btn-primary">Edit</a>{{/ifCond}}
+      </div>
+    </div>
+  </div>
+</div>
