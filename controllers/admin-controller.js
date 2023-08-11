@@ -7,15 +7,17 @@ const adminController = {
       .then(restaurants => res.render('admin/restaurants', { restaurants }))
       .catch(err => next(err))
   },
-  createRestaurant: (req, res) => {
-    res.render('admin/create-restaurant')
+  createRestaurant: (req, res, next) => {
+    return Category.findAll({ raw: true })
+      .then(categories => res.render('admin/create-restaurant', { categories }))
+      .catch(err => next(err))
   },
   postRestaurant: (req, res, next) => {
-    const { name, tel, address, openingHours, description } = req.body
+    const { name, tel, address, openingHours, description, categoryId } = req.body
     if (!name) throw new Error('Restaurant name is required!')
     const { file } = req
     localFileHandler(file)
-      .then(filePath => Restaurant.create({ name, tel, address, openingHours, description, image: filePath || null }))
+      .then(filePath => Restaurant.create({ name, tel, address, openingHours, description, categoryId, image: filePath || null }))
       .then(() => {
         req.flash('success_messages', 'restaurant was successfully created')
         res.redirect('/admin/restaurants')
@@ -32,21 +34,24 @@ const adminController = {
   },
   editRestaurant: (req, res, next) => {
     const { id } = req.params
-    Restaurant.findByPk(id, { raw: true }).then(restaurant => {
+    return Promise.all([
+      Restaurant.findByPk(id, { raw: true }),
+      Category.findAll({ raw: true })
+    ]).then(([restaurant, categories]) => {
       if (!restaurant) throw new Error('Restaurant didnt exist!')
-      res.render('admin/edit-restaurant', { restaurant })
+      res.render('admin/edit-restaurant', { restaurant, categories })
     })
       .catch(err => next(err))
   },
   putRestaurant: (req, res, next) => {
-    const { name, tel, address, openingHours, description } = req.body
+    const { name, tel, address, openingHours, description, categoryId } = req.body
     const { id } = req.params
     if (!name) throw new Error('Restaurant name is required!')
     const { file } = req
     Promise.all([Restaurant.findByPk(id), localFileHandler(file)])
       .then(([restaurant, filePath]) => {
         if (!restaurant) throw new Error('Restaurant didnt exist!')
-        return restaurant.update({ name, tel, address, openingHours, description, image: filePath || restaurant.image })
+        return restaurant.update({ name, tel, address, openingHours, description, categoryId, image: filePath || restaurant.image })
       })
       .then(() => {
         req.flash('success_messages', 'restaurant was successfully to update')
