@@ -14,10 +14,19 @@
        <select class="form-control"
                id="categoryId"
                name="categoryId">
+              <option>請選擇分類</option>
               {{#each categories}}
-              <option value="{{this.id}}">{{this.name}}</option>
+              <option value="{{this.id}}"
+                      {{#ifCond
+                      this.id
+                      ../restaurant.categoryId}}
+                      selected
+                      {{/ifCond}}>
+                     {{this.name}}
+              </option>
               {{/each}}
        </select>
+
 </div>
 <div class="form-row mb-3">
        <label class="form-label"
