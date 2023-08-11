@@ -20,6 +20,8 @@ router.post('/categories', categoryController.postCategory)
 router.get('/categories/:id', categoryController.getCategories)
 router.put('/categories/:id', categoryController.putCategory)
 
+router.delete('/categories/:id', categoryController.deleteCategory)
+
 // 餐廳
 router.get('/restaurants/create', adminController.createRestaurant)
 router.post('/restaurants', upload.single('image'), adminController.postRestaurant)

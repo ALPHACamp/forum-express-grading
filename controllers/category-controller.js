@@ -29,6 +29,18 @@ const categoryController = {
     })
       .then(() => res.redirect('/admin/categories'))
       .catch(err => next(err))
+  },
+  deleteCategory: (req, res, next) => {
+    const { id } = req.params
+    return Category.findByPk(id).then(category => {
+      if (!category) throw new Error('Category didnt exist!')
+      return category.destroy()
+    })
+      .then(() => {
+        req.flash('success_messages', '分類已刪除成功')
+        res.redirect('/admin/categories')
+      })
+      .catch(err => next(err))
   }
 }
 
