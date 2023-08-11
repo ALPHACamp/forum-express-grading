@@ -1,6 +1,6 @@
 const { Comment, User, Restaurant } = require('../models')
 
-const commentController = {
+const testController = {
   postComment: (req, res, next) => {
     const { restaurantId, text } = req.body
     const userId = req.user.id
@@ -28,4 +28,4 @@ const commentController = {
   }
 }
 
-module.exports = commentController
+module.exports = testController
