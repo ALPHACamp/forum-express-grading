@@ -3,6 +3,7 @@ const express = require('express')
 const router = express.Router()
 
 const adminController = require('../../controllers/admin-controller')
+const categoryController = require('../../controllers/category-controller')
 
 const upload = require('../../middleware/multer')
 
@@ -10,6 +11,9 @@ const upload = require('../../middleware/multer')
 router.get('/users', adminController.getUsers)
 
 router.patch('/users/:id', adminController.patchUser)
+
+// 分類
+router.get('/categories', categoryController.getCategories)
 
 // 餐廳
 router.get('/restaurants/create', adminController.createRestaurant)
