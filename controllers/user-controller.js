@@ -194,13 +194,17 @@ const userController = {
     try {
       const { restaurantId } = req.params
       const userId = req.user.id
-      const like = await Like.findOne({
-        where: {
-          restaurantId,
-          userId
-        }
-      })
-      console.log(like)
+
+      const [restaurant, like] = await Promise.all([
+        Restaurant.findByPk(restaurantId),
+        Like.findOne({
+          where: {
+            restaurantId,
+            userId
+          }
+        })
+      ])
+      if (!restaurant) throw new LikeError("Restaurant didn't exist!")
       if (!like) throw new LikeError("You haven't favorited this restaurant")
       await like.destroy()
       return res.redirect('back')
@@ -224,7 +228,6 @@ const userController = {
           isFollowed: req.user.Followings.some(f => f.id === user.id) // 看登入者的追蹤對象裡有沒有各個user
         }
       }).sort((a, b) => b.followerCount - a.followerCount)
-      console.log(results)
       return res.render('top-users', { users: results })
     } catch (error) {
       return next(error)
@@ -243,8 +246,8 @@ const userController = {
           }
         })
       ])
-      if (!user) throw new LikeError("User you want to follow didn't exist!")
-      if (followship) throw new LikeError('You have already followed this user!')
+      if (!user) throw new FollowError("User you want to follow didn't exist!")
+      if (followship) throw new FollowError('You have already followed this user!')
       await Followship.create({
         followerId,
         followingId
@@ -264,7 +267,7 @@ const userController = {
           followingId
         }
       })
-      if (!followship) throw new LikeError('You have not followed this user!')
+      if (!followship) throw new FollowError('You have not followed this user!')
       await followship.destroy()
       return res.redirect('back')
     } catch (error) {
