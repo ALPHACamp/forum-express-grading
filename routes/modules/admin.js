@@ -15,6 +15,8 @@ router.patch('/users/:id', adminController.patchUser)
 // 分類
 router.get('/categories', categoryController.getCategories)
 
+router.post('/categories', categoryController.postCategory)
+
 // 餐廳
 router.get('/restaurants/create', adminController.createRestaurant)
 router.post('/restaurants', upload.single('image'), adminController.postRestaurant)
