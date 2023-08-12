@@ -45,9 +45,13 @@ const userController = {
       })
     ])
       .then(([user, comments]) => {
-        const currentUserId = req.user ? req.user.id : null
         if (!user) throw new Error("User didn't exist!")
-        res.render('users/profile', { user, currentUserId, comments })
+        const currentUserId = req.user ? req.user.id : null
+        if (comments !== null) {
+          res.render('users/profile', { user, currentUserId, comments })
+        } else {
+          throw new Error("Comment didn't exist!")
+        }
       })
       .catch(err => next(err))
   },
