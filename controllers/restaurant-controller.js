@@ -40,7 +40,7 @@ const restaurantController = {
       .catch(err => next(err))
   },
   getRestaurant: (req, res, next) => {
-    return Restaurant.findByPk(req.params.id, { 
+    return Restaurant.findByPk(req.params.id, {
       include: [
         Category, { model: Comment, include: User }
       ]
