@@ -2,7 +2,7 @@ const bcrypt = require('bcryptjs')
 const db = require('../models')
 const { User, Restaurant, Comment, Favorite } = db
 const { imgurFileHandler } = require('../helpers/file-helpers')
-const { getUser } = require('../helpers/auth-helpers')
+const helper = require('../helpers/auth-helpers')
 
 const userController = {
   signUpPage: (req, res) => {
@@ -78,9 +78,9 @@ const userController = {
       .then(() => res.redirect('back'))
   },
   getUser: (req, res, next) => {
-    const userId = req.params.id
-    const currentUser = getUser(req).id
-    const userAuthed = (Number(userId) === currentUser) // 驗證使用者是否是本人
+    const { id } = req.params
+    const userId = helper.getUser(req).id
+    const userAuthed = (Number(id) === userId)
     return Promise.all([
       User.findByPk(userId, { raw: true }),
       Comment.findAndCountAll({
@@ -98,9 +98,9 @@ const userController = {
       .catch(err => next(err))
   },
   editUser: (req, res, next) => {
-    const userId = req.params.id
-    const currentUser = getUser(req).id
-    const userAuthed = (Number(userId) === currentUser)
+    const { id } = req.params
+    const userId = helper.getUser(req).id
+    const userAuthed = (Number(id) === userId)
     if (!userAuthed) throw new Error('非使用者本人無法更改資料!')
     return User.findByPk(userId, { raw: true })
       .then(user => {
@@ -110,9 +110,9 @@ const userController = {
       .catch(err => next(err))
   },
   putUser: (req, res, next) => {
-    const userId = req.params.id
-    const currentUser = getUser(req).id
-    const userAuthed = (Number(userId) === currentUser)
+    const { id } = req.params
+    const userId = helper.getUser(req).id
+    const userAuthed = (Number(id) === userId)
     if (!userAuthed) throw new Error('非使用者本人無法更改資料!')
     const { name } = req.body
     if (!name) throw new Error('User name is required!')
