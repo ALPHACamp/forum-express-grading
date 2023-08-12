@@ -35,6 +35,8 @@ router.post(
 router.get('/categories/:id', categoryController.getCategories)
 // 編輯分類
 router.put('/categories/:id', categoryController.putCategory)
+// 刪除分類
+router.delete('/categories/:id', categoryController.deleteCategory)
 // 導向分類頁
 router.get('/categories', categoryController.getCategories)
 // 新增一筆分類
