@@ -43,7 +43,6 @@ const userController = {
     })
       .then(user => {
         if (!user) throw new Error('找不到使用者！')
-        console.log(user.toJSON().Comments)
         return res.render('users/profile', { user: user.toJSON() })
       })
       .catch(err => next(err))

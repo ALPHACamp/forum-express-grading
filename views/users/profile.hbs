@@ -12,7 +12,9 @@
                 <li><strong>{{user.name}}</strong></li>
                 <li>{{user.email}}</li>
             </ul>
+            {{#ifCond user.id currentUser.id}}
             <p><a class="btn btn-outline-secondary" href="/users/{{user.id}}/edit">edit</a></p>
+            {{/ifCond}}
         </div>
     </div>
     <hr>
