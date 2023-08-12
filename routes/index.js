@@ -7,6 +7,7 @@ const admin = require('./modules/admin')
 const passport = require('../config/passport')
 const { generalErrorHandler } = require('../middleware/error-handler')
 const { authenticated, authenticatedAdmin } = require('../middleware/auth')
+const commentController = require('../controllers/comment-controller')
 
 router.use('/admin', authenticatedAdmin, admin)
 
@@ -21,6 +22,9 @@ router.get('/logout', userController.logout)
 router.get('/restaurants/:id/dashboard', authenticated, restController.getDashboard)
 router.get('/restaurants/:id', authenticated, restController.getRestaurant)
 router.get('/restaurants', authenticated, restController.getRestaurants)
+
+router.post('/comments', authenticated, commentController.postComment)
+
 router.use('/', (req, res) => res.redirect('/restaurants'))
 
 router.use('/', generalErrorHandler)
