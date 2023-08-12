@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs') // 載入 bcrypt
-const { User } = require('../models')
+const { User, Comment, Restaurant } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 const authHelper = require('../helpers/auth-helpers')
 const userController = {
@@ -39,12 +39,25 @@ const userController = {
     req.logout()
     res.redirect('/signin')
   },
-  getUser: (req, res) => {
+  getUser: (req, res, next) => {
     const paramsUserId = Number(req.params.id)
-    return User.findByPk(paramsUserId, {
-      raw: true
-    })
-      .then(user => res.render('users/profile', { user }))
+    return Promise.all([
+      User.findByPk(paramsUserId, { raw: true }),
+      Comment.findAndCountAll({
+        where: { userId: req.params.id },
+        raw: true,
+        nest: true,
+        include: Restaurant
+      })
+    ])
+      .then(([user, comments]) => {
+        res.render('users/profile', {
+          user,
+          count: comments.count,
+          comments: comments.rows
+        })
+      })
+      .catch(err => next(err))
   },
   editUser: (req, res, next) => {
     // 取得passport幫我們放入的user，也就是當前登入的登入者id
