@@ -6,33 +6,88 @@
   </div>
 
   <div class="col-md-8">
-    <ul class="list-unstyled">
-      <li>
-        <h5><strong>{{user.name}}</strong></h5>
-      </li>
-      <p></p>
-      <li>{{user.email}}</li>
-      <p></p>
-      <li>{{user.Comments.length}} 已評論餐廳</li>
-    </ul>
+    <h3>{{user.name}}</h3>
+    <p>{{user.email}}</p>
+    <p class="card-text">{{comments.length}} 間已評論餐廳</p>
+    <p class="card-text">{{user.FavoritedRestaurants.length}} 間已收藏的餐廳</p>
+    <p class="card-text">{{user.Followings.length}} 已追蹤的人數</p>
+    <p class="card-text">{{user.Followers.length}} 被追蹤的人數</p>
     <button type="button" class="btn btn-primary">
       <a class="btn btn-primary" href="/users/{{user.id}}/edit">
         Edit
       </a>
     </button>
+
   </div>
-  <div class="card-header">
-    {{user.Comments.length}} 已評論餐廳
-  </div>
-  {{#each user.Comments}}
-  <div class="col-md-2 mt-4">
-    <div class="card mb-4 shadow-sm">
-      <a href="/restaurants/{{this.Restaurant.id}}">
-        <img class="card-img-top img-fluid" src="{{this.Restaurant.image}}" width="286px" height="180px"
-          style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
-        <h6>{{this.Restaurant.name}}</h6>
-      </a>
+  <div class="col-md-12 d-flex justify-content-center">
+    <div class="col-md-4">
+      <div class=" mt-3 d-flex justify-content-center">
+        <div class="card" style="width: 50rem;">
+          <div class="card-header">
+            {{user.Followings.length}} followings (追蹤者)
+          </div>
+          <div class="card-body d-flex flex-wrap">
+            {{#if user.Followings}}
+            {{#each user.Followings}}
+            <div class="col-4 m-2">
+              <a href="/users/{{this.id}}">
+                <img
+                  src="{{#if this.image}}{{this.image}}{{else}}https://cdn-icons-png.flaticon.com/512/5234/5234205.png{{/if}}"
+                  alt="user image" class="img-fluid">
+              </a>
+            </div>
+            {{/each}}
+            {{else}}
+            <div class="card-body">
+              <p class="card-text">
+                尚無追蹤者
+              </p>
+            </div>
+            {{/if}}
+          </div>
+        </div>
+      </div>
+
+      <div class=" mt-3 d-flex justify-content-center">
+        <div class="card" style="width: 50rem;">
+          <div class="card-header">
+            {{user.Followers.length}} followers (追隨者)
+          </div>
+          <div class="card-body d-flex flex-wrap">
+            {{#if user.Followers}}
+            {{#each user.Followers}}
+            <div class="col-4 m-2">
+              <a href="/users/{{this.id}}">
+                <img
+                  src="{{#if this.image}}{{this.image}}{{else}}https://cdn-icons-png.flaticon.com/512/5234/5234205.png{{/if}}"
+                  alt="user image" class="img-fluid">
+              </a>
+            </div>
+            {{/each}}
+            {{else}}
+            <div class="card-body">
+              <p class="card-text">
+                尚無追隨者
+              </p>
+            </div>
+            {{/if}}
+          </div>
+        </div>
+      </div>
     </div>
+
+    <div class="card-header">
+      {{user.Comments.length}} 已評論餐廳
+    </div>
+    {{#each user.Comments}}
+    <div class="col-md-2 mt-4">
+      <div class="card mb-4 shadow-sm">
+        <a href="/restaurants/{{this.Restaurant.id}}">
+          <img class="card-img-top img-fluid" src="{{this.Restaurant.image}}" width="286px" height="180px"
+            style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+          <h6>{{this.Restaurant.name}}</h6>
+        </a>
+      </div>
+    </div>
+    {{/each}}
   </div>
-  {{/each}}
-</div>
