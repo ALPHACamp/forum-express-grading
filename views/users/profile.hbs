@@ -1,0 +1,22 @@
+<div class="card mb-3">
+  <div class="row g-0">
+    <div class="col-md-4">
+      {{#if user.image}}
+        <img src="{{user.image}}" width="300px" height="300px" style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;" alt="user avatar">
+      {{else}}
+      <img src="https://via.placeholder.com/300" width="300px" height="300px" style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;" />
+      {{/if}}
+    </div>
+    <div class="col-md-8">
+      <div class="card-body">
+        <h5 class="card-title">{{user.name}}</h5>
+        <p class="card-text">{{user.email}}</p>
+        {{#ifCond user.id currentUserId}}
+          <a href="/users/{{user.id}}/edit">
+            <button type="submit" class="btn btn-primary">edit</button>
+          </a>
+        {{/ifCond}}
+      </div>
+    </div>
+  </div>
+</div>
