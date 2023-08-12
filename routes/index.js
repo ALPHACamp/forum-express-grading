@@ -10,7 +10,6 @@ const upload = require('../middleware/multer')
 
 const { generalErrorHandler } = require('../middleware/error-handler')
 const { authenticated, authenticatedAdmin, authenticatedProfile } = require('../middleware/auth')
-const user = require('../models/user')
 
 router.use('/admin', authenticatedAdmin, admin)
 router.get('/signup', userController.signUpPage)
