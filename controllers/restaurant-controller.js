@@ -52,6 +52,7 @@ const restaurantController = {
       ],
 
       //* 排序：讓最近的 comment 排在最上面
+      // 以關聯的 model 排序才需要 { model:  }
       order: [
         [{ model: Comment }, 'createdAt', 'DESC']
       ]
@@ -73,6 +74,29 @@ const restaurantController = {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
 
         res.render('dashboard', { restaurant: restaurant.toJSON() })
+      })
+      .catch(err => next(err))
+  },
+
+  getFeeds: (req, res, next) => {
+    return Promise.all([
+      Restaurant.findAll({
+        order: [['createdAt', 'DESC']],
+        limit: 10,
+        include: [Category],
+        raw: true,
+        nest: true
+      }),
+      Comment.findAll({
+        order: [['createdAt', 'DESC']],
+        limit: 10,
+        include: [User, Restaurant],
+        raw: true,
+        nest: true
+      })
+    ])
+      .then(([restaurants, comments]) => {
+        res.render('feeds', { restaurants, comments })
       })
       .catch(err => next(err))
   }
