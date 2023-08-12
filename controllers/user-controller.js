@@ -2,7 +2,7 @@ const bcrypt = require('bcryptjs')
 const db = require('../models')
 const { User, Comment, Restaurant } = db
 const { imgurFileHandler } = require('../helpers/file-helpers')
-const { getUser } = require('../helpers/auth-helpers')
+const helper = require('../helpers/auth-helpers')
 
 const userController = {
   signUpPage: (req, res) => {
@@ -42,7 +42,7 @@ const userController = {
   },
   getUser: (req, res, next) => {
     const { id } = req.params
-    const userId = getUser(req).id
+    const userId = helper.getUser(req).id
     const userAuthed = (Number(id) === userId)
     return Promise.all([
       User.findByPk(userId, { raw: true }),
@@ -62,7 +62,7 @@ const userController = {
   },
   editUser: (req, res, next) => {
     const { id } = req.params
-    const userId = getUser(req).id
+    const userId = helper.getUser(req).id
     const userAuthed = (Number(id) === userId)
     if (!userAuthed) throw new Error('非使用者本人無法更改資料!')
     return User.findByPk(userId, { raw: true })
@@ -74,7 +74,7 @@ const userController = {
   },
   putUser: (req, res, next) => {
     const { id } = req.params
-    const userId = getUser(req).id
+    const userId = helper.getUser(req).id
     const userAuthed = (Number(id) === userId)
     if (!userAuthed) throw new Error('非使用者本人無法更改資料!')
     const { name } = req.body
