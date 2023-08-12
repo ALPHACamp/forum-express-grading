@@ -100,6 +100,7 @@ const restaurantController = {
     })
       .then(restaurants => {
         if (!restaurants) throw new Error("restaurants didn't exist!")
+
         const result = restaurants.map(restaurant => ({
           ...restaurant.toJSON(),
           favoritedCount: restaurant.FavoritedUsers.length,
@@ -109,7 +110,9 @@ const restaurantController = {
           .slice(0, 10)
         res.render('top-restaurants', { restaurants: result })
       })
-      .catch(err => next(err))
+      .catch(err => {
+        next(err)
+      })
   }
 }
 module.exports = restaurantController
