@@ -15,7 +15,7 @@ router.get('/signup', userController.signUpPage)
 // 提交註冊
 router.post('/signup', userController.signUp)
 // 登入頁
-router.get('/restaurants/:id', authenticated, restController.getRestaurant)
+router.get('/signin', userController.signInPage)
 // 登入驗證
 router.post(
   '/signin',
@@ -26,14 +26,17 @@ router.post(
   // 驗證結果
   userController.signIn
 )
+
 // 登出
 router.get('/logout', userController.logout)
+
 // Dashboard
 router.get(
   '/restaurants/:id/dashboard',
   authenticated,
   restController.getDashboard
 )
+
 // 前台首頁單獨餐廳
 router.get('/restaurants/:id', authenticated, restController.getRestaurant)
 // 前台首頁
