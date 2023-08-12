@@ -24,10 +24,12 @@ const restaurantController = {
       Category.findAll({ raw: true })
     ])
       .then(([restaurants, categories]) => {
+        const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
         const data = restaurants.rows.map(restaurant =>
           ({
             ...restaurant,
-            description: restaurant.description.substring(0, 50)
+            description: restaurant.description.substring(0, 50),
+            isFavorited: favoritedRestaurantsId.includes(restaurant.id)
           }))
         return res.render('restaurants', {
           restaurants: data,
@@ -43,18 +45,16 @@ const restaurantController = {
       nest: true,
       include: [
         Category,
-        {
-          model: Comment,
-          include: User
-        }
+        { model: Comment, include: User },
+        { model: User, as: 'FavoritedUsers' }
       ],
       order: [[Comment, 'createdAt', 'DESC']]
     })
       .then(restaurant => {
         if (!restaurant) throw new Error('restaurant not found')
-
+        const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id)
         restaurant.update({ viewCounts: restaurant.viewCounts + 1 })
-        return res.render('restaurant', { restaurant: restaurant.toJSON() })
+        return res.render('restaurant', { restaurant: restaurant.toJSON(), isFavorited })
       })
       .catch(error => next(error))
   },
