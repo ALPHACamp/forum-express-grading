@@ -1,24 +1,26 @@
 <div class="card">
   <div class="d-flex">
-    <img src="{{user.image}}" class="card-img-top" style="width: 15rem" alt="avatar">
+    <img src="{{userItem.image}}" class="card-img-top" style="width: 15rem" alt="avatar">
     <div class="card-body">
-      <h5 class="card-title">{{user.name}}</h5>
-      <p class="card-text">E-mail: {{user.email}}</p>
+      <h5 class="card-title">{{userItem.name}}</h5>
+      <p class="card-text">E-mail: {{userItem.email}}</p>
       <p class="card-text">
-        <strong>{{user.Comments.length}}</strong> 已評論餐廳
+        <strong>{{userItem.Comments.length}}</strong> 已評論餐廳
       </p>
-      <a href="/users/{{user.id}}/edit" class="btn btn-primary">edit</a>
+      {{#ifCond userItem.id user.id}}
+        <a href="/users/{{userItem.id}}/edit" class="btn btn-primary">edit</a>
+      {{/ifCond}}
     </div>
   </div>
 </div>
 
 <div class="card mt-2">
   <div class="card-header">
-    <strong>{{user.Comments.length}}</strong> 已評論餐廳
+    <strong>{{userItem.Comments.length}}</strong> 已評論餐廳
   </div>
   <div class="card-body d-flex flex-wrap">
-    {{#if user.Comments}}
-      {{#each user.Comments}}
+    {{#if userItem.Comments}}
+      {{#each userItem.Comments}}
       <div class="m-1">
         <a href="/restaurants/{{this.Restaurant.id}}">
           <img src="{{this.Restaurant.image}}" width="120px">
