@@ -1,6 +1,6 @@
 <div class="card mb-3">
   <div class="row g-0">
-    <div class="col-md-4">
+    <div class="col-md-4 overflow-hidden">
       {{#if user.image}}
         <img src="{{user.image}}" width="300px" height="300px" style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;" alt="user avatar">
       {{else}}
@@ -11,12 +11,29 @@
       <div class="card-body">
         <h5 class="card-title">{{user.name}}</h5>
         <p class="card-text">{{user.email}}</p>
+        <p class="card-text">{{comments.length}} 間已評論餐廳</p>
         {{#ifCond user.id currentUserId}}
-          <a href="/users/{{user.id}}/edit">
+          <a href="/users/{{user.id}}/edit" style="text-decoration: none">
             <button type="submit" class="btn btn-primary">edit</button>
           </a>
         {{/ifCond}}
+          <a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
       </div>
     </div>
   </div>
+</div>
+
+<div class="row">
+  {{#ifCond comments.length 0}}
+  <h5>尚未有評論</h5>
+  {{else}}
+  <h5>{{comments.length}}間已評論餐廳</h5>
+  {{#each comments}}
+  <div class="col-md-1 mx-1 my-1 overflow-hidden">
+      <a href="/restaurants/{{this.Restaurant.id}}">
+        <img class="img-responsive center-block" src="{{this.Restaurant.image}} "alt="rest-image"  style="width: 100px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+      </a>
+  </div>
+  {{/each}}
+  {{/ifCond}}
 </div>
