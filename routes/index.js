@@ -7,6 +7,7 @@ const userController = require('../controllers/user-controller')
 const commentController = require('../controllers/comment-controller.js')
 const { authenticated, authenticatedAdmin } = require('../middleware/auth') // 引入 auth.js
 const { generalErrorHandler } = require('../middleware/error-handler')
+const upload = require('../middleware/multer')
 router.use('/admin', authenticatedAdmin, admin)
 // signup
 router.get('/signup', userController.signUpPage)
@@ -21,6 +22,10 @@ router.get('/restaurants/:id/dashboard', authenticated, restController.getDashbo
 router.get('/restaurants', authenticated, restController.getRestaurants)
 router.delete('/comments/:id', authenticatedAdmin, commentController.deleteComment)
 router.post('/comments', authenticated, commentController.postComment)
-router.use('/', (req, res) => res.redirect('/restaurants'))
+router.get('/users/:id', authenticated, userController.getUser)
+router.get('/users/:id/edit', authenticated, userController.editUser)
+router.put('/users/:id', authenticated, upload.single('image'), userController.putUser)
+// 以下測試用 改為get，完成後須改回use
+router.get('/', (req, res) => res.redirect('/restaurants'))
 router.use('/', generalErrorHandler)
 module.exports = router

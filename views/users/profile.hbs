@@ -1,0 +1,16 @@
+<div class="card m-auto" style="max-width: 720px;">
+  <div class="d-flex">
+    <div>
+      <img src="{{user.image}}" class="img-fluid rounded-start" alt="..." style="width: 400px">
+    </div>
+    <div>
+      <div class="card-body">
+        <h3 class="card-title">{{user.name}}</h3>
+        <p class="card-text">{{user.email}}</p>
+        {{!-- 第一個user.id 是在user-controller設定傳入的，第二個reqUser.id是在app.js設定的全局樣板變數，為的是判斷兩者是否相等，相同登入者與瀏覽此頁面的使用者是同一人，可以進行編輯操作 --}}
+        {{#ifCond user.id reqUser.id  }}<a class="btn btn-primary" href="/users/{{user.id}}/edit">Edit</a>{{/ifCond}}
+        <a class="btn btn-outline-secondary" href="/restaurants">Back</a>
+      </div>
+    </div>
+  </div>
+</div>
