@@ -1,49 +1,49 @@
-const { Category } = require("../models");
+const { Category } = require('../models')
 const categoryController = {
   getCategories: (req, res, next) => {
     return Promise.all([
       Category.findAll({ raw: true }),
-      req.params.id ? Category.findByPk(req.params.id, { raw: true }) : null,
+      req.params.id ? Category.findByPk(req.params.id, { raw: true }) : null
     ])
       .then(([categories, category]) => {
-        res.render("admin/categories", {
+        res.render('admin/categories', {
           categories,
-          category,
-        });
+          category
+        })
       })
-      .catch((err) => next(err));
+      .catch(err => next(err))
   }, // 補逗號
   // 新增以下
   postCategory: (req, res, next) => {
-    const { name } = req.body;
-    if (!name) throw new Error("Category name is required!");
+    const { name } = req.body
+    if (!name) throw new Error('Category name is required!')
     return Category.create({ name })
-      .then(() => res.redirect("/admin/categories"))
-      .catch((err) => next(err));
+      .then(() => res.redirect('/admin/categories'))
+      .catch(err => next(err))
   },
   putCategory: (req, res, next) => {
-    const { name } = req.body;
+    const { name } = req.body
 
-    if (!name) throw new Error("Category name is required!");
+    if (!name) throw new Error('Category name is required!')
 
     return Category.findByPk(req.params.id)
-      .then((category) => {
-        if (!category) throw new Error("Category doesn't exist!");
+      .then(category => {
+        if (!category) throw new Error("Category doesn't exist!")
 
-        return category.update({ name });
+        return category.update({ name })
       })
-      .then(() => res.redirect("/admin/categories"))
-      .catch((err) => next(err));
+      .then(() => res.redirect('/admin/categories'))
+      .catch(err => next(err))
   },
   deleteCategory: (req, res, next) => {
     return Category.findByPk(req.params.id)
-      .then((category) => {
-        if (!category) throw new Error("Category didn't exist!"); // 反查，確認要刪除的類別存在，再進行下面刪除動作
+      .then(category => {
+        if (!category) throw new Error("Category didn't exist!") // 反查，確認要刪除的類別存在，再進行下面刪除動作
 
-        return category.destroy();
+        return category.destroy()
       })
-      .then(() => res.redirect("/admin/categories"))
-      .catch((err) => next(err));
-  },
-};
-module.exports = categoryController;
+      .then(() => res.redirect('/admin/categories'))
+      .catch(err => next(err))
+  }
+}
+module.exports = categoryController
