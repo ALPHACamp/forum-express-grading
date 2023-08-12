@@ -29,6 +29,19 @@ const restaurantController = {
         })
       })
       .catch(err => next(err))
+  },
+  // dashboard
+  getDashboard: (req, res, next) => {
+    Restaurant.findByPk(req.params.id, {
+      include: Category, // 拿出關聯的 Category model
+      nest: true,
+      raw: true
+    })
+      .then(restaurant => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        res.render('dashboard', { restaurant })
+      })
+      .catch(err => next(err))
   }
 }
 module.exports = restaurantController

@@ -17,14 +17,26 @@ router.post('/signup', userController.signUp)
 // 登入頁
 router.get('/restaurants/:id', authenticated, restController.getRestaurant)
 // 登入驗證
-router.post('/signin', passport.authenticate('local', { failureRedirect: '/signin', failureFlash: true }),
-// 驗證結果
-  userController.signIn)
+router.post(
+  '/signin',
+  passport.authenticate('local', {
+    failureRedirect: '/signin',
+    failureFlash: true
+  }),
+  // 驗證結果
+  userController.signIn
+)
 // 登出
 router.get('/logout', userController.logout)
+// Dashboard
+router.get(
+  '/restaurants/:id/dashboard',
+  authenticated,
+  restController.getDashboard
+)
 // 前台首頁單獨餐廳
 router.get('/restaurants/:id', authenticated, restController.getRestaurant)
-// 前台首頁，接收到的請求路徑/restaurants，交給 controller 的 getRestaurants 函式來處理
+// 前台首頁
 router.get('/restaurants', authenticated, restController.getRestaurants)
 // 設定 fallback 路由, 其他路由條件都不符合時，最終會通過的路由，將使用者重新導回 /restaurants
 router.use('/', (req, res) => res.redirect('/restaurants'))
