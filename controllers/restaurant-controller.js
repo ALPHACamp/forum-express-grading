@@ -1,4 +1,4 @@
-const { Restaurant, Category } = require('../models')
+const { Restaurant, Category, Comment, User } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
 
 const restaurantController = {
@@ -42,7 +42,20 @@ const restaurantController = {
   },
 
   getRestaurant: (req, res, next) => {
-    return Restaurant.findByPk(req.params.id, { include: Category })
+    return Restaurant.findByPk(req.params.id, {
+      include: [
+        { model: Category }, //! 取得 restaurant.Category
+        { model: Comment, include: [{ model: User }] } //! 取得 restaurant.Comments 、 restaurant.Comments.User
+        // -簡寫
+        // Category,
+        // { model: Comment, include: User }
+      ],
+
+      //* 排序：讓最近的 comment 排在最上面
+      order: [
+        [{ model: Comment }, 'createdAt', 'DESC']
+      ]
+    })
       .then(async restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
 
