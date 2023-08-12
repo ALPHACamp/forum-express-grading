@@ -1,4 +1,4 @@
-const { Restaurant, User, Category } = require('../models')
+const { Restaurant, Category } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
 
 const restaurantController = {
@@ -65,6 +65,5 @@ const restaurantController = {
       })
       .catch(err => next(err))
   }
-
 }
 module.exports = restaurantController
