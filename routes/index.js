@@ -26,6 +26,9 @@ router.post('/signin', passport.authenticate('local', // (功能)登入
   { failureRedirect: '/signin', failureFlash: true }), userController.signIn)
 router.get('/logout', userController.logout) // (功能)登出
 
+// top-users相關
+router.get('/users/top', authenticated, userController.getTopUsers) // (頁面)美食達人
+
 // user profile相關
 router.get('/users/:id', authenticated, userController.getUser) // (頁面)瀏覽Profile
 router.get('/users/:id/edit', authenticated, userController.editUser) // (頁面)瀏覽編輯Profile

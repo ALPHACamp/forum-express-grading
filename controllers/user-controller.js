@@ -160,7 +160,22 @@ const userController = {
       })
       .then(() => res.redirect('back'))
       .catch(err => next(err))
+  },
+  // (頁面)美食達人
+  getTopUsers: (req, res, next) => {
+    return User.findAll({ include: [{ model: User, as: 'Followers' }]})
+      .then(users => {
+        users = users.map(user => ({
+          ...user.toJSON(),
+          followerCount: user.Followers.length, // 判斷該user的追蹤人數
+          isFollowed: req.user.Followings.some(f => f.id === user.id) // 判斷目前登入者是否追蹤該user
+        }))
+
+        return res.render('top-users', { users })
+      })
+      .catch(err => next(err))
   }
+
 }
 
 module.exports = userController
