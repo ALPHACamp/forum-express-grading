@@ -1,4 +1,4 @@
-const { Restaurant, Category } = require('../models')
+const { Restaurant, Category, User, Comment } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
 
 const restaurantController = {
@@ -37,21 +37,21 @@ const restaurantController = {
       .catch(err => next(err))
   },
   getRestaurant: (req, res, next) => {
-    return Restaurant.findByPk(req.params.id)
+    return Restaurant.findByPk(req.params.id, {
+      include: [Category, { model: Comment, include: User }]
+    })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!") //  如果找不到，回傳錯誤訊息，後面不執行
-        const vc = restaurant.viewCounts + 1
-        return restaurant.update({ viewCounts: vc })
+        return restaurant.increment('viewCounts')
       })
-      .then(() => {
-        return Restaurant.findByPk(req.params.id, {
-          raw: true,
-          nest: true,
-          include: [Category]
-        })
-          .then(restaurant => res.render('restaurant', { restaurant }))
-          .catch(err => next(err))
+      .then(restaurant => {
+        // console.log(restaurant.Comments)
+        // restaurant = restaurant.toJSON()
+        // restaurant.Comments.sort({ createdAt: 'asc' })
+        // res.render('restaurant', { restaurant })
+        res.render('restaurant', { restaurant: restaurant.toJSON() })
       })
+      .catch(err => next(err))
   },
   getDashboard: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, { // 去資料庫用 id 找一筆資料
