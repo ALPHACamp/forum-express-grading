@@ -66,15 +66,13 @@ const restaurantController = {
   },
 
   getDashboard: (req, res, next) => {
-    return Restaurant.findByPk(req.params.id, {
-      include: Category,
-      nest: true,
-      raw: true
+    return Restaurant.findByPk(req.params.id, { // nest: true, raw: true 會把一對多的關係破壞(多對一不會)
+      include: [Category, Comment]
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
 
-        res.render('dashboard', { restaurant })
+        res.render('dashboard', { restaurant: restaurant.toJSON() })
       })
       .catch(err => next(err))
   }
