@@ -33,6 +33,7 @@ const restaurantController = {
           pagination: getPagination(limit, page, restaurants.count)
         })
       })
+      .catch(err => next(err))
   },
   getRestaurant: (req, res, next) => {
     const id = req.params.id
