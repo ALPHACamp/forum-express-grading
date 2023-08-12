@@ -18,7 +18,7 @@
             <div>
               <a class="btn btn-primary m-1" href="/restaurants/{{this.id}}">Show</a>
             </div>
-            {{#if isFavorited}}
+            {{#if this.isFavorited}}
             <form action="/favorite/{{this.id}}?_method=DELETE" method="POST">
               <button type="submit" class="btn btn-danger m-1">移除最愛</button>
             </form>
