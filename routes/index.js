@@ -4,7 +4,7 @@ const passport = require('../config/passport')
 
 const restController = require('../controllers/restaurant-controller')
 const userController = require('../controllers/user-controller')
-const adminController = require('../controllers/admin-controller')
+// const adminController = require('../controllers/admin-controller')
 
 const admin = require('./modules/admin')
 const { authenticated, authenticatedAdmin } = require('../middleware/auth')
@@ -20,6 +20,7 @@ router.post('/signin', passport.authenticate('local', { failureRedirect: '/signi
 
 router.get('/logout', userController.logout)
 
+router.get('/restaurants/:id', authenticated, restController.getRestaurant)
 router.get('/restaurants', authenticated, restController.getRestaurants)
 router.use('/', (req, res) => res.redirect('/restaurants'))
 
