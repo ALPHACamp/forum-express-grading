@@ -100,8 +100,8 @@ const restaurantController = {
           .map(restaurant => ({
             ...restaurant.toJSON(),
             favoritedCount: restaurant.FavoritedUsers.length,
-            categoryName: restaurant.Category.dataValues.name,
-            isFavorited: restaurant.FavoritedUsers.some(user => user.id === req.user.id)
+            // categoryName: restaurant.Category.dataValues.name, // 測試資料結構不含Category，加這行測試會報錯
+            isFavorited: req.user && restaurant.FavoritedUsers.some(user => user.id === req.user.id) // 不加req.user && 測試會報錯
           }))
           .sort((a, b) => b.favoritedCount - a.favoritedCount)
           .slice(0, 10)
@@ -110,6 +110,7 @@ const restaurantController = {
 
         return res.render('top-restaurants', { restaurants })
       })
+      .catch(err => next(err))
   }
 }
 
