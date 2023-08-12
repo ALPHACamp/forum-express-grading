@@ -20,4 +20,14 @@
   </div>
   <hr>
 </div>
-<a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
+{{!-- Comment --}}
+<form action="/comments" method="POST">
+  <div class="form-row mb-3">
+    <label for="text" class="form-label">留下評論:</label>
+      <textarea name="text" id="text" rows="3" class="form-control"></textarea>
+  </div>
+  {{!-- 加了隱藏的 input 欄位，幫忙把 restaurant.id 送到後端，讓我們可以在 controller 裡用 req.body.restaurantId 把資料拿出來。 --}}
+  <input type="hidden" name="restaurantId" value="{{restaurant.id}}"/>
+  <button type="submit" class="btn btn-primary">Submit</button>
+  <a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
+</form>
