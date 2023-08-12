@@ -6,7 +6,9 @@ const userController = {
     res.render('signup')
   },
   signUp: (req, res, next) => {
+    if (req.body.name === req.body.password) throw new Error('Name and Passwords can not be same!')
     if (req.body.password !== req.body.passwordCheck) throw new Error('Passwords do not match!')
+    if (!req.body.email.includes('@')) throw new Error('email should have @')
 
     User.findOne({ where: { email: req.body.email } })
       .then(user => {
