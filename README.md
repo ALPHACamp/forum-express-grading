@@ -50,12 +50,3 @@ git push origin R01           # 上傳本地進度
 * 第二組帳號沒有 admin 權限：
   * email: user1@example.com
   * password: 12345678
-
-  /*mysql://
-b33ae525e75ed0:
-4c187a90@
-us-cdbr-east-06.cleardb.net/
-heroku_83a3f4a761b9ede?
-reconnect=true*/
-
-heroku config:set MYSQL_DATABASE_URL=mysql://user-87:AVNS_tE1lzLFDd8YRelZ5vHx@db-mysql-sgp1-69937-do-user-95578-0.b.db.ondigitalocean.com:25060/db-87?ssl-mode=REQUIRED
