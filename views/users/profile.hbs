@@ -6,12 +6,15 @@
   </div>
 
   <div class="col-md-8">
-    <h3>{{user.name}}</h3>
-    <p>{{user.email}}</p>
-    <p class="card-text">{{comments.length}} 間已評論餐廳</p>
-    <p class="card-text">{{user.FavoritedRestaurants.length}} 間已收藏的餐廳</p>
-    <p class="card-text">{{user.Followings.length}} 已追蹤的人數</p>
-    <p class="card-text">{{user.Followers.length}} 被追蹤的人數</p>
+    <h1>{{user.name}}</h1>
+    <h2> {{user.email}}</h2>
+    <ul class="text-muted">
+      <li>{{user.Comments.length}}間已評論餐廳</li>
+      <li>{{user.FavoritedRestaurants.length}}間已收藏的餐廳</li>
+      <li>{{user.Followings.length}}已追蹤的人數</li>
+      <li>{{user.Followers.length}}粉絲</li>
+    </ul>
+
     <button type="button" class="btn btn-primary">
       <a class="btn btn-primary" href="/users/{{user.id}}/edit">
         Edit
@@ -19,75 +22,75 @@
     </button>
 
   </div>
-  <div class="col-md-12 d-flex justify-content-center">
-    <div class="col-md-4">
-      <div class=" mt-3 d-flex justify-content-center">
-        <div class="card" style="width: 50rem;">
-          <div class="card-header">
-            {{user.Followings.length}} followings (追蹤者)
+
+
+  <div class="row" style="text-align: left;">
+    <div class="col-md-5">
+      <div class="card">
+        <div class="card-header">
+          {{user.Followings.length}} 追蹤中
+        </div>
+        <div class="row">
+          {{#each user.Followings}}
+          <div class="col-md-2 m-1">
+            <a href="/users/{{this.id}}">
+              <img class="card-img-top img-fluid"
+                src="{{#if this.image}}{{this.image}}{{else}}https://stickershop.line-scdn.net/stickershop/v1/sticker/588967618/ANDROID/sticker.png{{/if}}"
+                width="286px" height="286px" style="transition: opacity 0.5s; opacity:0;"
+                onload="this.style.opacity=1;">
+            </a>
           </div>
-          <div class="card-body d-flex flex-wrap">
-            {{#if user.Followings}}
-            {{#each user.Followings}}
-            <div class="col-4 m-2">
-              <a href="/users/{{this.id}}">
-                <img
-                  src="{{#if this.image}}{{this.image}}{{else}}https://cdn-icons-png.flaticon.com/512/5234/5234205.png{{/if}}"
-                  alt="user image" class="img-fluid">
-              </a>
-            </div>
-            {{/each}}
-            {{else}}
-            <div class="card-body">
-              <p class="card-text">
-                尚無追蹤者
-              </p>
-            </div>
-            {{/if}}
-          </div>
+          {{/each}}
         </div>
       </div>
-
-      <div class=" mt-3 d-flex justify-content-center">
-        <div class="card" style="width: 50rem;">
-          <div class="card-header">
-            {{user.Followers.length}} followers (追隨者)
+      <div class="card">
+        <div class="card-header">
+          {{user.Followers.length}} 粉絲
+        </div>
+        <div class="row">
+          {{#each user.Followers}}
+          <div class="col-md-2 m-1">
+            <a href="/users/{{this.id}}">
+              <img class="card-img-top img-fluid"
+                src="{{#if this.image}}{{this.image}}{{else}}https://stickershop.line-scdn.net/stickershop/v1/sticker/588967618/ANDROID/sticker.png{{/if}}"
+                width="286px" height="286px" style="transition: opacity 0.5s; opacity:0;"
+                onload="this.style.opacity=1;">
+            </a>
           </div>
-          <div class="card-body d-flex flex-wrap">
-            {{#if user.Followers}}
-            {{#each user.Followers}}
-            <div class="col-4 m-2">
-              <a href="/users/{{this.id}}">
-                <img
-                  src="{{#if this.image}}{{this.image}}{{else}}https://cdn-icons-png.flaticon.com/512/5234/5234205.png{{/if}}"
-                  alt="user image" class="img-fluid">
-              </a>
-            </div>
-            {{/each}}
-            {{else}}
-            <div class="card-body">
-              <p class="card-text">
-                尚無追隨者
-              </p>
-            </div>
-            {{/if}}
-          </div>
+          {{/each}}
         </div>
       </div>
     </div>
-
-    <div class="card-header">
-      {{user.Comments.length}} 已評論餐廳
-    </div>
-    {{#each user.Comments}}
-    <div class="col-md-2 mt-4">
-      <div class="card mb-4 shadow-sm">
-        <a href="/restaurants/{{this.Restaurant.id}}">
-          <img class="card-img-top img-fluid" src="{{this.Restaurant.image}}" width="286px" height="180px"
-            style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
-          <h6>{{this.Restaurant.name}}</h6>
-        </a>
+    <div class="col-md-7">
+      <div class="card">
+        <div class="card-header">
+          {{user.Comments.length}} 已評論餐廳
+        </div>
+        <div class="row">
+          {{#each user.Comments}}
+          <div class="col-md-2 m-1">
+            <a href="/restaurants/{{this.Restaurant.id}}">
+              <img class="card-img-top img-fluid" src="{{this.Restaurant.image}}" width="286px" height="286px"
+                style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+            </a>
+          </div>
+          {{/each}}
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          {{user.FavoritedRestaurants.length}} 收藏的餐廳
+        </div>
+        <div class="row">
+          {{#each user.FavoritedRestaurants}}
+          <div class="col-md-2 m-1">
+            <a href="/restaurants/{{this.id}}">
+              <img class="card-img-top img-fluid" src="{{this.image}}" width="286px" height="286px"
+                style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+            </a>
+          </div>
+          {{/each}}
+        </div>
       </div>
     </div>
-    {{/each}}
   </div>
