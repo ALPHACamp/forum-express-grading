@@ -46,6 +46,9 @@ router.delete('/like/:restaurantId', authenticated, userController.removeLike)
 router.post('/following/:userId', authenticated, userController.addFollowing)
 router.delete('/following/:userId', authenticated, userController.removeFollowing)
 
+// top-restaurants相關
+router.get('/restaurants/top', authenticated, restController.getTopRestaurants) // (頁面)瀏覽top restaurants
+
 // feeds最新消息
 router.get('/restaurants/feeds', authenticated, restController.getFeeds)
 
