@@ -1,5 +1,6 @@
 const { Restaurant, Category, Comment, User, Favorite } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper') // 加入這行
+const favorite = require('../models/favorite')
 const restaurantController = {
   getRestaurants: (req, res, next) => { // 補上 next
     // 修改以下
@@ -107,53 +108,54 @@ const restaurantController = {
       })
       .catch(err => next(err))
   },
-  // getTopRestaurants: (req, res, next) => {
-  //   return Restaurant.findAll({
-  //     include: [{ model: User, as: 'FavoritedUsers' }],
-  //     limit: 10
-  //   })
-  //     .then(restaurants => {
-  //       const result = restaurants
-  //         .map(restaurant => ({
-  //           ...restaurant.toJSON(),
-  //           favoritedCount: restaurant.FavoritedUsers.length,
-  //           isFavorited: req.user && req.user.FavoritedRestaurants.map(fr => fr.id).includes(restaurant.id)
-  //         }))
-  //         .sort((a, b) => b.favoritedCount - a.favoritedCount).slice(0, 10)
-  //       res.render('top-restaurants', { restaurants: result })
-  //     })
-  //     .catch(err => next(err))
-  // }
   getTopRestaurants: (req, res, next) => {
-    return Favorite.findAll({
+    return Restaurant.findAll({
       include: [{ model: User, as: 'FavoritedUsers' }],
-      group: ['restaurantId'],
-      order: [
-        ['favoritedCount', 'DESC']
-      ],
       limit: 10
     })
-      .then(async favorites => {
-        const restaurantIds = favorites.map(favorite => favorite.restaurantId)
-        const restaurants = await Restaurant.findAll({
-          where: {
-            id: restaurantIds
-          }
-        })
-
-        const result = favorites.map(favorite => {
-          const restaurant = restaurants.find(r => r.id === favorite.restaurantId)
-          return {
+      .then(restaurants => {
+        const result = restaurants
+          .map(restaurant => ({
             ...restaurant.toJSON(),
-            favoritedCount: favorite.favoritedCount,
-            isFavorited: favorite.isFavorited
-          }
-        })
-
+            favoritedCount: restaurant.FavoritedUsers.length,
+            isFavorited: req.user && req.user.FavoritedRestaurants.map(fr => fr.id).includes(restaurant.id)
+          }))
+          .sort((a, b) => b.favoritedCount - a.favoritedCount).slice(0, 10)
         res.render('top-restaurants', { restaurants: result })
       })
       .catch(err => next(err))
   }
+  // getTopRestaurants: (req, res, next) => {
+  //   return Promise.all([
+  //     Favorite.findAll({
+  //       attributes: [
+  //         'restaurantId',
+  //         [Sequelize.literal('COUNT(DISTINCT(restaurantId))'), 'favoritedCount'],
+  //         [Sequelize.literal(userId == req.user.id), 'isFavorited']
+  //       ],
+  //       group: 'restaurantId',
+  //       order: [
+  //         ['favoritedCount', 'DESC']
+  //       ],
+  //       limit: 10
+  //     })
+  //   ])
+  //     .then(async favorites => {
+  //       const result = await Promise.all(
+  //         favorites.map(async favorite => {
+  //           const restaurant = await Restaurant.findByPk(favorite.restaurantId)
+  //           return {
+  //             ...restaurant.toJSON(),
+  //             favoritedCount: favorite.favoritedCount,
+  //             isFavorited: favorite.isFavorited
+  //           }
+  //         })
+  //       )
+  //       res.render('top-restaurants', { restaurants: result })
+  //     })
+
+  //     .catch(err => next(err))
+  // }
 
 }
 module.exports = restaurantController
