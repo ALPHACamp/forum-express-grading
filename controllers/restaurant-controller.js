@@ -1,6 +1,8 @@
 const { Restaurant, Category, User, Comment } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
 
+const helper = require('../helpers/auth-helpers') // for 測試檔需要
+
 const restaurantController = {
   getRestaurants: (req, res, next) => {
     const DEFAULT_LIMIT = 9
@@ -91,6 +93,24 @@ const restaurantController = {
     ])
       .then(([restaurants, comments]) => {
         res.render('feeds', { restaurants, comments })
+      })
+      .catch(err => next(err))
+  },
+  getTopRestaurants: (req, res, next) => {
+    return Restaurant.findAll({
+      include: [Category, { model: User, as: 'FavoritedUsers' }]
+    })
+      .then(restaurants => {
+        const result = restaurants.map(restaurant => ({
+          ...restaurant.toJSON(),
+          description: restaurant.description.substring(0, 50),
+          favoritedCount: restaurant.FavoritedUsers.length,
+          // isFavorited: restaurant.FavoritedUsers.some(f => f.id === req.user.id) // 此寫法可正常執行，但無法通過測試檔。
+          isFavorited: restaurant.FavoritedUsers.some(f => f.id === helper.getUser(req).id) // 因此處測試檔未定義 req.user ，故參考 R03 助教給予之回饋將 req.user.id 改為 helper.getUser(req).id
+        }))
+          .sort((a, b) => b.favoritedCount - a.favoritedCount)
+          .slice(0, 10)
+        res.render('top-restaurants', { restaurants: result })
       })
       .catch(err => next(err))
   }
