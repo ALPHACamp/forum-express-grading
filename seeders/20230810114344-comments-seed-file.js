@@ -14,7 +14,7 @@ module.exports = {
 
     await queryInterface.bulkInsert('Comments',
       Array.from({ length: seedCommentsCount }, () => ({
-        text: faker.lorem.words(5),
+        text: faker.lorem.sentence(),
         user_id: users[Math.floor(Math.random() * users.length)].id,
         restaurant_id: restaurants[Math.floor(Math.random() * restaurants.length)].id,
         created_at: new Date(),
