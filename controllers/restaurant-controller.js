@@ -1,4 +1,4 @@
-const { Restaurant, Category, Comment, User } = require('../models')
+const { Restaurant, Category, Comment, User, Favorite } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper') // 加入這行
 const restaurantController = {
   getRestaurants: (req, res, next) => { // 補上 next
@@ -124,5 +124,36 @@ const restaurantController = {
       })
       .catch(err => next(err))
   }
+  // getTopRestaurants: (req, res, next) => {
+  //   return Favorite.findAll({
+  //     include: [{ model: User, as: 'FavoritedUsers' }],
+  //     group: ['restaurantId'],
+  //     order: [
+  //       ['favoritedCount', 'DESC']
+  //     ],
+  //     limit: 10
+  //   })
+  //     .then(async favorites => {
+  //       const restaurantIds = favorites.map(favorite => favorite.restaurantId)
+  //       const restaurants = await Restaurant.findAll({
+  //         where: {
+  //           id: restaurantIds
+  //         }
+  //       })
+
+  //       const result = favorites.map(favorite => {
+  //         const restaurant = restaurants.find(r => r.id === favorite.restaurantId)
+  //         return {
+  //           ...restaurant.toJSON(),
+  //           favoritedCount: favorite.favoritedCount,
+  //           isFavorited: favorite.isFavorited
+  //         }
+  //       })
+
+  //       res.render('top-restaurants', { restaurants: result })
+  //     })
+  //     .catch(err => next(err))
+  // }
+
 }
 module.exports = restaurantController
