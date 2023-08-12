@@ -4,13 +4,14 @@ const router = express.Router()
 
 const restController = require('../controllers/restaurant-controller')
 const userController = require('../controllers/user-controller')
+const commentController = require('../controllers/comment-controller')
 const { authenticated, authenticatedAdmin } = require('../middleware/auth')
 const { generalErrorHandler } = require('../middleware/error-handler')
 
 const admin = require('./modules/admin')
-
 router.use('/admin', authenticatedAdmin, admin)
 
+// 用戶驗證
 router.get('/signup', userController.signUpPage)
 router.post('/signup', userController.signUp)
 
@@ -28,6 +29,8 @@ router.get('/restaurants/:id/dashboard', authenticated, restController.getDashbo
 router.get('/restaurants/:id', authenticated, restController.getRestaurant)
 
 router.get('/restaurants', authenticated, restController.getRestaurants)
+
+router.post('/comments', authenticated, commentController.postComment)
 
 router.use('/', generalErrorHandler)
 
