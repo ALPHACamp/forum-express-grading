@@ -33,7 +33,7 @@ const restaurantController = {
   // dashboard
   getDashboard: (req, res, next) => {
     Restaurant.findByPk(req.params.id, {
-      include: Category, // 拿出關聯的 Category model
+      include: Category,
       nest: true,
       raw: true
     })
