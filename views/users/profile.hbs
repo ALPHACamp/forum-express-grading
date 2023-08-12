@@ -1,0 +1,31 @@
+<div class="row mb-3">
+  <div class="col-md-3">
+    <img src="{{user.image}}" class="img-fluid rounded " alt="...">
+  </div>
+  <div class="col-md-9">
+      <h5>{{user.name}}</h5>
+      <p>{{user.email}}</p>
+      <p class="card-text">{{user.Comments.length}} 間已評論餐廳</p>
+      <a href="/users/{{user.id}}/edit" class="btn btn-primary">edit</a>
+  </div>
+</div>
+<hr>
+
+
+<div class="card mt-3">
+  <div class="card-header fw-bold">
+    {{#ifCond user.Comments.length 0}}
+      <div>尚未進行評論</div>
+    {{else}}
+      {{user.Comments.length}} 已評論餐廳
+    {{/ifCond}}
+  </div>
+  <div class="card-body row">
+    {{#each user.Comments}}
+      <a href="/restaurants/{{this.Restaurant.id}}" class="col-md-1">
+        <img class="figure-img img-fluid" src="{{this.Restaurant.image}}" alt="">
+      </a>
+    {{/each }}
+
+  </div>
+</div>

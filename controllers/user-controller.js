@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs') // 載入 bcrypt
-const db = require('../models')
-const { User } = db
+const { User, Restaurant, Comment } = require('../models')
+const uploadFile = require('../helpers/file-helpers').imgurFileHandler // 將 file-helper 載進來
 
 const userController = {
   signUpPage: (req, res) => {
@@ -39,6 +39,57 @@ const userController = {
     req.flash('success_messages', '登出成功！')
     req.logout()
     res.redirect('/signin')
+  },
+  getUser: (req, res, next) => {
+    const DEFAULT_AVATAR = 'https://i.imgur.com/FUerPDO.png'
+    const id = req.params.id
+    return User.findByPk(id, {
+      include: [
+        { model: Comment, include: Restaurant }
+      ],
+      nest: true
+    })
+      .then(user => {
+        if (!user) throw new Error("User didn't exist!")
+        user.image = user.image || DEFAULT_AVATAR
+        res.render('users/profile', { user: user.toJSON() })
+      })
+      .catch(err => next(err))
+  },
+  editUser: (req, res) => {
+    return User.findByPk(req.params.id, {
+      raw: true
+    })
+      .then(user => {
+        if (!user) throw new Error("User didn't exist!")
+        res.render('users/edit', { user })
+      })
+  },
+  putUser: (req, res, next) => {
+    const { name } = req.body
+    const { file } = req // 如果有上傳照片，把檔案取出來，file 為 input 設定的屬性
+    const userId = req.params.id
+    if (req.user.id !== Number(userId)) {
+      req.flash('error_messages', 'Not allowed to change')
+      res.redirect('/restaurants')
+    }
+    if (!name) throw new Error('User name is required!')
+    return Promise.all([
+      User.findByPk(userId),
+      uploadFile(file)
+    ])
+      .then(([user, filePath]) => {
+        if (!user) throw new Error("User didn't exist!")
+        return user.update({
+          name,
+          image: filePath || user.image
+        })
+      })
+      .then(() => {
+        req.flash('success_messages', '使用者資料編輯成功')
+        res.redirect(`/users/${userId}`)
+      })
+      .catch(err => next(err))
   }
 }
 
