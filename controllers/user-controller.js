@@ -43,8 +43,8 @@ const userController = {
     res.redirect('/restaurants')
   },
   // 登出功能
-  logout: (req, res) => {
-    req.flash('success_messages', '登出成功！')
+  logout: (req, res, next) => {
+    req.flash('success_messages', '成功登出!')
     req.logout()
     res.redirect('/signin')
   }
