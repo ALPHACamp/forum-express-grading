@@ -1,5 +1,6 @@
 const { Restaurant, Category, Comment, User } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
+const helper = require('../helpers/auth-helpers')
 const restaurantController = {
   getRestaurants: (req, res, next) => {
     const DEFAULT_LIMIT = 9
@@ -23,10 +24,12 @@ const restaurantController = {
     ])
       .then(([restaurants, categories]) => {
         const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
+        const likedRestaurantsId = req.user && req.user.LikedRestaurants.map(lr => lr.id)
         const data = restaurants.rows.map(r => ({
           ...r,
           description: r.description.substring(0, 50),
-          isFavorited: favoritedRestaurantsId.includes(r.id)
+          isFavorited: favoritedRestaurantsId.includes(r.id),
+          isLiked: likedRestaurantsId.includes(r.id)
         }))
         return res.render('restaurants', {
           restaurants: data,
@@ -39,7 +42,7 @@ const restaurantController = {
   },
   getRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
-      include: [Category, { model: Comment, include: User }, { model: User, as: 'FavoritedUsers' }], // 拿出關聯的資料
+      include: [Category, { model: Comment, include: User }, { model: User, as: 'FavoritedUsers' }, { model: User, as: 'LikedUsers' }], // 拿出關聯的資料
       nest: true
     })
       .then(restaurant => {
@@ -47,10 +50,13 @@ const restaurantController = {
         return restaurant.increment('viewCounts', { by: 1 })
       })
       .then(updateRestaurant => {
-        const isFavorited = updateRestaurant.FavoritedUsers.some(f => f.id === req.user.id)
+        const userId = helper.getUser(req).id
+        const isFavorited = updateRestaurant.FavoritedUsers.some(f => f.id === userId)
+        const isLiked = updateRestaurant.LikedUsers.some(lr => lr.id === userId)
         res.render('restaurant', {
           restaurant: updateRestaurant.toJSON(),
-          isFavorited
+          isFavorited,
+          isLiked
         })
       })
       .catch(err => next(err))
