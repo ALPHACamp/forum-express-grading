@@ -1,16 +1,18 @@
 <div class="row mt-3">
-
-  <ul class="nav nav-pills">
-    <li class="nav-item">
-      <a class="nav-link {{#ifCond '' categoryId}}active{{/ifCond}}" href="?categoryId=">全部</a>
-    </li>
-    {{#each categories}}
+  <div class="col-md-12">    
+    <ul class="nav nav-pills">
       <li class="nav-item">
-        <a class="nav-link {{#ifCond this.id ../categoryId}}active{{/ifCond}}"
-          href="?categoryId={{this.id}}">{{this.name}}</a>
+        <a class="nav-link {{#ifCond '' categoryId}}active{{/ifCond}}" href="?categoryId=">全部</a>
       </li>
-    {{/each}}
-  </ul>
+      {{#each categories}}
+        <li class="nav-item">
+          <a class="nav-link {{#ifCond this.id ../categoryId}}active{{/ifCond}}"
+            href="?categoryId={{this.id}}">{{this.name}}</a>
+        </li>
+      {{/each}}
+    </ul>
+    <br>
+  </div>
 
   {{#each restaurants}}
     <div class="col-md-4">
