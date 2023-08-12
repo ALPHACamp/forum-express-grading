@@ -31,6 +31,10 @@ router.post(
   upload.single('image'),
   adminController.postRestaurant
 )
+// 導向編輯分類頁
+router.get('/categories/:id', categoryController.getCategories)
+// 編輯分類
+router.put('/categories/:id', categoryController.putCategory)
 // 導向分類頁
 router.get('/categories', categoryController.getCategories)
 // 新增一筆分類
