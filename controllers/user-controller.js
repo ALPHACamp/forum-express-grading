@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs') // 載入 bcrypt
-const { User } = require('../models')
+const { User, Restaurant, Comment } = require('../models')
 const uploadFile = require('../helpers/file-helpers').imgurFileHandler // 將 file-helper 載進來
 
 const userController = {
@@ -44,12 +44,15 @@ const userController = {
     const DEFAULT_AVATAR = 'https://i.imgur.com/FUerPDO.png'
     const id = req.params.id
     return User.findByPk(id, {
-      raw: true
+      include: [
+        { model: Comment, include: Restaurant }
+      ],
+      nest: true
     })
       .then(user => {
         if (!user) throw new Error("User didn't exist!")
         user.image = user.image || DEFAULT_AVATAR
-        res.render('users/profile', { user })
+        res.render('users/profile', { user: user.toJSON() })
       })
       .catch(err => next(err))
   },
@@ -70,7 +73,7 @@ const userController = {
       req.flash('error_messages', 'Not allowed to change')
       res.redirect('/restaurants')
     }
-    if (!name) throw new Error('姓名是必要欄位')
+    if (!name) throw new Error('User name is required!')
     return Promise.all([
       User.findByPk(userId),
       uploadFile(file)
