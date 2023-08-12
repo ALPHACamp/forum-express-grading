@@ -1,0 +1,29 @@
+<div class="card m-auto" style="max-width: 720px;">
+  <div class="d-flex">
+    <div>
+      <img src="{{user.image}}" class="img-fluid rounded-start" alt="..." style="width: 400px">
+    </div>
+    <div>
+      <div class="card-body">
+        <h3 class="card-title">{{user.name}}</h3>
+        <p class="card-text">{{user.email}}</p>
+        {{!-- 第一個user.id 是在user-controller設定傳入的，第二個reqUser.id是在app.js設定的全局樣板變數，為的是判斷兩者是否相等，相同登入者與瀏覽此頁面的使用者是同一人，可以進行編輯操作 --}}
+        {{#ifCond user.id reqUser.id  }}<a class="btn btn-primary" href="/users/{{user.id}}/edit">Edit</a>{{/ifCond}}
+        <a class="btn btn-outline-secondary" href="/restaurants">Back</a>
+      </div>
+    </div>
+  </div>
+    <div class="card">
+      <h5 class="card-header">
+        {{count}} 已評論餐廳
+      </h5>
+      <div class="card-body d-flex flex-wrap">
+        {{#each comments}}
+        <a href="/restaurants/{{this.Restaurant.id}}">
+          <img src="{{this.Restaurant.image}}" style="max-width: 60px" class="m-1">
+        </a>
+        {{/each}}
+        {{#ifCond count 0}} <p>目前沒有評論任何餐廳唷。</p> {{/ifCond}}
+      </div>
+    </div>
+</div>
