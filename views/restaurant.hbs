@@ -14,11 +14,40 @@
                 <li><strong>Tel:</strong> {{restaurant.tel}}</li>
                 <li><strong>Address:</strong> {{restaurant.address}}</li>
             </ul>
-            <p><a href="/restaurants/{{restaurant.id}}/dashboard">dashboard</a></p>
+
+
+
+
         </div>
     </div>
     <div class="col-md-8">
         <p style="white-space: break-spaces;">{{restaurant.description}}</p>
+
+        <div class="d-flex">
+            <form action="/restaurants/{{restaurant.id}}/dashboard" style="display: contents;">
+                <button type="submit" class="btn btn-primary m-2">dashboard</button>
+            </form>
+
+            {{#if isFavorited }}
+            <form action="/favorite/{{restaurant.id}}?_method=DELETE" method="POST" style="display: contents;">
+                <button type="submit" class="btn btn-danger m-2">移除最愛</button>
+            </form>
+            {{else}}
+            <form action="/favorite/{{restaurant.id}}" method="POST" style="display: contents;">
+                <button type="submit" class="btn btn-primary m-2">加到最愛</button>
+            </form>
+            {{/if}}
+
+            {{#if isLiked }}
+            <form action="/like/{{restaurant.id}}?_method=DELETE" method="POST" style="display: contents;">
+                <button type="submit" class="btn btn-danger m-2">Unlike</button>
+            </form>
+            {{else}}
+            <form action="/like/{{restaurant.id}}" method="POST" style="display: contents;">
+                <button type="submit" class="btn btn-primary m-2">Like</button>
+            </form>
+            {{/if}}
+        </div>
     </div>
     <hr>
 </div>
@@ -49,5 +78,5 @@
     </div>
     <input type="hidden" name="restaurantId" value="{{restaurant.id}}" />
     <button type="submit" class="btn btn-primary">Submit</button>
-    <a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
+    <a class="btn btn-outline-secondary" href="/restaurants">Back</a>
 </form>

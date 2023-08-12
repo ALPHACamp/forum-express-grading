@@ -24,10 +24,14 @@ const restaurantController = {
       Category.findAll({ raw: true })
     ])
       .then(([restaurants, categories]) => {
+        const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
+        const likedRestaurantsId = req.user && req.user.LikedRestaurants.map(lr => lr.id)
         const data = restaurants.rows.map(restaurant =>
           ({
             ...restaurant,
-            description: restaurant.description.substring(0, 50)
+            description: restaurant.description.substring(0, 50),
+            isFavorited: favoritedRestaurantsId.includes(restaurant.id),
+            isLiked: likedRestaurantsId.includes(restaurant.id)
           }))
         return res.render('restaurants', {
           restaurants: data,
@@ -43,18 +47,18 @@ const restaurantController = {
       nest: true,
       include: [
         Category,
-        {
-          model: Comment,
-          include: User
-        }
+        { model: Comment, include: User },
+        { model: User, as: 'FavoritedUsers' },
+        { model: User, as: 'LikedUsers' }
       ],
       order: [[Comment, 'createdAt', 'DESC']]
     })
       .then(restaurant => {
         if (!restaurant) throw new Error('restaurant not found')
-
+        const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id)
+        const isLiked = restaurant.LikedUsers.some(l => l.id === req.user.id)
         restaurant.update({ viewCounts: restaurant.viewCounts + 1 })
-        return res.render('restaurant', { restaurant: restaurant.toJSON() })
+        return res.render('restaurant', { restaurant: restaurant.toJSON(), isFavorited, isLiked })
       })
       .catch(error => next(error))
   },
@@ -69,6 +73,31 @@ const restaurantController = {
         return res.render('dashboard', { restaurant: restaurant.toJSON() })
       })
       .catch(error => next(error))
+  },
+  getFeeds: (req, res, next) => {
+    return Promise.all([
+      Restaurant.findAll({
+        limit: 10,
+        order: [['createdAt', 'DESC']],
+        include: [Category],
+        raw: true,
+        nest: true
+      }),
+      Comment.findAll({
+        limit: 10,
+        order: [['createdAt', 'DESC']],
+        include: [User, Restaurant],
+        raw: true,
+        nest: true
+      })
+    ])
+      .then(([restaurants, comments]) => {
+        res.render('feeds', {
+          restaurants,
+          comments
+        })
+      })
+      .catch(err => next(err))
   }
 }
 module.exports = restaurantController
