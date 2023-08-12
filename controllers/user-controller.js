@@ -43,7 +43,6 @@ const userController = {
   },
   getUser: (req, res, next) => {
     const currentUserId = req.user ? req.user.id : {}
-    // console.log('req.user:', req.user.id)
     return Promise.all([User.findByPk(req.params.id), Comment.findAndCountAll({
       nest: true,
       where: { userId: req.params.id },
@@ -52,7 +51,6 @@ const userController = {
     ])
       .then(([user, comment]) => {
         if (!user) throw new Error("Profile didn't exist")
-        // if (!currentUserId) throw new Error("User didn't exist")
         const restaurants = comment.rows.map(item => item.Restaurant.toJSON())
         return res.render('users/profile', { user: user.toJSON(), restaurants, commentCount: comment.count, currentUserId })
       })
