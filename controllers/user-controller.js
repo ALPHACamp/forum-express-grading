@@ -36,6 +36,31 @@ const userController = {
     req.flash('success_messages', '登出成功！')
     req.logout()
     res.redirect('/signin')
+  },
+  getUser: (req, res, next) => {
+    const userId = req.user.id
+    User.findByPk(userId)
+      .then(user => res.render('users/profile', { user: user.toJSON() }))
+  },
+  editUser: (req, res, next) => {
+    const userId = req.user.id
+    User.findByPk(userId)
+      .then(user => res.render('users/edit', { user: user.toJSON() }))
+  },
+  putUser: (req, res, next) => {
+    const { name } = req.body
+    const userId = req.user.id
+    if (!name) throw new Error("input didn't exist!")
+    return User.findByPk(userId)
+      .then(user => {
+        if (!user) throw new Error("User didn't exist!")
+        return user.update({ name })
+      })
+      .then(() => {
+        req.flash('success_messages', 'Your profile was successfully to update')
+        res.redirect(`/users/${userId}`)
+      })
+      .catch(err => next(err))
   }
 }
 module.exports = userController
