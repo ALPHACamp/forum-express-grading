@@ -3,6 +3,7 @@ const db = require('../models')
 const { User } = db
 const { Restaurant, Comment, Favorite } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
+const authHelper = require('../helpers/auth-helpers')
 
 const userController = {
   // render sign up page
@@ -70,6 +71,11 @@ const userController = {
   },
   // render edit page
   editUser: (req, res, next) => {
+    if (authHelper.getUser(req).id !== Number(req.params.id)) {
+      req.flash('error_messages', 'Read only, not allowed to change.')
+      res.redirect(`/users/${req.params.id}`)
+    }
+
     return User.findByPk(req.params.id, { raw: true })
       .then(user => res.render('users/edit', { user }))
       .catch(err => next(err))
@@ -78,13 +84,13 @@ const userController = {
   putUser: (req, res, next) => {
     const { name } = req.body
     const { file } = req
-    console.log(file)
     return Promise.all([
       User.findByPk(req.params.id),
       imgurFileHandler(file)
     ])
       .then(([user, filePath]) => {
         if (!user) throw new Error("User didn't exist!")
+        if (!name) throw new Error('姓名是必要欄位')
         return user.update({
           name,
           avatar: filePath || user.avatar
