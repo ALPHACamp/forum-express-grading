@@ -1,7 +1,6 @@
 const bcrypt = require('bcryptjs')
 const { User } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
-const authHelper = require('../helpers/auth-helpers')
 const userController = {
   // 導向註冊頁
   signUpPage: (req, res) => {
@@ -9,12 +8,11 @@ const userController = {
   },
   // 註冊功能
   signUp: (req, res, next) => {
-    // 如果兩次輸入的密碼不同，就建立一個 Error 物件並拋出
     if (req.body.password !== req.body.passwordCheck) {
       throw new Error('Passwords do not match!')
     }
-    // 確認資料裡面沒有一樣的 email，若有，就建立一個 Error 物件並拋出
-    User.findOne({ where: { email: req.body.email } })
+    // 確認資料裡面沒有一樣的 email
+    return User.findOne({ where: { email: req.body.email } })
       .then(user => {
         if (user) throw new Error('Email already exists!')
         return bcrypt.hash(req.body.password, 10) // 前面加 return 傳到下一個 then
@@ -28,7 +26,7 @@ const userController = {
         })
       )
       .then(() => {
-        req.flash('success_messages', '成功註冊帳號！') // 成功訊息
+        req.flash('success_messages', '成功註冊帳號！')
         res.redirect('/signin')
       })
       .catch(err => next(err)) // 接住前面拋出的錯誤，呼叫專門做錯誤處理的 middleware
@@ -49,6 +47,7 @@ const userController = {
     req.logout()
     res.redirect('/signin')
   },
+  // 取得使用者
   getUser: (req, res, next) => {
     return User.findByPk(req.params.id, {
       raw: true
@@ -59,17 +58,9 @@ const userController = {
       })
       .catch(err => next(err))
   },
+  // 編輯使用者
   editUser: (req, res, next) => {
-    // 取得passport幫我們放入的user，也就是當前登入的登入者id
-    const reqUser = authHelper.getUser(req).id
-    // 取得路由中的動態路由的字串，並轉換成數字，此為編輯者id
-    const paramsUserId = Number(req.params.id)
-    // 如果登入者與編輯者身分不同，直接丟出去
-    if (reqUser !== paramsUserId) {
-      req.flash('error_messages', '無法編輯他人的使用者資料！')
-      return res.redirect(`/users/${paramsUserId}`)
-    }
-    return User.findByPk(paramsUserId, { raw: true })
+    return User.findByPk(req.params.id, { raw: true })
       .then(user => {
         if (!user) throw new Error("User doesn't exist!")
         return res.render('users/edit', { user })
@@ -79,28 +70,23 @@ const userController = {
   putUser: (req, res, next) => {
     const { name } = req.body
     const { file } = req
-    // 取得passport幫我們放入的user，也就是當前登入的登入者id
-    const reqUser = authHelper.getUser(req).id
-    // 取得路由中的動態路由的字串，並轉換成數字，此為編輯者id
-    const paramsUserId = Number(req.params.id)
-    // 如果沒有name
     if (!name) throw new Error('Name is required!')
-    // 如果登入者與編輯者身分不同，直接丟出去
-    if (reqUser !== paramsUserId) {
-      req.flash('error_messages', '無法編輯他人的使用者資料！')
-      return res.redirect(`/users/${paramsUserId}`)
+    if (req.user.id !== Number(req.params.id)) {
+      req.flash('error_messages', '不能更改!')
+      res.redirect('/restaurants')
     }
-    return Promise.all([User.findByPk(paramsUserId), imgurFileHandler(file)])
+
+    return Promise.all([User.findByPk(req.params.id), imgurFileHandler(file)])
       .then(([user, filePath]) => {
         if (!user) throw new Error("User doesn't exist!")
         return user.update({
-          name: name || user.name,
+          name,
           image: filePath || user.image
         })
       })
       .then(() => {
         req.flash('success_messages', '使用者資料編輯成功')
-        res.redirect(`/users/${paramsUserId}`)
+        res.redirect(`/users/${req.params.id}`)
       })
       .catch(err => next(err))
   }
