@@ -61,6 +61,7 @@ const restaurantController = {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         res.render('dashboard', { restaurant })
       })
+      .catch(err => next(err))
   }
 }
 module.exports = restaurantController
