@@ -59,10 +59,9 @@ const userController = {
       .then(([user, comments]) => {
         if (!user) throw new Error("User didn't exist!")
         user = user.toJSON()
-        const currentUserId = req.user ? req.user.id : null
         const isFollowed = req.user && req.user.Followings.some(d => d.id === user.id)
         if (comments !== null) {
-          res.render('users/profile', { user, currentUserId, comments, isFollowed })
+          res.render('users/profile', { user, comments, isFollowed })
         } else {
           throw new Error("Comment doesn't exist!")
         }
@@ -86,7 +85,7 @@ const userController = {
       imgurFileHandler(file)
     ])
       .then(([user, filePath]) => {
-        if (!user) throw new Error("User didn't exist")
+        if (!user) throw new Error("User doesn't exist")
         return user.update({
           name,
           image: filePath || user.image

@@ -11,11 +11,11 @@
       <div class="card-body">
         <h5 class="card-title">{{user.name}}</h5>
         <p class="card-text">{{user.email}}</p>
-        <li><strong>{{comments.length}}</strong>間已評論餐廳</li>
+        <li><strong>{{comments.length}}</strong>已評論餐廳</li>
         <li><strong>{{user.FavoritedRestaurants.length}}</strong> 收藏的餐廳</li>
         <li><strong>{{user.Followings.length}}</strong> followings (追蹤者)</li>
         <li><strong>{{user.Followers.length}}</strong> followers (追隨者)</li>
-        {{#ifCond user.id currentUserId}}
+        {{#ifCond user.id currentUser.id}}
           <a href="/users/{{user.id}}/edit" style="text-decoration: none">
             <button type="submit" class="btn btn-primary">edit</button>
           </a>
