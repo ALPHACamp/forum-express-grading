@@ -1,0 +1,19 @@
+<div class="card m-auto shadow p-3 mb-5 bg-white rounded">
+  <div class="row g-0">
+    <div class="col-md-4 d-flex align-items-center justify-content-center">
+      <img class="rounded-circle" src="{{user.image}}"
+        style="width: 200px; height: 200px; margin-bottom: 25px; transition: opacity 0.5s; opacity:0;"
+        onload="this.style.opacity=1;">
+    </div>
+    <div class="col-md-8">
+      <div class="card-body">
+        <h2 class="card-title">{{ user.name }}</h2>
+        <p class="card-text">{{ user.email }}</p>
+        <div class="d-flex justify-content-start mt-3">
+          <a class="btn btn-primary me-2" href="/users/{{user.id}}/edit">Edit</a>
+          <a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
