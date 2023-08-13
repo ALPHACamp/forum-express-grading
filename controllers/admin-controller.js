@@ -109,7 +109,7 @@ const adminController = {
         if (!user) throw new Error("user didn't exist!")
         if (user.email === 'root@example.com') {
           req.flash('error_messages', '禁止變更 root 權限')
-          res.redirect('back')
+          return res.redirect('back')
         }
         req.flash('success_messages', '使用者權限變更成功')
         res.redirect('/admin/users')
