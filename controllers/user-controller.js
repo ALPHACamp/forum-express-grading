@@ -46,7 +46,8 @@ const userController = {
       include: { model: Comment, include: Restaurant },
       where: { userId: id }
     })
-      .then(user => res.render('users/profile', { user: user.toJSON() }))
+      .then(user => res.render('users/profile', { user: user.toJSON() })
+      )
   },
   editUser: (req, res, next) => {
     const id = req.params.id
