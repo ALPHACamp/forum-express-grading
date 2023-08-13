@@ -133,6 +133,7 @@ describe('# R03', () => {
 
         // 測試作業指定的 userController.putUser 函式
         await this.userController.putUser(req, res, next)
+
         // putUser 正確執行的話，應呼叫 req.flash 
         // req.flash 的參數應與下列字串一致
         req.flash.calledWith('success_messages','使用者資料編輯成功').should.be.true
