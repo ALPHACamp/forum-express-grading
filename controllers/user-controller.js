@@ -39,6 +39,37 @@ const userController = {
     req.logout(() => {
       res.redirect('/signin')
     })
+  },
+  getUser: (req, res, next) => {
+    return User.findByPk(req.params.id, { raw: true })
+      .then(user => {
+        if (!user) throw new Error("Ussr doesn't exist")
+        res.render('users/profile', { user })
+      })
+      .catch(err => next(err))
+  },
+  editUser: (req, res, next) => {
+    return User.findByPk(req.params.id, { raw: true })
+      .then(user => {
+        if (!user) throw new Error("User doesn't exist")
+        res.render('users/edit', { user })
+      })
+      .catch(err => next(err))
+  },
+  putUser: (req, res, next) => {
+    const { name } = req.body
+    const id = req.params.id
+    if (!name) throw new Error('Name is required!')
+    return User.findByPk(id)
+      .then(user => {
+        if (!user) throw new Error("User doesn't exist")
+        return user.update({ name })
+      })
+      .then(() => {
+        req.flash('success_messages', '使用者資料編輯成功')
+        res.redirect(`/users/${id}`)
+      })
+      .catch(err => next(err))
   }
 }
 
