@@ -1,7 +1,6 @@
 const bcrypt = require('bcryptjs')
 const { imgurFileHandler } = require('../helpers/file-helpers')
-const db = require('../models')
-const { User, Restaurant, Favorite } = db
+const { User, Restaurant, Favorite, Comment } = require('../models')
 
 const userController = {
   signUpPage: (req, res) => {
@@ -79,9 +78,13 @@ const userController = {
   },
   getUser: (req, res, next) => {
     return User.findByPk(req.params.id, {
-      raw: true
+      include: [{ model: Comment, include: Restaurant }],
+      nest: true
     })
-      .then(user => res.render('users/profile', { user }))
+      .then(user => {
+        console.log(user)
+        res.render('users/profile', { user: user.toJSON() })
+      })
       .catch(err => next(err))
   },
   editUser: (req, res, next) => {

@@ -10,3 +10,18 @@
 </div>
 
 <hr />
+
+{{#ifCond user.Comments.length 0}}
+  <p>尚未評論</p>
+{{else}}
+  <p>{{user.Comments.length}}間已評論過的餐廳</p>
+{{/ifCond}}
+
+<div class="d-flex flex-wrap bd-highlight mb-3">
+  {{#each user.Comments}}
+    <a href="/restaurants/{{this.restaurantId}}">
+      <img class="img-responsive center-block me-3" src="{{this.Restaurant.image}}"
+        style="width: 250px; margin-bottom: 25px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+    </a>
+  {{/each}}
+</div>
