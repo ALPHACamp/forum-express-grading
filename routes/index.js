@@ -8,7 +8,11 @@ const userController = require('../controllers/user-controller')
 const commentController = require('../controllers/comment-controller')
 
 // Import middleware
-const { authenticated, authenticatedAdmin } = require('../middleware/auth')
+const {
+  authenticated,
+  authenticatedAdmin,
+  checkUserOwnership
+} = require('../middleware/auth')
 const { generalErrorHandler } = require('../middleware/error-handler')
 const upload = require('../middleware/multer')
 
@@ -33,10 +37,16 @@ router.post(
 router.get('/logout', userController.logout)
 
 // Set user profile page
-router.get('/users/:id/edit', authenticated, userController.editUser)
+router.get(
+  '/users/:id/edit',
+  authenticated,
+  checkUserOwnership,
+  userController.editUser
+)
 router.put(
   '/users/:id',
   authenticated,
+  checkUserOwnership,
   upload.single('image'),
   userController.putUser
 )

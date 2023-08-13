@@ -15,7 +15,21 @@ const authenticatedAdmin = (req, res, next) => {
     res.redirect('/signin')
   }
 }
+
+const checkUserOwnership = (req, res, next) => {
+  const currentUserId = req.user.id
+  const targetUserId = req.params.id
+
+  if (currentUserId !== targetUserId) {
+    req.flash('error_messages', '無權限進行此操作！')
+    return res.redirect('back') // 返回上一頁
+  }
+
+  next()
+}
+
 module.exports = {
   authenticated,
-  authenticatedAdmin
+  authenticatedAdmin,
+  checkUserOwnership
 }
