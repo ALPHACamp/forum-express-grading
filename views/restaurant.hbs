@@ -17,7 +17,40 @@
   <div class="col-md-8">
     <p style="white-space: break-spaces;">{{restaurant.description}}</p>
     <a href="/restaurants/{{restaurant.id}}/dashboard" class="btn btn-primary">Dashboard</a>
+    {{#if isFavorited }}
+      <form action="/favorite/{{restaurant.id}}?_method=DELETE" method="POST" style="display: contents;">
+        <button type="submit" class="btn btn-danger">移除最愛</button>
+      </form>
+    {{else}}
+      <form action="/favorite/{{restaurant.id}}" method="POST" style="display: contents;">
+        <button type="submit" class="btn btn-primary">加到最愛</button>
+      </form>
+    {{/if}}
   </div>
   <hr>
 </div>
-<a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
+{{!-- Comment --}}
+<h3 class="mb-3">所有評論：</h3>
+{{#each restaurant.Comments}}
+  {{#if ../user.isAdmin}}
+    <form action="/comments/{{this.id}}?_method=DELETE" class="float-end" method="POST">
+      <button class="btn btn-danger" type="submit">Delete</button>
+    </form>
+  {{/if}}
+  <blockquote class="blockquote mb-0">
+    <h4><a href="/users/{{this.User.id}}">{{this.User.name}}</a></h4>
+    <p>{{this.text}}</p>
+    <footer class="blockquote-footer">{{relativeTimeFromNow this.createdAt}}</footer>
+  </blockquote>
+  <hr>
+{{/each}}
+
+<form action="/comments" method="POST">
+  <div class="form-row mb-3">
+    <label for="text" class="form-label">留下評論：</label>
+    <textarea name="text" id="text" rows="3" class="form-control"></textarea>
+  </div>
+  <input type="hidden" name="restaurantId" value="{{restaurant.id}}">
+  <button class="btn btn-primary" type="submit">Submit</button>
+  <a href="javascript:history.back()" class="btn btn-outline-secondary">Back</a>
+</form>
