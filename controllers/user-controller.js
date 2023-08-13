@@ -64,7 +64,7 @@ const userController = {
           name: user.name,
           email: user.email,
           image: user.image,
-          commentedRestaurants: user.Comments.map(comment => {
+          commentedRestaurants: (user.Comments || []).map(comment => {
             return {
               id: comment.Restaurant.id,
               image: comment.Restaurant.image
