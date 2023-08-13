@@ -32,6 +32,8 @@ router.get('/restaurants', authenticated, restController.getRestaurants)
 
 router.post('/comments', authenticated, commentController.postComment)
 
+router.delete('/comments/:id', authenticatedAdmin, commentController.deleteComment)
+
 router.use('/', generalErrorHandler)
 
 // fallback路由，當匹配不到時就會執行這一行
