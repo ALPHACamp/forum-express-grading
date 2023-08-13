@@ -26,8 +26,6 @@
         </p>
         <span class="badge bg-secondary">{{this.Category.name}}</span>
         <p class="card-text text-truncate">{{this.description}}</p>
-        <span class="badge bg-secondary">{{this.Category.name}}</span>
-        <p class="card-text text-truncate">{{this.description}}</p>
         <div class="d-flex">
           {{#if isFavorited}}
             <form action="/favorite/{{this.id}}?_method=DELETE" method="POST">
