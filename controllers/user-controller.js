@@ -50,7 +50,6 @@ const userController = {
       .then(user => res.render('users/edit', { user: user.toJSON() }))
   },
   putUser: (req, res, next) => {
-    if (Number(req.params.id) !== Number(req.user.id)) throw new Error('error!')
     const { name } = req.body
     const id = req.params.id
     const { file } = req // 把檔案取出來
