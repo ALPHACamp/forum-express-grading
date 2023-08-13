@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs')
 const db = require('../models')
-const { User } = db
+const { User, Restaurant } = db
+const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const userController = {
   signUpPage: (req, res) => {
@@ -40,6 +41,72 @@ const userController = {
     req.flash('success_messages', '登出成功！')
     req.logout()
     res.redirect('/signin')
+  },
+
+  getUser: (req, res, next) => {
+    return User.findByPk(req.params.id)
+      .then(user => {
+        if (!user) throw new Error('User not found!')
+
+        const userForRender = {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          image: user.image
+        }
+
+        return res.render('users/profile', { user: userForRender })
+      })
+      .catch(err => next(err))
+  },
+
+  editUser: (req, res, next) => {
+    return User.findByPk(req.params.id)
+      .then(user => {
+        if (!user) throw new Error('User not found!')
+
+        const userForRender = {
+          id: user.id,
+          name: user.name,
+          image: user.image
+        }
+
+        return res.render('users/edit', { user: userForRender })
+      })
+      .catch(err => next(err))
+  },
+
+  putUser: async (req, res, next) => {
+    try {
+      console.log(req.body)
+      const id = Number(req.params.id)
+      console.log('User ID:', id)
+      const { name } = req.body
+      if (!name) throw new Error('User name is missing!')
+      const { file } = req
+
+      const catchUser = await User.findByPk(id)
+      if (!catchUser) throw new Error('User not found!')
+
+      const [user, filePath] = await Promise.all([
+        catchUser,
+        imgurFileHandler(file)
+      ])
+
+      await user
+        .update({
+          name,
+          image: filePath || user.image
+        })
+        .then(() => {
+          req.flash('success_messages', '使用者資料編輯成功')
+          res.redirect(`/users/${user.id}`)
+        })
+        .catch(err => next(err))
+    } catch (err) {
+      console.log('Error in putUser:', err.message)
+      next(err)
+    }
   }
 }
 
