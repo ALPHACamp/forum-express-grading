@@ -93,16 +93,13 @@ const restaurantController = {
       .catch(err => next(err))
   },
   getTopRestaurants: (req, res, next) => {
-    console.log('Entered getTopRestaurants')
     return Restaurant.findAll({
       include: [
         { model: User, as: 'FavoritedUsers' }
       ]
     })
       .then(restaurants => {
-        console.log('restaurants.length:', restaurants.length)
         if (!restaurants) throw new Error("restaurants didn't exist!")
-        console.log('===========result============')
         const result = restaurants.map(restaurant => ({
           ...restaurant.toJSON(),
           favoritedCount: restaurant.FavoritedUsers.length,
@@ -110,14 +107,9 @@ const restaurantController = {
         }))
           .sort((a, b) => b.favoritedCount - a.favoritedCount)
           .slice(0, 10)
-        console.log('result:', result.length)
         res.render('top-restaurants', { restaurants: result })
       })
-      .catch(err => {
-        console.log('=====err=======')
-        console.log('err:', err)
-        next(err)
-      })
+      .catch(err => next(err))
   }
 }
 module.exports = restaurantController
