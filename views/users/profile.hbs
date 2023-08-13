@@ -21,9 +21,9 @@
     </div>
     <div class="card-body d-flex-inline">
       {{#if restaurantNum}}
-      {{#each user.Comments}}
-      <a href="/restaurants/{{this.restaurantId}}">
-        <img src="{{this.Restaurant.image}}" alt="#" style="max-width: 5rem;">
+      {{#each restaurants}}
+      <a href="/restaurants/{{this.id}}">
+        <img src="{{this.image}}" alt="#" style="max-width: 5rem;">
       </a>
       {{/each}}
       {{else}}
