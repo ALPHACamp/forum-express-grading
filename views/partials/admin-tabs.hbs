@@ -1,0 +1,14 @@
+<h1>餐廳後台</h1>
+
+<ul class="nav">
+    <li class="nav-item">
+        <a class="nav-link {{#ifCond route 'restaurants'}} disabled {{/ifCond}}" aria-current="page"
+            href="/admin/restaurants">Restaurants</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link {{#ifCond route 'users'}} disabled {{/ifCond}}" href="/admin/users">Users</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link {{#ifCond route 'categories'}} disabled {{/ifCond}}" href="/admin/categories">Categories</a>
+    </li>
+</ul>
