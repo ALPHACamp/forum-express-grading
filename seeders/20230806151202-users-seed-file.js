@@ -7,6 +7,7 @@ module.exports = {
       password: await bcrypt.hash('12345678', 10),
       is_admin: true,
       name: 'root',
+      image: 'https://user0514.cdnw.net/shared/img/thumb/kotetsuPAR508341961_TP_V.jpg',
       created_at: new Date(),
       updated_at: new Date()
     }, {
@@ -14,6 +15,7 @@ module.exports = {
       password: await bcrypt.hash('12345678', 10),
       is_admin: false,
       name: 'user1',
+      image: 'https://user0514.cdnw.net/shared/img/thumb/aig-ai230112205-xl_TP_V.jpg',
       created_at: new Date(),
       updated_at: new Date()
     }, {
@@ -21,6 +23,7 @@ module.exports = {
       password: await bcrypt.hash('12345678', 10),
       is_admin: false,
       name: 'user2',
+      image: 'https://user0514.cdnw.net/shared/img/thumb/04ellyri529B_TP_V.jpg',
       created_at: new Date(),
       updated_at: new Date()
     }], {})
