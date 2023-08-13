@@ -53,6 +53,7 @@ router.put(
 router.get('/users/:id', authenticated, userController.getUser)
 
 // Set restaurants page
+router.get('/restaurants/feeds', authenticated, restController.getFeeds)
 router.get(
   '/restaurants/:id/dashboard',
   authenticated,
@@ -61,6 +62,10 @@ router.get(
 router.get('/restaurants/:id', authenticated, restController.getRestaurant)
 router.get('/restaurants', authenticated, restController.getRestaurants)
 router.post('/comments', authenticated, commentController.postComment)
+router.post('/like/:restaurantId', authenticated, userController.addLike)
+router.delete('/like/:restaurantId', authenticated, userController.removeLike)
+router.post('/favorite/:restaurantId', authenticated, userController.addFavorite)
+router.delete('/favorite/:restaurantId', authenticated, userController.removeFavorite)
 router.use('/', (req, res) => res.redirect('/restaurants'))
 router.use('/', generalErrorHandler)
 
