@@ -23,16 +23,23 @@ router.post('/signin', passport.authenticate('local', {
 
 router.get('/logout', userController.logout)
 
-// 前台
+// 餐廳
 router.get('/restaurants/:id/dashboard', authenticated, restController.getDashboard)
 
 router.get('/restaurants/:id', authenticated, restController.getRestaurant)
 
 router.get('/restaurants', authenticated, restController.getRestaurants)
 
+// 評論
 router.post('/comments', authenticated, commentController.postComment)
 
 router.delete('/comments/:id', authenticatedAdmin, commentController.deleteComment)
+
+// 個人頁面
+router.get('/users/:id', authenticated, userController.getUser)
+
+router.get('/users/:id/edit', authenticated, userController.editUser)
+router.put('/users/:id', authenticated, userController.putUser)
 
 router.use('/', generalErrorHandler)
 
