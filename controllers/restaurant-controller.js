@@ -101,13 +101,13 @@ const restaurantController = {
   },
   getTopRestaurants: (req, res, next) => {
     return Restaurant.findAll({
+      raw: true,
       include: [Category, { model: User, as: 'FavoritedUsers' }]
     })
       .then(restaurants => {
         const result = restaurants.map(restaurant => ({
-          ...restaurant.toJSON(),
+          ...restaurant,
           description: restaurant.description.substring(0, 200),
-          categoryName: restaurant.Category ? restaurant.Category.dataValues.name : '未分類',
           favoritedCount: restaurant.FavoritedUsers.length,
           isFavorited: req.user && req.user.FavoritedRestaurants.some(f => f.id === restaurant.id)
         }))
