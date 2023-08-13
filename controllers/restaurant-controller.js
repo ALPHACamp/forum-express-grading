@@ -102,7 +102,7 @@ const restaurantController = {
   getTopRestaurants: (req, res, next) => {
     console.log('pass1')
     return Restaurant.findAll({
-      include: [Category, { model: User, as: 'FavoritedUsers' }]
+      include: [{ model: User, as: 'FavoritedUsers' }]
     })
       .then(restaurants => {
         console.log('pass2')
