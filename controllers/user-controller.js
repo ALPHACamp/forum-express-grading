@@ -143,8 +143,8 @@ const userController = {
         return favorite.destroy()
       })
       .then(() => {
-        res.redirect('back')
         req.flash('success_messages', '已將餐廳從你的 Favorite list 中移除!')
+        res.redirect('back')
       })
       .catch(err => next(err))
   },
@@ -169,7 +169,10 @@ const userController = {
           restaurantId
         })
       })
-      .then(() => res.redirect('back'))
+      .then(() => {
+        req.flash('success_messages', '按讚成功！')
+        res.redirect('back')
+      })
       .catch(err => next(err))
   },
   // 取消按讚
@@ -185,7 +188,10 @@ const userController = {
 
         return like.destroy()
       })
-      .then(() => res.redirect('back'))
+      .then(() => {
+        req.flash('success_messages', '已取消你的讚！')
+        res.redirect('back')
+      })
       .catch(err => next(err))
   }
 }
