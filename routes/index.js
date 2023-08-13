@@ -43,6 +43,12 @@ router.get('/restaurants/:id', authenticated, restController.getRestaurant)
 // 前台首頁
 router.get('/restaurants', authenticated, restController.getRestaurants)
 
+// 刪除評論
+router.delete(
+  '/comments/:id',
+  authenticatedAdmin,
+  commentController.deleteComment
+)
 // 提交評論
 router.post('/comments', authenticated, commentController.postComment)
 
