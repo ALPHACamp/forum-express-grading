@@ -18,7 +18,7 @@ const authenticatedAdmin = (req, res, next) => {
 
 const checkUserOwnership = (req, res, next) => {
   const currentUserId = req.user.id
-  const targetUserId = req.params.id
+  const targetUserId = parseInt(req.params.id) // 將ID從字串轉換成數字
 
   if (currentUserId !== targetUserId) {
     req.flash('error_messages', '無權限進行此操作！')
