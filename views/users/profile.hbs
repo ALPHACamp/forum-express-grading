@@ -10,7 +10,9 @@
             <li><strong>Description:</strong> -</li>
         </ul>
         <div class="mt-5 ms-3">
+            {{#ifCond user.id currentUser.id}}
             <a class="btn btn-primary" href='/users/{{user.id}}/edit'>編輯資料</a>
+            {{/ifCond}}
             <a class="btn btn-secondary" href="/">回首頁</a>
         </div>
     </div>
@@ -24,7 +26,7 @@
             <div class="col-md-3 mb-4" style="max-width: 100%">
                 <a href="/restaurants/{{this.restaurantId}}">
                     <img class="img-responsive center-block" src="{{this.Restaurant.image}}"
-                        style="width: 100%; height: auto"onload="this.style.opacity=1;">
+                        style="width: 100%; height: auto" onload="this.style.opacity=1;">
                 </a>
             </div>
             {{/each}}
