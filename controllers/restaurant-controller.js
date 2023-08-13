@@ -122,7 +122,7 @@ const restaurantController = {
         include: [Category, { model: User, as: 'FavoritedUsers' }]
       })
 
-      const result = restaurants
+      const result = await restaurants
         .map(restaurant => ({
           ...restaurant.toJSON(),
           description: restaurant.description.substring(0, 200),
