@@ -2,7 +2,7 @@
 const bcrypt = require('bcryptjs')
 const db = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
-const { tr } = require('faker/lib/locales')
+// const { tr } = require('faker/lib/locales')
 const { User, Comment, Restaurant } = db
 const userController = {
   signUpPage: (req, res) => {
