@@ -1,4 +1,4 @@
-const { Restaurant, Category, Comment, User } = require('../models')
+const { Restaurant, Category, Comment, User, sequelize } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
 
 const restaurantController = {
@@ -106,7 +106,51 @@ const restaurantController = {
         })
       })
       .catch(err => next(err))
+  },
+  getTopRestaurants: (req, res, next) => {
+    return Restaurant.findAll({
+      include: [
+        { model: User, as: 'FavoritedUsers' }
+      ]
+    })
+      .then(restaurants => {
+        if (!restaurants) throw new Error("Can't not get restaurants data!")
+
+        const results = restaurants.map(r => ({
+          ...r.toJSON(),
+          description: r.description.substring(0, 50),
+          favoritedCount: r.FavoritedUsers.length,
+          isFavorited: req.user && req.user.FavoritedRestaurants.some(fr => fr.id === r.id)
+        }))
+          .sort((a, b) => b.favoritedCount - a.favoritedCount)
+          .slice(0, 10)
+
+        res.render('top-restaurants', { restaurants: results })
+      })
+      .catch(err => next(err))
   }
 }
 
 module.exports = restaurantController
+
+/*
+    return Restaurant.findAll({
+      attributes: {
+        include: [
+          [sequelize.literal('( SELECT COUNT(*) FROM Favorites WHERE Favorites.restaurant_id = Restaurant.id)'), 'favoritedCount'],
+          [sequelize.literal(`( SELECT COUNT(*) FROM Favorites WHERE Favorites.restaurant_id = Restaurant.id AND Favorites.user_id = ${req.user.id})`), 'isFavorited']
+        ]
+      },
+      order: [[sequelize.literal('favoritedCount'), 'DESC']],
+      limit: 10,
+      raw: true
+    })
+      .then(restaurants => {
+        if (!restaurants) throw new Error("Can't read Restaurants data")
+
+        const results = restaurants.map(r => r.dataValues)
+
+        res.render('top-restaurants', { restaurants: results })
+      })
+      .catch(err => next(err))
+    */
