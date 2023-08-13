@@ -9,6 +9,9 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarCollapse">
           <ul class="navbar-nav ms-auto mb-2 mb-md-0">
+            <li class="nav-item">
+                <a href="/users/{{ user.id }}" class="nav-link">使用者資料</a>
+              </li>
             {{#if user.isAdmin}}
               <li class="nav-item">
                 <a href="/admin" class="nav-link">Admin 後台</a>
