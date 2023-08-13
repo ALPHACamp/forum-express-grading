@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const passport = require('../config/passport')
+const upload = require('../middleware/multer')
 
 const admin = require('./modules/admin')
 const restController = require('../controllers/restaurant-controller')
@@ -19,7 +20,13 @@ router.post('/signin', passport.authenticate('local', { failureRedirect: '/signi
 // logout
 router.get('/logout', userController.logout)
 
+// user related
+router.get('/users/:id/edit', authenticated, userController.editUser)
+router.get('/users/:id', authenticated, upload.single('image'), userController.getUser)
+router.put('/users/:id', authenticated, userController.putUser)
+
 // front-end restaurant related
+router.get('/restaurants/feeds', authenticated, restController.getFeeds)
 router.get('/restaurants/:id/dashboard', authenticated, restController.getDashboard)
 router.get('/restaurants/:id', authenticated, restController.getRestaurant)
 router.get('/restaurants', authenticated, restController.getRestaurants)
@@ -27,11 +34,6 @@ router.get('/restaurants', authenticated, restController.getRestaurants)
 // comment related
 router.delete('/comments/:id', authenticatedAdmin, commentController.deleteComment)
 router.post('/comments', authenticated, commentController.postComment)
-
-// user related
-router.get('/users/:id/edit', authenticated, userController.editUser)
-router.get('/users/:id', authenticated, userController.getUser)
-router.put('/users/:id', authenticated, userController.putUser)
 
 router.use('/', (req, res) => res.redirect('/restaurants'))
 router.use('/', generalErrorHandler)
