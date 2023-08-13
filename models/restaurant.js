@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
       Restaurant.belongsTo(models.Category, { foreignKey: 'categoryId' })
       Restaurant.hasMany(models.Comment, { foreignKey: 'restaurantId' })
       Restaurant.belongsToMany(models.User, {
-        through: models.Favotie, // belongs to many 多對多關係，透過 Favorite 建立關聯
+        through: models.Favorite, // belongs to many 多對多關係，透過 Favorite 建立關聯
         foreignKey: 'restaurantId',
         as: 'FavoritedUsers' // 幫這個關係取名，如果之後和 User 有更多不同關係可通過名字分辨
       })
