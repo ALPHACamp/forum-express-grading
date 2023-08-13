@@ -39,7 +39,7 @@ describe('# R03', () => {
         await this.userController.getUser(req, res, next);
 
         // getUser 正確執行的話，應呼叫 res.render
-        // res.render 的第 1 個參數要是 'users/profile'
+        // res.render 的第 1 個參數要是 'users/profile' 
         // res.render 的第 2 個參數要是 user，其 id 屬性的值應是 1
         res.render.getCall(0).args[0].should.equal('users/profile')
         res.render.getCall(0).args[1].user.id.should.equal(1)
@@ -121,25 +121,25 @@ describe('# R03', () => {
       })
 
       it(' PUT /users/:id ', async () => {
-        // 模擬 request & response & next
+        // 模擬 request & response & next 
         // 對 PUT /users/1 發出 request，並夾帶 body.name = amdin2, user.id = 1
         const req = mockRequest({
           user: {id: 1},
           params: { id: 1 },
           body: { name: 'admin2' },
-        })
+        }) 
         const res = mockResponse()
         const next = mockNext
 
         // 測試作業指定的 userController.putUser 函式
         await this.userController.putUser(req, res, next)
 
-        // putUser 正確執行的話，應呼叫 req.flash
+        // putUser 正確執行的話，應呼叫 req.flash 
         // req.flash 的參數應與下列字串一致
         req.flash.calledWith('success_messages','使用者資料編輯成功').should.be.true
         // putUser 執行完畢，應呼叫 res.redirect 並重新導向 /users/1
         res.redirect.calledWith('/users/1').should.be.true
-        // putUser 執行完畢後，id:1 使用者的 name 應該已被修改
+        // putUser 執行完畢後，id:1 使用者的 name 應該已被修改 
         // 將假資料撈出，比對確認有成功修改到
         const user = await this.UserMock.findOne({ where: { id: 1 } })
         user.name.should.equal('admin2')
