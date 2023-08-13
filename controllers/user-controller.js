@@ -166,6 +166,27 @@ const userController = {
     } catch (err) {
       next(err)
     }
+  },
+  getTopUsers: async (req, res, next) => {
+    try {
+      // 撈出所有 User 與 followers 資料
+      const user = await User.findAll({
+        include: [{ model: User, as: 'Followers' }]
+      })
+
+      // 整理 users 資料，把每個 user 項目都拿出來處理一次，並把新陣列儲存在 users 裡
+      const users = await user.map(user => ({
+        // 整理格式
+        ...user.toJSON(),
+        // 計算追蹤者人數
+        followerCount: user.Followers.length,
+        // 判斷目前登入使用者是否已追蹤該 user 物件
+        isFollowed: req.user.Followings.some(f => f.id === user.id)
+      }))
+      res.render('top-users', { users })
+    } catch (err) {
+      next(err)
+    }
   }
 }
 
