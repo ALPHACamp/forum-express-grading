@@ -1,6 +1,6 @@
 <div class="card mb-3">
   <div class="row g-0">
-    <div class="col-md-2">
+    <div class="col-md-3">
       <img src="{{user.image}}"
            class="img-thumbnail rounded float-start"
            alt="...">
@@ -9,10 +9,32 @@
       <div class="card-body">
         <h5 class="card-title">{{user.name}}</h5>
         <p class="card-text">{{user.email}}</p>
+        <p class="card-text">{{user.Comments.length}} 已評論餐廳數</p>
         <a class="btn btn-primary"
            href="/users/{{user.id}}/edit"
            role="button">edit</a>
       </div>
     </div>
   </div>
+</div>
+<div class="card">
+  <div class="card-header">
+    <h4>已評論餐廳</h4>
+  </div>
+  <div class="row row-cols-1 row-cols-md-3 g-4 mt-1 mb-4 mx-3">
+    {{#each user.Comments}}
+    <div class="col-2">
+      <a href="/restaurants/{{this.Restaurant.id}}">
+        <div class="card">
+          <img src="{{this.Restaurant.image}}"
+               class="card-img-top"
+               alt="...">
+          <div class="card-body">
+            <h5 class="card-title">{{this.Restaurant.name}}</h5>
+          </div>
+      </a>
+    </div>
+  </div>
+  {{/each}}
+</div>
 </div>
