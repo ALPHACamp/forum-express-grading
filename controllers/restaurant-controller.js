@@ -41,9 +41,7 @@ const restaurantController = {
   },
   getRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
-      include: [
-        Category, { model: Comment, include: User }
-      ]
+      include: [Category, { model: Comment, include: User }]
     })
       .then(async restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
@@ -62,6 +60,31 @@ const restaurantController = {
         console.log('viewCounts', restaurant.viewCounts)
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         res.render('dashboard', { restaurant })
+      })
+      .catch(err => next(err))
+  },
+  getFeeds: (req, res, next) => {
+    return Promise.all([
+      Restaurant.findAll({
+        limit: 10,
+        order: [['createdAt', 'DESC']],
+        include: [Category],
+        raw: true,
+        nest: true
+      }),
+      Comment.findAll({
+        limit: 10,
+        order: [['createdAt', 'DESC']],
+        include: [User, Restaurant],
+        raw: true,
+        nest: true
+      })
+    ])
+      .then(([restaurants, comments]) => {
+        res.render('feeds', {
+          restaurants,
+          comments
+        })
       })
       .catch(err => next(err))
   }
