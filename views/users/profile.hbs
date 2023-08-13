@@ -1,0 +1,19 @@
+<div class="card mb-3">
+  <div class="row no-gutters">
+    <div class="col-md-4">
+      <img class="img-responsive center-block mb-6" src="{{user.image}}"
+        style="width: 300px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+    </div>
+    <div class="col-md-8">
+      <div class="card-body">
+        <h5 class="card-title">{{user.name}}</h5>
+        <p class="card-text">
+          {{user.email}}
+        </p>
+        {{#if editPermission}}
+        <a class="btn btn-primary" href="/users/{{user.id}}/edit">edit</a>
+        {{/if}}
+      </div>
+    </div>
+  </div>
+</div>
