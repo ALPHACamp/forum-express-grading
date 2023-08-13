@@ -17,6 +17,7 @@ if (config.use_env_variable) {
 }
 
 // 動態引入其他 models
+// fs: file system，尋找在 models 目錄底下以 .js 結尾的檔案。偵測到檔案以後，自動運用 sequelize 將其引入。
 fs
   .readdirSync(__dirname)
   .filter(file => {
@@ -35,7 +36,7 @@ Object.keys(db).forEach(modelName => {
 })
 
 // 匯出需要的物件
-db.sequelize = sequelize
-db.Sequelize = Sequelize
+db.sequelize = sequelize // 連線資料庫的 instance
+db.Sequelize = Sequelize // Sequelize 函式庫本身
 
 module.exports = db
