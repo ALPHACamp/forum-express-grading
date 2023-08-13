@@ -20,26 +20,37 @@
   </div>
   <div class="col-md-8 mb-3">
     <a class="btn btn-outline-primary" href="/restaurants/{{restaurant.id}}/dashboard">Dashboard</a>
-    {{#if isFavorited }}
+    <div class="d-flex my-2">
+      {{#if isFavorited}}
       <form action="/favorite/{{restaurant.id}}?_method=DELETE" method="POST" style="display: contents;">
-        <button type="submit" class="btn btn-danger">移除最愛</button>
+        <button type="submit" class="btn btn-danger me-1">移除最愛</button>
       </form>
-    {{else}}
+      {{else}}
       <form action="/favorite/{{restaurant.id}}" method="POST" style="display: contents;">
-        <button type="submit" class="btn btn-primary">加到最愛</button>
+        <button type="submit" class="btn btn-primary me-1">加到最愛</button>
       </form>
-    {{/if}}
+      {{/if}}
+      {{#if isLiked}}
+      <form action="/like/{{restaurant.id}}?_method=DELETE" method="POST">
+        <button type="submit" class="btn btn-danger me-1">Unlike</button>
+      </form>
+      {{else}}
+      <form action="/like/{{restaurant.id}}" method="POST">
+        <button type="submit" class="btn btn-primary me-1">Like</button>
+      </form>
+      {{/if}}
+    </div>
   </div>
 </div>
 <hr>
 {{!-- Comment --}}
 <h3 class="mb-3">所有評論：</h3>
 {{#each restaurant.Comments}}
- {{#if ../user.isAdmin}}
-    <form action="/comments/{{this.id}}?_method=DELETE" method="POST" class="float-end">
-      <button type="submit" class="btn btn-danger">Delete</button>
-    </form>
-  {{/if}}
+{{#if ../user.isAdmin}}
+<form action="/comments/{{this.id}}?_method=DELETE" method="POST" class="float-end">
+  <button type="submit" class="btn btn-danger">Delete</button>
+</form>
+{{/if}}
 <blockquote class="blockquote mb-0">
   <h4><a href="/users/{{this.User.id}}">{{this.User.name}}</a></h4>
   <p>{{this.text}}</p>

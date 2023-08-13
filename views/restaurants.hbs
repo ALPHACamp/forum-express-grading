@@ -29,11 +29,20 @@
         <div class="d-flex">
           {{#if isFavorited}}
           <form action="/favorite/{{this.id}}?_method=DELETE" method="POST">
-            <button type="submit" class="btn btn-danger m-1">移除最愛</button>
+            <button type="submit" class="btn btn-danger me-1">移除最愛</button>
           </form>
           {{else}}
           <form action="/favorite/{{this.id}}" method="POST">
-            <button type="submit" class="btn btn-primary m-1">加到最愛</button>
+            <button type="submit" class="btn btn-primary me-1">加到最愛</button>
+          </form>
+          {{/if}}
+          {{#if isLiked}}
+          <form action="/like/{{this.id}}?_method=DELETE" method="POST">
+            <button type="submit" class="btn btn-danger me-1">Unlike</button>
+          </form>
+          {{else}}
+          <form action="/like/{{this.id}}" method="POST">
+            <button type="submit" class="btn btn-primary me-1">Like</button>
           </form>
           {{/if}}
         </div>
