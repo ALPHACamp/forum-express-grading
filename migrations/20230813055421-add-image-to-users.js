@@ -3,7 +3,12 @@
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.addColumn('Users', 'image', {
+<<<<<<< HEAD
       type: Sequelize.STRING
+=======
+      type: Sequelize.STRING,
+      allowNull: true
+>>>>>>> R03
     })
   },
 
