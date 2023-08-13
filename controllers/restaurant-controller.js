@@ -25,10 +25,14 @@ const restaurantController = {
       Category.findAll({ raw: true })
     ])
       .then(([restaurants, categories]) => {
+        //! req.user.FavoritedRestaurants -> 從反序列化取得
+        const favoritedRestaurantsId = req.user.FavoritedRestaurants.map(fr => fr.id)
+
         const data = restaurants.rows.map(r => ({
           ...r,
           // 當 key 重複時，後面出現的會取代前面的
-          description: r.description.substring(0, 50) // description 擷取前 50 個字元
+          description: r.description.substring(0, 50), // description 擷取前 50 個字元
+          isFavorited: req.user && favoritedRestaurantsId.includes(r.id) // return true or false
         }))
 
         return res.render('restaurants', {
@@ -45,23 +49,27 @@ const restaurantController = {
     return Restaurant.findByPk(req.params.id, {
       include: [
         { model: Category }, //! 取得 restaurant.Category
-        { model: Comment, include: [{ model: User }] } //! 取得 restaurant.Comments 、 restaurant.Comments.User
+        { model: Comment, include: [{ model: User }] }, //! 取得 restaurant.Comments 、 restaurant.Comments.User
         // -簡寫
         // Category,
         // { model: Comment, include: User }
+        { model: User, as: 'FavoritedUsers' } //! 取得 restaurant.FavoritedUsers (一個 array，包含所有將此餐廳加到最愛的 user)
       ],
 
-      //* 排序：讓最近的 comment 排在最上面
-      // 以關聯的 model 排序才需要 { model:  }
-      order: [
-        [{ model: Comment }, 'createdAt', 'DESC']
+      order: [ //* 排序：讓最近的 comment 排在最上面
+        [{ model: Comment }, 'createdAt', 'DESC'] // 以關聯的 model 排序才需要 { model:  }
       ]
     })
       .then(async restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
 
         await restaurant.increment('viewCounts') // 將 viewCounts 加一(預設)
-        res.render('restaurant', { restaurant: restaurant.toJSON() })
+
+        const isFavorited = restaurant.FavoritedUsers.some(fu => fu.id === req.user.id)
+        res.render('restaurant', {
+          restaurant: restaurant.toJSON(),
+          isFavorited
+        })
       })
       .catch(err => next(err))
   },
