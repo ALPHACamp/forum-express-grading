@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs')
 const db = require('../models')
-const { User, Restaurant, Comment } = db
+const { User, Restaurant, Comment, Favorite } = db
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const userController = {
@@ -124,6 +124,48 @@ const userController = {
       console.log('Error in putUser:', err.message)
       next(err)
     }
+  },
+
+  addFavorite: (req, res, next) => {
+    const { restaurantId } = req.params
+    return Promise.all([
+      Restaurant.findByPk(restaurantId),
+      Favorite.findOne({
+        where: {
+          restaurantId,
+          userId: req.user.id
+        }
+      })
+    ])
+      .then(([restaurant, favorite]) => {
+        if (!restaurant) throw new Error('Restaurant not found!')
+        if (favorite) throw new Error('Already favorite!')
+        return Favorite.create({
+          restaurantId,
+          userId: req.user.id
+        })
+      })
+      .then(() => {
+        res.redirect('back')
+      })
+      .catch(err => next(err))
+  },
+
+  removeFavorite: (req, res, next) => {
+    return Favorite.findOne({
+      where: {
+        restaurantId: req.params.restaurantId,
+        userId: req.user.id
+      }
+    })
+      .then(favorite => {
+        if (!favorite) throw new Error('Favorite not found!')
+        return favorite.destroy()
+      })
+      .then(() => {
+        res.redirect('back')
+      })
+      .catch(err => next(err))
   }
 }
 
