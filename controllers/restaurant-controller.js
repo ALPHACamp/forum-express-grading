@@ -42,7 +42,7 @@ const restaurantController = {
       include: [
         Category,
         { model: Comment, include: User },
-        { model: User, as: 'FavoritedUsers'}
+        { model: User, as: 'FavoritedUsers' }
       ],
       nest: true
     })

@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs')
 const db = require('../models')
 const { User, Restaurant, Favorite } = db
+
 const userController = {
   signUpPage: (req, res) => {
     res.render('signup')
@@ -73,6 +74,16 @@ const userController = {
         return favorite.destroy()
       })
       .then(() => res.redirect('back'))
+      .catch(err => next(err))
+  },
+  getUser: (req, res, next) => {
+    return User.findByPk(req.params.id, {
+      raw: true
+    })
+      .then(user => {
+        console.log(user)
+        res.render('users/profile', { user })
+      })
       .catch(err => next(err))
   }
 }

@@ -1,0 +1,12 @@
+<div class="d-flex flex-row bd-highlight mb-3">
+  <img class="img-responsive center-block me-3" src="{{user.image}}"
+    style="width: 250px; margin-bottom: 25px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+
+  <ul class="list-unstyled ms-3">
+    <li> {{user.name}}</li>
+    <li> {{user.email}}</li>
+    <a class="btn btn-primary mt-2" href="/users/{{user.id}}/edit">edit</a>
+  </ul>
+</div>
+
+<hr />
