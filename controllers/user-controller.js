@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs')
-const db = require('../models')
-const { User } = db
+const { User } = require('../models')
+const { imgurFileHandler } = require('../helpers/file-helpers')
+const authHelper = require('../helpers/auth-helpers')
 const userController = {
   // 導向註冊頁
   signUpPage: (req, res) => {
@@ -47,6 +48,61 @@ const userController = {
     req.flash('success_messages', '成功登出!')
     req.logout()
     res.redirect('/signin')
+  },
+  getUser: (req, res, next) => {
+    return User.findByPk(req.params.id, {
+      raw: true
+    })
+      .then(user => {
+        if (!user) throw new Error("User doesn't exist!")
+        res.render('users/profile', { user })
+      })
+      .catch(err => next(err))
+  },
+  editUser: (req, res, next) => {
+    // 取得passport幫我們放入的user，也就是當前登入的登入者id
+    const reqUser = authHelper.getUser(req).id
+    // 取得路由中的動態路由的字串，並轉換成數字，此為編輯者id
+    const paramsUserId = Number(req.params.id)
+    // 如果登入者與編輯者身分不同，直接丟出去
+    if (reqUser !== paramsUserId) {
+      req.flash('error_messages', '無法編輯他人的使用者資料！')
+      return res.redirect(`/users/${paramsUserId}`)
+    }
+    return User.findByPk(paramsUserId, { raw: true })
+      .then(user => {
+        if (!user) throw new Error("User doesn't exist!")
+        return res.render('users/edit', { user })
+      })
+      .catch(err => next(err))
+  },
+  putUser: (req, res, next) => {
+    const { name } = req.body
+    const { file } = req
+    // 取得passport幫我們放入的user，也就是當前登入的登入者id
+    const reqUser = authHelper.getUser(req).id
+    // 取得路由中的動態路由的字串，並轉換成數字，此為編輯者id
+    const paramsUserId = Number(req.params.id)
+    // 如果沒有name
+    if (!name) throw new Error('Name is required!')
+    // 如果登入者與編輯者身分不同，直接丟出去
+    if (reqUser !== paramsUserId) {
+      req.flash('error_messages', '無法編輯他人的使用者資料！')
+      return res.redirect(`/users/${paramsUserId}`)
+    }
+    return Promise.all([User.findByPk(paramsUserId), imgurFileHandler(file)])
+      .then(([user, filePath]) => {
+        if (!user) throw new Error("User doesn't exist!")
+        return user.update({
+          name: name || user.name,
+          image: filePath || user.image
+        })
+      })
+      .then(() => {
+        req.flash('success_messages', '使用者資料編輯成功')
+        res.redirect(`/users/${paramsUserId}`)
+      })
+      .catch(err => next(err))
   }
 }
 module.exports = userController
