@@ -16,3 +16,32 @@
         </div>
     </div>
 </div>
+
+<div class="card">
+    <div class="card-header">
+        <span>{{user.Comments.length}}</span> 已評論餐廳
+    </div>
+    {{#ifCond 0 user.Comments.length}}
+    <div class="card-body">
+        <p class="card-text">尚無評論</p>
+    </div>
+    {{/ifCond}}
+    <div class="row row-cols-5 g-1">
+        {{#each user.Comments}}
+        <div class="col">
+            <div class="card h-100">
+                <a href="/restaurants/{{this.Restaurant.id}}"><img src="{{this.Restaurant.image}}" class="card-img-top"
+                        alt="..."></a>
+                <div class="card-body">
+                    <a href="/restaurants/{{this.Restaurant.id}}">
+                        <h5 class="card-title">{{this.Restaurant.name}}</h5>
+                    </a>
+                    <p class="card-text">{{this.text}}</p>
+                    <p class="card-text"><small class="text-muted">{{relativeTimeFromNow this.createdAt}}</small></p>
+
+                </div>
+            </div>
+        </div>
+        {{/each}}
+    </div>
+</div>
