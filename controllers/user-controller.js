@@ -64,7 +64,7 @@ const userController = {
     ])
       .then(([user, comments]) => {
         const commentAmount = comments.length
-        res.render('users/profile', { user, comments, commentAmount })
+        return res.render('users/profile', { user, comments, commentAmount })
       })
       .catch(err => next(err))
   },
