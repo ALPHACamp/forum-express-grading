@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const passport = require('../config/passport')
+
 const admin = require('./modules/admin')
 const restController = require('../controllers/restaurant-controller')
 const userController = require('../controllers/user-controller')
@@ -8,6 +9,7 @@ const commentController = require('../controllers/comment-controller')
 
 const { authenticated, authenticatedAdmin } = require('../middleware/auth')
 const { generalErrorHandler } = require('../middleware/error-handler')
+const upload = require('../middleware/multer')
 
 // 後台
 router.use('/admin', authenticatedAdmin, admin)
@@ -51,6 +53,18 @@ router.delete(
 )
 // 提交評論
 router.post('/comments', authenticated, commentController.postComment)
+
+// 瀏覽 Profile
+router.get('/users/:id', authenticated, userController.getUser)
+// 瀏覽編輯 Profile 頁面
+router.get('/users/:id/edit', authenticated, userController.editUser)
+// 編輯 Profile
+router.put(
+  '/users/:id',
+  authenticated,
+  upload.single('image'),
+  userController.putUser
+)
 
 // 設定 fallback 路由, 其他路由條件都不符合時，最終會通過的路由，將使用者重新導回 /restaurants
 router.use('/', (req, res) => res.redirect('/restaurants'))
