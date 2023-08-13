@@ -20,3 +20,21 @@
   <a class="btn btn-primary" href="/users/{{user.id}}/edit">編輯</a>
   <hr />
 </div>
+<!-- Commented Restaurants Section -->
+<div class="row mb-5">
+  <div class="col-md-12">
+    <h2>評論過的餐廳</h2>
+  </div>
+  {{#each user.commentedRestaurants}}
+    <div class="col-md-3">
+      <a href="/restaurants/{{this.id}}">
+        <img
+          class="img-responsive center-block mb-5"
+          src="{{this.image}}"
+          style="width: 150px; transition: opacity 0.5s; opacity:0;"
+          onload="this.style.opacity=1;"
+        />
+      </a>
+    </div>
+  {{/each}}
+</div>
