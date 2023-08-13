@@ -13,3 +13,18 @@
   </div>
   <hr>
 </div>
+{{!-- 使用者評論過的餐廳 --}}
+<hr>
+
+<div class="row">
+  <p>{{user.Comments.length}}已評論餐廳</p>
+  {{#each user.Comments}}
+  <div class="col-md-3" style="width: 150px;">
+    <div class="card mb-4">
+      <a href="/restaurants/{{this.Restaurant.id}}">
+        <img class="card-img-top img-fluid" src="{{this.Restaurant.image}}" alt="Card image cap">
+      </a>
+    </div>
+  </div>
+  {{/each}}
+</div>
