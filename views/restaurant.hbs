@@ -56,7 +56,7 @@
 <form action="/comments" method="POST">
   <div class="form-row mb-3">
     <label for="text" class="form-label">留下評論:</label>
-    <textarea name="text" id="text" rows="3" class="form-control"></textarea>
+    <textarea name="text" id="text" rows="3" class="form-control" maxlength="80" required></textarea>
   </div>
   {{!-- 加了隱藏的 input 欄位，幫忙把 restaurant.id 送到後端，讓我們可以在 controller 裡用 req.body.restaurantId 把資料拿出來。 --}}
   <input type="hidden" name="restaurantId" value="{{restaurant.id}}" />
