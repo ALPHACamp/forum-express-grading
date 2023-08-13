@@ -18,7 +18,7 @@ if (config.use_env_variable) {
 
 // 動態引入其他 models
 fs
-  .readdirSync(__dirname)
+  .readdirSync(__dirname) // __dirname 目前檔案所在資料夾
   .filter(file => {
     return (file.indexOf('.') !== 0) && (file !== basename) && (file.slice(-3) === '.js')
   })
