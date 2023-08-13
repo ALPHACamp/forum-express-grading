@@ -22,7 +22,7 @@
                 class="nav-link"
               >使用者資料</a>
             </li>
-            {{#if user.isAdmin}}
+            {{#if currentUser.isAdmin}}
               <li class="nav-item">
                 <a href="/admin" class="nav-link">Admin 後台</a>
               </li>
