@@ -53,6 +53,7 @@ router.put(
 router.get('/users/:id', authenticated, userController.getUser)
 
 // Set restaurants page
+router.get('/restaurants/feeds', authenticated, restController.getFeeds)
 router.get(
   '/restaurants/:id/dashboard',
   authenticated,

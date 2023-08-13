@@ -13,7 +13,7 @@ const restaurantController = {
       Restaurant.findAndCountAll({
         include: [Category],
         where: {
-          ...categoryId ? { categoryId } : []
+          ...(categoryId ? { categoryId } : [])
         },
         limit,
         offset,
@@ -43,11 +43,10 @@ const restaurantController = {
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
-        return restaurant.increment('viewCounts', { by: 1 })
-          .then(() => {
-            const updatedRestaurant = restaurant.get({ plain: true })
-            return res.render('restaurant', { restaurant: updatedRestaurant })
-          })
+        return restaurant.increment('viewCounts', { by: 1 }).then(() => {
+          const updatedRestaurant = restaurant.get({ plain: true })
+          return res.render('restaurant', { restaurant: updatedRestaurant })
+        })
       })
       .catch(err => next(err))
   },
@@ -61,6 +60,29 @@ const restaurantController = {
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         return res.render('dashboard', { restaurant })
+      })
+      .catch(err => next(err))
+  },
+
+  getFeeds: (req, res, next) => {
+    return Promise.all([
+      Restaurant.findAll({
+        limit: 10,
+        order: [['id', 'DESC']],
+        include: [Category],
+        raw: true,
+        nest: true
+      }),
+      Comment.findAll({
+        limit: 10,
+        order: [['id', 'DESC']],
+        include: [User, Restaurant],
+        raw: true,
+        nest: true
+      })
+    ])
+      .then(([restaurants, comments]) => {
+        return res.render('feeds', { restaurants, comments })
       })
       .catch(err => next(err))
   }
