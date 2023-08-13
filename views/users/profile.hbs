@@ -1,0 +1,47 @@
+<div class="row mb-3">
+    <div class="col-md-4">
+        <img class="img-responsive center-block" src="{{user.image}}"
+            style="width: 250px; margin-bottom: 25px; transition: opacity 0.5s; opacity:0;"
+            onload="this.style.opacity=1;">
+    </div>
+    <div class="col-md-8">
+        <div class="well">
+            <ul class="list-unstyled">
+                <h1>{{user.name}}</h1>
+                <p>{{user.email}}</p>
+            </ul>
+        </div>
+        <div class="col-md-8 mb-3">
+            <a class="btn btn-outline-primary" href="/users/{{user.id}}/edit">Edit</a>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <span>{{user.Comments.length}}</span> 已評論餐廳
+    </div>
+    {{#ifCond 0 user.Comments.length}}
+    <div class="card-body">
+        <p class="card-text">尚無評論</p>
+    </div>
+    {{/ifCond}}
+    <div class="row row-cols-5 g-1">
+        {{#each user.Comments}}
+        <div class="col">
+            <div class="card h-100">
+                <a href="/restaurants/{{this.Restaurant.id}}"><img src="{{this.Restaurant.image}}" class="card-img-top"
+                        alt="..."></a>
+                <div class="card-body">
+                    <a href="/restaurants/{{this.Restaurant.id}}">
+                        <h5 class="card-title">{{this.Restaurant.name}}</h5>
+                    </a>
+                    <p class="card-text">{{this.text}}</p>
+                    <p class="card-text"><small class="text-muted">{{relativeTimeFromNow this.createdAt}}</small></p>
+
+                </div>
+            </div>
+        </div>
+        {{/each}}
+    </div>
+</div>
