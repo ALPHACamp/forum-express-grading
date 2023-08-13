@@ -40,7 +40,7 @@ app.use((req, res, next) => {
   res.locals.error_messages = req.flash('error_messages') // 設定 warning_msg 訊息
   // 所有的 view 都能存取
   res.locals.user = getUser(req)
-  res.locals.reqUser = getUser(req)
+  // 參考 res.locals.reqUser = getUser(req)
   next()
 })
 // route
