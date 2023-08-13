@@ -45,21 +45,59 @@ const userController = {
       raw: false,
       nest: true,
       include: [
-        { model: Comment, include: User }
+        { model: Comment, include: User },
+        { model: Restaurant, as: 'FavoritedRestaurants' },
+        { model: User, as: 'Followers' },
+        { model: User, as: 'Followings' }
       ]
     })
       .then(async user => {
         if (!user) throw new Error("User didn't exist!")
 
-        let commentedRestaurantIds = []
-        if (user.Comments) {
-          commentedRestaurantIds = user.Comments.map(comment => comment.restaurantId)
+        // 評論
+        const commentedRestaurantIds = new Set(user.Comments.map(comment => comment.restaurantId))
+        const commentedRestaurants = await Restaurant.findAll({
+          where: { id: [...commentedRestaurantIds] },
+          raw: true
+        })
+
+        // 收藏
+        let favoritedRestaurantIds = []
+        if (user.FavoritedRestaurants) {
+          favoritedRestaurantIds = user.FavoritedRestaurants.map(restaurant => restaurant.id)
+        }
+        console.log(user.FavoritedRestaurants)
+        let favoritedRestaurants = []
+        if (favoritedRestaurantIds.length > 0) {
+          favoritedRestaurants = await Restaurant.findAll({
+            where: { id: favoritedRestaurantIds },
+            raw: true
+          })
         }
 
-        let commentedRestaurants = []
-        if (commentedRestaurantIds.length > 0) {
-          commentedRestaurants = await Restaurant.findAll({
-            where: { id: commentedRestaurantIds },
+        // 追蹤
+        let followingIds = []
+        if (user.Followings) {
+          followingIds = user.Followings.map(following => following.id)
+        }
+
+        let followings = []
+        if (followingIds.length > 0) {
+          followings = await User.findAll({
+            where: { id: followingIds },
+            raw: true
+          })
+        }
+
+        // 追隨
+        let followerIds = []
+        if (user.Followers) {
+          followerIds = user.Followers.map(follower => follower.id)
+        }
+        let followers = []
+        if (followerIds.length > 0) {
+          followers = await User.findAll({
+            where: { id: followerIds },
             raw: true
           })
         }
@@ -67,7 +105,13 @@ const userController = {
         await res.render('users/profile', {
           user: user.toJSON(),
           commentedRestaurants,
-          commentCounts: commentedRestaurantIds.length
+          commentCounts: commentedRestaurants.length,
+          favoritedRestaurants,
+          favoritedCounts: favoritedRestaurants.length,
+          followings,
+          followingCounts: followings.length,
+          followers,
+          followerCounts: followers.length
         })
       })
   },
