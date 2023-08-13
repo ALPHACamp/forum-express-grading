@@ -1,7 +1,9 @@
+/* eslint-disable indent */
 const bcrypt = require('bcryptjs')
 const db = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
-const { User } = db
+const { tr } = require('faker/lib/locales')
+const { User, Comment, Restaurant } = db
 const userController = {
   signUpPage: (req, res) => {
     res.render('signup')
@@ -40,16 +42,33 @@ const userController = {
     res.redirect('/signin')
   },
   getUser: (req, res) => {
-    // const requestUser = req.user
     return User.findByPk(req.params.id, {
+      raw: false,
       nest: true,
-      raw: true
+      include: [
+        { model: Comment, include: User }
+      ]
     })
-      .then(user => {
+      .then(async user => {
         if (!user) throw new Error("User didn't exist!")
-        // if (requestUser.id !== user.id) throw new Error('This is not your profile!')
-        res.render('users/profile', {
-          user
+
+        let commentedRestaurantIds = []
+        if (user.Comments) {
+          commentedRestaurantIds = user.Comments.map(comment => comment.restaurantId)
+        }
+
+        let commentedRestaurants = []
+        if (commentedRestaurantIds.length > 0) {
+          commentedRestaurants = await Restaurant.findAll({
+            where: { id: commentedRestaurantIds },
+            raw: true
+          })
+        }
+
+        await res.render('users/profile', {
+          user: user.toJSON(),
+          commentedRestaurants,
+          commentCounts: commentedRestaurantIds.length
         })
       })
   },
