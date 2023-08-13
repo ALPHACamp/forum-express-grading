@@ -100,20 +100,42 @@ const restaurantController = {
       .catch(err => next(err))
   },
   getTopRestaurants: (req, res, next) => {
+    // console.log('pass1')
+    // return Restaurant.findAll({
+    //   include: [{ model: User, as: 'FavoritedUsers' }]
+    // })
+    //   .then(restaurants => {
+    //     console.log('pass2')
+    //     const result = restaurants.map(restaurant => ({
+    //       ...restaurant.toJSON(),
+    //       description: restaurant.description.substring(0, 200),
+    //       favoritedCount: restaurant.FavoritedUsers.length,
+    //       isFavorited: req.user && req.user.FavoritedRestaurants.some(f => f.id === restaurant.id)
+    //     }))
+    //       .sort((a, b) => b.favoritedCount - a.favoritedCount)
+    //       .slice(0, 10)
+    //     console.log('pass3')
+    //     return res.render('top-restaurants', { restaurants: result })
+    //   })
+    //   .catch(err => {
+    //     console.log('pass4')
+    //     next(err)
+    //   })
     console.log('pass1')
     return Restaurant.findAll({
-      include: [{ model: User, as: 'FavoritedUsers' }]
+      include: [
+        { model: User, as: 'FavoritedUsers' }
+      ]
     })
       .then(restaurants => {
         console.log('pass2')
         const result = restaurants.map(restaurant => ({
           ...restaurant.toJSON(),
-          description: restaurant.description.substring(0, 200),
           favoritedCount: restaurant.FavoritedUsers.length,
           isFavorited: req.user && req.user.FavoritedRestaurants.some(f => f.id === restaurant.id)
         }))
           .sort((a, b) => b.favoritedCount - a.favoritedCount)
-          .slice(0, 10)
+          .splice(0, 10)
         console.log('pass3')
         return res.render('top-restaurants', { restaurants: result })
       })
@@ -123,4 +145,5 @@ const restaurantController = {
       })
   }
 }
+
 module.exports = restaurantController
