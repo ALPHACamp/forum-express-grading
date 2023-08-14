@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs')
 const { User, Restaurant, Comment } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
+const { getUser } = require('../helpers/auth-helpers')
 
 const userController = {
   signUpPage: (req, res) => {
@@ -37,17 +38,21 @@ const userController = {
     res.redirect('/signin')
   },
   getUser: (req, res, next) => {
-    // 需要：餐廳的img id，userid
     const userId = req.params.id
+    const editPermission = (Number(userId) === getUser(req).id)
     return User.findByPk(userId, { include: { model: Comment, include: Restaurant, nest: true } })
       .then(user => {
         if (!user) throw new Error("User didn't exist!")
-        res.render('users/profile', { user: user.toJSON() })
+        res.render('users/profile', { user: user.toJSON(), editPermission })
       })
       .catch(err => next(err))
   },
   editUser: (req, res, next) => {
     const userId = req.params.id
+    if (Number(userId) !== getUser(req).id) {
+      req.flash('error_messages', 'Permission denied')
+      res.redirect(`/users/${userId}`)
+    }
     return User.findByPk(userId, { raw: true })
       .then(user => {
         if (!user) throw new Error("User didn't exist!")
