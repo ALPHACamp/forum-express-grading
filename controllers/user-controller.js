@@ -58,10 +58,19 @@ const userController = {
     ])
       .then(([user, comments]) => {
         if (!user) throw new Error("User didn't exist!")
-        user = user.toJSON()
+        const commentRestaurant = comments.map(item => item.Restaurant)
+        // 篩選掉重複的commentRestaurant
+        const uniqueCommentRestaurant = commentRestaurant.reduce((uniqueArr, currentObj) => {
+          // 檢查目前的 id 是否已經在 uniqueArr 中存在
+          // 如果 id 還不存在，將目前的物件加入 uniqueArr
+          if (!uniqueArr.some(obj => obj.id === currentObj.id)) {
+            uniqueArr.push(currentObj)
+          }
+          return uniqueArr
+        }, [])
         const isFollowed = req.user && req.user.Followings.some(d => d.id === user.id)
         if (comments !== null) {
-          res.render('users/profile', { user, comments, isFollowed })
+          res.render('users/profile', { user: user.toJSON(), comments: uniqueCommentRestaurant, isFollowed })
         } else {
           throw new Error("Comment doesn't exist!")
         }

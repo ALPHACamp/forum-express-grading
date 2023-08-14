@@ -79,12 +79,12 @@
   <div class="col-md-8">
     <div class="card">
       <div class="card-header">
-        <li><strong>{{comments.length}}</strong>間已評論餐廳</li>
+        <li><strong>{{comments.length}}</strong>已評論餐廳</li>
       </div>
       <div class="card-body">
         {{#each comments}}
-            <a href="/restaurants/{{this.Restaurant.id}}" class="text-decoration-none">
-                <img src="{{this.Restaurant.image}}" width="60" height="60" class="avatar" style="transition: opacity 0.5s; opacity:0;"
+            <a href="/restaurants/{{this.id}}" class="text-decoration-none">
+                <img src="{{this.image}}" width="60" height="60" class="avatar" style="transition: opacity 0.5s; opacity:0;"
                   onload="this.style.opacity=1;" />
             </a>
         {{/each}}
