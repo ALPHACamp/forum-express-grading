@@ -24,11 +24,14 @@ passport.serializeUser((user, cb) => {
 })
 passport.deserializeUser((id, cb) => {
   return User.findByPk(id, {
-    include: [{
-      model: Restaurant, as: 'FavoritedRestaurants'
-    }]
+    include: [{ model: Restaurant, as: 'FavoritedRestaurants' }, { model: Restaurant, as: 'LikedRestaurants' }
+    ]
   })
-    .then(user => cb(null, user.toJSON()))
+    // .then(user => cb(null, user.toJSON()))
+    .then(user => {
+      console.log(user.toJSON())
+      cb(null, user.toJSON())
+    })
     .catch(err => cb(err))
 })
 
