@@ -42,6 +42,11 @@ router.post('/favorite/:restaurantId', authenticated, userController.addFavorite
 
 router.delete('/favorite/:restaurantId', authenticated, userController.removeFavorite)
 
+// 喜歡
+router.post('/like/:restaurantId', authenticated, userController.addLike)
+
+router.delete('/like/:restaurantId', authenticated, userController.removeLike)
+
 // 個人頁面
 router.get('/users/:id', authenticated, userController.getUser)
 
