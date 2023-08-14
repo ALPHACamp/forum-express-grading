@@ -29,6 +29,7 @@ module.exports = {
     await queryInterface.bulkInsert('Users', await users.map(user => ({
       ...user,
       password: bcrypt.hashSync(user.password, bcrypt.genSaltSync(10), null),
+      image: `https://loremflickr.com/320/240/human/?random=${Math.random() * 100}`,
       created_at: new Date(),
       updated_at: new Date()
     })), {})
