@@ -31,7 +31,6 @@ router.post(
   // 驗證結果
   userController.signIn
 )
-
 // 登出
 router.get('/logout', userController.logout)
 
@@ -70,6 +69,15 @@ router.delete(
 )
 // 提交評論
 router.post('/comments', authenticated, commentController.postComment)
+
+// 加入收藏
+router.post('/favorite/:restaurantId', authenticated, userController.addFavorite)
+// 移除收藏
+router.delete(
+  '/favorite/:restaurantId',
+  authenticated,
+  userController.removeFavorite
+)
 
 // 設定 fallback 路由, 其他路由條件都不符合時，最終會通過的路由，將使用者重新導回 /restaurants
 router.use('/', (req, res) => res.redirect('/restaurants'))
