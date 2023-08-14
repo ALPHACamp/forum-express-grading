@@ -1,7 +1,7 @@
 <div class="card m-auto shadow p-3 mb-5 bg-white rounded">
   <div class="row g-0">
     <div class="col-md-4 d-flex align-items-center justify-content-center">
-      <img class="rounded-circle" src="{{user.image}}"
+      <img class="rounded-circle" src={{#if user.image }}"{{user.image}}" {{else}}"https://loremflickr.com/320/240/person/?lock=81"{{/if}}
         style="width: 200px; height: 200px; margin-bottom: 25px; transition: opacity 0.5s; opacity:0;"
         onload="this.style.opacity=1;">
     </div>
@@ -9,11 +9,29 @@
       <div class="card-body">
         <h2 class="card-title">{{ user.name }}</h2>
         <p class="card-text">{{ user.email }}</p>
+        <p class="card-text">{{ user.Comments.length }} 已評論餐廳</p>
         <div class="d-flex justify-content-start mt-3">
           <a class="btn btn-primary me-2" href="/users/{{user.id}}/edit">Edit</a>
           <a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
         </div>
       </div>
     </div>
+  </div>
+</div>
+
+<div class="card">
+  <h5 class="card-header">
+    {{ user.Comments.length }} 已評論餐廳
+  </h5> 
+  <div class="card-body">
+    {{#if user.Comments}}
+      {{#each user.Comments}}
+      <a href="/restaurants/{{this.restaurantId}}"><img class="rounded-circle me-3" src="{{this.Restaurant.image}}"
+        style="width: 100px; height: 100px; margin-bottom: 25px; transition: opacity 0.5s; opacity:0;"
+        onload="this.style.opacity=1;"></a>
+      {{/each}}
+    {{else}}
+    <p>目前沒有評論</p>
+    {{/if}}
   </div>
 </div>
