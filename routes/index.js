@@ -61,8 +61,6 @@ router.get(
 router.get('/restaurants/:id', authenticated, restController.getRestaurant)
 // 前台首頁
 router.get('/restaurants', authenticated, restController.getRestaurants)
-// 設定 fallback 路由, 其他路由條件都不符合時，最終會通過的路由，將使用者重新導回 /restaurants
-router.use('/', (req, res) => res.redirect('/restaurants'))
 
 // 刪除評論
 router.delete(
@@ -72,6 +70,9 @@ router.delete(
 )
 // 提交評論
 router.post('/comments', authenticated, commentController.postComment)
+
+// 設定 fallback 路由, 其他路由條件都不符合時，最終會通過的路由，將使用者重新導回 /restaurants
+router.use('/', (req, res) => res.redirect('/restaurants'))
 
 // err
 router.use('/', generalErrorHandler)
