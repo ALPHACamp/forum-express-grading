@@ -1,0 +1,13 @@
+<h1>餐廳後台</h1>
+
+<ul class="nav nav-tabs">
+  <li class="nav-item">
+    <a class="nav-link {{#if (compare route 'restaurants')}} active disabled {{/if}}" aria-current="page" href="/admin/restaurants">Restaurants</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link {{#if (compare route 'users')}} active disabled {{/if}}" href="/admin/users" >Users</a>
+  </li>
+    <li class="nav-item">
+    <a class="nav-link {{#if (compare route 'categories') }} active disabled {{/if}}"href="/admin/categories">Categories</a>
+  </li>
+</ul>
