@@ -34,8 +34,8 @@ passport.deserializeUser((id, cb) => {
       //! as: 表示想要引入的關係，必須跟 user model 中設定的關聯名稱相同
       { model: Restaurant, as: 'FavoritedRestaurants' }, // action 取得 req.user.FavoritedRestaurants
       { model: Restaurant, as: 'LikedRestaurants' }, // action 取得 req.user.LikedRestaurants
-      { model: User, as: 'Followers' },
-      { model: User, as: 'Followings' }
+      { model: User, as: 'Followers' }, // action 取得 req.user.Followers
+      { model: User, as: 'Followings' } // action 取得 req.user.Followings
     ]
   })
     .then(user => cb(null, user.toJSON()))
