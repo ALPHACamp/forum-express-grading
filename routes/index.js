@@ -13,10 +13,12 @@ const upload = require('../middleware/multer')
 
 // 後台
 router.use('/admin', authenticatedAdmin, admin)
+
 // 註冊頁
 router.get('/signup', userController.signUpPage)
 // 提交註冊
 router.post('/signup', userController.signUp)
+
 // 登入頁
 router.get('/signin', userController.signInPage)
 // 登入驗證
@@ -32,6 +34,21 @@ router.post(
 
 // 登出
 router.get('/logout', userController.logout)
+
+// 瀏覽編輯 Profile 頁面
+router.get('/users/:id/edit', authenticated, userController.editUser)
+// 瀏覽 Profile
+router.get('/users/:id', authenticated, userController.getUser)
+// 編輯 Profile
+router.put(
+  '/users/:id',
+  authenticated,
+  upload.single('image'),
+  userController.putUser
+)
+
+// feeds
+router.get('/restaurants/feeds', authenticated, restController.getFeeds)
 
 // Dashboard
 router.get(
@@ -54,20 +71,9 @@ router.delete(
 // 提交評論
 router.post('/comments', authenticated, commentController.postComment)
 
-// 瀏覽 Profile
-router.get('/users/:id', authenticated, userController.getUser)
-// 瀏覽編輯 Profile 頁面
-router.get('/users/:id/edit', authenticated, userController.editUser)
-// 編輯 Profile
-router.put(
-  '/users/:id',
-  authenticated,
-  upload.single('image'),
-  userController.putUser
-)
-
 // 設定 fallback 路由, 其他路由條件都不符合時，最終會通過的路由，將使用者重新導回 /restaurants
 router.use('/', (req, res) => res.redirect('/restaurants'))
+
 // err
 router.use('/', generalErrorHandler)
 

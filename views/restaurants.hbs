@@ -1,5 +1,7 @@
 <div class="row mt-3 mb-5">
-  <div class="col-md-12 m-2">    
+  <div class="col-md-12 m-2">
+  <!--最新動態-->
+    {{> restaurant-tabs route='index'}}    
     <ul class="nav nav-pills">
       <li class="nav-item">
         <a class="nav-link {{#ifCond '' categoryId}}active{{/ifCond}}" href="?categoryId=">全部</a>
