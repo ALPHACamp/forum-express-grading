@@ -37,6 +37,11 @@ router.post('/comments', authenticated, commentController.postComment)
 
 router.delete('/comments/:id', authenticatedAdmin, commentController.deleteComment)
 
+// 收藏
+router.post('/favorite/:restaurantId', authenticated, userController.addFavorite)
+
+router.delete('/favorite/:restaurantId', authenticated, userController.removeFavorite)
+
 // 個人頁面
 router.get('/users/:id', authenticated, userController.getUser)
 
