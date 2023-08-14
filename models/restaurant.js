@@ -22,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
       Restaurant.belongsToMany(models.User, {
         through: models.Like,
         foreignKey: 'restaurantId',
-        as: 'LikeUsers'
+        as: 'LikedUsers'
       })
     }
   };
