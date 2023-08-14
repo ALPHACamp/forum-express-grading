@@ -1,0 +1,45 @@
+<div class="row mb-5">
+  <div class="col-md-4">
+    <img
+      class="img-responsive center-block"
+      src="{{user.image}}"
+      style="width: 250px; margin-bottom: 25px; transition: opacity 0.5s; opacity:0;"
+      onload="this.style.opacity=1;"
+    />
+    <br />
+  </div>
+
+  <div class="col-md-8">
+    <ul class="list-unstyled">
+      <li><strong>{{user.name}}</strong></li>
+      <li>{{user.email}}</li>
+    </ul>
+    <a
+      class="btn btn-primary"
+      href="/users/{{user.id}}/edit"
+      role="button"
+    >Edit</a>
+  </div>
+  <hr />
+  <!--評論-->
+  <h2>{{count}}已評論餐廳</h2>
+  <!--評論的餐廳-->
+  {{#each comments}}
+    <div class="card" style="width: 18rem;">
+      <div class="card-body">
+        <a href="/restaurants/{{this.Restaurant.id}}">
+          <img
+            src="{{this.Restaurant.image}}"
+            style="max-width: 60px"
+            class="m-1"
+          />
+        </a>
+        <a href="/restaurants/{{this.Restaurant.id}}">
+          <h5 class="card-title">{{this.Restaurant.name}}</h5>
+        </a>
+      </div>
+    </div>
+  {{/each}}
+  {{#ifCond count 0}} <h5>目前沒有評論</h5> {{/ifCond}}
+  <!--評論-->
+</div>
