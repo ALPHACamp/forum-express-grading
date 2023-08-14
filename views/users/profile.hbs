@@ -10,7 +10,9 @@
         <p class="card-text">
           <strong>{{user.Comments.length}}</strong> 已評論餐廳
         </p>
-        <a href="/users/{{ user.id }}/edit" class="btn btn-primary">edit</a>
+        {{#ifCond user.id currentUser.id}}
+         <a href="/users/{{ user.id }}/edit" class="btn btn-primary">edit</a>
+        {{/ifCond}}
       </div>
     </div>
   </div>
