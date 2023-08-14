@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs')
-const { User, Restaurant, Comment, Favorite, Like } = require('../models')
+const { User, Restaurant, Comment, Favorite, Like, Followship } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const userController = {
@@ -38,15 +38,17 @@ const userController = {
   },
   getUser: (req, res, next) => {
     const userId = req.params.id
+    const editPermission = (Number(userId) === Number(req.user.id))
     return User.findByPk(userId, { include: { model: Comment, include: Restaurant, nest: true } })
       .then(user => {
         if (!user) throw new Error("User didn't exist!")
-        res.render('users/profile', { user: user.toJSON() })
+        res.render('users/profile', { user: user.toJSON(), editPermission })
       })
       .catch(err => next(err))
   },
   editUser: (req, res, next) => {
     const userId = req.params.id
+    if (Number(userId) !== req.user.id) throw new Error('Permission denied.')
     return User.findByPk(userId, { raw: true })
       .then(user => {
         if (!user) throw new Error("User didn't exist!")
@@ -152,7 +154,7 @@ const userController = {
       .then(() => res.redirect('back'))
       .catch(err => next(err))
   },
-  getTopUser: (req, res, next) => {
+  getTopUsers: (req, res, next) => {
     return User.findAll({
       include: [{ model: User, as: 'Followers'}]
     })
@@ -160,10 +162,47 @@ const userController = {
         users = users.map(user => ({
           ...user.toJSON(),
           followerCount: user.Followers.length,
-          isFollowed: req.user.Following.some(f => f.id === user.id)
+          isFollowed: req.user.Followings.some(f => f.id === user.id)
         }))
+        users = users.sort((a,b) => b.followerCount - a.followerCount)
         res.render('top-users', { users })
       })
+      .catch(err => next(err))
+  },
+  addFollowing: (req, res, next) => {
+    const { userId } = req.params
+    Promise.all([
+      User.findByPk(userId),
+      Followship.findOne({
+        follower: req.user.id,
+        following: userId
+      })
+    ])
+      .then(([user, followship]) => {
+        if (!user) throw new Error("User did't exist")
+        if (followship) throw new Error('You are already following this user!')
+        return Followship.create({
+          followerId: req.user.id,
+          followingId: userId
+        })
+      })
+      .then(() => res.redirect('back'))
+      .catch(err => next(err))
+  },
+  removeFollowing: (req, res, next) => {
+    Followship.findOne({
+      where: {
+        followerId: req.user.id,
+        followingId: req.params.userId
+      }
+    })
+      .then(followship => {
+        if (!followship) throw new Error("You haven't followed this user!")
+        return followship.destroy()
+      })
+      .then(() => res.redirect('back'))
+      .catch(err => next(err))
   }
 }
+
 module.exports = userController

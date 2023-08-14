@@ -12,30 +12,14 @@
         <ul class="list-unstyled">
           <li><strong>Email: </strong>{{user.email}}</li>
         </ul>
+        {{#if editPermission}}
         <a class="btn btn-outline-secondary" href="/users/{{user.id}}/edit">Edit</a>
+        {{/if}}
       </div>
     </div>
   </div>
 </div>
 
-{{!-- <div class="mb-4 text-center">
-  <h1 class="h3 font-weight-normal mb-3">Profile</h1>
-</div>
-<div class="col-md-4 d-flex">
-  <div>
-    <img class="img-responsive center-block" src="{{user.image}}"
-      style="width: 500px; margin-bottom: 25px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
-  </div>
-  <div class="well mx-5">
-    <ul class="list-unstyled">
-      <li><strong>Name: </strong>{{user.name}}</li>
-    </ul>
-    <ul class="list-unstyled">
-      <li><strong>Email: </strong>{{user.email}}</li>
-    </ul>
-    <a class="btn btn-outline-secondary" href="/users/{{user.id}}/edit">Edit</a>
-  </div>
-</div> --}}
 
 <div class="card mt-3">
   <div class="card-header">
