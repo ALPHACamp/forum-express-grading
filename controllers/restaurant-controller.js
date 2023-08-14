@@ -25,7 +25,7 @@ const restaurantController = {
     ])
       .then(([restaurants, categories]) => {
         const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
-        const LikedRestaurantsId = req.user && req.user.LikedRestaurants.map(fr => fr.id)
+        const LikedRestaurantsId = req.user && req.user.LikedRestaurants.map(lr => lr.id)
         const data = restaurants.rows.map(r => ({
           ...r,
           description: r.description.substring(0, 50),
@@ -37,7 +37,8 @@ const restaurantController = {
       .catch(err => next(err))
   },
   getRestaurant: (req, res, next) => {
-    return Restaurant.findByPk(req.params.id, {
+    const { id } = req.params
+    return Restaurant.findByPk(id, {
       include: [
         Category,
         { model: Comment, include: User },
@@ -49,32 +50,34 @@ const restaurantController = {
       return restaurant.increment('viewCounts', { by: 1 })
         .then(() => restaurant.reload())
     }).then(restaurant => {
-      const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id)
-      const isLiked = restaurant.LikedUsers.some(f => f.id === req.user.id)
+      const userId = req.user ? req.user.id : null
+      const isFavorited = restaurant.FavoritedUsers.some(f => f.id === userId)
+      const isLiked = restaurant.LikedUsers.some(l => l.id === userId)
       const newRestaurant = restaurant.toJSON()
-      res.render('restaurant', { restaurant: newRestaurant, isFavorited, isLiked })
+      return res.render('restaurant', { restaurant: newRestaurant, isFavorited, isLiked })
     }).catch(err => next(err))
   },
   getDashboard: (req, res, next) => {
+    const { id } = req.params
     return Promise.all([
-      Restaurant.findByPk(req.params.id, {
+      Restaurant.findByPk(id, {
         include: Category,
         nest: true,
         raw: true
       }),
       Comment.findAndCountAll({
-        where: { restaurantId: req.params.id },
+        where: { restaurantId: id },
         include: Restaurant
       }),
       Favorite.findAndCountAll({
-        where: { restaurantId: req.params.id }
+        where: { restaurantId: id }
       })
     ])
       .then(([restaurant, { count: commentNum }, { count: favoriteNum }]) => {
         if (!restaurant) throw new Error("Restaurant doesn't exist")
 
         restaurant.commentNum = commentNum
-        restaurant.favotiteNum = favoriteNum
+        restaurant.favoriteNum = favoriteNum
         res.render('dashboard', { restaurant })
       })
       .catch(err => next(err))

@@ -2,7 +2,6 @@ const bcrypt = require('bcryptjs')
 const { User, Comment, Restaurant, Favorite, Like } = require('../models')
 // const { localFileHandler } = require('../helpers/file-helpers')
 const { imgurFileHandler } = require('../helpers/file-helpers')
-const { where } = require('sequelize')
 const userController = {
   signUpPage: (req, res) => {
     res.render('signup')
@@ -139,7 +138,10 @@ const userController = {
       })
     ]).then(([restaurant, like]) => {
       if (!restaurant) throw new Error("Restaurant didn't exist!")
-      if (like) throw new Error('You have liked this restaurant!')
+      if (like) {
+        req.flash('error_messages', 'You have liked this restaurant!')
+        return res.redirect('back')
+      }
 
       return Like.create({
         userId: req.user.id,
