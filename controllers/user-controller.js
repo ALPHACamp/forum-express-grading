@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs')
 const db = require('../models')
-const { User, Comment, Restaurant, Favorite, Like } = db
+const { User, Comment, Restaurant, Favorite, Like, Followship } = db
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const userController = {
@@ -169,13 +169,50 @@ const userController = {
       }]
     })
       .then(users => {
-        users.map(user => ({
-          ...user.toJSON(),
-          followerCount: user.Followers.length,
-          isFollowed: req.user.Followings.some(f => f.id === user.id)
-        }))
-        res.render('top-users', { users: users })
+        const result = users
+          .map(user => ({
+            ...user.toJSON(),
+            followerCount: user.Followers.length,
+            isFollowed: req.user.Followings.some(f => f.id === user.id)
+          }))
+          .sort((a, b) => b.followerCount - a.followerCount)
+        res.render('top-users', { users: result })
       })
+      .catch(err => next(err))
+  },
+  addFollowing: (req, res, next) => {
+    return Promise.all([
+      User.findByPk(req.params.id),
+      Followship.findOne({
+        where: {
+          followerId: req.user.id,
+          followingId: req.params.id
+        }
+      })
+    ])
+      .then(([user, followship]) => {
+        if (!user) throw new Error('The user does not exist!')
+        if (followship) throw new Error('You already followed this user!')
+        return Followship.create({
+          followerId: req.user.id,
+          followingId: req.params.id
+        })
+      })
+      .then(() => res.redirect('back'))
+      .catch(err => next(err))
+  },
+  removeFollowing: (req, res, next) => {
+    return Followship.findOne({
+      where: {
+        followerId: req.user.id,
+        followingId: req.params.id
+      }
+    })
+      .then(followship => {
+        if (!followship) throw new Error('You have not followed this user yet!')
+        return followship.destroy()
+      })
+      .then(() => res.redirect('back'))
       .catch(err => next(err))
   }
 }
