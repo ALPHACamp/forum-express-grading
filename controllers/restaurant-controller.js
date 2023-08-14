@@ -1,4 +1,4 @@
-const { Restaurant, Category, Comment, User, Like } = require('../models')
+const { Restaurant, Category, Comment, User, Favorite } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
 
 const restaurantController = {
@@ -65,12 +65,16 @@ const restaurantController = {
       Comment.findAndCountAll({
         where: { restaurantId: req.params.id },
         include: Restaurant
+      }),
+      Favorite.findAndCountAll({
+        where: { restaurantId: req.params.id }
       })
     ])
-      .then(([restaurant, { count: commentNum, rows: comments }]) => {
+      .then(([restaurant, { count: commentNum }, { count: favoriteNum }]) => {
         if (!restaurant) throw new Error("Restaurant doesn't exist")
 
         restaurant.commentNum = commentNum
+        restaurant.favotiteNum = favoriteNum
         res.render('dashboard', { restaurant })
       })
       .catch(err => next(err))

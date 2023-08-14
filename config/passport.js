@@ -27,11 +27,7 @@ passport.deserializeUser((id, cb) => {
     include: [{ model: Restaurant, as: 'FavoritedRestaurants' }, { model: Restaurant, as: 'LikedRestaurants' }
     ]
   })
-    // .then(user => cb(null, user.toJSON()))
-    .then(user => {
-      console.log(user.toJSON())
-      cb(null, user.toJSON())
-    })
+    .then(user => cb(null, user.toJSON()))
     .catch(err => cb(err))
 })
 
