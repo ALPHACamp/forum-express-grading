@@ -33,7 +33,6 @@ const adminController = {
       raw: true // 找到後整理格式再回傳
     })
       .then(restaurant => {
-        console.log(restaurant)
         if (!restaurant) { throw new Error("The restaurant didn't exist!") }
         res.render('admin/restaurant', { restaurant })
       })
@@ -44,7 +43,6 @@ const adminController = {
       raw: true // 找到後整理格式再回傳
     })
       .then(restaurant => {
-        console.log(restaurant)
         if (!restaurant) { throw new Error("The restaurant didn't exist!") }
         res.render('admin/edit-restaurant', { restaurant })
       })
@@ -68,6 +66,15 @@ const adminController = {
         req.flash('success_messages', 'restaurant was successfully to update')
         res.redirect('/admin/restaurants')
       })
+      .catch(err => next(err))
+  },
+  deleteRestaurant: (req, res, next) => {
+    Restaurant.findByPk(req.params.id)
+      .then(restaurant => {
+        if (!restaurant) { throw new Error("The restaurant didn't exist!") }
+        return restaurant.destroy()
+      })
+      .then(() => res.redirect('admin/restaurants'))
       .catch(err => next(err))
   }
 }
