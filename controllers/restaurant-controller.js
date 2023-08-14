@@ -45,7 +45,7 @@ const restaurantController = {
       ]
     })
       .then(restaurant => {
-        console.log(restaurant.Comments[0].dataValues)
+        // console.log(restaurant.Comments[0].dataValues)
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         return restaurant.increment('viewCounts', { by: 1 })
       })
@@ -73,14 +73,14 @@ const restaurantController = {
     return Promise.all([
       Restaurant.findAll({
         limit: 10,
-        order: [['createAt', 'DESC']], // 降序
+        order: [['createdAt', 'DESC']], // 降序
         include: [Category], // 引入的 Model
         raw: true,
         nest: true
       }),
       Comment.findAll({
         limit: 10,
-        order: [['createAt', 'DESC']],
+        order: [['createdAt', 'DESC']],
         include: [User, Restaurant],
         raw: true,
         nest: true
