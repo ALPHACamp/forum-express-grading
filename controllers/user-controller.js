@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs')
 const { User, Comment, Restaurant, Favorite, Like } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
+const { getUser } = require('../helpers/auth-helpers')
 const userController = {
   signUpPage: (req, res) => {
     return res.render('signup')
@@ -48,6 +49,7 @@ const userController = {
       .catch(err => next(err))
   },
   editUser: (req, res, next) => {
+    if (getUser(req).id !== Number(req.params.id)) throw new Error("You can't edit other's profile")
     return User.findByPk(req.params.id, {
       raw: true
     })
