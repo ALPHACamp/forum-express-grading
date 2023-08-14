@@ -20,9 +20,11 @@ const restaurantController = {
       Category.findAll({ raw: true })
     ])
       .then(([restaurants, categories]) => {
+        const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
         const data = restaurants.rows.map(r => ({
           ...r,
-          description: r.description.substring(0, 50)
+          description: r.description.substring(0, 50),
+          isFavorited: favoritedRestaurantsId.includes(r.id)
         }))
         return res.render('restaurants', { restaurants: data, categories, categoryId, pagination: getPagination(limit, page, restaurants.count) })
       })
@@ -31,12 +33,13 @@ const restaurantController = {
   getRestaurant: (req, res, next) => {
     const { id } = req.params
     return Promise.all([
-      Restaurant.findByPk(id, { include: [Category, { model: Comment, include: User }] }),
+      Restaurant.findByPk(id, { include: [Category, { model: Comment, include: User }, { model: User, as: 'FavoritedUsers' }] }),
       Restaurant.increment({ view_counts: 1 }, { where: { id } })
     ])
       .then(([restaurant, viewCounts]) => {
         if (!restaurant) throw new Error('Restaurant didnt exist!')
-        return res.render('restaurant', { restaurant: restaurant.toJSON() })
+        const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id)
+        return res.render('restaurant', { restaurant: restaurant.toJSON(), isFavorited })
       })
       .catch(err => next(err))
   },
