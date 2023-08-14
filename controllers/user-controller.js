@@ -59,6 +59,7 @@ const userController = {
       raw: true
     })
       .then(user => {
+        if (Number(req.params.id) !== Number(req.user.id)) throw new Error('No permission to edit this user!')
         if (!user) throw new Error('The user does not exist')
         res.render('users/edit', { user })
       })
