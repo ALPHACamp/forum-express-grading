@@ -10,7 +10,7 @@ const restaurantController = {
     const offset = getOffset(limit, page)
     return Promise.all([
       Restaurant.findAndCountAll({
-        include: Category,
+        include: [Category],
         where: {
           ...categoryId ? { categoryId } : {} // 檢查 categoryId 是否為空值
         },
@@ -22,12 +22,13 @@ const restaurantController = {
       Category.findAll({ raw: true })
     ])
       .then(([restaurants, categories]) => {
-        const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
+        const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id) // 回傳restaurant.id的陣列
+        const likedRestaurantsId = req.user && req.user.LikedRestaurants.map(lr => lr.id)
         const data = restaurants.rows.map(r => ({
           ...r,
           description: r.description.substring(0, 50),
-          isFavorited: favoritedRestaurantsId.includes(r.id)
-
+          isFavorited: favoritedRestaurantsId.includes(r.id),
+          isLiked: likedRestaurantsId.includes(r.id)
         }))
         // const data = restaurants.map(r => {
         //   r.description = r.description.substring(0, 50)
@@ -44,12 +45,25 @@ const restaurantController = {
   },
   getRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
-      include: [Category, { model: Comment, include: User }]
+      include: [
+        Category,
+        { model: Comment, include: User },
+        { model: User, as: 'FavoritedUsers' },
+        { model: User, as: 'LikedUsers' }
+      ]
     })
-      .then(async restaurant => {
+      .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
-        await restaurant.increment('viewCounts', { by: 1 })
-        res.render('restaurant', { restaurant: restaurant.toJSON() })
+        return restaurant.increment('viewCounts', { by: 1 })
+      })
+      .then(restaurant => {
+        const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id) // some 只要找到一個就會立刻回傳 true，後面的項目不會繼續執行
+        const isLiked = restaurant.LikedUsers.some(l => l.id === req.user.id)
+        res.render('restaurant', {
+          restaurant: restaurant.toJSON(),
+          isFavorited,
+          isLiked
+        })
       })
       .catch(err => next(err))
   },
