@@ -62,7 +62,7 @@ const userController = {
 
     const { file } = req
 
-    Promise.all([
+    return Promise.all([
       User.findByPk(req.params.id),
       imgurFileHandler(file)
     ])
