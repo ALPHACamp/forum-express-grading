@@ -21,6 +21,16 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'userId',
         as: 'LikedRestaurants'
       })
+      User.belongsToMany(User, {
+        through: models.Followship,
+        foreignKey: 'followingId', // 我的userId是5; 所有followingId有5的人
+        as: 'Followers' // 就是我的followers
+      })
+      User.belongsToMany(User, {
+        through: models.Followship,
+        foreignKey: 'followerId', // 所有followerId有5的人
+        as: 'Followings' // 就是我在following的人
+      })
     }
   };
   User.init({
