@@ -1,5 +1,5 @@
 const { Restaurant, Category } = require('../models')
-const restaurantController = {
+const restController = {
   getRestaurants: (req, res) => {
     return Restaurant.findAll({
       include: Category,
@@ -28,6 +28,18 @@ const restaurantController = {
         })
       })
       .catch(err => next(err))
+  },
+  getDashboard: (req, res, next) => {
+    return Restaurant.findByPk(req.params.id, {
+      include: [Category],
+      nest: true,
+      raw: true
+    }).then(restaurant => {
+      if (!restaurant) throw new Error("Restaurant didn't exist!")
+      return res.render('dashboard', {
+        restaurant
+      })
+    }).catch(err => next(err))
   }
 }
-module.exports = restaurantController
+module.exports = restController
