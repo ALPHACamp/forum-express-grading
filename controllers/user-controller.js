@@ -138,18 +138,14 @@ const userController = {
       })
     ]).then(([restaurant, like]) => {
       if (!restaurant) throw new Error("Restaurant didn't exist!")
-      if (like) {
-        req.flash('error_messages', 'You have liked this restaurant!')
-        return res.redirect('back')
-      }
+      if (like) throw new Error('You have liked this restaurant!')
 
       return Like.create({
         userId: req.user.id,
         restaurantId
       })
-        .then(() => res.redirect('back'))
-        .catch(err => next(err))
-    })
+    }).then(() => res.redirect('back'))
+      .catch(err => next(err))
   },
   removeLike: (req, res, next) => {
     return Like.findOne({
