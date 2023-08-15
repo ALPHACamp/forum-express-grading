@@ -1,0 +1,27 @@
+<div class="row mb-5">
+  <div class="col-md-12">
+    <h1>{{restaurant.name}}</h1>
+    <p>[{{restaurant.Category.name}}]</p>
+  </div>
+  <hr>
+  <div class="mb-3">
+    <ul class="list-group"
+        style="width: 20rem;">
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        瀏覽次數
+        <span class="badge bg-primary rounded-pill">{{restaurant.view_counts}}</span>
+      </li>
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        評論數
+        <span class="badge bg-primary rounded-pill"> - </span>
+      </li>
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        收藏數
+        <span class="badge bg-primary rounded-pill"> - </span>
+      </li>
+    </ul>
+  </div>
+  <hr>
+</div>
+<a class="btn btn-outline-secondary"
+   href="javascript:history.back()">Back</a>
