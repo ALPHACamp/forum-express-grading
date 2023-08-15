@@ -23,9 +23,16 @@ const restaurantController = {
       }),
       Category.findAll({ raw: true })
     ]).then(([restaurants, categories]) => {
+      // 簡化 isFavorited
+      const favoritedRestaurantsId =
+        req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
+
       const data = restaurants.rows.map(r => ({
         ...r,
-        description: r.description.substring(0, 50)
+        description: r.description.substring(0, 50),
+        // 取出使用者的收藏清單，然後 map 成 id 清單
+        // isFavorited: req.user && req.user.FavoriteRestaurants.map(fr => fr.id).include(r.id)
+        isFavorited: favoritedRestaurantsId.includes(r.id)
       }))
       return res.render('restaurants', {
         restaurants: data,
