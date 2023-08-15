@@ -48,17 +48,20 @@ const restaurantController = {
         // 從 categoryId 取 Category name
         Category,
         // 從 restaurant 找 Comment model 再找 comment 的 user
-        { model: Comment, include: User }
+        { model: Comment, include: User },
+        { model: User, as: 'FavoritedUsers' }
       ]
     })
       .then(restaurant => {
         // console.log(restaurant.Comments[0].dataValues)
+        const isFavorited = restaurant.FavoritedUsers.some(
+          f => f.id === req.user.id
+        )
         if (!restaurant) throw new Error("Restaurant didn't exist!")
-        return restaurant.increment('viewCounts', { by: 1 })
-      })
-      .then(restaurant => {
+        restaurant.increment('viewCounts', { by: 1 })
         res.render('restaurant', {
-          restaurant: restaurant.toJSON()
+          restaurant: restaurant.toJSON(),
+          isFavorited
         })
       })
       .catch(err => next(err))
