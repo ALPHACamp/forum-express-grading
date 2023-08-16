@@ -24,7 +24,7 @@
       href="/restaurants/{{restaurant.id}}/dashboard"
       class="btn btn-primary"
     >Dashboard</a>
-    <!--加到最愛-->
+    <!--收藏清單-->
         {{#if isFavorited }}
       <form action="/favorite/{{restaurant.id}}?_method=DELETE" method="POST" style="display: contents;">
         <button type="submit" class="btn btn-danger">移除最愛</button>
@@ -34,8 +34,19 @@
         <button type="submit" class="btn btn-primary">加到最愛</button>
       </form>
     {{/if}}
+    <!--like 清單-->
+    {{#if isLiked}}
+      <form action="/like/{{restaurant.id}}?_method=DELETE" method="POST">
+        <button type="submit" class="btn btn-danger m-1">UnLike</button>
+      </form>
+    {{else}}
+      <form action="/like/{{restaurant.id}}" method="POST">
+        <button type="submit" class="btn btn-primary m-1">Like</button>
+      </form>
+    {{/if}}
   </div>
   <hr />
+  
 {{!-- Comment --}}
 <h3 class="mb-3">所有評論：</h3>
 {{#each restaurant.Comments}}

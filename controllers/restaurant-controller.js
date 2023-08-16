@@ -26,13 +26,16 @@ const restaurantController = {
       // 簡化 isFavorited
       const favoritedRestaurantsId =
         req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
+      // likedRestaurantsId
+      const likedRestaurantsId =
+        req.user && req.user.LikedRestaurants.map(lr => lr.id)
 
       const data = restaurants.rows.map(r => ({
         ...r,
         description: r.description.substring(0, 50),
         // 取出使用者的收藏清單，然後 map 成 id 清單
-        // isFavorited: req.user && req.user.FavoriteRestaurants.map(fr => fr.id).include(r.id)
-        isFavorited: favoritedRestaurantsId.includes(r.id)
+        isFavorited: favoritedRestaurantsId.includes(r.id),
+        isLiked: likedRestaurantsId.includes(r.id)
       }))
       return res.render('restaurants', {
         restaurants: data,
@@ -49,7 +52,8 @@ const restaurantController = {
         Category,
         // 從 restaurant 找 Comment model 再找 comment 的 user
         { model: Comment, include: User },
-        { model: User, as: 'FavoritedUsers' }
+        { model: User, as: 'FavoritedUsers' },
+        { model: User, as: 'LikedUsers' } // restaurant.LikedUsers[]
       ]
     })
       .then(restaurant => {
@@ -57,11 +61,15 @@ const restaurantController = {
         const isFavorited = restaurant.FavoritedUsers.some(
           f => f.id === req.user.id
         )
+        const isLiked = restaurant.LikedUsers.some(
+          l => l.id === req.user.id
+        )
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         restaurant.increment('viewCounts', { by: 1 })
         res.render('restaurant', {
           restaurant: restaurant.toJSON(),
-          isFavorited
+          isFavorited,
+          isLiked
         })
       })
       .catch(err => next(err))
