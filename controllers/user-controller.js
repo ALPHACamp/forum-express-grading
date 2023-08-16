@@ -4,6 +4,7 @@ const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const userController = {
   signUpPage: (req, res) => {
+    console.log('signup page')
     res.render('signup')
   },
   signUp: (req, res, next) => {
