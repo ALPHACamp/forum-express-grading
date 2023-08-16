@@ -17,6 +17,19 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'userId',
         as: 'LikedRestaurants'
       })
+      // 自關聯 (Self-referential Relationships) 或自連接 (Self Joins)
+      // 從 followingId(5) 找 Followers ，找追蹤登入者( userId = 5)的人
+      User.belongsToMany(User, {
+        through: models.Followship,
+        foreignKey: 'followingId',
+        as: 'Followers'
+      })
+      // 從 followerId(5) 找 Followings，找登入者追蹤的人
+      User.belongsToMany(User, {
+        through: models.Followship,
+        foreignKey: 'followerId',
+        as: 'Followings'
+      })
     }
   }
   User.init(

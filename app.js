@@ -51,3 +51,7 @@ app.listen(port, () => {
 })
 
 module.exports = app
+
+// heroku run npx sequelize db:migrate:undo:all
+// heroku run npx sequelize db:migrate -a whispering-citadel-75835
+// heroku run npx sequelize db:seed:all -a whispering-citadel-75835
