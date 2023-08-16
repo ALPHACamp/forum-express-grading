@@ -1,7 +1,5 @@
-const { Restaurant, Category, Comment, User, Favorite, Sequelize } = require('../models')
+const { Restaurant, Category, Comment, User } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper') // 加入這行
-const favorite = require('../models/favorite')
-const restaurant = require('../models/restaurant')
 
 const restaurantController = {
   getRestaurants: (req, res, next) => { // 補上 next
