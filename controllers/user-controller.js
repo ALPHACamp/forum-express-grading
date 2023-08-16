@@ -44,7 +44,7 @@ const userController = {
     })
       .then(user => {
         if (!user) throw new Error("User didn't exist!")
-        res.render('users/profile', { user: user.toJSON() })
+        res.render('users/profile', { view_user: user.toJSON() })
       })
       .catch(err => next(err))
   },
@@ -54,7 +54,7 @@ const userController = {
     })
       .then(user => {
         if (!user) throw new Error("User didn't exist!")
-        if (Number(req.params.id) !== user.id) return
+        if (Number(req.params.id) !== req.user.id) throw new Error('無法編輯他人資訊')
         return res.render('users/edit', { user })
       })
       .catch(err => next(err))
