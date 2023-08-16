@@ -52,14 +52,20 @@ const restaurantController = {
       .catch(err => next(err))
   },
   getDashboard: (req, res, next) => {
-    return Restaurant.findByPk(req.params.id, {
-      include: Category,
-      nest: true,
-      raw: true
-    })
-      .then(restaurant => {
+    return Promise.all([
+      Restaurant.findByPk(req.params.id, {
+        include: Category,
+        raw: true,
+        nest: true
+      }),
+      Comment.findAll({
+        raw: true,
+        where: { restaurant_id: req.params.id }
+      })
+    ])
+      .then(([restaurant, comments]) => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
-        res.render('dashboard', { restaurant })
+        res.render('dashboard', { restaurant, comments })
       })
       .catch(err => next(err))
   }
