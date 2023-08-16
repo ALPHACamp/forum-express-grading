@@ -6,7 +6,11 @@
   <hr>
   <ul>
     <li>瀏覽次數：{{restaurant.viewCounts}}</li>
-    <li>評論數：-</li>
+    {{#if restaurant.Comments.length}}
+    <li>評論數：{{restaurant.Comments.length}}</li>
+    {{else}}
+    <li>評論數：0</li>
+    {{/if}}
     <li>收藏數：-</li>
   </ul>
   <br>
