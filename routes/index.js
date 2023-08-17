@@ -34,6 +34,9 @@ router.post(
 // 登出
 router.get('/logout', userController.logout)
 
+// 最多追蹤的使用者
+router.get('/users/top', authenticated, userController.getTopUsers)
+
 // 瀏覽編輯 Profile 頁面
 router.get('/users/:id/edit', authenticated, userController.editUser)
 // 瀏覽 Profile
