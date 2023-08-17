@@ -34,7 +34,7 @@ router.post(
 // 登出
 router.get('/logout', userController.logout)
 
-// 最多追蹤的使用者
+// 最多追蹤的使用者頁面
 router.get('/users/top', authenticated, userController.getTopUsers)
 
 // 瀏覽編輯 Profile 頁面
@@ -85,6 +85,14 @@ router.delete(
 // Llke
 router.post('/like/:restaurantId', authenticated, userController.addLike)
 router.delete('/like/:restaurantId', authenticated, userController.removeLike)
+
+// 追蹤功能
+router.post('/following/:userId', authenticated, userController.addFollowing)
+router.delete(
+  '/following/:userId',
+  authenticated,
+  userController.removeFollowing
+)
 
 // 設定 fallback 路由, 其他路由條件都不符合時，最終會通過的路由，將使用者重新導回 /restaurants
 router.use('/', (req, res) => res.redirect('/restaurants'))
