@@ -6,7 +6,10 @@
     "start": "node app.js",
     "dev": "nodemon app.js",
     "lint": "eslint \"**/*.js\" --fix",
-    "test": "mocha tests --exit --recursive --timeout 5000"
+    "test": "mocha tests --exit --recursive --timeout 5000",
+    "migrate" : "npx sequelize db:migrate",
+    "migrate-undo" : "npx sequelize db:migrate:undo",
+    "seeders" : "npx sequelize db:seed:all"
   },
   "repository": {
     "type": "git",
