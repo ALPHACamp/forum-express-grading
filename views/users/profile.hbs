@@ -1,22 +1,22 @@
 <div class="row mb-2">
 
   <div class="col-md-5">
-    <img class="img-responsive center-block mb-3" src="{{userOfPage.image}}"
+    <img class="img-responsive center-block mb-3" src="{{user.image}}"
       style="width: 250px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
   </div>
 
   <div class="col-md-7">
     <ul class="list-unstyled">
       <li>
-        <h5><strong>{{userOfPage.name}}</strong></h5>
+        <h5><strong>{{user.name}}</strong></h5>
       </li>
       <p></p>
-      <li>{{userOfPage.email}}</li>
+      <li>{{user.email}}</li>
       <p></p>
     </ul>
-    {{#ifCond userOfPage.id user.id }}
+    {{#ifCond user.id userOfLogin.id }}
     <button type="button" class="btn btn-primary btn-sm">
-      <a class="btn btn-primary btn-sm" href="/users/{{user.id}}/edit">
+      <a class="btn btn-primary btn-sm" href="/users/{{userOfLogin.id}}/edit">
         Edit
       </a>
     </button>
