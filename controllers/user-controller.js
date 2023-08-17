@@ -164,9 +164,9 @@ const userController = {
             // 計算追蹤者人數
             followerCount: user.Followers.length,
             // 判斷目前登入使用者是否已追蹤該 user 物件
-            isFollowed: req.user.Followings.some(f => f.id === user.id)
+            isFollowed: req.user && req.user.Followings.some(f => f.id === user.id)
           }))
-        users = users.sort((a, b) => b.followerCount - a.followerCount)
+          .sort((a, b) => b.followerCount - a.followerCount)
         res.render('top-users', { users: result })
       })
       .catch(err => next(err))
