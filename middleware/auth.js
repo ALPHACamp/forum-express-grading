@@ -13,7 +13,7 @@ const authenticated = (req, res, next) => {
 // 在某些後台頁面才需要特別驗證是否為管理者就需要設置此中間件，一般的登入頁面則不用
 const authenticatedAdmin = (req, res, next) => {
   if (ensureAuthenticated(req)) {
-    if (getUser(req).user.isAdmin) return next() // 是管理員 丟給下一個中間件
+    if (getUser(req).isAdmin) return next() // 是管理員 丟給下一個中間件
     res.redirect('/') // 不是管理員 返回首頁
   } else {
     res.redirect('/signin')
