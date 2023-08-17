@@ -42,7 +42,7 @@ const userController = {
   },
   getUser: (req, res, next) => {
     return User.findByPk(req.params.id, { raw: true })
-      .then(userOfPage => res.render('users/profile', { user: req.user, userOfPage }))
+      .then(user => res.render('users/profile', { user, userOfLogin: req.user }))
       .catch(err => next(err))
   },
   putUser: (req, res, next) => {
@@ -69,8 +69,7 @@ const userController = {
       .catch(err => next(err))
   },
   editUser: (req, res, next) => {
-    console.log('edituser page')
-    return User.findByPk(req.user.id, { raw: true })
+    return User.findByPk(req.params.id, { raw: true })
       .then(user => {
         if (!user) throw new Error("User didn't exist!")
         res.render('users/edit', { user })
