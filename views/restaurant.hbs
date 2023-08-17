@@ -22,20 +22,40 @@
 
 <a class="btn btn-primary" type="button" href="/restaurants/{{restaurant.id}}/dashboard">Dashboard</a>
 
+{{#if isFavorited }}
+<form action="/favorite/{{restaurant.id}}?_method=DELETE" method="POST" style="display: contents;">
+  <button type="submit" class="btn btn-danger">移除最愛</button>
+</form>
+{{else}}
+<form action="/favorite/{{restaurant.id}}" method="POST" style="display: contents;">
+  <button type="submit" class="btn btn-primary">加到最愛</button>
+</form>
+{{/if}}
+
+{{#if isLiked }}
+<form action="/like/{{restaurant.id}}?_method=DELETE" method="POST" style="display: contents;">
+  <button type="submit" class="btn btn-danger">Unlike</button>
+</form>
+{{else}}
+<form action="/like/{{restaurant.id}}" method="POST" style="display: contents;">
+  <button type="submit" class="btn btn-primary">Like</button>
+</form>
+{{/if}}
+
 {{!-- Comment --}}
 <h4 class="my-3">所有評論：</h4>
 {{#each restaurant.Comments}}
-  {{#if ../user.isAdmin}}
-  <form action="/comments/{{this.id}}?_method=DELETE" method="POST" class="float-end">
-    <button type="submit" class="btn btn-danger">Delete</button>
-  </form>
-  {{/if}}
-  <blockquote class="blockquote mb-0">
-    <h4><a href="/users/{{this.User.id}}">{{this.User.name}}</a></h4>
-    <p>{{this.text}}</p>
-    <footer class="blockquote-footer">{{relativeTimeFromNow this.createdAt}}</footer>
-  </blockquote>
-  <hr />
+{{#if ../user.isAdmin}}
+<form action="/comments/{{this.id}}?_method=DELETE" method="POST" class="float-end">
+  <button type="submit" class="btn btn-danger">Delete</button>
+</form>
+{{/if}}
+<blockquote class="blockquote mb-0">
+  <h4><a href="/users/{{this.User.id}}">{{this.User.name}}</a></h4>
+  <p>{{this.text}}</p>
+  <footer class="blockquote-footer">{{relativeTimeFromNow this.createdAt}}</footer>
+</blockquote>
+<hr />
 {{/each}}
 <form action="/comments" method="POST">
   <div class="form-row my-2">
@@ -46,3 +66,7 @@
   <button type="submit" class="btn btn-primary">Submit</button>
   <a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
 </form>
+{{!-- <br>
+<pre>
+  {{#jsonStringfy @root}}{{/jsonStringfy}}
+</pre> --}}
