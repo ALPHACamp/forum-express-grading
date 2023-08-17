@@ -99,6 +99,9 @@ const restaurantController = {
         })
       })
       .catch(err => next(err))
+  },
+  getTopRestaurants: (req, res, next) => {
+    res.render('top-restaurants', { })
   }
 }
 module.exports = restaurantController
