@@ -1,30 +1,30 @@
 <div class="card mb-3">
   <div class="row no-gutters">
     <div class="col-md-4">
-      <img class="img-responsive center-block mb-6" src="{{view_user.image}}"
+      <img class="img-responsive center-block mb-6" src="{{user.image}}"
         style="width: 300px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
     </div>
     <div class="col-md-8">
       <div class="card-body">
-        <h5 class="card-title">{{view_user.name}}</h5>
+        <h5 class="card-title">{{user.name}}</h5>
         <p class="card-text">
           {{user.email}}
         </p>
-          <a class="btn btn-primary" href="/users/{{view_user.id}}/edit">edit</a>
+          <a class="btn btn-primary" href="/users/{{user.id}}/edit">edit</a>
       </div>
     </div>
   </div>
 </div>
 <div class="card mt-3">
   <div class="card-header">
-    {{#if view_user.Comments}}
-    已評論 {{view_user.Comments.length}} 餐廳
+    {{#if user.Comments}}
+    已評論 {{user.Comments.length}} 餐廳
     {{else}}
     目前尚未留下任何評論
     {{/if}}
   </div>
   <div class="card-body">
-    {{#each view_user.Comments}}
+    {{#each user.Comments}}
     <a href="/restaurants/{{this.Restaurant.id}}" class="text-decoration-none">
       <img src="{{this.Restaurant.image}}" width="60" height="60" class="avatar"
         style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;" />
