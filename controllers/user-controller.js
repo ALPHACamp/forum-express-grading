@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs')
-const { User, Restaurant, Favorite, Like } = require('../models')
+const { User, Restaurant, Favorite, Like, Comment } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const userController = {
@@ -41,8 +41,13 @@ const userController = {
     })
   },
   getUser: (req, res, next) => {
-    return User.findByPk(req.params.id, { raw: true })
-      .then(user => res.render('users/profile', { user, userOfLogin: req.user }))
+    return User.findByPk(req.params.id, {
+      include: [{ model: Comment, include: Restaurant }],
+      nest: true // 移除raw: true，因資料尚需處理，還不能轉換成JS格式
+    })
+      .then(user => {
+        res.render('users/profile', { user: user.toJSON(), userOfLogin: req.user })
+      })
       .catch(err => next(err))
   },
   putUser: (req, res, next) => {
