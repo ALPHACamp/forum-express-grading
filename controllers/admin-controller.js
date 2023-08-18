@@ -1,4 +1,5 @@
 const { Restaurant } = require('../models')
+const restaurant = require('../models/restaurant')
 
 const adminController = {
   getRestaurants: (req, res, next) => {
@@ -26,9 +27,28 @@ const adminController = {
         res.render('admin/restaurant', { restaurant })
       })
       .catch(err => next(err))
+  },
+  editRestaurant: (req, res, next) => {
+    Restaurant.findByPk(req.params.id, { raw: true })
+      .then(restaurant => {
+        if (!restaurant) throw new Error('沒有這個餐廳')
+        res.render('admin/edit-restaurant', { restaurant })
+      }).catch(err => next(err))
+  },
+  putRestaurant: (req, res, next) => {
+    const { name, tel, address, openingHours, description } = req.body
+    if (!name) throw new Error('名字不可空白')
+    Restaurant.findByPk(req.params.id)
+      .then(restaurant => {
+        if (!restaurant) throw new Error('沒有這個餐廳')
+        return restaurant.update({ name, tel, address, openingHours, description })
+      }).then(() => {
+        req.flash('success_message', '編輯餐廳成功')
+        res.redirect('/admin/restaurants')
+      })
+      .catch(err => next(err))
   }
 
-  ,
 }
 
 module.exports = adminController
