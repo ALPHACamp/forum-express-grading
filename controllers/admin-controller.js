@@ -1,5 +1,5 @@
 const { Restaurant } = require('../models')
-const restaurant = require('../models/restaurant')
+const { localFileHandler } = require('../helpers/file-helper')
 
 const adminController = {
   getRestaurants: (req, res, next) => {
@@ -13,12 +13,22 @@ const adminController = {
   postRestaurant: (req, res, next) => {
     const { name, tel, address, openingHours, description } = req.body
     if (!name) throw new Error('名字是必填欄位')
-    Restaurant.create({
-      name, tel, address, openingHours, description
-    }).then(() => {
-      req.flash('success_messages', '新增餐廳成功')
-      res.redirect('/admin/restaurants')
-    }).catch(err => next(err))
+    const { file } = req // 這個是因為有Multer做成的image 被當成req.file傳過來
+    localFileHandler(file) // 丟進Multer抓到的file ，回傳正式路徑
+      .then(filePath => Restaurant.create(
+        {
+          name,
+          tel,
+          address,
+          openingHours,
+          description,
+          image: filePath || null
+        }
+      ))
+      .then(() => {
+        req.flash('success_messages', '新增餐廳成功')
+        res.redirect('/admin/restaurants')
+      }).catch(err => next(err))
   },
   getRestaurant: (req, res, next) => {
     Restaurant.findByPk(req.params.id, { raw: true })
@@ -38,10 +48,21 @@ const adminController = {
   putRestaurant: (req, res, next) => {
     const { name, tel, address, openingHours, description } = req.body
     if (!name) throw new Error('名字不可空白')
-    Restaurant.findByPk(req.params.id)
-      .then(restaurant => {
+    const { file } = req
+    Promise.all([
+      Restaurant.findByPk(req.params.id), // 從資料庫抓餐廳回來
+      localFileHandler(file) // 寫入新檔案並抓取路徑
+    ])
+      .then(([restaurant, filePath]) => {
         if (!restaurant) throw new Error('沒有這個餐廳')
-        return restaurant.update({ name, tel, address, openingHours, description })
+        return restaurant.update({
+          name,
+          tel,
+          address,
+          openingHours,
+          description,
+          image: filePath || restaurant.image // 如果有filepath就覆寫 沒有就用原本的資料庫路徑
+        })
         // 注意這邊要加return 讓findByPk有返回值 才能讓後續接.then
       }).then(() => {
         req.flash('success_message', '編輯餐廳成功')
