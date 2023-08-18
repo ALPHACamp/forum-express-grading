@@ -42,10 +42,20 @@ const adminController = {
       .then(restaurant => {
         if (!restaurant) throw new Error('沒有這個餐廳')
         return restaurant.update({ name, tel, address, openingHours, description })
+        // 注意這邊要加return 讓findByPk有返回值 才能讓後續接.then
       }).then(() => {
         req.flash('success_message', '編輯餐廳成功')
         res.redirect('/admin/restaurants')
       })
+      .catch(err => next(err))
+  },
+  deleteRestaurant: (req, res, next) => {
+    return Restaurant.findByPk(req.params.id)
+      .then(restaurant => {
+        if (!restaurant) throw new Error('沒有這個餐廳')
+        return restaurant.destroy()
+      })
+      .then(() => res.redirect('/admin/restaurants'))
       .catch(err => next(err))
   }
 
