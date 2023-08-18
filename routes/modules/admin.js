@@ -5,6 +5,9 @@ const adminController = require('../../controllers/admin-controller')
 
 router.get('/restaurants/create', adminController.createRestaurants)
 
+// id的路由要後於Create， 否則先有id變動的判斷，create會被識別為變動的id
+router.get('/restaurants/:id', adminController.getRestaurant)
+
 router.get('/restaurants', adminController.getRestaurants)
 router.post('/restaurants', adminController.postRestaurant)
 
