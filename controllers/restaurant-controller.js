@@ -51,7 +51,7 @@ const restController = {
           model: Comment,
           include: { model: User },
           order: [
-            [{ model: Comment}, 'createdAt', 'DESC']
+            [{ model: Comment }, 'createdAt', 'DESC']
           ]
         }
       ]
@@ -61,7 +61,7 @@ const restController = {
         return restaurant.increment('viewCounts', { by: 1 })
       }).then(restaurant => {
         restaurant = restaurant.toJSON()
-        console.log(restaurant)
+
         return res.render('restaurant', {
           restaurant
         })
