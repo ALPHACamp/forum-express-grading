@@ -1,0 +1,41 @@
+<div class="card mb-3">
+  <div class="row g-0">
+    <div class="col-md-4">
+      <img src="{{user.image}}" class="img-fluid rounded-start" alt="...">
+    </div>
+    <div class="col-md-8">
+      <div class="card-body">
+        <h5 class="card-title">Profile</h5>
+        <ul class="list-unstyled">
+          <li><strong>Name: </strong>{{user.name}}</li>
+        </ul>
+        <ul class="list-unstyled">
+          <li><strong>Email: </strong>{{user.email}}</li>
+        </ul>
+        {{#if editPermission}}
+        <a class="btn btn-outline-secondary" href="/users/{{user.id}}/edit">Edit</a>
+        {{/if}}
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card mt-3">
+  <div class="card-header">
+    {{#if user.Comments}}
+    已評論 {{user.Comments.length}} 餐廳
+    {{else}}
+    目前尚未留下任何評論
+    {{/if}}
+  </div>
+  <div class="card-body d-flex">
+    {{#each user.Comments}}
+    <div class="mx-2 my-2">
+      <a href="/restaurants/{{this.Restaurant.id}}">
+        <img class="rounded img-fluid" src="{{this.Restaurant.image}}" alt="Card image cap"
+          style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+      </a>
+    </div>
+    {{/each}}
+  </div>
+</div>
