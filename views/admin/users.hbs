@@ -1,0 +1,30 @@
+{{>admin-tab}} 
+
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Name</th>
+      <th scope="col">Email</th>
+      <th scope="col">Role</th>
+      <th scope="col">#</th>
+    </tr>
+  </thead>
+  {{!-- 每個使用者 --}}
+  {{#each users}}
+  <tbody>
+    <tr>
+      <th scope="row">1</th>
+      <td>{{this.name}}</td>
+      <td>{{this.email}}</td>
+      <td>{{this.role}}</td>
+      {{#if this.admin}}
+        <td><button>set as user</button></td>
+         {{else}}
+        <td><button>set as admin</button></td>
+      {{/if}}      
+    </tr>
+
+  </tbody>
+  {{/each}}
+</table>

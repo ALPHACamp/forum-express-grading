@@ -1,7 +1,10 @@
-const { Restaurant } = require('../models')
+const { Restaurant, User } = require('../models')
 const { localFileHandler } = require('../helpers/file-helper')
 
 const adminController = {
+
+  /**       使用者管理餐廳部分        **/
+
   getRestaurants: (req, res, next) => {
     Restaurant.findAll({ raw: true })
       .then(restaurants => res.render('admin/restaurants', { restaurants }))
@@ -78,8 +81,23 @@ const adminController = {
       })
       .then(() => res.redirect('/admin/restaurants'))
       .catch(err => next(err))
-  }
+  },
 
+  /**         使用者管理使用者部分        **/
+  getUsers: (req, res, next) => {
+    return User.findAll({ raw: true })
+      .then(users => {
+        users.forEach(user => {
+          if (user.isAdmin === 0) user.role = 'user'
+          if (user.isAdmin === 1) {
+            user.role = 'admin'
+            user.admin = true
+          }
+        })
+        return res.render('admin/users', { users })
+      })
+      .catch(err => next(err))
+  }
 }
 
 module.exports = adminController
