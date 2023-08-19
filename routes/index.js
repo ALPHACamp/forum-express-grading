@@ -11,6 +11,8 @@ const { authenticated, authenticatedAdmin } = require('../middleware/auth')
 const { generalErrorHandler } = require('../middleware/error-handler')
 
 router.use('/admin', authenticatedAdmin, admin)
+router.post('/following/:userId', authenticated, userController.addFollowing)
+router.delete('/following/:userId', authenticated, userController.removeFollowing)
 router.get('/users/top', authenticated, userController.getTopUsers)
 router.get('/users/:id/edit', userController.editUser)
 router.get('/users/:id', userController.getUser)

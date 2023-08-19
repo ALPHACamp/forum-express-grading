@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs')
-const { User, Restaurant, Favorite, Like, Comment } = require('../models')
+const { User, Restaurant, Favorite, Like, Comment, Followship } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const userController = {
@@ -46,7 +46,7 @@ const userController = {
       nest: true // 移除raw: true，因資料尚需處理，還不能轉換成JS格式
     })
       .then(user => {
-        res.render('users/profile', { user: user.toJSON(), userOfLogin: req.user })
+        res.render('users/profile', { user: user.toJSON(), loginUser: req.user })
       })
       .catch(err => next(err))
   },
@@ -171,9 +171,44 @@ const userController = {
           ...user.toJSON(),
           followerCount: user.Followers.length,
           isFollowed: req.user.Followings.some(f => f.id === user.id)
-        }))
+        })).sort((a, b) => b.followerCount - a.followerCount)
+
         res.render('top-users', { users })
       })
+      .catch(err => next(err))
+  },
+  addFollowing: (req, res, next) => {
+    Promise.all([
+      User.findByPk(req.params.userId),
+      Followship.findOne({
+        where: {
+          followerId: req.user.id,
+          followingId: req.params.userId
+        }
+      })])
+      .then(([user, followship]) => {
+        if (!user) throw new Error("User didn't exist!")
+        if (followship) throw new Error('You are already following this user!')
+        return Followship.create({
+          followerId: req.user.id,
+          followingId: req.params.userId
+        })
+      })
+      .then(() => res.redirect('back'))
+      .catch(err => next(err))
+  },
+  removeFollowing: (req, res, next) => {
+    Followship.findOne({
+      where: {
+        followerId: req.user.id,
+        followingId: req.params.userId
+      }
+    })
+      .then(followship => {
+        if (!followship) throw new Error("You haven't followed this user!")
+        return followship.destroy()
+      })
+      .then(() => res.redirect('back'))
       .catch(err => next(err))
   }
 }
