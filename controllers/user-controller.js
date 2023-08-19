@@ -1,14 +1,19 @@
-const { User } = require('../models')
+const { User, Comment, Restaurant } = require('../models')
 const bcrypt = require('bcryptjs')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const userController = {
   getUser: (req, res, next) => {
-    return User.findByPk(req.params.id, { raw: true })
-      .then(user => {
-        if (!user) throw new Error("User didn't exist")
-        res.render('users/profile', { user })
-      })
+    return Promise.all([
+      User.findByPk(req.params.id, { raw: true }),
+      Comment.findAndCountAll({ where: { userId: req.params.id }, include: Restaurant })
+    ]).then(([user, comments]) => {
+      if (!user) throw new Error("User didn't exist")
+      const commentedRests = comments.rows.map(comment => comment.Restaurant.dataValues)
+      const commentCount = comments.count
+
+      res.render('users/profile', { user, commentedRests, commentCount })
+    })
       .catch(err => next(err))
   },
   editUser: (req, res, next) => {

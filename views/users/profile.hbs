@@ -1,4 +1,7 @@
-<img
+
+<div class="row">
+    <div class="col-md-6">
+    <img
   class="card-img-top img-fluid"
   src="{{user.image}}"
   alt="Card image cap"
@@ -7,15 +10,34 @@
   style="transition: opacity 0.5s; opacity:0;"
   onload="this.style.opacity=1;"
 />
-<div class="row">
-  <div class="col-md-12">
+    </div>
+
+  <div class="col-md-6">
     <h1>{{user.name}}</h1>
     <p>{{user.email}}</p>
-  </div>
-</div>
-<button type="button" class="btn btn-link">
+    <button type="button" class="btn btn-link">
   <a class="btn btn-link link-primary" href="/users/{{user.id}}/edit">
     Edit
   </a>
 </button>
 <a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
+  </div>
+</div>
+
+
+  <div class="col-md-12 card">
+    <div class="card-header">
+      {{commentCount}}已評論餐廳
+    </div>
+    <div class="card-body d-flex-inline">
+      {{#if commentCount}}
+      {{#each commentedRests}}
+      <a href="/restaurants/{{this.id}}">
+        <img src="{{this.image}}" alt="#" style="max-width: 5rem;">
+      </a>
+      {{/each}}
+      {{else}}
+      <p>尚未評論任何餐廳</p>
+      {{/if}}
+    </div>
+  </div>
