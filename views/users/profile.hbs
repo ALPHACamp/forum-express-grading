@@ -17,7 +17,9 @@
       </ul>
     </div>
   </div>
-  <a class="btn btn-primary" href="/users/{{user.id}}/edit">編輯</a>
+  {{#ifCond currentUser.id user.id}}
+    <a class="col-md-1 btn btn-primary" href="/users/{{user.id}}/edit">編輯</a>
+  {{/ifCond}}
   <hr />
 </div>
 <!-- Commented Restaurants Section -->
