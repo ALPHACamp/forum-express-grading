@@ -52,6 +52,9 @@ router.put(
 // feeds
 router.get('/restaurants/feeds', authenticated, restController.getFeeds)
 
+// top-restaurants
+router.get('/restaurants/top', authenticated, restController.getTopRestaurants)
+
 // Dashboard
 router.get(
   '/restaurants/:id/dashboard',
@@ -74,7 +77,11 @@ router.delete(
 router.post('/comments', authenticated, commentController.postComment)
 
 // 加入收藏
-router.post('/favorite/:restaurantId', authenticated, userController.addFavorite)
+router.post(
+  '/favorite/:restaurantId',
+  authenticated,
+  userController.addFavorite
+)
 // 移除收藏
 router.delete(
   '/favorite/:restaurantId',

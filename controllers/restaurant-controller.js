@@ -1,5 +1,8 @@
 const { Restaurant, Category, Comment, User } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
+
+const helper = require('../helpers/auth-helpers')
+
 const restaurantController = {
   // getRestaurants => 瀏覽餐廳頁面
   getRestaurants: (req, res) => {
@@ -61,9 +64,7 @@ const restaurantController = {
         const isFavorited = restaurant.FavoritedUsers.some(
           f => f.id === req.user.id
         )
-        const isLiked = restaurant.LikedUsers.some(
-          l => l.id === req.user.id
-        )
+        const isLiked = restaurant.LikedUsers.some(l => l.id === req.user.id)
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         restaurant.increment('viewCounts', { by: 1 })
         res.render('restaurant', {
@@ -109,6 +110,27 @@ const restaurantController = {
           restaurants,
           comments
         })
+      })
+      .catch(err => next(err))
+  },
+  // top-restaurants
+  getTopRestaurants: (req, res, next) => {
+    return Restaurant.findAll({
+      // 收藏數
+      include: [Category, { model: User, as: 'FavoritedUsers' }]
+    })
+      .then(restaurants => {
+        restaurants = restaurants
+          .map(restaurant => ({
+            ...restaurant.toJSON(), // 整理格式
+            favoritedCount: restaurant.FavoritedUsers.length,
+            isFavorited: restaurant.FavoritedUsers.some(
+              f => f.id === helper.getUser(req).id
+            )
+          }))
+          .sort((a, b) => b.favoritedCount - a.favoritedCount)
+          .slice(0, 10)
+        res.render('top-restaurants', { restaurants })
       })
       .catch(err => next(err))
   }
