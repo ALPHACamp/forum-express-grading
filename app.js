@@ -1,3 +1,6 @@
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
 const path = require('path')
 const express = require('express')
 const flash = require('connect-flash')
@@ -5,9 +8,6 @@ const methodOverride = require('method-override')
 const session = require('express-session')
 const passport = require('./config/passport') // 一定要放在 session 後面！！！！！！！
 const { pages, apis } = require('./routes')
-if (process.env.NODE_ENV !== 'production') {
-  require('dotenv').config()
-}
 const handlebars = require('express-handlebars')
 const app = express()
 const port = process.env.PORT || 3000
