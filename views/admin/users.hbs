@@ -14,11 +14,15 @@
   {{#each users}}
   <tbody>
     <tr>
-      <th scope="row">1</th>
+      <th scope="row">{{this.id}}</th>
       <td>{{this.name}}</td>
       <td>{{this.email}}</td>
       <td>{{this.role}}</td>
-      <td><button type="button" class="btn-link">{{buttonText this}}</button></td>
+      <td>
+      <form action="/admin/users/{{this.id}}?_method=PATCH" method="POST" style="display: inline;">
+        <button  class="btn-link" type="submit">{{buttonText this}}</button></td>
+      </form>
+      <td>
 
     </tr>
 
