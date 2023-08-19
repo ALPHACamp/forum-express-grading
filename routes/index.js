@@ -36,7 +36,8 @@ router.post(
 )
 router.get('/logout', userController.logout)
 
-// Set user profile page
+// Set user related page
+router.get('/users/top', authenticated, userController.getTopUsers)
 router.get(
   '/users/:id/edit',
   authenticated,
