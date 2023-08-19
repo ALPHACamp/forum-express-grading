@@ -1,8 +1,8 @@
 /* eslint-disable indent */
 const bcrypt = require('bcryptjs')
-const { imgurFileHandler } = require('../helpers/file-helpers')
+const { imgurFileHandler } = require('../../helpers/file-helpers')
 // const { tr } = require('faker/lib/locales')
-const { User, Comment, Restaurant, Favorite, Like, Followship } = require('../models')
+const { User, Comment, Restaurant, Favorite, Like, Followship } = require('../../models')
 const userController = {
   signUpPage: (req, res) => {
     res.render('signup')
