@@ -18,11 +18,8 @@
       <td>{{this.name}}</td>
       <td>{{this.email}}</td>
       <td>{{this.role}}</td>
-      {{#if this.admin}}
-        <td><button>set as user</button></td>
-         {{else}}
-        <td><button>set as admin</button></td>
-      {{/if}}      
+      <td><button type="button" class="btn-link">{{buttonText this}}</button></td>
+
     </tr>
 
   </tbody>

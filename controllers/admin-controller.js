@@ -89,10 +89,7 @@ const adminController = {
       .then(users => {
         users.forEach(user => {
           if (user.isAdmin === 0) user.role = 'user'
-          if (user.isAdmin === 1) {
-            user.role = 'admin'
-            user.admin = true
-          }
+          if (user.isAdmin === 1) user.role = 'admin'
         })
         return res.render('admin/users', { users })
       })
