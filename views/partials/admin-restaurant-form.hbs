@@ -6,7 +6,11 @@
   <label class="form-label" for="categoryId">Category</label>
   <select class="form-control" id="categoryId" name="categoryId">
     {{#each categories}}
-      <option value="{{this.id}}">{{this.name}}</option>
+      <option value="{{this.id}}" 
+      {{!-- 調用helpers ifCond , 注意在each內要../跳出尋找才可以抓到categoryId --}}
+      {{#ifCond this.id ../restaurant.categoryId }} selected {{/ifCond}} 
+      >
+      {{this.name}}</option>
     {{/each}}
   </select>
 </div>
