@@ -21,9 +21,7 @@ const restaurantController = {
       .then(async restaurant => {
         if (!restaurant) throw new Error('此餐廳不存在')
         await restaurant.increment('viewCounts')
-        const data = restaurant.toJSON()
-        console.log('data is : ', data)
-        return res.render('restaurant', { restaurant: data })
+        return res.render('restaurant', { restaurant: restaurant.toJSON() })
       })
       .catch(err => next(err))
   },
