@@ -17,14 +17,20 @@ const restaurantController = {
       .catch(err => next(err))
   },
   getRestaurant: (req, res, next) => {
-    return Restaurant.findByPk(req.params.id, {
-      raw: true,
-      nest: true,
-      include: Category
-    })
-      .then(restaurant => {
+    return Restaurant.findByPk(req.params.id, { include: Category })
+      .then(async restaurant => {
         if (!restaurant) throw new Error('此餐廳不存在')
-        res.render('restaurant', { restaurant })
+        await restaurant.increment('viewCounts')
+        const data = restaurant.toJSON()
+        console.log('data is : ', data)
+        return res.render('restaurant', { restaurant: data })
+      })
+      .catch(err => next(err))
+  },
+  getDashboard: (req, res, next) => {
+    return Restaurant.findByPk(req.params.id, { include: Category })
+      .then(restaurant => {
+        res.render('dashboard', { restaurant: restaurant.toJSON() })
       })
       .catch(err => next(err))
   }
