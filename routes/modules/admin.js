@@ -22,7 +22,8 @@ router.get('/users', adminController.getUsers)
 router.patch('/users/:id', adminController.patchUser)
 
 /**    分類部分   **/
-
+router.get('/categories/:id', categoryController.getCategories)
+router.put('/categories/:id', categoryController.putCategories)
 router.get('/categories', categoryController.getCategories)
 router.post('/categories', categoryController.postCategory)
 /**   預防錯誤導向中間件    **/
