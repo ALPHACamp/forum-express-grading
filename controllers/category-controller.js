@@ -1,9 +1,16 @@
-const { Category } = require('../models')
+const { Category, Restaurant } = require('../models')
+const { Op } = require('sequelize')
 
 const categoryController = {
   getCategories: (req, res, next) => {
     return Promise.all([
-      Category.findAll({ raw: true }),
+      Category.findAll(
+        {
+          raw: true,
+          where: {
+            id: { [Op.not]: 99 } // 排除id=99 "已刪除分類"
+          }
+        }),
       req.params.id ? Category.findByPk(req.params.id, { raw: true }) : null
     ])
       .then(([categories, category]) => {
@@ -36,10 +43,16 @@ const categoryController = {
       .catch(err => next(err))
   },
   deleteCategory: (req, res, next) => {
-    return Category.findByPk(req.params.id)
-      .then(category => {
+    return Promise.all([
+      Category.findByPk(req.params.id),
+      Restaurant.findAll({ where: { categoryId: req.params.id } })
+    ])
+      .then(async ([category, restaurants]) => {
         if (!category) throw new Error('此類別不存在')
-        return category.destroy()
+        await Promise.all(restaurants.map(restaurant => { // 注意這裡用map才能取得返回值
+          return restaurant.update({ categoryId: '99' })
+        }))
+        return await category.destroy()
       })
       .then(() => {
         req.flash('success_messages', '刪除類別成功')
