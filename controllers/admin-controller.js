@@ -47,7 +47,7 @@ const adminController = {
       include: [Category]
     })
       .then(restaurant => {
-        if (!restaurant) throw new Error('沒有這個餐廳')
+        if (!restaurant) throw new Error('此餐廳不存在')
         res.render('admin/restaurant', { restaurant })
       })
       .catch(err => next(err))
@@ -58,7 +58,7 @@ const adminController = {
       Category.findAll({ raw: true })
     ])
       .then(([restaurant, categories]) => {
-        if (!restaurant) throw new Error('沒有這個餐廳')
+        if (!restaurant) throw new Error('此餐廳不存在')
         res.render('admin/edit-restaurant', { restaurant, categories })
       })
       .catch(err => next(err))
@@ -72,7 +72,7 @@ const adminController = {
       localFileHandler(file) // 寫入新檔案並抓取路徑
     ])
       .then(([restaurant, filePath]) => {
-        if (!restaurant) throw new Error('沒有這個餐廳')
+        if (!restaurant) throw new Error('此餐廳不存在')
         return restaurant.update({
           name,
           tel,
@@ -92,7 +92,7 @@ const adminController = {
   deleteRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id)
       .then(restaurant => {
-        if (!restaurant) throw new Error('沒有這個餐廳')
+        if (!restaurant) throw new Error('此餐廳不存在')
         return restaurant.destroy()
       })
       .then(() => res.redirect('/admin/restaurants'))

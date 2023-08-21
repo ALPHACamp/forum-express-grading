@@ -26,11 +26,23 @@ const categoryController = {
     if (!name) throw new Error('類別名稱不可為空')
     return Category.findByPk(req.params.id)
       .then(category => {
-        if (!category) throw new Error('找不到此類別')
+        if (!category) throw new Error('此類別不存在')
         return category.update({ name })
       })
       .then(() => {
         req.flash('success_messages', '修改分類成功')
+        res.redirect('/admin/categories')
+      })
+      .catch(err => next(err))
+  },
+  deleteCategory: (req, res, next) => {
+    return Category.findByPk(req.params.id)
+      .then(category => {
+        if (!category) throw new Error('此類別不存在')
+        return category.destroy()
+      })
+      .then(() => {
+        req.flash('success_messages', '刪除類別成功')
         res.redirect('/admin/categories')
       })
       .catch(err => next(err))
