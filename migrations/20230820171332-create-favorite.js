@@ -1,25 +1,18 @@
-// npx sequelize model:generate --name modelName --attributes attributeName:attributeDatatype,attribute2Name:attributeDatatype --underscored
 'use strict'
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('Users', {
+    await queryInterface.createTable('Favorites', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      name: {
-        allowNull: false,
-        type: Sequelize.STRING
+      user_id: {
+        type: Sequelize.INTEGER
       },
-      email: {
-        allowNull: false,
-        type: Sequelize.STRING
-      },
-      password: {
-        allowNull: false,
-        type: Sequelize.STRING
+      restaurant_id: {
+        type: Sequelize.INTEGER
       },
       created_at: {
         allowNull: false,
@@ -32,6 +25,6 @@ module.exports = {
     })
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('Users')
+    await queryInterface.dropTable('Favorites')
   }
 }
