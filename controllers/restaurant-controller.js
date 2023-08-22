@@ -1,18 +1,27 @@
 const { Restaurant, Category } = require('../models')
 const restaurantController = {
   getRestaurants: (req, res, next) => {
-    return Restaurant.findAll({
-      raw: true,
-      nest: true,
-      include: Category
-    })
-      .then(restaurants => {
-        const data = restaurants.map(r => ({ // 小括號代替return
+    const categoryId = Number(req.query.categoryId) || '' // 注意req.query是字串要轉型別，全部要給空字串
+    return Promise.all([
+      Restaurant.findAll({
+        raw: true,
+        nest: true,
+        include: Category,
+        where: {
+          ...categoryId ? { categoryId } : {}
+          // 要注意空物件永遠是true，這邊用成物件展開是為了擴充 實際上拿掉也可以跑
+        }
+      }),
+      Category.findAll({ raw: true })
+    ])
+      .then(([restaurants, categories]) => {
+        restaurants = restaurants.map(r => ({ // 小括號代替return
           ...r,
           description: r.description.substring(0, 50) // 雖然展開的時候也有屬性了，但後面的keyvalue可以覆蓋前面的keyvalue
         })
         )
-        return res.render('restaurants', { restaurants: data })
+        categories = categories.filter(category => category.id !== 99) // (!) 排除99
+        return res.render('restaurants', { restaurants, categories, categoryId })
       })
       .catch(err => next(err))
   },
