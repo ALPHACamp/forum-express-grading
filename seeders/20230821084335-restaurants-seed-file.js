@@ -1,5 +1,6 @@
 'use strict'
 const faker = require('faker')
+const { deletedCategoryFilter } = require('../helpers/deleted-filter-helper')
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     // 新增以下三行，先去查詢現在 Categories 的 id 有哪些
@@ -7,7 +8,7 @@ module.exports = {
       'SELECT id FROM Categories;',
       { type: queryInterface.sequelize.QueryTypes.SELECT }
     )
-    categories = categories.filter(category => category.id !== 99) // 排除顯示已刪除分類id=99
+    categories = deletedCategoryFilter(categories) // 排除顯示已刪除分類id=99
     await queryInterface.bulkInsert('Restaurants',
       Array.from({ length: 50 }, () => ({ // 先產生50個實體(undefined)，後面第二參數類似於map
         name: faker.name.findName(),
