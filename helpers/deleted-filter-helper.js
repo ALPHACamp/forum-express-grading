@@ -12,6 +12,6 @@ module.exports = {
 // module.exports = {
 //   deletedFilter: categories => {
 //     return Category.findOne({ where: { name: '已刪除的分類' } })
-//       .then(deleted => categories.filter(record => record.id !== deleted.id))
+//       .then(deleted => categories.filter(record => record.id !== deletedCategoryId))
 //   }
 // }
