@@ -35,7 +35,6 @@ passport.serializeUser((user, done) => {
 passport.deserializeUser((id, done) => {
   User.findByPk(id).then(user => {
     user = user.toJSON()
-    console.log(user)
     return done(null, user)
   })
 })

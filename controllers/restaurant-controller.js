@@ -1,4 +1,4 @@
-const { Restaurant, Category } = require('../models')
+const { Restaurant, Category, User, Comment } = require('../models')
 const { deletedCategoryFilter } = require('../helpers/deleted-filter-helper')
 const { getOffset, getPagination } = require('../helpers/pagination-helpler')
 const restaurantController = {
@@ -39,7 +39,14 @@ const restaurantController = {
       .catch(err => next(err))
   },
   getRestaurant: (req, res, next) => {
-    return Restaurant.findByPk(req.params.id, { include: Category })
+    return Restaurant.findByPk(req.params.id, {
+      include: {
+        model: Comment,
+        include: User
+      }
+      // EagerLoading會自動幫你抓外鍵對應的資料
+      // 注意返回的資料類型hasMany為物件陣列，belongsTo為物件
+    })
       .then(async restaurant => {
         if (!restaurant) throw new Error('此餐廳不存在')
         await restaurant.increment('viewCounts')
