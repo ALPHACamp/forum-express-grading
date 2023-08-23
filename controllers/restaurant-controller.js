@@ -43,7 +43,10 @@ const restaurantController = {
       include: {
         model: Comment,
         include: User
-      }
+      },
+      order: [
+        [Comment, 'createdAt', 'DESC'] // 新的時間在上面
+      ]
       // EagerLoading會自動幫你抓外鍵對應的資料
       // 注意返回的資料類型hasMany為物件陣列，belongsTo為物件
     })
