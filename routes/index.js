@@ -10,7 +10,7 @@ const userController = require('../controllers/user-controller')
 const commentController = require('../controllers/comment-controller')
 const { authenticated, authenticatedAdmin } = require('../middleware/auth')
 const { generalErrorHandler } = require('../middleware/error-handler')
-// 使用者管理頁面
+// 管理者管理頁面
 router.use('/admin', authenticatedAdmin, admin)
 // 註冊登入部分
 router.get('/signup', userController.signUpPage)
@@ -32,6 +32,9 @@ router.get('/restaurants', authenticated, restController.getRestaurants)
 
 router.delete('/comments/:id', authenticatedAdmin, commentController.deleteComment)
 router.post('/comments', authenticated, commentController.postComment)
+
+// 使用者部分
+router.get('/users/:id', authenticated, userController.getUser)
 
 // 後期處理
 router.use('/', (req, res) => { res.redirect('/restaurants') })
