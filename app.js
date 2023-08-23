@@ -29,7 +29,7 @@ app.use('/upload', express.static(path.join(__dirname, 'upload'))) // __dirname�
 app.use((req, res, next) => {
   res.locals.success_messages = req.flash('success_messages')
   res.locals.error_messages = req.flash('error_messages')
-  res.locals.user = getUser(req)
+  res.locals.user = getUser(req) // 寫了這個之後你的路由都會附帶著user
   next()
 })
 app.use(routes)

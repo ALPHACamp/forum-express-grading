@@ -15,7 +15,8 @@ router.get('/restaurants/:id', adminController.getRestaurant)
 router.put('/restaurants/:id', upload.single('image'), adminController.putRestaurant)
 router.delete('/restaurants/:id', adminController.deleteRestaurant)
 router.get('/restaurants', adminController.getRestaurants)
-router.post('/restaurants', upload.single('image'), adminController.postRestaurant) // upload中間件捕捉file 轉換req.file傳給路由並將檔案存入temp資料夾
+router.post('/restaurants', upload.single('image'), adminController.postRestaurant)
+// upload中間件捕捉file 轉換req.file傳給路由並將檔案存入temp資料夾
 
 /**    使用者管理部分  **/
 router.get('/users', adminController.getUsers)

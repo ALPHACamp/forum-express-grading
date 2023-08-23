@@ -24,6 +24,13 @@
 {{!-- 瀏覽評論 --}}
 <h3 class="mb-3">所有評論：</h3>
 {{#each restaurant.Comments}}
+  {{!-- 注意在each裡面 要返回上層 (這裡的user在app.js取得的) --}}
+  {{#if ../user.isAdmin}}
+     <form action="/comments/{{this.id}}?_method=DELETE" method="POST" class="float-end">
+      <button type="submit" class="btn btn-danger" 
+      onclick="return confirm(`確定要刪除這條評論嗎? \n User:  {{this.User.name}} \n Content:  {{this.text}} \n `)">Delete</button>
+    </form>
+  {{/if}}
   <blockquote class="blockquote mb-0">
     <h4><a href="/users/{{this.User.id}}">{{this.User.name}}</a></h4>
     <p>{{this.text}}</p>

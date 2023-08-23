@@ -16,6 +16,15 @@ const commentController = {
     })
       .then(() => res.redirect(`/restaurants/${restaurantId}`))
       .catch(err => next(err))
+  },
+  deleteComment: (req, res, next) => {
+    return Comment.findByPk(req.params.id)
+      .then(comment => {
+        if (!comment) throw new Error('評論不存在')
+        return comment.destroy() // 這個也會返回被刪除的資料
+      })
+      .then(deletedComment => res.redirect(`/restaurants/${deletedComment.restaurantId}`))
+      .catch(err => next(err))
   }
 }
 
