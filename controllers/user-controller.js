@@ -97,7 +97,6 @@ const userController = {
       .then(([restaurant, favorite]) => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         if (favorite) throw new Error('You have favorited this restaurant!')
-        console.log(req.user)
         return Favorite.create({
           userId: req.user.id,
           restaurantId
@@ -135,7 +134,7 @@ const userController = {
       .then(([restaurant, like]) => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         if (like) throw new Error('You have liked this restaurant!')
-        console.log(req.user)
+
         return Like.create({
           userId: req.user.id,
           restaurantId
