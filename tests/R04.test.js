@@ -43,7 +43,6 @@ describe('# R04: Like / Unlike', function () {
 
       // 建立了一個模擬的 Restaurant table，裡面放入 2 間餐廳資料
       this.restaurantMock = createModelMock('Restaurant', mockRestaurantData)
-      
       // 建立了一個模擬的 Like table，裡面目前是空的
       this.mockLikeData = []
       this.likeMock = createModelMock('Like', this.mockLikeData)
