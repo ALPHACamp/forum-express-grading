@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs')
 const { User } = require('../models')
 
-const { localFileHandler } = require('../helpers/file-helper')
+const { localFileHandler, defaultAvatarPath } = require('../helpers/file-helper')
 
 const userController = {
   signUpPage: (req, res) => {
@@ -44,6 +44,9 @@ const userController = {
     return User.findByPk(req.params.id, { raw: true })
       .then(user => {
         if (!user) throw new Error('使用者不存在')
+        if (!user.image) {
+          user.image = defaultAvatarPath
+        }
         return res.render('users/profile', { user })
       }).catch(err => next(err))
   },
@@ -57,14 +60,12 @@ const userController = {
   putUser: (req, res, next) => {
     const { name, email } = req.body
     const { file } = req
-    console.log('file is :', file)
     return Promise.all([
       User.findByPk(req.params.id),
       localFileHandler(file)
     ])
       .then(([user, filePath]) => {
         if (!user) throw new Error('使用者不存在')
-        console.log('filePath is :', filePath)
         return user.update({
           name,
           email,

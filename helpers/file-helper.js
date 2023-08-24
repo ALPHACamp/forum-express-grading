@@ -1,6 +1,6 @@
 const fs = require('fs') // 引入 fs 模組
-const path = require('path')
-const defaultAvatarPath = path.join(__dirname, 'upload/avatar01')
+
+const defaultAvatarPath = '/upload/avatar01.png'
 
 const localFileHandler = file => { // file 是 multer 處理完的檔案
   return new Promise((resolve, reject) => {
