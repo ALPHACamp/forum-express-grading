@@ -1,3 +1,5 @@
+{{> restaurant-tabs route='index'}}
+
 <ul class="nav nav-pills">
   <li class="nav-item">
     <a class="nav-link {{#ifCond '' categoryId}}active{{/ifCond}}" href="?categoryId=">全部</a>
@@ -24,7 +26,11 @@
               {{this.name}}
             </a>
           </p>
-          <span class="badge bg-secondary">{{this.Category.name}}</span>
+            <a href="/restaurants?categoryId={{this.Category.id}}">
+              <button class="btn btn-sm btn-dark btn-outline-warning">
+                {{this.Category.name}}  
+              </button>
+            </a>
           <p class="card-text text-truncate">{{this.description}}</p>
         </div>
       </div>

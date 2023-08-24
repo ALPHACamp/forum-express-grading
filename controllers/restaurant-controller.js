@@ -65,6 +65,29 @@ const restaurantController = {
         res.render('dashboard', { restaurant: restaurant.toJSON() })
       })
       .catch(err => next(err))
+  },
+  getFeeds: (req, res, next) => {
+    return Promise.all([
+      Restaurant.findAll({
+        raw: true,
+        nest: true,
+        order: [['createdAt', 'DESC']], // (!)不要用到空白
+        include: [Category],
+        limit: 10
+      }),
+      Comment.findAll({
+        raw: true,
+        nest: true,
+        include: [Restaurant, User],
+        limit: 10,
+        order: [['createdAt', 'DESC']]
+      })
+    ])
+      .then(([restaurants, comments]) => {
+        console.log(restaurants, comments)
+        return res.render('feeds', { restaurants, comments })
+      })
+      .catch(err => next(err))
   }
 }
 module.exports = restaurantController

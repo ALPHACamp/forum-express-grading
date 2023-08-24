@@ -13,7 +13,6 @@ const upload = require('../middleware/multer')
 const { authenticated, authenticatedAdmin } = require('../middleware/auth')
 const { generalErrorHandler } = require('../middleware/error-handler')
 
-
 // 管理者管理頁面
 router.use('/admin', authenticatedAdmin, admin)
 // 註冊登入部分
@@ -30,6 +29,7 @@ router.post('/signin', passport.authenticate('local',
 
 router.get('/logout', userController.logout)
 // 餐廳部分
+router.get('/restaurants/feeds', authenticated, restController.getFeeds) // 注意順序
 router.get('/restaurants/:id', authenticated, restController.getRestaurant)
 router.get('/restaurants/:id/dashboard', authenticated, restController.getDashboard)
 router.get('/restaurants', authenticated, restController.getRestaurants)
