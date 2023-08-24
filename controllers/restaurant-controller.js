@@ -121,7 +121,7 @@ const restController = {
         restaurants = restaurants.map(restaurants => ({
           ...restaurants.toJSON(),
           favoritedCount: restaurants.FavoritedUsers.length,
-          isFavorited: req.user.FavoritedRestaurants.some(FavoritedRestaurant => FavoritedRestaurant.id === restaurants.id)
+          isFavorited: req.user && req.user.FavoritedRestaurants.some(FavoritedRestaurants => FavoritedRestaurants.id === restaurants.id)
         }))
         return restaurants.sort((a, b) => b.favoritedCount - a.favoritedCount).slice(0, 10)
       }).then(restaurants => {
