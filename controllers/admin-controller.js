@@ -1,6 +1,6 @@
 const { Restaurant, User, Category } = require('../models')
 const { localFileHandler } = require('../helpers/file-helper')
-
+const { deletedCategoryFilter } = require('../helpers/deleted-filter-helper')
 const adminController = {
 
   /**       使用者管理餐廳部分        **/
@@ -16,7 +16,10 @@ const adminController = {
   },
   createRestaurants: (req, res, next) => {
     Category.findAll({ raw: true })
-      .then(categories => res.render('admin/create-restaurant', { categories }))
+      .then(categories => {
+        categories = deletedCategoryFilter(categories)
+        return res.render('admin/create-restaurant', { categories })
+      })
       .catch(err => next(err))
   },
   postRestaurant: (req, res, next) => {
@@ -77,7 +80,7 @@ const adminController = {
           name,
           tel,
           address,
-          openingHours,
+          openingHours: openingHours || restaurant.openingHours, // (!)編輯頁面時間是空的 容易蓋掉
           description,
           image: filePath || restaurant.image, // 如果有filepath就覆寫 沒有就用原本的資料庫路徑
           categoryId
