@@ -1,4 +1,17 @@
-<div>
-  <h1>{{user.name}}</h1>
-  <p>{{user.email}}</p>
+<div class="card mb-3" style="max-width: 1000px;">
+  <div class="row g-0">
+    <div class="col-md-4">
+      <img class="card-img-top img-fluid" src="{{person.image}}" alt="Card image cap" width="286px" height="180px"
+            style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+    </div>
+    <div class="col-md-8">
+      <div class="card-body">
+        <h5 class="card-title">{{person.name}}</h5>
+        <p class="card-text">{{person.email}}</p>
+        {{#ifCond user.id person.id}} 
+          <a class="btn btn-primary" href="/users/{{person.id}}/edit">Edit</a>
+        {{/ifCond}}
+      </div>
+    </div>
+  </div>
 </div>

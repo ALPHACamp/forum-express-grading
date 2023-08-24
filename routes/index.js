@@ -8,8 +8,12 @@ const admin = require('./modules/admin')
 const restController = require('../controllers/restaurant-controller')
 const userController = require('../controllers/user-controller')
 const commentController = require('../controllers/comment-controller')
+
+const upload = require('../middleware/multer')
 const { authenticated, authenticatedAdmin } = require('../middleware/auth')
 const { generalErrorHandler } = require('../middleware/error-handler')
+
+
 // 管理者管理頁面
 router.use('/admin', authenticatedAdmin, admin)
 // 註冊登入部分
@@ -35,7 +39,8 @@ router.post('/comments', authenticated, commentController.postComment)
 
 // 使用者部分
 router.get('/users/:id', authenticated, userController.getUser)
-
+router.get('/users/:id/edit', authenticated, userController.editUser)
+router.put('/users/:id', authenticated, upload.single('image'), userController.putUser)
 // 後期處理
 router.use('/', (req, res) => { res.redirect('/restaurants') })
 

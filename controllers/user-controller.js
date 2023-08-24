@@ -1,6 +1,8 @@
 const bcrypt = require('bcryptjs')
 const { User } = require('../models')
 
+const { localFileHandler } = require('../helpers/file-helper')
+
 const userController = {
   signUpPage: (req, res) => {
     res.render('signup')
@@ -42,8 +44,39 @@ const userController = {
     return User.findByPk(req.params.id, { raw: true })
       .then(user => {
         if (!user) throw new Error('使用者不存在')
-        return res.render('profile', { user })
+        return res.render('profile', { person: user }) // 注意這裡避免跟登入user搞混 改為person
       }).catch(err => next(err))
+  },
+  editUser: (req, res, next) => {
+    return User.findByPk(req.params.id, { raw: true })
+      .then(user => {
+        if (!user) throw new Error('使用者不存在')
+        return res.render('edit-profile', { person: user }) // 注意這裡避免跟登入user搞混 改為person
+      }).catch(err => next(err))
+  },
+  putUser: (req, res, next) => {
+    const { name, email } = req.body
+    if (!name || !email) throw new Error('名稱及信箱不可為空')
+    const { file } = req
+    console.log('file is :', file)
+    return Promise.all([
+      User.findByPk(req.params.id),
+      localFileHandler(file)
+    ])
+      .then(([user, filePath]) => {
+        if (!user) throw new Error('使用者不存在')
+        console.log('filePath is :', filePath)
+        return user.update({
+          name,
+          email,
+          image: filePath || user.image
+        })
+      })
+      .then(() => {
+        req.flash('success_messages', '修改使用者成功')
+        return res.redirect(`/users/${req.params.id}`)
+      })
+      .catch(err => next(err))
   }
 
 }
