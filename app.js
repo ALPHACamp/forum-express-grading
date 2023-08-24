@@ -8,6 +8,9 @@ const passport = require('./config/passport')
 const handlebarsHelpers = require('./helpers/handlebars-helpers')
 const { getUser } = require('./helpers/auth-helpers')
 const routes = require('./routes')
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
 const app = express()
 const port = process.env.PORT || 3000
 const SESSION_SECRET = 'secret'
@@ -30,7 +33,7 @@ app.use((req, res, next) => {
 app.use(routes)
 
 app.listen(port, () => {
-  console.info(`Example app listening on port ${port}!`)
+  console.info(`Express is running on http://localhost:${port}`)
 })
 
 module.exports = app
