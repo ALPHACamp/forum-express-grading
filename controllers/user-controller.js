@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs')
-const { User } = require('../models')
+const { User, Comment, Restaurant } = require('../models')
 
 const { localFileHandler, defaultAvatarPath } = require('../helpers/file-helper')
 
@@ -41,13 +41,15 @@ const userController = {
     res.redirect('/signin')
   },
   getUser: (req, res, next) => {
-    return User.findByPk(req.params.id, { raw: true })
+    return User.findByPk(req.params.id, {
+      include: { model: Comment, include: Restaurant }
+    })
       .then(user => {
         if (!user) throw new Error('使用者不存在')
         if (!user.image) {
-          user.image = defaultAvatarPath
+          user.image = defaultAvatarPath // 指定預設頭貼
         }
-        return res.render('users/profile', { user })
+        return res.render('users/profile', { user: user.toJSON() })
       }).catch(err => next(err))
   },
   editUser: (req, res, next) => {

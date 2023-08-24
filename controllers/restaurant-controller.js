@@ -58,7 +58,9 @@ const restaurantController = {
       .catch(err => next(err))
   },
   getDashboard: (req, res, next) => {
-    return Restaurant.findByPk(req.params.id, { include: Category })
+    return Restaurant.findByPk(req.params.id,
+      { include: [Category, Comment] }
+    )
       .then(restaurant => {
         res.render('dashboard', { restaurant: restaurant.toJSON() })
       })
