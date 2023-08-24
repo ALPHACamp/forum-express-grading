@@ -17,8 +17,9 @@ const adminController = {
   createRestaurants: (req, res, next) => {
     Category.findAll({ raw: true })
       .then(categories => {
-        categories = deletedCategoryFilter(categories)
-        return res.render('admin/create-restaurant', { categories })
+        return res.render('admin/create-restaurant', {
+          categories: deletedCategoryFilter(categories)
+        })
       })
       .catch(err => next(err))
   },
@@ -62,7 +63,10 @@ const adminController = {
     ])
       .then(([restaurant, categories]) => {
         if (!restaurant) throw new Error('此餐廳不存在')
-        res.render('admin/edit-restaurant', { restaurant, categories })
+        res.render('admin/edit-restaurant', {
+          restaurant,
+          categories: deletedCategoryFilter(categories)
+        })
       })
       .catch(err => next(err))
   },
