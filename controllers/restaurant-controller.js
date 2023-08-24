@@ -40,10 +40,9 @@ const restaurantController = {
   },
   getRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
-      include: {
-        model: Comment,
-        include: User
-      },
+      include: [
+        { model: Comment, include: User },
+        Category],
       order: [
         [Comment, 'createdAt', 'DESC'] // 新的時間在上面
       ]

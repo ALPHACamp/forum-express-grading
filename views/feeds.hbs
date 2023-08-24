@@ -18,8 +18,9 @@
               </button>
             </a>
             </h4>
+            <img src="{{this.image}}" alt="" width="200" height="200">
             <p class="my-4" style="white-space: break-spaces;">{{this.description}}</p>
-            {{relativeTimeFromNow this.createdAt}}
+            -- {{relativeTimeFromNow this.createdAt}}
             <hr>
           </div>
         {{/each}}
@@ -33,13 +34,13 @@
       </div>
       <div class="card-body">
         {{#each comments}}
-          <div>
-            <h4>
-              <a class="link-primary" href="/restaurants/{{this.Restaurant.id}}">{{this.Restaurant.name}}</a>
-            </h4>
-            <p class="my-4" style="white-space: break-spaces;">{{this.text}}</p>
+          <div> 
+            <img src="{{this.User.image}}" alt="" width="50;" height="50;">
             - <a class="link-secondary" href="/users/{{this.User.id}}">{{this.User.name}}</a>
-            <small>at {{relativeTimeFromNow this.createdAt}}</small>
+            留下評論 : 
+            <p class="my-4" style="white-space: break-spaces;">{{this.text}}</p>
+              在餐廳 <a class="link-primary" href="/restaurants/{{this.Restaurant.id}}">{{this.Restaurant.name}}</a>
+            <small>-- {{relativeTimeFromNow this.createdAt}}</small>
             <hr>
           </div>
         {{/each}}

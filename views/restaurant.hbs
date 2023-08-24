@@ -1,7 +1,7 @@
 <div class="row mb-5">
   <div class="col-md-12">
     <h1>{{restaurant.name}}</h1>
-    <p>[{{restaurant.Category.name}}]</p>
+    <a href="/restaurants?categoryId={{restaurant.Category.id}}">[{{restaurant.Category.name}}]</a>
   </div>
   <div class="col-md-4">
     <img class="img-responsive center-block mb-5" src="{{restaurant.image}}" style="width: 250px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
@@ -31,9 +31,10 @@
       onclick="return confirm(`確定要刪除這條評論嗎? \n User:  {{this.User.name}} \n Content:  {{this.text}} \n `)">Delete</button>
     </form>
   {{/if}}
-  <blockquote class="blockquote mb-0">
-    <h4><a href="/users/{{this.User.id}}">{{this.User.name}}</a></h4>
-    <p>{{this.text}}</p>
+  <blockquote class="blockquote mb-3">
+    <img src="{{this.User.image}}" alt="" width="50" height="50">
+    <a href="/users/{{this.User.id}}">{{this.User.name}}</a> 說 :
+    <p class="text mt-3 mb-5">{{this.text}}</p>
     <footer class="blockquote-footer">{{relativeTimeFromNow this.createdAt}}</footer>
   </blockquote>
   <hr />
