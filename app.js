@@ -1,3 +1,5 @@
+const path = require('path') // node.js 原生模組
+
 const express = require('express')
 const exphbs = require('express-handlebars')
 const session = require('express-session')
@@ -25,6 +27,7 @@ app.use(session({
 app.use(passport.initialize())
 app.use(passport.session())
 app.use(flash())
+app.use('/upload', express.static(path.join(__dirname, 'upload')))
 app.use((req, res, next) => {
   res.locals.success_messages = req.flash('success_messages')
   res.locals.error_messages = req.flash('error_messages')
