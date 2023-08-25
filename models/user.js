@@ -15,6 +15,7 @@ module.exports = (sequelize, DataTypes) => {
         through: models.Favorite,
         foreignKey: 'userId',
         as: 'FavoriteRestaurants'
+        // 注意這裡的命名邏輯 此用戶收藏的餐廳們
       })
     }
   };

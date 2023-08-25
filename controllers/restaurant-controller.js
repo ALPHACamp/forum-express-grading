@@ -23,9 +23,12 @@ const restaurantController = {
       Category.findAll({ raw: true })
     ])
       .then(([restaurants, categories]) => {
+        const favoriteRestaurantsId = req.user && req.user.FavoriteRestaurants.map(fr => fr.id)
+        // fr是簡寫 , 會返回一個只包含此使用者喜愛餐廳id的陣列
         restaurants.rows = restaurants.rows.map(r => ({ // 小括號代替return,注意這裡不能改整個restaurants,要選rows
           ...r,
-          description: r.description.substring(0, 50) // 雖然展開的時候也有屬性了，但後面的keyvalue可以覆蓋前面的keyvalue
+          description: r.description.substring(0, 50), // 雖然展開的時候也有屬性了，但後面的keyvalue可以覆蓋前面的keyvalue
+          isFavorite: favoriteRestaurantsId.includes(r.id)
         })
         )
         categories = deletedCategoryFilter(categories)
@@ -41,18 +44,26 @@ const restaurantController = {
   getRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
       include: [
+        Category,
         { model: Comment, include: User },
-        Category],
+        { model: User, as: 'FavoriteUsers' }], // 把收藏此餐廳的使用者抓出來
       order: [
         [Comment, 'createdAt', 'DESC'] // 新的時間在上面
       ]
       // EagerLoading會自動幫你抓外鍵對應的資料
       // 注意返回的資料類型hasMany為物件陣列，belongsTo為物件
     })
-      .then(async restaurant => {
+      .then(restaurant => {
         if (!restaurant) throw new Error('此餐廳不存在')
-        await restaurant.increment('viewCounts')
-        return res.render('restaurant', { restaurant: restaurant.toJSON() })
+        return restaurant.increment('viewCounts')
+      })
+      .then(restaurant => {
+        // 這邊改用some 搜到一個匹配就停止 , 登入者的id若有匹配到此餐廳收藏者id就true
+        const isFavorite = restaurant.FavoriteUsers.some(fu => fu.id === req.user.id)
+        return res.render('restaurant', {
+          restaurant: restaurant.toJSON(),
+          isFavorite
+        })
       })
       .catch(err => next(err))
   },
