@@ -22,11 +22,11 @@ module.exports = {
           key: 'id'
         }
       },
-      createdAt: {
+      created_at: { // 修正
         allowNull: false,
         type: Sequelize.DATE
       },
-      updatedAt: {
+      updated_at: { // 修正
         allowNull: false,
         type: Sequelize.DATE
       }

@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs')
-const { User, Comment, Restaurant, Favorite } = require('../models')
+const { User, Comment, Restaurant, Favorite, Like } = require('../models')
 
 const { localFileHandler, defaultAvatarPath } = require('../helpers/file-helper')
 const favorite = require('../models/favorite')
@@ -122,6 +122,49 @@ const userController = {
       .then(() => {
         req.flash('success_messages', '移除收藏成功')
         return res.redirect('back')
+      })
+      .catch(err => next(err))
+  },
+  addLike: (req, res, next) => {
+    const { restaurantId } = req.params
+    return Promise.all([
+      Restaurant.findByPk(restaurantId),
+      Like.findOne({
+        where: {
+          userId: req.user.id,
+          restaurantId
+        }
+      })
+    ])
+      .then(([restaurant, like]) => {
+        if (!restaurant) throw new Error('此餐廳不存在')
+        if (like) throw new Error('已經按過讚')
+        return Like.create({
+          userId: req.user.id,
+          restaurantId
+        })
+      })
+      .then(() => {
+        req.flash('success_messages', '點贊成功')
+        return res.redirect('/restaurants')
+      })
+      .catch(err => next(err))
+  },
+  removeLike: (req, res, next) => {
+    const { restaurantId } = req.params
+    return Like.findOne({
+      where: {
+        userId: req.user.id,
+        restaurantId
+      }
+    })
+      .then(like => {
+        if (!like) throw new Error('尚未點讚')
+        return like.destroy()
+      })
+      .then(() => {
+        req.flash('success_messages', '倒讚')
+        return res.redirect('/restaurants')
       })
       .catch(err => next(err))
   }

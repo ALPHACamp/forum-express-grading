@@ -37,7 +37,7 @@
               </button>
             </a>
           <p class="card-text text-truncate">{{this.description}}</p>
-          <div class="d-flex">
+          <div class="d-flex justify-content-between ">
             {{#if this.isFavorited}}
             <form action="/favorite/{{this.id}}?_method=DELETE" method="POST">
               <button type="submit" class="btn btn-danger m-1">移除最愛</button>
@@ -47,6 +47,12 @@
               <button type="submit" class="btn btn-primary m-1">加到最愛</button>
             </form>
             {{/if}}
+              <form action="/like/{{this.id}}" method="POST">
+                <button type="submit" class="btn btn-info m-1">👍</button>
+              </form>
+              <form action="/like/{{this.id}}?_method=DELETE" method="POST">
+                <button type="submit" class="btn btn-secondary m-1">收回👎</button>
+              </form>
           </div>
         </div>
       </div>
