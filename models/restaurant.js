@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static associate (models) {
+    static associate(models) {
       // define association here
       Restaurant.belongsTo(models.Category, { foreignKey: 'categoryId' }) // 要指定名稱
       Restaurant.hasMany(models.Comment, { foreignKey: 'restaurantId' })
@@ -18,6 +18,11 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'restaurantId',
         as: 'FavoritedUsers' // 給這段關係命名 (後續include會取用)
         // 注意這裡的命名邏輯 對此餐廳收藏的用戶們
+      })
+      Restaurant.belongsToMany(models.User, {
+        through: models.Like,
+        foreignKey: 'restaurantId',
+        as: 'LikedUsers'
       })
     }
   };
