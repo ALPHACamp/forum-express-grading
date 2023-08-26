@@ -16,7 +16,7 @@
   <div class="col-md-8">
     <p style="white-space: break-spaces;">{{restaurant.description}}</p>
     <a class="btn btn-primary" href="/restaurants/{{restaurant.id}}/dashboard">Dashboard</a>
-     {{#if isFavorite }}
+    {{#if isFavorited }}
       <form action="/favorite/{{restaurant.id}}?_method=DELETE" method="POST" style="display: contents;">
         <button type="submit" class="btn btn-danger">移除最愛</button>
       </form>
@@ -24,6 +24,16 @@
       <form action="/favorite/{{restaurant.id}}" method="POST" style="display: contents;">
         <button type="submit" class="btn btn-primary">加到最愛</button>
       </form>
+    {{/if}}
+
+    {{#if isLiked}}
+    <form action="/like/{{restaurant.id}}?_method=DELETE" method="POST" style="display: contents;">
+      <button type="submit" class="btn btn-secondary m-1">收回👎</button>
+    </form>
+    {{else}}
+    <form action="/like/{{restaurant.id}}" method="POST" style="display: contents;">
+      <button type="submit" class="btn btn-info m-1">👍</button>
+    </form>
     {{/if}}
   </div>
   <hr>

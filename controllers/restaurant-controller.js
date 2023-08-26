@@ -23,12 +23,14 @@ const restaurantController = {
       Category.findAll({ raw: true })
     ])
       .then(([restaurants, categories]) => {
-        const favoriteRestaurantsId = req.user && req.user.FavoriteRestaurants.map(fr => fr.id)
+        const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
+        const LikedRestaurantsId = req.user && req.user.LikedRestaurants.map(lr => lr.id)
         // fr是簡寫 , 會返回一個只包含此使用者喜愛餐廳id的陣列
         restaurants.rows = restaurants.rows.map(r => ({ // 小括號代替return,注意這裡不能改整個restaurants,要選rows
           ...r,
           description: r.description.substring(0, 50), // 雖然展開的時候也有屬性了，但後面的keyvalue可以覆蓋前面的keyvalue
-          isFavorite: favoriteRestaurantsId.includes(r.id)
+          isFavorited: favoritedRestaurantsId.includes(r.id),
+          isLiked: LikedRestaurantsId.includes(r.id)
         })
         )
         categories = deletedCategoryFilter(categories)
@@ -46,7 +48,9 @@ const restaurantController = {
       include: [
         Category,
         { model: Comment, include: User },
-        { model: User, as: 'FavoriteUsers' }], // 把收藏此餐廳的使用者抓出來
+        { model: User, as: 'FavoritedUsers' }, // 把收藏此餐廳的使用者抓出來
+        { model: User, as: 'LikedUsers' } // 按過讚的使用者抓出來
+      ],
       order: [
         [Comment, 'createdAt', 'DESC'] // 新的時間在上面
       ]
@@ -59,10 +63,12 @@ const restaurantController = {
       })
       .then(restaurant => {
         // 這邊改用some 搜到一個匹配就停止 , 登入者的id若有匹配到此餐廳收藏者id就true
-        const isFavorite = restaurant.FavoriteUsers.some(fu => fu.id === req.user.id)
+        const isFavorited = restaurant.FavoritedUsers.some(fu => fu.id === req.user.id)
+        const isLiked = restaurant.LikedUsers.some(lu => lu.id)
         return res.render('restaurant', {
           restaurant: restaurant.toJSON(),
-          isFavorite
+          isFavorited,
+          isLiked
         })
       })
       .catch(err => next(err))
