@@ -38,7 +38,7 @@
             </a>
           <p class="card-text text-truncate">{{this.description}}</p>
           <div class="d-flex">
-            {{#if this.isFavorite}}
+            {{#if this.isFavorited}}
             <form action="/favorite/{{this.id}}?_method=DELETE" method="POST">
               <button type="submit" class="btn btn-danger m-1">移除最愛</button>
             </form>

@@ -34,7 +34,7 @@ passport.serializeUser((user, done) => {
 passport.deserializeUser((id, done) => {
   User.findByPk(id, {
     include: [
-      { model: Restaurant, as: 'FavoriteRestaurants' } // 取用的關係必須明確指定
+      { model: Restaurant, as: 'FavoritedRestaurants' } // 取用的關係必須明確指定
     ]
   })
     .then(user => done(null, user.toJSON()))
