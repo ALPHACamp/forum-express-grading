@@ -9,18 +9,10 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       user_id: {
-        type: Sequelize.INTEGER,
-        references: {
-          model: 'Users',
-          key: 'id'
-        }
+        type: Sequelize.INTEGER
       },
       restaurant_id: {
-        type: Sequelize.INTEGER,
-        references: {
-          model: 'Restaurants',
-          key: 'id'
-        }
+        type: Sequelize.INTEGER
       },
       created_at: { // 修正
         allowNull: false,
