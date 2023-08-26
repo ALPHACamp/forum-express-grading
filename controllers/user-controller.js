@@ -146,7 +146,7 @@ const userController = {
       })
       .then(() => {
         req.flash('success_messages', '點贊成功')
-        return res.redirect('/restaurants')
+        return res.redirect('back')
       })
       .catch(err => next(err))
   },
@@ -163,8 +163,8 @@ const userController = {
         return like.destroy()
       })
       .then(() => {
-        req.flash('success_messages', '倒讚')
-        return res.redirect('/restaurants')
+        req.flash('success_messages', '收回讚')
+        return res.redirect('back')
       })
       .catch(err => next(err))
   }
