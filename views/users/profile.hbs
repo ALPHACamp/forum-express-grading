@@ -1,0 +1,46 @@
+<div class="card mb-3" style="max-width: 1000px;">
+  <div class="row g-0">
+    <div class="col-md-4">
+      <img class="card-img-top img-fluid" src="{{user.image}}" alt="Card image cap" width="286px" height="180px"
+            style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+    </div>
+    <div class="col-md-8">
+      <div class="card-body">
+        <h5 class="card-title">{{user.name}}</h5>
+        <p class="card-text">{{user.email}}</p>
+        <p class="card-text"> 已評論餐廳數量 : {{user.Comments.length}}</p>
+        {{#ifCond user.id loginUser.id}} 
+          <a class="btn btn-primary" href="/users/{{user.id}}/edit">Edit</a>
+        {{/ifCond}}
+        
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="accordion mt-5 mb-5" id="accordionExample">
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="headingOne">
+      <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+        {{user.Comments.length}} 此使用者評論的餐廳 : 
+      </button>
+    </h2>
+    <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+      <div class="accordion-body d-flex ">
+          {{#if user.Comments.length}}
+          {{#each user.Comments}}
+            <div class="card ms-3 me-3 mt-3"  style="width: 200px;">
+              <a href="/restaurants/{{this.Restaurant.id}}" class="card-text"> {{this.Restaurant.name}}</p> 
+              <a href="/restaurants/{{this.Restaurant.id}}">
+              <img width="200px" height="200px" src="{{this.Restaurant.image}}" alt="">
+              </a>
+            </div>
+          {{/each}}
+          {{else}}
+          <h4>尚未留下任何評論。</h4>
+          {{/if}}
+      </div>
+    </div>
+  </div>
+</div>
