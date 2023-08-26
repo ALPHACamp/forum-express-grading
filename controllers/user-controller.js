@@ -57,7 +57,7 @@ const userController = {
     return User.findByPk(req.params.id, { raw: true })
       .then(user => {
         if (!user) throw new Error('使用者不存在')
-        if (user.id !== req.user.id) throw new Error('請勿修改他人資料')
+        // if (user.id !== req.user.id) throw new Error('請勿修改他人資料')
         return res.render('users/edit', { user })
       }).catch(err => next(err))
   },
@@ -70,7 +70,7 @@ const userController = {
     ])
       .then(([user, filePath]) => {
         if (!user) throw new Error('使用者不存在')
-        if (user.id !== req.user.id) throw new Error('請勿修改他人資料')
+        // if (user.id !== req.user.id) throw new Error('請勿修改他人資料')
         return user.update({
           name,
           email,
