@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static associate(models) {
+    static associate (models) {
       User.hasMany(models.Comment, { foreignKey: 'userId' })
       User.belongsToMany(models.Restaurant, {
         through: models.Favorite,
@@ -24,13 +24,13 @@ module.exports = (sequelize, DataTypes) => {
       })
       User.belongsToMany(User, {
         through: models.Followship,
-        foreignKey: 'followingId',
-        as: 'Followers'
+        foreignKey: 'followingId', // 從被追蹤的使用者
+        as: 'Followers' // 找出有追蹤他的人
       })
       User.belongsToMany(User, {
         through: models.Followship,
-        foreignKey: 'followerId',
-        as: 'Followings'
+        foreignKey: 'followerId', // 從一個使用者
+        as: 'Followings' // 找出他追蹤誰
       })
     }
   };
