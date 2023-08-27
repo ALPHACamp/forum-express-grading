@@ -13,6 +13,12 @@
           <a class="btn btn-primary" href="/users/{{user.id}}/edit">Edit</a>
         {{/ifCond}}
         
+        <form action="/following/{{user.id}}" method="POST" style="display: contents;">
+            <button type="submit" class="btn btn-primary">追蹤</button>
+          </form>
+        <form action="/following/{{user.id}}?_method=DELETE" method="POST" style="display: contents;">
+            <button type="submit" class="btn btn-danger">取消追蹤</button>
+        </form>
       </div>
 
     </div>
@@ -40,6 +46,7 @@
           {{else}}
           <h4>尚未留下任何評論。</h4>
           {{/if}}
+          
       </div>
     </div>
   </div>
