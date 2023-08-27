@@ -1,4 +1,4 @@
-const { Restaurant, Category, User, Comment } = require('../models')
+const { Restaurant, Category, User, Comment, Favorite } = require('../models')
 const { deletedCategoryFilter } = require('../helpers/deleted-filter-helper')
 const { getOffset, getPagination } = require('../helpers/pagination-helpler')
 const restaurantController = {
@@ -75,7 +75,7 @@ const restaurantController = {
   },
   getDashboard: (req, res, next) => {
     return Restaurant.findByPk(req.params.id,
-      { include: [Category, Comment] }
+      { include: [Category, Comment, { model: User, as: 'FavoritedUsers' }] }
     )
       .then(restaurant => {
         res.render('dashboard', { restaurant: restaurant.toJSON() })
@@ -102,6 +102,23 @@ const restaurantController = {
       .then(([restaurants, comments]) => {
         console.log(restaurants, comments)
         return res.render('feeds', { restaurants, comments })
+      })
+      .catch(err => next(err))
+  },
+  getTopRestaurants: (req, res, next) => {
+    return Restaurant.findAll({
+      include: [{ model: User, as: 'FavoritedUsers' }]
+    })
+      .then(restaurants => {
+        restaurants = restaurants.map(restaurant => ({
+          ...restaurant.toJSON(),
+          description: restaurant.description.substring(0, 50),
+          favoritedCount: restaurant.FavoritedUsers.length,
+          isFavorited: req.user && req.user.FavoritedRestaurants.some(fr => fr.id === restaurant.id)
+        })// 記得要驗證req.user 否則測試不會通過
+        ).sort((res1, res2) => res2.favoritedCount - res1.favoritedCount)
+        restaurants = restaurants.slice(0, 11)
+        return res.render('top-restaurants', { restaurants })
       })
       .catch(err => next(err))
   }

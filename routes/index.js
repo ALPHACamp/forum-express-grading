@@ -30,6 +30,7 @@ router.post('/signin', passport.authenticate('local',
 router.get('/logout', userController.logout)
 // 餐廳部分
 router.get('/restaurants/feeds', authenticated, restController.getFeeds) // 注意順序
+router.get('/restaurants/top', authenticated, restController.getTopRestaurants) // 注意順序
 router.get('/restaurants/:id', authenticated, restController.getRestaurant)
 router.get('/restaurants/:id/dashboard', authenticated, restController.getDashboard)
 router.get('/restaurants', authenticated, restController.getRestaurants)

@@ -176,7 +176,7 @@ const userController = {
       })
       .then(users => {
         users = users.map(
-          user => ({ // 教案另外使用data存取陣列
+          user => ({ // 教案另外使用result存取陣列
             ...user.toJSON(),
             followerCount: user.Followers.length,
             isFollowed: req.user.Followings.some(f => f.id === user.id)
