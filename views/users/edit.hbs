@@ -1,0 +1,22 @@
+<div class="mb-4 text-center">
+  <h1 class="h3 font-weight-normal mb-3">Edit User</h1>
+</div>
+<form action="/users/{{user.id}}?_method=PUT" method="POST" enctype="multipart/form-data">
+  <div class="form-row mb-5">
+    <label class="form-label" for="tel">User name :</label>
+    <input class="form-control" type="text" name="name" id="name" placeholder="Enter name" value="{{user.name}}">
+  </div>
+
+  <div class="form-row mb-5">
+    <label class="form-label" for="tel">User email :</label>
+    <input class="form-control" type="text" name="email" id="email" placeholder="Enter email" value="{{user.email}}">
+  </div>
+
+  <div class="form-row mb-3">
+  <label class="form-label" for="image">Image</label>
+  <input class="form-control" type="file" name="image"  class="form-control-file" id="image" >
+  </div>
+
+  <button class="btn btn-primary">submit</button>
+
+</form>

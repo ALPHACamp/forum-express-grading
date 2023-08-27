@@ -1,0 +1,71 @@
+<div class="row mb-5">
+  <div class="col-md-12">
+    <h1>{{restaurant.name}}</h1>
+    <a href="/restaurants?categoryId={{restaurant.Category.id}}">[{{restaurant.Category.name}}]</a>
+  </div>
+  <div class="col-md-4">
+    <img class="img-responsive center-block mb-5" src="{{restaurant.image}}" style="width: 250px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+    <div class="well">
+      <ul class="list-unstyled">
+        <li><strong>Opening Hour:</strong> {{restaurant.openingHours}}</li>
+        <li><strong>Tel:</strong> {{restaurant.tel}}</li>
+        <li><strong>Address:</strong> {{restaurant.address}}</li>
+      </ul>
+    </div>
+  </div>
+  <div class="col-md-8">
+    <p style="white-space: break-spaces;">{{restaurant.description}}</p>
+    <a class="btn btn-primary" href="/restaurants/{{restaurant.id}}/dashboard">Dashboard</a>
+    {{#if isFavorited }}
+      <form action="/favorite/{{restaurant.id}}?_method=DELETE" method="POST" style="display: contents;">
+        <button type="submit" class="btn btn-danger">移除最愛</button>
+      </form>
+    {{else}}
+      <form action="/favorite/{{restaurant.id}}" method="POST" style="display: contents;">
+        <button type="submit" class="btn btn-warning">加到最愛</button>
+      </form>
+    {{/if}}
+
+    {{#if isLiked}}
+    <form action="/like/{{restaurant.id}}?_method=DELETE" method="POST" style="display: contents;">
+      <button type="submit" class="btn btn-secondary m-1">收回👎</button>
+    </form>
+    {{else}}
+    <form action="/like/{{restaurant.id}}" method="POST" style="display: contents;">
+      <button type="submit" class="btn btn-info m-1">👍</button>
+    </form>
+    {{/if}}
+  </div>
+  <hr>
+</div>
+
+
+{{!-- 瀏覽評論 --}}
+<h3 class="mb-3">所有評論：</h3>
+{{#each restaurant.Comments}}
+  {{!-- 注意在each裡面 要返回上層 (這裡的user在app.js取得的) --}}
+  {{#if ../loginUser.isAdmin}}
+     <form action="/comments/{{this.id}}?_method=DELETE" method="POST" class="float-end">
+      <button type="submit" class="btn btn-danger" 
+      onclick="return confirm(`確定要刪除這條評論嗎? \n User:  {{this.User.name}} \n Content:  {{this.text}} \n `)">Delete</button>
+    </form>
+  {{/if}}
+  <blockquote class="blockquote mb-3">
+    <img src="{{this.User.image}}" alt="" width="50" height="50">
+    <a href="/users/{{this.User.id}}">{{this.User.name}}</a> 說 :
+    <p class="text mt-3 mb-5">{{this.text}}</p>
+    <footer class="blockquote-footer">{{relativeTimeFromNow this.createdAt}}</footer>
+  </blockquote>
+  <hr />
+{{/each}}
+{{!-- 送出評論 --}}
+<form action="/comments" method="POST">
+  <div class="form-row mb-3">
+    <label class="form-label" for="text">留下評論：</label>
+    <textarea class="form-control" id="text" name="text" rows="3"></textarea>
+  </div>
+  {{!-- 隱藏欄位 把餐廳id傳送過去 --}}
+  <input type="hidden" name="restaurantId" value="{{restaurant.id}}" />
+  <button type="submit" class="btn btn-primary">Submit</button>
+  <a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
+</form>

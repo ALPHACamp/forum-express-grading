@@ -1,0 +1,31 @@
+{{>admin-tabs route='users'}}
+
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Name</th>
+      <th scope="col">Email</th>
+      <th scope="col">Role</th>
+      <th scope="col">#</th>
+    </tr>
+  </thead>
+  {{!-- 每個使用者 --}}
+  {{#each users}}
+  <tbody>
+    <tr>
+      <th scope="row">{{this.id}}</th>
+      <td>{{this.name}}</td>
+      <td>{{this.email}}</td>
+      <td>{{this.role}}</td>
+      <td>
+      <form action="/admin/users/{{this.id}}?_method=PATCH" method="POST" style="display: inline;">
+        <button  class="btn-link" type="submit">{{buttonText this}}</button></td>
+      </form>
+      <td>
+
+    </tr>
+
+  </tbody>
+  {{/each}}
+</table>

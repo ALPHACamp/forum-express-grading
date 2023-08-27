@@ -1,0 +1,1 @@
+forum.categories  id:99 = '已刪除的分類'
