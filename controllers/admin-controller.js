@@ -1,12 +1,13 @@
-const { Restaurant } = require('../models')
+const { Restaurant, User } = require('../models')
 // const { localFileHandler } = require('../helpers/file-helpers')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const adminController = {
   getRestaurants: (req, res) => {
-    return Restaurant.findAll({ raw: true }).then(restaurants => {
-      return res.render('admin/restaurants', { restaurants: restaurants })
-    })
+    return Restaurant.findAll({ raw: true })
+      .then(restaurants => {
+        return res.render('admin/restaurants', { restaurants: restaurants })
+      })
   },
   createRestaurant: (req, res) => {
     return res.render('admin/create-restaurant')
@@ -87,6 +88,34 @@ const adminController = {
         // 刪除的時候也不會加 { raw: true } 參數
       })
       .then(() => res.redirect('/admin/restaurants'))
+      .catch(err => next(err))
+  },
+  getUsers: (req, res, next) => {
+    return User.findAll({ raw: true })
+      .then(users => res.render('admin/users', { users }))
+      .catch(err => next(err))
+  },
+  patchUser: (req, res, next) => {
+    const userId = req.params.id
+    // const { email } = req.body // 這是用在有 post / put 時
+    return User.findByPk(userId)
+      .then(user => {
+        // root@example.com
+        if (user.email === 'root@example.com') {
+          req.flash('error_messages', '禁止變更 root 權限')
+          return res.redirect('back')
+
+          // 不是 root@example.com 的其他
+        } else {
+          return user.update({
+            isAdmin: !user.isAdmin // 在 user 中要改變的key（所以不用 user.isAdmin）: 要改成什麼 value (要確認是什麼資訊，所以要 user.isAdmin)
+          })
+            .then(() => {
+              req.flash('success_messages', '使用者權限變更成功')
+              return res.redirect('/admin/users')
+            }) // .then() 可以接住 return 的資料
+        }
+      })
       .catch(err => next(err))
   }
 }
