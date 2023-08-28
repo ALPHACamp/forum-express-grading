@@ -22,7 +22,9 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'User',
     tableName: 'Users',
-    underscored: true
+    underscored: true // underscored: Sequelize 就能夠幫忙把 lowerCamelCase 和 snack_case 的變數自動做雙向轉換
+    // 寫 JavaScript 操作 Sequelize ORM 處理資料時，會用 lowerCamelCase
+    // 直接對資料庫操作時，需要寫 snack_case
   })
   return User
 }
