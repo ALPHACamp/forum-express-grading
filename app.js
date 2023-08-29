@@ -10,7 +10,11 @@ const { getUser } = require('./helpers/auth-helpers')
 const SESSION_SECRET = 'secret'
 const routes = require('./routes')
 const app = express()
-const port = process.env.PORT || 3000 
+const port = process.env.PORT || 3000
+
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
 
 app.engine('hbs', handlebars({ extname: '.hbs', helpers: handlebarsHelpers }))
 app.set('view engine', 'hbs')
