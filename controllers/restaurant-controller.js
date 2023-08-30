@@ -15,23 +15,23 @@ const restaurantController = {
       })
     })
   },
-  getRestaurant:(req,res)=>{
+  getRestaurant: (req, res) => {
     return Restaurant.findByPk(req.params.id, {
       include: Category,
       nest: true,
       raw: true
     })
-    .then(restaurant => {
-      if (!restaurant) throw new Error("Restaurant didn't exist!")
-      res.render('restaurant', {
-        restaurant
+      .then(restaurant => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        res.render('restaurant', {
+          restaurant
+        })
       })
-    })
-    .catch(err => next(err))
+      .catch(err => next(err))
   },
-  getDashboard:(req,res,next)=>{
+  getDashboard: (req, res, next) => {
     console.log(`id是${req.params.id}`)
-    return Restaurant.findByPk(req.params.id)
+    return Restaurant.findByPk(req.params.id,{raw:true})
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         res.render('dashboard', {

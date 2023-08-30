@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
@@ -6,7 +6,7 @@ module.exports = {
       type: Sequelize.STRING
     })
   },
-    down: async (queryInterface, Sequelize) => {
-      await queryInterface.removeColumn('Restaurants', 'image')
-    }
+  down: async (queryInterface, Sequelize) => {
+    await queryInterface.removeColumn('Restaurants', 'image')
+  }
 }
