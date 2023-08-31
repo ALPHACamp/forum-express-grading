@@ -1,5 +1,10 @@
+<<<<<<< HEAD
 // const { ensureAuthenticated, getUser } = require('../helpers/auth-helpers')
 const helpers = require('../helpers/auth-helpers')
+=======
+const { ensureAuthenticated, getUser } = require('../helpers/auth-helpers')
+// const helpers = require('../helpers/auth-helpers')
+>>>>>>> 74fa712 (feat: User permission management)
 const authenticated = (req, res, next) => {
   // if (req.isAuthenticated)
   if (helpers.ensureAuthenticated(req)) {

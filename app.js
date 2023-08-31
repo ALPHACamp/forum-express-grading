@@ -15,7 +15,7 @@ const app = express()
 const port = process.env.PORT || 3000
 const SESSION_SECRET = 'secret'
 
-app.engine('hbs', handlebars({ extname: '.hbs', helpers: handlebarsHelpers }))  // 放入 helpers 的位置
+app.engine('hbs', handlebars({ extname: '.hbs', helpers: handlebarsHelpers })) // 放入 helpers 的位置
 app.set('view engine', 'hbs')
 app.use(express.urlencoded({ extended: true }))
 app.use(session({ secret: SESSION_SECRET, resave: false, saveUninitialized: false }))
