@@ -37,4 +37,5 @@ const userController = {
     res.redirect('/signin')
   }
 }
+
 module.exports = userController
