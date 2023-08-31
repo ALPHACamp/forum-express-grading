@@ -1,4 +1,4 @@
-const bcrypt = require('bcryptjs') //載入 bcrypt
+const bcrypt = require('bcryptjs') // 載入 bcrypt
 const db = require('../models')
 const { User } = db
 const userController = {
