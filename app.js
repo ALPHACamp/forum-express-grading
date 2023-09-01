@@ -2,6 +2,7 @@ const express = require('express')
 const handlebars = require('express-handlebars') // 引入 express-handlebars
 const flash = require('connect-flash') // 引入 connect-flash
 const session = require('express-session') // 引入 express-session
+const passport = require('./config/passport') // 增加這行，引入 Passport
 
 const routes = require('./routes')
 
@@ -15,6 +16,8 @@ app.set('view engine', 'hbs') // 設定使用 Handlebars 做為樣板引擎
 app.use(express.urlencoded({ extended: true }))
 
 app.use(session({ secret: SESSION_SECRET, resave: false, saveUninitialized: false }))
+app.use(passport.initialize()) // 增加這行，初始化 Passport
+app.use(passport.session()) // 增加這行，啟動 session 功能
 app.use(flash()) // 掛載套件
 
 app.use((req, res, next) => {
