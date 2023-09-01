@@ -3,6 +3,8 @@ const handlebars = require('express-handlebars') // 引入 express-handlebars
 const flash = require('connect-flash') // 引入 connect-flash
 const session = require('express-session') // 引入 express-session
 const passport = require('./config/passport') // 增加這行，引入 Passport
+const handlebarsHelpers = require('./helpers/handlebars-helpers') // 引入 handlebars-helpers
+const { getUser } = require('./helpers/auth-helpers') // 增加這行，引入自定義的 auth-helpers
 
 const routes = require('./routes')
 
@@ -23,6 +25,7 @@ app.use(flash()) // 掛載套件
 app.use((req, res, next) => {
   res.locals.success_messages = req.flash('success_messages') // 設定 success_msg 訊息
   res.locals.error_messages = req.flash('error_messages') // 設定 warning_msg 訊息
+  res.locals.user = getUser(req) // 增加這行
   next()
 })
 
