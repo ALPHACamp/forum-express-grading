@@ -46,7 +46,21 @@ const restaurantController = {
 
     }).then(restaurant => {
       if (!restaurant) throw new Error("Restuarant didn't exist!")
+      restaurant.increment({
+        viewCount: 1
+      })
       res.render('restaurant', { restaurant: restaurant.toJSON() })
+    }).catch(err => next(err))
+  },
+  getDashboard: (req, res, next) => {
+    return Restaurant.findByPk(req.params.id, {
+      include: [
+        Category,
+        { model: Comment, include: User }
+      ]
+    }).then(restaurant => {
+      if (!restaurant) throw new Error("Restaurant didn't exist!")
+      res.render('restDashboard', { restaurant: restaurant.toJSON() })
     }).catch(err => next(err))
   }
 }
