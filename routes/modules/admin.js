@@ -7,6 +7,7 @@ router.get('/restaurants/create', adminController.createRestaurant) // 新增這
 router.get('/restaurants/:id/edit', adminController.editRestaurant) // 新增這一行
 router.get('/restaurants/:id', adminController.getRestaurant) // 新增這一行
 router.put('/restaurants/:id', adminController.putRestaurant) // 新增這一行
+router.delete('/restaurants/:id', adminController.deleteRestaurant)
 router.get('/restaurants', adminController.getRestaurants) // 修改這行，新增 authenticatedAdmin 參數
 router.post('/restaurants', adminController.postRestaurant) // 新增這行
 
