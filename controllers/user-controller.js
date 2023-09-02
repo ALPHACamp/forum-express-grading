@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs') // 載入 bcrypt
-const { Comment, User, Restaurant, Favorite } = require('../models')
+const { Comment, User, Restaurant, Favorite, Like } = require('../models')
 const { localFileHandler } = require('../helpers/file-helpers')
 const userController = {
   signUpPage: (req, res) => {
@@ -103,7 +103,7 @@ const userController = {
           restaurantId
         }),
         restaurant.increment({
-          numLike: 1
+          numFavorite: 1
         })
       ]).then(() => res.redirect('back'))
     })
@@ -123,6 +123,51 @@ const userController = {
 
       return Promise.all([
         favorite.destroy(),
+        restaurant.decrement({
+          numFavorite: 1
+        })]).then(() => res.redirect('back'))
+    }).catch(err => next(err))
+  },
+
+  addLike: (req, res, next) => {
+    const { restaurantId } = req.params
+    return Promise.all([
+      Restaurant.findByPk(restaurantId),
+      Like.findOne({
+        where: {
+          userId: req.user.id,
+          restaurantId
+        }
+      })
+    ]).then(([restaurant, like]) => {
+      if (!restaurant) throw new Error("Restauarant didn't exist!")
+      if (like) throw new Error('You have liked this restaurant!')
+      return Promise.all([
+        Like.create({
+          userId: req.user.id,
+          restaurantId
+        }),
+        restaurant.increment({
+          numLike: 1
+        })
+      ]).then(() => res.redirect('back'))
+    })
+      .catch(err => next(err))
+  },
+  removeLike: (req, res, next) => {
+    return Promise.all([
+      Like.findOne({
+        where: {
+          userId: req.user.id,
+          restaurantId: req.params.restaurantId
+        }
+      }),
+      Restaurant.findByPk(req.params.restaurantId)
+    ]).then(([like, restaurant]) => {
+      if (!like) throw new Error("You haven't liked this restaurant")
+
+      return Promise.all([
+        like.destroy(),
         restaurant.decrement({
           numLike: 1
         })]).then(() => res.redirect('back'))
