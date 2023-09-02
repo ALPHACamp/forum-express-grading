@@ -21,6 +21,18 @@
 </div>
 <a class="btn btn-outline-secondary" href="/restaurants/{{restaurant.id}}/dashboard">Dashboard</a>
 
+{{!-- Comment --}}
+<h3 class="mb-3 mt-5">所有評論：</h3>
+{{#each restaurant.Comments}}
+<blockquote class="blockquote mb-0">
+  <h4><a href="/users/{{this.User.id}}">{{this.User.name}}</a></h4>
+  <p>{{this.text}}</p>
+  <footer class="blockquote-footer">{{relativeTimeFromNow this.createdAt}}</footer>
+</blockquote>
+<hr />
+{{/each}}
+
+
 
 {{!-- Comment --}}
 <form action="/comments" method="POST" class="mt-5">
