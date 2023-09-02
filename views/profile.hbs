@@ -1,0 +1,17 @@
+<div class="container">
+  <div class="row" style="justify-content: space-between">
+    <div class="col-sm-3" styles="padding:auto ">
+      <img class="img-responsive  mb-5" alt="Avatar" src="{{user.image}}" style="width: 250px; height: 250px;  border-radius: 50%;
+
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+    </div>
+
+    <div class="col-sm-6" style="background-color:#def7f7;">
+      <h2>{{user.name}} </h2>
+      <p>{{user.email}}</p>
+      <a class="btn btn-primary" href="/users/{{user.id}}/edit">Edit</a>
+    </div>
+  </div>
+</div>
