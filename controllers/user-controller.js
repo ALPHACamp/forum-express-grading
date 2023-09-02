@@ -54,25 +54,20 @@ const userController = {
           raw: true
         })
         const numRestaurant = restaurant.length
-        console.log('restaurant: ', restaurant)
-        res.render('profile', { user: user.toJSON(), num_restaurant: numRestaurant, restaurant: restaurant })
+        res.render('users/profile', { user: user.toJSON(), num_restaurant: numRestaurant, restaurant: restaurant })
       }).catch(err => next(err))
   },
   editUser: (req, res, next) => {
     return User.findByPk(req.params.id).then(user => {
       if (!user) throw new Error("User didn't exist!")
-      res.render('edit-profile', { user: user.toJSON() })
+      res.render('users/edit', { user: user.toJSON() })
     }).catch(err => next(err))
   },
   putUser: (req, res, next) => {
-    console.log('--------putUser--------')
-
-    console.log(req.body)
     const { name } = req.body
     const { file } = req
-    if (!name) throw new Error('User name is required!')
     if (req.user.id !== Number(req.params.id)) throw new Error('只能更改自己的資料！')
-    Promise.all([
+    return Promise.all([
       User.findByPk(req.params.id),
       localFileHandler(file)
     ])
@@ -84,7 +79,7 @@ const userController = {
         })
       })
       .then(() => {
-        req.flash('success_messages', 'User profile was successfully to update')
+        req.flash('success_messages', '使用者資料編輯成功')
         res.redirect(`/users/${req.params.id}`)
       })
       .catch(err => next(err))
