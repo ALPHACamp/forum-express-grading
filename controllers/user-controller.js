@@ -1,6 +1,5 @@
 const bcrypt = require('bcryptjs') // 載入 bcrypt
-const db = require('../models')
-const { User } = db
+const { Comment, User, Restaurant } = require('../models')
 const { localFileHandler } = require('../helpers/file-helpers')
 const userController = {
   signUpPage: (req, res) => {
@@ -38,10 +37,26 @@ const userController = {
     res.redirect('/signin')
   },
   getUser: (req, res, next) => {
-    return User.findByPk(req.params.id).then(user => {
-      if (!user) throw new Error("User didn't exist!")
-      res.render('profile', { user: user.toJSON() })
-    }).catch(err => next(err))
+    return Promise.all([
+      User.findByPk(req.params.id),
+      Comment.findAll({
+        where: { userId: req.params.id },
+        raw: true
+      })
+    ])
+      .then(async ([user, comment]) => {
+        if (!user) throw new Error("User didn't exist!")
+        const commentResID = comment.map(obj => obj.restaurantId)
+        const restaurant = await Restaurant.findAll({
+          where: {
+            id: commentResID
+          },
+          raw: true
+        })
+        const numRestaurant = restaurant.length
+        console.log('restaurant: ', restaurant)
+        res.render('profile', { user: user.toJSON(), num_restaurant: numRestaurant, restaurant: restaurant })
+      }).catch(err => next(err))
   },
   editUser: (req, res, next) => {
     return User.findByPk(req.params.id).then(user => {

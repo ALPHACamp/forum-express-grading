@@ -1,6 +1,6 @@
-<div class="container">
-  <div class="row" style="justify-content: space-between">
-    <div class="col-sm-3" styles="padding:auto ">
+<div class="container" style="padding-bottom:2rem ">
+  <div class="row" style="justify-content: space-evenly">
+    <div class="col-sm-3">
       <img class="img-responsive  mb-5" alt="Avatar" src="{{user.image}}" style="width: 250px; height: 250px;  border-radius: 50%;
 
   background-repeat: no-repeat;
@@ -8,10 +8,32 @@
   background-size: cover;transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
     </div>
 
-    <div class="col-sm-6" style="background-color:#def7f7;">
+    <div class="col-sm-6" style=" border-width:2px; border-style:solid; border-color: #d1cece;border-radius: 25px">
       <h2>{{user.name}} </h2>
       <p>{{user.email}}</p>
+      <h6>{{num_restaurant}} 已評論餐廳 </h6>
       <a class="btn btn-primary" href="/users/{{user.id}}/edit">Edit</a>
     </div>
   </div>
+</div>
+
+<div class="comment-profiles" style="border-width:2px; border-style:solid; border-color: #d1cece">
+  <div style="padding-top:1rem;background-color:#f6f2f2;">
+    <h6 style="padding-left:1rem"> {{num_restaurant}} 已評論餐廳</h6>
+    <hr>
+  </div>
+  <div class="restuarant-container" style="padding-top:1rem; padding-left:1rem; padding-right:1rem">
+    {{#each restaurant}}
+    <div class="row">
+      <a href="/restaurants/{{this.id}}"><img class="img-responsive  mb-5" alt="Avatar" src="{{this.image}}" style=" max-width:120px; max-height:120px;
+              width:auto; height:auto;
+              background-repeat: no-repeat;
+              background-position: center center;
+              background-size: cover;transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;"
+          alt="{{this.name}}" aria-label="{{this.name}}">
+      </a>
+    </div>
+    {{/each}}
+  </div>
+
 </div>
