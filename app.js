@@ -20,6 +20,7 @@ app.use(passport.session())
 app.use(flash()) // 掛載套件
 app.use(methodOverride('_method'))
 app.use('/upload', express.static(path.join(__dirname, 'upload')))
+app.use('/views', express.static(path.join(__dirname, 'views')))
 app.use((req, res, next) => {
   res.locals.success_messages = req.flash('success_messages')
   res.locals.error_messages = req.flash('error_messages')

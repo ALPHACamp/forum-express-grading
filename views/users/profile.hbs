@@ -1,7 +1,8 @@
 <div class="container" style="padding-bottom:2rem ">
   <div class="row" style="justify-content: space-evenly">
     <div class="col-sm-3">
-      <img class="img-responsive  mb-5" alt="Avatar" src="{{user.image}}" style="width: 250px; height: 250px;  border-radius: 50%;
+      <img class="img-responsive  mb-5" alt="Avatar"
+        src="{{#if user.image}}{{user.image}}{{else}} /views/users/non_user.png {{/if}}" style="width: 250px; height: 250px;  border-radius: 50%;
 
   background-repeat: no-repeat;
   background-position: center center;
