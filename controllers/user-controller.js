@@ -2,7 +2,7 @@ const bcrypt = require('bcryptjs') // 載入 bcrypt
 const db = require('../models')
 const { User,Comment,Restaurant } = db
 const {getUser} = require('../helpers/auth-helpers')
-const { localFileHandler } = require('../helpers/file-helpers') // 將 file-helper 載進來
+const { imgurFileHandler } = require('../helpers/file-helpers') // 將 file-helper 載進來
 const userController = {
   signUpPage: (req, res) => {
     res.render('signup')
@@ -48,7 +48,6 @@ const userController = {
     })
       .then(user => {
         if (!user) throw new Error("User didn't exist!")
-        console.log(user)
         res.render('users/profile', { user: user.toJSON(), editPermission })
       })
       .catch(err => next(err))
@@ -71,7 +70,7 @@ const userController = {
     }
     return Promise.all([ // 非同步處理
       User.findByPk(req.params.id), // 去資料庫查有沒有這個使用者
-      localFileHandler(file) // 把檔案傳到 file-helper 處理 
+      imgurFileHandler(file) // 把檔案傳到 file-helper 處理 
     ])
     .then(([user,filepath]) => {
       if (!user) throw new Error('user did not exists!')

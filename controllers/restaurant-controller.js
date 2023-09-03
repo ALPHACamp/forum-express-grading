@@ -34,7 +34,7 @@ const restaurantController = {
         })
       })
   },
-  getRestaurant: (req, res) => {
+  getRestaurant: (req, res,next) => {
     return Restaurant.findByPk(req.params.id, {
       include: [Category,
         { model: Comment, include: User }],
