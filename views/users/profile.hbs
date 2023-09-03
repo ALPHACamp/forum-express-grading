@@ -23,14 +23,15 @@
     <h6 style="padding-left:1rem"> {{num_restaurant}} 已評論餐廳</h6>
     <hr>
   </div>
-  <div class="restuarant-container" style="padding-top:1rem; padding-left:1rem; padding-right:1rem">
+  <div class="restaurant-container" style="padding-top: 1rem; padding-left: 1rem; padding-right: 1rem; display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;">
     {{#each restaurant}}
-    <div class="row">
-      <a href="/restaurants/{{this.id}}"><img class="img-responsive  mb-5" alt="Avatar" src="{{this.image}}" style=" max-width:120px; max-height:120px;
-              width:auto; height:auto;
-              background-repeat: no-repeat;
-              background-position: center center;
-              background-size: cover;transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;"
+    <div class="profile-restaurant" style="text-align: center; max-width: 120px;">
+      <a href="/restaurants/{{this.id}}">
+        <img class="img-responsive mb-5" alt="Avatar" src="{{this.image}}" style="max-width: 100%; height: auto; background-repeat: no-repeat;
+          background-position: center center;
+          background-size: cover; transition: opacity 0.5s; opacity: 0;" onload="this.style.opacity = 1;"
           alt="{{this.name}}" aria-label="{{this.name}}">
       </a>
     </div>
