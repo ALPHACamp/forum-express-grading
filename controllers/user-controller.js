@@ -105,7 +105,7 @@ const userController = {
         restaurant.increment({
           numFavorite: 1
         })
-      ]).then(() => res.redirect('back'))
+      ]).then(() => { return res.redirect('back') })
     })
       .catch(err => next(err))
   },
@@ -125,7 +125,7 @@ const userController = {
         favorite.destroy(),
         restaurant.decrement({
           numFavorite: 1
-        })]).then(() => res.redirect('back'))
+        })]).then(() => { return res.redirect('back') })
     }).catch(err => next(err))
   },
 
@@ -150,7 +150,7 @@ const userController = {
         restaurant.increment({
           numLike: 1
         })
-      ]).then(() => res.redirect('back'))
+      ]).then(() => { return res.redirect('back') })
     })
       .catch(err => next(err))
   },
@@ -182,7 +182,7 @@ const userController = {
         followerCount: user.Followers.length,
         isFollowed: req.user.Followings.some(f => f.id === user.id)
       })).sort((a, b) => b.followerCount - a.followerCount)
-      res.render('top-users', { users: result })
+      return res.render('top-users', { users: result })
     }).catch(err => next(err))
   },
 
@@ -205,7 +205,7 @@ const userController = {
           followingId: userId
         })
       })
-      .then(() => res.redirect('back'))
+      .then(() => { return res.redirect('back') })
       .catch(err => next(err))
   },
   removeFollowing: (req, res, next) => {
@@ -219,7 +219,7 @@ const userController = {
         if (!followship) throw new Error("You haven't followed this user!")
         return followship.destroy()
       })
-      .then(() => res.redirect('back'))
+      .then(() => { return res.redirect('back') })
       .catch(err => next(err))
   }
 }
