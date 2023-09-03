@@ -1,0 +1,16 @@
+<div class="mt-2 mx-4 border d-flex" style="padding:20px">
+  <img src="{{user.image}}" alt="avatar" style="margin-right:50px;border-radius:50%; height:200px;width:200px;">
+  <div class="d-flex flex-column justify-content-between align-items-start">
+    <div>
+      <h2>{{user.name}}</h2>
+      <p>{{user.email}}</p>
+    </div>
+    {{#if editPermission}}
+    <button type="button" class="btn btn-link" style="padding:0px; background-color:#0d6efd">
+      <a class="btn" href="/users/{{user.id}}/edit" style="padding:4px;color:white">
+        Edit
+      </a>
+    </button>
+    {{/if}}
+  </div>
+</div>
