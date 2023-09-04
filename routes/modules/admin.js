@@ -13,6 +13,9 @@ router.delete('/restaurants/:id', adminController.deleteRestaurant)
 router.get('/restaurants', adminController.getRestaurants) // 修改這行，新增 authenticatedAdmin 參數
 router.post('/restaurants', upload.single('image'), adminController.postRestaurant) // 新增這行; 新增上傳圖片功能
 
+router.patch('/users/:id', adminController.patchUser) // R01 test
+router.get('/users', adminController.getUsers) //        R01 test
+
 router.get('/', (req, res) => res.redirect('/admin/restaurants'))
 
 module.exports = router
