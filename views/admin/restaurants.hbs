@@ -1,12 +1,7 @@
-<h1>餐廳後台</h1>
-<br />
-<nav class="nav justify-content-between">
-  <a class="nav-link" href="/admin/restaurants">Restaurants</a>
-  <a class="nav-link" href="/admin/users">Users</a>
-  <a class="ms-auto"href='/admin/restaurants/create'>
+{{>admin-tabs route='restaurants'}}
+  <a href='/admin/restaurants/create'>
     <button type="button" class="btn btn-primary">New Restaurant</button>
   </a>
-</nav>
 <table class="table align-middle">
   <thead class="thead-dark">
     <tr>
