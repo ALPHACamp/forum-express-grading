@@ -16,10 +16,7 @@
 </div>
 <div class="card mt-3 mx-4">
   <div class="card-header"  >
-    {{#if user.Comments.length}}{{user.Comments.length}}
-    {{else}} 0
-    {{/if}}
-    個已評論餐廳
+    {{user.commentsLength}}個已評論餐廳
   </div>
   {{#if user.Comments}}
   <div class="row row-cols-5 g-1">
@@ -30,7 +27,7 @@
             alt="..."></a>
         <div class="card-body">
           <a href="/restaurants/{{this.Restaurant.id}}">
-            <h5 class="card-title">{{this.Restaurant.name}}</h5>
+            <h5 class="card-title">{{this.restaurant.name}}</h5>
           </a>
           <p class="card-text">{{this.text}}</p>
           <p class="card-text"><small class="text-muted">{{relativeTimeFromNow this.createdAt}}</small></p>

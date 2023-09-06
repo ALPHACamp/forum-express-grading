@@ -67,14 +67,14 @@ const restaurantController = {
       nest: true,
       raw: false
     })
-      .then(restaurant => {
-        if (!restaurant) throw new Error("Restaurant didn't exist!")
-        res.render('dashboard', {
-          restaurant: restaurant.toJSON()
-        })
+    .then(restaurant => {
+      if (!restaurant) throw new Error("Restaurant didn't exist!")
+      res.render('dashboard', {
+        restaurant: restaurant.toJSON()
       })
-      .catch(err => next(err))
-  },
+    })
+    .catch(err => next(err))
+},
   getFeeds: (req, res, next) => {
     return Promise.all([
       Restaurant.findAll({

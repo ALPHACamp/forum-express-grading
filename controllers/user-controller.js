@@ -45,12 +45,18 @@ const userController = {
     return User.findByPk(req.params.id, {
       include: [{ model: Comment, include: Restaurant }],
       where: { userId:req.params.id },
+      nest:true
     })
-      .then(user => {
-        if (!user) throw new Error("User didn't exist!")
-        res.render('users/profile', { user: user.toJSON(), editPermission })
-      })
-      .catch(err => next(err))
+    .then(user => {
+      user = user.toJSON()
+      user.commentsLength = user.Comments.length || 0
+      return user
+    })
+    .then(user=>{
+      if (!user) throw new Error("User didn't exist!")
+      res.render('users/profile', { user, editPermission })
+    })
+    .catch(err => next(err))
   },
   editUser:(req,res,next)=>{
     return User.findByPk(req.params.id, { raw: true })
