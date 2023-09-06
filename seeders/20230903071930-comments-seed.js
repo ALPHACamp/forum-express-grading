@@ -11,7 +11,7 @@ module.exports = {
       { type: queryInterface.sequelize.QueryTypes.SELECT }
     )
     await queryInterface.bulkInsert('Comments', [{ // 一次新增三筆資料
-      text:'超級好吃!',
+      text: '超級好吃!',
       user_id: users[Math.floor(Math.random() * users.length)].id,
       restaurant_id: restaurants[Math.floor(Math.random() * restaurants.length)].id,
       created_at: new Date(),

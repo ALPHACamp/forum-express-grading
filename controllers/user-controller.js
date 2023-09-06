@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs') // 載入 bcrypt
 const db = require('../models')
-const { User, Comment, Restaurant, Favorite,Like } = db
-const {getUser} = require('../helpers/auth-helpers')
+const { User, Comment, Restaurant, Favorite, Like } = db
+const { getUser } = require('../helpers/auth-helpers')
 const { imgurFileHandler } = require('../helpers/file-helpers') // 將 file-helper 載進來
 const userController = {
   signUpPage: (req, res) => {
@@ -44,54 +44,52 @@ const userController = {
     const editPermission = (Number(req.params.id) === Number(getUser(req).id))
     return User.findByPk(req.params.id, {
       include: [{ model: Comment, include: Restaurant }],
-      where: { userId:req.params.id },
-      nest:true
+      where: { userId: req.params.id },
+      nest: true
     })
-    .then(user => {
-      user = user.toJSON()
-      user.commentsLength = user.Comments.length || 0
-      return user
-    })
-    .then(user=>{
-      if (!user) throw new Error("User didn't exist!")
-      res.render('users/profile', { user, editPermission })
-    })
-    .catch(err => next(err))
-  },
-  editUser:(req,res,next)=>{
-    if(req.params.id != (getUser(req).id)){
-      res.redirect('/')
-    }
-    return User.findByPk(req.params.id, { raw: true })
-      .then((user) => {
-        if (!user) throw new Error('user did not exists!')
-        res.render('users/edit', {user})
+      .then(user => {
+        if (!user) throw new Error("User didn't exist!")
+        const userToRender = user.toJSON()
+        userToRender.commentsLength = user.Comments.length || 0
+        return userToRender
+      })
+      .then(userToRender => {
+        res.render('users/profile', { user: userToRender, editPermission })
       })
       .catch(err => next(err))
   },
-  putUser:(req,res,next)=>{
-    const {name} =req.body
+  editUser: (req, res, next) => {
+    if (req.params.id != (getUser(req).id)) {
+      res.redirect('/')
+    }
+    return User.findByPk(req.params.id, { raw: true })
+      .then(user => {
+        if (!user) throw new Error('user did not exists!')
+        res.render('users/edit', { user })
+      })
+      .catch(err => next(err))
+  },
+  putUser: (req, res, next) => {
+    const { name } = req.body
     if (!name) throw new Error('user name is required!')
-    const {file} = req
+    const { file } = req
     if (req.user.id !== Number(getUser(req).id)) {
       req.flash('error_messages', '非本人不得更改profile')
       res.redirect('/restaurants')
     }
     return Promise.all([ // 非同步處理
       User.findByPk(req.params.id), // 去資料庫查有沒有這個使用者
-      imgurFileHandler(file) // 把檔案傳到 file-helper 處理 
+      imgurFileHandler(file) // 把檔案傳到 file-helper 處理
     ])
-    .then(([user,filepath]) => {
-      if (!user) throw new Error('user did not exists!')
-      return user.update({
-        name, image:filepath||user.image})
-    })
-    .then((user) => {
-      req.flash('success_messages', '使用者資料編輯成功')
-      res.redirect(`/users/${req.params.id}`)
-    })
-    .catch(err => next(err))
-
+      .then(([user, filepath]) => {
+        if (!user) throw new Error('user did not exists!')
+        return user.update({ name, image: filepath || user.image })
+      })
+      .then(user => {
+        req.flash('success_messages', '使用者資料編輯成功')
+        res.redirect(`/users/${req.params.id}`)
+      })
+      .catch(err => next(err))
   },
   addFavorite: (req, res, next) => {
     const { restaurantId } = req.params
@@ -169,7 +167,6 @@ const userController = {
       .then(() => res.redirect('back'))
       .catch(err => next(err))
   }
-    
-    
+
 }
 module.exports = userController

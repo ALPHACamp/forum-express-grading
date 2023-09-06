@@ -27,7 +27,7 @@ const restaurantController = {
         const data = restaurants.rows.map(r => ({
           ...r,
           description: r.description.substring(0, 50),
-          isFavorited: favoritedRestaurantsId.includes(r.id) ,
+          isFavorited: favoritedRestaurantsId.includes(r.id),
           isLiked: likedRestaurantsId.includes(r.id)
         }))
         return res.render('restaurants', {
@@ -38,7 +38,7 @@ const restaurantController = {
         })
       })
   },
-  getRestaurant: (req, res,next) => {
+  getRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
       include: [Category,
         { model: Comment, include: User },
@@ -49,8 +49,8 @@ const restaurantController = {
       raw: false
     })
       .then(restaurant => {
-        const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id) 
-        const isLiked = restaurant.LikedUsers.some(l => l.id === req.user.id) 
+        const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id)
+        const isLiked = restaurant.LikedUsers.some(l => l.id === req.user.id)
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         restaurant.increment('viewCounts')
         res.render('restaurant', {
@@ -67,14 +67,14 @@ const restaurantController = {
       nest: true,
       raw: false
     })
-    .then(restaurant => {
-      if (!restaurant) throw new Error("Restaurant didn't exist!")
-      res.render('dashboard', {
-        restaurant: restaurant.toJSON()
+      .then(restaurant => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        res.render('dashboard', {
+          restaurant: restaurant.toJSON()
+        })
       })
-    })
-    .catch(err => next(err))
-},
+      .catch(err => next(err))
+  },
   getFeeds: (req, res, next) => {
     return Promise.all([
       Restaurant.findAll({
