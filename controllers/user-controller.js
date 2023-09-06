@@ -59,6 +59,9 @@ const userController = {
     .catch(err => next(err))
   },
   editUser:(req,res,next)=>{
+    if(req.params.id != (getUser(req).id)){
+      res.redirect('/')
+    }
     return User.findByPk(req.params.id, { raw: true })
       .then((user) => {
         if (!user) throw new Error('user did not exists!')
