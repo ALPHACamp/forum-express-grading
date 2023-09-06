@@ -5,7 +5,7 @@
       <h2>{{user.name}}</h2>
       <p>{{user.email}}</p>
     </div>
-    {{#if editPermission}}
+    {{#if user.editPermission}}
     <button type="button" class="btn btn-link" style="padding:0px; background-color:#0d6efd">
       <a class="btn" href="/users/{{user.id}}/edit" style="padding:4px;color:white">
         Edit
