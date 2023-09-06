@@ -180,7 +180,7 @@ const userController = {
       .catch(err => next(err))
   },
   addFollowing: (req, res, next) => {
-    const  userId  = req.params.id
+    const userId = req.params.id
     Promise.all([
       User.findByPk(userId),
       Followship.findOne({
