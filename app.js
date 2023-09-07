@@ -2,6 +2,8 @@ const express = require('express')
 const handlebars = require('express-handlebars')
 const session = require('express-session')
 const flash = require('connect-flash')
+const methodOverride = require('method-override')
+
 const passport = require('./config/passport')
 const routes = require('./routes')
 const handlebarsHelper = require('./helpers/handlerBars-helper')
@@ -28,6 +30,7 @@ app.use((req, res, next) => {
   res.locals.user = getUser(req)
   next()
 })
+app.use(methodOverride('_method'))
 app.use(routes)
 
 app.listen(port, () => {

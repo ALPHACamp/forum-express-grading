@@ -15,10 +15,10 @@ module.exports = {
   },
   async postRestaurant (req, res, next) {
     try {
-      const name = req.body.name
+      const { name, tel, address, openingHours, description } = req.body
 
-      if (!name || !name.replace(/\s/g, '').length) throw new Error('Restaurant is required')
-      await Restaurant.create({ ...req.body })
+      if (!name || !name.replace(/\s/g, '').length) throw new Error('Restaurant name is required')
+      await Restaurant.create({ name, tel, address, openingHours, description })
       req.flash('success_message', 'A restaurant was successfully created')
       res.redirect('/admin/restaurants')
     } catch (err) {
@@ -31,6 +31,43 @@ module.exports = {
 
       if (!restaurant) throw new Error('The restaurant is not existed.')
       res.render('admin/restaurant', { restaurant })
+    } catch (err) {
+      next(err)
+    }
+  },
+  async editRestaurant (req, res, next) {
+    try {
+      const restaurant = await Restaurant.findByPk(req.params.id, { raw: true })
+
+      if (!restaurant) throw new Error('The restaurant is not existed.')
+      res.render('admin/edit-restaurant', { restaurant })
+    } catch (err) {
+      next(err)
+    }
+  },
+  async putRestaurant (req, res, next) {
+    try {
+      const { name, tel, address, openingHours, description } = req.body
+
+      if (!name || !name.replace(/\s/g, '').length) throw new Error('Restaurant name is required')
+
+      const restaurant = await Restaurant.findByPk(req.params.id)
+
+      if (!restaurant) throw new Error('The restaurant is not existed')
+      await restaurant.update({ name, tel, address, openingHours, description })
+      req.flash('success_message', 'The restaurant was successfully to update')
+      res.redirect('/admin/restaurants')
+    } catch (err) {
+      next(err)
+    }
+  },
+  async deleteRestaurant (req, res, next) {
+    try {
+      const restaurant = await Restaurant.findByPk(req.params.id)
+
+      if (!restaurant) throw new Error('The restaurant is not existed')
+      await restaurant.destroy()
+      res.redirect('/admin/restaurants')
     } catch (err) {
       next(err)
     }
