@@ -1,7 +1,13 @@
-const adminController = {
-  getRestaurants (_req, res) {
-    return res.render('admin/restaurants')
+const { Restaurant } = require('../models')
+
+module.exports = {
+  async getRestaurants (_req, res, next) {
+    try {
+      const restaurants = await Restaurant.findAll({ raw: true })
+
+      res.render('admin/restaurants', { restaurants })
+    } catch (err) {
+      next(err)
+    }
   }
 }
-
-module.exports = adminController
