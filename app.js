@@ -1,5 +1,6 @@
 const express = require('express')
 const handlebars = require('express-handlebars')
+const path = require('path')
 const session = require('express-session')
 const flash = require('connect-flash')
 const methodOverride = require('method-override')
@@ -31,6 +32,7 @@ app.use((req, res, next) => {
   next()
 })
 app.use(methodOverride('_method'))
+app.use('/upload', express.static(path.join(__dirname, 'upload')))
 app.use(routes)
 
 app.listen(port, () => {

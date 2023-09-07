@@ -1,4 +1,5 @@
 const { Restaurant } = require('../models')
+const { localFileHandler } = require('../helpers/file-helper')
 
 module.exports = {
   async getRestaurants (_req, res, next) {
@@ -18,7 +19,9 @@ module.exports = {
       const { name, tel, address, openingHours, description } = req.body
 
       if (!name || !name.replace(/\s/g, '').length) throw new Error('Restaurant name is required')
-      await Restaurant.create({ name, tel, address, openingHours, description })
+
+      const filePath = await localFileHandler(req.file)
+      await Restaurant.create({ name, tel, address, openingHours, description, image: filePath || null })
       req.flash('success_message', 'A restaurant was successfully created')
       res.redirect('/admin/restaurants')
     } catch (err) {
@@ -51,10 +54,13 @@ module.exports = {
 
       if (!name || !name.replace(/\s/g, '').length) throw new Error('Restaurant name is required')
 
-      const restaurant = await Restaurant.findByPk(req.params.id)
+      const [restaurant, filePath] = await Promise.all([
+        Restaurant.findByPk(req.params.id),
+        localFileHandler(req.file)
+      ])
 
       if (!restaurant) throw new Error('The restaurant is not existed')
-      await restaurant.update({ name, tel, address, openingHours, description })
+      await restaurant.update({ name, tel, address, openingHours, description, image: filePath || restaurant.image })
       req.flash('success_message', 'The restaurant was successfully to update')
       res.redirect('/admin/restaurants')
     } catch (err) {
