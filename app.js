@@ -1,13 +1,27 @@
 const express = require('express')
 const handlebars = require('express-handlebars')
+const session = require('express-session')
+const flash = require('connect-flash')
 const routes = require('./routes')
 
 const app = express()
 const port = process.env.PORT || 3000
+const SESSION_SECRET = 'secret'
 
 app.engine('hbs', handlebars({ extname: '.hbs' }))
 app.set('view engine', 'hbs')
 app.use(express.urlencoded({ extended: true }))
+app.use(session({
+  secret: SESSION_SECRET,
+  resave: false,
+  saveUninitialized: false
+}))
+app.use(flash())
+app.use((req, res, next) => {
+  res.locals.success_message = req.flash('success_message')
+  res.locals.error_message = req.flash('error_message')
+  next()
+})
 app.use(routes)
 
 app.listen(port, () => {
