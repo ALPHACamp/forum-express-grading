@@ -1,29 +1,29 @@
 {{> restaurant-tabs route='topRestaurants'}}
-<h1>人氣餐廳</h1>
+<h1>Top 10 人氣餐廳</h1>
 <hr />
-<div class="row" style="text-align: center;">
+<div class="d-flex flex-column align-items-center">
   {{#each restaurants}}
-  <div class="card d-flex flex-row" style="width: 18rem;">
-    <img src="..." class="card-img-top" alt="...">
-    <div class="card-body">
-      <a href="/restaurants/{{this.name}}"></a>
-      <span class="bg-secondary badge">收藏數：{{this.followerCount}}</span>
+  <div class="card col-4 d-flex flex-row mb-3" >
+    <img src="{{this.image}}" class="card-img-top" alt="..." style="height:150px;width:150px;margin:auto 10px;">
+    <div class="card-body d-flex flex-column">
+      <a href="/restaurants/{{this.id}}">{{this.name}}</a>
+      <span class="bg-secondary badge mt-3 mb-3">收藏數：{{this.favoritedCount}}</span>
       <p>{{this.description}}</p>
       <div class="d-flex flex-row mt-5">
-        <div>
-          <button type="button" class="btn btn-link">
-            <a class="btn btn-link link-primary" href="/restaurants/{{this.id}}">
-              Show
-            </a>
-          </button>
-        </div>
+
+        <button type="button" class="btn btn-primary"style="padding:0px;height:37.78px;">
+          <a class="btn link-primary" style="color:aliceblue" href="/restaurants/{{this.id}}">
+            Show
+          </a>
+        </button>
+        
         <div style="margin-left:20px">
           {{#if isFavorited }}
-          <form action="/favorite/{{restaurant.id}}?_method=DELETE" method="POST" style="display: contents;">
+          <form action="/favorite/{{this.id}}?_method=DELETE" method="POST" style="display: contents;">
             <button type="submit" class="btn btn-danger">移除最愛</button>
           </form>
           {{else}}
-          <form action="/favorite/{{restaurant.id}}" method="POST" style="display: contents;">
+          <form action="/favorite/{{this.id}}" method="POST" style="display: contents;">
             <button type="submit" class="btn btn-primary">加到最愛</button>
           </form>
           {{/if}}
