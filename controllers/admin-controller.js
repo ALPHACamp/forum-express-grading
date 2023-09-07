@@ -24,5 +24,15 @@ module.exports = {
     } catch (err) {
       next(err)
     }
+  },
+  async getRestaurant (req, res, next) {
+    try {
+      const restaurant = await Restaurant.findByPk(req.params.id, { raw: true })
+
+      if (!restaurant) throw new Error('The restaurant is not existed.')
+      res.render('admin/restaurant', { restaurant })
+    } catch (err) {
+      next(err)
+    }
   }
 }
