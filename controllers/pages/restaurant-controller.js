@@ -1,6 +1,6 @@
-const { Restaurant, Category, Comment, User, Favorite } = require('../models')
-const { getOffset, getPagination } = require('../helpers/pagination-helper') // 加入這行
-const favorite = require('../models/favorite')
+const { Restaurant, Category, Comment, User, Favorite } = require('../../models')
+const { getOffset, getPagination } = require('../../helpers/pagination-helper') // 加入這行
+const favorite = require('../../models/favorite')
 const restaurantController = {
   getRestaurants: (req, res, next) => { // 補上 next
     // 修改以下
