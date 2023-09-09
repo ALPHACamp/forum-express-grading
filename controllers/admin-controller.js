@@ -1,4 +1,4 @@
-const { Restaurant } = require('../models')
+const { Restaurant, User } = require('../models')
 const { localFileHandler } = require('../helpers/file-helper')
 
 module.exports = {
@@ -6,7 +6,7 @@ module.exports = {
     try {
       const restaurants = await Restaurant.findAll({ raw: true })
 
-      res.render('admin/restaurants', { restaurants })
+      res.render('admin/restaurants', { restaurants, currentPage: 'restaurants' })
     } catch (err) {
       next(err)
     }
@@ -22,7 +22,7 @@ module.exports = {
 
       const filePath = await localFileHandler(req.file)
       await Restaurant.create({ name, tel, address, openingHours, description, image: filePath || null })
-      req.flash('success_message', 'A restaurant was successfully created')
+      req.flash('success_messages', 'A restaurant was successfully created')
       res.redirect('/admin/restaurants')
     } catch (err) {
       next(err)
@@ -61,7 +61,7 @@ module.exports = {
 
       if (!restaurant) throw new Error('The restaurant is not existed')
       await restaurant.update({ name, tel, address, openingHours, description, image: filePath || restaurant.image })
-      req.flash('success_message', 'The restaurant was successfully to update')
+      req.flash('success_messages', 'The restaurant was successfully to update')
       res.redirect('/admin/restaurants')
     } catch (err) {
       next(err)
@@ -74,6 +74,34 @@ module.exports = {
       if (!restaurant) throw new Error('The restaurant is not existed')
       await restaurant.destroy()
       res.redirect('/admin/restaurants')
+    } catch (err) {
+      next(err)
+    }
+  },
+  async getUsers (_req, res, next) {
+    try {
+      const users = await User.findAll({ raw: true })
+
+      res.render('admin/users', { users, currentPage: 'users' })
+    } catch (err) {
+      next(err)
+    }
+  },
+  async patchUser (req, res, next) {
+    try {
+      const userId = req.params.id
+      if (!userId) throw new Error('User id is required')
+
+      const user = await User.findByPk(userId)
+      if (!user) throw new Error('The user is not existed')
+      if (user.email === 'root@example.com') {
+        req.flash('error_messages', '禁止變更 root 權限')
+        res.redirect('back')
+      } else {
+        await user.update({ isAdmin: !user.isAdmin })
+        req.flash('success_messages', '使用者權限變更成功')
+        res.redirect('/admin/users')
+      }
     } catch (err) {
       next(err)
     }

@@ -16,7 +16,7 @@ const userController = {
       })
       .then(hash => User.create({ name, email, password: hash }))
       .then(() => {
-        req.flash('success_message', '成功註冊帳號')
+        req.flash('success_messages', '成功註冊帳號')
         res.render('signin')
       })
       .catch(err => next(err))
@@ -25,13 +25,18 @@ const userController = {
     res.render('signin')
   },
   signin (req, res) {
-    req.flash('success_message', '登入成功')
+    req.flash('success_messages', '登入成功')
     res.redirect('/restaurants')
   },
-  logout (req, res) {
-    req.flash('success_message', '登出成功')
-    req.logout()
-    res.redirect('/signin')
+  logout (req, res, next) {
+    req.flash('success_messages', '登出成功')
+    req.logout(err => {
+      if (err) {
+        err.alertMsg = '登出失敗'
+        return next(err)
+      }
+      res.redirect('/signin')
+    })
   }
 }
 
