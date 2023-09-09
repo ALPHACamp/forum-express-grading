@@ -1,8 +1,9 @@
 const express = require('express')
 const router = express.Router()
 const adminController = require('../../../controllers/pages/admin-controller')
+const upload = require('../../../middleware/multer') // 新增這裡
 const categoryController = require('../../../controllers/pages/category-controller')
-const upload = require('../../../middleware/multer')
+
 
 router.get('/restaurants/create', adminController.createRestaurant)
 router.get('/restaurants/:id/edit', adminController.editRestaurant)
