@@ -11,5 +11,20 @@ module.exports = {
     }
     res.redirect('back') // 把使用者導回錯誤發生的前一頁
     next(err)
+  },
+  // 新增以下
+  apiErrorHandler(err, req, res, next) {
+    if (err instanceof Error) {
+      res.status(err.status || 500).json({
+        status: 'error',
+        message: `${err.name}: ${err.message}`
+      })
+    } else {
+      res.status(err.status || 500).json({
+        status: 'error',
+        message: `${err}`
+      })
+    }
+    next(err)
   }
 }
