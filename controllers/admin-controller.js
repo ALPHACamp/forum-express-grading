@@ -1,10 +1,14 @@
-const { Restaurant, User } = require('../models')
+const { Restaurant, User, Category } = require('../models')
 const { localFileHandler } = require('../helpers/file-helper')
 
 module.exports = {
   async getRestaurants (_req, res, next) {
     try {
-      const restaurants = await Restaurant.findAll({ raw: true })
+      const restaurants = await Restaurant.findAll({
+        raw: true,
+        include: [Category],
+        nest: true
+      })
 
       res.render('admin/restaurants', { restaurants, currentPage: 'restaurants' })
     } catch (err) {
@@ -30,7 +34,11 @@ module.exports = {
   },
   async getRestaurant (req, res, next) {
     try {
-      const restaurant = await Restaurant.findByPk(req.params.id, { raw: true })
+      const restaurant = await Restaurant.findByPk(req.params.id, {
+        raw: true,
+        include: [Category],
+        nest: true
+      })
 
       if (!restaurant) throw new Error('The restaurant is not existed.')
       res.render('admin/restaurant', { restaurant })
