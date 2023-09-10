@@ -1,5 +1,4 @@
-{{> admin-title}}
-<br />
+{{> admin-title route="users"}}
 <br />
 <table class="table align-middle">
   <thead class="table-dark">
@@ -17,10 +16,10 @@
       <th scope="row">{{this.id}}</th>
       <td>{{this.name}}</td>
       <td>{{this.email}}</td>
-      <td>{{userRole this.isAdmin}}</td>
+      <td>{{#ifCond this.isAdmin 1}}admin{{else}}user{{/ifCond}}</td>
       <td>
         <form action="/admin/users/{{this.id}}?_method=PATCH" method="POST" style="display: inline;">
-          <button type="submit" class="btn btn-link">{{becomeRole this.isAdmin}}</button>
+          <button type="submit" class="btn btn-link">set as {{#ifCond this.isAdmin 1}}user{{else}}admin{{/ifCond}}</button>
         </form>
       </td>
     </tr>
