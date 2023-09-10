@@ -20,7 +20,7 @@ router.get('/users/:id/edit', userController.editUser)
 router.get('/users/:id', userController.getUser)
 router.put('/users/:id', upload.single('image'), userController.putUser)
 router.get('/signup', userController.signUpPage)
-router.post('/signup', userController.signUp) // 注意用 post
+router.post('/signup', passport.authenticate('local', { failureRedirect: '/signup', failureFlash: true }), userController.signUp)
 router.get('/signin', userController.signInPage)
 router.post('/signin', passport.authenticate('local', { failureRedirect: '/signin', failureFlash: true }), userController.signIn) // 注意是 post
 

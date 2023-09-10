@@ -9,6 +9,6 @@ const { apiErrorHandler } = require('../../middleware/error-handler') // 新增�
 router.use('/admin', authenticated, authenticatedAdmin, admin) // 修改，後台路由加入 authenticated, authenticatedAdmin
 router.get('/restaurants', authenticated, restController.getRestaurants) // 修改，前台路由加入 authenticated 
 router.post('/signin', passport.authenticate('local', { session: false }), userController.signIn) //新增這行
-
+router.post('/signup', passport.authenticate('local', { failureRedirect: '/signup', failureFlash: true }), userController.signUp)
 router.use('/', apiErrorHandler) // 新增這行
 module.exports = router

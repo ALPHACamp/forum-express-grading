@@ -1,20 +1,10 @@
-const jwt = require('jsonwebtoken')
+const bcrypt = require('bcryptjs') // 載入 bcrypt
+const { imgurFileHandler } = require('../helpers/file-helpers') // 引入處理檔案上傳的 helper 
+const { User } = require('../../models')
 const userController = {
-  signIn: (req, res, next) => {
-    try {
-      const userData = req.user.toJSON() // 新增這一行
-      delete userData.password // 新增這裡，刪除密碼
-      const token = jwt.sign(userData, process.env.JWT_SECRET, { expiresIn: '30d' }) // 簽發 JWT，效期為 30 天
-      res.json({
-        status: 'success',
-        data: {
-          token,
-          user: userData // 將 req.user 改成 userData
-        }
-      })
-    } catch (err) {
-      next(err)
-    }
+  // 負責 render 註冊的頁面
+  signUpPage: (req, res) => {
+    res.render('signup')
   },
 
   // 負責實際處理註冊的行為
@@ -39,5 +29,7 @@ const userController = {
       })
       .catch(err => next(err)) // 接住前面拋出的錯誤，呼叫專門做錯誤處理的 middleware
   }
+
+
 }
 module.exports = userController
