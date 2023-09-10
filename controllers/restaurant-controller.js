@@ -108,6 +108,37 @@ const restaurantController = {
       })
       .catch(err => next(err))
   },
+  getTopRestaurants: (req, res, next) => {
+    return Favorite.findAll({
+      attributes: [
+        'restaurant_id',
+        [sequelize.literal('COUNT(DISTINCT(restaurant_id))'), 'favoritedCount'],
+        [
+          sequelize.fn('SUM', sequelize.literal(`CASE WHEN user_id = ${req.user.id} THEN 1 ELSE 0 END`)), 'isFavorited'
+        ]
+      ],
+      group: 'restaurant_id',
+      include: [{ model: User }, { model: Restaurant }],
+      order: [
+        [sequelize.literal('favoritedCount DESC')]
+      ],
+      limit: 10,
+      where: {
+        favoritedCount: {
+          [Op.gt]: 0 // 過濾收藏數大於 0 的記錄
+        }
+      }
+    })
+
+      .then(restaurants => {
+        // 不要在這裡處理數據，直接將結果渲染到頁面上
+        console.log(restaurants);
+        res.render('top-restaurants', { restaurants });
+      })
+      .catch(err => next(err));
+  }
+
+
   // getTopRestaurants: (req, res, next) => {
   //   return Restaurant.findAll({
   //     include: [{ model: User, as: 'FavoritedUsers' }],
@@ -152,35 +183,7 @@ const restaurantController = {
 
 
 
-  getTopRestaurants: (req, res, next) => {
-    return Favorite.findAll({
-      attributes: [
-        'restaurant_id',
-        [sequelize.literal('COUNT(DISTINCT(restaurant_id))'), 'favoritedCount'],
-        [
-          sequelize.fn('SUM', sequelize.literal(`CASE WHEN user_id = ${req.user.id} THEN 1 ELSE 0 END`)), 'isFavorited'
-        ]
-      ],
-      group: 'restaurant_id',
-      include: [{ model: User }, { model: Restaurant }],
-      order: [
-        [sequelize.literal('favoritedCount DESC')]
-      ],
-      limit: 10,
-      where: {
-        favoritedCount: {
-          [Op.gt]: 0 // 過濾收藏數大於 0 的記錄
-        }
-      }
-    })
 
-      .then(restaurants => {
-        // 不要在這裡處理數據，直接將結果渲染到頁面上
-        console.log(restaurants);
-        res.render('top-restaurants', { restaurants });
-      })
-      .catch(err => next(err));
-  }
 
 
 }
