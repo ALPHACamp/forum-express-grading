@@ -38,5 +38,16 @@ module.exports = {
     } catch (err) {
       next(err)
     }
+  },
+  async deleteCategory (req, res, next) {
+    try {
+      const category = await Category.findByPk(req.params.id)
+
+      if (!category) throw new Error('The category is not existed')
+      await category.destroy()
+      res.redirect('/admin/categories')
+    } catch (err) {
+      next(err)
+    }
   }
 }
