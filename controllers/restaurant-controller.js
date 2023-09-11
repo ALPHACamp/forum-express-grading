@@ -1,19 +1,28 @@
 const { Restaurant, Category } = require('../models')
 
 module.exports = {
-  async getRestaurants (_req, res, next) {
+  async getRestaurants (req, res, next) {
     try {
-      const restaurants = await Restaurant.findAll({
-        raw: true,
-        include: Category,
-        nest: true
-      })
+      const categoryId = Number(req.query.categoryId) || ''
+      const [restaurants, categories] = await Promise.all([
+        Restaurant.findAll({
+          where: {
+            ...categoryId ? { categoryId } : {}
+          },
+          raw: true,
+          include: Category,
+          nest: true
+        }),
+        Category.findAll({ raw: true })
+      ])
 
       res.render('restaurants', {
         restaurants: restaurants.map(restaurant => ({
           ...restaurant,
           description: restaurant.description.substring(0, 50)
-        }))
+        })),
+        categories,
+        categoryId
       })
     } catch (err) {
       next(err)
