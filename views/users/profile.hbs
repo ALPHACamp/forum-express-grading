@@ -1,0 +1,41 @@
+<div class="mt-2 mx-4 border d-flex" style="padding:20px">
+  <img src="{{user.image}}" alt="..." style="margin-right:50px;border-radius:50%; height:200px;width:200px;background-color:gray">
+  <div class="d-flex flex-column justify-content-between align-items-start">
+    <div>
+      <h2>{{user.name}}</h2>
+      <p>{{user.email}}</p>
+    </div>
+    {{#if user.editPermission}}
+    <button type="button" class="btn btn-link" style="padding:0px; background-color:#0d6efd">
+      <a class="btn" href="/users/{{user.id}}/edit" style="padding:4px;color:white">
+        Edit
+      </a>
+    </button>
+    {{/if}}
+  </div>
+</div>
+<div class="card mt-3 mx-4">
+  <div class="card-header"  >
+    {{user.commentsLength}}個已評論餐廳
+  </div>
+  {{#if user.Comments}}
+  <div class="row row-cols-5 g-1">
+    {{#each user.Comments}}
+    <div class="col">
+      <div class="card h-100">
+        <a href="/restaurants/{{this.Restaurant.id}}"><img src="{{this.Restaurant.image}}" class="card-img-top"
+            alt="..."></a>
+        <div class="card-body">
+          <a href="/restaurants/{{this.Restaurant.id}}">
+            <h5 class="card-title">{{this.restaurant.name}}</h5>
+          </a>
+          <p class="card-text">{{this.text}}</p>
+          <p class="card-text"><small class="text-muted">{{relativeTimeFromNow this.createdAt}}</small></p>
+  
+        </div>
+      </div>
+    </div>
+    {{/each}}
+  </div>
+</div>
+{{/if}}
