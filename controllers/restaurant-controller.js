@@ -18,5 +18,18 @@ module.exports = {
     } catch (err) {
       next(err)
     }
+  },
+  async getRestaurant (req, res, next) {
+    try {
+      res.render('restaurant', {
+        restaurant: await Restaurant.findByPk(req.params.id, {
+          raw: true,
+          include: Category,
+          nest: true
+        })
+      })
+    } catch (err) {
+      next(err)
+    }
   }
 }
