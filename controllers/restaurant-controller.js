@@ -53,7 +53,7 @@ const restaurantController = {
   getDashboard: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
       include: Category,
-      nest: true,
+      nest: true, // 讓include的資料變得好讀與使用
       raw: true
     })
       .then(restaurant => {
