@@ -47,7 +47,7 @@ const userController = {
       .then(user => {
         if (!user) throw new Error("User didn't exist!")
         const userToRender = user.toJSON()
-        userToRender.commentsLength = user.Comments.length || 0
+        userToRender.commentsLength = user.Comments?.length || 0
         userToRender.editPermission = (Number(req.params.id) === Number(getUser(req).id))
         return res.render('users/profile', { user: userToRender })
       })
