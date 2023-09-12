@@ -1,0 +1,45 @@
+<div class="card mb-3 " style="max-width: 100%;">
+  <div class="row g-0">
+    <div class="col-md-4">
+      <img src="{{user.image}}" class="img-fluid rounded-start">
+    </div>
+    <div class="col-md-8">
+      <div class="card-body">
+        <h5 class="card-title">{{user.name}}</h5>
+        <p class="card-text mb-5">{{user.email}}</p>
+        <p class="card-text mb-5">已評論餐廳</p>
+        {{#if editPermission}}
+        <a class="btn btn-primary" href="/users/{{user.id}}/edit">edit</a>
+        {{/if}}
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    {{#if user.Comments.length}}
+      {{user.Comments.length}}
+      {{else}} 0
+    {{/if}}
+    已評論餐廳
+  </div>
+    <div class="row row-cols-5 g-1">
+      {{#each user.Comments}}
+      <div class="col">
+        <div class="card h-100">
+          <a href="/restaurants/{{this.Restaurant.id}}">
+            <img src="{{this.Restaurant.image}}" class="card-img-top">
+          </a>
+          <div class="card-body">
+            <a href="/restaurants/{{this.Restaurant.id}}">
+              <h5 class="card-title">{{this.Restaurant.name}}</h5>
+            </a>
+            <p class="card-text">{{this.text}}</p>
+            <p class="card-text"><small class="text-muted">{{relativeTimeFromNow this.createdAt}}</small></p>
+          </div>
+        </div>
+      </div>
+      {{/each}}
+    </div>
+</div>

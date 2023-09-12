@@ -18,6 +18,8 @@
     <p style="white-space: break-spaces;">{{restaurant.description}}</p>
   </div>
   <a href="/restaurants/{{restaurant.id}}/dashboard"><button class="btn btn-outline-success my-sm-0 my-2">Dashboard</button></a>
+  <br>
+  <br>
   <hr>
 </div>
 {{!-- Comment --}}
@@ -33,7 +35,7 @@
   <p>{{this.text}}</p>
   <footer class="blockquote-footer">{{relativeTimeFromNow this.createdAt}}</footer>
 </blockquote>
-<hr />
+<hr>
 {{/each}}
 
 <form action="/comments" method="POST">
