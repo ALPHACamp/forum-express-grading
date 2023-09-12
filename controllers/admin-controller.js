@@ -1,16 +1,27 @@
 const { Restaurant, User, Category } = require('../models')
 const { localFileHandler } = require('../helpers/file-helper')
+const { getOffset, getPagination } = require('../helpers/pagination-helper')
 
 module.exports = {
-  async getRestaurants (_req, res, next) {
+  async getRestaurants (req, res, next) {
     try {
-      const restaurants = await Restaurant.findAll({
+      const DEFAULT_LIMIT = 7
+      const page = Number(req.query.page) || 1
+      const limit = Number(req.query.limit) || DEFAULT_LIMIT
+      const offset = getOffset(limit, page)
+
+      const restaurants = await Restaurant.findAndCountAll({
         raw: true,
+        limit,
+        offset,
         include: [Category],
         nest: true
       })
 
-      res.render('admin/restaurants', { restaurants, currentPage: 'restaurants' })
+      res.render('admin/restaurants', {
+        restaurants: restaurants.rows,
+        pagination: getPagination(limit, page, restaurants.count)
+      })
     } catch (err) {
       next(err)
     }
@@ -93,7 +104,7 @@ module.exports = {
     try {
       const users = await User.findAll({ raw: true })
 
-      res.render('admin/users', { users, currentPage: 'users' })
+      res.render('admin/users', { users })
     } catch (err) {
       next(err)
     }
