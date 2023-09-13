@@ -1,0 +1,103 @@
+<div class="row mb-2">
+
+  <div class="col-md-4">
+    <img class="img-responsive center-block mb-3" src="{{user.image}}"
+      style="width: 250px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+  </div>
+
+  <div class="col-md-8">
+    <h1>{{user.name}}</h1>
+    <h2> {{user.email}}</h2>
+    <ul class="text-muted">
+      <li>{{user.Comments.length}}間已評論餐廳</li>
+      <li>{{user.FavoritedRestaurants.length}}間已收藏的餐廳</li>
+      <li>{{user.Followings.length}}位已追蹤的人數</li>
+      <li>{{user.Followers.length}}位粉絲</li>
+    </ul>
+
+
+    <div class="mb-4 ">
+      <button type="button" class="btn btn-primary" class="mb-4 ">
+        <a class="btn btn-primary" href="/users/{{user.id}}/edit">
+          Edit
+        </a>
+      </button>
+    </div>
+  </div>
+
+
+  <div class="row" style="text-align: left;">
+    <div class="col-md-5">
+      <div class="card">
+        <div class="card-header">
+          {{user.Followings.length}} 追蹤中
+        </div>
+        <div class="row">
+          {{#each user.Followings}}
+          <div class="col-md-2 m-1">
+            <a href="/users/{{this.id}}">
+              <img class="card-img-top img-fluid"
+                src="{{#if this.image}}{{this.image}}{{else}}https://stickershop.line-scdn.net/stickershop/v1/sticker/588967618/ANDROID/sticker.png{{/if}}"
+                width="286px" height="286px" style="transition: opacity 0.5s; opacity:0;"
+                onload="this.style.opacity=1;">
+            </a>
+          </div>
+          {{/each}}
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          {{user.Followers.length}} 粉絲
+        </div>
+        <div class="row">
+          {{#each user.Followers}}
+          <div class="col-md-2 m-1">
+            <a href="/users/{{this.id}}">
+              <img class="card-img-top img-fluid"
+                src="{{#if this.image}}{{this.image}}{{else}}https://stickershop.line-scdn.net/stickershop/v1/sticker/588967618/ANDROID/sticker.png{{/if}}"
+                width="286px" height="286px" style="transition: opacity 0.5s; opacity:0;"
+                onload="this.style.opacity=1;">
+            </a>
+          </div>
+          {{/each}}
+        </div>
+      </div>
+    </div>
+    <div class="col-md-7">
+      <div class="card">
+        <div class="card-header">
+          {{user.Comments.length}} 已評論餐廳
+        </div>
+        <div class="row">
+          {{#each user.Comments}}
+          <div class="col-md-2 m-1">
+            <a href="/restaurants/{{this.Restaurant.id}}">
+              <img class="card-img-top img-fluid" src="{{this.Restaurant.image}}" width="286px" height="286px"
+                style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+            </a>
+          </div>
+          {{/each}}
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          {{user.FavoritedRestaurants.length}} 收藏的餐廳
+        </div>
+        <div class="row">
+          {{#each user.FavoritedRestaurants}}
+          <div class="col-md-2 m-1">
+            <a href="/restaurants/{{this.id}}">
+              <img class="card-img-top img-fluid" src="{{this.image}}" width="286px" height="286px"
+                style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+            </a>
+          </div>
+          {{/each}}
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="mb-4 ">
+    <a class="btn btn-outline-primary" href="javascript:history.back()">Back</a>
+  </div>
