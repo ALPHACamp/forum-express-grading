@@ -1,4 +1,4 @@
-const { Restaurant, Category } = require('../models')
+const { Restaurant, Category, Comment, User } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
 
 module.exports = {
@@ -39,7 +39,10 @@ module.exports = {
   },
   async getRestaurant (req, res, next) {
     try {
-      const restaurant = await Restaurant.findByPk(req.params.id, { include: Category })
+      const restaurant = await Restaurant.findByPk(req.params.id, {
+        include: [Category, { model: Comment, include: User }],
+        order: [[Comment, 'createdAt', 'DESC']]
+      })
 
       await restaurant.increment('viewCounts')
       res.render('restaurant', {
