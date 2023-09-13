@@ -54,13 +54,11 @@ module.exports = {
   },
   async getDashboard (req, res, next) {
     try {
-      res.render('dashboard', {
-        restaurant: await Restaurant.findByPk(req.params.id, {
-          raw: true,
-          include: Category,
-          nest: true
-        })
-      })
+      const restaurant = (await Restaurant.findByPk(req.params.id, {
+        include: [Category, Comment]
+      })).toJSON()
+
+      res.render('dashboard', { restaurant, commentCounts: restaurant.Comments.length })
     } catch (err) {
       next(err)
     }
