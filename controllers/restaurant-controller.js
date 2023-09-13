@@ -123,13 +123,21 @@ const restaurantController = {
         [sequelize.literal('favoritedCount DESC')]
       ],
       limit: 10,
-      having: { ["favoritedCount"]: { [Op.gte]: 0 } }
+      having: { "favoritedCount": { [Op.gte]: 0 } },
+      raw: true,
+      nest: true
     })
+      .then(favorites => {
+        // 在這裡處理數據，計算每個餐廳是否被收藏
+        const restaurants = favorites.map(favorite => {
+          return {
+            ...favorite.Restaurant, // 餐廳的資料
+            favoritedCount: favorite.favoritedCount, // 收藏數
+            isFavorited: favorite.isFavorited // 是否被收藏
+          }
+        })
 
-      .then(restaurants => {
-        // 不要在這裡處理數據，直接將結果渲染到頁面上
-        console.log(restaurants);
-        res.render('top-restaurants', { restaurants });
+        res.render('top-restaurants', { restaurants })
       })
 
       .catch(err => next(err))
@@ -153,36 +161,6 @@ const restaurantController = {
   //     })
   //     .catch(err => next(err))
   // }
-  // getTopRestaurants: (req, res, next) => {
-  //   Favorite.findAll({
-  //     attributes: [
-  //       'restaurantId',
-  //       [Sequelize.literal('COUNT(DISTINCT(restaurant_id))'), 'favoritedCount'],
-  //       [sequelize.fn('SUM', sequelize.literal(`CASE WHEN user_id = ${req.user.id} THEN 1 ELSE 0 END`)), 'isFavorited']
-  //     ],
-  //     group: 'restaurant_id',
-  //     order: [
-  //       [sequelize.literal('favoritedCount DESC')]
-  //     ],
-  //     limit: 10
-  //   }).then(async favorites => {
-  //     const result = await Promise.all(favorites.map(async favorite => {
-  //       const restaurant = await Restaurant.findByPk(favorite.restaurantId)
-  //       return {
-  //         ...restaurant.toJSON(),
-  //         favoritedCount: restaurant.FavoritedUsers.length,
-  //         isFavorited: req.user && req.user.FavoritedRestaurants.map(fr => fr.id).includes(restaurant.id)
-  //       }
-  //     }))
-  //     res.render('top-restaurants', { restaurants: result })
-  //   }).catch(err => next(err))
-  // }
-
-
-
-
-
-
 }
 module.exports = restaurantController
 
