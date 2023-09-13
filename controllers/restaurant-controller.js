@@ -123,11 +123,7 @@ const restaurantController = {
         [sequelize.literal('favoritedCount DESC')]
       ],
       limit: 10,
-      where: {
-        favoritedCount: {
-          [Op.gt]: 0 // 過濾收藏數大於 0 的記錄
-        }
-      }
+      having: { ["favoritedCount"]: { [Op.gte]: 0 } }
     })
 
       .then(restaurants => {
@@ -135,7 +131,8 @@ const restaurantController = {
         console.log(restaurants);
         res.render('top-restaurants', { restaurants });
       })
-      .catch(err => next(err));
+
+      .catch(err => next(err))
   }
 
 
