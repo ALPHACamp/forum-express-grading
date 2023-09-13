@@ -18,6 +18,7 @@ router.get('/logout', userController.logout)
 router.get('/restaurants/:id/dashboard', restaurantController.getDashboard)
 router.get('/restaurants/:id', authenticated, restaurantController.getRestaurant)
 router.get('/restaurants', authenticated, restaurantController.getRestaurants)
+router.delete('/comments/:id', authenticatedAdmin, commentController.deleteComment)
 router.post('/comments', authenticated, commentController.postComment)
 router.get('/', (_req, res) => {
   res.redirect('/restaurants')

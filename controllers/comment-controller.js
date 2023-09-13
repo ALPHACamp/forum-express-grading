@@ -18,5 +18,16 @@ module.exports = {
     } catch (err) {
       next(err)
     }
+  },
+  async deleteComment (req, res, next) {
+    try {
+      const comment = await Comment.findByPk(req.params.id)
+      if (!comment) throw new Error('The comment does not exist')
+      await comment.destroy()
+      req.flash('success_messages', 'Success to delete the comment')
+      res.redirect(`/restaurants/${comment.restaurantId}`)
+    } catch (err) {
+      next(err)
+    }
   }
 }
