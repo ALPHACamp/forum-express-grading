@@ -1,6 +1,6 @@
 const { Restaurant, Category, Comment, User, Sequelize, sequelize, Favorite } = require('../models')
-const { getOffset, getPagination } = require('../helpers/pagination-helper'); // 加入這行
-const Op = Sequelize.Op; // 引入 Sequelize 運算符
+const { getOffset, getPagination } = require('../helpers/pagination-helper') // 加入這行
+const Op = Sequelize.Op // 引入 Sequelize 運算符
 const restaurantController = {
   getRestaurants: (req, res, next) => { // 補上 next
     // 修改以下
@@ -112,7 +112,7 @@ const restaurantController = {
     return Favorite.findAll({
       attributes: [
         'restaurant_id',
-        [sequelize.literal('COUNT(DISTINCT(restaurant_id))'), 'favoritedCount'],
+        [sequelize.literal('COUNT(restaurant_id)'), 'favoritedCount'],
         [
           sequelize.fn('SUM', sequelize.literal(`CASE WHEN user_id = ${req.user.id} THEN 1 ELSE 0 END`)), 'isFavorited'
         ]
@@ -123,7 +123,7 @@ const restaurantController = {
         [sequelize.literal('favoritedCount DESC')]
       ],
       limit: 10,
-      having: { "favoritedCount": { [Op.gte]: 0 } },
+      having: { favoritedCount: { [Op.gte]: 0 } },
       raw: true,
       nest: true
     })
@@ -143,7 +143,7 @@ const restaurantController = {
       .catch(err => next(err))
   }
 
-
+  // 以下是符合測試結果的寫法
   // getTopRestaurants: (req, res, next) => {
   //   return Restaurant.findAll({
   //     include: [{ model: User, as: 'FavoritedUsers' }],
@@ -163,5 +163,3 @@ const restaurantController = {
   // }
 }
 module.exports = restaurantController
-
-

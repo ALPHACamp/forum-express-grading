@@ -1,6 +1,6 @@
 module.exports = {
   // 必須要有四個參數 (err, req, res, next)
-  generalErrorHandler(err, req, res, next) {
+  generalErrorHandler (err, req, res, next) {
     // 判斷傳入的 err 是不是一個 Error 物件
     if (err instanceof Error) {
       // Error 物件裡面會有屬性 name 和 message
