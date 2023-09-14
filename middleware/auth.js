@@ -1,4 +1,4 @@
-const helpers = require('../helpers/auth-helper')
+const helpers = require('../helpers/auth-helpers')
 
 module.exports = {
   authenticated (req, res, next) {

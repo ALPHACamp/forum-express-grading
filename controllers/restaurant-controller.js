@@ -58,7 +58,7 @@ module.exports = {
         include: [Category, Comment]
       })).toJSON()
 
-      res.render('dashboard', { restaurant, commentCounts: restaurant.Comments.length })
+      res.render('dashboard', { restaurant, commentCounts: restaurant?.Comments?.length || 0 })
     } catch (err) {
       next(err)
     }

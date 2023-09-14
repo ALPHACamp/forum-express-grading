@@ -8,7 +8,7 @@ const methodOverride = require('method-override')
 const passport = require('./config/passport')
 const routes = require('./routes')
 const handlebarsHelper = require('./helpers/handlerBars-helper')
-const { getUser } = require('./helpers/auth-helper')
+const { getUser } = require('./helpers/auth-helpers')
 
 const app = express()
 const port = process.env.PORT || 3000
