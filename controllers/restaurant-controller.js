@@ -108,6 +108,7 @@ const restaurantController = {
       })
       .catch(err => next(err))
   },
+  // 以下是sequelize的寫法
   getTopRestaurants: (req, res, next) => {
     return Favorite.findAll({
       attributes: [
