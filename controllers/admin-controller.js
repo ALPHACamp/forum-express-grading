@@ -1,5 +1,5 @@
 const { Restaurant, User, Category } = require('../models')
-const { localFileHandler } = require('../helpers/file-helper')
+const { imgurUploader } = require('../helpers/file-helper')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
 
 module.exports = {
@@ -35,7 +35,7 @@ module.exports = {
 
       if (!name || !name.replace(/\s/g, '').length) throw new Error('Restaurant name is required')
 
-      const filePath = await localFileHandler(req.file)
+      const filePath = await imgurUploader(req.file.buffer)
       await Restaurant.create({ name, tel, address, openingHours, description, image: filePath || null, categoryId })
       req.flash('success_messages', 'A restaurant was successfully created')
       res.redirect('/admin/restaurants')
@@ -78,7 +78,7 @@ module.exports = {
 
       const [restaurant, filePath] = await Promise.all([
         Restaurant.findByPk(req.params.id),
-        localFileHandler(req.file)
+        imgurUploader(req.file.buffer)
       ])
 
       if (!restaurant) throw new Error('The restaurant is not existed')

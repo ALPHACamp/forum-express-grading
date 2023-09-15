@@ -8,7 +8,7 @@
   <label class="form-label" for="categoryId">Category</label>
   <select class="form-control" id="categoryId" name="categoryId">
     {{#each categories}}
-      <option value="{{this.id}}" {{#ifCond this.id ../restaurant.categoryId}}selected{{/ifCond}} >{{this.name}}</option>
+    <option value="{{this.id}}" {{#ifCond this.id ../restaurant.categoryId}}selected{{/ifCond}}>{{this.name}}</option>
     {{/each}}
   </select>
 </div>
@@ -34,8 +34,24 @@
 
 <div class="form-row mb-3">
   <label class="form-label" for="image">Image</label>
-  <input class="form-control" type="file" class="form-control-file" id="image" name="image">
+  <input class="form-control" type="file" class="form-control-file" id="image" name="image" accept="image/*">
 </div>
 <button type="submit" class="btn btn-primary">Submit</button>
 
+<div id="loading"
+  style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background-color:rgba(0, 0, 0, 0.3);z-index:9999">
+  <div class="w-100 h-100 d-flex justify-content-center align-items-center">
+    <div class="text-primary me-5" style="font-size: 3rem;">Processing the submission</div>
+    <div class="spinner-border text-primary" style="width: 5rem; height: 5rem;" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+</div>
+
 <a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
+
+<script>
+  const displayLoading = () => { document.getElementById('loading').style.display = 'block' }
+  document.getElementById('editRest').onsubmit = displayLoading;
+  document.getElementById('createRest').onsubmit = displayLoading;
+</script>

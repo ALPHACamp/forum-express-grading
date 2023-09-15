@@ -4,6 +4,7 @@ const path = require('path')
 const session = require('express-session')
 const flash = require('connect-flash')
 const methodOverride = require('method-override')
+require('dotenv').config()
 
 const passport = require('./config/passport')
 const routes = require('./routes')
