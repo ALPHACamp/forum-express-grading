@@ -1,4 +1,4 @@
-<div class="card my-3 mx-auto shadow" style="width: 90%;">
+<div class="card my-3 mx-auto shadow">
   <div class="row g-0" style="min-height:40vh">
     <div class="col-md-4 d-flex justify-content-center align-items-center">
       {{#if user.image}}
@@ -13,8 +13,28 @@
       <div class="card-body">
         <h5 class="card-title">{{user.name}}</h5>
         <p class="card-text">{{user.email}}</p>
+        <p class="card-text text-bold">{{commentCounts}} 則餐廳評論</p>
+        <br>
+        <br>
+        <br>
         <a href="/users/{{user.id}}/edit"><button class="btn btn-primary">edit</button></a>
       </div>
     </div>
+  </div>
+</div>
+
+<div class="card mt-5">
+  <div class="card-header">{{commentedRests.length}} 間已評論餐廳</div>
+  <div class="card-body">
+    {{#each commentedRests}}
+    <a href="/restaurants/{{this.id}}" style="color: transparent;">
+      {{#if this.image}}
+      <img class="m-1" src="{{this.image}}" alt="restaurant image" width="50px" height="50px"
+        style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+      {{else}}
+      <i class="fa-solid fa-utensils" style="font-size: 2.5rem;vertical-align:middle; color:blue"></i>
+      {{/if}}
+    </a>
+    {{/each}}
   </div>
 </div>
