@@ -66,7 +66,7 @@ const restaurantController = {
     return Promise.all([
       Restaurant.findAll({
         limit: 10,
-        order: [['createdAt', 'DESC']],  // order:[[欄位,排序],[...]] 可接受多組
+        order: [['createdAt', 'DESC']], // order:[[欄位,排序],[...]] 可接受多組
         include: [Category],
         raw: true,
         nest: true
