@@ -1,0 +1,30 @@
+<form action="/users/{{user.id}}?_method=PUT" method="POST" enctype="multipart/form-data" id="editUser">
+  <div class="mb-3">
+    <label for="name" class="form-label">Name</label>
+    <input type="text" class="form-control" id="name" name="name" value="{{user.name}}" required>
+  </div>
+
+  <div class="form-row mb-3">
+    <label class="form-label" for="image">Image</label>
+    <input class="form-control" type="file" class="form-control-file" id="image" name="image" accept="image/*">
+  </div>
+
+  <button type="submit" class="btn btn-primary">Submit</button>
+  <a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
+</form>
+
+
+<div id="loading"
+  style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background-color:rgba(0, 0, 0, 0.3);z-index:9999">
+  <div class="w-100 h-100 d-flex justify-content-center align-items-center">
+    <div class="text-primary me-5" style="font-size: 3rem;">Processing the submission</div>
+    <div class="spinner-border text-primary" style="width: 5rem; height: 5rem;" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+</div>
+
+<script>
+  const displayLoading = () => { document.getElementById('loading').style.display = 'block' }
+  document.getElementById('editUser').onsubmit = displayLoading;
+</script>
