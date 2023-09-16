@@ -18,6 +18,8 @@ module.exports = {
   },
   async imgurUploader (file) {
     try {
+      if (!file) return null
+
       const formData = new FormData()
       formData.append('image', file)
 

@@ -1,0 +1,20 @@
+<div class="card my-3 mx-auto shadow" style="width: 90%;">
+  <div class="row g-0" style="min-height:40vh">
+    <div class="col-md-4 d-flex justify-content-center align-items-center">
+      {{#if user.image}}
+      <img src="{{user.image}}" class="img-fluid rounded-start" alt="profile picture">
+      {{else}}
+      <div class="img-fluid rounded-start">
+        <i class="fa-regular fa-user fa-bounce" style="font-size: 10rem"></i>
+      </div>
+      {{/if}}
+    </div>
+    <div class="col-md-8">
+      <div class="card-body">
+        <h5 class="card-title">{{user.name}}</h5>
+        <p class="card-text">{{user.email}}</p>
+        <a href="/users/{{user.id}}/edit"><button class="btn btn-primary">edit</button></a>
+      </div>
+    </div>
+  </div>
+</div>

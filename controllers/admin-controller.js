@@ -78,7 +78,7 @@ module.exports = {
 
       const [restaurant, filePath] = await Promise.all([
         Restaurant.findByPk(req.params.id),
-        imgurUploader(req.file.buffer)
+        imgurUploader(req.file?.buffer)
       ])
 
       if (!restaurant) throw new Error('The restaurant is not existed')

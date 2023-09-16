@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs')
 const User = require('../models').User
+const { imgurUploader } = require('../helpers/file-helper')
 
 const userController = {
   getSignUpPage (_req, res) {
@@ -37,6 +38,44 @@ const userController = {
       }
       res.redirect('/signin')
     })
+  },
+  async getUser (req, res, next) {
+    try {
+      const user = await User.findByPk(req.params.id, { raw: true })
+
+      if (!user) throw new Error('The user does not exist')
+      res.render('users/profile', { user })
+    } catch (err) {
+      next(err)
+    }
+  },
+  async editUser (req, res, next) {
+    try {
+      const user = await User.findByPk(req.params.id, { raw: true })
+
+      if (!user) throw new Error('The user does not exist')
+      res.render('users/edit', { user })
+    } catch (err) {
+      next(err)
+    }
+  },
+  async putUser (req, res, next) {
+    try {
+      const { name } = req.body
+      if (!name || !name.replace(/\s/g, '').length) throw new Error('Name is required')
+
+      const [user, fileUrl] = await Promise.all([
+        User.findByPk(req.params.id),
+        imgurUploader(req.file?.buffer)
+      ])
+
+      if (!user) throw new Error('The user does not exist')
+      await user.update({ name, image: fileUrl || user.image })
+      req.flash('success_messages', '使用者資料編輯成功')
+      res.redirect(`/users/${user.id}`)
+    } catch (err) {
+      next(err)
+    }
   }
 }
 
