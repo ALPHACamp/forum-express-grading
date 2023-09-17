@@ -9,6 +9,7 @@ module.exports = {
       const limit = Number(req.query.limit) || DEFAULT_LIMIT
       const offset = getOffset(limit, page)
 
+      const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
       const categoryId = Number(req.query.categoryId) || ''
       const [restaurants, categories] = await Promise.all([
         Restaurant.findAndCountAll({
@@ -27,7 +28,8 @@ module.exports = {
       res.render('restaurants', {
         restaurants: restaurants.rows.map(restaurant => ({
           ...restaurant,
-          description: restaurant.description.substring(0, 50)
+          description: restaurant.description.substring(0, 50),
+          isFavorited: favoritedRestaurantsId?.includes(restaurant.id)
         })),
         categories,
         categoryId,
@@ -40,13 +42,18 @@ module.exports = {
   async getRestaurant (req, res, next) {
     try {
       const restaurant = await Restaurant.findByPk(req.params.id, {
-        include: [Category, { model: Comment, include: User }],
+        include: [
+          Category,
+          { model: Comment, include: User },
+          { model: User, as: 'FavoritedUsers' }
+        ],
         order: [[Comment, 'createdAt', 'DESC']]
       })
 
       await restaurant.increment('viewCounts')
       res.render('restaurant', {
-        restaurant: restaurant.toJSON()
+        restaurant: restaurant.toJSON(),
+        isFavorited: restaurant.FavoritedUsers.some(fu => fu.id === req.user.id)
       })
     } catch (err) {
       next(err)
@@ -99,7 +106,6 @@ module.exports = {
       if (!restaurant) throw new Error('The Restaurant does not exist')
       if (favorite) throw new Error('You have favorited this restaurant')
       await Favorite.create({ userId, restaurantId })
-      req.flash('success_messages', 'Success to add favorite')
       res.redirect('back')
     } catch (err) {
       next(err)
@@ -116,7 +122,6 @@ module.exports = {
 
       if (!favorite) throw new Error("You haven't favorited this restaurant")
       await favorite.destroy()
-      req.flash('success_messages', 'Success to reomve the favorite')
       res.redirect('back')
     } catch (err) {
       next(err)
