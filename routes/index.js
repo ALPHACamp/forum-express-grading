@@ -22,6 +22,8 @@ router.get('/restaurants/:id', authenticated, restaurantController.getRestaurant
 router.get('/restaurants', authenticated, restaurantController.getRestaurants)
 router.delete('/comments/:id', authenticatedAdmin, commentController.deleteComment)
 router.post('/comments', authenticated, commentController.postComment)
+router.post('/favorite/:id', restaurantController.addFavorite)
+router.delete('/favorite/:id', restaurantController.removeFavorite)
 router.get('/users/:id/edit', authenticated, userController.editUser)
 router.put('/users/:id', authenticated, upload2Memory.single('image'), userController.putUser)
 router.get('/users/:id', authenticated, userController.getUser)

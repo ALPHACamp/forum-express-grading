@@ -1,4 +1,4 @@
-const { Restaurant, Category, Comment, User } = require('../models')
+const { Restaurant, Category, Comment, User, Favorite } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
 
 module.exports = {
@@ -83,6 +83,41 @@ module.exports = {
       ])
 
       res.render('feeds', { restaurants, comments })
+    } catch (err) {
+      next(err)
+    }
+  },
+  async addFavorite (req, res, next) {
+    try {
+      const restaurantId = req.params.id
+      const userId = req.user.id
+      const [restaurant, favorite] = await Promise.all([
+        Restaurant.findByPk(restaurantId),
+        Favorite.findOne({ where: { userId, restaurantId } })
+      ])
+
+      if (!restaurant) throw new Error('The Restaurant does not exist')
+      if (favorite) throw new Error('You have favorited this restaurant')
+      await Favorite.create({ userId, restaurantId })
+      req.flash('success_messages', 'Success to add favorite')
+      res.redirect('back')
+    } catch (err) {
+      next(err)
+    }
+  },
+  async removeFavorite  (req, res, next) {
+    try {
+      const favorite = await Favorite.findOne({
+        where: {
+          userId: req.user.id,
+          restaurantId: req.params.id
+        }
+      })
+
+      if (!favorite) throw new Error("You haven't favorited this restaurant")
+      await favorite.destroy()
+      req.flash('success_messages', 'Success to reomve the favorite')
+      res.redirect('back')
     } catch (err) {
       next(err)
     }
