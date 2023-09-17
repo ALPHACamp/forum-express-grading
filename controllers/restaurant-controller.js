@@ -62,5 +62,29 @@ module.exports = {
     } catch (err) {
       next(err)
     }
+  },
+  async getFeeds (_req, res, next) {
+    try {
+      const [restaurants, comments] = await Promise.all([
+        Restaurant.findAll({
+          limit: 10,
+          order: [['createdAt', 'DESC']],
+          include: [Category],
+          raw: true,
+          nest: true
+        }),
+        Comment.findAll({
+          limit: 10,
+          order: [['createdAt', 'DESC']],
+          include: [Restaurant, User],
+          raw: true,
+          nest: true
+        })
+      ])
+
+      res.render('feeds', { restaurants, comments })
+    } catch (err) {
+      next(err)
+    }
   }
 }
