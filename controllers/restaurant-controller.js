@@ -1,4 +1,4 @@
-const { Restaurant, Category, Comment, User, Favorite } = require('../models')
+const { Restaurant, Category, Comment, User, Favorite, Like } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
 
 module.exports = {
@@ -10,6 +10,7 @@ module.exports = {
       const offset = getOffset(limit, page)
 
       const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
+      const likedRestaurantsId = req.user && req.user.LikedRestaurants.map(lr => lr.id)
       const categoryId = Number(req.query.categoryId) || ''
       const [restaurants, categories] = await Promise.all([
         Restaurant.findAndCountAll({
@@ -29,7 +30,8 @@ module.exports = {
         restaurants: restaurants.rows.map(restaurant => ({
           ...restaurant,
           description: restaurant.description.substring(0, 50),
-          isFavorited: favoritedRestaurantsId?.includes(restaurant.id)
+          isFavorited: favoritedRestaurantsId?.includes(restaurant.id),
+          isLiked: likedRestaurantsId?.includes(restaurant.id)
         })),
         categories,
         categoryId,
@@ -45,7 +47,8 @@ module.exports = {
         include: [
           Category,
           { model: Comment, include: User },
-          { model: User, as: 'FavoritedUsers' }
+          { model: User, as: 'FavoritedUsers' },
+          { model: User, as: 'LikedUsers' }
         ],
         order: [[Comment, 'createdAt', 'DESC']]
       })
@@ -53,7 +56,8 @@ module.exports = {
       await restaurant.increment('viewCounts')
       res.render('restaurant', {
         restaurant: restaurant.toJSON(),
-        isFavorited: restaurant.FavoritedUsers.some(fu => fu.id === req.user.id)
+        isFavorited: restaurant.FavoritedUsers.some(fu => fu.id === req.user.id),
+        isLiked: restaurant.LikedUsers.some(lu => lu.id === req.user.id)
       })
     } catch (err) {
       next(err)
@@ -122,6 +126,39 @@ module.exports = {
 
       if (!favorite) throw new Error("You haven't favorited this restaurant")
       await favorite.destroy()
+      res.redirect('back')
+    } catch (err) {
+      next(err)
+    }
+  },
+  async addLike (req, res, next) {
+    try {
+      const userId = req.user.id
+      const restaurantId = req.params.id
+      const [restaurant, like] = await Promise.all([
+        Restaurant.findByPk(restaurantId),
+        Like.findOne({ where: { userId, restaurantId } })
+      ])
+
+      if (!restaurant) throw new Error('The Restaurant does not exist')
+      if (like) throw new Error('You have liked this restaurant')
+      await Like.create({ userId, restaurantId })
+      res.redirect('back')
+    } catch (err) {
+      next(err)
+    }
+  },
+  async removeLike (req, res, next) {
+    try {
+      const like = await Like.findOne({
+        where: {
+          userId: req.user.id,
+          restaurantId: req.params.id
+        }
+      })
+
+      if (!like) throw new Error("You haven't liked this restaurant")
+      await like.destroy()
       res.redirect('back')
     } catch (err) {
       next(err)

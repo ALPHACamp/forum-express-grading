@@ -30,11 +30,14 @@ router.get('/restaurants', authenticated, restaurantController.getRestaurants)
 router.delete('/comments/:id', authenticatedAdmin, commentController.deleteComment)
 router.post('/comments', authenticated, commentController.postComment)
 
-router.post('/favorite/:id', restaurantController.addFavorite)
-router.delete('/favorite/:id', restaurantController.removeFavorite)
+router.post('/favorite/:id', authenticated, restaurantController.addFavorite)
+router.delete('/favorite/:id', authenticated, restaurantController.removeFavorite)
 
 router.post('/following/:id', userController.addFollowing)
 router.delete('/following/:id', userController.removeFollowing)
+
+router.post('/like/:id', authenticated, restaurantController.addLike)
+router.delete('/like/:id', authenticated, restaurantController.removeLike)
 
 router.get('/', (_req, res) => {
   res.redirect('/restaurants')
