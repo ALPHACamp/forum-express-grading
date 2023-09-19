@@ -19,10 +19,25 @@ const userController = {
       })
       .then(hash => User.create({ name, email, password: hash }))
       .then(() => {
-        req.flash('sucess', '註冊成功')
+        req.flash('success', '註冊成功')
         res.redirect('/signin')
       })
       .catch(error => next(error))
+  },
+
+  signInPage: (req, res) => {
+    res.render('signin')
+  },
+
+  signIn: (req, res) => {
+    req.flash('success', '登入成功')
+    res.redirect('/restaurants')
+  },
+
+  logout: (req, res) => {
+    req.flash('success', '登出成功')
+    req.logout()
+    res.redirect('signin')
   }
 }
 
