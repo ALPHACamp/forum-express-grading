@@ -25,6 +25,18 @@ const userController = {
         res.redirect('/signin')
       })
       .catch(err => next(err)) // catch error above and call error-handler middleware
+  },
+  signInPage: (req, res) => {
+    res.render('signin')
+  },
+  signIn: (req, res) => {
+    req.flash('success_messages', 'Login successfully!')
+    res.redirect('/restaurants')
+  },
+  logout: (req, res) => {
+    req.flash('success_messages', 'Logout successfully!')
+    req.logout()
+    res.redirect('/signin')
   }
 }
 module.exports = userController
