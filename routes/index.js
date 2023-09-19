@@ -6,6 +6,7 @@ const admin = require("./modules/admin");
 
 const restController = require('../controllers/restaurant-controller')
 const userController = require("../controllers/user-controller");
+const { authenticated } = require("../middleware/auth");
 const { generalErrorHandler } = require("../middleware/error-handler");
 
 
@@ -23,7 +24,7 @@ router.post(
 );
 
 router.get("/logout", userController.logout);
-router.get('/restaurants', restController.getRestaurants)
+router.get("/restaurants", authenticated, restController.getRestaurants);
 router.use('/', (req, res) => res.redirect('/restaurants'))
 router.use("/", generalErrorHandler);
 
