@@ -1,4 +1,5 @@
 const { Restaurant } = require('../models')
+const { localFileHandler } = require('../helpers/file-helper')
 const adminController = {
   getRestaurants: (req, res, next) => {
     Restaurant.findAll({
@@ -13,7 +14,11 @@ const adminController = {
   postRestaurant: (req, res, next) => {
     const { name, tel, address, openingHours, description } = req.body // get data in from by req.body
     if (!name) throw new Error('Restaurant name is required!') // name is required, if null this function would be terminated and error message would be showed
-    Restaurant.create({ name, tel, address, openingHours, description }) // create a new Restaurant instance and store in database
+    const { file } = req
+    localFileHandler(file)
+      .then(filePath => {
+        Restaurant.create({ name, tel, address, openingHours, description, image: filePath || null }) // create a new Restaurant instance and store in database
+      })
       .then(() => {
         req.flash('success_msg', 'restaurant was successfully created') // show success information
         res.redirect('/admin/restaurants') // redirect back to index when data is created successfully
@@ -39,10 +44,14 @@ const adminController = {
   putRestaurant: (req, res, next) => {
     const { name, tel, address, openingHours, description } = req.body // get data in from by req.body
     if (!name) throw new Error('Restaurant name is required!') // name is required, if null this function would be terminated and error message would be showed
-    Restaurant.findByPk(req.params.id)
-      .then(restaurant => {
+    const { file } = req// 把檔案取出來
+    Promise.all([
+      Restaurant.findByPk(req.params.id), // 去資料庫查有沒有這間餐廳
+      localFileHandler(file) // 把檔案傳到 file-helper 處理
+    ])
+      .then(([restaurant, filePath]) => { // 以上兩樣事都做完以後
         if (!restaurant) throw new Error("Restaurant didn't exist!")
-        return restaurant.update({ name, tel, address, openingHours, description })
+        return restaurant.update({ name, tel, address, openingHours, description, image: filePath || restaurant.image })
       })
       .then(() => {
         req.flash('success_msg', 'restaurant was successfully updated')

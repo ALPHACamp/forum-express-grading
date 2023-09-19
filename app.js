@@ -1,4 +1,5 @@
 const express = require('express')
+const path = require('path')
 const handlebars = require('express-handlebars') // 引入 express-handlebars
 const methodOverride = require('method-override') // 引入套件 method-override
 const flash = require('connect-flash')
@@ -23,6 +24,7 @@ app.use(passport.initialize()) // 初始化 Passport
 app.use(passport.session()) // 啟動 session 功能
 app.use(flash()) // 掛載套件
 app.use(methodOverride('_method')) // 使用 method-override
+app.use('/upload', express.static(path.join(__dirname, 'upload')))
 app.use((req, res, next) => {
   res.locals.success_msg = req.flash('success_msg')
   res.locals.error_msg = req.flash('error_msg')
