@@ -13,6 +13,7 @@
     "url": "git+https://github.com/ALPHACamp/forum-express-grading.git"
   },
   "dependencies": {
+    "bcrypt": "^5.1.1",
     "express": "^4.17.1",
     "express-handlebars": "^5.3.3",
     "mysql2": "^2.3.0",
