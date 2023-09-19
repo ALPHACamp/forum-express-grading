@@ -7,11 +7,22 @@ const userController = {
     res.render('signup')
   },
 
-  signUp: (req, res) => {
-    const { name, email, password } = req.body
-    bcrypt.hash(password, 10)
+  signUp: (req, res, next) => {
+    const { name, email, password, passwordCheck } = req.body
+    if (password !== passwordCheck) throw new Error('密碼不一致')
+    User.findOne({
+      where: { email }
+    })
+      .then(user => {
+        if (user) throw new Error('用戶已存在')
+        return bcrypt.hash(password, 10)
+      })
       .then(hash => User.create({ name, email, password: hash }))
-      .then(() => { res.redirect('/signin') })
+      .then(() => {
+        req.flash('sucess', '註冊成功')
+        res.redirect('/signin')
+      })
+      .catch(error => next(error))
   }
 }
 
