@@ -3,6 +3,8 @@ const handlebars = require('express-handlebars') // 引入 express-handlebars
 const flash = require('connect-flash')
 const session = require('express-session')
 const passport = require('./config/passport') // invoke passport
+const handlebarsHelpers = require('./helpers/handlebars-helpers') // invoke handlebars-helpers
+const { getUser } = require('./helpers/auth-helpers')
 const routes = require('./routes')
 
 const app = express()
@@ -10,7 +12,7 @@ const port = process.env.PORT || 3000
 const SESSION_SECRET = 'secret'
 
 // 註冊 Handlebars 樣板引擎，並指定副檔名為 .hbs
-app.engine('hbs', handlebars({ extname: '.hbs' }))
+app.engine('hbs', handlebars({ extname: '.hbs', helpers: handlebarsHelpers })) // invoke handlebarsHelpers to handlebars engine
 // 設定使用 Handlebars 做為樣板引擎
 app.set('view engine', 'hbs')
 
@@ -22,6 +24,7 @@ app.use(flash()) // 掛載套件
 app.use((req, res, next) => {
   res.locals.success_msg = req.flash('success_msg')
   res.locals.error_msg = req.flash('error_msg')
+  res.locals.user = getUser(req)
   next()
 })
 app.use(routes)
