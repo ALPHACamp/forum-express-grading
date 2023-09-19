@@ -19,6 +19,14 @@ const adminController = {
         res.redirect('/admin/restaurants') // redirect back to index when data is created successfully
       })
       .catch(err => next(err))
+  },
+  getRestaurant: (req, res, next) => {
+    Restaurant.findByPk(req.params.id, { raw: true })
+      .then(restaurant => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!") // if can't find restaurantId throw error message and stop execute below code
+        res.render('admin/restaurant', { restaurant })
+      })
+      .catch(err => next(err))
   }
 }
 module.exports = adminController
