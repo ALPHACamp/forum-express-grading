@@ -98,6 +98,25 @@ const restaurantController = {
         })
       })
       .catch(err => next(err))
+  },
+  getTopRestaurants: (req, res, next) => {
+    // 撈出所有 User 與 followers 資料
+    return Restaurant.findAll({
+      include: [{ model: User, as: 'FavoritedUsers' }],
+      limit: 10
+    })
+      .then(restaurants => {
+        // 整理 users 資料，把每個 user 項目都拿出來處理一次，並把新陣列儲存在 users 裡
+        const result = restaurants.map(restaurant => ({
+          ...restaurant.toJSON(),
+          favoritedCount: restaurant.FavoritedUsers.length,
+          // 判斷目前登入使用者是否已追蹤該 user 物件
+          isFavorited: req.user && req.user.FavoritedRestaurants.some(fr => fr.id === restaurant.id)
+        }))
+          .sort((a, b) => b.favoritedCount - a.favoritedCount)
+        res.render('top-restaurants', { restaurants: result })
+      })
+      .catch(err => next(err))
   }
 }
 
