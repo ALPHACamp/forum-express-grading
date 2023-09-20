@@ -21,6 +21,18 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'userId',
         as: 'LikedRestaurants'
       })
+      // userId在Followers關聯表中當外鍵，此表"誰追蹤我"  找出所有 followingId 是 5 (我)的人，就是我的 follower(粉絲)
+      User.belongsToMany(User, {
+        through: models.Followship,
+        foreignKey: 'followingId',
+        as: 'Followers'
+      })
+      // userId代換成followerId當外鍵，我追蹤的人  找出所有 followerId 是 5 (我)的人，就是我在 following 的人
+      User.belongsToMany(User, {
+        through: models.Followship,
+        foreignKey: 'followerId',
+        as: 'Followings'
+      })
     }
   };
   User.init({
