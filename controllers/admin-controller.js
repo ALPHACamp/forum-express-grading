@@ -10,16 +10,18 @@ const adminController = {
       .then(restaurants => res.render('admin/restaurants', { restaurants }))
       .catch(err => next(err))
   },
-  createRestaurant: (req, res) => {
-    return res.render('admin/create-restaurant')
+  createRestaurant: (req, res, next) => {
+    return Category.findAll({ raw: true })
+      .then(categories => res.render('admin/create-restaurant', { categories }))
+      .catch(err => next(err))
   },
   postRestaurant: (req, res, next) => {
-    const { name, tel, address, openingHours, description } = req.body // get data in from by req.body
+    const { name, tel, address, openingHours, description, categoryId } = req.body // get data in from by req.body
     if (!name) throw new Error('Restaurant name is required!') // name is required, if null this function would be terminated and error message would be showed
     const { file } = req
     return localFileHandler(file)
       .then(filePath => {
-        Restaurant.create({ name, tel, address, openingHours, description, image: filePath || null }) // create a new Restaurant instance and store in database
+        Restaurant.create({ name, tel, address, openingHours, description, image: filePath || null, categoryId }) // create a new Restaurant instance and store in database
       })
       .then(() => {
         req.flash('success_messages', 'restaurant was successfully created') // show success information
@@ -40,15 +42,18 @@ const adminController = {
       .catch(err => next(err))
   },
   editRestaurant: (req, res, next) => {
-    return Restaurant.findByPk(req.params.id, { raw: true })
-      .then(restaurant => {
+    return Promise.all([
+      Restaurant.findByPk(req.params.id, { raw: true }),
+      Category.findAll({ raw: true })
+    ])
+      .then(([restaurant, categories]) => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
-        res.render('admin/edit-restaurant', { restaurant })
+        res.render('admin/edit-restaurant', { restaurant, categories })
       })
       .catch(err => next(err))
   },
   putRestaurant: (req, res, next) => {
-    const { name, tel, address, openingHours, description } = req.body // get data in from by req.body
+    const { name, tel, address, openingHours, description, categoryId } = req.body // get data in from by req.body
     if (!name) throw new Error('Restaurant name is required!') // name is required, if null this function would be terminated and error message would be showed
     const { file } = req// 把檔案取出來
     return Promise.all([
@@ -57,7 +62,7 @@ const adminController = {
     ])
       .then(([restaurant, filePath]) => { // 以上兩樣事都做完以後
         if (!restaurant) throw new Error("Restaurant didn't exist!")
-        return restaurant.update({ name, tel, address, openingHours, description, image: filePath || restaurant.image })
+        return restaurant.update({ name, tel, address, openingHours, description, image: filePath || restaurant.image, categoryId })
       })
       .then(() => {
         req.flash('success_messages', 'restaurant was successfully updated')
