@@ -20,7 +20,7 @@ const adminController = {
         Restaurant.create({ name, tel, address, openingHours, description, image: filePath || null }) // create a new Restaurant instance and store in database
       })
       .then(() => {
-        req.flash('success_msg', 'restaurant was successfully created') // show success information
+        req.flash('success_messages', 'restaurant was successfully created') // show success information
         res.redirect('/admin/restaurants') // redirect back to index when data is created successfully
       })
       .catch(err => next(err))
@@ -54,7 +54,7 @@ const adminController = {
         return restaurant.update({ name, tel, address, openingHours, description, image: filePath || restaurant.image })
       })
       .then(() => {
-        req.flash('success_msg', 'restaurant was successfully updated')
+        req.flash('success_messages', 'restaurant was successfully updated')
         res.redirect('/admin/restaurants')
       })
       .catch(err => next(err))

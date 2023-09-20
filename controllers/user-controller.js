@@ -21,7 +21,7 @@ const userController = {
         password: hash
       }))
       .then(() => {
-        req.flash('success_msg', 'register account successfully')
+        req.flash('success_messages', 'register account successfully')
         res.redirect('/signin')
       })
       .catch(err => next(err)) // catch error above and call error-handler middleware
