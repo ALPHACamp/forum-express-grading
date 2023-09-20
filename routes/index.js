@@ -6,10 +6,10 @@ const admin = require('./modules/admin')
 
 const restaurantController = require('../controllers/restaurants-controllers')
 const userController = require('../controllers/user-controller')
-const { authenticated } = require('../middleware/auth-handler')
+const { authenticated, authenticatedAdmin } = require('../middleware/auth-handler')
 const { errorHandler } = require('../middleware/error-handler')
 
-router.use('/admin', admin)
+router.use('/admin', authenticatedAdmin, admin)
 
 router.get('/signup', userController.signUpPage)
 
