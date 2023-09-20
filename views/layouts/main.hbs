@@ -11,18 +11,18 @@
       crossorigin="anonymous"
     />
   </head>
-  <body>
-    {{> header}}
-    <main role="main">
-      <div class="album bg-light pt-5">
-        <div class="container">
-          {{> messages}}
-          {{{body}}}
-        </div>
+  <body class="d-flex flex-column h-100 bg-light">
+  {{> header}}
+  <main class="flex-shrink-0" role="main">
+    <div class="album container pt-5">
+      <div class="pt-5">
+        {{> messages}}
+        {{{body}}}
       </div>
-    </main>
-    {{> footer}}
-  </body>
+    </div>
+  </main>
+  {{> footer}}
+</body>
   <script
       src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
       integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
