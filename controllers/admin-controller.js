@@ -1,8 +1,8 @@
-const { Restaurant } = require('../models')
+const { Restaurant, User } = require('../models')
 const { localFileHandler } = require('../helpers/file-helper')
 const adminController = {
   getRestaurants: (req, res, next) => {
-    Restaurant.findAll({
+    return Restaurant.findAll({
       raw: true
     })
       .then(restaurants => res.render('admin/restaurants', { restaurants }))
@@ -15,7 +15,7 @@ const adminController = {
     const { name, tel, address, openingHours, description } = req.body // get data in from by req.body
     if (!name) throw new Error('Restaurant name is required!') // name is required, if null this function would be terminated and error message would be showed
     const { file } = req
-    localFileHandler(file)
+    return localFileHandler(file)
       .then(filePath => {
         Restaurant.create({ name, tel, address, openingHours, description, image: filePath || null }) // create a new Restaurant instance and store in database
       })
@@ -26,7 +26,7 @@ const adminController = {
       .catch(err => next(err))
   },
   getRestaurant: (req, res, next) => {
-    Restaurant.findByPk(req.params.id, { raw: true })
+    return Restaurant.findByPk(req.params.id, { raw: true })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!") // if can't find restaurantId throw error message and stop execute below code
         res.render('admin/restaurant', { restaurant })
@@ -34,7 +34,7 @@ const adminController = {
       .catch(err => next(err))
   },
   editRestaurant: (req, res, next) => {
-    Restaurant.findByPk(req.params.id, { raw: true })
+    return Restaurant.findByPk(req.params.id, { raw: true })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         res.render('admin/edit-restaurant', { restaurant })
@@ -45,7 +45,7 @@ const adminController = {
     const { name, tel, address, openingHours, description } = req.body // get data in from by req.body
     if (!name) throw new Error('Restaurant name is required!') // name is required, if null this function would be terminated and error message would be showed
     const { file } = req// 把檔案取出來
-    Promise.all([
+    return Promise.all([
       Restaurant.findByPk(req.params.id), // 去資料庫查有沒有這間餐廳
       localFileHandler(file) // 把檔案傳到 file-helper 處理
     ])
@@ -68,7 +68,13 @@ const adminController = {
       .then(() => res.redirect('/admin/restaurants'))
       .catch(err => next(err))
   },
-  getUsers: () => {},
+  getUsers: (req, res, next) => {
+    return User.findAll({
+      raw: true
+    })
+      .then(users => res.render('admin/users', { users }))
+      .catch(err => next(err))
+  },
   patchUsers: () => {}
 }
 module.exports = adminController
