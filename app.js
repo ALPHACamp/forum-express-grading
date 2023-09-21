@@ -5,6 +5,7 @@ const session = require('express-session')
 const flash = require('connect-flash')
 const passport = require('./config/passport')
 const methodOverride =require('method-override')
+const path = require('path')
 const { getUser } = require('./helpers/auth-helpers')
 const handlebarsHelper = require('./helpers/handlebars-helper')
 
@@ -29,6 +30,8 @@ app.use(passport.initialize())
 app.use(passport.session())
 
 app.use(methodOverride('_method'))
+
+app.use('/upload', express.static(path.join(__dirname, 'upload')))
 
 app.use((req, res, next) => {
   res.locals.success_msg = req.flash('success')
