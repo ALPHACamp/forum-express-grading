@@ -14,6 +14,7 @@ router.patch('/users/:id', adminController.patchUser)
 router.get('/users', adminController.getUsers)
 router.get('/categories/:id', categoryController.getCategories) // editing page
 router.put('/categories/:id', categoryController.putCategory)
+router.delete('/categories/:id', categoryController.deleteCategory)
 router.get('/categories', categoryController.getCategories) // creating page
 router.post('/categories', categoryController.postCategories)
 
