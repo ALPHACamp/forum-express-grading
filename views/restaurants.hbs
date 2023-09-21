@@ -30,3 +30,26 @@
     </div>
   {{/each}}
 </div>
+<nav class="mt-3" aria-label="page navigation">
+  <ul class="pagination">
+    <li class="page-item {{#ifEq pagination.currentPage 1}}disabled{{/ifEq}}">
+      <a class="page-link" href="/restaurants?page={{pagination.prev}}&categoryId={{categoryId}}" aria-label="Previous">
+        <span aria-hidden="true">&laquo;</span>
+      </a>
+    </li>
+    {{#each pagination.pages}}
+      {{#ifEq this ../pagination.currentPage}}
+        <li class="page-item active"><a class="page-link" href="#">{{this}}</a></li>
+      {{else}}
+        <li class="page-item">
+          <a class="page-link" href="/restaurants?page={{this}}&categoryId={{../categoryId}}">{{this}}</a>
+        </li>
+      {{/ifEq}}
+    {{/each}}
+    <li class="page-item {{#ifEq pagination.currentPage pagination.totalPage}}disabled{{/ifEq}}">
+      <a class="page-link" href="/restaurants?page={{pagination.next}}&categoryId={{categoryId}}" aria-label="Next">
+        <span aria-hidden="true">&raquo;</span>
+      </a>
+    </li>
+  </ul>
+</nav>
