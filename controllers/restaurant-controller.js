@@ -18,14 +18,14 @@ const restaurantController = {
       .catch(err => next(err))
   },
   getRestaurant: (req, res, next) => {
-    return Restaurant.findByPk(req.params.id, {
-      include: Category,
-      nest: true,
-      raw: true
-    })
+    return Restaurant.findByPk(req.params.id, { include: Category })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist")
-        res.render('restaurant', { restaurant })
+        return restaurant.increment('view_counts')
+          .then(() => {
+            console.log(restaurant.viewCounts)
+            res.render('restaurant', { restaurant: restaurant.toJSON() })
+          })
       })
       .catch(err => next(err))
   },
