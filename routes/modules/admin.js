@@ -12,7 +12,9 @@ router.get('/restaurants', adminController.getRestaurants)
 router.post('/restaurants', upload.single('image'), adminController.postRestaurant)
 router.patch('/users/:id', adminController.patchUser)
 router.get('/users', adminController.getUsers)
-router.get('/categories', categoryController.getCategories)
+router.get('/categories/:id', categoryController.getCategories) // editing page
+router.put('/categories/:id', categoryController.putCategory)
+router.get('/categories', categoryController.getCategories) // creating page
 router.post('/categories', categoryController.postCategories)
 
 router.use('/', (req, res) => res.redirect('/admin/restaurants'))
