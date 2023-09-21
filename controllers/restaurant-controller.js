@@ -38,7 +38,7 @@ const restaurantController = {
       })
       .catch(err => next(err))
   },
-  getRestaurantDashboard: (req, res, next) => {
+  getDashboard: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
       include: Category,
       nest: true,
@@ -46,7 +46,7 @@ const restaurantController = {
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist")
-        res.render('restaurant-dashboard', { restaurant })
+        res.render('dashboard', { restaurant })
       })
       .catch(err => next(err))
   }
