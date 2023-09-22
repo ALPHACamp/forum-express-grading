@@ -15,7 +15,7 @@ describe('# R01', () => {
         // 對 POST /signin 發出請求，參數是錯誤的密碼
         .post('/signin')
         .type('urlencoded')
-        .send('email=root@example.com&password=123')
+        .send('email=root@example.com&password=12345')
         // 期待登入驗證回應失敗，重新導向 /signin
         .expect('Location', '/signin')
         .expect(302, done)
@@ -26,7 +26,7 @@ describe('# R01', () => {
         // 對 POST /signin 發出請求，參數是錯誤的帳號
         .post('/signin')
         .type('urlencoded')
-        .send('email=tu&password=12345678')
+        .send('email=tu&password=123')
         // 期待登入驗證回應失敗，重新導向 /signin
         .expect('Location', '/signin')
         .expect(302, done)
@@ -37,7 +37,7 @@ describe('# R01', () => {
         // 對 POST /signin 發出請求，參數是作業指定的使用者帳號密碼
         .post('/signin')
         .type('urlencoded')
-        .send('email=root@example.com&password=12345678')
+        .send('email=root@example.com&password=123')
         // 期待登入驗證成功，重新導向 /restaurants 
         .expect('Location', '/restaurants')
         .expect(302, done)
