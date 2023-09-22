@@ -14,7 +14,7 @@ const commentController = {
         return Comment.create({ text, restaurantId, userId })
       })
       .then(() => {
-        res.redirect(`/restaurant/${restaurantId}`)
+        res.redirect(`/restaurants/${restaurantId}`)
       })
       .catch(err => next(err))
   }
