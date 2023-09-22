@@ -46,7 +46,6 @@ const userController = {
       ]
     })
       .then(user => {
-        console.log(user.toJSON())
         if (!user) throw new Error("User didn't exist!")
         res.render('users/profile', { user: user.toJSON(), DEFAULT_AVATAR })
       })
