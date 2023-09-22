@@ -1,0 +1,48 @@
+{{> restaurant-tabs route='feeds'}}
+<h1>最新動態</h1>
+<hr />
+<div class="row mt-5">
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-header">
+        最新餐廳
+      </div>
+      <div class="card-body" style="max-height: 550px;overflow:auto;">
+        {{#each restaurants}}
+        <div>
+          <h4>
+            <a class="link-primary" href="/restaurants/{{this.id}}">{{this.name}}</a>
+            <a class="fs-6 fw-light" href="/restaurants?categoryId={{this.categoryId}}">[{{this.Category.name}}]</a>
+          </h4>
+          <div style="min-height: 100px;">
+            <img src="{{this.image}}" width="100" height="100" alt="restaurant image" style="float: left;margin: 5px">
+            <p class="my-4" style="white-space: break-spaces; text-align:justify">{{this.description}}</p>
+          </div>
+        </div>
+        <div class="my-3"><i>{{relativeTimeFromNow this.createdAt}}</i></div>
+        <hr>
+        {{/each}}
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-header">
+        最新評論
+      </div>
+      <div class="card-body" style="max-height: 550px;overflow:auto;">
+        {{#each comments}}
+        <div>
+          <h4>
+            <a class="link-primary" href="/restaurants/{{this.Restaurant.id}}">{{this.Restaurant.name}}</a>
+          </h4>
+          <p class="my-4" style="white-space: break-spaces;">{{this.text}}</p>
+          - <a class="link-secondary" href="/users/{{this.User.id}}">{{this.User.name}}</a>
+          <small>at {{relativeTimeFromNow this.createdAt}}</small>
+          <hr>
+        </div>
+        {{/each}}
+      </div>
+    </div>
+  </div>
+</div>
