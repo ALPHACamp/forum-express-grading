@@ -1,4 +1,4 @@
-const { Restaurant, Category, Comment, User, Favorite } = require('../models')
+const { Restaurant, Category, Comment, User, Sequelize } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
 
 module.exports = {
@@ -98,35 +98,61 @@ module.exports = {
       next(err)
     }
   },
-  async addFavorite (req, res, next) {
+  async getTopRestaurants (req, res, next) {
     try {
-      const restaurantId = req.params.id
-      const userId = req.user.id
-      const [restaurant, favorite] = await Promise.all([
-        Restaurant.findByPk(restaurantId),
-        Favorite.findOne({ where: { userId, restaurantId } })
-      ])
-
-      if (!restaurant) throw new Error('The Restaurant does not exist')
-      if (favorite) throw new Error('You have favorited this restaurant')
-      await Favorite.create({ userId, restaurantId })
-      res.redirect('back')
-    } catch (err) {
-      next(err)
-    }
-  },
-  async removeFavorite  (req, res, next) {
-    try {
-      const favorite = await Favorite.findOne({
-        where: {
-          userId: req.user.id,
-          restaurantId: req.params.id
-        }
+      const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
+      const topFavors = await Restaurant.findAll({
+        attributes: {
+          include: [
+            [Sequelize.fn('COUNT', Sequelize.col('FavoritedUsers.id')), 'favoritedCount']
+          ]
+        },
+        include: [{
+          model: User,
+          as: 'FavoritedUsers',
+          attributes: [],
+          through: { attributes: [] },
+          mapToModel: true,
+          required: false
+        }],
+        group: ['Restaurant.id'],
+        order: [[Sequelize.literal('favoritedCount'), 'DESC']],
+        limit: 10,
+        raw: true,
+        nest: true,
+        subQuery: false
       })
+      /*
+      const topFavors = await sequelize.query(
+        `
+        SELECT a.*, COUNT(b.user_id) favoritedCount
+        FROM restaurants a
+        LEFT JOIN favorites b
+        ON  a.id = b.restaurant_id
+        GROUP BY a.id
+        ORDER BY favoritedCount DESC
+        LIMIT 10;
+        `,
+        {
+          // model: Restaurant,
+          // mapToModel: true,
+          type: sequelize.QueryTypes.SELECT
+          // raw: true
+        }
+      )
+      // console.log(topFavors)
+      */
+      const restaurants = Object.keys(topFavors[0]).includes('favoritedCount')
+        ? topFavors.map(restaurant => ({
+          ...restaurant,
+          isFavorited: favoritedRestaurantsId?.includes(restaurant.id)
+        }))
+        : topFavors.map(rec => ({
+          ...rec.toJSON(),
+          favoritedCount: rec.dataValues.FavoritedUsers.length
+        })).sort((a, b) => b.favoritedCount - a.favoritedCount)
 
-      if (!favorite) throw new Error("You haven't favorited this restaurant")
-      await favorite.destroy()
-      res.redirect('back')
+      res.render('Top 10 人氣餐廳', { restaurants })
     } catch (err) {
       next(err)
     }

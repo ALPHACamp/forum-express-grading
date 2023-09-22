@@ -23,6 +23,7 @@ router.put('/users/:id', authenticated, upload2Memory.single('image'), userContr
 router.get('/users/:id', authenticated, userController.getUser)
 
 router.get('/restaurants/feeds', authenticated, restaurantController.getFeeds)
+router.get('/restaurants/top', authenticated, restaurantController.getTopRestaurants)
 router.get('/restaurants/:id/dashboard', authenticated, restaurantController.getDashboard)
 router.get('/restaurants/:id', authenticated, restaurantController.getRestaurant)
 router.get('/restaurants', authenticated, restaurantController.getRestaurants)
@@ -30,8 +31,8 @@ router.get('/restaurants', authenticated, restaurantController.getRestaurants)
 router.delete('/comments/:id', authenticatedAdmin, commentController.deleteComment)
 router.post('/comments', authenticated, commentController.postComment)
 
-router.post('/favorite/:id', authenticated, restaurantController.addFavorite)
-router.delete('/favorite/:id', authenticated, restaurantController.removeFavorite)
+router.post('/favorite/:restaurantId', authenticated, userController.addFavorite)
+router.delete('/favorite/:restaurantId', authenticated, userController.removeFavorite)
 
 router.post('/following/:id', userController.addFollowing)
 router.delete('/following/:id', userController.removeFollowing)

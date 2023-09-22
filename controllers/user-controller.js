@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs')
-const { User, Comment, Restaurant, Followship, Like } = require('../models')
+const { User, Comment, Restaurant, Favorite, Followship, Like } = require('../models')
 const { imgurUploader } = require('../helpers/file-helper')
 
 const userController = {
@@ -104,6 +104,39 @@ const userController = {
           }))
           .sort((a, b) => b.followerCount - a.followerCount)
       })
+    } catch (err) {
+      next(err)
+    }
+  },
+  async addFavorite (req, res, next) {
+    try {
+      const restaurantId = req.params.restaurantId
+      const userId = req.user.id
+      const [restaurant, favorite] = await Promise.all([
+        Restaurant.findByPk(restaurantId),
+        Favorite.findOne({ where: { userId, restaurantId } })
+      ])
+
+      if (!restaurant) throw new Error('The Restaurant does not exist')
+      if (favorite) throw new Error('You have favorited this restaurant')
+      await Favorite.create({ userId, restaurantId })
+      res.redirect('back')
+    } catch (err) {
+      next(err)
+    }
+  },
+  async removeFavorite (req, res, next) {
+    try {
+      const favorite = await Favorite.findOne({
+        where: {
+          userId: req.user.id,
+          restaurantId: req.params.restaurantId
+        }
+      })
+
+      if (!favorite) throw new Error("You haven't favorited this restaurant")
+      await favorite.destroy()
+      res.redirect('back')
     } catch (err) {
       next(err)
     }
