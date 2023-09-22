@@ -15,6 +15,19 @@ const restaurantController = {
         return res.render('restaurants', { restaurants: data })
       })
       .catch(err => next(err))
+  },
+  getRestaurant: (req, res, next) => {
+    const { id } = req.params
+    return Restaurant.findByPk(id, {
+      include: Category,
+      nest: true,
+      raw: true
+    })
+      .then(restaurant => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        res.render('restaurant', { restaurant })
+      })
+      .catch(err => next(err))
   }
 }
 module.exports = restaurantController
