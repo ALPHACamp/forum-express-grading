@@ -1,15 +1,35 @@
-<div class="card mb-3" style="max-width: 80%;">
+<div class="card mb-3 mx-auto" style="max-width: 80%;">
   <div class="row g-0">
     <div class="col-md-4">
-      <img src="{{#if user.image}}{{user.image}}{{else}}https://static.vecteezy.com/system/resources/previews/009/734/564/original/default-avatar-profile-icon-of-social-media-user-vector.jpg{{/if}}" class="img-fluid rounded-start" alt="user's image">
+      <img src="{{#if user.image}}{{user.image}}{{else}}{{DEFAULT_AVATAR}}{{/if}}" class="img-fluid rounded-start" alt="user's image">
     </div>
     <div class="col-md-8">
       <div class="card-body">
         <h5 class="card-title">{{user.name}}</h5>
         <p class="card-text">{{user.email}}</p>
+        <p class="card-text"><small class="text-body-secondary">{{user.Comments.length}}個已評論餐廳</small></p>
         <p class="card-text"><small class="text-body-secondary">Last updated: {{relativeTimeFromNow user.updatedAt}}</small></p>
         <button type="button" class="btn btn-outline-primary" onclick="window.location.href='/users/{{user.id}}/edit';">Edit</button>
       </div>
+    </div>
+  </div>
+</div>
+<div class="card mb-3 mx-auto" style="max-width: 80%;">
+  <h5 class="card-header">{{user.Comments.length}}個已評論餐廳</h5>
+  <div class="card-body">
+    <div class="row">
+      {{#each user.Comments}}
+      <div class="col-4 my-3">
+        <a href="/restaurants/{{Restaurant.id}}">
+          <div class="card text-bg-dark">
+            <img src="{{Restaurant.image}}" class="rounded" alt="commented restaurant">
+            <div class="card-img-overlay">
+              <h5 class="card-title d-inline text-white bg-dark">{{Restaurant.name}}</h5>
+            </div>
+          </div>
+        </a>
+      </div>
+      {{/each}}
     </div>
   </div>
 </div>
