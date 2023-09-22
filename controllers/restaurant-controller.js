@@ -1,4 +1,4 @@
-const { Restaurant, Category } = require('../models')
+const { Restaurant, Category, User, Comment } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
 const restaurantController = {
   getRestaurants: (req, res, next) => {
@@ -35,8 +35,10 @@ const restaurantController = {
   getRestaurant: (req, res, next) => {
     const id = req.params.id
     return Restaurant.findByPk(id, {
-      include: Category,
-      nest: true
+      include: [ // Nested eager loading
+        Category,
+        { model: Comment, include: User }
+      ]
     })
       .then(restaurant => {
         if (!restaurant) { throw new Error("Restaurant didn't exist!") }
