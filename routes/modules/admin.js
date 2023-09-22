@@ -16,7 +16,7 @@ router.post(
   adminController.postRestaurant
 )
 router.get('/users', adminController.getUsers)
-router.patch('/users', adminController.patchUser)
+router.patch('/users/:id', adminController.patchUser)
 router.get('/', (req, res) => res.redirect('/admin/restaurants'))
 
 module.exports = router

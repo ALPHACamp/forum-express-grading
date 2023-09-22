@@ -31,13 +31,14 @@ const userController = {
 
   signIn: (req, res) => {
     req.flash('success', '登入成功')
-    res.redirect('/admin/restaurants')
+    res.redirect('/restaurants')
   },
 
   logout: (req, res) => {
-    req.flash('success', '登出成功')
-    req.logout()
-    res.redirect('/signin')
+    req.logout(() => {
+      req.flash('success', '登出成功')
+      res.redirect('/signin')
+    })
   }
 }
 

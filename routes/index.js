@@ -26,7 +26,7 @@ router.post(
   userController.signIn
 )
 
-router.post('/logout', userController.logout)
+router.get('/logout', userController.logout)
 
 router.get('/restaurants', authenticated, restaurantController.getRestaurants)
 
