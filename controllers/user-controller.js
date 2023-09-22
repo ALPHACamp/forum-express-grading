@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs')
-const { User } = require('../models')
+const { User, Comment, Restaurant } = require('../models')
 const { localFileHandler } = require('../helpers/file-helper')
 const DEFAULT_AVATAR = 'https://static.vecteezy.com/system/resources/previews/009/734/564/original/default-avatar-profile-icon-of-social-media-user-vector.jpg'
 const userController = {
@@ -40,10 +40,15 @@ const userController = {
     res.redirect('/signin')
   },
   getUser: (req, res, next) => {
-    return User.findByPk(req.params.id, { raw: true })
+    return User.findByPk(req.params.id, {
+      include: [
+        { model: Comment, include: Restaurant }
+      ]
+    })
       .then(user => {
+        console.log(user.toJSON())
         if (!user) throw new Error("User didn't exist!")
-        res.render('users/profile', { user, DEFAULT_AVATAR })
+        res.render('users/profile', { user: user.toJSON(), DEFAULT_AVATAR })
       })
       .catch(err => next(err))
   },
