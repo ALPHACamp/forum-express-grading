@@ -61,5 +61,10 @@ const restaurantController = {
       })
       .catch(err => next(err))
   }
+  // getFeeds: (req, res, next) => {
+  //   return Promise.all([
+
+  //   ])
+  // }
 }
 module.exports = restaurantController
