@@ -4,9 +4,9 @@ const { localFileHandler } = require('../helpers/file-helper')
 const adminController = {
   getRestaurants: (req, res, next) => {
     Restaurant.findAll({
-      raw: true,
+      include: [Category],
       nest: true,
-      include: [Category]
+      raw: true
     })
       .then(restaurants => {
         res.render('admin/restaurants', { restaurants })
