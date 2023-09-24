@@ -20,7 +20,7 @@ const categoryController = {
       .then(() => res.redirect('/admin/categories'))
       .catch(err => next(err))
   },
-  putCategories: (req, res, next) => {
+  putCategory: (req, res, next) => {
     const { name } = req.body
     const id = req.params.id
     if (!name) throw new Error('Category name is required!')
@@ -28,6 +28,16 @@ const categoryController = {
       .then(category => {
         if (!category) throw new Error("Category doesn't exist!")
         return category.update({ name })
+      })
+      .then(() => res.redirect('/admin/categories'))
+      .catch(err => next(err))
+  },
+  deleteCategory: (req, res, next) => {
+    const id = req.params.id
+    return Category.findByPk(id)
+      .then(category => {
+        if (!category) throw new Error("Category doesn't exist!")
+        return category.destroy()
       })
       .then(() => res.redirect('/admin/categories'))
       .catch(err => next(err))
