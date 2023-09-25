@@ -39,6 +39,26 @@ const userController = {
       req.flash('success', '登出成功')
       res.redirect('/signin')
     })
+  },
+  getUser: (req, res, next) => {
+    const id = Number(req.params.id)
+    const userId = req.user.id
+    return User.findByPk(id, {
+      raw: true
+    })
+      .then(user => {
+        console.log(id, userId)
+        if (!user) throw new Error("User didn't exist")
+        // if (id !== userId) throw new Error('無法更改他人資料')
+        return res.render('users/profile', { user, userId })
+      })
+      .catch(err => next(err))
+  },
+  editUser: (req, res, next) => {
+    res.render('users/edit')
+  },
+  putUser: (req, res, next) => {
+    res.send('putUser')
   }
 }
 

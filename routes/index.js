@@ -45,6 +45,12 @@ router.post('/comments', authenticated, commentController.postComment)
 
 router.delete('/comments/:id', authenticated, commentController.deleteComment)
 
+router.get('/users/:id/edit', authenticated, userController.editUser)
+
+router.get('/users/:id', authenticated, userController.getUser)
+
+router.put('/users/:id', authenticated, userController.putUser)
+
 router.use('/', errorHandler)
 
 module.exports = router
