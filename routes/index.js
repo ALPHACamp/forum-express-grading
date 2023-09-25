@@ -43,6 +43,8 @@ router.get('/', (req, res) => res.redirect('/restaurants'))
 
 router.post('/comments', authenticated, commentController.postComment)
 
+router.delete('/comments/:id', authenticated, commentController.deleteComment)
+
 router.use('/', errorHandler)
 
 module.exports = router
