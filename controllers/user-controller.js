@@ -1,5 +1,6 @@
 const bcrypt = require('bcrypt')
 const db = require('../models')
+const { localFileHandler } = require('../helpers/file-helper')
 const User = db.User
 
 const userController = {
@@ -41,24 +42,43 @@ const userController = {
     })
   },
   getUser: (req, res, next) => {
-    const id = Number(req.params.id)
-    const userId = req.user.id
+    const id = req.params.id
+    // const userId = req.user.id;
     return User.findByPk(id, {
       raw: true
     })
       .then(user => {
-        console.log(id, userId)
         if (!user) throw new Error("User didn't exist")
-        // if (id !== userId) throw new Error('無法更改他人資料')
-        return res.render('users/profile', { user, userId })
+        return res.render('users/profile', { user })
       })
       .catch(err => next(err))
   },
   editUser: (req, res, next) => {
-    res.render('users/edit')
+    const id = Number(req.params.id)
+    // const userId = req.user.id;
+    return User.findByPk(id, { raw: true }).then(user => {
+      if (!user) throw new Error("User didn't exist")
+      // if (user.id !== userId) throw new Error("無法更改他人資料");
+      return res.render('users/edit', { user })
+    })
   },
   putUser: (req, res, next) => {
-    res.send('putUser')
+    const { name } = req.body
+    const userId = req.user.id
+    if (!name) throw new Error('User name is required')
+    const id = Number(req.params.id)
+    const file = req.file
+    return Promise.all([User.findByPk(id), localFileHandler(file)])
+      .then(([user, filePath]) => {
+        if (!user) throw new Error("User didn't exist")
+        if (user.id !== userId) throw new Error('無法更改他人資料')
+        return user.update({ name, image: filePath || user.image })
+      })
+      .then(() => {
+        req.flash('success', '使用者資料編輯成功')
+        res.redirect(`/users/${id}`)
+      })
+      .catch(err => next(err))
   }
 }
 

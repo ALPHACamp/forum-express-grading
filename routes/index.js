@@ -9,6 +9,7 @@ const userController = require('../controllers/user-controller')
 const commentController = require('../controllers/comment-controller')
 const { authenticated, authenticatedAdmin } = require('../middleware/auth-handler')
 const { errorHandler } = require('../middleware/error-handler')
+const upload = require('../middleware/multer')
 
 router.use('/admin', authenticatedAdmin, admin)
 
@@ -49,7 +50,7 @@ router.get('/users/:id/edit', authenticated, userController.editUser)
 
 router.get('/users/:id', authenticated, userController.getUser)
 
-router.put('/users/:id', authenticated, userController.putUser)
+router.put('/users/:id', upload.single('image'), authenticated, userController.putUser)
 
 router.use('/', errorHandler)
 

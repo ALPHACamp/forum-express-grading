@@ -136,7 +136,7 @@ describe('# R03', () => {
 
         // putUser 正確執行的話，應呼叫 req.flash 
         // req.flash 的參數應與下列字串一致
-        req.flash.calledWith('success_messages','使用者資料編輯成功').should.be.true
+        req.flash.calledWith('success','使用者資料編輯成功').should.be.true
         // putUser 執行完畢，應呼叫 res.redirect 並重新導向 /users/1
         res.redirect.calledWith('/users/1').should.be.true
         // putUser 執行完畢後，id:1 使用者的 name 應該已被修改 

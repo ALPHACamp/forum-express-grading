@@ -1,12 +1,12 @@
 <div class="card" style="width: 32rem">
-  <img src="https://loremflickr.com/320/240/restaurant,food/?random=60.185641161225334" class="card-img-top" alt="avatar">
+  <img src="{{user.image}}" class="card-img-top" alt="avatar">
   <div class="card-body">
     <h3>{{user.name}}</h3>
     <p class="card-text">{{user.email}}</p>
   </div>
   <div class="card-footer">
-    {{#ifCond user.id userId}}
+    {{!-- {{#ifCond user.id userId}} --}}
     <a href="/users/{{user.id}}/edit" class="btn btn-primary">Edit</a>
-    {{/ifCond}}
+    {{!-- {{/ifCond}} --}}
   </div>
 </div>
