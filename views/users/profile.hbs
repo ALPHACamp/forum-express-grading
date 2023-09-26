@@ -1,5 +1,5 @@
-<div class="card" style="width: 32rem">
-  <img src="{{user.image}}" class="card-img-top" alt="avatar">
+<div class="card mb-5">
+  <img src="{{user.image}}" class="card-img-top" alt="avatar" />
   <div class="card-body">
     <h3>{{user.name}}</h3>
     <p class="card-text">{{user.email}}</p>
@@ -8,5 +8,19 @@
     {{!-- {{#ifCond user.id userId}} --}}
     <a href="/users/{{user.id}}/edit" class="btn btn-primary">Edit</a>
     {{!-- {{/ifCond}} --}}
+  </div>
+</div>
+<div class="card">
+  <div class="card-header">
+    {{comment.count}}已評論餐廳
+  </div>
+  <div>
+    {{#each user.Comments}}
+    <a href="/restaurants/{{this.restaurantId}}"><img
+    src="{{this.Restaurant.image}}"
+    alt="restaurant"
+    style="width: 12rem; margin:15px"
+    ></a>
+    {{/each}}
   </div>
 </div>

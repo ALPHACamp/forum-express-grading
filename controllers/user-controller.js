@@ -1,7 +1,6 @@
 const bcrypt = require('bcrypt')
-const db = require('../models')
+const { Restaurant, Comment, User } = require('../models')
 const { localFileHandler } = require('../helpers/file-helper')
-const User = db.User
 
 const userController = {
   signUpPage: (req, res) => {
@@ -44,12 +43,19 @@ const userController = {
   getUser: (req, res, next) => {
     const id = req.params.id
     // const userId = req.user.id;
-    return User.findByPk(id, {
-      raw: true
-    })
-      .then(user => {
+    return Promise.all([
+      User.findByPk(id, {
+        include: { model: Comment, include: Restaurant }
+      }),
+      Comment.findAndCountAll({
+        where: { userId: id },
+        raw: true
+      })
+    ])
+
+      .then(([user, comment]) => {
         if (!user) throw new Error("User didn't exist")
-        return res.render('users/profile', { user })
+        return res.render('users/profile', { user: user.toJSON(), comment })
       })
       .catch(err => next(err))
   },

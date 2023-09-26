@@ -36,7 +36,6 @@ const restaurantController = {
       include: [Category, { model: Comment, include: User }]
     })
       .then(restaurant => {
-        console.log(restaurant)
         if (!restaurant) throw new Error("Restaurant didn't exist!")
         return res.render('restaurant', { restaurant: restaurant.toJSON() })
       })
