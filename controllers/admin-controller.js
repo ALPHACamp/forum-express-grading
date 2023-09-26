@@ -1,5 +1,5 @@
 const { Restaurant } = require('../models')
-const { localFileHandler } = require('../helpers/file-helpers')
+const { imgurFileHandler } = require("../helpers/file-helpers");
 
 const adminController = {
   getRestaurants: (req, res, next) => {
@@ -18,22 +18,22 @@ const adminController = {
 
     const { file } = req
 
-    localFileHandler(file)
-      .then(filePath =>
+    imgurFileHandler(file)
+      .then((filePath) =>
         Restaurant.create({
           name,
           tel,
           address,
           openingHours,
           description,
-          image: filePath || null
+          image: filePath || null,
         })
       )
       .then(() => {
-        req.flash('success_messages', 'restaurant was successfully created')
-        res.redirect('/admin/restaurants')
+        req.flash("success_messages", "restaurant was successfully created");
+        res.redirect("/admin/restaurants");
       })
-      .catch(err => next(err))
+      .catch((err) => next(err));
   },
   getRestaurant: (req, res, next) => {
     Restaurant.findByPk(req.params.id, {
@@ -63,9 +63,9 @@ const adminController = {
 
     const { file } = req
 
-    Promise.all([Restaurant.findByPk(req.params.id), localFileHandler(file)])
+    Promise.all([Restaurant.findByPk(req.params.id), imgurFileHandler(file)])
       .then(([restaurant, filePath]) => {
-        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        if (!restaurant) throw new Error("Restaurant didn't exist!");
 
         return restaurant.update({
           name,
@@ -73,14 +73,14 @@ const adminController = {
           address,
           openingHours,
           description,
-          image: filePath || restaurant.image
-        })
+          image: filePath || restaurant.image,
+        });
       })
       .then(() => {
-        req.flash('success_messages', 'restaurant was successfully to update')
-        res.redirect('/admin/restaurants')
+        req.flash("success_messages", "restaurant was successfully to update");
+        res.redirect("/admin/restaurants");
       })
-      .catch(err => next(err))
+      .catch((err) => next(err));
   },
   deleteRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id)
