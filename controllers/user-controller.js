@@ -1,8 +1,10 @@
 const bcrypt = require('bcryptjs')
 const db = require('../models')
 const { User } = db
+const { imgurFileHandler } = require('../helpers/file-helpers')
+const { getUser } = require('../helpers/auth-helpers')
 
-const userContorller = {
+const userController = {
   signUpPage: (req, res) => {
     res.render('signup')
   },
@@ -38,7 +40,53 @@ const userContorller = {
     req.flash('success_messages', '登出成功！')
     req.logout()
     res.redirect('/signin')
+  },
+  getUser: (req, res, next) => {
+    const currentUser = getUser(req)
+    const getUserId = Number(req.params.id)
+    const editPermission = (getUserId === currentUser.id)
+    return User.findByPk(getUserId, { raw: true })
+      .then(user => {
+        if (!user) throw new Error("User didn't exist!")
+        return res.render('users/profile', { user, editPermission })
+      })
+      .catch(err => next(err))
+  },
+  editUser: (req, res, next) => {
+    const getUserId = Number(req.params.id)
+    const currentUser = getUser(req)
+    const editPermission = (getUserId === currentUser.id)
+    if (!editPermission) {
+      req.flash('error_messages', '無法編輯他人的使用者資料!')
+      return res.redirect(`/users/${currentUser.id}`)
+    }
+    return User.findByPk(getUserId, { raw: true })
+      .then(user => {
+        return res.render('users/edit', { user })
+      })
+      .catch(err => next(err))
+  },
+  putUser: (req, res, next) => {
+    const { name } = req.body
+    const user = getUser(req)
+    if (!name) throw new Error('User name is required!')
+    const { file } = req
+    Promise.all([
+      User.findByPk(user.id),
+      imgurFileHandler(file)
+    ])
+      .then(([user, filePath]) => {
+        return user.update({
+          name,
+          image: filePath || user.image
+        })
+      })
+      .then(() => {
+        req.flash('success_messages', '使用者資料編輯成功')
+        res.redirect(`/users/${user.id}`)
+      })
+      .catch(err => next(err))
   }
 }
 
-module.exports = userContorller
+module.exports = userController
