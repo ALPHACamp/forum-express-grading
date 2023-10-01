@@ -1,8 +1,10 @@
 const bcrypt = require('bcryptjs')
 const db = require('../models')
-const { User } = db
+const { User, Restaurant, Comment } = db
+const { imgurFileHandler } = require('../helpers/file-helpers')
+const { getUser } = require('../helpers/auth-helpers')
 
-const userContorller = {
+const userController = {
   signUpPage: (req, res) => {
     res.render('signup')
   },
@@ -38,7 +40,66 @@ const userContorller = {
     req.flash('success_messages', '登出成功！')
     req.logout()
     res.redirect('/signin')
+  },
+  getUser: (req, res, next) => {
+    const currentUser = getUser(req)
+    const getUserId = Number(req.params.id)
+    const editPermission = (getUserId === currentUser.id)
+    return Promise.all([
+      User.findByPk(getUserId, {
+        raw: true
+      }),
+      Comment.findAndCountAll({
+        where: { user_id: getUserId },
+        include: [Restaurant],
+        raw: true,
+        nest: true
+      })
+    ])
+      .then(([user, { count, rows }]) => {
+        if (!user) throw new Error("User didn't exist!")
+        return res.render('users/profile', { user, editPermission, count, comments: rows })
+      })
+      .catch(err => next(err))
+  },
+  editUser: (req, res, next) => {
+    const getUserId = Number(req.params.id)
+    const currentUser = getUser(req)
+    const editPermission = (getUserId === currentUser.id)
+    if (!editPermission) {
+      req.flash('error_messages', '無法編輯他人的使用者資料!')
+      return res.redirect(`/users/${currentUser.id}`)
+    }
+    return User.findByPk(getUserId, { raw: true })
+      .then(user => {
+        return res.render('users/edit', { user })
+      })
+      .catch(err => next(err))
+  },
+  putUser: (req, res, next) => {
+    const { name } = req.body
+    if (!name) throw new Error('User name is required!')
+    const { file } = req
+    if (req.user.id !== Number(getUser(req).id)) {
+      req.flash('error_messages', '無法編輯他人的使用者資料!')
+      res.redirect('/restaurants')
+    }
+    return Promise.all([ // 非同步處理
+      User.findByPk(req.params.id), // 去資料庫查有沒有這個使用者
+      imgurFileHandler(file) // 把檔案傳到 file-helper 處理
+    ])
+      .then(([user, filepath]) => {
+        if (!user) throw new Error('user did not exists!')
+        return user.update({
+          name, image: filepath || user.image
+        })
+      })
+      .then(() => {
+        req.flash('success_messages', '使用者資料編輯成功')
+        res.redirect(`/users/${req.params.id}`)
+      })
+      .catch(err => next(err))
   }
 }
 
-module.exports = userContorller
+module.exports = userController
