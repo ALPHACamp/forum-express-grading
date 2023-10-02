@@ -9,14 +9,25 @@ const handlebarsHelpers = require('./helpers/handlebars-helpers')
 const { getUser } = require('./helpers/auth-helpers')
 const routes = require('./routes')
 
-if (process.env.NODE_ENV !== "production") {
-  require("dotenv").config();
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
 }
 
 const app = express()
 const port = process.env.PORT || 3000
 const SESSION_SECRET = 'secret'
-app.engine('hbs', handlebars({ extname: '.hbs', helpers: handlebarsHelpers }))
+app.engine(
+  'hbs',
+  handlebars({
+    extname: '.hbs',
+    helpers: {
+      ...handlebarsHelpers,
+      eq: function (a, b) {
+        return a === b
+      }
+    }
+  })
+)
 app.set('view engine', 'hbs')
 app.use(express.urlencoded({ extended: true }))
 app.use(

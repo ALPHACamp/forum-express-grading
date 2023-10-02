@@ -12,6 +12,10 @@ router.put(
   adminController.putRestaurant
 )
 router.delete('/restaurants/:id', adminController.deleteRestaurant)
+// 修改使用者權限
+router.patch('/users/:id', adminController.patchUser)
+// 顯示使用者清單
+router.get('/users', adminController.getUsers)
 router.get('/restaurants', adminController.getRestaurants)
 router.post(
   '/restaurants',

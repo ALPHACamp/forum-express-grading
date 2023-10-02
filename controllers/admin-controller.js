@@ -1,5 +1,5 @@
-const { Restaurant } = require('../models')
-const { imgurFileHandler } = require("../helpers/file-helpers");
+const { Restaurant, User } = require('../models')
+const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const adminController = {
   getRestaurants: (req, res, next) => {
@@ -19,21 +19,21 @@ const adminController = {
     const { file } = req
 
     imgurFileHandler(file)
-      .then((filePath) =>
+      .then(filePath =>
         Restaurant.create({
           name,
           tel,
           address,
           openingHours,
           description,
-          image: filePath || null,
+          image: filePath || null
         })
       )
       .then(() => {
-        req.flash("success_messages", "restaurant was successfully created");
-        res.redirect("/admin/restaurants");
+        req.flash('success_messages', 'restaurant was successfully created')
+        res.redirect('/admin/restaurants')
       })
-      .catch((err) => next(err));
+      .catch(err => next(err))
   },
   getRestaurant: (req, res, next) => {
     Restaurant.findByPk(req.params.id, {
@@ -65,7 +65,7 @@ const adminController = {
 
     Promise.all([Restaurant.findByPk(req.params.id), imgurFileHandler(file)])
       .then(([restaurant, filePath]) => {
-        if (!restaurant) throw new Error("Restaurant didn't exist!");
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
 
         return restaurant.update({
           name,
@@ -73,14 +73,14 @@ const adminController = {
           address,
           openingHours,
           description,
-          image: filePath || restaurant.image,
-        });
+          image: filePath || restaurant.image
+        })
       })
       .then(() => {
-        req.flash("success_messages", "restaurant was successfully to update");
-        res.redirect("/admin/restaurants");
+        req.flash('success_messages', 'restaurant was successfully to update')
+        res.redirect('/admin/restaurants')
       })
-      .catch((err) => next(err));
+      .catch(err => next(err))
   },
   deleteRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id)
@@ -91,6 +91,33 @@ const adminController = {
       })
       .then(() => res.redirect('/admin/restaurants'))
       .catch(err => next(err))
+  },
+  getUsers: (req, res, next) => {
+    return User.findAll({
+      raw: true
+    })
+      .then(users => {
+        res.render('admin/users', { users })
+      })
+      .catch(err => next(err))
+  },
+  patchUser: (req, res, next) => {
+    return User.findByPk(req.params.id)
+      .then(user => {
+        if (user.email === 'root@example.com') {
+          req.flash('error_messages', '禁止變更 root 權限')
+          throw res.redirect('back')
+        }
+        return user
+      })
+      .then(user => user.update({ isAdmin: !user.isAdmin }))
+      .then(() => {
+        req.flash('success_messages', '使用者權限變更成功')
+        res.redirect('/admin/users')
+      })
+      .catch(err => {
+        next(err)
+      })
   }
 }
 
