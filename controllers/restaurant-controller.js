@@ -20,11 +20,15 @@ const restaurantController = {
       }),
       Category.findAll({ raw: true })
     ]).then(([restaurants, categories]) => {
-      const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
+      const { favoritedRestaurantsId, likedRestaurantsId } = {
+        favoritedRestaurantsId: req.user && req.user.FavoritedRestaurants.map(fr => fr.id),
+        likedRestaurantsId: req.user && req.user.LikedRestaurants.map(fr => fr.id)
+      }
       const data = restaurants.rows.map(r => ({
         ...r,
         description: r.description.substring(0, 50),
-        isFavorited: favoritedRestaurantsId.includes(r.id)
+        isFavorited: favoritedRestaurantsId.includes(r.id),
+        isLiked: likedRestaurantsId.includes(r.id)
       }))
       return res.render('restaurants', {
         restaurants: data,
@@ -40,7 +44,8 @@ const restaurantController = {
       include: [ // Nested eager loading
         Category,
         { model: Comment, include: User },
-        { model: User, as: 'FavoritedUsers' }
+        { model: User, as: 'FavoritedUsers' },
+        { model: User, as: 'LikedUsers' }
       ]
     })
       .then(restaurant => {
@@ -48,10 +53,14 @@ const restaurantController = {
         return restaurant.increment('viewCounts')
       })
       .then(updateRestaurant => {
-        const isFavorited = updateRestaurant.FavoritedUsers.some(f => f.id === req.user.id)
+        const { isFavorited, isLiked } = {
+          isFavorited: updateRestaurant.FavoritedUsers.some(f => f.id === req.user.id),
+          isLiked: updateRestaurant.LikedUsers.some(f => f.id === req.user.id)
+        }
         res.render('restaurant', {
           restaurant: updateRestaurant.toJSON(),
-          isFavorited
+          isFavorited,
+          isLiked
         })
       })
       .catch(err => next(err))
