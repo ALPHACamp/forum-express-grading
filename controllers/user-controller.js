@@ -105,7 +105,7 @@ const userController = {
       Restaurant.findByPk(restaurantId),
       Favorite.findOne({
         where: {
-          userId: req.user.id,
+          userId: getUser(req).id,
           restaurantId
         }
       })
@@ -115,7 +115,7 @@ const userController = {
         if (favorite) throw new Error('You have favorited this restaurant!')
 
         return Favorite.create({
-          userId: req.user.id,
+          userId: getUser(req).id,
           restaurantId
         })
       })
@@ -125,7 +125,7 @@ const userController = {
   removeFavorite: (req, res, next) => {
     return Favorite.findOne({
       where: {
-        userId: req.user.id,
+        userId: getUser(req).id,
         restaurantId: req.params.restaurantId
       }
     })
@@ -143,7 +143,7 @@ const userController = {
       Restaurant.findByPk(restaurantId),
       Like.findOne({
         where: {
-          userId: req.user.id,
+          userId: getUser(req).id,
           restaurantId
         }
       })
@@ -153,7 +153,7 @@ const userController = {
         if (like) throw new Error('You have liked this restaurant!')
 
         return Like.create({
-          userId: req.user.id,
+          userId: getUser(req).id,
           restaurantId
         })
       })
@@ -163,7 +163,7 @@ const userController = {
   removeLike: (req, res, next) => {
     return Like.findOne({
       where: {
-        userId: req.user.id,
+        userId: getUser(req).id,
         restaurantId: req.params.restaurantId
       }
     })
@@ -196,7 +196,7 @@ const userController = {
       User.findByPk(userId),
       Followship.findOne({
         where: {
-          followerId: req.user.id,
+          followerId: getUser(req).id,
           followingId: req.params.userId
         }
       })
@@ -205,7 +205,7 @@ const userController = {
         if (!user) throw new Error("User didn't exist!")
         if (followship) throw new Error('You are already following this user!')
         return Followship.create({
-          followerId: req.user.id,
+          followerId: getUser(req).id,
           followingId: userId
         })
       })
@@ -215,7 +215,7 @@ const userController = {
   removeFollowing: (req, res, next) => {
     Followship.findOne({
       where: {
-        followerId: req.user.id,
+        followerId: getUser(req).id,
         followingId: req.params.userId
       }
     })
