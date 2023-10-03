@@ -26,7 +26,9 @@ router.post('/restaurants', upload.single('image'), adminController.postRestaura
 router.get('/users', adminController.getUsers)
 router.patch('/users/:id', adminController.patchUser)
 
+// categories
 router.get('/categories', categoryController.getCategories)
+router.post('/categories', categoryController.postCategory)
 
 // 放在所有 router 的最後面
 router.use('/', (req, res) => res.redirect('/admin/restaurants'))
