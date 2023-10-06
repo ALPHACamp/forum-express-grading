@@ -27,6 +27,8 @@ router.get('/users', adminController.getUsers)
 router.patch('/users/:id', adminController.patchUser)
 
 // categories
+router.get('/categories/:cid', categoryController.getCategories)
+router.put('/categories/:cid', categoryController.putCategory)
 router.get('/categories', categoryController.getCategories)
 router.post('/categories', categoryController.postCategory)
 

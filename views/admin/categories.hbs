@@ -1,7 +1,16 @@
 {{> admin-tabs router='categories'}}
 <br />
 <br />
-
+{{#if category}}
+<form action="/admin/categories/{{category.id}}?_method=PUT" method="POST">
+  <div class="input-group mb-3">
+    <input type="text" class="form-control" name="name" value="{{category.name}}">
+    <button class="btn btn-warning" type="submit" id="button-addon2">Update</button>
+    <a href="/admin/categories"
+      class="link-secondary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">or Create New</a>
+  </div>
+</form>
+{{else}}
 <div>
   <form action="/admin/categories" method="POST">
     <div class="input-group mb-3">
@@ -10,7 +19,7 @@
     </div>
   </form>
 </div>
-
+{{/if}}
 <br>
 <br>
 <table class="table align-middle">
