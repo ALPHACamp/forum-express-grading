@@ -33,6 +33,7 @@ router.put(
   upload.single('image'),
   userController.putUser
 )
+router.get('/restaurants/feeds', authenticated, restController.getFeeds)
 router.get(
   '/restaurants/:id/dashboard',
   authenticated,
