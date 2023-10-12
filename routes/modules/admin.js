@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router()
 
 const adminController = require('../../controllers/admin-controller')
+const categoryController = require('../../controllers/category-controller')
 const upload = require('../../middleware/multer')
 // const { authenticatedAdmin } = require('../../middleware/auth') // 有建立在 index 了
 
@@ -24,6 +25,13 @@ router.post('/restaurants', upload.single('image'), adminController.postRestaura
 // users
 router.get('/users', adminController.getUsers)
 router.patch('/users/:id', adminController.patchUser)
+
+// categories
+router.get('/categories/:cid', categoryController.getCategories)
+router.put('/categories/:cid', categoryController.putCategory)
+router.delete('/categories/:cid', categoryController.deleteCategory)
+router.get('/categories', categoryController.getCategories)
+router.post('/categories', categoryController.postCategory)
 
 // 放在所有 router 的最後面
 router.use('/', (req, res) => res.redirect('/admin/restaurants'))

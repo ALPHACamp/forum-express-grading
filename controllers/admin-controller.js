@@ -1,19 +1,27 @@
-const { Restaurant, User } = require('../models')
+const { Restaurant, User, Category } = require('../models')
 // const { localFileHandler } = require('../helpers/file-helpers')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const adminController = {
   getRestaurants: (req, res) => {
-    return Restaurant.findAll({ raw: true })
+    Restaurant.findAll({
+      raw: true,
+      nest: true,
+      include: [Category]
+    })
       .then(restaurants => {
         return res.render('admin/restaurants', { restaurants: restaurants })
       })
   },
-  createRestaurant: (req, res) => {
-    return res.render('admin/create-restaurant')
+  createRestaurant: (req, res, next) => {
+    return Category.findAll({
+      raw: true
+    })
+      .then(categories => res.render('admin/create-restaurant', { categories }))
+      .catch(err => next(err))
   },
   postRestaurant: (req, res, next) => {
-    const { name, tel, address, openingHours, description } = req.body // 從 req.body 拿出表單裡的資料
+    const { name, tel, address, openingHours, description, categoryId } = req.body // 從 req.body 拿出表單裡的資料
     if (!name) throw new Error('Restaurant name is required!') // name 是必填，若發先是空值就會終止程式碼，並在畫面顯示錯誤提示
     const { file } = req // 把檔案取出來，也可以寫成 const file = req.file
     return imgurFileHandler(file) // 把取出的檔案傳給 file-helper 處理後
@@ -23,8 +31,9 @@ const adminController = {
         address,
         openingHours,
         description,
-        image: filePath || null
+        image: filePath || null,
         // image: filePath || null 的意思是：如果 filePath 的值為檔案路徑字串(使用者有上傳檔案，就會被判斷為 Truthy)，就將 image 的值設為檔案路徑；如果 filePath 的值是空的(也就是沒有上傳檔案，因此沒有檔案路徑，會被判斷為 Falsy)，那麼就將 image 的值設為 null
+        categoryId
       }))
       .then(() => {
         req.flash('success_messages', 'restaurant was successfully created')
@@ -35,7 +44,9 @@ const adminController = {
   // getRestaurant 而不是 getRestaurants，代表要 show specific restaurant
   getRestaurant: (req, res, next) => {
     Restaurant.findByPk(req.params.id, { // 去資料庫用 id 找一筆資料
-      raw: true // 找到以後整理格式再回傳
+      raw: true,
+      nest: true,
+      include: [Category]
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!") //  如果找不到，回傳錯誤訊息，後面不執行
@@ -44,18 +55,19 @@ const adminController = {
       .catch(err => next(err))
   },
   editRestaurant: (req, res, next) => {
-    Restaurant.findByPk(req.params.id, {
-      raw: true
-    })
-      .then(restaurant => {
+    return Promise.all([
+      Restaurant.findByPk(req.params.id, { raw: true }),
+      Category.findAll({ raw: true })
+    ])
+      .then(([restaurant, categories]) => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
-        res.render('admin/edit-restaurant', { restaurant })
+        res.render('admin/edit-restaurant', { restaurant, categories })
       })
       .catch(err => next(err))
   },
   putRestaurant: (req, res, next) => {
     // 拿資料、更新資料、閃flash、回restaurants清單
-    const { name, tel, address, openingHours, description } = req.body
+    const { name, tel, address, openingHours, description, categoryId } = req.body
     if (!name) throw new Error('Restaurant name is required!')
     const { file } = req // 把檔案取出來
     Promise.all([ // 非同步處理
@@ -70,7 +82,8 @@ const adminController = {
           address,
           openingHours,
           description,
-          image: filePath || restaurant.image // 如果 filePath 是 Truthy (使用者有上傳新照片) 就用 filePath，是 Falsy (使用者沒有上傳新照片) 就沿用原本資料庫內的值
+          image: filePath || restaurant.image, // 如果 filePath 是 Truthy (使用者有上傳新照片) 就用 filePath，是 Falsy (使用者沒有上傳新照片) 就沿用原本資料庫內的值
+          categoryId
         })
       })
       .then(() => {

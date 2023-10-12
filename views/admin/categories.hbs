@@ -1,37 +1,48 @@
-{{> admin-tabs router='restaurants'}}
-<br />
-<a href='/admin/restaurants/create'>
-  <button type="button" class="btn btn-outline-secondary">New Restaurant</button>
-</a>
+{{> admin-tabs router='categories'}}
 <br />
 <br />
+{{#if category}}
+<form action="/admin/categories/{{category.id}}?_method=PUT" method="POST">
+  <div class="input-group mb-3">
+    <input type="text" class="form-control" name="name" value="{{category.name}}">
+    <button class="btn btn-warning" type="submit" id="button-addon2">Update</button>
+    <a href="/admin/categories"
+      class="link-secondary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">or Create New</a>
+  </div>
+</form>
+{{else}}
+<div>
+  <form action="/admin/categories" method="POST">
+    <div class="input-group mb-3">
+      <input type="text" class="form-control" name="name" placeholder="Category Name">
+      <button class="btn btn-success" type="submit" id="button-addon2">Create</button>
+    </div>
+  </form>
+</div>
+{{/if}}
+<br>
+<br>
 <table class="table align-middle">
   <thead class="thead-dark">
     <tr>
       <th scope="col">#</th>
-      <th scope="col">Name</th>
-      <th scope="col">Category</th>
+      <th scope="col">Category Name</th>
+      <th scope="col">#</th>
       <th scope="col"></th>
     </tr>
   </thead>
   <tbody>
-    {{#each restaurants}}
+    {{#each categories}}
     <tr>
       <th scope="row">{{this.id}}</th>
       <td>{{this.name}}</td>
-      <td>{{this.Category.name}}</td>
       <td>
         <button type="button" class="btn btn-link">
-          <a class="btn btn-link link-primary" href="/admin/restaurants/{{this.id}}">
-            Show
-          </a>
-        </button>
-        <button type="button" class="btn btn-link">
-          <a class="btn btn-link link-primary" href="/admin/restaurants/{{this.id}}/edit">
+          <a class="btn btn-link link-primary" href="/admin/categories/{{this.id}}">
             Edit
           </a>
         </button>
-        <form action="/admin/restaurants/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
+        <form action="/admin/categories/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
           <button type="submit" class="btn btn-link link-danger"
             onclick="return confirm(`確定要刪除 {{ this.name }} 嗎？`)">Delete</button>
           {{!-- 對於 on* 開頭的事件處理器 (event handler) 來說，return false 就能夠取消事件，包括我們這裡使用的 onclick。

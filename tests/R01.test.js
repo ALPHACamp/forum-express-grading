@@ -91,7 +91,6 @@ describe('# R01', () => {
             isAdmin: true, // 是管理者
           }]
         )
-
         // 將 adminController 中的 User db 取代成 User mock db
         this.adminController = createControllerProxy('../controllers/admin-controller', { User: this.UserMock })
       })
