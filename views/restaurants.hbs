@@ -1,3 +1,17 @@
+<ul class="nav nav-pills">
+  <li class="nav-item">
+    {{!-- categoryId 是 controller 傳來的變數 --}}
+    <a class="nav-link {{#ifCond '' categoryId}}active{{/ifCond}}" href="?categoryId=">全部</a>
+  </li>
+  {{#each categories}}
+  <li class="nav-item">
+    {{!-- 把 this.id 設定為一個變數 categoryId ，並傳到後端 --}}
+    <a class="nav-link {{#ifCond this.id ../categoryId}}active{{/ifCond}}"
+      href="?categoryId={{this.id}}">{{this.name}}</a>
+  </li>
+  {{/each}}
+</ul>
+
 <div class="row mt-3">
   {{#each restaurants}}
   <div class="col-md-4">
