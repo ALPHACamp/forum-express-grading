@@ -7,11 +7,11 @@ const restController = require('../controllers/restaurant-controller')
 const userController = require('../controllers/user-controller')
 
 const admin = require('./modules/admin')
-const { authenticated } = require('../middleware/auth')
+const { authenticated, authenticatedAdmin } = require('../middleware/auth')
 const { generalErrorHandler } = require('../middleware/error-handler')
 
 // 管理員頁面
-router.use('/admin', admin)
+router.use('/admin', authenticatedAdmin, admin)
 
 // 一般使用者
 router.get('/signup', userController.signUpPage)
