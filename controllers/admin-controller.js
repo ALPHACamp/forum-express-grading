@@ -1,5 +1,5 @@
 const { Restaurant } = require('../models')
-const { imgurFileHandler  } = require('../helpers/file-helpers')
+const { imgurFileHandler } = require('../helpers/file-helpers')
 const adminController = {
   getRestaurants: (req, res, next) => {
     Restaurant.findAll({
@@ -15,7 +15,7 @@ const adminController = {
     const { name, tel, address, openingHours, description } = req.body // 從 req.body 拿出表單裡的資料
     if (!name) throw new Error('Restaurant name is required!') // name 是必填，若發先是空值就會終止程式碼，並在畫面顯示錯誤提示
     const { file } = req // 把檔案取出來，也可以寫成const file = req.file
-    return imgurFileHandler (file) // 把取出的檔案傳給 file-helper 處理後
+    return imgurFileHandler(file) // 把取出的檔案傳給 file-helper 處理後
       .then(filePath => Restaurant.create({ // 再 create 這筆餐廳資料
         name,
         tel,
@@ -66,7 +66,7 @@ const adminController = {
           address,
           openingHours,
           description,
-          image: filePath || restaurant.image // 如果 filePath 是 Truthy (使用者有上傳新照片) 就用 filePath，是 Falsy (使用者沒有上傳新照片) 就沿用原本資料庫內的值 
+          image: filePath || restaurant.image // 如果 filePath 是 Truthy (使用者有上傳新照片) 就用 filePath，是 Falsy (使用者沒有上傳新照片) 就沿用原本資料庫內的值
         })
       })
       .then(() => {
