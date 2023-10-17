@@ -25,6 +25,18 @@
   </div>
   <hr>
 </div>
-<a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
+{{!-- <a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a> --}}
 {{!-- history.back() ，這個方法是 JavaScript 裡的 window 物件提供給我們的，等同於你點擊了瀏覽器的上一頁按鈕。你可以把 window.history.back() 貼到 Devtools 的
 Console 裡玩玩看 --}}
+
+{{!-- Comment --}}
+
+<form action="/comments" method="POST">
+  <div class="form-row mb-3">
+    <label class="form-label" for="text">留下評論：</label>
+    <textarea class="form-control" id="text" name="text" rows="3"></textarea>
+  </div>
+  <input type="hidden" name="restaurantId" value="{{restaurant.id}}" />
+  <button type="submit" class="btn btn-primary">Submit</button>
+  <a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
+</form>
