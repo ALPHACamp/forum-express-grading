@@ -22,7 +22,8 @@ const commentController = {
         res.redirect(`/restaurants/${restaurantId}`)
       })
       .catch(err => next(err))
-  }
+  },
+
 }
 
 module.exports = commentController
