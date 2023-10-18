@@ -7,11 +7,7 @@
     "dialect": "mysql"
   },
   "production": {
-    "username": "root",
-    "password": null,
-    "database": "database_production",
-    "host": "127.0.0.1",
-    "dialect": "mysql"
+    "use_env_variable": "mysql://user-104:AVNS_RphRQxIFuW8HftAUHWS@db-mysql-sgp1-69937-do-user-95578-0.b.db.ondigitalocean.com:25060/db-104?ssl-mode=REQUIRED"
   },
   "travis": {
     "username": "travis",
