@@ -1,25 +1,33 @@
-const { raw } = require('express')
 const { Restaurant, Category } = require('../models')
+const { getOffset, getPagination } = require('../helpers/pagination-helper')
+
 const restaurantController = {
   getRestaurants: (req, res, next) => {
+    const DEFAULT_LIMIT = 9
+    const page = Number(req.query.page) || 1
+    const limit = Number(req.query.limit) || DEFAULT_LIMIT
+    const offset = getOffset(limit, page)
     const categoryId = Number(req.query.categoryId) || ''
-    return Promise.all([Restaurant.findAll({
+    return Promise.all([Restaurant.findAndCountAll({
       include: Category,
       where: { // 新增查詢條件
         ...categoryId ? { categoryId } : {} // 檢查 categoryId 是否為空值
       },
+      limit,
+      offset,
       nest: true,
       raw: true
     }), Category.findAll({ raw: true })])
       .then(([restaurants, categories]) => {
-        const data = restaurants.map(restaurant => ({
+        const data = restaurants.rows.map(restaurant => ({
           ...restaurant,
           description: restaurant.description.substring(0, 50)
         }))
         return res.render('restaurants', {
           restaurants: data,
           categories,
-          categoryId
+          categoryId,
+          pagination: getPagination(limit, page, restaurants.count)
         })
       })
       .catch(err => next(err))
