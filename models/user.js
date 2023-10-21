@@ -19,14 +19,15 @@ module.exports = (sequelize, DataTypes) => {
     {
       name: DataTypes.STRING,
       email: DataTypes.STRING,
-      password: DataTypes.STRING
+      password: DataTypes.STRING,
+      isAdmin: DataTypes.BOOLEAN, //純 JavaScript 實作
     },
     {
       sequelize,
-      modelName: 'User',
-      tableName: 'Users',
-      underscored: true
+      modelName: "User",
+      tableName: "Users",
+      underscored: true,
     }
-  )
+  );
   return User
 }
