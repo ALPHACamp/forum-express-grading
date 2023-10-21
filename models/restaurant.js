@@ -3,8 +3,7 @@ const {
   Model
 } = require('sequelize')
 module.exports = (sequelize, DataTypes) => {
-  // 先定義一個 User，這個 User 繼承自 Model，可以使用 Model 提供的各種方法
-  class User extends Model {
+  class Restaurant extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -13,21 +12,21 @@ module.exports = (sequelize, DataTypes) => {
     static associate (models) {
       // define association here
     }
-  }
-  // 呼叫 User.init 方法來定義欄位
-  User.init(
+  };
+  Restaurant.init(
     {
       name: DataTypes.STRING,
-      email: DataTypes.STRING,
-      password: DataTypes.STRING,
-      isAdmin: DataTypes.BOOLEAN // 純 JavaScript 實作
+      tel: DataTypes.STRING,
+      address: DataTypes.STRING,
+      openingHours: DataTypes.STRING,
+      description: DataTypes.TEXT
     },
     {
       sequelize,
-      modelName: 'User',
-      tableName: 'Users',
+      modelName: 'Restaurant',
+      tableName: 'Restaurants',
       underscored: true
     }
   )
-  return User
+  return Restaurant
 }
