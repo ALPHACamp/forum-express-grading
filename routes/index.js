@@ -4,10 +4,11 @@ const passport = require('../config/passport')
 const restController = require('../controllers/restaurant-controller') // 載入 controller
 const userController = require('../controllers/user-controller')
 const { authenticated } = require('../middleware/auth') // 引入用來驗證是否登入
+const { authenticatedAdmin } = require('../middleware/auth')
 const { generalErrorHandler } = require('../middleware/error-handler')
 const admin = require('./modules/admin')
 
-router.use('/admin', admin)
+router.use('/admin', authenticatedAdmin, admin)
 router.get('/signup', userController.signUpPage)
 router.post('/signup', userController.signUp)
 router.get('/signin', userController.signInPage)
