@@ -1,4 +1,5 @@
 const { Restaurant } = require('../models')
+const { localFileHandler } = require('../helpers/file-helpers') // 將 file-helper 載進來
 
 const adminController = {
   getRestaurants: (req, res, next) => {
@@ -18,13 +19,19 @@ const adminController = {
 
     if (!name) throw new Error('Name為必填欄位')
 
-    Restaurant.create({
-      name,
-      tel,
-      address,
-      openingHours,
-      description
-    })
+    const { file } = req // 把檔案從req從取出來
+
+    localFileHandler(file) // 將取出的檔案傳給 file-helper (localFileHandler)處理後
+      .then(filePath =>
+        Restaurant.create({
+          name,
+          tel,
+          address,
+          openingHours,
+          description,
+          image: filePath || null
+        }))
+
       .then(() => {
         req.flash('success_messages', 'restaurant was successfully created')
 
@@ -61,8 +68,14 @@ const adminController = {
 
     if (!name) throw new Error('Name為必填欄位')
 
-    Restaurant.findByPk(req.params.id)
-      .then(restaurant => {
+    const { file } = req // 把檔案取出來
+
+    Promise.all([
+      // 非同步處理
+      Restaurant.findByPk(req.params.id), // 去資料庫查有沒有這間餐廳
+      localFileHandler(file) // 把檔案傳到 file-helper 處理
+    ])
+      .then(([restaurant, filePath]) => {
         if (!restaurant) throw new Error('此restaurant不存在')
 
         return restaurant.update({
@@ -70,7 +83,8 @@ const adminController = {
           tel,
           address,
           openingHours,
-          description
+          description,
+          image: filePath || restaurant.image // 如果 filePath 是 Truthy (使用者有上傳新照片) 就用 filePath，是 Falsy (使用者沒有上傳新照片) 就沿用原本資料庫內的值
         })
       })
       .then(() => {
