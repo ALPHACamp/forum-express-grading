@@ -1,15 +1,21 @@
-const { Restaurant, User } = require('../models')
+const { Restaurant, User, Category } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 const adminController = {
   getRestaurants: (req, res, next) => {
     return Restaurant.findAll({
-      raw: true
+      raw: true,
+      nest: true,
+      include: [Category]
     })
       .then(restaurants => res.render('admin/restaurants', { restaurants }))
       .catch(err => next(err))
   },
-  createRestaurant: (req, res) => {
-    return res.render('admin/create-restaurant')
+  createRestaurant: (req, res, next) => {
+    return Category.findAll({
+      raw: true
+    })
+      .then(categories => res.render('admin/create-restaurant', { categories }))
+      .catch(err => next(err))
   },
   postRestaurant: (req, res, next) => {
     const { name, tel, address, openingHours, description } = req.body // 從 req.body 拿出表單裡的資料
@@ -32,7 +38,9 @@ const adminController = {
   },
   getRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
-      raw: true
+      raw: true,
+      nest: true,
+      include: [Category]
     })
       .then(restaurant => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
@@ -41,17 +49,19 @@ const adminController = {
       .catch(err => next(err))
   },
   editRestaurant: (req, res, next) => {
-    return Restaurant.findByPk(req.params.id, {
-      raw: true
-    })
-      .then(restaurant => {
+    return Promise.all([
+      // 因為兩者查詢不須互相等待,故寫Promise.all 讓兩者同時執行
+      Restaurant.findByPk(req.params.id, { raw: true }),
+      Category.findAll({ raw: true })
+    ])
+      .then(([restaurant, categories]) => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
-        res.render('admin/edit-restaurant', { restaurant })
+        res.render('admin/edit-restaurant', { restaurant, categories })
       })
       .catch(err => next(err))
   },
   putRestaurant: (req, res, next) => {
-    const { name, tel, address, openingHours, description } = req.body
+    const { name, tel, address, openingHours, description, catergoryId } = req.body
     if (!name) throw new Error('Restaurant name is required!')
     // NOTE: 這一段沒有設定 { raw: true } 因為這邊會需要 update
     // 編輯情境裡是不會加 { raw: true }!!
@@ -68,7 +78,8 @@ const adminController = {
           address,
           openingHours,
           description,
-          image: filePath || restaurant.image // 如果 filePath 是 Truthy (使用者有上傳新照片) 就用 filePath，是 Falsy (使用者沒有上傳新照片) 就沿用原本資料庫內的值
+          image: filePath || restaurant.image, // 如果 filePath 是 Truthy (使用者有上傳新照片) 就用 filePath，是 Falsy (使用者沒有上傳新照片) 就沿用原本資料庫內的值
+          catergoryId
         })
       })
       .then(() => {
