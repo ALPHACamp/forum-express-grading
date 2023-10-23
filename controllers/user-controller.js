@@ -49,7 +49,6 @@ const userController = {
             commentedRestaurants.push(comment.Restaurant)
           })
         }
-        console.log(commentedRestaurants)
         return res.render('users/profile', { user: user.toJSON(), commentCounts, commentedRestaurants })
       })
       .catch(err => next(err))
