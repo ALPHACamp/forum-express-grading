@@ -5,6 +5,17 @@
     required>
 </div>
 <div class="form-row mb-3">
+  <label class="form-label" for="categoryId">Category</label>
+  <select class="form-control" id="categoryId" name="categoryId">
+    {{#each categories}}
+      <!--> 因為是在巢狀的 block helper 裡呼叫 restaurant 變數, 要運用 Handlebars 的路徑語法回到上一層語境<-->
+      <option value="{{this.id}}" {{#ifCond this.id ../restaurant.categoryId}} selected {{/ifCond}}>
+        {{this.name}}
+      </option>
+    {{/each}}
+  </select>
+</div>
+<div class="form-row mb-3">
   <label class="form-label" for="tel">Tel</label>
   <input class="form-control" type="text" name="tel" id="tel" placeholder="Enter tel" value="{{restaurant.tel}}"> 
 </div>
