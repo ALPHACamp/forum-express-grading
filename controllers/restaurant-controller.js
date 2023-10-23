@@ -22,10 +22,12 @@ const restaurantController = {
     ])
       .then(([restaurants, categories]) => {
         const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
+        const linkRestaurantsId = req.user && req.user.LikeRestaurants.map(fr => fr.id)
         const data = restaurants.rows.map(r => ({
           ...r,
           description: r.description.substring(0, 50),
-          isFavorited: favoritedRestaurantsId.includes(r.id)
+          isFavorited: favoritedRestaurantsId.includes(r.id),
+          isLink: linkRestaurantsId.includes(r.id)
         }))
         return res.render('restaurants', { restaurants: data, categories, pagination: getPagination(limit, page, restaurants.count) })
       })
