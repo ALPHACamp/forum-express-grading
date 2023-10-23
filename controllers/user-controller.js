@@ -42,7 +42,15 @@ const userController = {
       }]
     })
       .then(user => {
-        return res.render('users/profile', { user: user.toJSON() })
+        const commentCounts = user.toJSON().Comments.length || 0
+        const commentedRestaurants = []
+        if (commentCounts > 0) {
+          user.toJSON().Comments.forEach(comment => {
+            commentedRestaurants.push(comment.Restaurant)
+          })
+        }
+        console.log(commentedRestaurants)
+        return res.render('users/profile', { user: user.toJSON(), commentCounts, commentedRestaurants })
       })
       .catch(err => next(err))
   },

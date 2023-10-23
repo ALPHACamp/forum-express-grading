@@ -9,6 +9,7 @@
       <div class="card-body">
         <h2 class="card-title">{{ user.name }}</h2>
         <p class="card-text">{{ user.email }}</p>
+        <h4>{{commentCounts}}間 已評論餐廳</h4>
         <div class="d-flex justify-content-start mt-3">
           <a class="btn btn-primary me-2" href="/users/{{user.id}}/edit">Edit</a>
           <a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
@@ -16,4 +17,13 @@
       </div>
     </div>
   </div>
+</div>
+<div class="row mb-5">
+  <h4>{{commentCounts}}間 已評論餐廳</p>
+  {{#each commentedRestaurants}}
+      <a href="/restaurants/{{this.id}}" class="text-decoration-none">
+      <img class="img-responsive center-block mb-5" src="{{this.image}}"
+          style="width: 50px; height: 50px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+      </a>
+  {{/each}}
 </div>
