@@ -42,7 +42,7 @@ const userController = {
       }]
     })
       .then(user => {
-        const commentCounts = user.toJSON().Comments.length || 0
+        const commentCounts = user.toJSON().Comments?.length || 0
         const commentedRestaurants = []
         if (commentCounts > 0) {
           user.toJSON().Comments.forEach(comment => {
