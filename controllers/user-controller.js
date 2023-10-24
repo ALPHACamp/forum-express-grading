@@ -36,6 +36,10 @@ const userController = {
     res.redirect('/signin')
   },
   getUser: (req, res, next) => {
+    if (Number(req.params.id) !== req.user.id) {
+      req.flash('warning_messages', '無法切換到他人的個人介面')
+      res.redirect(`/users/${req.user.id}`)
+    }
     return User.findByPk(req.params.id, {
       include: [{
         model: Comment, include: [Restaurant]
@@ -55,12 +59,19 @@ const userController = {
       .catch(err => next(err))
   },
   editUser: (req, res, next) => {
+    if (Number(req.params.id) !== req.user.id) {
+      req.flash('warning_messages', '無法切換到他人的個人編輯介面')
+      res.redirect(`/users/${req.user.id}/edit`)
+    }
     return User.findByPk(req.params.id)
       .then(user => {
         return res.render('users/edit', { user: user.toJSON() })
       })
   },
   putUser: (req, res, next) => {
+    if (Number(req.params.id) !== req.user.id) {
+      res.redirect(`/users/${req.user.id}/edit`)
+    }
     const { name, email } = req.body
     const userId = req.params.id
     const { file } = req
