@@ -59,6 +59,7 @@ describe('# R01', () => {
       // 修改 adminController 中的資料庫連線設定，由連向真實的資料庫 -> 改為連向模擬的 User table
       this.adminController = createControllerProxy('../controllers/admin-controller', { User: this.UserMock })
     })
+
     // 開始測試
     context('# [顯示使用者清單]', () => {
       it(' GET /admin/users ', async () => {
@@ -90,14 +91,7 @@ describe('# R01', () => {
             isAdmin: true, // 是管理者
           }]
         )
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
 
->>>>>>> R01
-=======
-
->>>>>>> origin/R04-test
         // 將 adminController 中的 User db 取代成 User mock db
         this.adminController = createControllerProxy('../controllers/admin-controller', { User: this.UserMock })
       })
@@ -108,20 +102,12 @@ describe('# R01', () => {
         const res = mockResponse()
         const next = mockNext
 
-<<<<<<< HEAD
         // 測試作業指定的 adminController.patchUser 函式
-=======
-       // 測試作業指定的 adminController.patchUser 函式
->>>>>>> origin/R04-test
         await this.adminController.patchUser(req, res, next)
 
         // patchUser 正確執行的話，應呼叫 req.flash
         // req.flash 的參數應該要與下列字串一致
-<<<<<<< HEAD
         req.flash.calledWith('error_messages', '禁止變更 root 權限').should.be.true
-=======
-        req.flash.calledWith('error_messages','禁止變更 root 權限').should.be.true
->>>>>>> origin/R04-test
 
         // patchUser 執行完畢，應呼叫 res.redirect 並重新導向上一頁 
         res.redirect.calledWith('back').should.be.true
@@ -156,11 +142,7 @@ describe('# R01', () => {
 
         // patchUser 正確執行的話，應呼叫 req.flash 
         // req.flash 的參數應與下列字串一致
-<<<<<<< HEAD
         req.flash.calledWith('success_messages', '使用者權限變更成功').should.be.true
-=======
-        req.flash.calledWith('success_messages','使用者權限變更成功').should.be.true
->>>>>>> origin/R04-test
         // patchUser 執行完畢，應呼叫 res.redirect 並重新導向 /admin/users
         res.redirect.calledWith('/admin/users').should.be.true
 
@@ -199,11 +181,7 @@ describe('# R01', () => {
 
         // patchUser 正確執行的話，應呼叫 req.flash 
         // req.flash 的參數應與下列字串一致
-<<<<<<< HEAD
         req.flash.calledWith('success_messages', '使用者權限變更成功').should.be.true
-=======
-        req.flash.calledWith('success_messages','使用者權限變更成功').should.be.true
->>>>>>> origin/R04-test
         // patchUser 執行完畢，應呼叫 res.redirect 並重新導向 /admin/users
         res.redirect.calledWith('/admin/users').should.be.true
 
