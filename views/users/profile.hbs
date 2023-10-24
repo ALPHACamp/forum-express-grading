@@ -19,3 +19,24 @@
     </div>
   </div>
 </div>
+
+<div class="card mt-3">
+  <div class="card-header">
+    {{#if user.Comments}}
+    <p>{{user.Comments.length}} 已評論餐廳</p>
+    {{else}}
+    <p>尚未評論餐廳</p>
+    {{/if}}
+  </div>
+
+  <div class="card-group">
+    {{#each user.Comments}}
+    <div class="card">
+      <a href="/restaurants/{{this.Restaurant.id}}">
+        <img class="rounded img-fluid" src="{{this.Restaurant.image}}" alt="Card image cap"
+          style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+      </a>
+    </div>
+    {{/each}}
+  </div>
+</div>

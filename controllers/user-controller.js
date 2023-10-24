@@ -45,10 +45,14 @@ const userController = {
   getUser: (req, res, next) => {
     const userId = req.params.id
     const editPermission = (Number(userId) === getUser(req).id)
-    return User.findByPk(userId, { raw: true })
+    return User.findByPk(userId, {
+      include: {
+        model: Comment, include: Restaurant, nest: true
+      }
+    })
       .then(user => {
         if (!user) throw new Error("User didn't exist!")
-        res.render('users/profile', { user, editPermission })
+        res.render('users/profile', { user: user.toJSON(), editPermission })
       })
       .catch(err => next(err))
   },
