@@ -38,7 +38,7 @@ const userController = {
   getUser: (req, res, next) => {
     if (Number(req.params.id) !== req.user.id) {
       req.flash('warning_messages', '無法切換到他人的個人介面')
-      res.redirect(`/users/${req.user.id}`)
+      return res.redirect(`/users/${req.user.id}`)
     }
     return User.findByPk(req.params.id, {
       include: [{
@@ -60,7 +60,7 @@ const userController = {
   editUser: (req, res, next) => {
     if (Number(req.params.id) !== req.user.id) {
       req.flash('warning_messages', '無法切換到他人的個人編輯介面')
-      res.redirect(`/users/${req.user.id}/edit`)
+      return res.redirect(`/users/${req.user.id}/edit`)
     }
     return User.findByPk(req.params.id)
       .then(user => {
@@ -68,8 +68,12 @@ const userController = {
       })
   },
   putUser: (req, res, next) => {
+    if (!req.isAuthenticated()) {
+      req.flash('warning_messages', '請先登入')
+      return res.redirect('/signin')
+    }
     if (Number(req.params.id) !== req.user.id) {
-      res.redirect(`/users/${req.user.id}/edit`)
+      return res.redirect(`/users/${req.user.id}/edit`)
     }
     const { name, email } = req.body
     const userId = req.params.id
