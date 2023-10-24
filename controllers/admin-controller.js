@@ -1,22 +1,14 @@
-<<<<<<< HEAD
 const { Restaurant, User, Category } = require('../models')
-=======
-const { Restaurant, User } = require('../models')
->>>>>>> R01
 // const { localFileHandler } = require('../helpers/file-helpers')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const adminController = {
   getRestaurants: (req, res) => {
-<<<<<<< HEAD
     Restaurant.findAll({
       raw: true,
       nest: true,
       include: [Category]
     })
-=======
-    return Restaurant.findAll({ raw: true })
->>>>>>> R01
       .then(restaurants => {
         return res.render('admin/restaurants', { restaurants: restaurants })
       })
