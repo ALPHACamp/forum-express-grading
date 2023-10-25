@@ -12,6 +12,7 @@
 </ul>
 <div class="row mb-3">
   {{#each restaurants}}
+  {{!-- 餐廳列表 --}}
   <div class="col-md-4">
     <div class="card mb-4 shadow-sm">
       <a href="/restaurants/{{this.id}}">
@@ -26,6 +27,15 @@
         </p>
         <span class="badge bg-secondary">{{this.Category.name}}</span>
         <p class="card-text text-truncate">{{this.description}}</p>
+        {{!-- 收藏 --}}
+        <div class="d-flex">
+          <form action="/favorite/{{this.id}}?_method=DELETE" method="POST">
+            <button type="submit" class="btn btn-outline-danger m-1">移除最愛</button>
+          </form>
+          <form action="/favorite/{{this.id}}" method="POST">
+            <button type="submit" class="btn btn-primary m-1">加到最愛</button>
+          </form>
+        </div>
       </div>
     </div>
   </div>
