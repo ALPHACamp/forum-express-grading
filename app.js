@@ -1,6 +1,11 @@
 const path = require('path') // node.js 的原生模組
 const express = require('express')
 const routes = require('./routes')
+// 如果應用程式不是在「正式上線模式 (production mode)」中執行，就透過 dotenv 去讀取在 env 檔案裡的資訊
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
+
 const handlebars = require('express-handlebars') // 引入 express-handlebars
 const methodOverride = require('method-override')
 const flash = require('connect-flash')

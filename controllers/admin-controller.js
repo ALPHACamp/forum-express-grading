@@ -1,5 +1,5 @@
 const { Restaurant } = require('../models')
-const { localFileHandler } = require('../helpers/file-helpers') // 將 file-helper 載進來
+const { imgurFileHandler } = require('../helpers/file-helpers') // 將 file-helper 載進來
 
 const adminController = {
   getRestaurants: (req, res, next) => {
@@ -21,7 +21,7 @@ const adminController = {
 
     const { file } = req // 把檔案從req從取出來
 
-    localFileHandler(file) // 將取出的檔案傳給 file-helper (localFileHandler)處理後
+    imgurFileHandler(file) // 將取出的檔案傳給 file-helper (localFileHandler)處理後
       .then(filePath =>
         Restaurant.create({
           name,
@@ -30,7 +30,8 @@ const adminController = {
           openingHours,
           description,
           image: filePath || null
-        }))
+        })
+      )
 
       .then(() => {
         req.flash('success_messages', 'restaurant was successfully created')
@@ -73,7 +74,7 @@ const adminController = {
     Promise.all([
       // 非同步處理
       Restaurant.findByPk(req.params.id), // 去資料庫查有沒有這間餐廳
-      localFileHandler(file) // 把檔案傳到 file-helper 處理
+      imgurFileHandler(file) // 把檔案傳到 file-helper 處理
     ])
       .then(([restaurant, filePath]) => {
         if (!restaurant) throw new Error('此restaurant不存在')
