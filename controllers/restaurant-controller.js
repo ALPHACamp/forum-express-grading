@@ -19,11 +19,13 @@ const restaurantController = {
       raw: true
     }), Category.findAll({ raw: true })])
       .then(([restaurants, categories]) => {
-        const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id) //找出有被收藏的餐廳
+        const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id) // 找出有被收藏的餐廳
+        const likedRestaurantsId = req.user && req.user.LikedRestaurants.map(fr => fr.id) // 找出有被喜歡的餐廳
         const data = restaurants.rows.map(restaurant => ({
           ...restaurant,
           description: restaurant.description.substring(0, 50),
-          isFavorited: favoritedRestaurantsId.includes(restaurant.id) // 比對收藏清單
+          isFavorited: favoritedRestaurantsId.includes(restaurant.id), // 比對收藏清單
+          isLiked: likedRestaurantsId.includes(restaurant.id) // 比對喜歡清單
         }))
         return res.render('restaurants', {
           restaurants: data,
@@ -39,7 +41,8 @@ const restaurantController = {
       include: [
         Category,
         { model: Comment, include: User },
-        { model: User, as: 'FavoritedUsers' }
+        { model: User, as: 'FavoritedUsers' },
+        { model: User, as: 'LikedUsers' }
       ]
     })
       .then(restaurant => {
@@ -48,10 +51,10 @@ const restaurantController = {
         return restaurant.increment('viewCounts')
       })
       .then(restaurant => {
-        // 比對收藏餐廳清單
-        const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id)
+        const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id) // 比對收藏餐廳清單
+        const isLiked = restaurant.FavoritedUsers.some(f => f.id === req.user.id) // 比對收藏餐廳清單
         res.render('restaurant', {
-          restaurant: restaurant.toJSON(), isFavorited
+          restaurant: restaurant.toJSON(), isFavorited, isLiked
         })
       })
       .catch(err => next(err))
