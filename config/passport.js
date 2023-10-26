@@ -31,7 +31,10 @@ passport.deserializeUser((id, cb) => {
   return User.findByPk(id, {
     // 要帶出收藏 & 喜歡資料表的資料顯示
     include: [
-      { model: Restaurant, as: 'FavoritedRestaurants' }, { model: Restaurant, as: 'LikedRestaurants' }
+      { model: Restaurant, as: 'FavoritedRestaurants' },
+      { model: Restaurant, as: 'LikedRestaurants' },
+      { model: User, as: 'Followers' }, // 追蹤自己
+      { model: User, as: 'Followings' } // 自己追蹤的人
     ]
   })
     .then(user => cb(null, user.toJSON()))
