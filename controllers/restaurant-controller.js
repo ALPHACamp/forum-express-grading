@@ -91,6 +91,25 @@ const restaurantController = {
         })
       })
       .catch(err => next(err))
+  },
+  getTopRestaurants: (req, res, next) => {
+    // 撈出所有 Resaurant 與 faverate 資料
+    return Restaurant.findAll({
+      include: [{ model: User, as: 'FavoritedUsers' }]
+    })
+      .then(resaurants => {
+        resaurants = resaurants.map(resaurant => ({
+          // 整理格式
+          ...resaurant.toJSON(),
+          // 計算收藏數
+          favoritedCount: resaurant.FavoritedUsers.length,
+          // 判斷目前登入使用者是否已追蹤該 user 物件
+          isLiked: req.user.LikedRestaurants.some(f => f.id === resaurant.id)
+        }))
+          .sort((a, b) => b.favoritedCount - a.favoritedCount)
+        res.render('top-restaurants', { resaurants })
+      })
+      .catch(err => next(err))
   }
 }
 module.exports = restaurantController
