@@ -22,8 +22,18 @@
     <form action="/restaurants/{{restaurant.id}}/dashboard">
       <button type="submit" class="btn btn-primary">Dashboard</button>
     </form>
+    {{#if isFavorited}}
+    <form action="/favorite/{{restaurant.id}}?_method=DELETE" method="POST">
+      <button type="submit" class="btn btn-danger m-1">移除最愛</button>
+    </form>
+    {{else}}
+    <form action="/favorite/{{restaurant.id}}" method="POST">
+      <button type="submit" class="btn btn-primary m-1">加到最愛</button>
+    </form>
+    {{/if}}
   </div>
-  <hr>
+</div>
+<hr>
 </div>
 {{!-- <a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a> --}}
 {{!-- history.back() ，這個方法是 JavaScript 裡的 window 物件提供給我們的，等同於你點擊了瀏覽器的上一頁按鈕。你可以把 window.history.back() 貼到 Devtools 的
