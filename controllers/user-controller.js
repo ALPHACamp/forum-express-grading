@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs')
 // const db = require('../models')
 // const { User } = db
-const { User, Restaurant, Comment, Favorite } = require('../models')
+const { User, Restaurant, Comment, Favorite, Like } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 const { getUser } = require('../helpers/auth-helpers')
 
@@ -131,6 +131,57 @@ const userController = {
 
         return favorite.destroy()
       })
+      .then(() => res.redirect('back'))
+      .catch(err => next(err))
+  },
+  addLike: (req, res, next) => {
+    // find rest.id and user.id
+    const { restaurantId } = req.params
+    const userId = req.user.id
+
+    // find rest, like(where: userId, RestId)
+    return Promise.all([
+      Restaurant.findByPk(restaurantId),
+      Like.findOne({
+        where: {
+          restaurantId,
+          userId
+        }
+      })
+    ])
+      // if(!restaurant) / if(like)
+      // Like.create
+      .then(([restaurant, like]) => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        if (like) throw new Error('You have Liked this restaurant!')
+        return Like.create({
+          restaurantId,
+          userId
+        })
+      })
+      // res.redirect => rest.hbs
+      .then(() => res.redirect('back'))
+      .catch(err => next(err))
+  },
+  removeLike: (req, res, next) => {
+    // find rest.id and user.id
+    const { restaurantId } = req.params
+    const userId = req.user.id
+
+    // find Like(where: userId, RestId)
+    return Like.findOne({
+      where: {
+        restaurantId,
+        userId
+      }
+    })
+      // if(!restaurant) / if(like)
+      // Like.create
+      .then(like => {
+        if (!like) throw new Error("You haven't liked this restaurant")
+        return like.destroy()
+      })
+      // res.redirect => rest.hbs
       .then(() => res.redirect('back'))
       .catch(err => next(err))
   }

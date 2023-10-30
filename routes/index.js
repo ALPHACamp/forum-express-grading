@@ -21,13 +21,10 @@ router.get('/users/:id/edit', authenticated, userController.editUser)
 router.get('/users/:id', authenticated, userController.getUser)
 router.put('/users/:id', upload.single('image'), userController.putUser)
 
-
 router.get('/restaurants/feeds', authenticated, restController.getFeeds)
 router.get('/restaurants/:id/dashboard', authenticated, restController.getDashboard)
 router.get('/restaurants/:id', authenticated, restController.getRestaurant)
 router.get('/restaurants', authenticated, restController.getRestaurants)
-// fallback 路由是指其他路由條件都不符合時，最終會通過的路由。也就是說，當程式一路由上而下執行，萬一都匹配不到和請求相符的路徑，此時不論此 request 是用哪個 HTTP method 發出的，都會匹配到這一行，將使用者重新導回 /restaurants
-router.get('/', (req, res) => res.redirect('/restaurants')) // ?
 
 router.delete('/comments/:id', authenticatedAdmin, commentController.deleteComment)
 router.post('/comments', authenticated, commentController.postComment)
@@ -35,6 +32,9 @@ router.post('/comments', authenticated, commentController.postComment)
 router.post('/favorite/:restaurantId', authenticated, userController.addFavorite)
 router.delete('/favorite/:restaurantId', authenticated, userController.removeFavorite)
 
-router.use('/', generalErrorHandler)
+router.post('/like/:restaurantId', authenticated, userController.addLike)
+router.delete('/like/:restaurantId', authenticated, userController.removeLike)
 
+router.get('/', (req, res) => res.redirect('/restaurants')) // fallback 路由是指其他路由條件都不符合時，最終會通過的路由。也就是說，當程式一路由上而下執行，萬一都匹配不到和請求相符的路徑，此時不論此 request 是用哪個 HTTP method 發出的，都會匹配到這一行，將使用者重新導回 /restaurants
+router.use('/', generalErrorHandler)
 module.exports = router
