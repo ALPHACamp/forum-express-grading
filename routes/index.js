@@ -21,7 +21,9 @@ router.post(
   userController.signIn
 ) // 注意是 post
 router.get('/logout', userController.logout)
+router.get('/restaurants/:id', restController.getRestaurant)
 router.get('/restaurants', authenticated, restController.getRestaurants)
+
 router.use('/', (req, res) => res.redirect('/restaurants')) // 設定fallback 路由，其他路由條件都不符合時，最終會通過的路由。
 router.use('/', generalErrorHandler)
 

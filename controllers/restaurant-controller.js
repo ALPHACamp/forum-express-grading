@@ -9,15 +9,27 @@ const restaurantController = {
       raw: true,
       nest: true,
       include: [Category]
-    })
-      .then(restaurants => {
-        const data = restaurants.map(r => ({
-          ...r,
-          description: r.description.substring(0, 50)
-        }))
+    }).then(restaurants => {
+      const data = restaurants.map(r => ({
+        ...r,
+        description: r.description.substring(0, 50)
+      }))
 
-        return res.render('restaurants', { restaurants: data })
+      return res.render('restaurants', { restaurants: data })
+    })
+  },
+  getRestaurant: (req, res, next) => {
+    return Restaurant.findByPk(req.params.id, {
+      raw: true,
+      nest: true,
+      include: [Category]
+    })
+      .then(restaurant => {
+        if (!restaurant) throw new Error('此restaurant不存在')
+
+        res.render('restaurant', { restaurant })
       })
+      .catch(err => next(err))
   }
 }
 
