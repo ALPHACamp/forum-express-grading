@@ -25,7 +25,7 @@ const restaurantController = {
       .then(restaurant => {
         if (!restaurant) throw new Error('此restaurant不存在')
 
-        return restaurant.increment('viewCounts', { by: 1 })
+        return restaurant.increment('viewCounts')
       })
 
       .then(() => {
