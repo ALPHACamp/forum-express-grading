@@ -15,7 +15,7 @@ const passport = require('./config/passport')
 const { getUser } = require('./helpers/auth-helpers')
 const handlebarsHelpers = require('./helpers/handlebars-helpers') // 引入 handlebars-helpers
 const app = express()
-const port = process.env.PORT || 3000
+const PORT = process.env.PORT || 3000
 
 const SESSION_SECRET = 'secret'
 // 註冊 Handlebars 樣板引擎，並指定副檔名為 .hbs
@@ -40,8 +40,8 @@ app.use((req, res, next) => {
 })
 app.use(routes)
 
-app.listen(port, () => {
-  console.info(`Example app listening on port ${port}!`)
+app.listen(PORT, () => {
+  console.info(`Example app listening on port ${PORT}!`)
 })
 
 module.exports = app
