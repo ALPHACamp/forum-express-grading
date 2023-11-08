@@ -20,14 +20,41 @@ const restaurantController = {
   },
   getRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
-      raw: true,
-      nest: true,
       include: [Category]
     })
       .then(restaurant => {
         if (!restaurant) throw new Error('此restaurant不存在')
 
-        res.render('restaurant', { restaurant })
+        return restaurant.increment('viewCounts')
+      })
+
+      .then(() => {
+        return Restaurant.findByPk(req.params.id, {
+          include: [Category]
+        })
+      })
+
+      .then(updateRestaurant => {
+        res.render('restaurant', {
+          restaurant: updateRestaurant.toJSON()
+        })
+      })
+
+      .catch(err => next(err))
+  },
+  getDashboard: (req, res, next) => {
+    return Restaurant.findByPk(req.params.id, {
+      raw: true,
+      nest: true,
+      include: [Category]
+    })
+
+      .then(restaurant => {
+        if (!restaurant) throw new Error('無法獲取更新後的restaurant')
+
+        res.render('dashboard', {
+          restaurant
+        })
       })
       .catch(err => next(err))
   }
