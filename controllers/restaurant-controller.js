@@ -4,19 +4,36 @@ const { Restaurant, Category } = require('../models')
 const restaurantController = {
   // restaurantController是一個物件
   // getRestaurants負責處理瀏覽餐廳頁面的函式，主要為render restaurants 的樣板
-  getRestaurants: (req, res) => {
-    return Restaurant.findAll({
-      raw: true,
-      nest: true,
-      include: [Category]
-    }).then(restaurants => {
-      const data = restaurants.map(r => ({
-        ...r,
-        description: r.description.substring(0, 50)
-      }))
+  getRestaurants: (req, res, next) => {
+    // 因為handlebars中，有categories，因此這裡需要去抓Category的資料。
 
-      return res.render('restaurants', { restaurants: data })
-    })
+    const categoryId = Number(req.query.categoryId) // categoryId的值是從網址上提取上來(req.query)
+
+    return Promise.all([
+      Restaurant.findAll({
+        raw: true,
+        nest: true,
+        include: [Category],
+        where: {
+          ...categoryId ? { categoryId } : {}
+        }
+      }),
+      Category.findAll({ raw: true })
+    ])
+
+      .then(([restaurants, categories]) => {
+        const data = restaurants.map(r => ({
+          ...r,
+          description: r.description.substring(0, 50)
+        }))
+
+        return res.render('restaurants', {
+          restaurants: data,
+          categories,
+          categoryId
+        })
+      })
+      .catch(err => next(err))
   },
   getRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
