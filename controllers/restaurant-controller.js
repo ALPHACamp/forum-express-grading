@@ -1,28 +1,34 @@
 // 負責處理前台餐廳相關的請求 (request)
 const { Restaurant, Category } = require('../models')
+const { getOffset, getPagination } = require('../helpers/pagination-helper')
 
 const restaurantController = {
   // restaurantController是一個物件
   // getRestaurants負責處理瀏覽餐廳頁面的函式，主要為render restaurants 的樣板
   getRestaurants: (req, res, next) => {
     // 因為handlebars中，有categories，因此這裡需要去抓Category的資料。
-
-    const categoryId = Number(req.query.categoryId) // categoryId的值是從網址上提取上來(req.query)
+    const DEFAULT_LIMIT = 9
+    const categoryId = Number(req.query.categoryId) || '' // categoryId的值是從網址上提取上來(req.query)
+    const page = Number(req.query.page) || 1
+    const limit = Number(req.query.limit) || DEFAULT_LIMIT
+    const offset = getOffset(limit, page)
 
     return Promise.all([
-      Restaurant.findAll({
+      Restaurant.findAndCountAll({
         raw: true,
         nest: true,
+        limit,
+        offset,
         include: [Category],
         where: {
-          ...categoryId ? { categoryId } : {}
+          ...(categoryId ? { categoryId } : {})
         }
       }),
       Category.findAll({ raw: true })
     ])
 
       .then(([restaurants, categories]) => {
-        const data = restaurants.map(r => ({
+        const data = restaurants.rows.map(r => ({
           ...r,
           description: r.description.substring(0, 50)
         }))
@@ -30,7 +36,8 @@ const restaurantController = {
         return res.render('restaurants', {
           restaurants: data,
           categories,
-          categoryId
+          categoryId,
+          pagination: getPagination(limit, page, restaurants.count) // restaurants.count為findAndCountAll的返回值
         })
       })
       .catch(err => next(err))
