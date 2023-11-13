@@ -3,6 +3,7 @@ const router = express.Router()
 const passport = require('../config/passport')
 const restController = require('../controllers/restaurant-controller') // 載入 controller
 const userController = require('../controllers/user-controller')
+const commentController = require('../controllers/comment-controller')
 const { authenticated } = require('../middleware/auth') // 引入用來驗證是否登入
 const { authenticatedAdmin } = require('../middleware/auth')
 const { generalErrorHandler } = require('../middleware/error-handler')
@@ -24,6 +25,8 @@ router.get('/logout', userController.logout)
 router.get('/restaurants/:id/dashboard', restController.getDashboard)
 router.get('/restaurants/:id', restController.getRestaurant)
 router.get('/restaurants', authenticated, restController.getRestaurants)
+
+router.post('/comments', authenticated, commentController.postComment)
 
 router.use('/', (req, res) => res.redirect('/restaurants')) // 設定fallback 路由，其他路由條件都不符合時，最終會通過的路由。
 router.use('/', generalErrorHandler)
