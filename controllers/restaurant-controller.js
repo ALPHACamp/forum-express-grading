@@ -1,5 +1,5 @@
 // 負責處理前台餐廳相關的請求 (request)
-const { Restaurant, Category } = require('../models')
+const { Restaurant, Category, Comment, User } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
 
 const restaurantController = {
@@ -44,7 +44,7 @@ const restaurantController = {
   },
   getRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
-      include: [Category]
+      include: [Category, { model: Comment, include: User }]
     })
       .then(restaurant => {
         if (!restaurant) throw new Error('此restaurant不存在')
@@ -54,7 +54,7 @@ const restaurantController = {
 
       .then(() => {
         return Restaurant.findByPk(req.params.id, {
-          include: [Category]
+          include: [Category, { model: Comment, include: User }]
         })
       })
 
