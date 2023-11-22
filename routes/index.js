@@ -26,6 +26,8 @@ router.get('/restaurants/:id/dashboard', restController.getDashboard)
 router.get('/restaurants/:id', restController.getRestaurant)
 router.get('/restaurants', authenticated, restController.getRestaurants)
 
+router.delete('/comments/:id', authenticatedAdmin, commentController.deleteComment)
+
 router.post('/comments', authenticated, commentController.postComment)
 
 router.use('/', (req, res) => res.redirect('/restaurants')) // 設定fallback 路由，其他路由條件都不符合時，最終會通過的路由。
