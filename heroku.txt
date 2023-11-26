@@ -1,0 +1,11 @@
+powerful-mountain-32848
+
+mysql://
+user-145
+:
+AVNS_rJJ4BD_83xkj0tsPYxM
+@
+db-mysql-sgp1-63466-do-user-14970671-0.c.db.ondigitalocean.com:25060
+/
+db-145
+?ssl-mode=REQUIRED
