@@ -8,10 +8,30 @@
       <div class="card-body">
         <h5 class="card-title fw-bold">{{user.name}}</h5>
         <p class="card-text fw-bold">{{user.email}}</p>
+        <p class="card-text fw-bold">已評論過{{user.commentsCount}}次</p>
         <a href='/users/{{user.id}}/edit'>
           <button type="button" class="btn btn-outline-secondary">Edit</button>
         </a>
       </div>
     </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    已評論過{{user.commentsCount}}次
+  </div>
+  <div class="card-body">
+    <blockquote class="blockquote mb-0">
+      <div class="col-md-4 d-flex align-items-center">
+        {{#each user.Comments}}
+        <div class="card mb-2">
+          <a href="/restaurants/{{this.Restaurant.id}}">
+          <img class="img-fluid me-2" src="{{this.Restaurant.image}}" >
+          </a>
+        </div>
+        {{/each}}
+      </div>
+    </blockquote>
   </div>
 </div>
