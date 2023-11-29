@@ -42,11 +42,12 @@ git push origin R01           # 上傳本地進度
 
 接著改成到 GitHub 來發 PR。
 
-## 共用帳號
+## 共用的帳號
 請一律設定下面 2 組帳號以利驗收：
 * 第一組帳號有 admin 權限：
   * email: root@example.com
   * password: 12345678
+  
 * 第二組帳號沒有 admin 權限：
   * email: user1@example.com
   * password: 12345678
