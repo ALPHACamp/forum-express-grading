@@ -21,7 +21,6 @@ module.exports = {
     await queryInterface.changeColumn('Restaurants', 'view_counts', {
       type: Sequelize.INTEGER,
       allowNull: true
-      // 如果以前有預設值，你可以在這裡設置回去
     })
   }
 }

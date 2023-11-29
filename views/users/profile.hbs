@@ -1,0 +1,17 @@
+
+<div class="card mb-3" style="max-width: 1700px;">
+  <div class="row g-0">
+    <div class="col-md-4 d-flex align-items-center">
+      <img class="img-fluid" src="{{user.image}}" >
+    </div>
+    <div class="col-md-8">
+      <div class="card-body">
+        <h5 class="card-title fw-bold">{{user.name}}</h5>
+        <p class="card-text fw-bold">{{user.email}}</p>
+        <a href='/users/{{user.id}}/edit'>
+          <button type="button" class="btn btn-outline-secondary">Edit</button>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
