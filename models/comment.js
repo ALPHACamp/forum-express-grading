@@ -14,14 +14,18 @@ module.exports = (sequelize, DataTypes) => {
       Comment.belongsTo(models.User, { foreignKey: 'userId' })
     }
   };
-  Comment.init({
-    text: DataTypes.STRING,
-    userId: DataTypes.INTEGER,
-    restaurantId: DataTypes.INTEGER
-  }, {
-    sequelize,
-    modelName: 'Comment',
-    underscored: true
-  })
+  Comment.init(
+    {
+      text: DataTypes.STRING,
+      userId: DataTypes.INTEGER,
+      restaurantId: DataTypes.INTEGER
+    },
+    {
+      sequelize,
+      modelName: 'Comment',
+      tableName: 'Comments',
+      underscored: true
+    }
+  )
   return Comment
 }
