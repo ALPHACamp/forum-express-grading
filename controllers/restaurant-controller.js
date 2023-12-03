@@ -81,6 +81,30 @@ const restaurantController = {
         })
       })
       .catch(err => next(err))
+  },
+  getFeeds: (req, res, next) => {
+    // 需同時取完才能進去下階段，因此使用了Promise.all
+    Promise.all([
+      Restaurant.findAll({
+        limit: 10,
+        order: [['createdAt', 'DESC']],
+        raw: true,
+        nest: true,
+        include: [Category]
+      }),
+      Comment.findAll({
+        limit: 10,
+        order: [['createdAt', 'DESC']],
+        raw: true,
+        nest: true,
+        include: [User, Restaurant]
+      })
+    ])
+      .then(([restaurants, comments]) => {
+        res.render('feeds', { restaurants, comments })
+      })
+
+      .catch(err => next(err))
   }
 }
 

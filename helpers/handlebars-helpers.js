@@ -1,5 +1,5 @@
 const dayjs = require('dayjs') // 載入 dayjs 套件
-const relativeTime = require('dayjs/plugin/relativeTime')// dayjs 套件中的relativeTime 的 plugin
+const relativeTime = require('dayjs/plugin/relativeTime') // dayjs 套件中的relativeTime 的 plugin
 dayjs.extend(relativeTime) // 引用
 
 module.exports = {
