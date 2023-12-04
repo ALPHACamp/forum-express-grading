@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs') // 載入 bcrypt
 const db = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
-const { User, Comment, Restaurant, Favorite } = db
+const { User, Comment, Restaurant, Favorite, Like } = db
 
 const userController = {
   signUpPage: (req, res) => {
@@ -137,6 +137,44 @@ const userController = {
         if (!favorite) throw new Error('您的最愛清單無此餐廳!')
 
         return favorite.destroy()
+      })
+      .then(() => res.redirect('back'))
+      .catch(err => next(err))
+  },
+  addLike: (req, res, next) => {
+    return Promise.all([
+      Restaurant.findByPk(req.params.restaurantId),
+      Like.findOne({
+        where: {
+          userId: req.user.id,
+          restaurantId: req.params.restaurantId
+        }
+      })
+    ])
+      .then(([restaurant, like]) => {
+        if (!restaurant) throw new Error('此restaurant不存在!')
+        if (like) throw new Error('您已為此餐廳按過讚了!')
+
+        return Like.create({
+          userId: req.user.id,
+          restaurantId: req.params.restaurantId
+        })
+      })
+      .then(() => res.redirect('back'))
+      .catch(err => next(err))
+  },
+  removeLike: (req, res, next) => {
+    return Like.findOne({
+      where: {
+        userId: req.user.id,
+        restaurantId: req.params.restaurantId
+      }
+    })
+
+      .then(like => {
+        if (!like) throw new Error('您從未按過此餐廳讚!')
+
+        return like.destroy()
       })
       .then(() => res.redirect('back'))
       .catch(err => next(err))

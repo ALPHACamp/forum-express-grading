@@ -44,10 +44,8 @@ passport.deserializeUser((id, cb) => {
   return User.findByPk(id, {
     // 我要引入餐廳的資料，其關係為FavoritedRestaurants(指定的user下，包含哪些restaurant)
     include: [
-      {
-        model: Restaurant,
-        as: 'FavoritedRestaurants'
-      }
+      { model: Restaurant, as: 'FavoritedRestaurants' },
+      { model: Restaurant, as: 'LikedRestaurants' }
     ]
   })
     .then(user => cb(null, user.toJSON()))

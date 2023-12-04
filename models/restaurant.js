@@ -20,6 +20,12 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'restaurantId', // 對Favorite表設定外鍵
         as: 'FavoritedUsers' // 幫這個關聯取個名稱
       })
+
+      Restaurant.belongsToMany(models.User, {
+        through: models.Like,
+        foreignKey: 'restaurantId',
+        as: 'LikedUsers'
+      })
     }
   };
   Restaurant.init(
