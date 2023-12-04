@@ -12,6 +12,13 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate (models) {
       User.hasMany(models.Comment, { foreignKey: 'userId' })
+
+      // 設定多對多關係
+      User.belongsToMany(models.Restaurant, {
+        through: models.Favorite,
+        foreignKey: 'userId',
+        as: 'FavoritedRestaurants'
+      })
     }
   }
   // 呼叫 User.init 方法來定義欄位
