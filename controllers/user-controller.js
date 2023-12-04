@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs') // 載入 bcrypt
 const db = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
-const { User, Comment, Restaurant } = db
+const { User, Comment, Restaurant, Favorite } = db
 
 const userController = {
   signUpPage: (req, res) => {
@@ -55,7 +55,9 @@ const userController = {
           throw new Error("User didn't exist!")
         }
         // 使user.Comments的值不為undefined
-        user.dataValues.commentsCount = user.Comments ? user.Comments.length : 0
+        user.dataValues.commentsCount = user.Comments
+          ? user.Comments.length
+          : 0
         const userJson = user.toJSON()
         res.render('users/profile', { user: userJson })
       })
@@ -98,6 +100,46 @@ const userController = {
     } catch (err) {
       next(err)
     }
+  },
+  addFavorite: (req, res, next) => {
+    return Promise.all([
+      // 先抓取餐廳資料
+      Restaurant.findByPk(req.params.restaurantId),
+      // 在確認最愛的名單中是否已被加入清單中
+      Favorite.findOne({
+        where: {
+          userId: req.user.id,
+          restaurantId: req.params.restaurantId
+        }
+      })
+    ])
+      .then(([restaurant, favorite]) => {
+        if (!restaurant) throw new Error('此restaurant不存在!')
+
+        if (favorite) throw new Error('您已將此餐廳加入最愛清單了!')
+
+        return Favorite.create({
+          userId: req.user.id,
+          restaurantId: req.params.restaurantId
+        })
+      })
+      .then(() => res.redirect('back'))
+      .catch(err => next(err))
+  },
+  removeFavorite: (req, res, next) => {
+    return Favorite.findOne({
+      where: {
+        userId: req.user.id,
+        restaurantId: req.params.restaurantId
+      }
+    })
+      .then(favorite => {
+        if (!favorite) throw new Error('您的最愛清單無此餐廳!')
+
+        return favorite.destroy()
+      })
+      .then(() => res.redirect('back'))
+      .catch(err => next(err))
   }
 }
 
