@@ -42,6 +42,10 @@ router.delete('/comments/:id', authenticatedAdmin, commentController.deleteComme
 router.post('/favorite/:restaurantId', authenticated, userController.addFavorite)
 router.delete('/favorite/:restaurantId', authenticated, userController.removeFavorite)
 
+// like路由
+router.post('/like/:restaurantId', authenticated, userController.addLike)
+router.delete('/like/:restaurantId', authenticated, userController.removeLike)
+
 // Fallback 路由
 router.use('/', (req, res) => res.redirect('/restaurants'))
 

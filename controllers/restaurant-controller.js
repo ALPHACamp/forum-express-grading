@@ -28,12 +28,14 @@ const restaurantController = {
     ])
 
       .then(([restaurants, categories]) => {
-        const favoritedRestaurantsId =
-          req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
+        const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
+        const likeRestaurantsId = req.user && req.user.LikedRestaurants.map(tw => tw.id)
+
         const data = restaurants.rows.map(r => ({
           ...r,
           description: r.description.substring(0, 50),
-          isFavorited: favoritedRestaurantsId.includes(r.id)
+          isFavorited: favoritedRestaurantsId.includes(r.id),
+          isLiked: likeRestaurantsId.includes(r.id)
         }))
 
         return res.render('restaurants', {
@@ -65,16 +67,19 @@ const restaurantController = {
             { model: Comment, include: User },
             // 使用「現在的使用者」是否有出現在收藏「這間餐廳的收藏使用者列表」裡面
             // 也可以使用「現在這間餐廳」是否有出現在「使用者的收藏清單」裡面
-            { model: User, as: 'FavoritedUsers' }
+            { model: User, as: 'FavoritedUsers' },
+            { model: User, as: 'LikedUsers' }
           ] // 使用FavoritedUsers，讓電腦得知是使用哪種關係]
         })
       })
 
       .then(updateRestaurant => {
         const isFavorited = updateRestaurant.FavoritedUsers.some(f => f.id === req.user.id)
+        const isLiked = updateRestaurant.LikedUsers.some(d => d.id === req.user.id)
         res.render('restaurant', {
           restaurant: updateRestaurant.toJSON(),
-          isFavorited
+          isFavorited,
+          isLiked
         })
       })
 
