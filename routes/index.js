@@ -24,6 +24,7 @@ router.get('/logout', userController.logout)
 router.use('/admin', authenticatedAdmin, admin)
 
 // 具體用戶路由
+router.get('/users/top', authenticated, userController.getTopUsers)
 router.get('/users/:id/edit', authenticated, userController.editUser)
 router.put('/users/:id/edit', authenticated, upload.single('image'), userController.putUser)
 router.get('/users/:id', authenticated, userController.getUser)

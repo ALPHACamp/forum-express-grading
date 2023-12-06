@@ -178,6 +178,28 @@ const userController = {
       })
       .then(() => res.redirect('back'))
       .catch(err => next(err))
+  },
+  getTopUsers: (req, res, next) => {
+    return User.findAll({
+      // 找出那些資料者並且夾帶他的紛絲
+      include: [{ model: User, as: 'Followers' }]
+    })
+
+      .then(users => {
+        // 將users的資料整理，並把新陣列儲存在 users 裡
+        users = users.map(user => ({
+          // 將每一個user利用toJSON()整理
+          ...user.toJSON(),
+          // 計算user的追蹤數
+          followerCount: user.Followers.length,
+          // 確認當前的使用者的追蹤列表是否含有目前頁面的使用者
+          isFollowed: req.user.Followings.some(f => f.id === user.id)
+        }))
+        // 兩個users是不一樣
+        res.render('top-users', { users })
+      })
+
+      .catch(err => next(err))
   }
 }
 
