@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs')
-const db = require('../models')
-const { User } = db
+const { User } = require('../models')
+const { imgurFileHandler } = require('../helpers/file-helpers')
 const userController = {
   signUpPage: (req, res) => {
     res.render('signup')
@@ -37,6 +37,69 @@ const userController = {
     req.flash('success_messages', '登出成功！')
     req.logout()
     res.redirect('/signin')
+  },
+  getUser: (req, res, next) => {
+    return User.findByPk(req.params.id, {
+      raw: true
+    })
+      .then(user => {
+        if (!user) throw new Error("user doesn't exist!")
+        res.render('users/profile', { user })
+      })
+      .catch(err => next(err))
+  },
+  editUser: (req, res, next) => {
+    return User.findByPk(req.params.id, {
+      raw: true
+    })
+      .then(user => {
+        if (!user) throw new Error("user doesn't exist!")
+        res.render('users/edit', { user })
+      })
+      .catch(err => next(err))
+  },
+  // 自己原本的寫法，功能沒問題，但不知道為何沒辦法通過測試
+  // putUser: (req, res, next) => {
+  //   const { name } = req.body
+  //   if (!name) throw new Error('User name is required!')
+  //   const { file } = req
+  //   Promise.all([
+  //     User.findByPk(req.user.id),
+  //     imgurFileHandler(file)
+  //   ])
+  //     .then(([user, filePath]) => {
+  //       if (!user) throw new Error("User doesn't exist!")
+  //       return user.update({
+  //         name,
+  //         image: filePath || user.image
+  //       })
+  //     })
+  //     .then(() => {
+  //       req.flash('success_messages', '使用者資料編輯成功')
+  //       res.redirect(`/users/${req.user.id}`)
+  //     })
+  //     .catch(err => next(err))
+  // }
+
+  // putUser為別人的寫法
+  putUser: async (req, res, next) => {
+    try {
+      const { name } = req.body
+      if (!name) throw new Error('Name為必填欄位')
+      const { file } = req
+      const user = await User.findByPk(req.params.id)
+      if (!user) throw new Error('此user不存在')
+      const filePath = await imgurFileHandler(file)
+      await user.update({
+        name,
+        image: filePath || user.image
+      })
+      const userJson = user.toJSON()
+      req.flash('success_messages', '使用者資料編輯成功')
+      res.redirect(`/users/${userJson.id}`)
+    } catch (err) {
+      next(err)
+    }
   }
 }
 module.exports = userController
