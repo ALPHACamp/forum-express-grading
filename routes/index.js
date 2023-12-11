@@ -31,6 +31,7 @@ router.get('/users/:id', authenticated, userController.getUser)
 
 // 餐廳路由
 router.get('/restaurants/feeds', authenticated, restController.getFeeds)
+router.get('/restaurants/top', authenticated, restController.getTopRestaurants)
 router.get('/restaurants/:id/dashboard', restController.getDashboard)
 router.get('/restaurants/:id', restController.getRestaurant)
 router.get('/restaurants', authenticated, restController.getRestaurants)

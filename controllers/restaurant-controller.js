@@ -28,8 +28,10 @@ const restaurantController = {
     ])
 
       .then(([restaurants, categories]) => {
-        const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
-        const likeRestaurantsId = req.user && req.user.LikedRestaurants.map(tw => tw.id)
+        const favoritedRestaurantsId =
+          req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
+        const likeRestaurantsId =
+          req.user && req.user.LikedRestaurants.map(tw => tw.id)
 
         const data = restaurants.rows.map(r => ({
           ...r,
@@ -49,10 +51,7 @@ const restaurantController = {
   },
   getRestaurant: (req, res, next) => {
     return Restaurant.findByPk(req.params.id, {
-      include: [
-        Category,
-        { model: Comment, include: User }
-      ]
+      include: [Category, { model: Comment, include: User }]
     })
       .then(restaurant => {
         if (!restaurant) throw new Error('此restaurant不存在')
@@ -74,8 +73,12 @@ const restaurantController = {
       })
 
       .then(updateRestaurant => {
-        const isFavorited = updateRestaurant.FavoritedUsers.some(f => f.id === req.user.id)
-        const isLiked = updateRestaurant.LikedUsers.some(d => d.id === req.user.id)
+        const isFavorited = updateRestaurant.FavoritedUsers.some(
+          f => f.id === req.user.id
+        )
+        const isLiked = updateRestaurant.LikedUsers.some(
+          d => d.id === req.user.id
+        )
         res.render('restaurant', {
           restaurant: updateRestaurant.toJSON(),
           isFavorited,
@@ -123,6 +126,27 @@ const restaurantController = {
         res.render('feeds', { restaurants, comments })
       })
 
+      .catch(err => next(err))
+  },
+  getTopRestaurants: (req, res, next) => {
+    return Restaurant.findAll({
+      include: [{ model: User, as: 'FavoritedUsers' }]
+    })
+      .then(restaurants => {
+        const Newrestaurants = restaurants
+          .map(restaurant => ({
+            ...restaurant.toJSON(),
+            description: restaurant.description.substring(0, 200),
+            favoritedCount: restaurant.FavoritedUsers.length,
+            // 在使用 req.user 之前，增加一個檢查來確保它不是 undefined
+            isFavorited: req.user
+              ? restaurant.FavoritedUsers.some(f => f.id === req.user.id)
+              : false
+          }))
+          .sort((a, b) => b.favoritedCount - a.favoritedCount)
+          .slice(0, 10)
+        res.render('top-restaurants', { restaurants: Newrestaurants })
+      })
       .catch(err => next(err))
   }
 }
