@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs')
-const { User } = require('../models')
+const { User, Comment, Restaurant } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 const userController = {
   signUpPage: (req, res) => {
@@ -39,12 +39,18 @@ const userController = {
     res.redirect('/signin')
   },
   getUser: (req, res, next) => {
+    if (Number(req.params.id) !== req.user.id) {
+      req.flash('warning_messages', '無法切換到他人的個人介面')
+      return res.redirect(`/users/${req.user.id}`)
+    }
     return User.findByPk(req.params.id, {
-      raw: true
+      include: [{ model: Comment, include: Restaurant }]
     })
       .then(user => {
         if (!user) throw new Error("user doesn't exist!")
-        res.render('users/profile', { user })
+        user.dataValues.commentsCount = user.Comments ? user.Comments.length : 0
+        const userJson = user.toJSON()
+        res.render('users/profile', { user: userJson })
       })
       .catch(err => next(err))
   },
@@ -83,6 +89,10 @@ const userController = {
 
   // putUser為別人的寫法
   putUser: async (req, res, next) => {
+    if (Number(req.params.id) !== req.user.id) {
+      req.flash('warning_messages', '無法切換到他人的個人介面')
+      return res.redirect(`/users/${req.user.id}/edit`)
+    }
     try {
       const { name } = req.body
       if (!name) throw new Error('Name為必填欄位')

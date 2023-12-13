@@ -11,3 +11,19 @@
     </a>
   </div>
 </div>
+<div class="card">
+  <div class="card-header">
+    <p>已評論過{{user.commentsCount}}次</p>
+  </div>
+  <div class="class-body">
+    <div class="col-md-4 d-flex align-items-center">
+      {{#each user.Comments}}
+      <div class="card mb-2">
+        <a href="/restaurants/{{this.Restaurant.id}}">
+          <img class="img-fluid me-2" src="{{this.Restaurant.image}}" alt="">
+        </a>
+      </div>
+      {{/each}}
+    </div>
+  </div>
+</div>
